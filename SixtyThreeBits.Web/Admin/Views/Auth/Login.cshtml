@@ -1,0 +1,43 @@
+﻿@model AuthModel.LoginPageViewModel
+@{ Layout = null;}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>Login | @Model.ProjectName</title>
+    <link rel="icon" type="image/png" href="/img/favicon.png">
+    <link rel="stylesheet" href="/plugins/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/plugins/angle/css/app.css" />
+    <link rel="stylesheet" href="/plugins/angle/css/theme-a.css" />
+    <link rel="stylesheet" href="/admin/css/style.css" />
+</head>
+<body>
+    <div class="login-container">
+        <div class="card">
+            <div class="card-body">
+                <div class="text-center mb-3"><img src="/img/logo.svg" width="100" alt="logo" class="block-center img-rounded"></div>
+                <form method="post">
+                    <div class="form-group">
+                        <input name="@nameof(Model.Username)" type="text" placeholder="Email" autocomplete="off" class="form-control" value="@Model.Username">
+                    </div>
+                    <div class="form-group">
+                        <input name="@nameof(Model.Password)" type="password" placeholder="Password" class="form-control" value="@Model.Password">
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-oval btn-primary">Login</button>
+                    </div>
+                </form>
+                @if (Model.IsLoginFailed)
+                {
+                    <p class="text-center text-danger">@Model.ErrorMessage</p>
+                }
+            </div>
+        </div>
+        <div class="p-lg text-center">
+            <span>63BITS LLC</span>
+        </div>
+    </div>
+</body>
+</html>

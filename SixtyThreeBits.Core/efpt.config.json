@@ -1,0 +1,38 @@
+﻿{
+   "ContextClassName": "DBCoreDataContext",
+   "ContextNamespace": null,
+   "DefaultDacpacSchema": null,
+   "DoNotCombineNamespace": false,
+   "IdReplace": false,
+   "IncludeConnectionString": false,
+   "ModelNamespace": null,
+   "OutputContextPath": "DB\\",
+   "OutputPath": "DB\\Tables",
+   "ProjectRootNamespace": "SixtyThreeBits.Core",
+   "SelectedHandlebarsLanguage": 0,
+   "SelectedToBeGenerated": 0,
+   "Tables": [
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[Permissions]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[RolePermissions]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[Roles]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[Users]"
+      }
+   ],
+   "UseDatabaseNames": true,
+   "UseFluentApiOnly": true,
+   "UseHandleBars": false,
+   "UseInflector": false,
+   "UseLegacyPluralizer": false,
+   "UseSpatial": false
+}

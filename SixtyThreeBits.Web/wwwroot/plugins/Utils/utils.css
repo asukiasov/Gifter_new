@@ -1,0 +1,33 @@
+﻿.disabled {
+    opacity: 0.3;
+}
+.highlight{
+	background-color:#ffe58a;
+}
+.underline{
+    text-decoration:underline !important;
+}
+.strike{
+    text-decoration:line-through !important;
+}
+.custom-shake{
+	-webkit-animation: shake .1s ease infinite;
+	animation: shake .1s ease infinite;
+}
+@-webkit-keyframes shake {
+  from {
+    -webkit-transform: translateX(5px);
+  }
+  to {
+    -webkit-transform: translateX(-5px);
+  }
+}
+
+@keyframes shake {
+  from {
+    transform: translateX(5px);
+  }
+  to {
+    transform: translateX(-5px);
+  }
+}

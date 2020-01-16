@@ -1,0 +1,56 @@
+﻿using Microsoft.AspNetCore.Http;
+using SixtyThreeBits.Libraries;
+using System.Linq;
+
+namespace SixtyThreeBits.Web.Reusables
+{
+    public interface ISessionAssistance
+    {
+        void Clear();
+        T Get<T>(string Key);
+        bool HasKey(string Key);        
+        void Set<T>(string Key, T Value);
+        void Remove(string Key);
+    }
+
+    public class SessionAssistance : ISessionAssistance
+    {
+        #region Properties
+        ISession Session;
+        #endregion
+
+        #region Sub Classes
+        public SessionAssistance(IHttpContextAccessor HttpContextAccessor)
+        {
+            Session = HttpContextAccessor.HttpContext.Session;                        
+        }
+        #endregion
+
+        #region Methods
+        public void Clear()
+        {            
+            Session.Clear();
+        }
+
+        public T Get<T>(string Key)
+        {
+            return HasKey(Key) ? Session.GetString(Key).FromJsonTo<T>() : default(T);
+        }
+
+        public bool HasKey(string Key)
+        {
+            return Session.Keys.Contains(Key);
+        }
+
+        public void Set<T>(string Key, T Value)
+        {            
+            Session.SetString(Key, Value.ToJSON());
+        }         
+
+        public void Remove(string Key)
+        {
+            Session.Remove(Key);
+        }
+        #endregion
+    }
+}
