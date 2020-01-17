@@ -13,6 +13,8 @@
 
   <ItemGroup>
     <PackageReference Include="63BITS-Libraries-DotNetStandart" Version="1.1.11" />
+    <PackageReference Include="DevExtreme.AspNet.Core" Version="19.2.5" />
+    <PackageReference Include="DevExtreme.AspNet.Data" Version="2.5.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.1.1" />
@@ -21,9 +23,20 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\admin\js\" />
     <Folder Include="wwwroot\js\" />
     <Folder Include="wwwroot\css\" />
+    <Folder Include="wwwroot\plugins\devextreme\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Admin\Views\Home\Index.cshtml" />
+    <None Include="Admin\Views\Shared\FileTreeEditor\FileTreeEditor.cshtml" />
+    <None Include="Admin\Views\Shared\FileTreeEditor\FileTreeEditorFile.cshtml" />
+    <None Include="Admin\Views\Shared\FileTreeEditor\FileTreeEditorFolder.cshtml" />
+    <None Include="Views\Shared\FileTree\FileTree.cshtml" />
+    <None Include="Views\Shared\FileTree\FileTreeFile.cshtml" />
+    <None Include="Views\Shared\FileTree\FileTreeFolder.cshtml" />
+    <None Include="wwwroot\plugins\jquery-confirm\jquery-confirm.min.js" />
   </ItemGroup>
 
   <ItemGroup>

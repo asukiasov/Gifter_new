@@ -1,0 +1,20 @@
+﻿@model TreeNodeItem
+<div class="item accordion-item">
+    <span class="list-block-title accordion-toggle"><a href="#">@Html.Raw(Model.Caption)</a></span>
+    @if (Model.HasChildren)
+    {
+        <div class="accordion-content">
+            @foreach (var Child in Model.Children)
+            {
+                if(Child.IsFolder)
+                {
+                    @await Html.PartialAsync(ViewNames.Shared.FileTree.Folder,Child)
+                }
+                else
+                {
+                    @await Html.PartialAsync(ViewNames.Shared.FileTree.File, Child);
+                }
+            }
+        </div>
+    }
+</div>

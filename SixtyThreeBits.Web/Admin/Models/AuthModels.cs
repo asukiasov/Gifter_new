@@ -11,11 +11,7 @@ namespace SixtyThreeBits.Web.Admin.Models
         #region Methods
         public LoginPageViewModel GetPageViewModel()
         {
-            var Model = new LoginPageViewModel
-            {
-                ProjectName = AppSettings.ProjectName
-            };
-
+            var Model = new LoginPageViewModel();
             return Model;
         }
 
@@ -28,8 +24,8 @@ namespace SixtyThreeBits.Web.Admin.Models
         public async Task<bool> AuthenticateUser(LoginPageViewModel ViewModel)
         {
             bool IsAuthenticated = false;
-            var DAL = new UsersDataAccess(db);
-            var User = await DAL.GetSingleUserByEmailAndPassword(ViewModel.Username, ViewModel.Password);
+            
+            var User = await DataAccessFactory.Users.GetSingleUserByEmailAndPassword(ViewModel.Username, ViewModel.Password);
             if (User == null)
             {
                 ViewModel.IsLoginFailed = true;
@@ -62,8 +58,7 @@ namespace SixtyThreeBits.Web.Admin.Models
         #region Sub Classes
         public class LoginPageViewModel
         {            
-            #region Properties
-            public string ProjectName { get; set; }
+            #region Properties            
             public string Username { get; set; }
             public string Password { get; set; }            
             public string ErrorMessage { get; set; } = Resources.ValidationUserInvalidUsernameOrPassword;

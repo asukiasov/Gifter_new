@@ -22,7 +22,7 @@ namespace SixtyThreeBits.Web.Admin.Controllers
         {            
             if (Model.IsUserLoggedIn())
             {
-                return Redirect(Url.RouteUrl(ControllerActionRouteNames.Admin.Home.Index));
+                return Redirect(Url.RouteUrl(ControllerActionRouteNames.Admin.Home.Page));
             }
             else
             {
@@ -38,7 +38,7 @@ namespace SixtyThreeBits.Web.Admin.Controllers
             var IsAuthenticated = await Model.AuthenticateUser(ViewModel: ViewModel);
             if (IsAuthenticated)
             {                                
-                return Redirect(Url.RouteUrl(ControllerActionRouteNames.Admin.Home.Index));                
+                return Redirect(Url.RouteUrl(ControllerActionRouteNames.Admin.Home.Page));                
             }
             else
             {

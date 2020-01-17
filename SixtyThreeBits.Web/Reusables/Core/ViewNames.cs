@@ -143,6 +143,18 @@
                 public const string DevexpressTree = "~/Admin/Views/Shared/DevexpressTree.cshtml";
                 public const string PopupLayout = "~/Admin/Views/Shared/PopupLayout.cshtml";
                 public const string Tabs = "~/Admin/Views/Shared/Tabs.cshtml";
+                public const string SuccessErrorPartialView = "~/Admin/Views/Shared/SuccessErrorPartialView.cshtml";
+                #endregion
+
+                #region Sub Classes
+                public class FileTreeEditor
+                {
+                    #region Properties
+                    public const string Editor = "~/Views/Admin/Shared/FileTreeEditor/FileTreeEditor.cshtml";
+                    public const string Folder = "~/Views/Admin/Shared/FileTreeEditor/FileTreeEditorFolder.cshtml";
+                    public const string File = "~/Views/Admin/Shared/FileTreeEditor/FileTreeEditorFile.cshtml";
+                    #endregion
+                }
                 #endregion
             }
 
@@ -175,6 +187,20 @@
                 public const string Page = "~/Views/Home/Index.cshtml";
                 #endregion
             } 
+            #endregion
+        }
+
+        public class Shared
+        {
+            #region Sub Classes
+            public class FileTree
+            {
+                #region Properties
+                public const string Tree = "~/Views/Shared/FileTree/FileTree.cshtml";
+                public const string Folder = "~/Views/Shared/FileTree/FileTreeFolder.cshtml";
+                public const string File = "~/Views/Shared/FileTree/FileTreeFile.cshtml";
+                #endregion
+            }
             #endregion
         }
         #endregion

@@ -1,0 +1,193 @@
+﻿@{ var Model = LocalUtilities.GetLayoutViewModel<AdminLayoutViewModel>(ViewData: ViewData, Key: Constants.ViewData.LayoutViewModel); }
+<!DOCTYPE html>
+<html lang="en" class="csstransforms3d">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>@Html.Raw(Model.PageTitle) | @Html.Raw(Constants.ProjectName)</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700&display=swap" rel="stylesheet">
+    <link href="~/plugins/fontawesome/5.12.0/css/all.css" rel="stylesheet" />
+    <link href="~/plugins/63bits-fonts/fonts.css" rel="stylesheet" />
+    <link href="~/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/plugins/angle/css/app.css" rel="stylesheet" />
+    <link href="~/plugins/angle/css/theme-a.css" rel="stylesheet" />
+    <link href="~/plugins/jquery-confirm/jquery-confirm.min.css" rel="stylesheet" />
+    <link href="~/plugins/utils/utils.css" rel="stylesheet" />
+
+    <link href="~/admin/css/style.css" rel="stylesheet" />
+
+    <script src="~/plugins/jquery/jquery.min.js"></script>
+    @RenderSection(Constants.ViewSections.HeaderSection, false)
+</head>
+<body class="@(Model.IsSidebarCollapsed ? "aside-collapsed aside-toggled" : null)">
+    <div class="wrapper">
+        <header class="topnavbar-wrapper">
+            <nav class="navbar topnavbar">
+                <div class="navbar-header">
+                    <a class="navbar-brand">
+                        <div class="brand-logo">
+                            <img class="img-fluid" src="/img/logo.svg" alt="App Logo" width="160">
+                        </div>
+                        <div class="brand-logo-collapsed">
+                            <img class="img-fluid" src="/img/logo.svg" alt="App Logo">
+                        </div>
+                    </a>
+                </div>
+
+                <ul class="navbar-nav mr-auto flex-row">
+                    <li class="nav-item">
+                        <!-- Button used to collapse the left sidebar. Only visible on tablet and desktops-->
+                        <a class="nav-link d-none d-md-block d-lg-block d-xl-block" href="#" data-trigger-resize="" data-toggle-state="aside-collapsed">
+                            <i class="fas fa-bars"></i>
+                        </a>
+                        <!-- Button to show/hide the sidebar on mobile. Visible on mobile only.-->
+                        <a class="nav-link sidebar-toggle d-md-none" href="#" data-trigger-resize="" data-toggle-state="aside-toggled">
+                            <i class="fas fa-bars"></i>
+                        </a>
+                    </li>
+                </ul>
+
+                <ul class="navbar-nav flex-row">
+                    <li class="nav-item dropdown dropdown-list">
+                        <a class="nav-link dropdown-toggle dropdown-toggle-nocaret" href="#" data-toggle="dropdown">
+                            <i class="fas fa-user"></i>
+                        </a>
+                        <!-- START Dropdown menu-->
+                        <div class="dropdown-menu dropdown-menu-right animated fadeIn">
+                            <div class="dropdown-item">
+                                <div class="list-group">
+                                    <a href="@Model.UrlRelogin" class="list-group-item list-group-item-action"><i class="fas fa-sync-alt"></i> Relogin </a>
+                                    <a href="@Model.UrlLogout" class="list-group-item list-group-item-action"><i class="fas fa-sign-out-alt"></i> Logout </a>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </nav>
+        </header>
+
+        <aside class="aside-container">
+            <div class="aside-inner">
+                <nav class="sidebar" data-sidebar-anyclick-close="">
+                    <ul class="sidebar-nav">
+                        <li class="has-user-block">
+                            <div id="user-block">
+                                <div class="item user-block">
+                                    <!-- User picture-->
+                                    <div class="user-block-picture">
+                                        <div class="user-block-status">
+                                            <img class="img-thumbnail rounded-circle" src="/img/no-avatar.svg" alt="Avatar" width="60" height="60" title="@Model.UserFullname">
+                                            @*<div class="circle circle-success circle-lg"></div>*@
+                                        </div>
+                                    </div>
+                                    <!-- Name and Job-->
+                                    <div class="user-block-info">
+                                        <span class="user-block-name">@Model.UserFullname</span>
+                                        @*<span class="user-block-role">Designer</span>*@
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+
+                        @if (Model.HasMenu)
+                        {
+                            foreach (var Item in Model.Menu)
+                            {
+                                <li data-menu-top-item @(Item.IsSelected ? Html.Raw("class=\"active\"") : null)>
+                                    <a href="@(Item.HasChildren ? $"#menu-{Html.Raw(Item.NavigateUrl)}" : $"{Html.Raw(Item.NavigateUrl)}")" @(Item.HasChildren ? Html.Raw("data-toggle=\"collapse\"") : null) aria-expanded="false">
+                                        <i class="@Html.Raw(Item.Icon)"></i>
+                                        <span>@Html.Raw(Item.Caption)</span>
+                                    </a>
+                                    @if (Item.HasChildren)
+                                    {
+                                        <ul class="sidebar-nav sidebar-subnav collapse @(Item.IsSelected ? Html.Raw("show") : null)" id="menu-@Html.Raw(Item.NavigateUrl)">
+                                            <li class="sidebar-subnav-header">@Html.Raw(Item.Caption)</li>
+                                            @foreach (var SubItem in Item.Children)
+                                            {
+                                                <li @(SubItem.IsSelected ? Html.Raw("class=\"active\"") : null)>
+                                                    <a href="@Html.Raw(SubItem.NavigateUrl)">
+                                                        <span>@Html.Raw(SubItem.Caption)</span>
+                                                    </a>
+                                                </li>
+                                            }
+                                        </ul>
+                                    }
+                                </li>
+                            }
+                        }
+                    </ul>
+                </nav>
+            </div>
+            <footer class="footer-container">
+                <span>
+                    <span>Developed by</span>
+                    <a href="http://63bits.com/" target="_blank">
+                        <img src="/img/63bits.svg" alt="63BITS" height="13" />
+                    </a>
+                </span>
+                <a href="http://63bits.com/" target="_blank">
+                    <img src="/img/63bits.svg" height="10" />
+                </a>
+            </footer>
+        </aside>
+
+        <section class="section-container">
+            <div class="content-wrapper">
+                <div class="content-heading">
+                    <div>
+                        @Html.Raw(Model.PageTitle)
+                        @*<small>Standard and custom elements for any form</small>*@
+                    </div>
+                </div>
+                @if (Model.HasBreadcrumbs && Model.Breadcrumbs.ItemsCount > 2)
+                {
+                    <ol class="breadcrumb">
+                        @foreach (var Item in Model.Breadcrumbs.Items)
+                        {
+                            if (Item.IsLastItem)
+                            {
+                                <li class="breadcrumb-item active">@Html.Raw(Item.Caption)</li>
+                            }
+                            else if (Item.HasNavigateUrl)
+                            {
+                                <li class="breadcrumb-item">
+                                    <a href="@Html.Raw(Item.NavigateUrl)">@Html.Raw(Item.Caption)</a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="breadcrumb-item">@Html.Raw(Item.Caption)</li>
+                            }
+                        }
+                    </ol>
+                }
+                @RenderBody()
+            </div>
+        </section>        
+    </div>
+
+    @if (Model.IsSuccessErrorPartialInitiated)
+    {
+        <link href="~/plugins/successErrorMessage/successErrorMessage.css" rel="stylesheet" />
+        <script src="~/plugins/successErrorMessage/successErrorMessage.js"></script>
+
+        @await Html.PartialAsync(ViewNames.Admin.Shared.SuccessErrorPartialView, Model.SuccessErrorViewModel)
+    }
+    <script src="~/plugins/bootstrap/js/bootstrap.min.js"></script>
+    <script src="~/plugins/utils/utils.js"></script>
+    <script src="~/plugins/preloader/preloader.js"></script>
+    <script src="~/plugins/jquery-confirm/jquery-confirm.min.js"></script>
+
+
+    <script src="~/admin/js/Global.js"></script>
+    <script src="~/admin/js/Layout.js"></script>    
+    <script src="~/plugins/63bits-components/63bits-components.js"></script>
+    <script>
+        Globals.TextError = '@Model.TextError';
+        Globals.TextSuccess = '@Model.TextSuccess';
+        LayoutModel.SidebarStatusCookieKey = '@Constants.Cookies.IsAdminSideBarCollapsed';
+    </script>
+    @RenderSection(Constants.ViewSections.FooterSection, false)
+</body>
+</html>

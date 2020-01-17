@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace SixtyThreeBits.Core.Modules
 {
@@ -57,16 +58,13 @@ namespace SixtyThreeBits.Core.Modules
         //        });
         //    }
 
-        //    public static List<UsersListResult> ListUsers()
-        //    {
-        //        return TryToReturnStatic($"{nameof(ListUsers)}()", () =>
-        //        {
-        //            using (var db = ConnectionFactory.GetDBCoreDataContext())
-        //            {
-        //                return db.UsersList().OrderByDescending(Item => Item.CRTime).ToList();
-        //            }
-        //        });
-        //    }        
+        public async Task<List<DB.Tables.Users>> ListUsers()
+        {
+            return await TryToReturnAsync($"{nameof(ListUsers)}()", async () =>
+            {
+                return await db.Users.OrderByDescending(Item => Item.CRTime).ToListAsync();
+            });
+        }
 
         //    public int? UsersIUD(byte? DatabaseAction, int? UserID = null, string UserEmail = null, string UserPassword = null, string UserFirstname = null, string UserLastname = null, string UserFullname = null, int? UserRoleID = null, DateTime? UserBirthdate = null, string UserMobile = null, string UserPersonalNumber = null, string UserAvatarFilename = null, bool? UserIsActive = null)
         //    {

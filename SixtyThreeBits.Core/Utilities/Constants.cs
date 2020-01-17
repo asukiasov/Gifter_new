@@ -2,6 +2,10 @@
 {
     public class Constants
     {
+        #region Properties
+        public const string ProjectName = "63BITS Project Starter"; 
+        #endregion
+
         #region Sub Classes
         public class Cache
         {
@@ -11,7 +15,7 @@
         public class Cookies
         {
             #region Properties
-            public const string IsSidebarCollapsed = "IsSidebarCollapsed";
+            public const string IsAdminSideBarCollapsed = "IsAdminSideBarCollapsed";
             #endregion
         }
 
@@ -93,17 +97,15 @@
         public class Session
         {
             #region Properties
-            const string Prefix = "SixtyThreeBits.Web.";
-
-            public static string User => $"{Prefix}User";
+            public const string User = "User";            
             #endregion
 
             #region Sub Classes
             public class SuccessErrorMessage
             {
                 #region Properties
-                public static string Error => $"{Prefix}SuccessErrorMessageError";
-                public static string Success => $"{Prefix}SuccessErrorMessageSuccess";
+                public const string Error = "SuccessErrorMessageError";
+                public const string Success = "SuccessErrorMessageSuccess";
                 #endregion
             } 
             #endregion
@@ -116,6 +118,12 @@
             public const string TabsViewModel = "ConstantsViewDataTabsViewModel";
             public const string Title = "ConstantsViewDataTitle";
             #endregion
+        }
+
+        public class ViewSections
+        {
+            public const string HeaderSection = "HeaderSection";
+            public const string FooterSection = "FooterSection";
         }
         #endregion
     }

@@ -1,0 +1,16 @@
+﻿@model List<TreeNodeItem>
+<div class="sortable">
+    <ul>
+        @foreach (var Item in Model)
+        {
+            if (Item.IsFolder)
+            {
+                @await Html.PartialAsync(ViewNames.Admin.Shared.FileTreeEditor.Folder, Item)
+            }
+            else
+            {
+                @await Html.PartialAsync(ViewNames.Admin.Shared.FileTreeEditor.File, Item)
+            }
+        }
+    </ul>
+</div>

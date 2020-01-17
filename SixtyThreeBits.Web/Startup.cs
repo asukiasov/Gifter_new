@@ -38,11 +38,11 @@ namespace SixtyThreeBits.Web
             Services.AddSession(options =>
             {
                 options.IdleTimeout = System.TimeSpan.FromMinutes(30);
-                options.Cookie.Name = AppSettings.IsDevelopment ? $"{AppSettings.ProjectName}Development" : $"{AppSettings.ProjectName}Production";
+                options.Cookie.Name = AppSettings.IsDevelopment ? $"{Constants.ProjectName}Development" : $"{Constants.ProjectName}Production";
                 options.Cookie.HttpOnly = true;
             });
             Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            Services.AddControllersWithViews();
+            Services.AddControllersWithViews().AddJsonOptions(Options => { Options.JsonSerializerOptions.PropertyNamingPolicy = null;  } ); ;
             Services.AddDbContext<DBCoreDataContext>(Options => Options.UseSqlServer(AppSettings.DBConnectionStrings.DBConnectionString));
             Services.Configure<RouteOptions>(routeOptions => {
                 routeOptions.AppendTrailingSlash = true;
@@ -60,7 +60,7 @@ namespace SixtyThreeBits.Web
             App.UseFileServer();
             App.UseSession(new SessionOptions { IdleTimeout = TimeSpan.FromMinutes(60) });
             App.UseRouting();            
-
+            
             App.UseEndpoints(Endpoints =>
             {
                 Endpoints.MapControllers();                

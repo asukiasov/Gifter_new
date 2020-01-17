@@ -1,0 +1,16 @@
+﻿@model UsersModel.PageViewModel
+@section HeaderSection{
+    <link href="~/plugins/devextreme/css/dx.common.css" rel="stylesheet" />
+    <link href="~/plugins/devextreme/css/dx.light.css" rel="stylesheet" />
+    <script src="~/plugins/devextreme/js/dx.all.js"></script>
+    <script src="~/plugins/devextreme/js/aspnet/dx.aspnet.data.js"></script>
+}
+<div class="row">
+    <div class="col">
+        @await Html.PartialAsync(ViewNames.Admin.Shared.DevexpressGrid, Model.Grid)
+    </div>
+</div>
+@section FooterSection{
+
+
+}

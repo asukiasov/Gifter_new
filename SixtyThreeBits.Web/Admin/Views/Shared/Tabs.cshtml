@@ -1,0 +1,30 @@
+﻿@{ var Model = LocalUtilities.GetLayoutViewModel<TabsViewModel>(ViewData: ViewData, Key: Constants.ViewData.TabsViewModel); }
+@{ 
+    Layout = ViewNames.Admin.Shared.Layout;
+}
+
+@section HeaderSection{
+    <link href="~/Areas/Admin/Content/Css/Tabs.css" rel="stylesheet" />
+    @RenderSection(Constants.ViewSections.HeaderSection, false)
+}
+
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+    @if (Model.HasTabs)
+    {
+        foreach (var Item in Model.Tabs)
+        {
+            <li class="nav-item">
+                <a class="nav-link submenu-nav-link @(Item.IsSelected ? Html.Raw("active") : null)" id="@Html.Raw(Item.Caption.ToLower())" href="@Html.Raw(Item.NavigateUrl)">@Html.Raw(Item.Caption)</a>
+            </li>
+        }
+    }
+
+</ul>
+
+<div class="tab-content">
+    @RenderBody()
+</div>
+
+@section FooterSection{
+    @RenderSection(Constants.ViewSections.FooterSection, false)
+}

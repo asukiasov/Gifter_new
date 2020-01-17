@@ -114,7 +114,7 @@
             public class Home
             {
                 #region Properties
-                public const string Index = "AdminHomeIndex";
+                public const string Page = "AdminHomeIndex";
                 #endregion
             }
 

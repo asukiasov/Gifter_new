@@ -6,9 +6,7 @@ namespace SixtyThreeBits.Core.Utilities
 {
     public class AppSettingsModel
     {
-        #region Properties
-        public readonly string ProjectName = "63BITS Project Starter";
-
+        #region Properties        
         IConfiguration Configuration { get; set; }
         public DBConnectionStringsModel DBConnectionStrings { get; set; }
         

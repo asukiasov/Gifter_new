@@ -24,13 +24,7 @@ namespace SixtyThreeBits.Web.Reusables.Core
             }
             SetLayoutViewModel(ViewData: ViewData, ViewModel: Model, Key: Constants.ViewData.LayoutViewModel);
         }
-
-        public static string GetCurrentPageUrl(HttpRequest Request)
-        {
-            var Url = Microsoft.AspNetCore.Http.Extensions.UriHelper.GetDisplayUrl(Request);            
-            return $"{Url.Split('?')[0].TrimEnd('/')}/";
-        }
-
+        
         public static string GetFileManagerUrl(IUrlHelper Url, string FolderPhysicalPath, string FolderVirtualPath, bool AllowSelectMultiple = false,bool RestrictToImagesOnly = false, string OnSelectedFilesChooseClientCallback = null)
         {
             var SB = new System.Text.StringBuilder();
@@ -63,8 +57,8 @@ namespace SixtyThreeBits.Web.Reusables.Core
             */
         }
 
-        public static T GetLayoutViewModel<T>(ViewDataDictionary ViewData, string Key)
-        {
+        public static T GetLayoutViewModel<T>(ViewDataDictionary ViewData, string Key = null)
+        {            
             return (T)ViewData[Key];
         }
 

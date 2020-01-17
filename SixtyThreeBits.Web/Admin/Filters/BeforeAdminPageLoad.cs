@@ -3,24 +3,25 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using SixtyThreeBits.Core.Modules;
 using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Web.Admin.Models;
+using SixtyThreeBits.Web.Reusables;
 using SixtyThreeBits.Web.Reusables.Core;
 using System.Linq;
 
 namespace SixtyThreeBits.Web.Admin.Filters
 {
-    public class BeforeAdminPageLoad : System.Attribute, IActionFilter
+    public class BeforeAdminPageLoad : ActionFilterAttribute
     {
         WebProjectModelBase Model;
-        AdminLayoutViewModel ViewModel = new AdminLayoutViewModel();
+        AdminLayoutViewModel ViewModel;
 
-        void IActionFilter.OnActionExecuted(ActionExecutedContext FilterContext)
+        public override void OnActionExecuted(ActionExecutedContext FilterContext)
         {
 
         }
 
-        void IActionFilter.OnActionExecuting(ActionExecutingContext FilterContext)
+        public override void OnActionExecuting(ActionExecutingContext FilterContext)
         {
-
+            ViewModel = new AdminLayoutViewModel();
             //var LayoutViewModel = new AdminLayoutViewModel();
             Model = LocalUtilities.GetWebProjectModelBaseFromController(FilterContext.Controller);
             var C = FilterContext.Controller as Controller;
@@ -50,6 +51,7 @@ namespace SixtyThreeBits.Web.Admin.Filters
 
             if (Model.User != null)
             {
+                ViewModel.UserFullname = Model.User.UserFullname;
                 IsAuthorized = true;
             }
 
@@ -59,7 +61,7 @@ namespace SixtyThreeBits.Web.Admin.Filters
         void InitStartUp()
         {
             Model.Language = Constants.Languages.ENGLISH;
-            //Model.IsSidebarCollapsed = FilterContext.RequestContext.HttpContext.Request.Cookies[Constants.Cookies.IsSidebarCollapsed]?.Value == "true";
+            ViewModel.IsSidebarCollapsed = Model.CookieAssistance.Get<bool>(Key: Constants.Cookies.IsAdminSideBarCollapsed);
         }
 
         void InitMenu()
