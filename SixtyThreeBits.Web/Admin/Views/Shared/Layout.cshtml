@@ -5,19 +5,10 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="icon" type="image/png" href="/img/favicon.png">
     <title>@Html.Raw(Model.PageTitle) | @Html.Raw(Constants.ProjectName)</title>
-    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700&display=swap" rel="stylesheet">
-    <link href="~/plugins/fontawesome/5.12.0/css/all.css" rel="stylesheet" />
-    <link href="~/plugins/63bits-fonts/fonts.css" rel="stylesheet" />
-    <link href="~/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="~/plugins/angle/css/app.css" rel="stylesheet" />
-    <link href="~/plugins/angle/css/theme-a.css" rel="stylesheet" />
-    <link href="~/plugins/jquery-confirm/jquery-confirm.min.css" rel="stylesheet" />
-    <link href="~/plugins/utils/utils.css" rel="stylesheet" />
-
+    @await Html.PartialAsync(ViewNames.Shared.PluginsClient.Header, Model.PluginClient)
     <link href="~/admin/css/style.css" rel="stylesheet" />
-
-    <script src="~/plugins/jquery/jquery.min.js"></script>
     @RenderSection(Constants.ViewSections.HeaderSection, false)
 </head>
 <body class="@(Model.IsSidebarCollapsed ? "aside-collapsed aside-toggled" : null)">
@@ -164,25 +155,18 @@
                 }
                 @RenderBody()
             </div>
-        </section>        
+        </section>
     </div>
 
     @if (Model.IsSuccessErrorPartialInitiated)
     {
         <link href="~/plugins/successErrorMessage/successErrorMessage.css" rel="stylesheet" />
         <script src="~/plugins/successErrorMessage/successErrorMessage.js"></script>
-
         @await Html.PartialAsync(ViewNames.Admin.Shared.SuccessErrorPartialView, Model.SuccessErrorViewModel)
     }
-    <script src="~/plugins/bootstrap/js/bootstrap.min.js"></script>
-    <script src="~/plugins/utils/utils.js"></script>
-    <script src="~/plugins/preloader/preloader.js"></script>
-    <script src="~/plugins/jquery-confirm/jquery-confirm.min.js"></script>
-
-
+    @await Html.PartialAsync(ViewNames.Shared.PluginsClient.Footer, Model.PluginClient)
     <script src="~/admin/js/Global.js"></script>
-    <script src="~/admin/js/Layout.js"></script>    
-    <script src="~/plugins/63bits-components/63bits-components.js"></script>
+    <script src="~/admin/js/Layout.js"></script>
     <script>
         Globals.TextError = '@Model.TextError';
         Globals.TextSuccess = '@Model.TextSuccess';

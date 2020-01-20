@@ -38,6 +38,7 @@ namespace SixtyThreeBits.Web.Reusables.Core
                 Model.SessionAssistance = new SessionAssistance(HttpContextAccessor);
                 Model.CookieAssistance = new CookieAssistance(C.Request, C.Response);
                 Model.Url = C.Url;
+                Model.PluginClient = new PluginClient();
             }
         }
     }

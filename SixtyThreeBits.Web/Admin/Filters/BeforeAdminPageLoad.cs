@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using SixtyThreeBits.Core.Modules;
 using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Web.Admin.Models;
-using SixtyThreeBits.Web.Reusables;
 using SixtyThreeBits.Web.Reusables.Core;
 using System.Linq;
 
@@ -30,6 +29,7 @@ namespace SixtyThreeBits.Web.Admin.Filters
             if (IsAuthorized)
             {
                 InitStartUp();
+                InitClientPlugins();
                 InitMenu();
                 InitBreadCrumbs();
                 InitPageTitle();
@@ -62,6 +62,21 @@ namespace SixtyThreeBits.Web.Admin.Filters
         {
             Model.Language = Constants.Languages.ENGLISH;
             ViewModel.IsSidebarCollapsed = Model.CookieAssistance.Get<bool>(Key: Constants.Cookies.IsAdminSideBarCollapsed);
+        }
+
+        void InitClientPlugins()
+        {
+            Model.PluginClient
+            .EnableGoogleFonts(true)
+            .EnableFontAwesome(true)
+            .Enable63BitsFonts(true)
+            .EnableBootstrap(true)
+            .EnableAngle(true)
+            .EnableJQuery(true)
+            .EnableJQueryConfirm(true)
+            .EnablePreloader(true);
+
+            ViewModel.PluginClient = Model.PluginClient;
         }
 
         void InitMenu()

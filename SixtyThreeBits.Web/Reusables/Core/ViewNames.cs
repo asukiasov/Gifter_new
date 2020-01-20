@@ -201,6 +201,14 @@
                 public const string File = "~/Views/Shared/FileTree/FileTreeFile.cshtml";
                 #endregion
             }
+
+            public class PluginsClient
+            {
+                #region Properties
+                public const string Footer = "~/Views/Shared/PluginsClient/PluginsClientFooter.cshtml";
+                public const string Header = "~/Views/Shared/PluginsClient/PluginsClientHeader.cshtml"; 
+                #endregion
+            }
             #endregion
         }
         #endregion

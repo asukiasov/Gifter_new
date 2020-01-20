@@ -19,6 +19,7 @@ namespace SixtyThreeBits.Web.Admin.Controllers
         [Route("", Name = ControllerActionRouteNames.Admin.UserManagement.Users)]
         public async Task<ActionResult> Users()
         {
+            Model.PluginClient.EnableDevextreme(true);
             var ViewModel = await Model.GetPageViewModel();
             return View(ViewNames.Admin.UserManagement.Users, ViewModel);
         }

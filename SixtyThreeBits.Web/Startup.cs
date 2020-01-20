@@ -37,9 +37,9 @@ namespace SixtyThreeBits.Web
             Services.AddSingleton(AppSettings);
             Services.AddSession(options =>
             {
-                options.IdleTimeout = System.TimeSpan.FromMinutes(30);
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
                 options.Cookie.Name = AppSettings.IsDevelopment ? $"{Constants.ProjectName}Development" : $"{Constants.ProjectName}Production";
-                options.Cookie.HttpOnly = true;
+                options.Cookie.HttpOnly = true;                
             });
             Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             Services.AddControllersWithViews().AddJsonOptions(Options => { Options.JsonSerializerOptions.PropertyNamingPolicy = null;  } ); ;

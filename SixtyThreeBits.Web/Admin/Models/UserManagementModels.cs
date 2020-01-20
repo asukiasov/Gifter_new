@@ -56,6 +56,13 @@ namespace SixtyThreeBits.Web.Admin.Models
                     .DataGrid<GridItem>()
                     .ID("UsersGrid")
                     .Width("100%")
+                    .ShowBorders(true)
+                    .FocusedRowEnabled(true)
+                    .FilterRow(Options =>
+                    {
+                        Options.Visible(true);
+                        Options.ApplyFilter(GridApplyFilterMode.Auto);
+                    })
                     .DataSource(d =>
                         d.RemoteController()
                         .LoadUrl(UrlList)
@@ -70,22 +77,29 @@ namespace SixtyThreeBits.Web.Admin.Models
                           Editing.AllowDeleting(ShowDeleteButton);
                           Editing.AllowUpdating(ShowUpdateButton);
                     })
-                    .Paging(Paging=>
+                    .Pager(Options =>
                     {
-                        Paging.Enabled(true);
-                        Paging.PageSize(30);                        
+                        Options.AllowedPageSizes(new[] { 15, 30, 50, 100});
+                        Options.ShowInfo(true);
+                        Options.ShowPageSizeSelector(true);
+                        Options.Visible(true);
+                    })
+                    .Paging(Options =>
+                    {                        
+                        Options.Enabled(true);
+                        Options.PageSize(30);                        
                     })
                     .Columns(Columns =>
                     {
                         Columns.AddFor(m => m.UserFirstname).Caption("Firstname").Width(100);
                         Columns.AddFor(m => m.UserLastname).Caption("Lastname").Width(100);
                         Columns.AddFor(m => m.UserEmail).Caption("Email").Width(150);
-                        Columns.AddFor(m => m.UserPassword).Caption("Password").Width(100);
+                        Columns.AddFor(m => m.UserPassword).Caption("Password").Width(100);                        
                         Columns.AddFor(m => m.UserRoleID).Caption("Role").Lookup(Options =>
                         {
-                            Options.DataSource(Roles, nameof(SimpleKeyValue<object, object>.Key));
+                            Options.DataSource(d => d.Array().Data(Roles).Key(nameof(SimpleKeyValue<object, object>.Key))).ValueExpr(nameof(SimpleKeyValue<object, object>.Key)).DisplayExpr(nameof(SimpleKeyValue<object, object>.Value));                            
                         });
-                        Columns.AddFor(m => m.IsActive).Caption("Active").Width(80);
+                        Columns.AddFor(m => m.IsActive).Caption("Active").Width(80); 
                         Columns.Add();
                     });
                     

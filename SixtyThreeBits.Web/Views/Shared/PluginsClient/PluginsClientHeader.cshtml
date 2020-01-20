@@ -1,0 +1,59 @@
+﻿@model PluginClient
+@if (Model.IsGoogleFontsEnabled)
+{
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700&display=swap" rel="stylesheet">
+}
+@if (Model.IsFontAwesomeEnabled)
+{
+    <link href="~/plugins/fontawesome/5.12.0/css/all.css" rel="stylesheet" />
+}
+@if (Model.Is63BitsFontsEnabled)
+{
+    <link href="~/plugins/63bits-fonts/fonts.css" rel="stylesheet" />
+}
+@if (Model.IsBootstrapEnabled)
+{
+    <link href="~/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+}
+@if (Model.IsAngleEnabled)
+{
+    <link href="~/plugins/angle/css/app.css" rel="stylesheet" />
+    <link href="~/plugins/angle/css/theme-a.css" rel="stylesheet" />
+}
+@if (Model.IsJQueryConfirmEnabled)
+{
+    <link href="~/plugins/jquery-confirm/jquery-confirm.min.css" rel="stylesheet" />
+}
+@if (Model.IsFancyboxEnabled)
+{
+    <link href="~/plugins/fancybox/jquery.fancybox.css" rel="stylesheet" />
+}
+@if (Model.IsUtilsEnabled)
+{
+    <link href="~/plugins/utils/utils.css" rel="stylesheet" />
+}
+@if (Model.IsJQueryEnabled)
+{
+    <script src="~/plugins/jquery/jquery.min.js"></script>
+}
+@if (Model.Is63BitsFormsEnabled)
+{
+    <link href="~/plugins/63bits-bsforms/63bits-bsforms.css" rel="stylesheet" />
+}
+@if (Model.IsPreloaderEnabled)
+{
+    <link href="~/plugins/preloader/preloader.css" rel="stylesheet" />
+}
+@if (Model.IsSelect2Enabled)
+{
+    <link href="~/plugins/select2/css/select2-bootstrap4.min.css" rel="stylesheet" />
+    <link href="~/plugins/select2/css/select2.min.css" rel="stylesheet" />
+}
+@if (Model.IsDevextremeEnabled)
+{
+    <link href="~/plugins/devextreme/css/dx.common.css" rel="stylesheet" />
+    <link href="~/plugins/devextreme/css/dx.light.compact.css" rel="stylesheet" />
+    <script src="~/plugins/devextreme/js/dx.all.js"></script>
+    <script src="~/plugins/devextreme/js/aspnet/dx.aspnet.data.js"></script>
+    <script src="~/plugins/devextreme/js/aspnet/dx.aspnet.mvc.js"></script>
+}
