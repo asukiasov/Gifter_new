@@ -118,27 +118,27 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="TextError" xml:space="preserve">
-    <value>Sorry something went wrong</value>
+    <value>უკაცრავად დაფიქსირდა შეცდომა</value>
   </data>
   <data name="TextNo" xml:space="preserve">
-    <value>No</value>
+    <value>არა</value>
   </data>
   <data name="TextSuccess" xml:space="preserve">
-    <value>Operation has been finished successfully</value>
+    <value>ოპერაცია წარმატებით შესრულდა</value>
   </data>
   <data name="TextYes" xml:space="preserve">
-    <value>Yes</value>
+    <value>კი</value>
   </data>
   <data name="ValidationEmailFormatInvalid" xml:space="preserve">
-    <value>Email format is invalid</value>
+    <value>ელ-ფოსტის ფორმატი არასწორია</value>
   </data>
   <data name="ValidationRequired" xml:space="preserve">
-    <value>Field is required</value>
+    <value>ველის შეყვანა აუცილებელია</value>
   </data>
   <data name="ValidationTextMaxLength" xml:space="preserve">
-    <value>Max length has been exceeded. Only {0} symbols are allowed.</value>
+    <value>ტექსტის მაქსიმალური ზომა {0} სიმბოლო უნდა იყოს.</value>
   </data>
   <data name="ValidationUserInvalidUsernameOrPassword" xml:space="preserve">
-    <value>Invalid username or password</value>
+    <value>არასწორი სახელი ან პაროლი</value>
   </data>
 </root>

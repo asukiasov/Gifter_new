@@ -1,11 +1,10 @@
-﻿//TextAbort და TextSuccess ცვლადების მნიშნველობების გაფორმება ხდება Layout.cshtml - ის ბოლოში
+﻿//TextAbort და TextSuccess ცვლადების მნიშნველობების გაფორმება ხდება _Layout.cshtml - ის ბოლოში
 var Globals = {
     TextError: null,
     TextSuccess: null,
     Formats: {
         JQueryIUDate: 'M d, yy'
     },
-    
     Devexpress: {
         OnGridCheckBoxColumnEditorInit: function (Grid, Editor, EventArgs) {
             if (Grid.IsNewRowEditing()) {
@@ -36,24 +35,17 @@ var Globals = {
                 Editor.SetChecked(false);
             }
         },
-        SetGridFullHeight: function (Grid, HeightCorrectionInPixels) {
+        SetGridFullHeight: function (Grid, GridElement, HeightCorrectionInPixels) {
             // Making sure that number is passed, if not HeightCorrectionInPixels will be zero.
             HeightCorrectionInPixels = HeightCorrectionInPixels % 1 === 0 ? HeightCorrectionInPixels : 0;
             var ScreenHeight = $(window).outerHeight();
-
-            var ElementMain = $(Grid.GetMainElement());
-
-            var ElementDataTable = $(ElementMain).find('[class^="dxgvTable"]');
-            if (ElementDataTable.length == 0) {
-                ElementDataTable = $(ElementMain).find('.dxtlDataTable');
-            }
-
-            if (ElementDataTable.length) {
-                var PaddingBottom = 25;
-                var OffsetTop = ElementDataTable.offset().top;                
-                var GridHeight = ScreenHeight - OffsetTop - PaddingBottom;
-                Grid.SetHeight(GridHeight);
-            }
+                        
+            
+            var PaddingBottom = 25;
+            var OffsetTop = $(GridElement).offset().top;
+            var GridHeight = ScreenHeight - OffsetTop - PaddingBottom;
+            Grid.option('height', GridHeight);
+            
         },
     },
     Common: {

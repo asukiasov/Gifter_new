@@ -1,3 +1,12 @@
-﻿.dx-row-focused {
+﻿.dx-row-focused > td {
     background-color: #d9e4fd !important;
+    border-color: #d9e4fd !important;
+    color: #000 !important;
+}
+.dx-row-focused .dx-link {
+    background-color: #d9e4fd !important;
+    border-color: #d9e4fd !important;
+}
+.dx-datagrid-validator.dx-datagrid-invalid {
+    background-color: rgba(244, 67, 54, 0.32) !important;
 }

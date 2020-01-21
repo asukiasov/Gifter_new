@@ -3,9 +3,12 @@ using DevExtreme.AspNet.Mvc.Builders;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using SixtyThreeBits.Core.Modules;
+using SixtyThreeBits.Core.Properties;
+using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries;
 using SixtyThreeBits.Web.Reusables.Core;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -19,6 +22,11 @@ namespace SixtyThreeBits.Web.Admin.Models
             ViewModel.Grid = new PageViewModel.GridViewModel();
             ViewModel.Grid.Roles = (await DataAccessFactory.Roles.ListRoles())?.Select(Item => new SimpleKeyValue<int?, string> { Key = Item.RoleID, Value = Item.RoleName }).ToList();
             ViewModel.Grid.UrlList = Url.RouteUrl(ControllerActionRouteNames.Admin.UserManagement.UsersGrid);
+            ViewModel.Grid.UrlUpdate = Url.RouteUrl(ControllerActionRouteNames.Admin.UserManagement.UsersGridUpdate);
+            ViewModel.Grid.UrlDelete = Url.RouteUrl(ControllerActionRouteNames.Admin.UserManagement.UsersGridDelete);
+            ViewModel.Grid.AllowUpdate = User.HasPermission(ControllerActionRouteNames.Admin.UserManagement.UsersGridUpdate);
+            ViewModel.Grid.AllowDelete = User.HasPermission(ControllerActionRouteNames.Admin.UserManagement.UsersGridDelete);
+
             return ViewModel;
         }
 
@@ -52,59 +60,46 @@ namespace SixtyThreeBits.Web.Admin.Models
                 #region Methods
                 public DataGridBuilder<GridItem> InitGrid(IHtmlHelper Html)
                 {
-                    return Html.DevExtreme()
-                    .DataGrid<GridItem>()
-                    .ID("UsersGrid")
-                    .Width("100%")
-                    .ShowBorders(true)
-                    .FocusedRowEnabled(true)
-                    .FilterRow(Options =>
-                    {
-                        Options.Visible(true);
-                        Options.ApplyFilter(GridApplyFilterMode.Auto);
-                    })
-                    .DataSource(d =>
-                        d.RemoteController()
-                        .LoadUrl(UrlList)
-                        .InsertUrl(UrlAddNew)
-                        .UpdateUrl(UrlUpdate)
-                        .DeleteUrl(UrlDelete)
-                        .Key(nameof(GridItem.UserID))
-                    )
-                    .Editing(Editing => {
-                          Editing.Mode(GridEditMode.Row);
-                          Editing.AllowAdding(ShowAddNewButton);
-                          Editing.AllowDeleting(ShowDeleteButton);
-                          Editing.AllowUpdating(ShowUpdateButton);
-                    })
-                    .Pager(Options =>
-                    {
-                        Options.AllowedPageSizes(new[] { 15, 30, 50, 100});
-                        Options.ShowInfo(true);
-                        Options.ShowPageSizeSelector(true);
-                        Options.Visible(true);
-                    })
+                    var Grid = GetGridWithStartupValues<GridItem>(Html: Html, KeyFieldName: nameof(GridItem.UserID));
+
+                    Grid
+                    .ID("UsersGrid")                   
                     .Paging(Options =>
                     {                        
                         Options.Enabled(true);
                         Options.PageSize(30);                        
                     })
+                    .Scrolling(Options =>
+                    {
+                        Options.Mode(GridScrollingMode.Standard);
+                        Options.ShowScrollbar(ShowScrollbarMode.Always);                        
+                    })
+                    .OnInitialized("function(s){ UsersModel.OnUsersGridInit(s); }")
                     .Columns(Columns =>
                     {
-                        Columns.AddFor(m => m.UserFirstname).Caption("Firstname").Width(100);
-                        Columns.AddFor(m => m.UserLastname).Caption("Lastname").Width(100);
-                        Columns.AddFor(m => m.UserEmail).Caption("Email").Width(150);
-                        Columns.AddFor(m => m.UserPassword).Caption("Password").Width(100);                        
-                        Columns.AddFor(m => m.UserRoleID).Caption("Role").Lookup(Options =>
+                        Columns.AddFor(m => m.UserFirstname).Caption("Firstname").Width(150).ValidationRules(Options =>
                         {
-                            Options.DataSource(d => d.Array().Data(Roles).Key(nameof(SimpleKeyValue<object, object>.Key))).ValueExpr(nameof(SimpleKeyValue<object, object>.Key)).DisplayExpr(nameof(SimpleKeyValue<object, object>.Value));                            
+                            Options.AddRequired();
                         });
-                        Columns.AddFor(m => m.IsActive).Caption("Active").Width(80); 
-                        Columns.Add();
+                        Columns.AddFor(m => m.UserLastname).Caption("Lastname").Width(150);
+                        Columns.AddFor(m => m.UserEmail).Caption("Email").Width(200).ValidationRules(Options =>
+                        {
+                            Options.AddRequired();
+                            Options.AddEmail();                            
+                        });
+                        Columns.AddFor(m => m.UserPassword).Caption("Password").Width(150);
+
+                        var UserRoleIDColumn = Columns.AddFor(m => m.UserRoleID).Caption("Role").Width(150);
+                        InitLookupColumn(Column: UserRoleIDColumn, Data: Roles);
+
+                        var IsActiveColumn = Columns.AddFor(m => m.IsActive).Caption("Active").Width(80);
+                        InitCheckboxColumn(IsActiveColumn);
+
+                        var x =  Columns.Add();
                     });
-                    
 
 
+                    return Grid;
                 }
                 #endregion
 

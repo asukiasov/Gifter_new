@@ -30,5 +30,24 @@ namespace SixtyThreeBits.Web.Admin.Controllers
             var ViewModel = await Model.GetGridViewModel();
             return Json(ViewModel);
         }
+
+        [Route("grid/add", Name = ControllerActionRouteNames.Admin.UserManagement.UsersGridAdd)]
+        public async Task<ActionResult> UsersGridAdd()
+        {
+            return Ok();
+        }
+
+        [Route("grid/update", Name = ControllerActionRouteNames.Admin.UserManagement.UsersGridUpdate)]
+        //public async Task<ActionResult> UsersGridUpdate()
+        public ActionResult UsersGridUpdate()
+        {
+            return Ok();
+        }
+
+        [Route("grid/delete", Name = ControllerActionRouteNames.Admin.UserManagement.UsersGridDelete)]
+        public async Task<ActionResult> UsersGridDelete()
+        {
+            return Ok();
+        }
     }
 }

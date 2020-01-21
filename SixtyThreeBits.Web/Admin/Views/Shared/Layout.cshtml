@@ -165,7 +165,8 @@
         @await Html.PartialAsync(ViewNames.Admin.Shared.SuccessErrorPartialView, Model.SuccessErrorViewModel)
     }
     @await Html.PartialAsync(ViewNames.Shared.PluginsClient.Footer, Model.PluginClient)
-    <script src="~/admin/js/Global.js"></script>
+
+    <script src="~/js/Global.js"></script>
     <script src="~/admin/js/Layout.js"></script>
     <script>
         Globals.TextError = '@Model.TextError';

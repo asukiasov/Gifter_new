@@ -1,9 +1,12 @@
-﻿using DevExtreme.AspNet.Mvc.Builders;
+﻿using DevExtreme.AspNet.Mvc;
+using DevExtreme.AspNet.Mvc.Builders;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using SixtyThreeBits.Core.DB;
 using SixtyThreeBits.Core.Modules;
+using SixtyThreeBits.Core.Properties;
 using SixtyThreeBits.Core.Utilities;
+using SixtyThreeBits.Libraries;
 using System.Collections.Generic;
 
 namespace SixtyThreeBits.Web.Reusables.Core
@@ -18,9 +21,9 @@ namespace SixtyThreeBits.Web.Reusables.Core
     public class DevexpressTypesBase
     {
         #region Properties        
-        public bool ShowAddNewButton { get; set; }
-        public bool ShowUpdateButton { get; set; }
-        public bool ShowDeleteButton { get; set; }
+        public bool AllowAdd { get; set; }
+        public bool AllowUpdate { get; set; }
+        public bool AllowDelete { get; set; }
 
         public string UrlAddNew { get; set; }
         public string UrlUpdate { get; set; }
@@ -36,7 +39,106 @@ namespace SixtyThreeBits.Web.Reusables.Core
 
     public class DevexpressGridViewModelBase : DevexpressTypesBase
     {
+        public DataGridBuilder<T> GetGridWithStartupValues<T>(IHtmlHelper Html, string KeyFieldName)
+        {
+            return Html.DevExtreme().DataGrid<T>()            
+            .Width("100%")
+            .ShowBorders(true)
+            .ShowRowLines(true)
+            .FocusedRowEnabled(true)
+            .FilterRow(Options =>
+            {
+                Options.Visible(true);
+                Options.ApplyFilter(GridApplyFilterMode.Auto);
+            })
+            .DataSource(Options =>
+                Options.RemoteController()
+                .LoadUrl(UrlList)
+                .InsertUrl(UrlAddNew)
+                .UpdateUrl(UrlUpdate)
+                .DeleteUrl(UrlDelete)
+                .Key(KeyFieldName)
+            )
+            .Editing(Options => {
+                Options.Mode(GridEditMode.Row);
+                Options.AllowAdding(AllowAdd);
+                Options.AllowUpdating(AllowUpdate);
+                Options.AllowDeleting(AllowDelete);                
 
+            })
+            .Pager(Options =>
+            {
+                Options.AllowedPageSizes(new[] { 30, 50, 100 });
+                Options.ShowInfo(true);
+                Options.ShowPageSizeSelector(true);
+                Options.Visible(true);
+            })
+            .Paging(Options =>
+            {
+                Options.Enabled(true);
+                Options.PageSize(30);
+            })
+            .Scrolling(Options =>
+            {
+                Options.Mode(GridScrollingMode.Standard);
+                Options.ShowScrollbar(ShowScrollbarMode.Always);
+            })
+            .Columns(Columns =>
+            {
+                if (AllowAdd || AllowUpdate || AllowDelete)
+                {
+                    var Width = (AllowDelete && !AllowAdd && !AllowUpdate) ? 40 : 80;
+                    Columns.Add().Type(GridCommandColumnType.Buttons).Width(Width).Buttons(b =>
+                    {
+                        b.Add().Name(GridColumnButtonName.Edit).Icon("fas fa-pencil-alt");
+                        b.Add().Name(GridColumnButtonName.Delete).Icon("fas fa-trash-alt");
+                        b.Add().Name(GridColumnButtonName.Save).Icon("fas fa-check");
+                        b.Add().Name(GridColumnButtonName.Cancel).Icon("fas fa-minus-circle");
+                    });
+                }
+            });
+        }
+
+        public void InitTextboxColumn<T>(DataGridColumnBuilder<T> Column, bool IsRequired = false, bool ShouldValidateEmailFormat = false, int? MaxLength = null)
+        {
+            Column.ValidationRules(Options =>
+            {
+                if (IsRequired)
+                {
+                    Options.AddRequired().Message(Resources.ValidationRequired).Trim(true);
+                }
+                if (ShouldValidateEmailFormat)
+                {
+                    Options.AddEmail().Message(Resources.ValidationEmailFormatInvalid);
+                }
+                if (MaxLength > 0)
+                {
+                    Options.AddStringLength().Min(1).Max(MaxLength.Value).Message(string.Format(Resources.ValidationTextMaxLength, MaxLength));
+                }
+            });
+        }
+
+        public void InitLookupColumn<T>(DataGridColumnBuilder<T> Column, IEnumerable<SimpleKeyValue<int?,string>> Data, bool IsRequired = false)
+        {
+            Column.Lookup(Options =>
+            {
+                Options.DataSource(d => d.Array().Data(Data).Key(nameof(SimpleKeyValue<int?, string>.Key))).ValueExpr(nameof(SimpleKeyValue<int?, string>.Key)).DisplayExpr(nameof(SimpleKeyValue<int?, string>.Value));
+            });
+
+            if (IsRequired)
+            {
+                Column.ValidationRules(Options =>
+                {
+                    Options.AddRequired().Message(Resources.ValidationRequired).Trim(true);                    
+                });
+            }
+        }
+
+        public void InitCheckboxColumn<T>(DataGridColumnBuilder<T> Column)
+        {
+            Column.TrueText(Resources.TextYes);
+            Column.FalseText(Resources.TextNo);            
+        }
     }
 
     public class LayoutViewModelBase

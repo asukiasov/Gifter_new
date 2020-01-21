@@ -33,9 +33,8 @@ namespace SixtyThreeBits.Web.Reusables.Core
                 var db = FilterContext.HttpContext.RequestServices.GetService(typeof(DBCoreDataContext)) as DBCoreDataContext;
                 Model.DataAccessFactory = new DataAccessFactory(db);                
                 Model.AppSettings = FilterContext.HttpContext.RequestServices.GetService(typeof(AppSettingsModel)) as AppSettingsModel;
-
-                var HttpContextAccessor = FilterContext.HttpContext.RequestServices.GetService(typeof(IHttpContextAccessor)) as IHttpContextAccessor;
-                Model.SessionAssistance = new SessionAssistance(HttpContextAccessor);
+                
+                Model.SessionAssistance = FilterContext.HttpContext.RequestServices.GetService(typeof(ISessionAssistance)) as ISessionAssistance;
                 Model.CookieAssistance = new CookieAssistance(C.Request, C.Response);
                 Model.Url = C.Url;
                 Model.PluginClient = new PluginClient();

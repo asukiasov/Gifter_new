@@ -61,7 +61,7 @@ namespace SixtyThreeBits.Core.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to უკაცრავად დაფიქსირდა შეცდომა.
+        ///   Looks up a localized string similar to Sorry something went wrong.
         /// </summary>
         public static string TextError {
             get {
@@ -70,7 +70,16 @@ namespace SixtyThreeBits.Core.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ოპერაცია წარმატებით შესრულდა.
+        ///   Looks up a localized string similar to No.
+        /// </summary>
+        public static string TextNo {
+            get {
+                return ResourceManager.GetString("TextNo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Operation has been finished successfully.
         /// </summary>
         public static string TextSuccess {
             get {
@@ -79,7 +88,43 @@ namespace SixtyThreeBits.Core.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to არასწორი სახელი ან პაროლი.
+        ///   Looks up a localized string similar to Yes.
+        /// </summary>
+        public static string TextYes {
+            get {
+                return ResourceManager.GetString("TextYes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Email format is invalid.
+        /// </summary>
+        public static string ValidationEmailFormatInvalid {
+            get {
+                return ResourceManager.GetString("ValidationEmailFormatInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Field is required.
+        /// </summary>
+        public static string ValidationRequired {
+            get {
+                return ResourceManager.GetString("ValidationRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Max length has been exceeded. Only {0} symbols are allowed..
+        /// </summary>
+        public static string ValidationTextMaxLength {
+            get {
+                return ResourceManager.GetString("ValidationTextMaxLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid username or password.
         /// </summary>
         public static string ValidationUserInvalidUsernameOrPassword {
             get {

@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SixtyThreeBits.Core.DB;
 using System;
+using SixtyThreeBits.Web.Reusables;
 
 namespace SixtyThreeBits.Web
 {
@@ -35,18 +36,22 @@ namespace SixtyThreeBits.Web
         public void ConfigureServices(IServiceCollection Services)
         {
             Services.AddSingleton(AppSettings);
+            Services.AddDistributedMemoryCache();
             Services.AddSession(options =>
             {
                 options.IdleTimeout = TimeSpan.FromMinutes(30);
-                options.Cookie.Name = AppSettings.IsDevelopment ? $"{Constants.ProjectName}Development" : $"{Constants.ProjectName}Production";
-                options.Cookie.HttpOnly = true;                
+                options.Cookie.Name = AppSettings.IsDevelopment ? $"{Constants.ProjectName}Development" : $"{Constants.ProjectName}Production";                
             });
-            Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+            Services.AddHttpContextAccessor();
+            Services.AddScoped<ISessionAssistance, SessionAssistance>();
+
+
             Services.AddControllersWithViews().AddJsonOptions(Options => { Options.JsonSerializerOptions.PropertyNamingPolicy = null;  } ); ;
             Services.AddDbContext<DBCoreDataContext>(Options => Options.UseSqlServer(AppSettings.DBConnectionStrings.DBConnectionString));
             Services.Configure<RouteOptions>(routeOptions => {
                 routeOptions.AppendTrailingSlash = true;
-            });
+            }); 
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -58,7 +63,7 @@ namespace SixtyThreeBits.Web
             }
 
             App.UseFileServer();
-            App.UseSession(new SessionOptions { IdleTimeout = TimeSpan.FromMinutes(60) });
+            App.UseSession();
             App.UseRouting();            
             
             App.UseEndpoints(Endpoints =>
