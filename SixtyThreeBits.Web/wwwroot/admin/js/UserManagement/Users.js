@@ -4,9 +4,14 @@
         UsersModel.UsersGrid = s.component;
         
         Globals.Devexpress.SetGridFullHeight(UsersModel.UsersGrid,s.element[0]);        
+    },
+    OnUsersGridInitNewRow: function (s) {
+        console.log(s);
     }
 };
 
 $(function () {
-
+    $('.js-add-new-button').click(function () {
+        UsersModel.UsersGrid.addRow();
+    });
 });

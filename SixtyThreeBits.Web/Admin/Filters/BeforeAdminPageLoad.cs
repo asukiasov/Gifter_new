@@ -21,11 +21,10 @@ namespace SixtyThreeBits.Web.Admin.Filters
         public override void OnActionExecuting(ActionExecutingContext FilterContext)
         {
             ViewModel = new AdminLayoutViewModel();
-            //var LayoutViewModel = new AdminLayoutViewModel();
             Model = LocalUtilities.GetWebProjectModelBaseFromController(FilterContext.Controller);
             var C = FilterContext.Controller as Controller;
 
-            var IsAuthorized = AdminAuthorize();
+            var IsAuthorized = AdminAuthorize();            
             if (IsAuthorized)
             {
                 InitStartUp();
@@ -34,7 +33,8 @@ namespace SixtyThreeBits.Web.Admin.Filters
                 InitBreadCrumbs();
                 InitPageTitle();
 
-                SuccessErrorPartialViewAssistance.SetSuccessErrorMessageInLayoutModel(SessionAssistance: Model.SessionAssistance, ViewModel);
+                Model.InitSuccessErrorPartialViewModel();
+                ViewModel.SuccessErrorPartialViewModel = Model.SuccessErrorPartialViewModel;
                 LocalUtilities.SetLayoutViewModel(ViewData: C.ViewData, ViewModel: ViewModel, Key: Constants.ViewData.LayoutViewModel);
             }
             else

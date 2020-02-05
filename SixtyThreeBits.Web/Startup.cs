@@ -33,15 +33,24 @@ namespace SixtyThreeBits.Web
             }
         }
 
-        public void ConfigureServices(IServiceCollection Services)
-        {
+        public void ConfigureServices(IServiceCollection Services) 
+        {            
             Services.AddSingleton(AppSettings);
+            Services.AddSingleton(new UtilityCollection(AppSettings));
+
             Services.AddDistributedMemoryCache();
+            Services.Configure<CookiePolicyOptions>(Options =>
+            {
+                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
+                Options.CheckConsentNeeded = context => false;
+                Options.MinimumSameSitePolicy = SameSiteMode.None;
+            }); 
             Services.AddSession(options =>
             {
-                options.IdleTimeout = TimeSpan.FromMinutes(30);
-                options.Cookie.Name = AppSettings.IsDevelopment ? $"{Constants.ProjectName}Development" : $"{Constants.ProjectName}Production";                
-            });
+                //options.IdleTimeout = TimeSpan.FromMinutes(30);
+                options.Cookie.Name = AppSettings.IsDevelopment ? $".{Constants.ProjectName}Development" : $".{Constants.ProjectName}Production";
+                options.Cookie.IsEssential = true;                
+            });            
 
             Services.AddHttpContextAccessor();
             Services.AddScoped<ISessionAssistance, SessionAssistance>();
@@ -51,7 +60,7 @@ namespace SixtyThreeBits.Web
             Services.AddDbContext<DBCoreDataContext>(Options => Options.UseSqlServer(AppSettings.DBConnectionStrings.DBConnectionString));
             Services.Configure<RouteOptions>(routeOptions => {
                 routeOptions.AppendTrailingSlash = true;
-            }); 
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -87,4 +87,15 @@ namespace SixtyThreeBits.Web.Reusables.Core
         public List<SyncSortIndexesItem> SortIndexes { get; set; }
         #endregion
     }
+
+    public class SuccessErrorPartialViewModel
+    {
+        #region Properties
+        public bool IsTop { set; get; }
+        public string Message { set; get; }
+        public bool ShowError { set; get; }
+        public bool ShowSuccess { set; get; }
+        public bool IsInitialized { get; set; }
+        #endregion
+    }
 }

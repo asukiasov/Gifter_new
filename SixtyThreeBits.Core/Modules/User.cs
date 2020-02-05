@@ -6,13 +6,14 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using SixtyThreeBits.Core.Utilities;
 
 namespace SixtyThreeBits.Core.Modules
 {
     public class UsersDataAccess : DataAccessBase
     {
         #region Contructors
-        public UsersDataAccess(DBCoreDataContext db) : base(db) { } 
+        public UsersDataAccess(DBCoreDataContext db) : base(db) { }
         #endregion
 
         #region Methods
@@ -27,16 +28,14 @@ namespace SixtyThreeBits.Core.Modules
         //        });
         //    }
 
-        //    public static User GetSingleUserByID(int? UserID)
-        //    {
-        //        return TryToReturnStatic($"{nameof(GetSingleUserByID)}({nameof(UserID)} = {UserID})", () =>
-        //        {
-        //            using (var db = ConnectionFactory.GetDBCoreDataContext())
-        //            {
-        //                return db.UsersGetSingleUserByUserID(UserID).DeserializeTo<User>();
-        //            }
-        //        });
-        //    }        
+        public async Task<User> GetSingleUserByID(int? UserID)
+        {
+            return await TryToReturnAsync($"{nameof(GetSingleUserByID)}({nameof(UserID)} = {UserID})", async () =>
+            {
+                var Result = await db.UsersGetSingleUserByID(UserID);
+                return Result.DeserializeTo<User>();
+            });
+        }
 
         public async Task<User> GetSingleUserByEmailAndPassword(string Email, string Password)
         {
@@ -66,17 +65,64 @@ namespace SixtyThreeBits.Core.Modules
             });
         }
 
-        //    public int? UsersIUD(byte? DatabaseAction, int? UserID = null, string UserEmail = null, string UserPassword = null, string UserFirstname = null, string UserLastname = null, string UserFullname = null, int? UserRoleID = null, DateTime? UserBirthdate = null, string UserMobile = null, string UserPersonalNumber = null, string UserAvatarFilename = null, bool? UserIsActive = null)
-        //    {
-        //        return TryToReturn($"{nameof(UsersIUD)}({nameof(DatabaseAction)} = {DatabaseAction}, {nameof(UserID)} = {UserID}, {nameof(UserEmail)} = {UserEmail}, {nameof(UserPassword)} = {UserPassword}, {nameof(UserFirstname)} = {UserFirstname}, {nameof(UserLastname)} = {UserLastname}, {nameof(UserFullname)} = {UserFullname}, {nameof(UserRoleID)} = {UserRoleID}, {nameof(UserBirthdate)} = {UserBirthdate}, {nameof(UserMobile)} = {UserMobile}, {nameof(UserPersonalNumber)} = {UserPersonalNumber}, {nameof(UserAvatarFilename)} = {UserAvatarFilename}, {nameof(UserIsActive)} = {UserIsActive})", () =>
-        //        {
-        //            using (var db = ConnectionFactory.GetDBCoreDataContext())
-        //            {
-        //                db.UsersIUD(DatabaseAction, ref UserID, UserEmail, UserPassword, UserFirstname, UserLastname, UserRoleID, UserBirthdate, UserMobile, UserPersonalNumber, UserAvatarFilename, UserIsActive);
-        //                return UserID;
-        //            }
-        //        });
-        //    }
+        public async Task<int?> UsersIUD(byte DatabaseAction, int? UserID = null, string UserEmail = null, string UserPassword = null, string UserFirstname = null, string UserLastname = null, int? UserRoleID = null, DateTime? UserBirthdate = null, string UserPhoneNumberMobile = null, string UserPersonalNumber = null, string UserAvatarFilename = null, bool? UserIsActive = null)
+        {            
+            return await TryToReturnAsync($"{nameof(UsersIUD)}({nameof(DatabaseAction)} = {DatabaseAction}, {nameof(UserID)} = {UserID}, {nameof(UserEmail)} = {UserEmail}, {nameof(UserPassword)} = {UserPassword}, {nameof(UserFirstname)} = {UserFirstname}, {nameof(UserLastname)} = {UserLastname}, {nameof(UserRoleID)} = {UserRoleID}, {nameof(UserBirthdate)} = {UserBirthdate}, {nameof(UserPhoneNumberMobile)} = {UserPhoneNumberMobile}, {nameof(UserPersonalNumber)} = {UserPersonalNumber}, {nameof(UserAvatarFilename)} = {UserAvatarFilename}, {nameof(UserIsActive)} = {UserIsActive})", async () =>
+            {
+                //await db.UsersIUD(DatabaseAction, UserID, UserEmail, UserPassword, UserFirstname, UserLastname, UserRoleID, UserBirthdate, UserPhoneNumberMobile, UserPersonalNumber, UserAvatarFilename, UserIsActive);
+
+                if (DatabaseAction == Enums.DatabaseActions.CREATE)
+                {                    
+                    UserID = await db.UsersIUD(DatabaseAction, UserID, UserEmail, UserPassword, UserFirstname, UserLastname, UserRoleID, UserBirthdate, UserPhoneNumberMobile, UserPersonalNumber, UserAvatarFilename, UserIsActive);
+                    var User = new DB.Tables.Users
+                    {
+                        UserEmail = UserEmail,
+                        UserPassword = UserPassword.MD5(),
+                        UserFirstname = UserFirstname,
+                        UserLastname = UserLastname,
+                        UserRoleID = UserRoleID,
+                        UserBirthdate = UserBirthdate,
+                        UserPhoneNumberMobile = UserPhoneNumberMobile,
+                        UserPersonalNumber = UserPersonalNumber,
+                        UserAvatarFilename = UserAvatarFilename,
+                        UserIsActive = UserIsActive ?? false
+                    };
+                    await db.Users.AddAsync(User);
+                    await db.SaveChangesAsync();
+                    UserID = User.UserID;
+                }
+                else if (DatabaseAction == Enums.DatabaseActions.UPDATE)
+                {
+                    var User = await db.Users.Where(Item => Item.UserID == UserID).FirstOrDefaultAsync();
+                    if (User != null)
+                    {
+                        User.UserEmail = UserEmail ?? User.UserEmail;
+                        User.UserPassword = UserPassword.MD5() ?? User.UserPassword;
+                        User.UserFirstname = UserFirstname ?? User.UserFirstname;
+                        User.UserLastname = UserLastname ?? User.UserLastname;
+                        User.UserRoleID = UserRoleID == Constants.NullValueFor.Int ? null : UserRoleID ?? User.UserRoleID;
+                        User.UserBirthdate = UserBirthdate == Constants.NullValueFor.Date ? null : UserBirthdate ?? User.UserBirthdate;
+                        User.UserPhoneNumberMobile = UserPhoneNumberMobile == Constants.NullValueFor.String ? null : UserPhoneNumberMobile ?? User.UserPhoneNumberMobile;
+                        User.UserPersonalNumber = UserPersonalNumber == Constants.NullValueFor.String ? null : UserPersonalNumber ?? User.UserPersonalNumber;
+                        User.UserAvatarFilename = UserAvatarFilename == Constants.NullValueFor.String ? null : UserAvatarFilename ?? User.UserAvatarFilename;
+                        User.UserIsActive = UserIsActive ?? User.UserIsActive;
+                        db.Users.Update(User);                        
+                        await db.SaveChangesAsync();
+                    }
+                }
+                else if (DatabaseAction == Enums.DatabaseActions.DELETE)
+                {
+                    var User = await db.Users.Where(Item => Item.UserID == UserID).FirstOrDefaultAsync();
+                    if (User != null)
+                    {
+                        db.Users.Remove(User);
+                        await db.SaveChangesAsync();
+                    }
+                }
+
+                return UserID;
+            });
+        }
         #endregion Methods
     }
 

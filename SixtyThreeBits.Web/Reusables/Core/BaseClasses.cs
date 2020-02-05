@@ -1,13 +1,18 @@
 ﻿using DevExtreme.AspNet.Mvc;
 using DevExtreme.AspNet.Mvc.Builders;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using SixtyThreeBits.Core.DB;
 using SixtyThreeBits.Core.Modules;
 using SixtyThreeBits.Core.Properties;
 using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries;
+using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace SixtyThreeBits.Web.Reusables.Core
 {
@@ -39,9 +44,10 @@ namespace SixtyThreeBits.Web.Reusables.Core
 
     public class DevexpressGridViewModelBase : DevexpressTypesBase
     {
+        #region Methods
         public DataGridBuilder<T> GetGridWithStartupValues<T>(IHtmlHelper Html, string KeyFieldName)
         {
-            return Html.DevExtreme().DataGrid<T>()            
+            return Html.DevExtreme().DataGrid<T>()
             .Width("100%")
             .ShowBorders(true)
             .ShowRowLines(true)
@@ -59,11 +65,12 @@ namespace SixtyThreeBits.Web.Reusables.Core
                 .DeleteUrl(UrlDelete)
                 .Key(KeyFieldName)
             )
-            .Editing(Options => {
-                Options.Mode(GridEditMode.Row);
+            .Editing(Options =>
+            {
+                Options.Mode(GridEditMode.Cell);
                 Options.AllowAdding(AllowAdd);
                 Options.AllowUpdating(AllowUpdate);
-                Options.AllowDeleting(AllowDelete);                
+                Options.AllowDeleting(AllowDelete);
 
             })
             .Pager(Options =>
@@ -118,7 +125,7 @@ namespace SixtyThreeBits.Web.Reusables.Core
             });
         }
 
-        public void InitLookupColumn<T>(DataGridColumnBuilder<T> Column, IEnumerable<SimpleKeyValue<int?,string>> Data, bool IsRequired = false)
+        public void InitLookupColumn<T>(DataGridColumnBuilder<T> Column, IEnumerable<SimpleKeyValue<int?, string>> Data, bool IsRequired = false)
         {
             Column.Lookup(Options =>
             {
@@ -129,16 +136,17 @@ namespace SixtyThreeBits.Web.Reusables.Core
             {
                 Column.ValidationRules(Options =>
                 {
-                    Options.AddRequired().Message(Resources.ValidationRequired).Trim(true);                    
+                    Options.AddRequired().Message(Resources.ValidationRequired).Trim(true);
                 });
             }
         }
 
         public void InitCheckboxColumn<T>(DataGridColumnBuilder<T> Column)
-        {
+        {            
             Column.TrueText(Resources.TextYes);
-            Column.FalseText(Resources.TextNo);            
-        }
+            Column.FalseText(Resources.TextNo);
+        }        
+        #endregion
     }
 
     public class LayoutViewModelBase
@@ -302,16 +310,56 @@ namespace SixtyThreeBits.Web.Reusables.Core
         public string WebsiteDomain { get; set; }
         public DataAccessFactory DataAccessFactory { get; set; }
         public AppSettingsModel AppSettings { get; set; }
+        public UtilityCollection Utilities { get; set; }
         public ISessionAssistance SessionAssistance { get; set; }
         public ICookieAssistance CookieAssistance { get; set; }
         public IUrlHelper Url { get; set; }
+        public ViewDataDictionary ViewData { get; set; }
         public PluginClient PluginClient { get; set; }
+        public SuccessErrorPartialViewModel SuccessErrorPartialViewModel { get; set; } = new SuccessErrorPartialViewModel();
         public string Language { get; set; }
         public User User { get; set; }
         public bool IsLoggedIn => User != null;
         #endregion
 
         #region Methods
+        public string GetFileManagerUrl(IUrlHelper Url, string FolderPhysicalPath, string FolderVirtualPath, bool AllowSelectMultiple = false, bool RestrictToImagesOnly = false, string OnSelectedFilesChooseClientCallback = null)
+        {
+            var SB = new System.Text.StringBuilder();
+            SB.Append(Url.RouteUrl(ControllerActionRouteNames.Admin.FileManager.Index, new { FolderVirtualPathHash = FolderVirtualPath.EncryptWeb(), FolderPhysicalPathHash = FolderPhysicalPath.EncryptWeb() }));
+            if (AllowSelectMultiple || RestrictToImagesOnly || !string.IsNullOrWhiteSpace(OnSelectedFilesChooseClientCallback))
+            {
+                SB.Append("?");
+                if (AllowSelectMultiple)
+                {
+                    SB.Append($"{nameof(AllowSelectMultiple)}=true&");
+                }
+                if (RestrictToImagesOnly)
+                {
+                    SB.Append("AllowedExtensions=.jpg,.jpeg,.png,.svg&");
+                }
+                if (!string.IsNullOrWhiteSpace(OnSelectedFilesChooseClientCallback))
+                {
+                    SB.Append($"{nameof(OnSelectedFilesChooseClientCallback)}={OnSelectedFilesChooseClientCallback}&");
+                }
+            }
+            return SB.ToString().TrimEnd('&');
+            /*
+             /admin/filemanager/
+
+            /admin/filemanager/?AllowSelectMultiple=true
+
+            /admin/filemanager/?AllowedExtensions=.jpg,.jpeg,.png,.svg
+
+            /admin/filemanager/?AllowSelectMultiple=true&AllowedExtensions=.jpg,.jpeg,.png,.svg
+            */
+        }
+
+        public string GetFilenameFromUploadedFile(IFormFile PostedFile)
+        {
+            return PostedFile?.FileName.ToAZ09Dash(GuidInlcuded: true);
+        }
+
         public string GetRouteByName(string RouteName, object RouteValues = null, bool GetFullPath = false, string Protocol = Constants.Protocols.HTTP)
         {                        
             if (GetFullPath)
@@ -323,6 +371,101 @@ namespace SixtyThreeBits.Web.Reusables.Core
                 return Url.RouteUrl((string.IsNullOrWhiteSpace(Language) || Language == Constants.Languages.GEORGIAN) ? RouteName : $"{RouteName}Culture", RouteValues);
             }
         }
+
+        public string GetWebsiteDomain(HttpRequest Request)
+        {            
+            var Port = Request.Host.Port;
+            var PortString = Port < 1000 ? "" : $":{Port}";
+
+            var WebsiteDomain = $"{Request.Scheme}://{Request.Host.Host}{PortString}";
+            return WebsiteDomain;
+        }
+
+        public string LogRequest(HttpRequest Request, string LogFilePhysicalPath = null)
+        {
+            var SB = new System.Text.StringBuilder();
+            SB.Append($"QueryString:{Environment.NewLine}");
+            foreach (var Key in Request.Query.Keys)
+            {
+                SB.Append($"{Key}: {Request.Query[Key]}{Environment.NewLine}");
+            }
+            SB.Append($"{Environment.NewLine}{Environment.NewLine}Form:{Environment.NewLine}");
+            foreach (var Key in Request.Form.Keys)
+            {
+                SB.Append($"{Key}: {Request.Form[Key]}{Environment.NewLine}");
+            }
+            var RequestString = SB.ToString();
+            if (!string.IsNullOrWhiteSpace(LogFilePhysicalPath))
+            {
+                RequestString.LogString(LogFilePhysicalPath);
+            }
+            return RequestString;
+        }
+
+        public async Task SaveUploadedFile(IFormFile PostedFile, string Filename, string FolderPath = null)
+        {
+            using (var Stream = new FileStream($"{AppSettings.UploadFolderPhysicalPath}{FolderPath}{Filename}", FileMode.Create))
+            {
+                await PostedFile.CopyToAsync(Stream);
+            }
+        }
+
+        #region SuccessError
+        public void InitSuccessErrorPartialViewModel()
+        {
+            var ErrorMessage = SessionAssistance.Get<string>(Constants.Session.SuccessErrorMessage.Error);
+            if (ErrorMessage != null)
+            {
+                SuccessErrorPartialViewModel.IsInitialized = true;
+                SuccessErrorPartialViewModel.ShowError = true;
+                SuccessErrorPartialViewModel.Message = ErrorMessage;
+                SessionAssistance.Remove(Constants.Session.SuccessErrorMessage.Error);
+            }
+            else
+            {
+                var SuccessMessage = SessionAssistance.Get<string>(Constants.Session.SuccessErrorMessage.Success);
+                if (SuccessMessage != null)
+                {
+                    SuccessErrorPartialViewModel.IsInitialized = true;
+                    SuccessErrorPartialViewModel.ShowSuccess = true;
+                    SuccessErrorPartialViewModel.Message = SuccessMessage;
+                    SessionAssistance.Remove(Constants.Session.SuccessErrorMessage.Success);
+                }
+            }
+        }
+
+        public void PrepareSuccessErrorForJavascript()
+        {
+            SuccessErrorPartialViewModel.IsInitialized = true;
+        }
+
+        public void ShowSuccess(string Message = null)
+        {
+            if (string.IsNullOrWhiteSpace(Message))
+            {
+                Message = Resources.TextSuccess;
+            }
+            SessionAssistance.Set(Constants.Session.SuccessErrorMessage.Success, Message);
+        }
+
+        public void ShowError(string Message = null, bool UseSession = false)
+        {
+            if (string.IsNullOrWhiteSpace(Message))
+            {
+                Message = Resources.TextError;
+            }
+
+            if (UseSession)
+            {
+                SessionAssistance.Set(Constants.Session.SuccessErrorMessage.Error, Message);
+            }
+            else
+            {
+                SuccessErrorPartialViewModel.ShowError = true;
+                SuccessErrorPartialViewModel.Message = Message;
+            }
+        }        
+        #endregion
         #endregion
     }
 }

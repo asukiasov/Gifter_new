@@ -8,6 +8,7 @@ namespace SixtyThreeBits.Web.Reusables
     {
         void Clear();
         T Get<T>(string Key);
+        string GetSessionID();
         bool HasKey(string Key);        
         void Set<T>(string Key, T Value);
         void Remove(string Key);
@@ -35,6 +36,11 @@ namespace SixtyThreeBits.Web.Reusables
         public T Get<T>(string Key)
         {
             return HasKey(Key) ? Session.GetString(Key).FromJsonTo<T>() : default(T);
+        }
+
+        public string GetSessionID()
+        {
+            return Session.Id;
         }
 
         public bool HasKey(string Key)

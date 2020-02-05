@@ -11,6 +11,7 @@ namespace SixtyThreeBits.Web.Admin.Models
         public string UrlRelogin { get; set; }
         public string TextError { get; set; } = Resources.TextError;
         public string TextSuccess { get; set; } = Resources.TextSuccess;
+        public SuccessErrorPartialViewModel SuccessErrorPartialViewModel { get; set; } = new SuccessErrorPartialViewModel();
         #endregion
     }
 }

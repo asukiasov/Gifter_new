@@ -69,17 +69,17 @@ namespace SixtyThreeBits.Core.Utilities
             #endregion
         }
 
-        public class TimeUnitCodes
+        public enum TimeUnitCodes : byte
         {
             #region Properties
-            public const int MILLISECOND = 1;
-            public const int SECOND = 2;
-            public const int MINUTE = 3;
-            public const int HOUR = 4;
-            public const int DAY = 5;
-            public const int WEEK = 6;
-            public const int MONTH = 7;
-            public const int YEAR = 8;
+            MILLISECOND = 1,
+            SECOND = 2,
+            MINUTE = 3,
+            HOUR = 4,
+            DAY = 5,
+            WEEK = 6,
+            MONTH = 7,
+            YEAR = 8
             #endregion
         }
     }

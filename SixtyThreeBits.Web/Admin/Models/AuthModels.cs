@@ -12,6 +12,14 @@ namespace SixtyThreeBits.Web.Admin.Models
         public LoginPageViewModel GetPageViewModel()
         {
             var Model = new LoginPageViewModel();
+            //Model.IsLoginFailed = true;
+            //var SessionData = SessionAssistance.Get<string>("SomeData");
+            //if(SessionData == null)
+            //{
+            //    SessionData = System.Guid.NewGuid().ToString();
+            //    SessionAssistance.Set<string>("SomeData", SessionData);
+            //}
+            //Model.ErrorMessage = SessionData; 
             return Model;
         }
 

@@ -12,7 +12,8 @@ namespace SixtyThreeBits.Web.Controllers
         [Route("", Name = ControllerActionRouteNames.Website.Home.Page)]
         public IActionResult Index()
         {
-            return View(ViewNames.Website.Home.Page);
+            return Redirect("/admin/");
+            //return View(ViewNames.Website.Home.Page);
         }
     }
 }

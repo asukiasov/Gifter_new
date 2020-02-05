@@ -1,4 +1,6 @@
-﻿namespace SixtyThreeBits.Core.Utilities
+﻿using System;
+
+namespace SixtyThreeBits.Core.Utilities
 {
     public class Constants
     {
@@ -75,6 +77,7 @@
             #region Properties
             public const string String = "";
             public const int Int = -1;
+            public static readonly DateTime Date = new DateTime(1900, 1, 1);
             #endregion
         }
 
