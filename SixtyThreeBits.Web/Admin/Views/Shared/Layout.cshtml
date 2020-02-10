@@ -158,11 +158,11 @@
         </section>
     </div>
 
-    @if (Model.IsSuccessErrorPartialInitiated)
+    @if (Model.IsSuccessErrorPartialViewModelinitialized)
     {
         <link href="~/plugins/successErrorMessage/successErrorMessage.css" rel="stylesheet" />
         <script src="~/plugins/successErrorMessage/successErrorMessage.js"></script>
-        @await Html.PartialAsync(ViewNames.Admin.Shared.SuccessErrorPartialView, Model.SuccessErrorViewModel)
+        @await Html.PartialAsync(ViewNames.Admin.Shared.SuccessErrorPartialView, Model.SuccessErrorPartialViewModel)
     }
     @await Html.PartialAsync(ViewNames.Shared.PluginsClient.Footer, Model.PluginClient)
 

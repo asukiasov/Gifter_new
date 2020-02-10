@@ -1,7 +1,14 @@
 ﻿//TextAbort და TextSuccess ცვლადების მნიშნველობების გაფორმება ხდება _Layout.cshtml - ის ბოლოში
-var Globals = {
+const Globals = {
     TextError: null,
     TextSuccess: null,
+    Constants: {
+        NullValueFor: {
+            Int: -1,
+            String: '',
+            Date:'1900-01-01'
+        }
+    },
     Formats: {
         JQueryIUDate: 'M d, yy'
     },
@@ -38,19 +45,19 @@ var Globals = {
         SetGridFullHeight: function (Grid, GridElement, HeightCorrectionInPixels) {
             // Making sure that number is passed, if not HeightCorrectionInPixels will be zero.
             HeightCorrectionInPixels = HeightCorrectionInPixels % 1 === 0 ? HeightCorrectionInPixels : 0;
-            var ScreenHeight = $(window).outerHeight();
+            const ScreenHeight = $(window).outerHeight();
                         
             
-            var PaddingBottom = 25;
-            var OffsetTop = $(GridElement).offset().top;
-            var GridHeight = ScreenHeight - OffsetTop - PaddingBottom;
+            const PaddingBottom = 25;
+            const OffsetTop = $(GridElement).offset().top;
+            const GridHeight = ScreenHeight - OffsetTop - PaddingBottom;
             Grid.option('height', GridHeight);
             
         },
     },
     Common: {
         ProcessSelect2AjaxResultFromSimpleKeyValue: function (Result) {
-            var Select2Object = { results: new Array() };
+            const Select2Object = { results: new Array() };
 
             if (Result && Result.Data) {
                 $(Result.Data).each(function (Index, Item) {

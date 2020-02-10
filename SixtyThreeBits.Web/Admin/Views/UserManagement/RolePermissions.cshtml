@@ -1,0 +1,31 @@
+﻿@model RolePermissionsModel.PageViewModel
+<div class="actions-row">
+    @if (Model.ShowSaveButton)
+    {
+        <button class="btn btn-circle btn-primary js-save-button"><i class="fas fa-save"></i></button>
+    }
+</div>
+
+<div class="row">
+    <div class="col-xl-4">
+        <div class="card mb-0">
+            <div class="panel-body">
+                @await Html.PartialAsync(ViewNames.Admin.Shared.DevexpressGrid, Model.RolesGrid)
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-8">
+        <div class="card mb-0">
+            <div class="panel-body">
+                @await Html.PartialAsync(ViewNames.Admin.Shared.DevexpressTree, Model.PermissionsTree)
+            </div>
+        </div>
+    </div>
+</div>
+@section FooterSection{
+<script src="~/admin/js/UserManagement/RolePermissions.js"></script>    
+<script>
+    RolePermissionsModel.UrlSave = '@Html.Raw(Model.UrlSave)';
+    RolePermissionsModel.UrlGetRolePermissions = '@Html.Raw(Model.UrlGetRolePermissions)';
+</script>
+}

@@ -2,6 +2,7 @@
 using DevExtreme.AspNet.Mvc.Builders;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using SixtyThreeBits.Core.DB;
@@ -20,6 +21,13 @@ namespace SixtyThreeBits.Web.Reusables.Core
     {
         #region Properties
         DataGridBuilder<T> InitGrid(IHtmlHelper Html); 
+        #endregion
+    }
+
+    public interface IDevexpressTreeModel<T> where T : class
+    {
+        #region Properties
+        TreeListBuilder<T> InitTree(IHtmlHelper Html);
         #endregion
     }
 
@@ -52,10 +60,17 @@ namespace SixtyThreeBits.Web.Reusables.Core
             .ShowBorders(true)
             .ShowRowLines(true)
             .FocusedRowEnabled(true)
+            .FocusedRowIndex(0)
+            .Scrolling(Options =>
+            {
+                Options.Mode(GridScrollingMode.Standard);
+                Options.ShowScrollbar(ShowScrollbarMode.Always);
+            })
             .FilterRow(Options =>
             {
                 Options.Visible(true);
                 Options.ApplyFilter(GridApplyFilterMode.Auto);
+                Options.ShowAllText(Resources.TextAllDevexpressGridFilterRaw);
             })
             .DataSource(Options =>
                 Options.RemoteController()
@@ -71,6 +86,10 @@ namespace SixtyThreeBits.Web.Reusables.Core
                 Options.AllowAdding(AllowAdd);
                 Options.AllowUpdating(AllowUpdate);
                 Options.AllowDeleting(AllowDelete);
+                Options.Texts(OptionsTexts =>
+                {
+                    OptionsTexts.ConfirmDeleteMessage(Resources.TextConfirmDelete);
+                });
 
             })
             .Pager(Options =>
@@ -84,23 +103,90 @@ namespace SixtyThreeBits.Web.Reusables.Core
             {
                 Options.Enabled(true);
                 Options.PageSize(30);
-            })
-            .Scrolling(Options =>
-            {
-                Options.Mode(GridScrollingMode.Standard);
-                Options.ShowScrollbar(ShowScrollbarMode.Always);
-            })
+            })            
             .Columns(Columns =>
             {
                 if (AllowAdd || AllowUpdate || AllowDelete)
                 {
-                    var Width = (AllowDelete && !AllowAdd && !AllowUpdate) ? 40 : 80;
+                    //var Width = (AllowDelete && !AllowAdd && !AllowUpdate) ? 40 : 80;
+                    var Width = 30;
                     Columns.Add().Type(GridCommandColumnType.Buttons).Width(Width).Buttons(b =>
                     {
                         b.Add().Name(GridColumnButtonName.Edit).Icon("fas fa-pencil-alt");
                         b.Add().Name(GridColumnButtonName.Delete).Icon("fas fa-trash-alt");
                         b.Add().Name(GridColumnButtonName.Save).Icon("fas fa-check");
                         b.Add().Name(GridColumnButtonName.Cancel).Icon("fas fa-minus-circle");
+                    });
+                }
+            });
+        }
+
+        public TreeListBuilder<T> GetTreeWithStartupValues<T>(IHtmlHelper Html, string KeyFieldName, string ParentFieldName)
+        {
+            return Html.DevExtreme().TreeList<T>()
+            .KeyExpr(KeyFieldName)
+            .ParentIdExpr(ParentFieldName)
+            .Width("100%")
+            .ShowBorders(true)
+            .ShowRowLines(true)
+            .FocusedRowEnabled(true)
+            .FocusedRowIndex(0)
+            .AutoExpandAll(true)
+            .Scrolling(Options =>
+            {
+                Options.Mode(TreeListScrollingMode.Standard);
+                Options.ShowScrollbar(ShowScrollbarMode.Always);
+            })
+            .FilterRow(Options =>
+            {
+                Options.Visible(true);
+                Options.ApplyFilter(GridApplyFilterMode.Auto);
+                Options.ShowAllText(Resources.TextAllDevexpressGridFilterRaw);
+            })            
+            .DataSource(Options =>
+                Options.RemoteController()
+                .LoadUrl(UrlList)
+                .InsertUrl(UrlAddNew)
+                .UpdateUrl(UrlUpdate)
+                .DeleteUrl(UrlDelete)
+                .Key(KeyFieldName)
+            )
+            .Editing(Options =>
+            {
+                Options.Mode(GridEditMode.Cell);
+                Options.AllowAdding(AllowAdd);
+                Options.AllowUpdating(AllowUpdate);
+                Options.AllowDeleting(AllowDelete);                
+                Options.Texts(OptionsTexts =>
+                {
+                    OptionsTexts.ConfirmDeleteMessage(Resources.TextConfirmDelete);
+                });
+
+            })
+            .Pager(Options =>
+            {
+                Options.AllowedPageSizes(new[] { 30, 50, 100 });
+                Options.ShowInfo(true);
+                Options.ShowPageSizeSelector(true);
+                Options.Visible(true);
+            })
+            .Paging(Options =>
+            {
+                Options.Enabled(true);
+                Options.PageSize(30);
+            })            
+            .Columns(Columns =>
+            {
+                if (AllowAdd || AllowUpdate || AllowDelete)
+                {
+                    var Width = (AllowDelete && !AllowAdd && !AllowUpdate) ? 30 : 60;
+                    Columns.Add().Type(TreeListCommandColumnType.Buttons).Width(Width).Buttons(b =>
+                    {
+                        b.Add().Name(TreeListColumnButtonName.Add).Icon("fas fa-plus");
+                        b.Add().Name(TreeListColumnButtonName.Edit).Icon("fas fa-pencil-alt");
+                        b.Add().Name(TreeListColumnButtonName.Delete).Icon("fas fa-trash-alt");
+                        b.Add().Name(TreeListColumnButtonName.Save).Icon("fas fa-check");
+                        b.Add().Name(TreeListColumnButtonName.Cancel).Icon("fas fa-minus-circle");
                     });
                 }
             });
@@ -153,8 +239,8 @@ namespace SixtyThreeBits.Web.Reusables.Core
     {
         #region Properties
         public string PageTitle { get; set; }
-        public SuccessErrorPartialViewModel SuccessErrorViewModel { get; set; }
-        public bool IsSuccessErrorPartialInitiated => SuccessErrorViewModel != null;
+        public SuccessErrorPartialViewModel SuccessErrorPartialViewModel { get; set; } = new SuccessErrorPartialViewModel();
+        public bool IsSuccessErrorPartialViewModelinitialized => SuccessErrorPartialViewModel?.IsInitialized == true;
         public List<ProjectMenuItem> Menu { get; set; }
         public bool HasMenu => Menu?.Count > 0;        
         public Breadcrumbs Breadcrumbs { get; set; }
@@ -293,14 +379,21 @@ namespace SixtyThreeBits.Web.Reusables.Core
         #endregion
     }
 
-    [BeforeWebProjectControllerLoaded(Order = 0)]
-    public class WebProjectController<T> :  Controller
+    public class SixtyThreeBitsException : SystemException
     {
-        #region Properties
-        public T Model { get; set; }        
+        #region Constructors
+        public SixtyThreeBitsException(string Message) : base(Message) { }
         #endregion
     }
     
+    [TypeFilter(typeof(BeforeWebProjectControllerLoaded), Order = 0)]
+    public class WebProjectController<T> :  Controller
+    {
+        #region Properties
+        public T Model { get; set; }
+        #endregion        
+    }
+
     public class WebProjectModelBase 
     {
         #region Properties
@@ -320,6 +413,7 @@ namespace SixtyThreeBits.Web.Reusables.Core
         public string Language { get; set; }
         public User User { get; set; }
         public bool IsLoggedIn => User != null;
+        public FormViewModelBase Form { get; set; }
         #endregion
 
         #region Methods
@@ -466,6 +560,56 @@ namespace SixtyThreeBits.Web.Reusables.Core
             }
         }        
         #endregion
+        #endregion
+    }
+
+    public class FormViewModelBase
+    {
+        #region Constructors
+        public FormViewModelBase(UtilityCollection Utilities)
+        {
+            this.Utilities = Utilities;
+        }
+        #endregion
+
+        #region Properties
+        UtilityCollection Utilities;
+
+        public string Filename { get; set; }
+        public string FilenameHttpPath => Utilities.GetUploadedFileHttpPath(Filename);
+        public bool HasFile => !string.IsNullOrWhiteSpace(Filename);
+        public string UrlDeleteFile { get; set; }
+
+        public string UrlAttachmentsUpload { get; set; }
+        public string UrlAttachmentsUpdate { get; set; }
+        public string UrlAttachmentsDelete { get; set; }
+        public string UrlAttachmentsSyncSortIndexes { get; set; }        
+
+
+        public List<SimpleKeyValue<string, string>> Errors { get; set; }
+        public string ErrorMessage => string.Join("<br />", Errors);
+        public bool HasErrors => Errors?.Count > 0;
+        public string ErrorsJson => Errors.ToJSON();        
+        public bool IsSaved { get; set; }
+
+        public string TextConfirmDeleteAttachment { get; set; } = Resources.TextConfirmDeleteAttachment;
+        #endregion
+
+        #region Methods
+        public void AddError(string ErrorKey,string ErrorMessage)
+        {
+            if (Errors == null)
+            {
+                Errors = new List<SimpleKeyValue<string, string>>();
+            }
+
+            Errors.Add(new SimpleKeyValue<string, string> { Key = ErrorKey, Value = ErrorMessage });
+        }
+
+        public void AddError(string ErrorMessage)
+        {
+            AddError(ErrorKey: null, ErrorMessage: ErrorMessage);
+        }
         #endregion
     }
 }

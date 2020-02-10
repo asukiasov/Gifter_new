@@ -52,14 +52,14 @@ namespace SixtyThreeBits.Web.Admin.Models
             SessionAssistance.Clear();
         }
 
-        public void ReloginUser()
+        public async Task ReloginUser()
         {
             var User = SessionAssistance.Get<User>(Constants.Session.User);
-            //User = UsersDataAccess.GetSingleUserByID(UserID: User?.UserID);
-            //if (User != null && User.UserIsActive)
-            //{
-            //    SessionAssistance.SetUser(Session, User);
-            //}
+            User = await DataAccessFactory.Users.GetSingleUserByID(User.UserID);
+            if (User != null && User.UserIsActive)
+            {
+                SessionAssistance.Set(Constants.Session.User, User);
+            }
         }
         #endregion
 

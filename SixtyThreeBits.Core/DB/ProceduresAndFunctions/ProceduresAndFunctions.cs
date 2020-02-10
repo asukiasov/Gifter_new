@@ -24,11 +24,11 @@ namespace SixtyThreeBits.Core.DB
 
         #region Functions
         internal virtual DbSet<ScalarFunctionResult<string>> UsersGetSingleUserByIDResult { get; set; }
-        public async Task<string> UsersGetSingleUserByID(int? UserID)
+        public async Task<string> UsersGetSingleUserByUserID(int? UserID)
         {
             var PR = new PrepareQueryExecution(
                 DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
-                DatabaseObjectName: nameof(UsersGetSingleUserByID),
+                DatabaseObjectName: nameof(UsersGetSingleUserByUserID),
                 ResultItemType: typeof(ScalarFunctionResult<string>),
                 SqlParameters: new SqlParameter[]
                 {
@@ -38,6 +38,24 @@ namespace SixtyThreeBits.Core.DB
             var DBResult = UsersGetSingleUserByIDResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
             var DBFunctionResult = await DBResult.FirstOrDefaultAsync();
             return DBFunctionResult?.Value;
+        }
+
+        internal virtual DbSet<ScalarFunctionResult<bool>> UsersIsEmailUniqueResult { get; set; }
+        public async Task<bool> UsersIsEmailUnique(string Email, int? UserID)
+        {
+            var PR = new PrepareQueryExecution(
+                DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
+                DatabaseObjectName: nameof(UsersIsEmailUnique),
+                ResultItemType: typeof(ScalarFunctionResult<bool>),
+                SqlParameters: new SqlParameter[]
+                {
+                    Email.ToSqlParameter(nameof(Email), SqlDbType.NVarChar),
+                    UserID.ToSqlParameter(nameof(UserID), SqlDbType.Int)
+                }
+            );
+            var DBResult = UsersIsEmailUniqueResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
+            var DBFunctionResult = await DBResult.FirstOrDefaultAsync();
+            return DBFunctionResult?.Value == true;
         }
 
 
@@ -117,11 +135,28 @@ namespace SixtyThreeBits.Core.DB
             
             return UserID;
         }
+
+        public async Task RolePermissionsUpdate(int? RoleID, string PermissionsXml)
+        {
+            var PR = new PrepareQueryExecution(
+             DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.STORED_PROCEDURE,
+             DatabaseObjectName: nameof(RolePermissionsUpdate),
+             ResultItemType: null,
+             SqlParameters: new SqlParameter[]
+             {
+                 RoleID.ToSqlParameter(nameof(RoleID),SqlDbType.TinyInt),
+                 PermissionsXml.ToSqlParameter(nameof(PermissionsXml),SqlDbType.Xml)
+             }
+           );
+
+            var DBResult = await Database.ExecuteSqlRawAsync(PR.SqlQuery, PR.SqlParameters);            
+        }
         #endregion
 
         partial void OnModelCreatingPartial(ModelBuilder ModelBuilder)
         {
             ModelBuilder.Entity<ScalarFunctionResult<string>>(Entity => { Entity.HasNoKey(); });
+            ModelBuilder.Entity<ScalarFunctionResult<bool>>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<PermissionsListPermissionsWithRoleMarkDBItem>(Entity => { Entity.HasNoKey(); });       
         }
 

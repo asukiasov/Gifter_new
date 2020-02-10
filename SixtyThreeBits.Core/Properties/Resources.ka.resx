@@ -117,6 +117,15 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="TextAllDevexpressGridFilterRaw" xml:space="preserve">
+    <value>(ყველა)</value>
+  </data>
+  <data name="TextConfirmDelete" xml:space="preserve">
+    <value>ნამდვილად გნებავთ ჩანაწერის წაშლა?</value>
+  </data>
+  <data name="TextConfirmDeleteAttachment" xml:space="preserve">
+    <value>ნამდვილად გნებავთ გაილის წაშლა?</value>
+  </data>
   <data name="TextError" xml:space="preserve">
     <value>უკაცრავად დაფიქსირდა შეცდომა</value>
   </data>
@@ -136,7 +145,10 @@
     <value>ველის შეყვანა აუცილებელია</value>
   </data>
   <data name="ValidationTextMaxLength" xml:space="preserve">
-    <value>ტექსტის მაქსიმალური ზომა {0} სიმბოლო უნდა იყოს.</value>
+    <value>ტექსტის მაქსიმალური ზომა {0} სიმბოლო უნდა იყოს</value>
+  </data>
+  <data name="ValidationUserEmailNotUniq" xml:space="preserve">
+    <value>მოცემული ელ-ფოსტის მისამართი უკვე გამოყენებულია</value>
   </data>
   <data name="ValidationUserInvalidUsernameOrPassword" xml:space="preserve">
     <value>არასწორი სახელი ან პაროლი</value>

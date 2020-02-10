@@ -16,50 +16,36 @@ namespace SixtyThreeBits.Core.Modules
         public UsersDataAccess(DBCoreDataContext db) : base(db) { }
         #endregion
 
-        #region Methods
-        //    public void DeleteUser(int? UserID)
-        //    {
-        //        TryExecute($"{nameof(DeleteUser)}({nameof(UserID)} = {UserID})", () =>
-        //        {
-        //            using (var db = ConnectionFactory.GetDBCoreDataContext())
-        //            {
-        //                db.UsersDelete(UserID);
-        //            }
-        //        });
-        //    }
-
+        #region Methods        
         public async Task<User> GetSingleUserByID(int? UserID)
         {
-            return await TryToReturnAsync($"{nameof(GetSingleUserByID)}({nameof(UserID)} = {UserID})", async () =>
+            return await TryToReturnAsyncTask($"{nameof(GetSingleUserByID)}({nameof(UserID)} = {UserID})", async () =>
             {
-                var Result = await db.UsersGetSingleUserByID(UserID);
+                var Result = await db.UsersGetSingleUserByUserID(UserID);
                 return Result.DeserializeTo<User>();
             });
         }
 
         public async Task<User> GetSingleUserByEmailAndPassword(string Email, string Password)
         {
-            return await TryToReturnAsync($"{nameof(GetSingleUserByEmailAndPassword)}({nameof(Email)} = {Email}, {nameof(Password)} = {Password})", async () =>
+            return await TryToReturnAsyncTask($"{nameof(GetSingleUserByEmailAndPassword)}({nameof(Email)} = {Email}, {nameof(Password)} = {Password})", async () =>
             {
                  var Result = await db.UsersGetSingleUserByEmailAndPassword(Email, Password);
                 return Result.DeserializeTo<User>();
             });
         }
 
-        //    public static bool IsEmailUniq(string Email,int? UserID = null)
-        //    {
-        //        return TryToReturnStatic($"{nameof(IsEmailUniq)}({nameof(Email)} = {Email}, {nameof(UserID)} = {UserID})", () =>
-        //        {
-        //            using (var db = ConnectionFactory.GetDBCoreDataContext())
-        //            {
-        //                return db.UsersIsEmailUnique(Email,UserID).Value;
-        //            }
-        //        });
-        //    }
+        public async Task<bool> IsUserEmailUniq(string UserEmail, int? UserID = null)
+        {
+            return await TryToReturn($"{nameof(IsUserEmailUniq)}({nameof(UserEmail)} = {UserEmail}, {nameof(UserID)} = {UserID})", async () =>
+            {
+                return await db.UsersIsEmailUnique(UserEmail, UserID);                
+            });
+        }
 
         public async Task<List<DB.Tables.Users>> ListUsers()
         {
-            return await TryToReturnAsync($"{nameof(ListUsers)}()", async () =>
+            return await TryToReturnAsyncTask($"{nameof(ListUsers)}()", async () =>
             {
                 return await db.Users.OrderByDescending(Item => Item.CRTime).ToListAsync();
             });
@@ -67,7 +53,7 @@ namespace SixtyThreeBits.Core.Modules
 
         public async Task<int?> UsersIUD(byte DatabaseAction, int? UserID = null, string UserEmail = null, string UserPassword = null, string UserFirstname = null, string UserLastname = null, int? UserRoleID = null, DateTime? UserBirthdate = null, string UserPhoneNumberMobile = null, string UserPersonalNumber = null, string UserAvatarFilename = null, bool? UserIsActive = null)
         {            
-            return await TryToReturnAsync($"{nameof(UsersIUD)}({nameof(DatabaseAction)} = {DatabaseAction}, {nameof(UserID)} = {UserID}, {nameof(UserEmail)} = {UserEmail}, {nameof(UserPassword)} = {UserPassword}, {nameof(UserFirstname)} = {UserFirstname}, {nameof(UserLastname)} = {UserLastname}, {nameof(UserRoleID)} = {UserRoleID}, {nameof(UserBirthdate)} = {UserBirthdate}, {nameof(UserPhoneNumberMobile)} = {UserPhoneNumberMobile}, {nameof(UserPersonalNumber)} = {UserPersonalNumber}, {nameof(UserAvatarFilename)} = {UserAvatarFilename}, {nameof(UserIsActive)} = {UserIsActive})", async () =>
+            return await TryToReturnAsyncTask($"{nameof(UsersIUD)}({nameof(DatabaseAction)} = {DatabaseAction}, {nameof(UserID)} = {UserID}, {nameof(UserEmail)} = {UserEmail}, {nameof(UserPassword)} = {UserPassword}, {nameof(UserFirstname)} = {UserFirstname}, {nameof(UserLastname)} = {UserLastname}, {nameof(UserRoleID)} = {UserRoleID}, {nameof(UserBirthdate)} = {UserBirthdate}, {nameof(UserPhoneNumberMobile)} = {UserPhoneNumberMobile}, {nameof(UserPersonalNumber)} = {UserPersonalNumber}, {nameof(UserAvatarFilename)} = {UserAvatarFilename}, {nameof(UserIsActive)} = {UserIsActive})", async () =>
             {
                 //await db.UsersIUD(DatabaseAction, UserID, UserEmail, UserPassword, UserFirstname, UserLastname, UserRoleID, UserBirthdate, UserPhoneNumberMobile, UserPersonalNumber, UserAvatarFilename, UserIsActive);
 
@@ -93,7 +79,7 @@ namespace SixtyThreeBits.Core.Modules
                 }
                 else if (DatabaseAction == Enums.DatabaseActions.UPDATE)
                 {
-                    var User = await db.Users.Where(Item => Item.UserID == UserID).FirstOrDefaultAsync();
+                    var User = await db.Users.FirstOrDefaultAsync(Item => Item.UserID == UserID);
                     if (User != null)
                     {
                         User.UserEmail = UserEmail ?? User.UserEmail;
@@ -112,7 +98,7 @@ namespace SixtyThreeBits.Core.Modules
                 }
                 else if (DatabaseAction == Enums.DatabaseActions.DELETE)
                 {
-                    var User = await db.Users.Where(Item => Item.UserID == UserID).FirstOrDefaultAsync();
+                    var User = await db.Users.FirstOrDefaultAsync(Item => Item.UserID == UserID);
                     if (User != null)
                     {
                         db.Users.Remove(User);

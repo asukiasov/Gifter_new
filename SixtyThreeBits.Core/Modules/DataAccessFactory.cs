@@ -1,7 +1,4 @@
 ﻿using SixtyThreeBits.Core.DB;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SixtyThreeBits.Core.Modules
 {
@@ -9,6 +6,7 @@ namespace SixtyThreeBits.Core.Modules
     {
         #region Properties
         public RolesDataAccess Roles { get; set; }
+        public PermissionsDataAccess Permissions { get; set; }
         public UsersDataAccess Users { get; set; }
         #endregion
 
@@ -16,6 +14,7 @@ namespace SixtyThreeBits.Core.Modules
         public DataAccessFactory(DBCoreDataContext db)
         {
             Roles = new RolesDataAccess(db);
+            Permissions = new PermissionsDataAccess(db);
             Users = new UsersDataAccess(db);
         } 
         #endregion

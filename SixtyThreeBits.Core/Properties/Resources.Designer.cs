@@ -61,6 +61,33 @@ namespace SixtyThreeBits.Core.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to (All).
+        /// </summary>
+        public static string TextAllDevexpressGridFilterRaw {
+            get {
+                return ResourceManager.GetString("TextAllDevexpressGridFilterRaw", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do you really want to delete this item?.
+        /// </summary>
+        public static string TextConfirmDelete {
+            get {
+                return ResourceManager.GetString("TextConfirmDelete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do you really want to delete this attachment?.
+        /// </summary>
+        public static string TextConfirmDeleteAttachment {
+            get {
+                return ResourceManager.GetString("TextConfirmDeleteAttachment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Sorry something went wrong.
         /// </summary>
         public static string TextError {
@@ -120,6 +147,15 @@ namespace SixtyThreeBits.Core.Properties {
         public static string ValidationTextMaxLength {
             get {
                 return ResourceManager.GetString("ValidationTextMaxLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User email is already in use.
+        /// </summary>
+        public static string ValidationUserEmailNotUniq {
+            get {
+                return ResourceManager.GetString("ValidationUserEmailNotUniq", resourceCulture);
             }
         }
         

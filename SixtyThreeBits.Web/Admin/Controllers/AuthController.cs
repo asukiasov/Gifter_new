@@ -34,7 +34,7 @@ namespace SixtyThreeBits.Web.Admin.Controllers
         [HttpPost]
         [Route("login")]
         public async Task<ActionResult> Login(AuthModel.LoginPageViewModel ViewModel)
-        {
+        {            
             var IsAuthenticated = await Model.AuthenticateUser(ViewModel: ViewModel);
             if (IsAuthenticated)
             {                                
@@ -54,9 +54,9 @@ namespace SixtyThreeBits.Web.Admin.Controllers
         }
 
         [Route("relogin", Name = ControllerActionRouteNames.Admin.Auth.Relogin)]
-        public ActionResult Relogin()
+        public async Task<ActionResult> Relogin()
         {
-            Model.ReloginUser();
+            await Model.ReloginUser();
             return Redirect(Request.Headers["Referer"].ToString());
         }
     }

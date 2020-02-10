@@ -7,6 +7,9 @@ namespace SixtyThreeBits.Web.Admin.Controllers
     [BeforeAdminPageLoad(Order = 1)]
     public class AdminControllerBase<T> : WebProjectController<T>
     {
-
+        public ContentResult GetDevexpressErrorResult(string ErrorMessage)
+        {
+            return new ContentResult { Content = ErrorMessage, StatusCode = 500 };
+        }
     }
 }

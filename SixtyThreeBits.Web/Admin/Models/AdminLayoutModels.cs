@@ -10,8 +10,7 @@ namespace SixtyThreeBits.Web.Admin.Models
         public bool IsSidebarCollapsed { get; set; }
         public string UrlRelogin { get; set; }
         public string TextError { get; set; } = Resources.TextError;
-        public string TextSuccess { get; set; } = Resources.TextSuccess;
-        public SuccessErrorPartialViewModel SuccessErrorPartialViewModel { get; set; } = new SuccessErrorPartialViewModel();
+        public string TextSuccess { get; set; } = Resources.TextSuccess;        
         #endregion
     }
 }

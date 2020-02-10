@@ -117,6 +117,15 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="TextAllDevexpressGridFilterRaw" xml:space="preserve">
+    <value>(All)</value>
+  </data>
+  <data name="TextConfirmDelete" xml:space="preserve">
+    <value>Do you really want to delete this item?</value>
+  </data>
+  <data name="TextConfirmDeleteAttachment" xml:space="preserve">
+    <value>Do you really want to delete this attachment?</value>
+  </data>
   <data name="TextError" xml:space="preserve">
     <value>Sorry something went wrong</value>
   </data>
@@ -137,6 +146,9 @@
   </data>
   <data name="ValidationTextMaxLength" xml:space="preserve">
     <value>Max length has been exceeded. Only {0} symbols are allowed.</value>
+  </data>
+  <data name="ValidationUserEmailNotUniq" xml:space="preserve">
+    <value>User email is already in use</value>
   </data>
   <data name="ValidationUserInvalidUsernameOrPassword" xml:space="preserve">
     <value>Invalid username or password</value>

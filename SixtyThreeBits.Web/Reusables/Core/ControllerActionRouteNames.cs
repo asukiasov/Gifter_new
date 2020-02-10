@@ -254,6 +254,7 @@
                 public const string PermissionsTreeUpdateParent = "AdminUserManagementPermissionsTreeUpdateParent";
 
                 public const string RolePermissions = "AdminUserManagementRolePermissions";
+                public const string RolePermissionsGet = "AdminUserManagementRolePermissionsGet";
                 public const string RolePermissionsRolesGrid = "AdminUserManagementRolePermissionsRolesGrid";
                 public const string RolePermissionsPermissionsTree = "AdminUserManagementRolePermissionsPermissionsTree";
                 public const string RolePermissionsSave = "AdminUserManagementRolePermissionsSave";

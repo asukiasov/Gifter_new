@@ -56,7 +56,11 @@ namespace SixtyThreeBits.Web
             Services.AddScoped<ISessionAssistance, SessionAssistance>();
 
 
-            Services.AddControllersWithViews().AddJsonOptions(Options => { Options.JsonSerializerOptions.PropertyNamingPolicy = null;  } ); ;
+            Services.AddControllersWithViews(Options=> { 
+                Options.RespectBrowserAcceptHeader = true;                
+            }).AddJsonOptions(Options => { 
+                Options.JsonSerializerOptions.PropertyNamingPolicy = null;  
+            } ); 
             Services.AddDbContext<DBCoreDataContext>(Options => Options.UseSqlServer(AppSettings.DBConnectionStrings.DBConnectionString));
             Services.Configure<RouteOptions>(routeOptions => {
                 routeOptions.AppendTrailingSlash = true;
@@ -70,6 +74,15 @@ namespace SixtyThreeBits.Web
             {
                 App.UseDeveloperExceptionPage();
             }
+            else
+            {
+                App.UseExceptionHandler(Options =>
+                {
+                    App.UseExceptionHandler("/error/404/");
+
+                });
+                App.UseHsts();
+            }
 
             App.UseFileServer();
             App.UseSession();
@@ -77,7 +90,7 @@ namespace SixtyThreeBits.Web
             
             App.UseEndpoints(Endpoints =>
             {
-                Endpoints.MapControllers();                
+                Endpoints.MapControllers();                                
             });
         }
     }

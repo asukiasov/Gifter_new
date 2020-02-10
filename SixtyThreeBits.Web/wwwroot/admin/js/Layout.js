@@ -1,8 +1,8 @@
 ﻿$(function () {
     $('[data-trigger-resize]').click(function (e) {
         e.preventDefault();
-        var Body = $('body');
-        var IsSidebarCollapsed;
+        const Body = $('body');
+        let IsSidebarCollapsed;
 
         if ($(this).hasClass('sidebar-toggle')) {
             if (Body.hasClass('aside-toggled')) {
