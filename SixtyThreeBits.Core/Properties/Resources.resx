@@ -117,8 +117,14 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="TextAdd" xml:space="preserve">
+    <value>Add</value>
+  </data>
   <data name="TextAllDevexpressGridFilterRaw" xml:space="preserve">
     <value>(All)</value>
+  </data>
+  <data name="TextCancel" xml:space="preserve">
+    <value>Cancel</value>
   </data>
   <data name="TextConfirmDelete" xml:space="preserve">
     <value>Do you really want to delete this item?</value>
@@ -126,14 +132,23 @@
   <data name="TextConfirmDeleteAttachment" xml:space="preserve">
     <value>Do you really want to delete this attachment?</value>
   </data>
+  <data name="TextDelete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
   <data name="TextError" xml:space="preserve">
     <value>Sorry something went wrong</value>
   </data>
   <data name="TextNo" xml:space="preserve">
     <value>No</value>
   </data>
+  <data name="TextSave" xml:space="preserve">
+    <value>Save</value>
+  </data>
   <data name="TextSuccess" xml:space="preserve">
     <value>Operation has been finished successfully</value>
+  </data>
+  <data name="TextUpdate" xml:space="preserve">
+    <value>Update</value>
   </data>
   <data name="TextYes" xml:space="preserve">
     <value>Yes</value>

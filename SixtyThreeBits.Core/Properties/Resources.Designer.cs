@@ -61,11 +61,29 @@ namespace SixtyThreeBits.Core.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add.
+        /// </summary>
+        public static string TextAdd {
+            get {
+                return ResourceManager.GetString("TextAdd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to (All).
         /// </summary>
         public static string TextAllDevexpressGridFilterRaw {
             get {
                 return ResourceManager.GetString("TextAllDevexpressGridFilterRaw", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cancel.
+        /// </summary>
+        public static string TextCancel {
+            get {
+                return ResourceManager.GetString("TextCancel", resourceCulture);
             }
         }
         
@@ -88,6 +106,15 @@ namespace SixtyThreeBits.Core.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Delete.
+        /// </summary>
+        public static string TextDelete {
+            get {
+                return ResourceManager.GetString("TextDelete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Sorry something went wrong.
         /// </summary>
         public static string TextError {
@@ -106,11 +133,29 @@ namespace SixtyThreeBits.Core.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Save.
+        /// </summary>
+        public static string TextSave {
+            get {
+                return ResourceManager.GetString("TextSave", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Operation has been finished successfully.
         /// </summary>
         public static string TextSuccess {
             get {
                 return ResourceManager.GetString("TextSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update.
+        /// </summary>
+        public static string TextUpdate {
+            get {
+                return ResourceManager.GetString("TextUpdate", resourceCulture);
             }
         }
         

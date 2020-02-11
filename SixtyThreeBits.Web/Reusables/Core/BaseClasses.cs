@@ -53,7 +53,7 @@ namespace SixtyThreeBits.Web.Reusables.Core
     public class DevexpressGridViewModelBase : DevexpressTypesBase
     {
         #region Methods
-        public DataGridBuilder<T> GetGridWithStartupValues<T>(IHtmlHelper Html, string KeyFieldName)
+        public DataGridBuilder<T> GetGridWithStartupValues<T>(IHtmlHelper Html, string KeyFieldName) 
         {
             return Html.DevExtreme().DataGrid<T>()
             .Width("100%")
@@ -107,15 +107,14 @@ namespace SixtyThreeBits.Web.Reusables.Core
             .Columns(Columns =>
             {
                 if (AllowAdd || AllowUpdate || AllowDelete)
-                {
-                    //var Width = (AllowDelete && !AllowAdd && !AllowUpdate) ? 40 : 80;
+                {                    
                     var Width = 30;
                     Columns.Add().Type(GridCommandColumnType.Buttons).Width(Width).Buttons(b =>
                     {
-                        b.Add().Name(GridColumnButtonName.Edit).Icon("fas fa-pencil-alt");
-                        b.Add().Name(GridColumnButtonName.Delete).Icon("fas fa-trash-alt");
-                        b.Add().Name(GridColumnButtonName.Save).Icon("fas fa-check");
-                        b.Add().Name(GridColumnButtonName.Cancel).Icon("fas fa-minus-circle");
+                        b.Add().Name(GridColumnButtonName.Edit).Icon("fas fa-pencil-alt").Text(Resources.TextUpdate);
+                        b.Add().Name(GridColumnButtonName.Delete).Icon("fas fa-trash-alt").Text(Resources.TextDelete);
+                        b.Add().Name(GridColumnButtonName.Save).Icon("fas fa-check").Text(Resources.TextSave);
+                        b.Add().Name(GridColumnButtonName.Cancel).Icon("fas fa-minus-circle").Text(Resources.TextCancel);
                     });
                 }
             });
@@ -183,11 +182,11 @@ namespace SixtyThreeBits.Web.Reusables.Core
                     var Width = (AllowDelete && !AllowAdd && !AllowUpdate) ? 30 : 60;
                     Columns.Add().Type(TreeListCommandColumnType.Buttons).Width(Width).Buttons(b =>
                     {
-                        b.Add().Name(TreeListColumnButtonName.Add).Icon("fas fa-plus");
-                        b.Add().Name(TreeListColumnButtonName.Edit).Icon("fas fa-pencil-alt");
-                        b.Add().Name(TreeListColumnButtonName.Delete).Icon("fas fa-trash-alt");
-                        b.Add().Name(TreeListColumnButtonName.Save).Icon("fas fa-check");
-                        b.Add().Name(TreeListColumnButtonName.Cancel).Icon("fas fa-minus-circle");
+                        b.Add().Name(TreeListColumnButtonName.Add).Icon("fas fa-plus").Text(Resources.TextAdd);
+                        b.Add().Name(TreeListColumnButtonName.Edit).Icon("fas fa-pencil-alt").Text(Resources.TextUpdate);
+                        b.Add().Name(TreeListColumnButtonName.Delete).Icon("fas fa-trash-alt").Text(Resources.TextDelete);
+                        b.Add().Name(TreeListColumnButtonName.Save).Icon("fas fa-check").Text(Resources.TextSave);
+                        b.Add().Name(TreeListColumnButtonName.Cancel).Icon("fas fa-minus-circle").Text(Resources.TextCancel);
                     });
                 }
             });
