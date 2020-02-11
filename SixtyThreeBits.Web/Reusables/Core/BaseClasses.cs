@@ -132,6 +132,7 @@ namespace SixtyThreeBits.Web.Reusables.Core
             .FocusedRowEnabled(true)
             .FocusedRowIndex(0)
             .AutoExpandAll(true)
+            .RootValue(null)
             .Scrolling(Options =>
             {
                 Options.Mode(TreeListScrollingMode.Standard);

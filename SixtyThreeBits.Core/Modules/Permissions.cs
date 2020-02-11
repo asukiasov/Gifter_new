@@ -20,30 +20,7 @@ namespace SixtyThreeBits.Core.Modules
         {
             await TryExecuteStaticAsyncTask($"{nameof(DeleteRecursive)}({nameof(PermissionID)} = {PermissionID})", async () =>
             {
-                var PermissionsList = await db.Permissions.ToListAsync();
-                var PermissionsToDelete = new List<Permissions>();
-
-
-                var ParentPermission = PermissionsList.FirstOrDefault(Item => Item.PermissionID == PermissionID);
-                if (ParentPermission != null)
-                {
-                    PermissionsToDelete.Add(ParentPermission);
-
-                    Action<Permissions> GetPermissionsRecursive = null;
-
-                    GetPermissionsRecursive = new Action<Permissions>((ParentPermission) =>
-                    {
-                        var Children = PermissionsList.Where(Item => Item.PermissionParentID == ParentPermission.PermissionID).ToList();
-                        foreach (var Child in Children)
-                        {
-                            PermissionsToDelete.Add(Child);
-                            GetPermissionsRecursive(Child);
-                        }
-                    });
-
-                    db.Permissions.RemoveRange(PermissionsToDelete);
-                    await db.SaveChangesAsync();
-                }
+                await db.PermissionsDeleteRecursive(PermissionID);                
             });
         }
 
@@ -74,7 +51,7 @@ namespace SixtyThreeBits.Core.Modules
         //    });
         //}
 
-        public async Task<int?> PermissionsIUD(byte? DatabaseAction = null, int? PermissionID = null, int? PermissionParentID = null, string PermissionCaption = null, string PermissionPagePath = null, string PermissionCodeName = null, string PermissionCode = null, int? PermissionSortIndex = null, bool? PermissionIsMenuItem = null, string PermissionMenuIcon = null)
+        public async Task<int?> PermissionsIUD(Enums.DatabaseActions DatabaseAction, int? PermissionID = null, int? PermissionParentID = null, string PermissionCaption = null, string PermissionPagePath = null, string PermissionCodeName = null, string PermissionCode = null, int? PermissionSortIndex = null, bool? PermissionIsMenuItem = null, string PermissionMenuIcon = null)
         {
             return await TryToReturnAsyncTask($"{nameof(PermissionsIUD)}({nameof(DatabaseAction)} = {DatabaseAction}, {nameof(PermissionID)} = {PermissionID}, {nameof(PermissionParentID)} = {PermissionParentID}, {nameof(PermissionCaption)} = {PermissionCaption}, {nameof(PermissionPagePath)} = {PermissionPagePath}, {nameof(PermissionCodeName)} = {PermissionCodeName}, {nameof(PermissionCode)} = {PermissionCode}, {nameof(PermissionSortIndex)} = {PermissionSortIndex}, {nameof(PermissionIsMenuItem)} = {PermissionIsMenuItem}, {nameof(PermissionMenuIcon)} = {PermissionMenuIcon})", async () =>
             {

@@ -51,7 +51,7 @@ namespace SixtyThreeBits.Core.Modules
             });
         }
 
-        public async Task<int?> UsersIUD(byte DatabaseAction, int? UserID = null, string UserEmail = null, string UserPassword = null, string UserFirstname = null, string UserLastname = null, int? UserRoleID = null, DateTime? UserBirthdate = null, string UserPhoneNumberMobile = null, string UserPersonalNumber = null, string UserAvatarFilename = null, bool? UserIsActive = null)
+        public async Task<int?> UsersIUD(Enums.DatabaseActions DatabaseAction, int? UserID = null, string UserEmail = null, string UserPassword = null, string UserFirstname = null, string UserLastname = null, int? UserRoleID = null, DateTime? UserBirthdate = null, string UserPhoneNumberMobile = null, string UserPersonalNumber = null, string UserAvatarFilename = null, bool? UserIsActive = null)
         {            
             return await TryToReturnAsyncTask($"{nameof(UsersIUD)}({nameof(DatabaseAction)} = {DatabaseAction}, {nameof(UserID)} = {UserID}, {nameof(UserEmail)} = {UserEmail}, {nameof(UserPassword)} = {UserPassword}, {nameof(UserFirstname)} = {UserFirstname}, {nameof(UserLastname)} = {UserLastname}, {nameof(UserRoleID)} = {UserRoleID}, {nameof(UserBirthdate)} = {UserBirthdate}, {nameof(UserPhoneNumberMobile)} = {UserPhoneNumberMobile}, {nameof(UserPersonalNumber)} = {UserPersonalNumber}, {nameof(UserAvatarFilename)} = {UserAvatarFilename}, {nameof(UserIsActive)} = {UserIsActive})", async () =>
             {

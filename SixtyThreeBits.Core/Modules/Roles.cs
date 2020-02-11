@@ -34,7 +34,7 @@ namespace SixtyThreeBits.Core.Modules
             });
         }
 
-        public async Task<int?> RolesIUD(byte? DatabaseAction = null, int? RoleID = null, string RoleName = null, int? RoleCode = null)
+        public async Task<int?> RolesIUD(Enums.DatabaseActions DatabaseAction, int? RoleID = null, string RoleName = null, int? RoleCode = null)
         {
             return await TryToReturnStaticAsyncTask($"{nameof(RolesIUD)}({nameof(DatabaseAction)} = {DatabaseAction}, {nameof(RoleID)} = {RoleID}, {nameof(RoleName)} = {RoleName}, {nameof(RoleCode)} = {RoleCode})", async () =>
             {

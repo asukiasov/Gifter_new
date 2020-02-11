@@ -56,7 +56,7 @@ namespace SixtyThreeBits.Web.Admin.Models
             }            
         }
 
-        public async Task CRUD(byte DatabaseAction, int? UserID, PageViewModel.GridModel.GridItem SubmitModel)
+        public async Task CRUD(Enums.DatabaseActions DatabaseAction, int? UserID, PageViewModel.GridModel.GridItem SubmitModel)
         {            
             if (DatabaseAction == Enums.DatabaseActions.DELETE)
             {
@@ -134,7 +134,7 @@ namespace SixtyThreeBits.Web.Admin.Models
 
                         var IsActiveColumn = Columns.AddFor(m => m.IsActive).Caption("Active").Width(80);
                         InitCheckboxColumn(IsActiveColumn);
-
+                        
                         Columns.Add();
                     });
 
@@ -194,7 +194,7 @@ namespace SixtyThreeBits.Web.Admin.Models
             return ViewModel;
         }
 
-        public async Task CRUD(byte DatabaseAction, int? RoleID, PageViewModel.GridModel.GridItem SubmitModel)
+        public async Task CRUD(Enums.DatabaseActions DatabaseAction, int? RoleID, PageViewModel.GridModel.GridItem SubmitModel)
         {           
             await DataAccessFactory.Roles.RolesIUD(
                 DatabaseAction: DatabaseAction,
@@ -298,7 +298,7 @@ namespace SixtyThreeBits.Web.Admin.Models
             return ViewModel;
         }
 
-        public async Task CRUD(byte DatabaseAction, int? PermissionID, PageViewModel.TreeModel.TreeItem SubmitModel)
+        public async Task CRUD(Enums.DatabaseActions DatabaseAction, int? PermissionID, PageViewModel.TreeModel.TreeItem SubmitModel)
         {
             await DataAccessFactory.Permissions.PermissionsIUD(
                 DatabaseAction: DatabaseAction,

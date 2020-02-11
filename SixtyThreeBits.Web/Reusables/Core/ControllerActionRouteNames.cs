@@ -63,8 +63,7 @@
                 public const string Page = "AdminDictionaries";
                 public const string DictionariesTree = "AdminDictionariesTree";
                 public const string DictionariesTreeAdd = "AdminDictionariesTreeAdd";
-                public const string DictionariesTreeUpdate = "AdminDictionariesTreeUpdate";
-                public const string DictionariesTreeUpdateParent = "AdminDictionariesTreeUpdateParent";
+                public const string DictionariesTreeUpdate = "AdminDictionariesTreeUpdate";                
                 public const string DictionariesTreeDelete = "AdminDictionariesTreeDelete";
                 #endregion
             }

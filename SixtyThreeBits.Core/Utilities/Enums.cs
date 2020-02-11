@@ -29,13 +29,13 @@ namespace SixtyThreeBits.Core.Utilities
             #endregion
         }
 
-        public class DatabaseActions
+        public enum DatabaseActions
         {
             #region Properties
-            public const int CREATE = 0;
-            public const int UPDATE = 1;
-            public const int DELETE = 2;
-            public const int ARCHIVE = 3;
+            CREATE = 0,
+            UPDATE = 1,
+            DELETE = 2,
+            ARCHIVE = 3
             #endregion
         }
 

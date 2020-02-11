@@ -1,0 +1,18 @@
+﻿@model DictionariesModel.PageViewModel
+@if (Model.ShowAddNewButton)
+{
+    <div class="actions-row">
+        <button class="btn btn-oval btn-default js-add-new-button"><i class="fas fa-plus"></i> Add</button>
+    </div>
+}
+<div class="row">
+    <div class="col">
+        @await Html.PartialAsync(ViewNames.Admin.Shared.DevexpressTree, Model.Tree)
+    </div>
+</div>
+@section FooterSection{
+<script src="~/admin/js/Dictionaries/Dictionaries.js"></script>
+<script>
+    DictionariesModel.UrlUpdate = '@Model.UrlUpdate';
+</script>
+}

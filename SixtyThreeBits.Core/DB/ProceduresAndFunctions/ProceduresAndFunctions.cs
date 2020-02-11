@@ -1,5 +1,6 @@
 ﻿ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries;
 using System;
 using System.ComponentModel.DataAnnotations;
@@ -106,7 +107,22 @@ namespace SixtyThreeBits.Core.DB
         #endregion
 
         #region Stored Procedures        
-        public async Task<int?> UsersIUD(byte iud, int? UserID, string UserEmail, string UserPassword, string UserFirstname, string UserLastname, int? UserRoleID, DateTime? UserBirthdate, string UserPhoneNumberMobile, string UserPersonalNumber, string UserAvatarFilename, bool? UserIsActive)
+        public async Task DictionariesDeleteRecursive(int? DictionaryID)
+        {
+            var PR = new PrepareQueryExecution(
+             DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.STORED_PROCEDURE,
+             DatabaseObjectName: nameof(DictionariesDeleteRecursive),
+             ResultItemType: null,
+             SqlParameters: new SqlParameter[]
+             {
+                 DictionaryID.ToSqlParameter(nameof(DictionaryID),SqlDbType.Int)
+             }
+           );
+
+            var DBResult = await Database.ExecuteSqlRawAsync(PR.SqlQuery, PR.SqlParameters);
+        }
+
+        public async Task<int?> UsersIUD(Enums.DatabaseActions iud, int? UserID, string UserEmail, string UserPassword, string UserFirstname, string UserLastname, int? UserRoleID, DateTime? UserBirthdate, string UserPhoneNumberMobile, string UserPersonalNumber, string UserAvatarFilename, bool? UserIsActive)
         {
             var PR = new PrepareQueryExecution(
              DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.STORED_PROCEDURE,
@@ -150,6 +166,21 @@ namespace SixtyThreeBits.Core.DB
            );
 
             var DBResult = await Database.ExecuteSqlRawAsync(PR.SqlQuery, PR.SqlParameters);            
+        }
+
+        public async Task PermissionsDeleteRecursive(int? PermissionID)
+        {
+            var PR = new PrepareQueryExecution(
+             DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.STORED_PROCEDURE,
+             DatabaseObjectName: nameof(PermissionsDeleteRecursive),
+             ResultItemType: null,
+             SqlParameters: new SqlParameter[]
+             {
+                 PermissionID.ToSqlParameter(nameof(PermissionID),SqlDbType.Int)
+             }
+           );
+
+            var DBResult = await Database.ExecuteSqlRawAsync(PR.SqlQuery, PR.SqlParameters);
         }
         #endregion
 
