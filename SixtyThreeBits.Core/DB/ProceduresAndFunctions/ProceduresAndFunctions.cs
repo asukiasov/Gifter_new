@@ -79,7 +79,7 @@ namespace SixtyThreeBits.Core.DB
         } 
 
 
-        public class PermissionsListPermissionsWithRoleMarkDBItem
+        public class PermissionsListPermissionsWithRoleMarkResultItem
         {
             #region Properties
             public int? PermissionID { get; set; }
@@ -89,13 +89,13 @@ namespace SixtyThreeBits.Core.DB
             public bool PermissionIsSelected { get; set; } 
             #endregion
         }
-        internal virtual DbSet<PermissionsListPermissionsWithRoleMarkDBItem> PermissionsListPermissionsWithRoleMarkResult { get; set; }
-        public IQueryable<PermissionsListPermissionsWithRoleMarkDBItem> PermissionsListPermissionsWithRoleMark(int? RoleID)
+        internal virtual DbSet<PermissionsListPermissionsWithRoleMarkResultItem> PermissionsListPermissionsWithRoleMarkResult { get; set; }
+        public IQueryable<PermissionsListPermissionsWithRoleMarkResultItem> PermissionsListPermissionsWithRoleMark(int? RoleID)
         {
             var PR = new PrepareQueryExecution(
               DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
               DatabaseObjectName: nameof(PermissionsListPermissionsWithRoleMark),
-              ResultItemType: typeof(PermissionsListPermissionsWithRoleMarkDBItem),
+              ResultItemType: typeof(PermissionsListPermissionsWithRoleMarkResultItem),
               SqlParameters: new SqlParameter[]
               {
                   RoleID.ToSqlParameter(nameof(RoleID), SqlDbType.Int)
@@ -188,7 +188,7 @@ namespace SixtyThreeBits.Core.DB
         {
             ModelBuilder.Entity<ScalarFunctionResult<string>>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<ScalarFunctionResult<bool>>(Entity => { Entity.HasNoKey(); });
-            ModelBuilder.Entity<PermissionsListPermissionsWithRoleMarkDBItem>(Entity => { Entity.HasNoKey(); });       
+            ModelBuilder.Entity<PermissionsListPermissionsWithRoleMarkResultItem>(Entity => { Entity.HasNoKey(); });       
         }
 
         #region Query Preparation
