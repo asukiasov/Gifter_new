@@ -32,29 +32,26 @@ namespace SixtyThreeBits.Web.Reusables.Core
         #endregion
     }
 
-    public class DevexpressTypesBase
+    public class DevexpressGridViewModelBase
     {
         #region Properties        
-        public bool AllowAdd { get; set; }
+        public bool ShowAddNewButton { get; set; }
         public bool AllowUpdate { get; set; }
         public bool AllowDelete { get; set; }
 
+        public string UrlLoad { get; set; } 
         public string UrlAddNew { get; set; }
         public string UrlUpdate { get; set; }
-        public string UrlNodeDragDrop { get; set; }
         public string UrlDelete { get; set; }
-        public string UrlList { get; set; }
-        public string UrlCustomAction { get; set; }
+
+        public string BeforeSendJSFunction { get; set; }
 
         public bool IsError => !string.IsNullOrWhiteSpace(ErrorMessage);
         public string ErrorMessage { get; set; }
         #endregion        
-    }
 
-    public class DevexpressGridViewModelBase : DevexpressTypesBase
-    {
         #region Methods
-        public DataGridBuilder<T> GetGridWithStartupValues<T>(IHtmlHelper Html, string KeyFieldName) 
+        public DataGridBuilder<T> GetGridWithStartupValues<T>(IHtmlHelper Html, string KeyFieldName)
         {
             return Html.DevExtreme().DataGrid<T>()
             .Width("100%")
@@ -73,23 +70,31 @@ namespace SixtyThreeBits.Web.Reusables.Core
                 Options.ApplyFilter(GridApplyFilterMode.Auto);
                 Options.ShowAllText(Resources.TextAllDevexpressGridFilterRaw);
             })
-            .DataSource(Options =>
-                Options.RemoteController()
-                .LoadUrl(UrlList)
-                .InsertUrl(UrlAddNew)
-                .UpdateUrl(UrlUpdate)
-                .DeleteUrl(UrlDelete)
-                .Key(KeyFieldName)
-            )
+            .DataSource(Options => {
+                var OptionsResult = Options.RemoteController();
+                OptionsResult.Key(KeyFieldName);
+                OptionsResult.LoadUrl(UrlLoad);
+                OptionsResult.InsertUrl(UrlAddNew);
+                OptionsResult.UpdateUrl(UrlUpdate);
+                OptionsResult.DeleteUrl(UrlDelete);
+
+                if (!string.IsNullOrWhiteSpace(BeforeSendJSFunction))
+                {
+                    OptionsResult.OnBeforeSend(BeforeSendJSFunction);
+                }
+
+                return OptionsResult;
+            })
             .Editing(Options =>
             {
                 Options.Mode(GridEditMode.Cell);
-                Options.AllowAdding(AllowAdd);
+                Options.AllowAdding(ShowAddNewButton);
                 Options.AllowUpdating(AllowUpdate);
                 Options.AllowDeleting(AllowDelete);
                 Options.Texts(OptionsTexts =>
                 {
                     OptionsTexts.ConfirmDeleteMessage(Resources.TextConfirmDelete);
+
                 });
 
             })
@@ -104,13 +109,13 @@ namespace SixtyThreeBits.Web.Reusables.Core
             {
                 Options.Enabled(true);
                 Options.PageSize(30);
-            })            
+            })
             .Columns(Columns =>
             {
-                if (AllowAdd || AllowUpdate || AllowDelete)
-                {                    
+                if (ShowAddNewButton || AllowUpdate || AllowDelete)
+                {
                     var Width = 30;
-                    Columns.Add().Type(GridCommandColumnType.Buttons).Width(Width).Buttons(b =>
+                    Columns.Add().Type(GridCommandColumnType.Buttons).Alignment(HorizontalAlignment.Center).Width(Width).Buttons(b =>
                     {
                         b.Add().Name(GridColumnButtonName.Edit).Icon("fas fa-pencil-alt").Text(Resources.TextUpdate);
                         b.Add().Name(GridColumnButtonName.Delete).Icon("fas fa-trash-alt").Text(Resources.TextDelete);
@@ -143,10 +148,10 @@ namespace SixtyThreeBits.Web.Reusables.Core
                 Options.Visible(true);
                 Options.ApplyFilter(GridApplyFilterMode.Auto);
                 Options.ShowAllText(Resources.TextAllDevexpressGridFilterRaw);
-            })            
+            })
             .DataSource(Options =>
                 Options.RemoteController()
-                .LoadUrl(UrlList)
+                .LoadUrl(UrlLoad)
                 .InsertUrl(UrlAddNew)
                 .UpdateUrl(UrlUpdate)
                 .DeleteUrl(UrlDelete)
@@ -155,9 +160,9 @@ namespace SixtyThreeBits.Web.Reusables.Core
             .Editing(Options =>
             {
                 Options.Mode(GridEditMode.Cell);
-                Options.AllowAdding(AllowAdd);
+                Options.AllowAdding(ShowAddNewButton);
                 Options.AllowUpdating(AllowUpdate);
-                Options.AllowDeleting(AllowDelete);                
+                Options.AllowDeleting(AllowDelete);
                 Options.Texts(OptionsTexts =>
                 {
                     OptionsTexts.ConfirmDeleteMessage(Resources.TextConfirmDelete);
@@ -175,13 +180,13 @@ namespace SixtyThreeBits.Web.Reusables.Core
             {
                 Options.Enabled(true);
                 Options.PageSize(30);
-            })            
+            })
             .Columns(Columns =>
             {
-                if (AllowAdd || AllowUpdate || AllowDelete)
+                if (ShowAddNewButton || AllowUpdate || AllowDelete)
                 {
-                    var Width = (AllowDelete && !AllowAdd && !AllowUpdate) ? 30 : 60;
-                    Columns.Add().Type(TreeListCommandColumnType.Buttons).Width(Width).Buttons(b =>
+                    var Width = (AllowDelete && !ShowAddNewButton && !AllowUpdate) ? 30 : 60;
+                    Columns.Add().Alignment(HorizontalAlignment.Center).Type(TreeListCommandColumnType.Buttons).Width(Width).Buttons(b =>
                     {
                         b.Add().Name(TreeListColumnButtonName.Add).Icon("fas fa-plus").Text(Resources.TextAdd);
                         b.Add().Name(TreeListColumnButtonName.Edit).Icon("fas fa-pencil-alt").Text(Resources.TextUpdate);
@@ -229,10 +234,22 @@ namespace SixtyThreeBits.Web.Reusables.Core
         }
 
         public void InitCheckboxColumn<T>(DataGridColumnBuilder<T> Column)
-        {            
+        {
             Column.TrueText(Resources.TextYes);
             Column.FalseText(Resources.TextNo);
-        }        
+        }
+
+        public void InitDateColumn<T>(DataGridColumnBuilder<T> Column, bool FormatDateTime = false)
+        {
+            if (FormatDateTime)
+            {
+                Column.Format(Constants.Formats.DateTime);
+            }
+            else
+            {
+                Column.Format(Constants.Formats.Date);
+            }
+        }
         #endregion
     }
 

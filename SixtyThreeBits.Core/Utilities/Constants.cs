@@ -18,6 +18,7 @@ namespace SixtyThreeBits.Core.Utilities
         {
             #region Properties
             public const string IsAdminSideBarCollapsed = "IsAdminSideBarCollapsed";
+            public const string User = "User";            
             #endregion
         }
 

@@ -51,6 +51,16 @@ namespace SixtyThreeBits.Web.Admin.Filters
             var IsAuthorized = false;
             Model.User = Model.SessionAssistance.Get<User>(Constants.Session.User);
 
+            if (Model.User == null)
+            {
+                var UserID = Model.CookieAssistance.Get<int?>(Constants.Cookies.User);
+                if (UserID != null)
+                {
+                    Model.User = Model.DataAccessFactory.Users.GetSingleUserByID(UserID).Result;
+                    Model.SessionAssistance.Set(Constants.Session.User, Model.User);
+                }
+            }
+
             if (Model.User != null)
             {
                 ViewModel.UserFullname = Model.User.UserFullname;

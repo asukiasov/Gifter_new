@@ -23,7 +23,7 @@ namespace SixtyThreeBits.Web.Admin.Models
             ViewModel.ShowAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.UserManagement.UsersGridAdd);
             ViewModel.Grid = new PageViewModel.GridModel();
             ViewModel.Grid.Roles = (await DataAccessFactory.Roles.ListRoles())?.Select(Item => new SimpleKeyValue<int?, string> { Key = Item.RoleID, Value = Item.RoleName }).ToList();
-            ViewModel.Grid.UrlList = Url.RouteUrl(ControllerActionRouteNames.Admin.UserManagement.UsersGrid);
+            ViewModel.Grid.UrlLoad = Url.RouteUrl(ControllerActionRouteNames.Admin.UserManagement.UsersGrid);
             ViewModel.Grid.UrlAddNew = Url.RouteUrl(ControllerActionRouteNames.Admin.UserManagement.UsersGridAdd);
             ViewModel.Grid.UrlUpdate = Url.RouteUrl(ControllerActionRouteNames.Admin.UserManagement.UsersGridUpdate);
             ViewModel.Grid.UrlDelete = Url.RouteUrl(ControllerActionRouteNames.Admin.UserManagement.UsersGridDelete);
@@ -172,10 +172,10 @@ namespace SixtyThreeBits.Web.Admin.Models
             ViewModel.ShowAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.UserManagement.RolesGridAdd);
 
             ViewModel.Grid = new PageViewModel.GridModel();            
-            ViewModel.Grid.AllowAdd = User.HasPermission(ControllerActionRouteNames.Admin.UserManagement.RolesGridAdd);
+            ViewModel.Grid.ShowAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.UserManagement.RolesGridAdd);
             ViewModel.Grid.AllowUpdate = User.HasPermission(ControllerActionRouteNames.Admin.UserManagement.RolesGridUpdate);
             ViewModel.Grid.AllowDelete = User.HasPermission(ControllerActionRouteNames.Admin.UserManagement.RolesGridDelete);
-            ViewModel.Grid.UrlList = Url.RouteUrl(ControllerActionRouteNames.Admin.UserManagement.RolesGrid);
+            ViewModel.Grid.UrlLoad = Url.RouteUrl(ControllerActionRouteNames.Admin.UserManagement.RolesGrid);
             ViewModel.Grid.UrlAddNew = Url.RouteUrl(ControllerActionRouteNames.Admin.UserManagement.RolesGridAdd);
             ViewModel.Grid.UrlUpdate = Url.RouteUrl(ControllerActionRouteNames.Admin.UserManagement.RolesGridUpdate);
             ViewModel.Grid.UrlDelete = Url.RouteUrl(ControllerActionRouteNames.Admin.UserManagement.RolesGridDelete);
@@ -270,10 +270,10 @@ namespace SixtyThreeBits.Web.Admin.Models
             ViewModel.ShowAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.UserManagement.PermissionsTreeAdd);
 
             ViewModel.Tree = new PageViewModel.TreeModel();
-            ViewModel.Tree.AllowAdd = User.HasPermission(ControllerActionRouteNames.Admin.UserManagement.PermissionsTreeAdd);
+            ViewModel.Tree.ShowAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.UserManagement.PermissionsTreeAdd);
             ViewModel.Tree.AllowUpdate = User.HasPermission(ControllerActionRouteNames.Admin.UserManagement.PermissionsTreeUpdate);
             ViewModel.Tree.AllowDelete = User.HasPermission(ControllerActionRouteNames.Admin.UserManagement.PermissionsTreeDelete);
-            ViewModel.Tree.UrlList = Url.RouteUrl(ControllerActionRouteNames.Admin.UserManagement.PermissionsTree);
+            ViewModel.Tree.UrlLoad = Url.RouteUrl(ControllerActionRouteNames.Admin.UserManagement.PermissionsTree);
             ViewModel.Tree.UrlAddNew = Url.RouteUrl(ControllerActionRouteNames.Admin.UserManagement.PermissionsTreeAdd);
             ViewModel.Tree.UrlUpdate = ViewModel.UrlUpdate = Url.RouteUrl(ControllerActionRouteNames.Admin.UserManagement.PermissionsTreeUpdate);
             ViewModel.Tree.UrlDelete = Url.RouteUrl(ControllerActionRouteNames.Admin.UserManagement.PermissionsTreeDelete);
@@ -422,9 +422,9 @@ namespace SixtyThreeBits.Web.Admin.Models
             ViewModel.UrlSave = Url.RouteUrl(ControllerActionRouteNames.Admin.UserManagement.RolePermissionsSave);
 
             ViewModel.RolesGrid = new PageViewModel.RolesGridModel();
-            ViewModel.RolesGrid.UrlList = Url.RouteUrl(ControllerActionRouteNames.Admin.UserManagement.RolePermissionsRolesGrid);
+            ViewModel.RolesGrid.UrlLoad = Url.RouteUrl(ControllerActionRouteNames.Admin.UserManagement.RolePermissionsRolesGrid);
             ViewModel.PermissionsTree = new PageViewModel.PermissionsTreeModel();
-            ViewModel.PermissionsTree.UrlList = Url.RouteUrl(ControllerActionRouteNames.Admin.UserManagement.RolePermissionsPermissionsTree);
+            ViewModel.PermissionsTree.UrlLoad = Url.RouteUrl(ControllerActionRouteNames.Admin.UserManagement.RolePermissionsPermissionsTree);
               
 
             return ViewModel;

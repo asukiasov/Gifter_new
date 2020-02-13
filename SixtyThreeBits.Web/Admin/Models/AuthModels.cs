@@ -2,6 +2,7 @@
 using SixtyThreeBits.Core.Properties;
 using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Web.Reusables.Core;
+using System;
 using System.Threading.Tasks;
 
 namespace SixtyThreeBits.Web.Admin.Models
@@ -11,15 +12,7 @@ namespace SixtyThreeBits.Web.Admin.Models
         #region Methods
         public LoginPageViewModel GetPageViewModel()
         {
-            var Model = new LoginPageViewModel();
-            //Model.IsLoginFailed = true;
-            //var SessionData = SessionAssistance.Get<string>("SomeData");
-            //if(SessionData == null)
-            //{
-            //    SessionData = System.Guid.NewGuid().ToString();
-            //    SessionAssistance.Set<string>("SomeData", SessionData);
-            //}
-            //Model.ErrorMessage = SessionData; 
+            var Model = new LoginPageViewModel();        
             return Model;
         }
 
@@ -42,6 +35,7 @@ namespace SixtyThreeBits.Web.Admin.Models
             {
                 IsAuthenticated = true;
                 SessionAssistance.Set(Constants.Session.User, User);
+                CookieAssistance.Set(Constants.Cookies.User, User.UserID, DateTime.Now.AddHours(12));
             }
 
             return IsAuthenticated;
