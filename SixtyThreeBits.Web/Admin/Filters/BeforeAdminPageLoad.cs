@@ -34,7 +34,9 @@ namespace SixtyThreeBits.Web.Admin.Filters
                 InitPageTitle();
 
                 Model.InitSuccessErrorPartialViewModel();
+
                 ViewModel.SuccessErrorPartialViewModel = Model.SuccessErrorPartialViewModel;
+                ViewModel.PageTitle = Model.PageTitle;
                 LocalUtilities.SetLayoutViewModel(ViewData: C.ViewData, ViewModel: ViewModel, Key: Constants.ViewData.LayoutViewModel);
             }
             else
@@ -123,7 +125,7 @@ namespace SixtyThreeBits.Web.Admin.Filters
             var P = Model.User.GetPermission(Model.UrlCurrentPage);
             if (P != null)
             {
-                ViewModel.PageTitle = P.PermissionCaption;
+                Model.SetPageTitle(P.PermissionCaption);
             }
         }
     }

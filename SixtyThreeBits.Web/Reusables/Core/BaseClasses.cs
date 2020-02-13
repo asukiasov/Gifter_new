@@ -13,6 +13,7 @@ using SixtyThreeBits.Libraries;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace SixtyThreeBits.Web.Reusables.Core
@@ -237,8 +238,7 @@ namespace SixtyThreeBits.Web.Reusables.Core
 
     public class LayoutViewModelBase
     {
-        #region Properties
-        public string PageTitle { get; set; }
+        #region Properties        
         public SuccessErrorPartialViewModel SuccessErrorPartialViewModel { get; set; } = new SuccessErrorPartialViewModel();
         public bool IsSuccessErrorPartialViewModelinitialized => SuccessErrorPartialViewModel?.IsInitialized == true;
         public List<ProjectMenuItem> Menu { get; set; }
@@ -246,6 +246,7 @@ namespace SixtyThreeBits.Web.Reusables.Core
         public Breadcrumbs Breadcrumbs { get; set; }
         public bool HasBreadcrumbs => Breadcrumbs != null;
         public string UrlLogout { get; set; }
+        public StringBuilder PageTitle { get; set; }
         public PluginClient PluginClient { get; set; }
         #endregion
     }
@@ -408,6 +409,7 @@ namespace SixtyThreeBits.Web.Reusables.Core
         public ICookieAssistance CookieAssistance { get; set; }
         public IUrlHelper Url { get; set; }
         public ViewDataDictionary ViewData { get; set; }
+        public StringBuilder PageTitle { get; } = new StringBuilder();
         public PluginClient PluginClient { get; set; }
         public SuccessErrorPartialViewModel SuccessErrorPartialViewModel { get; set; } = new SuccessErrorPartialViewModel();
         public string Language { get; set; }
@@ -502,6 +504,11 @@ namespace SixtyThreeBits.Web.Reusables.Core
             {
                 await PostedFile.CopyToAsync(Stream);
             }
+        }
+
+        public void SetPageTitle(string PageTitle)
+        {
+            this.PageTitle.Clear().Append(PageTitle);
         }
 
         #region SuccessError
