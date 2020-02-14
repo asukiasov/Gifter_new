@@ -11,5 +11,17 @@ namespace SixtyThreeBits.Web.Admin.Controllers
         {
             return new ContentResult { Content = ErrorMessage, StatusCode = 500 };
         }
+
+        [NonAction]
+        public JsonResult GetDevexpressSuccessResult()
+        {
+            return Json("OK");
+        }
+
+        [NonAction]
+        public ActionResult NotFoundAdmin()
+        {
+            return View(ViewNames.Admin.Shared.NotFound);
+        }
     }
 }

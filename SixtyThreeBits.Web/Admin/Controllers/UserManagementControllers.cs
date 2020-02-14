@@ -47,7 +47,7 @@ namespace SixtyThreeBits.Web.Admin.Controllers
             else
             {
                 await Model.CRUD(DatabaseAction: Enums.DatabaseActions.CREATE, UserID: key, SubmitModel: SubmitModel);
-                return Ok();
+                return GetDevexpressSuccessResult();
             }
         }
 
@@ -90,7 +90,7 @@ namespace SixtyThreeBits.Web.Admin.Controllers
             }
             else
             {
-                return Ok();
+                return GetDevexpressSuccessResult();
             }
         } 
         #endregion
@@ -135,7 +135,7 @@ namespace SixtyThreeBits.Web.Admin.Controllers
             }
             else
             {
-                return Ok();
+                return GetDevexpressSuccessResult();
             }
         }
 
@@ -151,7 +151,7 @@ namespace SixtyThreeBits.Web.Admin.Controllers
             }
             else
             {
-                return Ok();
+                return GetDevexpressSuccessResult();
             }
         }
 
@@ -166,7 +166,7 @@ namespace SixtyThreeBits.Web.Admin.Controllers
             }
             else
             {
-                return Ok();
+                return GetDevexpressSuccessResult();
             }
         } 
         #endregion
@@ -211,7 +211,7 @@ namespace SixtyThreeBits.Web.Admin.Controllers
             }
             else
             {
-                return Ok();
+                return GetDevexpressSuccessResult();
             }
         }
 
@@ -227,7 +227,7 @@ namespace SixtyThreeBits.Web.Admin.Controllers
             }
             else
             {
-                return Ok();
+                return GetDevexpressSuccessResult();
             }
         }
 
@@ -242,7 +242,7 @@ namespace SixtyThreeBits.Web.Admin.Controllers
             }
             else
             {
-                return Ok();
+                return GetDevexpressSuccessResult();
             }
         } 
         #endregion

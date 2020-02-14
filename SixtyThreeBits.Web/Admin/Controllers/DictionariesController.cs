@@ -46,7 +46,7 @@ namespace SixtyThreeBits.Web.Admin.Controllers
             }
             else
             {
-                return Ok();
+                return GetDevexpressSuccessResult();
             }
         }
 
@@ -62,7 +62,7 @@ namespace SixtyThreeBits.Web.Admin.Controllers
             }
             else
             {
-                return Ok();
+                return GetDevexpressSuccessResult();
             }
         }
 
@@ -77,7 +77,7 @@ namespace SixtyThreeBits.Web.Admin.Controllers
             }
             else
             {
-                return Ok();
+                return GetDevexpressSuccessResult();
             }
         }
         #endregion
