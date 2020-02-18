@@ -32,11 +32,9 @@ namespace SixtyThreeBits.Web.Admin.Filters
                 InitMenu();
                 InitBreadCrumbs();
                 InitPageTitle();
+                InitSuccessErrorMessage();
 
-                Model.InitSuccessErrorPartialViewModel();
-
-                ViewModel.SuccessErrorPartialViewModel = Model.SuccessErrorPartialViewModel;
-                ViewModel.PageTitle = Model.PageTitle;
+                
                 LocalUtilities.SetLayoutViewModel(ViewData: C.ViewData, ViewModel: ViewModel, Key: Constants.ViewData.LayoutViewModel);
             }
             else
@@ -57,7 +55,10 @@ namespace SixtyThreeBits.Web.Admin.Filters
                 if (UserID != null)
                 {
                     Model.User = Model.DataAccessFactory.Users.GetSingleUserByID(UserID).Result;
-                    Model.SessionAssistance.Set(Constants.Session.User, Model.User);
+                    if (Model.User != null)
+                    {
+                        Model.SessionAssistance.Set(Constants.Session.User, Model.User);
+                    }
                 }
             }
 
@@ -127,7 +128,8 @@ namespace SixtyThreeBits.Web.Admin.Filters
 
         void InitBreadCrumbs()
         {
-            ViewModel.Breadcrumbs = Breadcrumbs.GetBreadcrumbsByPageUrl(Model.User.Permissions, Model.UrlCurrentPage);            
+            Model.Breadcrumbs = Breadcrumbs.GetBreadcrumbsByPageUrl(Model.User.Permissions, Model.UrlCurrentPage);
+            ViewModel.Breadcrumbs = Model.Breadcrumbs;
         }
 
         void InitPageTitle()
@@ -137,6 +139,14 @@ namespace SixtyThreeBits.Web.Admin.Filters
             {
                 Model.SetPageTitle(P.PermissionCaption);
             }
+
+            ViewModel.PageTitle = Model.PageTitle;
+        }
+
+        void InitSuccessErrorMessage()
+        {
+            Model.InitSuccessErrorPartialViewModel();
+            ViewModel.SuccessErrorPartialViewModel = Model.SuccessErrorPartialViewModel;
         }
     }
 }

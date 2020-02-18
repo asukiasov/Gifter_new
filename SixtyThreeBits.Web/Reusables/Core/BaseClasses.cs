@@ -427,6 +427,7 @@ namespace SixtyThreeBits.Web.Reusables.Core
         public IUrlHelper Url { get; set; }
         public ViewDataDictionary ViewData { get; set; }
         public StringBuilder PageTitle { get; } = new StringBuilder();
+        public Breadcrumbs Breadcrumbs { get; set; }
         public PluginClient PluginClient { get; set; }
         public SuccessErrorPartialViewModel SuccessErrorPartialViewModel { get; set; } = new SuccessErrorPartialViewModel();
         public string Language { get; set; }
@@ -526,6 +527,10 @@ namespace SixtyThreeBits.Web.Reusables.Core
         public void SetPageTitle(string PageTitle)
         {
             this.PageTitle.Clear().Append(PageTitle);
+            if (Breadcrumbs != null && Breadcrumbs.HasItems)
+            {
+                Breadcrumbs.Items[Breadcrumbs.ItemsCount - 1].Caption = PageTitle;
+            }
         }
 
         #region SuccessError

@@ -933,13 +933,13 @@ var PageBuilderModel = {
             title: {
                 partial:
                     `<div class="section-row title-container js-section--container{{#unless components.title.isActive}} component-disabled{{/unless}}" data-container="title">
-                        <div class="title js-title js-tinymce">{{components.title.html}}</div>
+                        <div class="title js-title js-tinymce"><h2>{{components.title.html}}</h2></div>
                         {{titleControlsHepler components.title}}
                     </div>`,
 
                 template:
                     `<div class="section-row title-container js-section--container{{#unless title.isActive}} component-disabled{{/unless}}" data-container="title">
-                        <div class="title js-title js-tinymce">{{title.html}}</div>
+                        <div class="title js-title js-tinymce"><h2>{{title.html}}</h2></div>
                         {{titleControlsHepler title}}
                     </div>`,
 
@@ -1834,10 +1834,12 @@ var PageBuilderModel = {
                         actionButtons: PageBuilderModel.editors.actionButtons.settings
                     };
 
+                    var urlDownload, filename;
+
                     for (var i = 0; i < files.length; i++) {
 
-                        var urlDownload = escape(files[i].urlDownload);
-                        var filename = files[i].name.split('.').slice(0, -1).join('.');
+                        urlDownload = escape(files[i].urlDownload);
+                        filename = files[i].name.split('.').slice(0, -1).join('.');
 
                         model.components.attachements[i] = {
                             url: urlDownload,
