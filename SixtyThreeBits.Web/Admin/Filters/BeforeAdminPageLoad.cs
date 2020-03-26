@@ -21,7 +21,7 @@ namespace SixtyThreeBits.Web.Admin.Filters
         public override void OnActionExecuting(ActionExecutingContext FilterContext)
         {
             ViewModel = new AdminLayoutViewModel();
-            Model = LocalUtilities.GetWebProjectModelBaseFromController(FilterContext.Controller);
+            Model = WebsiteUtilities.GetWebProjectModelBaseFromController(FilterContext.Controller);
             var C = FilterContext.Controller as Controller;
 
             var IsAuthorized = AdminAuthorize();            
@@ -33,9 +33,9 @@ namespace SixtyThreeBits.Web.Admin.Filters
                 InitBreadCrumbs();
                 InitPageTitle();
                 InitSuccessErrorMessage();
+                InitSidebar();
 
-                
-                LocalUtilities.SetLayoutViewModel(ViewData: C.ViewData, ViewModel: ViewModel, Key: Constants.ViewData.LayoutViewModel);
+                WebsiteUtilities.SetLayoutViewModel(ViewData: C.ViewData, ViewModel: ViewModel, Key: Constants.ViewData.LayoutViewModel);
             }
             else
             {
@@ -44,19 +44,19 @@ namespace SixtyThreeBits.Web.Admin.Filters
             }
         }
 
-        bool AdminAuthorize()
+        bool AdminAuthorize() 
         {
             var IsAuthorized = false;
             Model.User = Model.SessionAssistance.Get<User>(Constants.Session.User);
 
-            if (Model.User == null)
+            if (Model.AppSettings.IsDevelopment)
             {
-                var UserID = Model.CookieAssistance.Get<int?>(Constants.Cookies.User);
-                if (UserID != null)
+                if (Model.User == null)
                 {
-                    Model.User = Model.DataAccessFactory.Users.GetSingleUserByID(UserID).Result;
-                    if (Model.User != null)
+                    var UserID = Model.CookieAssistance.Get<int?>(Constants.Cookies.User);
+                    if (UserID != null)
                     {
+                        Model.User = Model.DataAccessFactory.Users.GetSingleUserByID(UserID).Result;
                         Model.SessionAssistance.Set(Constants.Session.User, Model.User);
                     }
                 }
@@ -73,8 +73,7 @@ namespace SixtyThreeBits.Web.Admin.Filters
 
         void InitStartUp()
         {
-            Model.Language = Constants.Languages.ENGLISH;
-            ViewModel.IsSidebarCollapsed = Model.CookieAssistance.Get<bool>(Key: Constants.Cookies.IsAdminSideBarCollapsed);
+            Model.Language = Constants.Languages.ENGLISH;            
         }
 
         void InitClientPlugins()
@@ -141,6 +140,15 @@ namespace SixtyThreeBits.Web.Admin.Filters
             }
 
             ViewModel.PageTitle = Model.PageTitle;
+        }
+
+        void InitSidebar()
+        {
+            Model.IsSidebarCollapsed = new ValueReference<bool>
+            {
+                Value = Model.CookieAssistance.Get<bool>(Key: Constants.Cookies.IsAdminSideBarCollapsed)
+            };
+            ViewModel.IsSidebarCollapsed = Model.IsSidebarCollapsed;
         }
 
         void InitSuccessErrorMessage()

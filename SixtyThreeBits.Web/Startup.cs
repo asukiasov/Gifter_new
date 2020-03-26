@@ -1,14 +1,12 @@
-using SixtyThreeBits.Core.Utilities;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using SixtyThreeBits.Core.DB;
-using System;
+using SixtyThreeBits.Core.Modules;
+using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Web.Reusables;
 
 namespace SixtyThreeBits.Web
@@ -60,8 +58,14 @@ namespace SixtyThreeBits.Web
                 Options.RespectBrowserAcceptHeader = true;                
             }).AddJsonOptions(Options => { 
                 Options.JsonSerializerOptions.PropertyNamingPolicy = null;  
-            } ); 
-            Services.AddDbContext<DBCoreDataContext>(Options => Options.UseSqlServer(AppSettings.DBConnectionStrings.DBConnectionString));
+            } );
+
+            Services.AddSingleton(new DataAccessFactory(AppSettings.DBConnectionStrings.DBConnectionString));
+            //Honestly, I'm very pissed of on EFCore team!!! because of "A second operation started on this context before a previous operation completed. Any instance members are not guaranteed to be thread safe."
+            //The whole idea of .NET Core + DI is create once use anywhere. I'm not able to use same DBDataContext to perform multiple db queries, so what is the point of DI then?            
+            //Services.AddDbContext<DBCoreDataContext>(Options => Options.UseSqlServer(AppSettings.DBConnectionStrings.DBConnectionString));
+
+
             Services.Configure<RouteOptions>(routeOptions => {
                 routeOptions.AppendTrailingSlash = true;
             });

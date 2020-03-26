@@ -9,15 +9,15 @@
 <div class="row">
     <div class="col-xl-4">
         <div class="card mb-0">
-            <div class="panel-body">
-                @await Html.PartialAsync(ViewNames.Admin.Shared.DevexpressGrid, Model.RolesGrid)
+            <div class="panel-body">                
+                @Model.RolesGrid.Render(Html)
             </div>
         </div>
     </div>
     <div class="col-xl-8">
         <div class="card mb-0">
-            <div class="panel-body">
-                @await Html.PartialAsync(ViewNames.Admin.Shared.DevexpressTree, Model.PermissionsTree)
+            <div class="panel-body">                
+                @Model.PermissionsTree.Render(Html)
             </div>
         </div>
     </div>

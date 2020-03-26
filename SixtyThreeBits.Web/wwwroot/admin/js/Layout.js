@@ -25,7 +25,7 @@
             }
         }
 
-        Utility.SetCookie(LayoutModel.SidebarStatusCookieKey, IsSidebarCollapsed);
+        Utilities.SetCookie(LayoutModel.SidebarStatusCookieKey, IsSidebarCollapsed);
     });
 
     $(document).on('mouseenter', '.aside-collapsed ul.sidebar-nav > [data-menu-top-item]', function () {

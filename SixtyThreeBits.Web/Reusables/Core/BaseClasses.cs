@@ -10,41 +10,45 @@ using SixtyThreeBits.Core.Modules;
 using SixtyThreeBits.Core.Properties;
 using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries;
+using SixtyThreeBits.Web.Reusables;
+using SixtyThreeBits.Web.Reusables.Core;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace SixtyThreeBits.Web.Reusables.Core
 {
-    public interface IDevexpressGridModel<T> where T : class
+    public interface IDevExtremeGridModel<T> where T : class
     {
         #region Properties
-        DataGridBuilder<T> InitGrid(IHtmlHelper Html); 
+        DataGridBuilder<T> Render(IHtmlHelper Html); 
+        #endregion
+    }    
+
+    public interface IDevExtremeTreeModel<T> where T : class
+    {
+        #region Properties
+        TreeListBuilder<T> Render(IHtmlHelper Html);
         #endregion
     }
 
-    public interface IDevexpressTreeModel<T> where T : class
-    {
-        #region Properties
-        TreeListBuilder<T> InitTree(IHtmlHelper Html);
-        #endregion
-    }
-
-    public class DevexpressGridViewModelBase
+    public class DevExtremeGridViewModelBase
     {
         #region Properties        
-        public bool ShowAddNewButton { get; set; }
+        public bool AllowAdd { get; set; }
         public bool AllowUpdate { get; set; }
         public bool AllowDelete { get; set; }
 
-        public string UrlLoad { get; set; } 
+        public string UrlLoad { get; set; }
+        public object LoadParams { get; set; }
         public string UrlAddNew { get; set; }
-        public string UrlUpdate { get; set; }
-        public string UrlDelete { get; set; }
+        public string UrlUpdate { get; set; }        
+        public string UrlDelete { get; set; }        
 
-        public string BeforeSendJSFunction { get; set; }
+        public string BeforeSendJSFunction { get; set; }        
 
         public bool IsError => !string.IsNullOrWhiteSpace(ErrorMessage);
         public string ErrorMessage { get; set; }
@@ -64,6 +68,7 @@ namespace SixtyThreeBits.Web.Reusables.Core
                 Options.Mode(GridScrollingMode.Standard);
                 Options.ShowScrollbar(ShowScrollbarMode.Always);
             })
+            .OnToolbarPreparing("function(e){ e.toolbarOptions.visible = false;  }")
             .FilterRow(Options =>
             {
                 Options.Visible(true);
@@ -73,7 +78,7 @@ namespace SixtyThreeBits.Web.Reusables.Core
             .DataSource(Options => {
                 var OptionsResult = Options.RemoteController();
                 OptionsResult.Key(KeyFieldName);
-                OptionsResult.LoadUrl(UrlLoad);
+                OptionsResult.LoadUrl(UrlLoad);                
                 OptionsResult.InsertUrl(UrlAddNew);
                 OptionsResult.UpdateUrl(UrlUpdate);
                 OptionsResult.DeleteUrl(UrlDelete);
@@ -82,22 +87,26 @@ namespace SixtyThreeBits.Web.Reusables.Core
                 {
                     OptionsResult.OnBeforeSend(BeforeSendJSFunction);
                 }
+                if (LoadParams != null)
+                {
+                    OptionsResult.LoadParams(LoadParams);                    
+                }
 
-                return OptionsResult;
+                return OptionsResult;    
             })
             .Editing(Options =>
             {
                 Options.Mode(GridEditMode.Cell);
-                Options.AllowAdding(ShowAddNewButton);
+                Options.AllowAdding(AllowAdd);
                 Options.AllowUpdating(AllowUpdate);
                 Options.AllowDeleting(AllowDelete);
                 Options.Texts(OptionsTexts =>
                 {
                     OptionsTexts.ConfirmDeleteMessage(Resources.TextConfirmDelete);
-
+                    
                 });
 
-            })
+            })            
             .Pager(Options =>
             {
                 Options.AllowedPageSizes(new[] { 30, 50, 100 });
@@ -109,14 +118,14 @@ namespace SixtyThreeBits.Web.Reusables.Core
             {
                 Options.Enabled(true);
                 Options.PageSize(30);
-            })
+            })            
             .Columns(Columns =>
-            {
-                if (ShowAddNewButton || AllowUpdate || AllowDelete)
+            {                
+                if (AllowAdd || AllowUpdate || AllowDelete)
                 {
                     var Width = 30;
-                    Columns.Add().Type(GridCommandColumnType.Buttons).Alignment(HorizontalAlignment.Center).Width(Width).Buttons(b =>
-                    {
+                    Columns.Add().Type(GridCommandColumnType.Buttons).Alignment(HorizontalAlignment.Center).Width(Width).Visible(AllowDelete).Buttons(b =>
+                    {                           
                         b.Add().Name(GridColumnButtonName.Edit).Icon("fas fa-pencil-alt").Text(Resources.TextUpdate);
                         b.Add().Name(GridColumnButtonName.Delete).Icon("fas fa-trash-alt").Text(Resources.TextDelete);
                         b.Add().Name(GridColumnButtonName.Save).Icon("fas fa-check").Text(Resources.TextSave);
@@ -148,7 +157,7 @@ namespace SixtyThreeBits.Web.Reusables.Core
                 Options.Visible(true);
                 Options.ApplyFilter(GridApplyFilterMode.Auto);
                 Options.ShowAllText(Resources.TextAllDevexpressGridFilterRaw);
-            })
+            })            
             .DataSource(Options =>
                 Options.RemoteController()
                 .LoadUrl(UrlLoad)
@@ -160,9 +169,9 @@ namespace SixtyThreeBits.Web.Reusables.Core
             .Editing(Options =>
             {
                 Options.Mode(GridEditMode.Cell);
-                Options.AllowAdding(ShowAddNewButton);
+                Options.AllowAdding(AllowAdd);
                 Options.AllowUpdating(AllowUpdate);
-                Options.AllowDeleting(AllowDelete);
+                Options.AllowDeleting(AllowDelete);                
                 Options.Texts(OptionsTexts =>
                 {
                     OptionsTexts.ConfirmDeleteMessage(Resources.TextConfirmDelete);
@@ -180,15 +189,14 @@ namespace SixtyThreeBits.Web.Reusables.Core
             {
                 Options.Enabled(true);
                 Options.PageSize(30);
-            })
+            })            
             .Columns(Columns =>
             {
-                if (ShowAddNewButton || AllowUpdate || AllowDelete)
+                if (AllowAdd || AllowUpdate || AllowDelete)
                 {
-                    var Width = (AllowDelete && !ShowAddNewButton && !AllowUpdate) ? 30 : 60;
+                    var Width = (AllowDelete && !AllowAdd && !AllowUpdate) ? 30 : 60;
                     Columns.Add().Alignment(HorizontalAlignment.Center).Type(TreeListCommandColumnType.Buttons).Width(Width).Buttons(b =>
-                    {
-                        b.Add().Name(TreeListColumnButtonName.Add).Icon("fas fa-plus").Text(Resources.TextAdd);
+                    {                        
                         b.Add().Name(TreeListColumnButtonName.Edit).Icon("fas fa-pencil-alt").Text(Resources.TextUpdate);
                         b.Add().Name(TreeListColumnButtonName.Delete).Icon("fas fa-trash-alt").Text(Resources.TextDelete);
                         b.Add().Name(TreeListColumnButtonName.Save).Icon("fas fa-check").Text(Resources.TextSave);
@@ -217,11 +225,11 @@ namespace SixtyThreeBits.Web.Reusables.Core
             });
         }
 
-        public void InitLookupColumn<T>(DataGridColumnBuilder<T> Column, IEnumerable<SimpleKeyValue<int?, string>> Data, bool IsRequired = false)
+        public void InitLookupColumn<T1,T2,T3>(DataGridColumnBuilder<T1> Column, IEnumerable<SimpleKeyValue<T2, T3>> Data, bool IsRequired = false)
         {
             Column.Lookup(Options =>
             {
-                Options.DataSource(d => d.Array().Data(Data).Key(nameof(SimpleKeyValue<int?, string>.Key))).ValueExpr(nameof(SimpleKeyValue<int?, string>.Key)).DisplayExpr(nameof(SimpleKeyValue<int?, string>.Value));
+                Options.DataSource(d => d.Array().Data(Data).Key(nameof(SimpleKeyValue<T2, T3>.Key))).ValueExpr(nameof(SimpleKeyValue<T2, T3>.Key)).DisplayExpr(nameof(SimpleKeyValue<T2, T3>.Value));
             });
 
             if (IsRequired)
@@ -234,7 +242,7 @@ namespace SixtyThreeBits.Web.Reusables.Core
         }
 
         public void InitCheckboxColumn<T>(DataGridColumnBuilder<T> Column)
-        {
+        {            
             Column.TrueText(Resources.TextYes);
             Column.FalseText(Resources.TextNo);
         }
@@ -247,23 +255,40 @@ namespace SixtyThreeBits.Web.Reusables.Core
             }
             else
             {
-                Column.Format(Constants.Formats.Date);
-            }
+                Column.Format(Constants.Formats.Date);                
+            }            
         }
+        #endregion
+    }
+
+    public class DevExtremeGridFilterItem
+    {
+        #region Properties
+        public string FieldName { get; set; }
+        public string Operator { get; set; }
+        public string Value { get; set; } 
+        #endregion
+    }
+
+    public class DevExtremeGridSortItem
+    {
+        #region Properties
+        public string FieldName { get; set; }
+        public bool IsDescending { get; set; }
         #endregion
     }
 
     public class LayoutViewModelBase
     {
-        #region Properties        
-        public SuccessErrorPartialViewModel SuccessErrorPartialViewModel { get; set; } = new SuccessErrorPartialViewModel();
+        #region Properties
+        public StringBuilder PageTitle { get; set; }
+        public SuccessErrorPartialViewModel SuccessErrorPartialViewModel { get; set; }
         public bool IsSuccessErrorPartialViewModelinitialized => SuccessErrorPartialViewModel?.IsInitialized == true;
         public List<ProjectMenuItem> Menu { get; set; }
         public bool HasMenu => Menu?.Count > 0;        
         public Breadcrumbs Breadcrumbs { get; set; }
         public bool HasBreadcrumbs => Breadcrumbs != null;
         public string UrlLogout { get; set; }
-        public StringBuilder PageTitle { get; set; }
         public PluginClient PluginClient { get; set; }
         #endregion
     }
@@ -276,12 +301,14 @@ namespace SixtyThreeBits.Web.Reusables.Core
         bool _Is63BitsFontsEnabled;
         bool _IsAngleEnabled;
         bool _IsBootstrapEnabled;
+        bool _IsDataTablesEnabled;
         bool _IsDevextremeEnabled;
         bool _IsGoogleFontsEnabled;
         bool _IsFancyboxEnabled;
         bool _IsFontAwesomeEnabled;
         bool _IsJQueryEnabled;
         bool _IsJQueryConfirmEnabled;
+        bool _IsJsZipEnabled;
         bool _IsPreloaderEnabled;
         bool _IsSelect2Enabled;
         bool _IsSuccessErrorMessageEnabled;
@@ -292,12 +319,14 @@ namespace SixtyThreeBits.Web.Reusables.Core
         public bool Is63BitsFontsEnabled => _Is63BitsFontsEnabled;
         public bool IsAngleEnabled => _IsAngleEnabled;
         public bool IsBootstrapEnabled => _IsBootstrapEnabled;
+        public bool IsDataTablesEnabled => _IsDataTablesEnabled;
         public bool IsDevextremeEnabled => _IsDevextremeEnabled;
         public bool IsGoogleFontsEnabled => _IsGoogleFontsEnabled;
         public bool IsFancyboxEnabled => _IsFancyboxEnabled;
         public bool IsFontAwesomeEnabled => _IsFontAwesomeEnabled;
         public bool IsJQueryEnabled => _IsJQueryEnabled;
         public bool IsJQueryConfirmEnabled => _IsJQueryConfirmEnabled;
+        public bool IsJsZipEnabled => _IsJsZipEnabled;
         public bool IsPreloaderEnabled => _IsPreloaderEnabled;
         public bool IsSelect2Enabled => _IsSelect2Enabled;
         public bool IsSuccessErrorMessageEnabled => _IsSuccessErrorMessageEnabled;
@@ -332,6 +361,12 @@ namespace SixtyThreeBits.Web.Reusables.Core
         public PluginClient EnableBootstrap(bool Value)
         {
             _IsBootstrapEnabled = Value;
+            return this;
+        }
+
+        public PluginClient EnableDataTables(bool Value)
+        {
+            _IsDataTablesEnabled = Value;
             return this;
         }
 
@@ -371,6 +406,12 @@ namespace SixtyThreeBits.Web.Reusables.Core
             return this;
         }
 
+        public PluginClient EnableJsZip(bool Value)
+        {
+            _IsJsZipEnabled = Value;
+            return this;
+        }
+
         public PluginClient EnablePreloader(bool Value)
         {
             _IsPreloaderEnabled = Value;
@@ -396,14 +437,7 @@ namespace SixtyThreeBits.Web.Reusables.Core
         }        
         #endregion
     }
-
-    public class SixtyThreeBitsException : SystemException
-    {
-        #region Constructors
-        public SixtyThreeBitsException(string Message) : base(Message) { }
-        #endregion
-    }
-    
+        
     [TypeFilter(typeof(BeforeWebProjectControllerLoaded), Order = 0)]
     public class WebProjectController<T> :  Controller
     {
@@ -419,6 +453,7 @@ namespace SixtyThreeBits.Web.Reusables.Core
         public string ActionName { get; set; }
         public string UrlCurrentPage { get; set; }
         public string WebsiteDomain { get; set; }
+        public string WebsiteHttpPath => $"{WebsiteDomain}/";
         public DataAccessFactory DataAccessFactory { get; set; }
         public AppSettingsModel AppSettings { get; set; }
         public UtilityCollection Utilities { get; set; }
@@ -426,13 +461,17 @@ namespace SixtyThreeBits.Web.Reusables.Core
         public ICookieAssistance CookieAssistance { get; set; }
         public IUrlHelper Url { get; set; }
         public ViewDataDictionary ViewData { get; set; }
+
+
         public StringBuilder PageTitle { get; } = new StringBuilder();
         public Breadcrumbs Breadcrumbs { get; set; }
+
         public PluginClient PluginClient { get; set; }
         public SuccessErrorPartialViewModel SuccessErrorPartialViewModel { get; set; } = new SuccessErrorPartialViewModel();
         public string Language { get; set; }
         public User User { get; set; }
-        public bool IsLoggedIn => User != null;
+        public bool IsLoggedIn => User != null;        
+        public ValueReference<bool> IsSidebarCollapsed { get; set; }
         public FormViewModelBase Form { get; set; }
         #endregion
 
@@ -489,9 +528,10 @@ namespace SixtyThreeBits.Web.Reusables.Core
         public string GetWebsiteDomain(HttpRequest Request)
         {            
             var Port = Request.Host.Port;
-            var PortString = Port < 1000 ? "" : $":{Port}";
+            var HostString = Request.Host.Host.TrimEnd(':');            
+            var PortString = (Port == 80 || Port == 443 || Port == null) ? "" : $":{Port}";            
 
-            var WebsiteDomain = $"{Request.Scheme}://{Request.Host.Host}{PortString}";
+            var WebsiteDomain = $"{Request.Scheme}://{HostString}{PortString}";
             return WebsiteDomain;
         }
 
@@ -616,7 +656,7 @@ namespace SixtyThreeBits.Web.Reusables.Core
 
 
         public List<SimpleKeyValue<string, string>> Errors { get; set; }
-        public string ErrorMessage => string.Join("<br />", Errors);
+        public string ErrorMessage => string.Join("<br />", Errors?.Select(Item => Item.Value));
         public bool HasErrors => Errors?.Count > 0;
         public string ErrorsJson => Errors.ToJSON();        
         public bool IsSaved { get; set; }
@@ -640,5 +680,5 @@ namespace SixtyThreeBits.Web.Reusables.Core
             AddError(ErrorKey: null, ErrorMessage: ErrorMessage);
         }
         #endregion
-    }
+    }    
 }

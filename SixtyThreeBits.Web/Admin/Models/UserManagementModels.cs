@@ -95,14 +95,14 @@ namespace SixtyThreeBits.Web.Admin.Models
             #endregion
 
             #region Sub Classes
-            public class GridModel : DevexpressGridViewModelBase, IDevexpressGridModel<GridModel.GridItem>
+            public class GridModel : DevExtremeGridViewModelBase, IDevExtremeGridModel<GridModel.GridItem>
             {
                 #region Properties
                 public List<SimpleKeyValue<int?, string>> Roles { get; set; }
                 #endregion
 
                 #region Methods
-                public DataGridBuilder<GridItem> InitGrid(IHtmlHelper Html)
+                public DataGridBuilder<GridItem> Render(IHtmlHelper Html)
                 {
                     var Grid = GetGridWithStartupValues<GridItem>(Html: Html, KeyFieldName: nameof(GridItem.UserID));
 
@@ -172,7 +172,7 @@ namespace SixtyThreeBits.Web.Admin.Models
             ViewModel.ShowAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.UserManagement.RolesGridAdd);
 
             ViewModel.Grid = new PageViewModel.GridModel();            
-            ViewModel.Grid.ShowAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.UserManagement.RolesGridAdd);
+            ViewModel.Grid.AllowAdd = User.HasPermission(ControllerActionRouteNames.Admin.UserManagement.RolesGridAdd);
             ViewModel.Grid.AllowUpdate = User.HasPermission(ControllerActionRouteNames.Admin.UserManagement.RolesGridUpdate);
             ViewModel.Grid.AllowDelete = User.HasPermission(ControllerActionRouteNames.Admin.UserManagement.RolesGridDelete);
             ViewModel.Grid.UrlLoad = Url.RouteUrl(ControllerActionRouteNames.Admin.UserManagement.RolesGrid);
@@ -219,10 +219,10 @@ namespace SixtyThreeBits.Web.Admin.Models
             #endregion
 
             #region Sub Classes
-            public class GridModel : DevexpressGridViewModelBase, IDevexpressGridModel<GridModel.GridItem>
+            public class GridModel : DevExtremeGridViewModelBase, IDevExtremeGridModel<GridModel.GridItem>
             {
                 #region Methods
-                public DataGridBuilder<GridItem> InitGrid(IHtmlHelper Html)
+                public DataGridBuilder<GridItem> Render(IHtmlHelper Html)
                 {
                     var Grid = GetGridWithStartupValues<GridItem>(Html: Html, KeyFieldName: nameof(GridItem.RoleID));
 
@@ -243,7 +243,6 @@ namespace SixtyThreeBits.Web.Admin.Models
                     return Grid;
                 }
                 #endregion
-
 
                 #region Sub CLasses
                 public class GridItem
@@ -270,7 +269,7 @@ namespace SixtyThreeBits.Web.Admin.Models
             ViewModel.ShowAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.UserManagement.PermissionsTreeAdd);
 
             ViewModel.Tree = new PageViewModel.TreeModel();
-            ViewModel.Tree.ShowAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.UserManagement.PermissionsTreeAdd);
+            ViewModel.Tree.AllowAdd = User.HasPermission(ControllerActionRouteNames.Admin.UserManagement.PermissionsTreeAdd);
             ViewModel.Tree.AllowUpdate = User.HasPermission(ControllerActionRouteNames.Admin.UserManagement.PermissionsTreeUpdate);
             ViewModel.Tree.AllowDelete = User.HasPermission(ControllerActionRouteNames.Admin.UserManagement.PermissionsTreeDelete);
             ViewModel.Tree.UrlLoad = Url.RouteUrl(ControllerActionRouteNames.Admin.UserManagement.PermissionsTree);
@@ -339,10 +338,10 @@ namespace SixtyThreeBits.Web.Admin.Models
             #endregion
 
             #region Sub Classes
-            public class TreeModel : DevexpressGridViewModelBase, IDevexpressTreeModel<TreeModel.TreeItem>
+            public class TreeModel : DevExtremeGridViewModelBase, IDevExtremeTreeModel<TreeModel.TreeItem>
             {
                 #region Methods
-                public TreeListBuilder<TreeItem> InitTree(IHtmlHelper Html)
+                public TreeListBuilder<TreeItem> Render(IHtmlHelper Html)
                 {
                     var Tree = GetTreeWithStartupValues<TreeItem>(Html: Html, KeyFieldName: nameof(TreeItem.PermissionID), ParentFieldName: nameof(TreeItem.PermissionParentID));
 
@@ -486,10 +485,10 @@ namespace SixtyThreeBits.Web.Admin.Models
             #endregion
 
             #region Sub Classes
-            public class RolesGridModel : DevexpressGridViewModelBase, IDevexpressGridModel<RolesGridModel.GridItem>
+            public class RolesGridModel : DevExtremeGridViewModelBase, IDevExtremeGridModel<RolesGridModel.GridItem>
             {
                 #region Methods
-                public DataGridBuilder<GridItem> InitGrid(IHtmlHelper Html)
+                public DataGridBuilder<GridItem> Render(IHtmlHelper Html)
                 {
                     var Grid = GetGridWithStartupValues<GridItem>(Html: Html, KeyFieldName: nameof(GridItem.RoleID));
 
@@ -530,10 +529,10 @@ namespace SixtyThreeBits.Web.Admin.Models
                 #endregion
             }
 
-            public class PermissionsTreeModel : DevexpressGridViewModelBase, IDevexpressTreeModel<PermissionsTreeModel.TreeItem>
+            public class PermissionsTreeModel : DevExtremeGridViewModelBase, IDevExtremeTreeModel<PermissionsTreeModel.TreeItem>
             {
                 #region Methods
-                public TreeListBuilder<TreeItem> InitTree(IHtmlHelper Html)
+                public TreeListBuilder<TreeItem> Render(IHtmlHelper Html)
                 {
                     var Tree = GetTreeWithStartupValues<TreeItem>(Html: Html, KeyFieldName: nameof(TreeItem.PermissionID), ParentFieldName: nameof(TreeItem.PermissionParentID));
 

@@ -137,9 +137,7 @@
             {
                 #region Properties
                 public const string Layout = "~/Admin/Views/Shared/Layout.cshtml";
-                public const string NotFound = "~/Admin/Views/Shared/NotFound.cshtml";
-                public const string DevexpressGrid = "~/Admin/Views/Shared/DevexpressGrid.cshtml";                
-                public const string DevexpressTree = "~/Admin/Views/Shared/DevexpressTree.cshtml";
+                public const string NotFound = "~/Admin/Views/Shared/NotFound.cshtml";                
                 public const string PopupLayout = "~/Admin/Views/Shared/PopupLayout.cshtml";
                 public const string Tabs = "~/Admin/Views/Shared/Tabs.cshtml";
                 public const string SuccessErrorPartialView = "~/Admin/Views/Shared/SuccessErrorPartialView.cshtml";

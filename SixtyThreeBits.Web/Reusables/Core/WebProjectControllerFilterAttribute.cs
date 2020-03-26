@@ -1,9 +1,6 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using SixtyThreeBits.Core.DB;
 using SixtyThreeBits.Core.Modules;
 using SixtyThreeBits.Core.Utilities;
 
@@ -11,17 +8,17 @@ namespace SixtyThreeBits.Web.Reusables.Core
 {
     public class BeforeWebProjectControllerLoaded : ActionFilterAttribute
     {
-        DBCoreDataContext db;
+        DataAccessFactory DataAccessFactory;
         AppSettingsModel AppSettings;
         UtilityCollection Utilities;
         ISessionAssistance SessionAssistance;
 
-        public BeforeWebProjectControllerLoaded(DBCoreDataContext db, AppSettingsModel AppSettings, UtilityCollection Utilities, ISessionAssistance SessionAssistance)
-        {
-            this.db = db;
+        public BeforeWebProjectControllerLoaded(AppSettingsModel AppSettings, UtilityCollection Utilities, ISessionAssistance SessionAssistance, DataAccessFactory DataAccessFactory    )
+        {            
             this.AppSettings = AppSettings;
             this.Utilities = Utilities;
             this.SessionAssistance = SessionAssistance;
+            this.DataAccessFactory = DataAccessFactory;
         }
 
         public override void OnActionExecuted(ActionExecutedContext FilterContext)
@@ -46,8 +43,8 @@ namespace SixtyThreeBits.Web.Reusables.Core
                 Model.AppSettings = this.AppSettings;
                 Model.Utilities = this.Utilities;
                 Model.SessionAssistance = this.SessionAssistance;
-
-                Model.DataAccessFactory = new DataAccessFactory(db);                                                
+                Model.DataAccessFactory = this.DataAccessFactory;
+                
                 Model.CookieAssistance = new CookieAssistance(C.Request, C.Response);
                 Model.Url = C.Url;
                 Model.PluginClient = new PluginClient();

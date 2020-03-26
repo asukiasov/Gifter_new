@@ -14,4 +14,11 @@
         public bool ShouldSerializeSortIndex() { return SortIndex.HasValue; }
         #endregion
     }
+
+    public class ValueReference<T>
+    {
+        #region Properties
+        public T Value { get; set; }
+        #endregion
+    }
 }

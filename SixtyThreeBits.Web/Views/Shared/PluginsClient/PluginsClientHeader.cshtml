@@ -49,14 +49,22 @@
     <link href="~/plugins/select2/css/select2-bootstrap4.min.css" rel="stylesheet" />
     <link href="~/plugins/select2/css/select2.min.css" rel="stylesheet" />
 }
+@if (Model.IsDataTablesEnabled)
+{
+    <link href="~/plugins/datatables/datatables.min.css" rel="stylesheet" />
+    <link href="~/plugins/datatables/DataTables-1.10.20/css/jquery.dataTables.min.css" rel="stylesheet" />
+    <link href="~/plugins/datatables/DataTables-1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+    <link href="~/plugins/datatables/Buttons-1.6.1/css/buttons.dataTables.min.css" rel="stylesheet" />
+    <link href="~/plugins/datatables/Buttons-1.6.1/css/buttons.bootstrap4.min.css" rel="stylesheet" />    
+}
 @if (Model.IsDevextremeEnabled)
 {
     <link href="~/plugins/devextreme/css/dx.common.css" rel="stylesheet" />
     <link href="~/plugins/devextreme/css/dx.light.compact.css" rel="stylesheet" />
-    @*<link href="~/plugins/devextreme/css/dx.material.blue.light.compact.css" rel="stylesheet" />*@    
     <link href="~/admin/css/Devexpress.css" rel="stylesheet" />
+    <script src="~/plugins/devextreme/js/jszip.js"></script>
     <script src="~/plugins/devextreme/js/dx.all.js"></script>
     <script src="~/plugins/devextreme/js/aspnet/dx.aspnet.data.js"></script>
     <script src="~/plugins/devextreme/js/aspnet/dx.aspnet.mvc.js"></script>
-
+    @*<script src="~/plugins/devextreme/js/localization/dx.messages.ka.js"></script>*@
 }

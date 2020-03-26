@@ -299,7 +299,7 @@ namespace SixtyThreeBits.Web.Admin.Controllers
         {
             var ViewModel = await Model.SaveRolePermissions(SubmitModel);
             return Json(ViewModel);
-        } 
+        }
         #endregion
     }
 }

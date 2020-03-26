@@ -21,7 +21,7 @@ namespace SixtyThreeBits.Web.Admin.Models
             ViewModel.ShowAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.Dictionaries.DictionariesTreeAdd);
 
             ViewModel.Tree = new PageViewModel.TreeModel();            
-            ViewModel.Tree.ShowAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.Dictionaries.DictionariesTreeAdd);
+            ViewModel.Tree.AllowAdd = User.HasPermission(ControllerActionRouteNames.Admin.Dictionaries.DictionariesTreeAdd);
             ViewModel.Tree.AllowUpdate = User.HasPermission(ControllerActionRouteNames.Admin.Dictionaries.DictionariesTreeUpdate);
             ViewModel.Tree.AllowDelete = User.HasPermission(ControllerActionRouteNames.Admin.Dictionaries.DictionariesTreeDelete);
             ViewModel.Tree.UrlLoad = Url.RouteUrl(ControllerActionRouteNames.Admin.Dictionaries.DictionariesTree);
@@ -92,10 +92,10 @@ namespace SixtyThreeBits.Web.Admin.Models
             #endregion
 
             #region Sub Classes
-            public class TreeModel : DevexpressGridViewModelBase, IDevexpressTreeModel<TreeModel.TreeItem>
+            public class TreeModel : DevExtremeGridViewModelBase, IDevExtremeTreeModel<TreeModel.TreeItem>
             {
                 #region Methods
-                public TreeListBuilder<TreeItem> InitTree(IHtmlHelper Html)
+                public TreeListBuilder<TreeItem> Render(IHtmlHelper Html)
                 {
                     var Tree = GetTreeWithStartupValues<TreeItem>(Html: Html, KeyFieldName: nameof(TreeItem.DictionaryID), ParentFieldName: nameof(TreeItem.DictionaryParentID));
 

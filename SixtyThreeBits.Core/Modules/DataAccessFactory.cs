@@ -1,4 +1,5 @@
-﻿using SixtyThreeBits.Core.DB;
+﻿using Microsoft.EntityFrameworkCore;
+using SixtyThreeBits.Core.DB;
 
 namespace SixtyThreeBits.Core.Modules
 {
@@ -12,13 +13,30 @@ namespace SixtyThreeBits.Core.Modules
         #endregion
 
         #region Constructors
-        public DataAccessFactory(DBCoreDataContext db)
+        public DataAccessFactory(string DBConnectionString)
         {
-            Roles = new RolesDataAccess(db);
-            Permissions = new PermissionsDataAccess(db);
-            Users = new UsersDataAccess(db);
-            Dictionaries = new DictionariesDataAccess(db);
+            var ConnectionFactory = new ConnectionFactory(DBConnectionString);
+            Roles = new RolesDataAccess(ConnectionFactory);
+            Permissions = new PermissionsDataAccess(ConnectionFactory);
+            Users = new UsersDataAccess(ConnectionFactory);
+            Dictionaries = new DictionariesDataAccess(ConnectionFactory);
         } 
         #endregion
+    }
+
+    public class ConnectionFactory
+    {
+        readonly string DBConnectionString;
+
+        public ConnectionFactory(string DBConnectionString)
+        {
+            this.DBConnectionString = DBConnectionString;
+        }
+        public DBCoreDataContext GetDBCoreDataContext()
+        {
+            var OptionsBuilder = new DbContextOptionsBuilder<DBCoreDataContext>();
+            OptionsBuilder.UseSqlServer(DBConnectionString);
+            return new DBCoreDataContext(OptionsBuilder.Options);
+        }
     }
 }

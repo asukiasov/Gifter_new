@@ -7,7 +7,7 @@
 }
 <div class="row">
     <div class="col">
-        @await Html.PartialAsync(ViewNames.Admin.Shared.DevexpressTree, Model.Tree)
+        @Model.Tree.Render(Html)
     </div>
 </div>
 @section FooterSection{

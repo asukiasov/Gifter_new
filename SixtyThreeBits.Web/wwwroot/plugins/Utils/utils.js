@@ -1,20 +1,107 @@
-﻿var Utility = {
-    MonthShortNames: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-    
+﻿const Utilities = {
     Date: {
+        MonthShortNames: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+        WeekDaysShortNames: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+        WEEKDAYS: {
+            MONDAY: 1,
+            TUESDAY: 2,
+            WEDNESDAY: 3,
+            THURSDAY: 4,
+            FRIDAY: 5,
+            SATURDAY: 6,
+            SUNDAY: 0
+        },
+        AddDays: function (Input, DaysToAdd) {
+            const D = new Date(Input);
+            DaysToAdd = parseInt(DaysToAdd);
+            if (Input && (DaysToAdd >= 0 || DaysToAdd < 0) && !isNaN(D.getTime())) {
+                D.setDate(D.getDate() + DaysToAdd);
+                return D;
+            }
+            else {
+                return null;
+            }
+        },
+        AddBusinessDays: function (Input, BusinessDaysToAdd) {
+            const D = new Date(Input);
+            BusinessDaysToAdd = parseInt(BusinessDaysToAdd);
+            if (Input && (BusinessDaysToAdd >= 0 || BusinessDaysToAdd < 0) && !isNaN(D.getTime())) {
+                const wks = Math.floor(BusinessDaysToAdd / 5);
+                let dys = Utilities.Numbers.Mod(BusinessDaysToAdd, 5);
+                let dy = D.getDay();
+                if (dy === 6 && dys > -1) {
+                    if (dys === 0) {
+                        dys -= 2;
+                        dy += 2;
+                    }
+                    dys++;
+                    dy -= 6;
+                }
+                if (dy === 0 && dys < 1) {
+                    if (dys === 0) {
+                        dys += 2;
+                        dy -= 2;
+                    }
+                    dys--;
+                    dy += 6;
+                }
+                if (dy + dys > 5) dys += 2;
+                if (dy + dys < 1) dys -= 2;
+
+                var DateToReturn = new Date(D);
+                DateToReturn.setDate(D.getDate() + wks * 7 + dys);
+                return DateToReturn;
+            }
+            else {
+                return null;
+            }
+        },
+        GetDateWithoutTime: function (Input) {
+            const D = new Date(Input);
+            if (Input && !isNaN(D.getTime())) {
+                const Year = D.getFullYear();
+                let Month = (D.getMonth() + 1);
+                let Day = D.getDate();
+
+                Month = Month < 10 ? ('0' + Month) : Month;
+                Day = Day < 10 ? ('0' + Day) : Day;
+                return new Date(Year + '-' + Month + '-' + Day + 'T00:00:00');
+            }
+            else {
+                return null;
+            }
+        },
+        IsWeekend: function (Input) {
+            const D = new Date(Input);
+            if (Input && !isNaN(D.getTime())) {
+                const Day = D.getDay();
+                return Day == Utilities.Date.WEEKDAYS.SATURDAY || Day == Utilities.Date.WEEKDAYS.SUNDAY;
+            }
+            else {
+                return false;
+            }
+        },
         ToShortDate: function (Input) {
-            var D = new Date(Input);
-            if (Input && !isNaN(D)) {
-                return Utility.MonthShortNames[D.getMonth()] + ' ' + D.getDate() + ', ' + D.getFullYear();
+            const D = new Date(Input);
+            if (Input && !isNaN(D.getTime())) {
+                const Year = D.getFullYear();
+                const Month = Utilities.Date.MonthShortNames[D.getMonth()]
+                const Day = D.getDate();
+                return Month + ' ' + Day + ', ' + Year;
             }
             else {
                 return null;
             }
         },
         ToShortDateTime: function (Input) {
-            var D = new Date(Input);
-            if (Input && !isNaN(D)) {
-                return Utility.MonthShortNames[D.getMonth()] + ' ' + D.getDate() + ', ' + D.getFullYear() + ' ' + D.getHours() + ':' + D.getMinutes();
+            const D = new Date(Input);
+            if (Input && !isNaN(D.getTime())) {
+                const Year = D.getFullYear();
+                const Month = Utilities.Date.MonthShortNames[D.getMonth()];
+                const Day = D.getDate();
+                const Hours = D.getHours();
+                const Minutes = D.getMinutes();
+                return Month + ' ' + Day + ', ' + Year + ' ' + Hours + ':' + Minutes;
             }
             else {
                 return null;
@@ -22,7 +109,7 @@
         },
         ToTime: function (Input) {
             var D = new Date(Input);
-            if (Input && !isNaN(D)) {
+            if (Input && !isNaN(D.getTime())) {
                 var Hours = (D.getHours() < 10 ? '0' : '') + D.getHours();
                 var Minutes = (D.getMinutes() < 10 ? '0' : '') + D.getMinutes();
                 return Hours + ':' + Minutes;
@@ -30,12 +117,48 @@
             else {
                 return null;
             }
-        }
+        },
+        ToWeekDayShortDate: function (Input) {
+            const D = new Date(Input);
+            if (Input && !isNaN(D.getTime())) {
+                const Year = D.getFullYear();
+                let DayOfMonth = D.getDate();
+                DayOfMonth = (DayOfMonth > 9 ? DayOfMonth : '0' + DayOfMonth);
+                const Month = Utilities.Date.MonthShortNames[D.getMonth()];
+                const Weekday = Utilities.Date.WeekDaysShortNames[D.getDay()];
+                return Month + ' ' + DayOfMonth + ', ' + Year + ', ' + Weekday;
+            }
+            else {
+                return null;
+            }
+        },
     },
 
     String: {
-        EndsWith : function (suffix) {
+        EndsWith: function (suffix) {
             return this.indexOf(suffix, this.length - suffix.length) !== -1;
+        },
+        StripHtml: function (InputString) {
+            return InputString.replace(/<[^>]*>/g, '');
+        }
+    },
+
+    Numbers: {
+        Mod: function (Input, n) {
+            return ((Input % n) + n) % n;
+        }
+    },
+
+    BytesToSize: function (bytes) {
+        if (bytes >= 0) {
+
+            var k = 1024;
+            var sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
+            var i = Math.floor(Math.log(bytes) / Math.log(k))
+            return (bytes / Math.pow(k, i)).toPrecision(3) + ' ' + sizes[i]
+        }
+        else {
+            return null;
         }
     },
 
@@ -158,7 +281,7 @@
 };
 
 $.fn.extend({
-    GetExtension : function () {
+    GetExtension: function () {
         var val = this.selector.match(/\.[^.]+$/);
         return val == null || val.length == 0 ? undefined : val[0].toLowerCase();
     },
@@ -178,23 +301,19 @@ $.fn.extend({
         }
     },
 
-    Disable: function () {
-        this.addClass('disabled');
-        this.attr('disabled', 'disabled');
-    },
     DisableWithOverlay: function () {
         var html =
-'<div class="js-overlay-disable" style="position:absolute;top:0;left:0;z-index:99999;width:100%;height:100%;">\
+            '<div class="js-overlay-disable" style="position:absolute;top:0;left:0;z-index:99999;width:100%;height:100%;">\
     <div style="position:absolute;top:0;left:0;z-index:1;width:100%;height:100%;opacity:0.5;background-color:#fff"></div>\
     <div style="position:absolute;top:50%;left:50%;z-index:2;transform:translate(-50%,-50%)"></div>\
 </div>';
-        this.append(html)        
+        this.append(html)
     },
     Enable: function () {
         this.removeClass('disabled');
         this.removeAttr('disabled');
         this.find('.js-overlay-disable').remove();
-    },        
+    },
     ScrollTo: function (selector, milliseconds) {
         var _this = this;
         return new Promise(function (Resolve, Reject) {
@@ -259,9 +378,33 @@ $.fn.extend({
             '-webkit-overflow-scrolling': 'touch'
         });
     },
+    SetFullHeight: function (HeightCorrectionInPixels) {
+        // Making sure that number is passed, if not HeightCorrectionInPixels will be zero.
+        HeightCorrectionInPixels = HeightCorrectionInPixels % 1 === 0 ? HeightCorrectionInPixels : 0;
+        const ScreenHeight = $(window).outerHeight();
+
+
+        const PaddingBottom = 25;
+        const OffsetTop = $(this).offset().top;
+        const ElementHeight = ScreenHeight - OffsetTop - PaddingBottom + HeightCorrectionInPixels;
+
+        this.css({
+            'overflow': 'auto',
+            'height': ElementHeight + 'px',
+            '-webkit-overflow-scrolling': 'touch'
+        });
+    },
+    GetFullHeight: function (HeightCorrectionInPixels) {
+        HeightCorrectionInPixels = HeightCorrectionInPixels % 1 === 0 ? HeightCorrectionInPixels : 0;
+        const ScreenHeight = $(window).outerHeight();
+        const PaddingBottom = 25;
+        const OffsetTop = $(this).offset().top;
+        const ElementHeight = ScreenHeight - OffsetTop - PaddingBottom + HeightCorrectionInPixels;
+        return ElementHeight;
+    },
 
     // call example $(['path to image1','path to image2', '...']).PreloadImages();
-    PreloadImages : function () {
+    PreloadImages: function () {
         this.each(function () {
             $('<img/>')[0].src = this;
         });

@@ -11,7 +11,7 @@
     <link href="~/admin/css/style.css" rel="stylesheet" />
     @RenderSection(Constants.ViewSections.HeaderSection, false)
 </head>
-<body class="@(Model.IsSidebarCollapsed ? "aside-collapsed aside-toggled" : null)">
+<body class="@(Model.IsSidebarCollapsed.Value ? "aside-collapsed aside-toggled" : null)">
     <div class="wrapper">
         <header class="topnavbar-wrapper">
             <nav class="navbar topnavbar">

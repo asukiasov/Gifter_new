@@ -6,13 +6,13 @@ namespace SixtyThreeBits.Core.Modules
     public class DataAccessBase : SixtyThreeBitsDataObject
     {
         #region Properties
-        public DBCoreDataContext db { get; set; }
+        public ConnectionFactory ConnectionFactory { get; set; }
         #endregion
 
         #region Constructors
-        public DataAccessBase(DBCoreDataContext db)
+        public DataAccessBase(ConnectionFactory ConnectionFactory)
         {
-            this.db = db;
+            this.ConnectionFactory = ConnectionFactory;
         }
         #endregion
     }
