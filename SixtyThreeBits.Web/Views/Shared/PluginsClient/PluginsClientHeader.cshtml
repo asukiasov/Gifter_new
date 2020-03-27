@@ -24,6 +24,10 @@
 {
     <link href="~/plugins/jquery-confirm/jquery-confirm.min.css" rel="stylesheet" />
 }
+@if (Model.IsJQueryUIEnabled)
+{
+    <link href="~/plugins/jquery-ui/jquery-ui.css" rel="stylesheet" />
+}
 @if (Model.IsFancyboxEnabled)
 {
     <link href="~/plugins/fancybox/jquery.fancybox.css" rel="stylesheet" />
@@ -31,10 +35,6 @@
 @if (Model.IsUtilsEnabled)
 {
     <link href="~/plugins/utils/utils.css" rel="stylesheet" />
-}
-@if (Model.IsJQueryEnabled)
-{
-    <script src="~/plugins/jquery/jquery.min.js"></script>
 }
 @if (Model.Is63BitsFormsEnabled)
 {
@@ -55,7 +55,12 @@
     <link href="~/plugins/datatables/DataTables-1.10.20/css/jquery.dataTables.min.css" rel="stylesheet" />
     <link href="~/plugins/datatables/DataTables-1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
     <link href="~/plugins/datatables/Buttons-1.6.1/css/buttons.dataTables.min.css" rel="stylesheet" />
-    <link href="~/plugins/datatables/Buttons-1.6.1/css/buttons.bootstrap4.min.css" rel="stylesheet" />    
+    <link href="~/plugins/datatables/Buttons-1.6.1/css/buttons.bootstrap4.min.css" rel="stylesheet" />
+
+}
+@if (Model.IsJQueryEnabled)
+{
+    <script src="~/plugins/jquery/jquery.min.js"></script>
 }
 @if (Model.IsDevextremeEnabled)
 {

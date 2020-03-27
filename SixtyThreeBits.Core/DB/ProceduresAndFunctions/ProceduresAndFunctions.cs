@@ -24,6 +24,92 @@ namespace SixtyThreeBits.Core.DB
         #endregion
 
         #region Functions
+        #region PagesGetSingleByID
+        internal virtual DbSet<ScalarFunctionResult<string>> PagesGetSingleByIDResult { get; set; }
+        public async Task<string> PagesGetSingleByID(int? PageID, bool? PageIsPublished)
+        {
+            var PR = new PrepareQueryExecution(
+                DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
+                DatabaseObjectName: nameof(PagesGetSingleByID),
+                ResultItemType: typeof(ScalarFunctionResult<string>),
+                SqlParameters: new SqlParameter[]
+                {
+                    PageID.ToSqlParameter(nameof(PageID), SqlDbType.Int),
+                    PageIsPublished.ToSqlParameter(nameof(PageIsPublished), SqlDbType.Bit)
+                }
+            );
+            var DBResult = PagesGetSingleByIDResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
+            var DBFunctionResult = await DBResult.FirstOrDefaultAsync();
+            return DBFunctionResult?.Value;
+        }
+        #endregion
+
+        #region PagesGetSingleBySlug
+        internal virtual DbSet<ScalarFunctionResult<string>> PagesGetSingleBySlugResult { get; set; }
+        public async Task<string> PagesGetSingleBySlug(string PageSlug, bool? PageIsPublished)
+        {
+            var PR = new PrepareQueryExecution(
+                DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
+                DatabaseObjectName: nameof(PagesGetSingleBySlug),
+                ResultItemType: typeof(ScalarFunctionResult<string>),
+                SqlParameters: new SqlParameter[]
+                {
+                    PageSlug.ToSqlParameter(nameof(PageSlug), SqlDbType.NVarChar),
+                    PageIsPublished.ToSqlParameter(nameof(PageIsPublished), SqlDbType.Bit)
+                }
+            );
+            var DBResult = PagesGetSingleBySlugResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
+            var DBFunctionResult = await DBResult.FirstOrDefaultAsync();
+            return DBFunctionResult?.Value;
+        }
+        #endregion
+
+        #region PagesIsSlugUniq
+        internal virtual DbSet<ScalarFunctionResult<bool>> PagesIsSlugUniqResult { get; set; }
+        public async Task<bool> PagesIsSlugUniq(string PageSlug, int? PageID)
+        {
+            var PR = new PrepareQueryExecution(
+                DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
+                DatabaseObjectName: nameof(PagesIsSlugUniq),
+                ResultItemType: typeof(ScalarFunctionResult<string>),
+                SqlParameters: new SqlParameter[]
+                {
+                    PageSlug.ToSqlParameter(nameof(PageSlug), SqlDbType.NVarChar),
+                    PageID.ToSqlParameter(nameof(PageID), SqlDbType.Int)
+                }
+            );
+            var DBResult = PagesIsSlugUniqResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
+            var DBFunctionResult = await DBResult.FirstOrDefaultAsync();
+            return DBFunctionResult?.Value == true;
+        }
+        #endregion
+
+        #region PagesListForDeleteRecursive        
+        public class PagesListForDeleteRecursiveResultItem
+        {
+            #region Properties
+            public int? PageID { get; set; }
+            
+            #endregion
+        }
+        internal virtual DbSet<PagesListForDeleteRecursiveResultItem> PagesListForDeleteRecursiveResult { get; set; }
+        public IQueryable<PagesListForDeleteRecursiveResultItem> PagesListForDeleteRecursive(int? PageID)
+        {
+            var PR = new PrepareQueryExecution(
+              DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
+              DatabaseObjectName: nameof(PagesListForDeleteRecursive),
+              ResultItemType: typeof(PagesListForDeleteRecursiveResultItem),
+              SqlParameters: new SqlParameter[]
+              {
+                  PageID.ToSqlParameter(nameof(PageID), SqlDbType.Int),                  
+              }
+            );
+            var DBResult = PagesListForDeleteRecursiveResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
+            return DBResult;
+        }        
+        #endregion
+
+        #region UsersGetSingleUserByUserID
         internal virtual DbSet<ScalarFunctionResult<string>> UsersGetSingleUserByIDResult { get; set; }
         public async Task<string> UsersGetSingleUserByUserID(int? UserID)
         {
@@ -40,7 +126,29 @@ namespace SixtyThreeBits.Core.DB
             var DBFunctionResult = await DBResult.FirstOrDefaultAsync();
             return DBFunctionResult?.Value;
         }
+        #endregion
+        
+        #region UsersGetSingleUserByEmailAndPassword
+        internal virtual DbSet<ScalarFunctionResult<string>> UsersGetSingleUserByEmailAndPasswordResult { get; set; }
+        public async Task<string> UsersGetSingleUserByEmailAndPassword(string Email, string Password)
+        {
+            var PR = new PrepareQueryExecution(
+                DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
+                DatabaseObjectName: nameof(UsersGetSingleUserByEmailAndPassword),
+                ResultItemType: typeof(ScalarFunctionResult<string>),
+                SqlParameters: new SqlParameter[]
+                {
+                    Email.ToSqlParameter(nameof(Email), SqlDbType.VarChar),
+                    Password.ToSqlParameter(nameof(Password), SqlDbType.NVarChar)
+                }
+            );
+            var DBResult = UsersGetSingleUserByEmailAndPasswordResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
+            var DBFunctionResult = await DBResult.FirstOrDefaultAsync();
+            return DBFunctionResult?.Value;
+        }
+        #endregion
 
+        #region UsersIsEmailUnique
         internal virtual DbSet<ScalarFunctionResult<bool>> UsersIsEmailUniqueResult { get; set; }
         public async Task<bool> UsersIsEmailUnique(string Email, int? UserID)
         {
@@ -58,52 +166,7 @@ namespace SixtyThreeBits.Core.DB
             var DBFunctionResult = await DBResult.FirstOrDefaultAsync();
             return DBFunctionResult?.Value == true;
         }
-
-
-        internal virtual DbSet<ScalarFunctionResult<string>> UsersGetSingleUserByEmailAndPasswordResult { get; set; }
-        public async Task<string> UsersGetSingleUserByEmailAndPassword(string Email, string Password)
-        {
-            var PR = new PrepareQueryExecution(
-                DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
-                DatabaseObjectName: nameof(UsersGetSingleUserByEmailAndPassword),
-                ResultItemType: typeof(ScalarFunctionResult<string>),
-                SqlParameters: new SqlParameter[]
-                {
-                    Email.ToSqlParameter(nameof(Email), SqlDbType.VarChar),
-                    Password.ToSqlParameter(nameof(Password), SqlDbType.NVarChar)
-                }
-            );            
-            var DBResult = UsersGetSingleUserByEmailAndPasswordResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
-            var DBFunctionResult = await DBResult.FirstOrDefaultAsync();
-            return DBFunctionResult?.Value;
-        } 
-
-
-        public class PermissionsListPermissionsWithRoleMarkResultItem
-        {
-            #region Properties
-            public int? PermissionID { get; set; }
-            public int? PermissionParentID { get; set; }
-            public string PermissionCaption { get; set; }
-            public int? PermissionSortIndex { get; set; }
-            public bool PermissionIsSelected { get; set; } 
-            #endregion
-        }
-        internal virtual DbSet<PermissionsListPermissionsWithRoleMarkResultItem> PermissionsListPermissionsWithRoleMarkResult { get; set; }
-        public IQueryable<PermissionsListPermissionsWithRoleMarkResultItem> PermissionsListPermissionsWithRoleMark(int? RoleID)
-        {
-            var PR = new PrepareQueryExecution(
-              DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
-              DatabaseObjectName: nameof(PermissionsListPermissionsWithRoleMark),
-              ResultItemType: typeof(PermissionsListPermissionsWithRoleMarkResultItem),
-              SqlParameters: new SqlParameter[]
-              {
-                  RoleID.ToSqlParameter(nameof(RoleID), SqlDbType.Int)
-              }
-            );
-            var DBResult = PermissionsListPermissionsWithRoleMarkResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
-            return DBResult;
-        }
+        #endregion
         #endregion
 
         #region Stored Procedures        
@@ -122,6 +185,67 @@ namespace SixtyThreeBits.Core.DB
             var DBResult = await Database.ExecuteSqlRawAsync(PR.SqlQuery, PR.SqlParameters);
         }
 
+        public async Task PagesDeleteRecursive(int? PageID)
+        {
+            var PR = new PrepareQueryExecution(
+             DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.STORED_PROCEDURE,
+             DatabaseObjectName: nameof(PagesDeleteRecursive),
+             ResultItemType: null,
+             SqlParameters: new SqlParameter[]
+             {
+                 PageID.ToSqlParameter(nameof(PageID),SqlDbType.Int)
+             }
+           );
+
+            var DBResult = await Database.ExecuteSqlRawAsync(PR.SqlQuery, PR.SqlParameters);
+        }
+
+        public async Task PagesSyncParentsAndSortIndexes(string ParentsAndSortIndexesXml)
+        {
+            var PR = new PrepareQueryExecution(
+             DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.STORED_PROCEDURE,
+             DatabaseObjectName: nameof(PagesSyncParentsAndSortIndexes),
+             ResultItemType: null,
+             SqlParameters: new SqlParameter[]
+             {
+                 ParentsAndSortIndexesXml.ToSqlParameter(nameof(ParentsAndSortIndexesXml),SqlDbType.Xml)
+             }
+           );
+
+            var DBResult = await Database.ExecuteSqlRawAsync(PR.SqlQuery, PR.SqlParameters);
+        }
+
+        public async Task PermissionsDeleteRecursive(int? PermissionID)
+        {
+            var PR = new PrepareQueryExecution(
+             DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.STORED_PROCEDURE,
+             DatabaseObjectName: nameof(PermissionsDeleteRecursive),
+             ResultItemType: null,
+             SqlParameters: new SqlParameter[]
+             {
+                 PermissionID.ToSqlParameter(nameof(PermissionID),SqlDbType.Int)
+             }
+           );
+
+            var DBResult = await Database.ExecuteSqlRawAsync(PR.SqlQuery, PR.SqlParameters);
+        }
+
+        public async Task RolePermissionsUpdate(int? RoleID, string PermissionsXml)
+        {
+            var PR = new PrepareQueryExecution(
+             DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.STORED_PROCEDURE,
+             DatabaseObjectName: nameof(RolePermissionsUpdate),
+             ResultItemType: null,
+             SqlParameters: new SqlParameter[]
+             {
+                 RoleID.ToSqlParameter(nameof(RoleID),SqlDbType.TinyInt),
+                 PermissionsXml.ToSqlParameter(nameof(PermissionsXml),SqlDbType.Xml)
+             }
+           );
+
+            var DBResult = await Database.ExecuteSqlRawAsync(PR.SqlQuery, PR.SqlParameters);            
+        }
+        
         public async Task<int?> UsersIUD(Enums.DatabaseActions iud, int? UserID, string UserEmail, string UserPassword, string UserFirstname, string UserLastname, int? UserRoleID, DateTime? UserBirthdate, string UserPhoneNumberMobile, string UserPersonalNumber, string UserAvatarFilename, bool? UserIsActive)
         {
             var PR = new PrepareQueryExecution(
@@ -148,39 +272,8 @@ namespace SixtyThreeBits.Core.DB
             var DBResult = await Database.ExecuteSqlRawAsync(PR.SqlQuery, PR.SqlParameters);
 
             UserID = PR.SqlParameters[1].Value?.ToString().ToInt();
-            
+
             return UserID;
-        }
-
-        public async Task RolePermissionsUpdate(int? RoleID, string PermissionsXml)
-        {
-            var PR = new PrepareQueryExecution(
-             DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.STORED_PROCEDURE,
-             DatabaseObjectName: nameof(RolePermissionsUpdate),
-             ResultItemType: null,
-             SqlParameters: new SqlParameter[]
-             {
-                 RoleID.ToSqlParameter(nameof(RoleID),SqlDbType.TinyInt),
-                 PermissionsXml.ToSqlParameter(nameof(PermissionsXml),SqlDbType.Xml)
-             }
-           );
-
-            var DBResult = await Database.ExecuteSqlRawAsync(PR.SqlQuery, PR.SqlParameters);            
-        }
-
-        public async Task PermissionsDeleteRecursive(int? PermissionID)
-        {
-            var PR = new PrepareQueryExecution(
-             DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.STORED_PROCEDURE,
-             DatabaseObjectName: nameof(PermissionsDeleteRecursive),
-             ResultItemType: null,
-             SqlParameters: new SqlParameter[]
-             {
-                 PermissionID.ToSqlParameter(nameof(PermissionID),SqlDbType.Int)
-             }
-           );
-
-            var DBResult = await Database.ExecuteSqlRawAsync(PR.SqlQuery, PR.SqlParameters);
         }
         #endregion
 
@@ -188,7 +281,7 @@ namespace SixtyThreeBits.Core.DB
         {
             ModelBuilder.Entity<ScalarFunctionResult<string>>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<ScalarFunctionResult<bool>>(Entity => { Entity.HasNoKey(); });
-            ModelBuilder.Entity<PermissionsListPermissionsWithRoleMarkResultItem>(Entity => { Entity.HasNoKey(); });       
+            ModelBuilder.Entity<PagesListForDeleteRecursiveResultItem>(Entity => { Entity.HasNoKey(); });       
         }
 
         #region Query Preparation

@@ -132,6 +132,9 @@
   <data name="TextConfirmDeleteAttachment" xml:space="preserve">
     <value>Do you really want to delete this attachment?</value>
   </data>
+  <data name="TextConfirmDeleteRecursive" xml:space="preserve">
+    <value>Deleting this item will also delete all child items. Do you really want to continue?</value>
+  </data>
   <data name="TextDelete" xml:space="preserve">
     <value>Delete</value>
   </data>
@@ -158,6 +161,9 @@
   </data>
   <data name="ValidationRequired" xml:space="preserve">
     <value>Field is required</value>
+  </data>
+  <data name="ValidationRequiredPageTitle" xml:space="preserve">
+    <value>Page title is required</value>
   </data>
   <data name="ValidationTextMaxLength" xml:space="preserve">
     <value>Max length has been exceeded. Only {0} symbols are allowed.</value>

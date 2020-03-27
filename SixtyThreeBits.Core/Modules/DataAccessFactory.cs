@@ -1,25 +1,28 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SixtyThreeBits.Core.DB;
+using SixtyThreeBits.Core.Utilities;
 
 namespace SixtyThreeBits.Core.Modules
 {
     public class DataAccessFactory
     {
-        #region Properties
-        public RolesDataAccess Roles { get; set; }
-        public PermissionsDataAccess Permissions { get; set; }
-        public UsersDataAccess Users { get; set; }
+        #region Properties        
         public DictionariesDataAccess Dictionaries { get; set; }
+        public PagesDataAccess Pages { get; set; }
+        public PermissionsDataAccess Permissions { get; set; }
+        public RolesDataAccess Roles { get; set; }
+        public UsersDataAccess Users { get; set; }        
         #endregion
 
         #region Constructors
-        public DataAccessFactory(string DBConnectionString)
+        public DataAccessFactory(AppSettingsCollection AppSettings)
         {
-            var ConnectionFactory = new ConnectionFactory(DBConnectionString);
-            Roles = new RolesDataAccess(ConnectionFactory);
-            Permissions = new PermissionsDataAccess(ConnectionFactory);
-            Users = new UsersDataAccess(ConnectionFactory);
+            var ConnectionFactory = new ConnectionFactory(AppSettings.DBConnectionStrings.DBConnectionString);
             Dictionaries = new DictionariesDataAccess(ConnectionFactory);
+            Pages = new PagesDataAccess(ConnectionFactory, AppSettings);
+            Permissions = new PermissionsDataAccess(ConnectionFactory);
+            Roles = new RolesDataAccess(ConnectionFactory);            
+            Users = new UsersDataAccess(ConnectionFactory);            
         } 
         #endregion
     }

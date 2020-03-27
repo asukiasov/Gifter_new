@@ -307,11 +307,14 @@ namespace SixtyThreeBits.Web.Reusables.Core
         bool _IsFancyboxEnabled;
         bool _IsFontAwesomeEnabled;
         bool _IsJQueryEnabled;
+        bool _IsJQueryUIEnabled;
         bool _IsJQueryConfirmEnabled;
+        bool _IsJQueryNestedSortableEnabled;
         bool _IsJsZipEnabled;
         bool _IsPreloaderEnabled;
         bool _IsSelect2Enabled;
         bool _IsSuccessErrorMessageEnabled;
+        bool _IsTemplate7Enabled;
         bool _IsUtilsEnabled;
 
         public bool Is63BitsFormsEnabled => _Is63BitsFormsEnabled;
@@ -326,10 +329,13 @@ namespace SixtyThreeBits.Web.Reusables.Core
         public bool IsFontAwesomeEnabled => _IsFontAwesomeEnabled;
         public bool IsJQueryEnabled => _IsJQueryEnabled;
         public bool IsJQueryConfirmEnabled => _IsJQueryConfirmEnabled;
+        public bool IsJQueryNestedSortableEnabled => _IsJQueryNestedSortableEnabled;
+        public bool IsJQueryUIEnabled => _IsJQueryEnabled;
         public bool IsJsZipEnabled => _IsJsZipEnabled;
         public bool IsPreloaderEnabled => _IsPreloaderEnabled;
         public bool IsSelect2Enabled => _IsSelect2Enabled;
         public bool IsSuccessErrorMessageEnabled => _IsSuccessErrorMessageEnabled;
+        public bool IsTemplate7Enabled => _IsTemplate7Enabled;
         public bool IsUtilsEnabled => _IsUtilsEnabled;
         #endregion
 
@@ -400,9 +406,21 @@ namespace SixtyThreeBits.Web.Reusables.Core
             return this;
         }
 
+        public PluginClient EnableJQueryUI(bool Value)
+        {
+            _IsJQueryUIEnabled = Value;
+            return this;
+        }
+
         public PluginClient EnableJQueryConfirm(bool Value)
         {
             _IsJQueryConfirmEnabled = Value;
+            return this;
+        }
+
+        public PluginClient EnableJQueryNestedSortable(bool Value)
+        {
+            _IsJQueryNestedSortableEnabled = Value;
             return this;
         }
 
@@ -427,6 +445,12 @@ namespace SixtyThreeBits.Web.Reusables.Core
         public PluginClient EnableSuccessErrorMessage(bool Value)
         {
             _IsSuccessErrorMessageEnabled = Value;
+            return this;
+        }
+
+        public PluginClient EnableTemplate7(bool Value)
+        {
+            _IsTemplate7Enabled = Value;
             return this;
         }
 
@@ -455,7 +479,7 @@ namespace SixtyThreeBits.Web.Reusables.Core
         public string WebsiteDomain { get; set; }
         public string WebsiteHttpPath => $"{WebsiteDomain}/";
         public DataAccessFactory DataAccessFactory { get; set; }
-        public AppSettingsModel AppSettings { get; set; }
+        public AppSettingsCollection AppSettings { get; set; }
         public UtilityCollection Utilities { get; set; }
         public ISessionAssistance SessionAssistance { get; set; }
         public ICookieAssistance CookieAssistance { get; set; }

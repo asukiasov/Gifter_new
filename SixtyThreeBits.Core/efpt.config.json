@@ -18,6 +18,10 @@
       },
       {
          "HasPrimaryKey": true,
+         "Name": "[dbo].[Pages]"
+      },
+      {
+         "HasPrimaryKey": true,
          "Name": "[dbo].[Permissions]"
       },
       {

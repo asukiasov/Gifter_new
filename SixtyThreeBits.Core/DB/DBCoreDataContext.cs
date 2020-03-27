@@ -16,6 +16,7 @@ namespace SixtyThreeBits.Core.DB
         }
 
         public virtual DbSet<Dictionaries> Dictionaries { get; set; }
+        public virtual DbSet<Pages> Pages { get; set; }
         public virtual DbSet<Permissions> Permissions { get; set; }
         public virtual DbSet<RolePermissions> RolePermissions { get; set; }
         public virtual DbSet<Roles> Roles { get; set; }
@@ -62,6 +63,39 @@ namespace SixtyThreeBits.Core.DB
                     .HasConstraintName("FK_Dictionaries_Dictionaries");
             });
 
+            modelBuilder.Entity<Pages>(entity =>
+            {
+                entity.HasKey(e => e.PageID);
+
+                entity.Property(e => e.PageDateCreated)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.PageImageFilename).HasMaxLength(200);
+
+                entity.Property(e => e.PageShortDescription).HasMaxLength(500);
+
+                entity.Property(e => e.PageShortDescriptionEng).HasMaxLength(500);
+
+                entity.Property(e => e.PageShortDescriptionRus).HasMaxLength(500);
+
+                entity.Property(e => e.PageSlug)
+                    .IsRequired()
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.PageTitle).HasMaxLength(100);
+
+                entity.Property(e => e.PageTitleEng).HasMaxLength(100);
+
+                entity.Property(e => e.PageTitleRus).HasMaxLength(100);
+
+                entity.HasOne(d => d.Parent)
+                    .WithMany(p => p.InverseParent)
+                    .HasForeignKey(d => d.PageParentID)
+                    .HasConstraintName("FK_Pages_Pages");
+            });
+
             modelBuilder.Entity<Permissions>(entity =>
             {
                 entity.HasKey(e => e.PermissionID);
@@ -83,6 +117,11 @@ namespace SixtyThreeBits.Core.DB
                 entity.Property(e => e.PermissionMenuIcon).HasMaxLength(50);
 
                 entity.Property(e => e.PermissionPagePath).HasMaxLength(100);
+
+                entity.HasOne(d => d.PermissionParent)
+                    .WithMany(p => p.InversePermissionParent)
+                    .HasForeignKey(d => d.PermissionParentID)
+                    .HasConstraintName("FK_Permissions_Permissions");
             });
 
             modelBuilder.Entity<RolePermissions>(entity =>

@@ -8,6 +8,7 @@ namespace SixtyThreeBits.Core.DB.Tables
     {
         public Permissions()
         {
+            InversePermissionParent = new HashSet<Permissions>();
             RolePermissions = new HashSet<RolePermissions>();
         }
 
@@ -22,6 +23,8 @@ namespace SixtyThreeBits.Core.DB.Tables
         public int? PermissionSortIndex { get; set; }
         public DateTime CRTime { get; set; }
 
+        public virtual Permissions PermissionParent { get; set; }
+        public virtual ICollection<Permissions> InversePermissionParent { get; set; }
         public virtual ICollection<RolePermissions> RolePermissions { get; set; }
     }
 }

@@ -31,7 +31,7 @@
                 closeAnimation: 'scale',
                 scrollToPreviousElement:true,
                 buttons: {
-                    'დიახ': {
+                    'Yes': {
                         btnClass: ConfirmButtonColor,
                         action: function () {
                             if (Resolve) {
@@ -39,7 +39,7 @@
                             }
                         }
                     },
-                    'არა': function () {
+                    'No': function () {
 
                     }
                 }
@@ -47,7 +47,7 @@
         },
         Error: function (ErrorMessage) {
             $.alert({
-                title: 'შეცდომა',
+                title: 'Error',
                 content: ErrorMessage ? ErrorMessage : Globals.TextError,
                 icon: 'fas fa-exclamation-triangle',
                 closeIcon: true,

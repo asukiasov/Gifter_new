@@ -9,11 +9,11 @@ namespace SixtyThreeBits.Web.Reusables.Core
     public class BeforeWebProjectControllerLoaded : ActionFilterAttribute
     {
         DataAccessFactory DataAccessFactory;
-        AppSettingsModel AppSettings;
+        AppSettingsCollection AppSettings;
         UtilityCollection Utilities;
         ISessionAssistance SessionAssistance;
 
-        public BeforeWebProjectControllerLoaded(AppSettingsModel AppSettings, UtilityCollection Utilities, ISessionAssistance SessionAssistance, DataAccessFactory DataAccessFactory    )
+        public BeforeWebProjectControllerLoaded(AppSettingsCollection AppSettings, UtilityCollection Utilities, ISessionAssistance SessionAssistance, DataAccessFactory DataAccessFactory    )
         {            
             this.AppSettings = AppSettings;
             this.Utilities = Utilities;

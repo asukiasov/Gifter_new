@@ -1,16 +1,80 @@
 ﻿@model List<TreeNodeItem>
 <div class="sortable">
-    <ul>
+    <ul class="js-file-tree-editor">
         @foreach (var Item in Model)
-        {
-            if (Item.IsFolder)
-            {
-                @await Html.PartialAsync(ViewNames.Admin.Shared.FileTreeEditor.Folder, Item)
-            }
-            else
-            {
-                @await Html.PartialAsync(ViewNames.Admin.Shared.FileTreeEditor.File, Item)
-            }
+        {            
+            @await Html.PartialAsync(ViewNames.Admin.Shared.FileTreeEditor.File, Item)            
         }
     </ul>
 </div>
+
+<script id="file-tree-editor-partial-template" type="text/template7">
+    {{#each Children}}
+    <li data-id="{{NodeID}}" class="tree-item file js-file-tree-editor-item {{#if IsNoNestingEnabled}}js-no-nesting{{/if}}">
+        <span class="drag"><i class="fas fa-arrows-alt"></i></span>
+        <div class="handle {{#if IsDisabled}}disabled{{/if}}">
+            <div class="left-col">
+                {{#if IsFolder}}
+                    <i class="fas fa-folder-open"></i>
+                {{#else}}
+                    <i class="fas fa-file-alt"></i>
+                {{/if}}
+                <i class="fas fa-file-alt"></i>
+                <div class="name">
+                    <a class="js-file-tree-editor-item-caption" {{#if HasNavigateUrl}} href="{{NavigateUrl}}" {{/if}} {{#if IsTargetBlank}} target="_blank" {{/if}}>
+                        {{Caption}}
+                    </a>
+                </div>
+                <input class="hidden js-file-tree-editor-item-caption-textbox" type="text" value="" />
+            </div>
+            <div class="right-col">
+                {{#if ShowToggler1}}
+                <label class="toggler">
+                    <span>{{TextToggler1}}</span>
+                    <input type="checkbox" {{#if IsToggler1Checked}} checked {{/if}} class="js-file-tree-editor-item-toggler-1-checkbox" />
+                    <i></i>
+                </label>
+                {{/if}}
+                {{#if ShowToggler2}}                
+                <label class="toggler">
+                    <span>{{TextToggler2}}</span>
+                    <input type="checkbox" {{#if IsToggler2Checked}} checked {{/if}} class="js-file-tree-editor-item-toggler-2-checkbox" />
+                    <i></i>
+                </label>
+                {{/if}}
+                {{#js_if "this.ShowCustomButton && this.ShowCustomButtonLast"}}
+                <a href="#" class="js-file-tree-editor-item-custom-button">
+                    <i class="fa {{CustomButtonIcon}}"></i>
+                </a>
+                {{/js_if}}
+                {{#if ShowAddNewButton}}                
+                <a href="#" class="js-file-tree-editor-item-add-new-button">
+                    <i class="fas fa-plus"></i>
+                </a>
+                {{/if}}
+                {{#if ShowEditButton}}
+                <a href="#" class="js-file-tree-editor-item-add-edit-button">
+                    <i class="fas fa-pencil-alt"></i>
+                </a>
+                {{/if}}
+                {{#if ShowDeleteButton}}
+                <a href="#" class="js-file-tree-editor-item-delete-button">
+                    <i class="fas fa-trash-alt"></i>
+                </a>
+                {{/if}}
+                {{#js_if "this.ShowCustomButton && this.ShowCustomButtonLast"}}
+                {
+                <a href="#" class="js-file-tree-editor-item-custom-button">
+                    <i class="fa {{CustomButtonIcon}}"></i>
+                </a>
+                {{/js_if}}
+            </div>
+        </div>
+        <ul>
+            {{#if HasChildren}}
+            {{> "Children"}}            
+            {{/if}}
+        </ul>
+    </li>
+    {{/each}}
+</script>

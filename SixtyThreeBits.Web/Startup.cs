@@ -13,28 +13,30 @@ namespace SixtyThreeBits.Web
 {
     public class Startup
     {
-        AppSettingsModel AppSettings;
+        AppSettingsCollection AppSettings;
+        UtilityCollection Utilities;
 
         public Startup(IWebHostEnvironment Env)
         {
             if (Env.IsDevelopment())
             {
                 var Builder = new ConfigurationBuilder().SetBasePath(Env.ContentRootPath).AddJsonFile("appsettings.json");
-                AppSettings = new AppSettingsModel(Builder.Build());
+                AppSettings = new AppSettingsCollection(Builder.Build());
                 AppSettings.IsDevelopment = true;
             }
             else
             {
                 var Builder = new ConfigurationBuilder().SetBasePath(Env.ContentRootPath).AddJsonFile("appsettings.release.json");
-                AppSettings = new AppSettingsModel(Builder.Build());
+                AppSettings = new AppSettingsCollection(Builder.Build());
                 AppSettings.IsDevelopment = false;
             }
+            Utilities = new UtilityCollection(AppSettings);
         }
 
         public void ConfigureServices(IServiceCollection Services) 
         {            
             Services.AddSingleton(AppSettings);
-            Services.AddSingleton(new UtilityCollection(AppSettings));
+            Services.AddSingleton(Utilities);
 
             Services.AddDistributedMemoryCache();
             Services.Configure<CookiePolicyOptions>(Options =>
@@ -60,7 +62,7 @@ namespace SixtyThreeBits.Web
                 Options.JsonSerializerOptions.PropertyNamingPolicy = null;  
             } );
 
-            Services.AddSingleton(new DataAccessFactory(AppSettings.DBConnectionStrings.DBConnectionString));
+            Services.AddScoped<DataAccessFactory>();
             //Honestly, I'm very pissed of on EFCore team!!! because of "A second operation started on this context before a previous operation completed. Any instance members are not guaranteed to be thread safe."
             //The whole idea of .NET Core + DI is create once use anywhere. I'm not able to use same DBDataContext to perform multiple db queries, so what is the point of DI then?            
             //Services.AddDbContext<DBCoreDataContext>(Options => Options.UseSqlServer(AppSettings.DBConnectionStrings.DBConnectionString));

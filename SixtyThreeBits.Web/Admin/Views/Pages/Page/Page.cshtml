@@ -1,0 +1,113 @@
+﻿@model PagePropertiesModel.PageViewModel    
+@section HeaderSection{
+    <link href="~/Content/Plugins/63bits-bsforms/forms.css" rel="stylesheet" />
+    <link href="~/Content/Plugins/Fancybox/jquery.fancybox.min.css" rel="stylesheet" />
+}
+<div class="actions-row">
+    <button id="SaveButton" type="submit" class="btn btn-circle btn-primary" form="PagePropertiesForm"><i class="fas fa-save"></i></button>
+</div>
+<div class="card">
+    <div class="card-body">
+
+
+        <form id="PagePropertiesForm" method="post" enctype="multipart/form-data">
+            <div class="row">
+                <div class="form-group col-lg-2">
+                    <label>Published?</label>
+                    <label class="toggler toggler-lg">
+                        <input type="checkbox" id="IsPublishedChechBox" name="@nameof(Model.PageIsPublished)" value="true" @(Model.PageIsPublished ? Html.Raw("checked") : null) />
+                        <i></i>
+                    </label>
+                </div>
+                <div class="form-group col-lg-2">
+                    <label>Menu?</label>
+                    <label class="toggler toggler-lg">
+                        <input type="checkbox" id="IsMenuItemChechBox" name="@nameof(Model.PageIsMenuItem)" value="true" @(Model.PageIsMenuItem ? Html.Raw("checked") : null) />
+                        <i></i>
+                    </label>
+                </div>
+                <div class="form-group col-lg-4">
+                    <label>Upload Image</label>
+                    <div class="input-group custom-file-group js-custom-file-upload">
+                        <div class="form-control">
+                            <a class="js-attachment js-image-attachment" href="@Model.PageImageFilenameHttpPath">@Model.PageImageFilename</a>
+                            <span class="js-new-attachment hidden"></span>
+                        </div>
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-warning hidden js-clear-button"><i class="fa fa-times"></i></button>
+                            @if (Model.HasPageImage)
+                            {
+                                <button type="button" data-url="@Html.Raw(Model.UrlDeleteImage)" data-text-confirm="@Html.Raw(Model.TextConfirmDelete)" class="btn btn-danger js-delete-button"><i class="fas fa-trash-alt"></i></button>
+                            }
+                            <span class="btn btn-default custom-file-upload">
+                                <i class="fas fa-folder-open"></i>
+                                <input type="file" name="PostedFile" accept="" />
+                            </span>
+                        </span>
+                    </div>
+                    <span class="help-block"></span>
+                </div>
+                <div class="form-group col-lg-4">
+                    <label>Url Slug</label>
+                    <input id="SlugTextBox" type="text" name="@nameof(Model.PageSlug)" class="form-control" value="@Model.PageSlug" />
+                    <p class="help-block">
+                        <span class="error-text"></span>
+                    </p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-lg-4">
+                    <label>Title</label>
+                    <input type="text" name="@nameof(Model.PageTitle)" class="form-control" value="@Model.PageTitle" />
+                    <p class="help-block">
+                        <span class="error-text"></span>
+                    </p>
+                </div>
+                <div class="form-group col-lg-4">
+                    <label>Title Eng</label>
+                    <input type="text" name="@nameof(Model.PageTitleEng)" class="form-control" value="@Model.PageTitleEng" />
+                    <p class="help-block">
+                        <span class="error-text"></span>
+                    </p>
+                </div>
+                <div class="form-group col-lg-4">
+                    <label>Title Rus</label>
+                    <input type="text" name="@nameof(Model.PageTitleRus)" class="form-control" value="@Model.PageTitleRus" />
+                    <p class="help-block">
+                        <span class="error-text"></span>
+                    </p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-lg-4">
+                    <label>Short Description</label>
+                    <textarea name="@nameof(Model.PageShortDescription)" class="form-control" maxlength="200">@Html.Raw(Model.PageShortDescription)</textarea>
+                </div>
+                <div class="form-group col-lg-4">
+                    <label>Short Description Eng</label>
+                    <textarea name="@nameof(Model.PageShortDescriptionEng)" class="form-control" maxlength="200">@Html.Raw(Model.PageShortDescriptionEng)</textarea>
+                </div>
+                <div class="form-group col-lg-4">
+                    <label>Short Description Rus</label>
+                    <textarea name="@nameof(Model.PageShortDescriptionRus)" class="form-control" maxlength="200">@Html.Raw(Model.PageShortDescriptionRus)</textarea>
+                </div>
+            </div>             
+        </form>
+    </div>
+</div>
+
+@section FooterSection{
+    <script src="~/Content/Plugins/63bits-bsforms/forms.js"></script>    
+    <script src="~/Content/Plugins/Fancybox/jquery.fancybox.min.js"></script>
+    <script src="~/Content/Plugins/Fancybox/FancyMethods.js"></script>
+    <script src="~/Areas/Admin/Content/Scripts/Pages/Page/Page.js"></script>    
+    @if (Model.Form.HasErrors)
+    {
+        <script>
+        $(function(){
+            Validation.Init({ErrorsJson:@Html.Raw(Model.Form.ErrorsJson)}).ShowErrors();
+        });
+        </script>
+    }
+
+}

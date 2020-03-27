@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 
 namespace SixtyThreeBits.Core.Utilities
 {
-    public class AppSettingsModel
+    public class AppSettingsCollection
     {
         #region Properties        
         IConfiguration Configuration { get; set; }
@@ -17,14 +17,14 @@ namespace SixtyThreeBits.Core.Utilities
         public bool SMTPEnableSSL => GetConfigValue().ToBooleanValue();
         public string SMTPFromName => GetConfigValue();
 
-        public string UploadFolderHttpPath => GetConfigValue();
         public string UploadFolderPhysicalPath => GetConfigValue();
+        public readonly string UploadFolderVirtualPath = "/upload/";
         public bool IsDevelopment { get; set; }
 
         #endregion
 
         #region Constructors
-        public AppSettingsModel(IConfiguration Configuration)
+        public AppSettingsCollection(IConfiguration Configuration)
         {
             this.Configuration = Configuration;
             DBConnectionStrings = new DBConnectionStringsModel(Configuration);

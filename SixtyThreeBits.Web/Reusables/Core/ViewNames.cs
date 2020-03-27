@@ -147,9 +147,8 @@
                 public class FileTreeEditor
                 {
                     #region Properties
-                    public const string Editor = "~/Views/Admin/Shared/FileTreeEditor/FileTreeEditor.cshtml";
-                    public const string Folder = "~/Views/Admin/Shared/FileTreeEditor/FileTreeEditorFolder.cshtml";
-                    public const string File = "~/Views/Admin/Shared/FileTreeEditor/FileTreeEditorFile.cshtml";
+                    public const string Editor = "~/Admin/Views/Shared/FileTreeEditor/FileTreeEditor.cshtml";                    
+                    public const string File = "~/Admin/Views/Shared/FileTreeEditor/FileTreeEditorFile.cshtml";
                     #endregion
                 }
                 #endregion

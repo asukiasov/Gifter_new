@@ -86,7 +86,8 @@ namespace SixtyThreeBits.Web.Admin.Filters
             .EnableAngle(true)
             .EnableJQuery(true)
             .EnableJQueryConfirm(true)
-            .EnablePreloader(true);
+            .EnablePreloader(true)
+            .Enable63BitsComponents(true);
 
             ViewModel.PluginClient = Model.PluginClient;
         }

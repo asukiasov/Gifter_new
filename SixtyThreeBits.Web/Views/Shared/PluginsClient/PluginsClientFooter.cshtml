@@ -2,7 +2,6 @@
 @if (Model.IsBootstrapEnabled)
 {
     <script src="~/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-
 }
 @if (Model.IsUtilsEnabled)
 {
@@ -12,9 +11,17 @@
 {
     <script src="~/plugins/preloader/preloader.js"></script>
 }
+@if (Model.IsJQueryUIEnabled)
+{
+    <script src="~/plugins/jquery-ui/jquery-ui.js"></script>
+}
 @if (Model.IsJQueryConfirmEnabled)
 {
     <script src="~/plugins/jquery-confirm/jquery-confirm.min.js"></script>
+}
+@if (Model.IsJQueryNestedSortableEnabled)
+{
+    <script src="~/plugins/jquery-nestedSortable/jquery.mjs.nestedSortable.js"></script>
 }
 @if (Model.Is63BitsComponentsEnabled)
 {
@@ -36,6 +43,10 @@
 @if (Model.IsSelect2Enabled)
 {
     <script src="~/plugins/select2/js/select2.full.min.js"></script>
+}
+@if(Model.IsTemplate7Enabled)
+{
+    <script src="~/plugins/template7/template7.min.js"></script>
 }
 @if (Model.IsJsZipEnabled)
 {

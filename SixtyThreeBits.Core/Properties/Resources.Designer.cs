@@ -106,6 +106,15 @@ namespace SixtyThreeBits.Core.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Deleting this item will also delete all child items. Do you really want to continue?.
+        /// </summary>
+        public static string TextConfirmDeleteRecursive {
+            get {
+                return ResourceManager.GetString("TextConfirmDeleteRecursive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Delete.
         /// </summary>
         public static string TextDelete {
@@ -183,6 +192,15 @@ namespace SixtyThreeBits.Core.Properties {
         public static string ValidationRequired {
             get {
                 return ResourceManager.GetString("ValidationRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Page title is required.
+        /// </summary>
+        public static string ValidationRequiredPageTitle {
+            get {
+                return ResourceManager.GetString("ValidationRequiredPageTitle", resourceCulture);
             }
         }
         

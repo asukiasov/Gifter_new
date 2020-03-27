@@ -132,6 +132,9 @@
   <data name="TextConfirmDeleteAttachment" xml:space="preserve">
     <value>ნამდვილად გნებავთ გაილის წაშლა?</value>
   </data>
+  <data name="TextConfirmDeleteRecursive" xml:space="preserve">
+    <value>ჩანაწერის წაშლა აგრეთვე გამოიწვევს ყველა ქვე-ჩანაწერების წაშლას (ასეთების არსებობის შემთხვევაში). ნამდვილად გსურთ გაგრძელება?</value>
+  </data>
   <data name="TextDelete" xml:space="preserve">
     <value>წაშლა</value>
   </data>
@@ -158,6 +161,9 @@
   </data>
   <data name="ValidationRequired" xml:space="preserve">
     <value>ველის შეყვანა აუცილებელია</value>
+  </data>
+  <data name="ValidationRequiredPageTitle" xml:space="preserve">
+    <value>შეიყვანეთ გვერდის დასახელება</value>
   </data>
   <data name="ValidationTextMaxLength" xml:space="preserve">
     <value>ტექსტის მაქსიმალური ზომა {0} სიმბოლო უნდა იყოს</value>

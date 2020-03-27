@@ -11,11 +11,11 @@ namespace SixtyThreeBits.Core.Utilities
         public System.Globalization.CultureInfo CultureInvariant = System.Globalization.CultureInfo.InvariantCulture;
         public System.Globalization.CultureInfo CultureKA => new System.Globalization.CultureInfo("ka-ge");
         public System.Globalization.CultureInfo CultureUS => new System.Globalization.CultureInfo("en-us");
-        AppSettingsModel AppSettings;
+        AppSettingsCollection AppSettings;
         #endregion
 
         #region Constructors
-        public UtilityCollection(AppSettingsModel AppSettings)
+        public UtilityCollection(AppSettingsCollection AppSettings)
         {
             this.AppSettings = AppSettings;
         }
@@ -98,17 +98,29 @@ namespace SixtyThreeBits.Core.Utilities
             }
 
             return ErrorMessage;
-        }        
-        
-        public string GetUploadedFileHttpPath(string Filename)
-        {
-            return string.IsNullOrWhiteSpace(Filename) ? null : $"{AppSettings.UploadFolderHttpPath}{Filename}";
         }
 
-        public string GetUploadedFilePhysicalPath(string Filename)
+        /// <summary>
+        /// Get http path of file
+        /// </summary>
+        /// <param name="Filename">Name of the file</param>
+        /// <param name="SubFolders">Subfolders string, that MUST NOT have slash in the beginning and MUST HAVE slash in the end, like sub1/sub2/sub3/ </param>
+        /// <returns></returns>
+        public string GetUploadedFileHttpPath(string Filename, string SubFolders = null)
         {
-            return $"{AppSettings.UploadFolderPhysicalPath}{Filename}";
-        }        
+            return string.IsNullOrWhiteSpace(Filename) ? null : $"{AppSettings.UploadFolderVirtualPath}{SubFolders}{Filename}";
+        }
+        
+        /// <summary>
+        /// Get full physical path of file.
+        /// </summary>
+        /// <param name="Filename">Name of the file</param>
+        /// <param name="SubFolders">Subfolders string, that MUST NOT have back slash in the beginning and MUST HAVE back slash in the end, like sub1\sub2\sub3\ </param>
+        /// <returns></returns>
+        public string GetUploadedFilePhysicalPath(string Filename, string SubFolders = null)
+        {            
+            return $"{AppSettings.UploadFolderPhysicalPath}{SubFolders}{Filename}";
+        }                
         #endregion
-    }    
+    }
 }
