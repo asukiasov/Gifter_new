@@ -288,6 +288,8 @@ namespace SixtyThreeBits.Web.Reusables.Core
         public bool HasMenu => Menu?.Count > 0;        
         public Breadcrumbs Breadcrumbs { get; set; }
         public bool HasBreadcrumbs => Breadcrumbs != null;
+        public List<ProjectMenuItem> Tabs { get; set; }
+        public bool HasTabs => Tabs?.Count > 0;
         public string UrlLogout { get; set; }
         public PluginClient PluginClient { get; set; }
         #endregion
@@ -489,6 +491,7 @@ namespace SixtyThreeBits.Web.Reusables.Core
 
         public StringBuilder PageTitle { get; } = new StringBuilder();
         public Breadcrumbs Breadcrumbs { get; set; }
+        public List<ProjectMenuItem> Tabs { get; set; } = new List<ProjectMenuItem>();
 
         public PluginClient PluginClient { get; set; }
         public SuccessErrorPartialViewModel SuccessErrorPartialViewModel { get; set; } = new SuccessErrorPartialViewModel();
@@ -657,35 +660,13 @@ namespace SixtyThreeBits.Web.Reusables.Core
     }
 
     public class FormViewModelBase
-    {
-        #region Constructors
-        public FormViewModelBase(UtilityCollection Utilities)
-        {
-            this.Utilities = Utilities;
-        }
-        #endregion
-
-        #region Properties
-        UtilityCollection Utilities;
-
-        public string Filename { get; set; }
-        public string FilenameHttpPath => Utilities.GetUploadedFileHttpPath(Filename);
-        public bool HasFile => !string.IsNullOrWhiteSpace(Filename);
-        public string UrlDeleteFile { get; set; }
-
-        public string UrlAttachmentsUpload { get; set; }
-        public string UrlAttachmentsUpdate { get; set; }
-        public string UrlAttachmentsDelete { get; set; }
-        public string UrlAttachmentsSyncSortIndexes { get; set; }        
-
-
+    {        
+        #region Properties        
         public List<SimpleKeyValue<string, string>> Errors { get; set; }
         public string ErrorMessage => string.Join("<br />", Errors?.Select(Item => Item.Value));
         public bool HasErrors => Errors?.Count > 0;
         public string ErrorsJson => Errors.ToJSON();        
-        public bool IsSaved { get; set; }
-
-        public string TextConfirmDeleteAttachment { get; set; } = Resources.TextConfirmDeleteAttachment;
+        public bool IsSaved { get; set; }        
         #endregion
 
         #region Methods

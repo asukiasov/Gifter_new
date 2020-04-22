@@ -2,7 +2,7 @@
 using SixtyThreeBits.Libraries;
 
 namespace SixtyThreeBits.Core.Modules
-{    
+{
     public class DataAccessBase : SixtyThreeBitsDataObject
     {
         #region Properties

@@ -12,7 +12,7 @@ namespace SixtyThreeBits.Core.Modules
 {
     public class PagesDataAccess : DataAccessBase
     {
-        #region Methods
+        #region Properties
         AppSettingsCollection AppSettings;
         #endregion
 

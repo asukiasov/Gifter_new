@@ -106,7 +106,22 @@ namespace SixtyThreeBits.Core.DB
             );
             var DBResult = PagesListForDeleteRecursiveResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
             return DBResult;
-        }        
+        }
+        #endregion
+
+        #region SystemPropertiesGet
+        internal virtual DbSet<ScalarFunctionResult<string>> SystemPropertiesGetResult { get; set; }
+        public async Task<string> SystemPropertiesGet()
+        {
+            var PR = new PrepareQueryExecution(
+                DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
+                DatabaseObjectName: nameof(SystemPropertiesGet),
+                ResultItemType: typeof(ScalarFunctionResult<string>)
+            );
+            var DBResult = SystemPropertiesGetResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
+            var DBFunctionResult = await DBResult.FirstOrDefaultAsync();
+            return DBFunctionResult?.Value;
+        }
         #endregion
 
         #region UsersGetSingleUserByUserID

@@ -20,14 +20,8 @@ namespace SixtyThreeBits.Core.DB
         public virtual DbSet<Permissions> Permissions { get; set; }
         public virtual DbSet<RolePermissions> RolePermissions { get; set; }
         public virtual DbSet<Roles> Roles { get; set; }
+        public virtual DbSet<SystemProperties> SystemProperties { get; set; }
         public virtual DbSet<Users> Users { get; set; }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-            }
-        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -90,8 +84,8 @@ namespace SixtyThreeBits.Core.DB
 
                 entity.Property(e => e.PageTitleRus).HasMaxLength(100);
 
-                entity.HasOne(d => d.Parent)
-                    .WithMany(p => p.InverseParent)
+                entity.HasOne(d => d.PageParent)
+                    .WithMany(p => p.InversePageParent)
                     .HasForeignKey(d => d.PageParentID)
                     .HasConstraintName("FK_Pages_Pages");
             });
@@ -150,6 +144,29 @@ namespace SixtyThreeBits.Core.DB
                 entity.Property(e => e.RoleName)
                     .IsRequired()
                     .HasMaxLength(100);
+            });
+
+            modelBuilder.Entity<SystemProperties>(entity =>
+            {
+                entity.Property(e => e.SystemPropertiesID).ValueGeneratedNever();
+
+                entity.Property(e => e.ContactAddress).HasMaxLength(200);
+
+                entity.Property(e => e.ContactEmail).HasMaxLength(200);
+
+                entity.Property(e => e.ContactPhone).HasMaxLength(200);
+
+                entity.Property(e => e.FacebookUrl).HasMaxLength(200);
+
+                entity.Property(e => e.GoogleMapsIFrame).HasMaxLength(2000);
+
+                entity.Property(e => e.InstagramUrl).HasMaxLength(200);
+
+                entity.Property(e => e.LinkedInUrl).HasMaxLength(200);
+
+                entity.Property(e => e.TwitterUrl).HasMaxLength(200);
+
+                entity.Property(e => e.YoutubeUrl).HasMaxLength(200);
             });
 
             modelBuilder.Entity<Users>(entity =>

@@ -34,10 +34,15 @@
       },
       {
          "HasPrimaryKey": true,
+         "Name": "[dbo].[SystemProperties]"
+      },
+      {
+         "HasPrimaryKey": true,
          "Name": "[dbo].[Users]"
       }
    ],
    "UseDatabaseNames": true,
+   "UseDbContextSplitting": false,
    "UseFluentApiOnly": true,
    "UseHandleBars": false,
    "UseInflector": false,

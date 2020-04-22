@@ -21,9 +21,9 @@ namespace SixtyThreeBits.Web.Reusables
         #endregion
 
         #region Sub Classes
-        public SessionAssistance(IHttpContextAccessor HttpContextAccessor)
+        public SessionAssistance(ISession Session)
         {
-            Session = HttpContextAccessor.HttpContext.Session;                        
+            this.Session = Session;                        
         }
         #endregion
 

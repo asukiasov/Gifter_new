@@ -10,7 +10,13 @@ using System.Threading.Tasks;
 namespace SixtyThreeBits.Web.Reusables.Core
 {
     public class LocalUtilities
-    {                 
+    {
+        public static bool IsAjaxRequest(HttpRequest Request)
+        {
+            var Header = Request?.Headers["X-Requested-With"].ToString();
+            return Header == "XMLHttpRequest";
+        }
+
         public static WebProjectModelBase GetWebProjectModelBaseFromController(object Controller)
         {
             dynamic C = Controller;

@@ -92,6 +92,14 @@ namespace SixtyThreeBits.Core.Utilities
                 Items.RemoveAt(Index);
             }
         }
+
+        public void DeleteLastItem()
+        {
+            if (Items?.Count >  0)
+            {
+                Items.RemoveAt(Items.Count - 1);
+            }
+        }
         #endregion Methods
 
         #region Sub Classes

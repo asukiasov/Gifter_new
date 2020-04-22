@@ -8,8 +8,7 @@ namespace SixtyThreeBits.Core.Utilities
     {
         #region Properties        
         IConfiguration Configuration { get; set; }
-        public DBConnectionStringsModel DBConnectionStrings { get; set; }
-        
+        public DBConnectionStringsModel DBConnectionStrings { get; set; }        
         public string SMTPAddress => GetConfigValue();
         public string SMTPUsername => GetConfigValue();
         public string SMTPPassword => GetConfigValue();

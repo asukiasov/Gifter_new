@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.29613.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SixtyThreeBits.Web", "SixtyThreeBits.Web\SixtyThreeBits.Web.csproj", "{85A14672-F6B0-40E5-801A-1D258343F457}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SixtyThreeBits.Core", "SixtyThreeBits.Core\SixtyThreeBits.Core.csproj", "{B7D3876A-0AE0-4541-A1F0-27D1123E903E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SixtyThreeBits.Core", "SixtyThreeBits.Core\SixtyThreeBits.Core.csproj", "{B7D3876A-0AE0-4541-A1F0-27D1123E903E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

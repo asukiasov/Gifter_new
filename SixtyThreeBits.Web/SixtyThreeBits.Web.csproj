@@ -5,13 +5,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Admin\Views\Pages\Page\**" />
     <Compile Remove="App_Data\**" />
-    <Content Remove="Admin\Views\Pages\Page\**" />
     <Content Remove="App_Data\**" />
-    <EmbeddedResource Remove="Admin\Views\Pages\Page\**" />
     <EmbeddedResource Remove="App_Data\**" />
-    <None Remove="Admin\Views\Pages\Page\**" />
     <None Remove="App_Data\**" />
   </ItemGroup>
 
@@ -19,6 +15,7 @@
     <PackageReference Include="63BITS-Libraries-DotNetStandart" Version="1.1.26" />
     <PackageReference Include="DevExtreme.AspNet.Core" Version="19.2.5" />
     <PackageReference Include="DevExtreme.AspNet.Data" Version="2.5.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Session" Version="2.2.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.3" />
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="3.1.3" />
@@ -34,6 +31,7 @@
   <ItemGroup>
     <None Include="Admin\Views\Home\Index.cshtml" />
     <None Include="Admin\Views\Pages\PagesTree.cshtml" />
+    <None Include="Admin\Views\Pages\Page\PageProperties.cshtml" />
     <None Include="Admin\Views\Shared\FileTreeEditor\FileTreeEditor.cshtml" />
     <None Include="Admin\Views\Shared\FileTreeEditor\FileTreeEditorFile.cshtml" />
     <None Include="Views\Shared\FileTree\FileTree.cshtml" />

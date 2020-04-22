@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SixtyThreeBits.Web.Admin.Controllers;
+using SixtyThreeBits.Web.Admin.Filters;
 using SixtyThreeBits.Web.Admin.Models;
 using SixtyThreeBits.Web.Reusables.Core;
 using System.Threading.Tasks;
@@ -57,92 +58,59 @@ namespace SixtyThreeBits.Web.Areas.Admin.Controllers
         }
     }
 
-    //[RoutePrefix("pages")]
-    //[BeforePagesPageLoad(Order = 1)]
-    //[TabsInitialization(Order = 2, ParentRoute = ControllerActionRouteNames.Admin.Pages.Page.Root)]
-    //public class PageController : AdminAreaController
-    //{
-    //    #region Properties
-    //    public SixtyThreeBits.Core.Page DBItemPage;
-    //    #endregion
+    [Route("admin/pages/{PageID:int}")]
+    [TypeFilter(typeof(BeforePagesPageLoad), Order = 2)]    
+    [TabsInitialization(Order = 2, ParentRoute = ControllerActionRouteNames.Admin.Pages.Page.Root)]
+    public class PageController : AdminControllerBase<PageModel>
+    {
 
-    //    #region Page Properties
-    //    [HttpGet]
-    //    [Route("{PageID:int}/properties", Name = ControllerActionRouteNames.Admin.Pages.Page.Properties)]
-    //    public async Task<ActionResult> PageProperties(int? PageID)
-    //    {
-    //        var Model = PagePropertiesModel.GetPageViewModel(DBItemPage, null, Url);            
-    //        return View(ViewNames.Admin.Pages.Page, Model);
-    //    }
+        #region Constructors
+        public PageController()
+        {
+            Model = new PageModel();
+        }
+        #endregion
 
-    //    [HttpPost]
-    //    [ValidateInput(false)]
-    //    [Route("{PageID:int}/properties")]
-    //    public async Task<ActionResult> PageProperties(int? PageID, PagePropertiesModel.PageViewModel Model)
-    //    {
-    //        var Result = default(async Task<ActionResult>);
 
-    //        Model = PagePropertiesModel.GetPageViewModel(DBItemPage, Model, Url);
-    //        PagePropertiesModel.ValidatePageItemViewModel(PageID, Model);
+        #region Page Properties
+        [Route("properties", Name = ControllerActionRouteNames.Admin.Pages.Page.Properties)]
+        public IActionResult PageProperties()
+        {
+            Model.PluginClient.Enable63BitsForms(true).EnableFancybox(true);
+            var ViewModel = Model.GetPagePropertiesViewModel();
+            Model.SetPageTitle(Model.DBItemPage.PageTitle);
+            return View(ViewNames.Admin.Pages.Page.Properties, ViewModel);
+        }
+        #endregion
 
-    //        if (Model.Form.HasErrors)
-    //        {
-    //            Result = View(ViewNames.Admin.Pages.Page, Model);
-    //        }
-    //        else
-    //        {
-    //            Model = PagePropertiesModel.SavePageItem(PageID, Model, User.UserID);
-    //            if (Model.Form.IsSaved)
-    //            {
-    //                SuccessErrorPartialViewAssistance.InitSuccessMessage(Session: Session);
-    //                Result = Redirect(Url.RouteUrl(ControllerActionRouteNames.Admin.Pages.Page.Properties));
-    //            }
-    //            else
-    //            {
-    //                SuccessErrorPartialViewAssistance.InitErrorMessage<AdminLayoutModel>(ViewData: ViewData);
-    //                Result = View(ViewNames.Admin.Pages.Page, Model);
-    //            }
-    //        }
+        #region Page Builder
+        [Route("page-builder", Name = ControllerActionRouteNames.Admin.Pages.Page.Builder)]
+        [Route("page-builder/{Language:length(2)}", Name = ControllerActionRouteNames.Admin.Pages.Page.BuilderLanguage)]
+        public IActionResult PageBuilder(int? PageID, string Language)
+        {
+            var ViewModel = Model.GetPageBuilderViewModel(PageID, Language);
+            return View(ViewNames.Admin.Pages.Page.Builder, ViewModel);
+        }
 
-    //        return Result;
-    //    }
-
-    //    [HttpPost]
-    //    [Route("{PageID:int}/properties/delete-image", Name = ControllerActionRouteNames.Admin.Pages.Page.DeleteImage)]
-    //    public async Task<ActionResult> PageDeleteImage(int? PageID)
-    //    {
-    //        var Response = PagePropertiesModel.DeleteImage(PageID);
-    //        return Json(Response);
-    //    }
-    //    #endregion
-
-    //    #region Page Builder
-    //    [Route("{PageID:int}/page-builder", Name = ControllerActionRouteNames.Admin.Pages.Page.Builder)]
-    //    [Route("{PageID:int}/page-builder/{Language:length(2)}", Name = ControllerActionRouteNames.Admin.Pages.Page.BuilderLanguage)]
-    //    public async Task<ActionResult> PageBuilder(int? PageID, string Language)
-    //    {
-    //        var Model = PageBuilderModel.GetPageViewModel(PageID, Language, this);
-    //        return View(ViewNames.Admin.Pages.PageBuilder, Model);
-    //    }
-
-    //    [HttpPost]
-    //    [ValidateInput(false)]
-    //    [Route("{PageID:int}/page-builder")]
-    //    [Route("{PageID:int}/page-builder/{Language:length(2)}")]
-    //    public async Task<ActionResult> PageBuilder(int? PageID, string Language, PageBuilderModel.PageSubmitModel SubmitModel)
-    //    {
-    //        var Errors = PageBuilderModel.Validate(PageID, SubmitModel);
-    //        var Model = new AjaxResponse();
-    //        if (Errors.Count == 0)
-    //        {
-    //            Model = PageBuilderModel.Save(PageID, SubmitModel);
-    //        }
-    //        else
-    //        {
-    //            Model.Data = Errors;
-    //        }
-    //        return Json(Model);
-    //    }
-    //    #endregion
-    //}
+        [HttpPost]
+        //[ValidateInput(false)]
+        [Route("page-builder")]
+        [Route("page-builder/{Language:length(2)}")]
+        public IActionResult PageBuilder(int? PageID, string Language, PageModel.PageBuilderSubmitModel SubmitModel)
+        {
+            //var Errors = PageBuilderModel.Validate(PageID, SubmitModel);
+            //var Model = new AjaxResponse();
+            //if (Errors.Count == 0)
+            //{
+            //    Model = PageBuilderModel.Save(PageID, SubmitModel);
+            //}
+            //else
+            //{
+            //    Model.Data = Errors;
+            //}
+            //return Json(Model);
+            return Json("OK");
+        }
+        #endregion
+    }    
 }

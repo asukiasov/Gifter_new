@@ -85,10 +85,18 @@
             public class Pages
             {
                 #region Properties
-                public const string Tree = "~/Admin/Views/Pages/PagesTree.cshtml";
-                public const string Page = "~/Admin/Views/Pages/Page/Page.cshtml";
-                public const string PageBuilder = "~/Admin/Views/Pages/Page/PageBuilder.cshtml";
-                #endregion            
+                public const string Tree = "~/Admin/Views/Pages/PagesTree.cshtml";                
+                #endregion
+
+                #region Sub Classes
+                public class Page
+                {
+                    #region Properties
+                    public const string Properties = "~/Admin/Views/Pages/Page/PageProperties.cshtml";
+                    public const string Builder = "~/Admin/Views/Pages/Page/PageBuilder.cshtml"; 
+                    #endregion
+                }
+                #endregion
             }
 
             public class Products
@@ -151,6 +159,13 @@
                     public const string File = "~/Admin/Views/Shared/FileTreeEditor/FileTreeEditorFile.cshtml";
                     #endregion
                 }
+                #endregion
+            }
+
+            public class SystemProperties
+            {
+                #region Properties
+                public const string Page = "~/Admin/Views/SystemProperties/SystemProperties.cshtml"; 
                 #endregion
             }
 

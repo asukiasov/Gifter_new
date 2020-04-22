@@ -230,6 +230,13 @@
                 #endregion
             }
 
+            public class SystemProperties
+            {
+                #region Properties
+                public const string Page = "AdminSystemPropertiesPage"; 
+                #endregion
+            }
+
             public class UserManagement
             {
                 #region Properties

@@ -8,7 +8,7 @@ namespace SixtyThreeBits.Core.DB.Tables
     {
         public Pages()
         {
-            InverseParent = new HashSet<Pages>();
+            InversePageParent = new HashSet<Pages>();
         }
 
         public int PageID { get; set; }
@@ -33,7 +33,7 @@ namespace SixtyThreeBits.Core.DB.Tables
         public bool PageIsMenuItem { get; set; }
         public DateTime PageDateCreated { get; set; }
 
-        public virtual Pages Parent { get; set; }
-        public virtual ICollection<Pages> InverseParent { get; set; }
+        public virtual Pages PageParent { get; set; }
+        public virtual ICollection<Pages> InversePageParent { get; set; }
     }
 }

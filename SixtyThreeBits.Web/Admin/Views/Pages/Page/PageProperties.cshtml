@@ -1,10 +1,8 @@
-﻿@model PagePropertiesModel.PageViewModel    
+﻿@model PageModel.PagePropertiesViewModel    
 @section HeaderSection{
-    <link href="~/Content/Plugins/63bits-bsforms/forms.css" rel="stylesheet" />
-    <link href="~/Content/Plugins/Fancybox/jquery.fancybox.min.css" rel="stylesheet" />
 }
 <div class="actions-row">
-    <button id="SaveButton" type="submit" class="btn btn-circle btn-primary" form="PagePropertiesForm"><i class="fas fa-save"></i></button>
+    <button type="submit" class="btn btn-circle btn-primary js-save-button" form="PagePropertiesForm"><i class="fas fa-save"></i></button>
 </div>
 <div class="card">
     <div class="card-body">
@@ -30,7 +28,7 @@
                     <label>Upload Image</label>
                     <div class="input-group custom-file-group js-custom-file-upload">
                         <div class="form-control">
-                            <a class="js-attachment js-image-attachment" href="@Model.PageImageFilenameHttpPath">@Model.PageImageFilename</a>
+                            <a class="js-attachment js-image-attachment" href="@Model.PageImageHttpPath">@Model.PageImageFilename</a>
                             <span class="js-new-attachment hidden"></span>
                         </div>
                         <span class="input-group-btn">
@@ -41,7 +39,7 @@
                             }
                             <span class="btn btn-default custom-file-upload">
                                 <i class="fas fa-folder-open"></i>
-                                <input type="file" name="PostedFile" accept="" />
+                                <input type="file" name="@nameof(Model.PageImageFile)" accept="" />
                             </span>
                         </span>
                     </div>
@@ -49,7 +47,7 @@
                 </div>
                 <div class="form-group col-lg-4">
                     <label>Url Slug</label>
-                    <input id="SlugTextBox" type="text" name="@nameof(Model.PageSlug)" class="form-control" value="@Model.PageSlug" />
+                    <input type="text" name="@nameof(Model.PageSlug)" class="form-control js-slug" value="@Model.PageSlug" />
                     <p class="help-block">
                         <span class="error-text"></span>
                     </p>
@@ -97,15 +95,12 @@
 </div>
 
 @section FooterSection{
-    <script src="~/Content/Plugins/63bits-bsforms/forms.js"></script>    
-    <script src="~/Content/Plugins/Fancybox/jquery.fancybox.min.js"></script>
-    <script src="~/Content/Plugins/Fancybox/FancyMethods.js"></script>
-    <script src="~/Areas/Admin/Content/Scripts/Pages/Page/Page.js"></script>    
-    @if (Model.Form.HasErrors)
+    <script src="~/admin/js/Pages/Page/Page.js"></script>    
+    @if (Model.HasErrors)
     {
         <script>
         $(function(){
-            Validation.Init({ErrorsJson:@Html.Raw(Model.Form.ErrorsJson)}).ShowErrors();
+            Validation.Init({ErrorsJson:@Html.Raw(Model.ErrorsJson)}).ShowErrors();
         });
         </script>
     }

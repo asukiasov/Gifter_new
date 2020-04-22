@@ -31,6 +31,7 @@ namespace SixtyThreeBits.Web.Admin.Filters
                 InitClientPlugins();
                 InitMenu();
                 InitBreadCrumbs();
+                InitTabs();
                 InitPageTitle();
                 InitSuccessErrorMessage();
                 InitSidebar();
@@ -73,7 +74,8 @@ namespace SixtyThreeBits.Web.Admin.Filters
 
         void InitStartUp()
         {
-            Model.Language = Constants.Languages.ENGLISH;            
+            Model.Language = Constants.Languages.ENGLISH;
+            
         }
 
         void InitClientPlugins()
@@ -130,6 +132,11 @@ namespace SixtyThreeBits.Web.Admin.Filters
         {
             Model.Breadcrumbs = Breadcrumbs.GetBreadcrumbsByPageUrl(Model.User.Permissions, Model.UrlCurrentPage);
             ViewModel.Breadcrumbs = Model.Breadcrumbs;
+        }        
+
+        void InitTabs()
+        {
+            ViewModel.Tabs = Model.Tabs;
         }
 
         void InitPageTitle()

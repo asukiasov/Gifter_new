@@ -18,6 +18,25 @@ $(function () {
             dots: true
         });
     }
+
+    if ($('.js-t63-testimonials-slider').length > 0) {
+        $('.js-t63-testimonials-slider').slick({
+            fade: true,
+            arrows: false,
+            dots: true,
+            autoplay: true,
+            autoplaySpeed: 5000,
+            pauseOnHover: false,
+            pauseOnFocus: false
+        });
+    }
+
+    //--- faq
+    $('.js-faq-item-head').click(function () {
+        const container = $(this).closest('.js-faq-item');
+        $(container).toggleClass('is-open');
+        $(container).find('.js-faq-item-body').slideToggle(200);
+    });
 });
 
 $(window).on('scroll', function () {

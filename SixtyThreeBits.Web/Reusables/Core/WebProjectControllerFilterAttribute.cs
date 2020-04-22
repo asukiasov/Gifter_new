@@ -11,13 +11,11 @@ namespace SixtyThreeBits.Web.Reusables.Core
         DataAccessFactory DataAccessFactory;
         AppSettingsCollection AppSettings;
         UtilityCollection Utilities;
-        ISessionAssistance SessionAssistance;
 
-        public BeforeWebProjectControllerLoaded(AppSettingsCollection AppSettings, UtilityCollection Utilities, ISessionAssistance SessionAssistance, DataAccessFactory DataAccessFactory    )
-        {            
+        public BeforeWebProjectControllerLoaded(AppSettingsCollection AppSettings, UtilityCollection Utilities, DataAccessFactory DataAccessFactory)
+        {
             this.AppSettings = AppSettings;
             this.Utilities = Utilities;
-            this.SessionAssistance = SessionAssistance;
             this.DataAccessFactory = DataAccessFactory;
         }
 
@@ -41,14 +39,14 @@ namespace SixtyThreeBits.Web.Reusables.Core
                 Model.WebsiteDomain = Model.GetWebsiteDomain(C.Request);
 
                 Model.AppSettings = this.AppSettings;
-                Model.Utilities = this.Utilities;
-                Model.SessionAssistance = this.SessionAssistance;
+                Model.Utilities = this.Utilities;                
                 Model.DataAccessFactory = this.DataAccessFactory;
-                
+
+                Model.SessionAssistance = new SessionAssistance(C.HttpContext.Session);
                 Model.CookieAssistance = new CookieAssistance(C.Request, C.Response);
                 Model.Url = C.Url;
                 Model.PluginClient = new PluginClient();
-                Model.Form = new FormViewModelBase(Model.Utilities);
+                Model.Form = new FormViewModelBase();
             }
         }
     }    

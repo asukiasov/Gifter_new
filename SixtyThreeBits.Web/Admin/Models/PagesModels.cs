@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using SixtyThreeBits.Core.Modules;
 using SixtyThreeBits.Core.Properties;
 using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries;
@@ -153,6 +155,195 @@ namespace SixtyThreeBits.Web.Admin.Models
         }        
     }
 
+    public class PageModelBase : WebProjectModelBase
+    {
+        #region Properties
+        public Page DBItemPage { get; set; } 
+        #endregion
+    }
+
+    public class PageModel : PageModelBase
+    {
+        #region Methods
+        public PagePropertiesViewModel GetPagePropertiesViewModel()
+        {
+            var ViewModel = new PagePropertiesViewModel();            
+            ViewModel.PageIsPublished = DBItemPage.PageIsPublished;
+            ViewModel.PageIsMenuItem = DBItemPage.PageIsMenuItem;
+            ViewModel.PageImageFilename = DBItemPage.PageImageFilename;
+            ViewModel.PageImageHttpPath = DBItemPage.PageImageFilenameHttpPath;
+            ViewModel.PageSlug = DBItemPage.PageSlug;
+            ViewModel.PageTitle = DBItemPage.PageTitle;
+            ViewModel.PageTitleEng = DBItemPage.PageTitleEng;
+            ViewModel.PageTitleRus = DBItemPage.PageTitleRus;
+            ViewModel.PageShortDescription = DBItemPage.PageShortDescription;
+            ViewModel.PageShortDescriptionEng = DBItemPage.PageShortDescriptionEng;
+            ViewModel.PageShortDescriptionRus = DBItemPage.PageShortDescriptionRus;
+            return ViewModel;
+        }
+
+        public PageBuilderViewModel GetPageBuilderViewModel(int? PageID, string Language)
+        {
+            if (string.IsNullOrWhiteSpace(Language))
+            {
+                Language = Enums.Languages.GEORGIAN;
+            }
+
+            var ViewModel = new PageBuilderViewModel();
+            ViewModel.PageTitle = Utilities.GetValuesByLanguage(Language, DBItemPage.PageTitle, DBItemPage.PageTitleEng, DBItemPage.PageTitleRus);
+            ViewModel.PageSlug = DBItemPage.PageSlug;
+            ViewModel.PageText = Utilities.GetValuesByLanguage(Language, DBItemPage.PageText, DBItemPage.PageTextEng, DBItemPage.PageTextRus);
+            ViewModel.PageData = Utilities.GetValuesByLanguage(Language, DBItemPage.PageData, DBItemPage.PageDataEng, DBItemPage.PageDataRus) ?? "[]";
+            ViewModel.IsPublished = DBItemPage.PageIsPublished;
+            ViewModel.Language = Language;
+            ViewModel.UrlBack = Url.RouteUrl(ControllerActionRouteNames.Admin.Pages.Index);
+            ViewModel.UrlPreview = Url.RouteUrl(ControllerActionRouteNames.Website.Home.StaticPagePreviewCulture, new { Culture = Language, PageID });
+            ViewModel.UrlSave = UrlCurrentPage;
+            //Model.UrlFileManager = LocalUtilities.GetFileManagerUrl(C.Url, C.DBItemPage.FolderPhysicalPath, C.DBItemPage.FolderVirtualPath);
+
+            ViewModel.SelectedLanguage = Utilities.GetValuesByLanguage(Language, Enums.Languages.GEORGIAN, Enums.Languages.ENGLISH, Enums.Languages.RUSSIAN);
+            ViewModel.LanguageOptions = new List<SimpleKeyValue<string, string>>
+            {
+                new SimpleKeyValue<string, string>{ Key = nameof(Enums.Languages.GEORGIAN), Value = Url.RouteUrl(ControllerActionRouteNames.Admin.Pages.Page.BuilderLanguage, new { PageID, Language = Enums.Languages.GEORGIAN}), IsSelected = Language == Enums.Languages.GEORGIAN },
+                new SimpleKeyValue<string, string>{ Key = nameof(Enums.Languages.ENGLISH), Value = Url.RouteUrl(ControllerActionRouteNames.Admin.Pages.Page.BuilderLanguage, new { PageID, Language = Enums.Languages.ENGLISH}), IsSelected = Language == Enums.Languages.ENGLISH},
+                new SimpleKeyValue<string, string>{ Key = nameof(Enums.Languages.RUSSIAN), Value = Url.RouteUrl(ControllerActionRouteNames.Admin.Pages.Page.BuilderLanguage, new { PageID, Language = Enums.Languages.RUSSIAN}), IsSelected = Language == Enums.Languages.RUSSIAN}
+            };
+
+            return ViewModel;
+        }
+
+        //public static AjaxResponse Save(int? PageID, PageSubmitModel SubmitModel)
+        //{
+        //    var AR = new AjaxResponse();
+        //    var DAL = new PagesDataAccess();
+
+        //    switch (SubmitModel.Language)
+        //    {
+        //        case Enums.Languages.GEORGIAN:
+        //            {
+        //                DAL.PagesIUD(
+        //                    DatabaseAction: Enums.DatabaseActions.UPDATE,
+        //                    PageID: PageID,
+        //                    PageSlug: SubmitModel.PageSlug,
+        //                    PageTitle: SubmitModel.PageTitle ?? Constants.NullValueFor.String,
+        //                    PageText: SubmitModel.PageText ?? Constants.NullValueFor.String,
+        //                    PageData: SubmitModel.PageData ?? Constants.NullValueFor.String,
+        //                    PageIsPublished: SubmitModel.IsPublished
+        //                );
+        //                break;
+        //            }
+        //        case Enums.Languages.ENGLISH:
+        //            {
+        //                DAL.PagesIUD(
+        //                    DatabaseAction: Enums.DatabaseActions.UPDATE,
+        //                    PageID: PageID,
+        //                    PageSlug: SubmitModel.PageSlug,
+        //                    PageTitleEng: SubmitModel.PageTitle ?? Constants.NullValueFor.String,
+        //                    PageTextEng: SubmitModel.PageText ?? Constants.NullValueFor.String,
+        //                    PageDataEng: SubmitModel.PageData ?? Constants.NullValueFor.String,
+        //                    PageIsPublished: SubmitModel.IsPublished
+        //                );
+        //                break;
+        //            }
+        //        case Enums.Languages.RUSSIAN:
+        //            {
+        //                DAL.PagesIUD(
+        //                    DatabaseAction: Enums.DatabaseActions.UPDATE,
+        //                    PageID: PageID,
+        //                    PageSlug: SubmitModel.PageSlug,
+        //                    PageTitleRus: SubmitModel.PageTitle ?? Constants.NullValueFor.String,
+        //                    PageTextRus: SubmitModel.PageText ?? Constants.NullValueFor.String,
+        //                    PageDataRus: SubmitModel.PageData ?? Constants.NullValueFor.String,
+        //                    PageIsPublished: SubmitModel.IsPublished
+        //                );
+        //                break;
+        //            }
+        //    }
+        //    AR.IsSuccess = !DAL.IsError;
+
+        //    return AR;
+        //}
+
+        //public static List<SimpleKeyValue<string, string>> Validate(int? PageID, PageSubmitModel SubmitModel)
+        //{
+        //    var Errors = new List<SimpleKeyValue<string, string>>
+        //    {
+        //        Validation.ValidateRequired(ErrorKey: $"[name=\"{nameof(SubmitModel.PageTitle)}\"]", ValueToValidate: SubmitModel.PageTitle)
+        //    };
+
+        //    if (string.IsNullOrWhiteSpace(SubmitModel.PageSlug))
+        //    {
+        //        Errors.Add(Validation.GetError(ErrorKey: $"[name=\"{nameof(SubmitModel.PageSlug)}\"]", ErrorMessage: Resources.ValidationRequiredField));
+        //    }
+        //    else if (!PagesDataAccess.IsPageSlugUniq(SubmitModel.PageSlug, PageID))
+        //    {
+        //        Errors.Add(Validation.GetError(ErrorKey: $"[name=\"{nameof(SubmitModel.PageSlug)}\"]", ErrorMessage: Resources.TextSlugNotUniq));
+        //    }
+
+        //    Errors.RemoveAll(Item => Item == null);
+
+        //    return Errors;
+        //}
+        #endregion
+
+        #region Sub Classes
+        public class PagePropertiesViewModel : FormViewModelBase
+        {
+            
+            #region Properties             
+            public string PageSlug { get; set; }
+            public string PageTitle { get; set; }
+            public string PageTitleEng { get; set; }
+            public string PageTitleRus { get; set; }
+            public string PageShortDescription { get; set; }
+            public string PageShortDescriptionEng { get; set; }
+            public string PageShortDescriptionRus { get; set; }
+            public string PageImageFilename { get; set; }
+            public string PageImageHttpPath { get; set; }
+            public bool HasPageImage => !string.IsNullOrWhiteSpace(PageImageFilename);
+
+            public bool PageIsPublished { get; set; }
+            public bool PageIsMenuItem { get; set; }            
+            public IFormFile PageImageFile { get; set; }            
+            public string UrlDeleteImage { get; set; }
+            public string TextConfirmDelete { get; set; } = Resources.TextConfirmDelete;
+            #endregion
+        }
+
+        public class PageBuilderViewModel
+        {
+            #region Properties
+            public string PageTitle { get; set; }
+            public string PageSlug { get; set; }
+            public string PageText { get; set; }
+            public bool IsPublished { get; set; }
+            public string Language { get; set; }
+            public string PageData { get; set; }
+            public string UrlBack { get; set; }
+            public string UrlPreview { get; set; }
+            public string UrlSave { get; set; }
+            public string UrlFileManager { get; set; }
+            public string SelectedLanguage { get; set; }
+            public List<SimpleKeyValue<string, string>> LanguageOptions { get; set; }
+            public bool HasLanguageOptions => LanguageOptions?.Count > 0;
+
+            public string TextError { get; set; } = Resources.TextError;
+            #endregion
+        }
+
+        public class PageBuilderSubmitModel
+        {
+            #region Properties
+            public string PageTitle { get; set; }
+            public string PageSlug { get; set; }
+            public string PageText { get; set; }
+            public string Language { get; set; }
+            public string PageData { get; set; }
+            public bool IsPublished { get; set; }
+            #endregion
+        }
+        #endregion
+    }
     //public class PagePropertiesModel
     //{
     //    #region Methods
