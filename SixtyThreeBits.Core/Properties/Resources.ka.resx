@@ -159,6 +159,21 @@
   <data name="ValidationEmailFormatInvalid" xml:space="preserve">
     <value>ელ-ფოსტის ფორმატი არასწორია</value>
   </data>
+  <data name="ValidationPageSlugNotUniq" xml:space="preserve">
+    <value>გვერდის URL Slug არ არის უნიკალური</value>
+  </data>
+  <data name="ValidationPasswordLength" xml:space="preserve">
+    <value>პაროლი უნდა შეიცავდეს მინიმუმ 8 სიმბოლოს</value>
+  </data>
+  <data name="ValidationPasswordOldNotMatch" xml:space="preserve">
+    <value>მიმდინარე პაროლი არასწორია</value>
+  </data>
+  <data name="ValidationPasswordsNotMatch" xml:space="preserve">
+    <value>პაროლები არ ემთხვევა</value>
+  </data>
+  <data name="ValidationPasswordStrength" xml:space="preserve">
+    <value>პაროლი უნდა შეიცავდეს მინიმუმ ერთ სიმბოლოსა და ერთ ციფრს</value>
+  </data>
   <data name="ValidationRequired" xml:space="preserve">
     <value>ველის შეყვანა აუცილებელია</value>
   </data>

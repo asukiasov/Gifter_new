@@ -21,8 +21,8 @@ namespace SixtyThreeBits.Web.Admin.Controllers
         [HttpGet]
         [Route("", Name = ControllerActionRouteNames.Admin.UserManagement.Users)]
         public async Task<ActionResult> Users()
-        {
-            Model.PluginClient.EnableDevextreme(true);
+        {            
+            Model.PluginsClient.EnableDevextreme(true);
             var ViewModel = await Model.GetPageViewModel();
             return View(ViewNames.Admin.UserManagement.Users, ViewModel);
         }
@@ -111,7 +111,7 @@ namespace SixtyThreeBits.Web.Admin.Controllers
         [Route("", Name = ControllerActionRouteNames.Admin.UserManagement.Roles)]
         public ActionResult Roles()
         {
-            Model.PluginClient.EnableDevextreme(true);
+            Model.PluginsClient.EnableDevextreme(true);
             var ViewModel = Model.GetPageViewModel();
             return View(ViewNames.Admin.UserManagement.Roles, ViewModel);
         }
@@ -187,7 +187,7 @@ namespace SixtyThreeBits.Web.Admin.Controllers
         [Route("", Name = ControllerActionRouteNames.Admin.UserManagement.Permissions)]
         public ActionResult Permissions()
         {
-            Model.PluginClient.EnableDevextreme(true);
+            Model.PluginsClient.EnableDevextreme(true);
             var ViewModel = Model.GetPageViewModel();
             return View(ViewNames.Admin.UserManagement.Permissions, ViewModel);
         }
@@ -263,7 +263,7 @@ namespace SixtyThreeBits.Web.Admin.Controllers
         [Route("", Name = ControllerActionRouteNames.Admin.UserManagement.RolePermissions)]
         public ActionResult RolePermissions()
         {
-            Model.PluginClient.EnableDevextreme(true).EnableSuccessErrorMessage(true);
+            Model.PluginsClient.EnableDevextreme(true).EnableSuccessErrorMessage(true);
             Model.SuccessErrorPartialViewModel.IsInitialized = true;
             var ViewModel = Model.GetPageViewModel();
             return View(ViewNames.Admin.UserManagement.RolePermissions, ViewModel);

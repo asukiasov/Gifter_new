@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using SixtyThreeBits.Core.Abstractions;
 using SixtyThreeBits.Core.DB;
 using SixtyThreeBits.Core.Modules;
 using SixtyThreeBits.Core.Properties;
@@ -167,7 +168,7 @@ namespace SixtyThreeBits.Web.Reusables.Core
                 .Key(KeyFieldName)
             )
             .Editing(Options =>
-            {
+            {                
                 Options.Mode(GridEditMode.Cell);
                 Options.AllowAdding(AllowAdd);
                 Options.AllowUpdating(AllowUpdate);
@@ -197,6 +198,7 @@ namespace SixtyThreeBits.Web.Reusables.Core
                     var Width = (AllowDelete && !AllowAdd && !AllowUpdate) ? 30 : 60;
                     Columns.Add().Alignment(HorizontalAlignment.Center).Type(TreeListCommandColumnType.Buttons).Width(Width).Buttons(b =>
                     {                        
+                        b.Add().Name(TreeListColumnButtonName.Add).Icon("fas fa-plus").Text(Resources.TextAdd);
                         b.Add().Name(TreeListColumnButtonName.Edit).Icon("fas fa-pencil-alt").Text(Resources.TextUpdate);
                         b.Add().Name(TreeListColumnButtonName.Delete).Icon("fas fa-trash-alt").Text(Resources.TextDelete);
                         b.Add().Name(TreeListColumnButtonName.Save).Icon("fas fa-check").Text(Resources.TextSave);
@@ -260,28 +262,11 @@ namespace SixtyThreeBits.Web.Reusables.Core
         }
         #endregion
     }
-
-    public class DevExtremeGridFilterItem
-    {
-        #region Properties
-        public string FieldName { get; set; }
-        public string Operator { get; set; }
-        public string Value { get; set; } 
-        #endregion
-    }
-
-    public class DevExtremeGridSortItem
-    {
-        #region Properties
-        public string FieldName { get; set; }
-        public bool IsDescending { get; set; }
-        #endregion
-    }
-
+    
     public class LayoutViewModelBase
     {
         #region Properties
-        public StringBuilder PageTitle { get; set; }
+        public IPageTitle PageTitle { get; set; }
         public SuccessErrorPartialViewModel SuccessErrorPartialViewModel { get; set; }
         public bool IsSuccessErrorPartialViewModelinitialized => SuccessErrorPartialViewModel?.IsInitialized == true;
         public List<ProjectMenuItem> Menu { get; set; }
@@ -291,179 +276,12 @@ namespace SixtyThreeBits.Web.Reusables.Core
         public List<ProjectMenuItem> Tabs { get; set; }
         public bool HasTabs => Tabs?.Count > 0;
         public string UrlLogout { get; set; }
-        public PluginClient PluginClient { get; set; }
+        public PluginsClient PluginsClient { get; set; }
+        public readonly string TextError = Resources.TextError;
+        public readonly string TextSuccess = Resources.TextSuccess;
         #endregion
     }
-
-    public class PluginClient
-    {
-        #region Properties
-        bool _Is63BitsFormsEnabled;
-        bool _Is63BitsComponentsEnabled;
-        bool _Is63BitsFontsEnabled;
-        bool _IsAngleEnabled;
-        bool _IsBootstrapEnabled;
-        bool _IsDataTablesEnabled;
-        bool _IsDevextremeEnabled;
-        bool _IsGoogleFontsEnabled;
-        bool _IsFancyboxEnabled;
-        bool _IsFontAwesomeEnabled;
-        bool _IsJQueryEnabled;
-        bool _IsJQueryUIEnabled;
-        bool _IsJQueryConfirmEnabled;
-        bool _IsJQueryNestedSortableEnabled;
-        bool _IsJsZipEnabled;
-        bool _IsPreloaderEnabled;
-        bool _IsSelect2Enabled;
-        bool _IsSuccessErrorMessageEnabled;
-        bool _IsTemplate7Enabled;
-        bool _IsUtilsEnabled;
-
-        public bool Is63BitsFormsEnabled => _Is63BitsFormsEnabled;
-        public bool Is63BitsComponentsEnabled => _Is63BitsComponentsEnabled;
-        public bool Is63BitsFontsEnabled => _Is63BitsFontsEnabled;
-        public bool IsAngleEnabled => _IsAngleEnabled;
-        public bool IsBootstrapEnabled => _IsBootstrapEnabled;
-        public bool IsDataTablesEnabled => _IsDataTablesEnabled;
-        public bool IsDevextremeEnabled => _IsDevextremeEnabled;
-        public bool IsGoogleFontsEnabled => _IsGoogleFontsEnabled;
-        public bool IsFancyboxEnabled => _IsFancyboxEnabled;
-        public bool IsFontAwesomeEnabled => _IsFontAwesomeEnabled;
-        public bool IsJQueryEnabled => _IsJQueryEnabled;
-        public bool IsJQueryConfirmEnabled => _IsJQueryConfirmEnabled;
-        public bool IsJQueryNestedSortableEnabled => _IsJQueryNestedSortableEnabled;
-        public bool IsJQueryUIEnabled => _IsJQueryEnabled;
-        public bool IsJsZipEnabled => _IsJsZipEnabled;
-        public bool IsPreloaderEnabled => _IsPreloaderEnabled;
-        public bool IsSelect2Enabled => _IsSelect2Enabled;
-        public bool IsSuccessErrorMessageEnabled => _IsSuccessErrorMessageEnabled;
-        public bool IsTemplate7Enabled => _IsTemplate7Enabled;
-        public bool IsUtilsEnabled => _IsUtilsEnabled;
-        #endregion
-
-        #region Methods
-        public PluginClient Enable63BitsForms(bool Value)
-        {
-            _Is63BitsFormsEnabled = Value;
-            return this;
-        }
-
-        public PluginClient Enable63BitsComponents(bool Value)
-        {
-            _Is63BitsComponentsEnabled = Value;
-            return this;
-        }
-
-        public PluginClient Enable63BitsFonts(bool Value)
-        {
-            _Is63BitsFontsEnabled = Value;
-            return this;
-        }
-
-        public PluginClient EnableAngle(bool Value)
-        {
-            _IsAngleEnabled = Value;
-            return this;
-        }
-
-        public PluginClient EnableBootstrap(bool Value)
-        {
-            _IsBootstrapEnabled = Value;
-            return this;
-        }
-
-        public PluginClient EnableDataTables(bool Value)
-        {
-            _IsDataTablesEnabled = Value;
-            return this;
-        }
-
-        public PluginClient EnableDevextreme(bool Value)
-        {
-            _IsDevextremeEnabled = Value;
-            return this;
-        }
-
-        public PluginClient EnableFancybox(bool Value)
-        {
-            _IsFancyboxEnabled = Value;
-            return this;
-        }
-
-        public PluginClient EnableGoogleFonts(bool Value)
-        {
-            _IsGoogleFontsEnabled = Value;
-            return this;
-        }
-
-        public PluginClient EnableFontAwesome(bool Value)
-        {
-            _IsFontAwesomeEnabled = Value;
-            return this;
-        }
-
-        public PluginClient EnableJQuery(bool Value)
-        {
-            _IsJQueryEnabled = Value;
-            return this;
-        }
-
-        public PluginClient EnableJQueryUI(bool Value)
-        {
-            _IsJQueryUIEnabled = Value;
-            return this;
-        }
-
-        public PluginClient EnableJQueryConfirm(bool Value)
-        {
-            _IsJQueryConfirmEnabled = Value;
-            return this;
-        }
-
-        public PluginClient EnableJQueryNestedSortable(bool Value)
-        {
-            _IsJQueryNestedSortableEnabled = Value;
-            return this;
-        }
-
-        public PluginClient EnableJsZip(bool Value)
-        {
-            _IsJsZipEnabled = Value;
-            return this;
-        }
-
-        public PluginClient EnablePreloader(bool Value)
-        {
-            _IsPreloaderEnabled = Value;
-            return this;
-        }
-
-        public PluginClient EnableSelect2(bool Value)
-        {
-            _IsSelect2Enabled = Value;
-            return this;
-        }
-
-        public PluginClient EnableSuccessErrorMessage(bool Value)
-        {
-            _IsSuccessErrorMessageEnabled = Value;
-            return this;
-        }
-
-        public PluginClient EnableTemplate7(bool Value)
-        {
-            _IsTemplate7Enabled = Value;
-            return this;
-        }
-
-        public PluginClient EnableUtils(bool Value)
-        {
-            _IsUtilsEnabled = Value;
-            return this;
-        }        
-        #endregion
-    }
-        
+            
     [TypeFilter(typeof(BeforeWebProjectControllerLoaded), Order = 0)]
     public class WebProjectController<T> :  Controller
     {
@@ -480,22 +298,23 @@ namespace SixtyThreeBits.Web.Reusables.Core
         public string UrlCurrentPage { get; set; }
         public string WebsiteDomain { get; set; }
         public string WebsiteHttpPath => $"{WebsiteDomain}/";
+        public bool IsHttps { get; set; }
         public DataAccessFactory DataAccessFactory { get; set; }
         public AppSettingsCollection AppSettings { get; set; }
         public UtilityCollection Utilities { get; set; }
         public ISessionAssistance SessionAssistance { get; set; }
         public ICookieAssistance CookieAssistance { get; set; }
         public IUrlHelper Url { get; set; }
+        public IPageTitle PageTitle { get; set; }
         public ViewDataDictionary ViewData { get; set; }
-
-
-        public StringBuilder PageTitle { get; } = new StringBuilder();
+        
         public Breadcrumbs Breadcrumbs { get; set; }
         public List<ProjectMenuItem> Tabs { get; set; } = new List<ProjectMenuItem>();
 
-        public PluginClient PluginClient { get; set; }
+        public PluginsClient PluginsClient { get; set; }
         public SuccessErrorPartialViewModel SuccessErrorPartialViewModel { get; set; } = new SuccessErrorPartialViewModel();
-        public string Language { get; set; }
+        public string Culture { get; set; }
+        public readonly string CultureDefault = Enums.Languages.GEORGIAN;
         public User User { get; set; }
         public bool IsLoggedIn => User != null;        
         public ValueReference<bool> IsSidebarCollapsed { get; set; }
@@ -503,9 +322,9 @@ namespace SixtyThreeBits.Web.Reusables.Core
         #endregion
 
         #region Methods
-        public string GetFileManagerUrl(IUrlHelper Url, string FolderPhysicalPath, string FolderVirtualPath, bool AllowSelectMultiple = false, bool RestrictToImagesOnly = false, string OnSelectedFilesChooseClientCallback = null)
+        public string GetFileManagerUrl(string FolderPhysicalPath, string FolderVirtualPath, bool AllowSelectMultiple = false, bool RestrictToImagesOnly = false, string OnSelectedFilesChooseClientCallback = null)
         {
-            var SB = new System.Text.StringBuilder();
+            var SB = new StringBuilder();
             SB.Append(Url.RouteUrl(ControllerActionRouteNames.Admin.FileManager.Index, new { FolderVirtualPathHash = FolderVirtualPath.EncryptWeb(), FolderPhysicalPathHash = FolderPhysicalPath.EncryptWeb() }));
             if (AllowSelectMultiple || RestrictToImagesOnly || !string.IsNullOrWhiteSpace(OnSelectedFilesChooseClientCallback))
             {
@@ -540,16 +359,12 @@ namespace SixtyThreeBits.Web.Reusables.Core
             return PostedFile?.FileName.ToAZ09Dash(GuidInlcuded: true);
         }
 
-        public string GetRouteByName(string RouteName, object RouteValues = null, bool GetFullPath = false, string Protocol = Constants.Protocols.HTTP)
-        {                        
-            if (GetFullPath)
-            {
-                return Url.RouteUrl((string.IsNullOrWhiteSpace(Language) || Language == Constants.Languages.GEORGIAN) ? RouteName : $"{RouteName}Culture", RouteValues, Protocol);
-            }
-            else
-            {
-                return Url.RouteUrl((string.IsNullOrWhiteSpace(Language) || Language == Constants.Languages.GEORGIAN) ? RouteName : $"{RouteName}Culture", RouteValues);
-            }
+        public string GetRouteByName(string RouteName, object RouteValues = null, bool GetFullPath = false)
+        {
+            string Protocol = GetFullPath ? (IsHttps ? Constants.Protocols.HTTPS : Constants.Protocols.HTTP) : null;
+            RouteName = string.IsNullOrWhiteSpace(Culture) || Culture == CultureDefault ? RouteName : $"{RouteName}Culture";
+            var UrlResult = Url.RouteUrl(RouteName, RouteValues, Protocol);            
+            return UrlResult;
         }
 
         public string GetWebsiteDomain(HttpRequest Request)
@@ -562,9 +377,9 @@ namespace SixtyThreeBits.Web.Reusables.Core
             return WebsiteDomain;
         }
 
-        public string LogRequest(HttpRequest Request, string LogFilePhysicalPath = null)
+        public void LogRequest(HttpRequest Request, string LogFilePhysicalPath = null)
         {
-            var SB = new System.Text.StringBuilder();
+            var SB = new StringBuilder();
             SB.Append($"QueryString:{Environment.NewLine}");
             foreach (var Key in Request.Query.Keys)
             {
@@ -575,31 +390,29 @@ namespace SixtyThreeBits.Web.Reusables.Core
             {
                 SB.Append($"{Key}: {Request.Form[Key]}{Environment.NewLine}");
             }
-            var RequestString = SB.ToString();
+            SB.Append($"{Environment.NewLine}{Environment.NewLine}Body:{Environment.NewLine}");
+            SB.Append(Request.Body);
+
+            var LogString = SB.ToString();
             if (!string.IsNullOrWhiteSpace(LogFilePhysicalPath))
             {
-                RequestString.LogString(LogFilePhysicalPath);
+                LogString.LogString(LogFilePhysicalPath);
             }
-            return RequestString;
         }
 
-        public async Task SaveUploadedFile(IFormFile PostedFile, string Filename, string FolderPath = null)
+        public async Task SaveUploadedFile(IFormFile PostedFile, string Filename, string FolderPhysicalPath = null)
         {
-            using (var Stream = new FileStream($"{AppSettings.UploadFolderPhysicalPath}{FolderPath}{Filename}", FileMode.Create))
+            if (string.IsNullOrWhiteSpace(FolderPhysicalPath))
+            {
+                FolderPhysicalPath = AppSettings.UploadFolderPhysicalPath;
+            }
+
+            using (var Stream = new FileStream($"{FolderPhysicalPath}{Filename}", FileMode.Create))
             {
                 await PostedFile.CopyToAsync(Stream);
             }
         }
-
-        public void SetPageTitle(string PageTitle)
-        {
-            this.PageTitle.Clear().Append(PageTitle);
-            if (Breadcrumbs != null && Breadcrumbs.HasItems)
-            {
-                Breadcrumbs.Items[Breadcrumbs.ItemsCount - 1].Caption = PageTitle;
-            }
-        }
-
+        
         #region SuccessError
         public void InitSuccessErrorPartialViewModel()
         {
@@ -665,6 +478,7 @@ namespace SixtyThreeBits.Web.Reusables.Core
         public List<SimpleKeyValue<string, string>> Errors { get; set; }
         public string ErrorMessage => string.Join("<br />", Errors?.Select(Item => Item.Value));
         public bool HasErrors => Errors?.Count > 0;
+        public bool IsValid => !HasErrors;
         public string ErrorsJson => Errors.ToJSON();        
         public bool IsSaved { get; set; }        
         #endregion

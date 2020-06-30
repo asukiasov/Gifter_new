@@ -31,7 +31,7 @@ namespace SixtyThreeBits.Core.Utilities
 
         public enum DatabaseActions
         {
-            #region Properties
+            #region Properties            
             CREATE = 0,
             UPDATE = 1,
             DELETE = 2,

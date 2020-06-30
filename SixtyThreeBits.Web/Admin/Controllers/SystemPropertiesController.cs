@@ -19,7 +19,7 @@ namespace SixtyThreeBits.Web.Admin.Controllers
         [Route("", Name = ControllerActionRouteNames.Admin.SystemProperties.Page)]
         public async Task<IActionResult> SystemProperies()
         {
-            Model.PluginClient.Enable63BitsForms(true).EnableFancybox(true);
+            Model.PluginsClient.Enable63BitsForms(true).EnableFancybox(true);
             var ViewModel = await Model.GetPageViewModel();
             return View(ViewNames.Admin.SystemProperties.Page, ViewModel);
         }

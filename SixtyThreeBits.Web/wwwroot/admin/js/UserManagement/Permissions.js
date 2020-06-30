@@ -6,6 +6,13 @@
         PermissionsModel.PermissionsTree = e.component;
         Globals.Devexpress.SetGridFullHeight(PermissionsModel.PermissionsTree, e.element[0]);
     },
+    OnPermissionsTreeToolbarPreparing: function (e) {
+        e.toolbarOptions.visible = false;
+        //const ToolbarItems = e.toolbarOptions.items; 
+        //var AddButton = ToolbarItems[0];  // find the index of add button or loop and find
+        //AddButton.visible = false; //hide the item
+        //e.event.toolbarOptions.items = []; // clear the toolbar
+    },
     OnPermissionsTreeReorder: function (e) {
 
         const PermissionID = e.itemData.PermissionID

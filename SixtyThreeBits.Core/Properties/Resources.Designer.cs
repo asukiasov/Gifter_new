@@ -187,6 +187,51 @@ namespace SixtyThreeBits.Core.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Page slug is not unique.
+        /// </summary>
+        public static string ValidationPageSlugNotUniq {
+            get {
+                return ResourceManager.GetString("ValidationPageSlugNotUniq", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Password length must be more then 8 symbols.
+        /// </summary>
+        public static string ValidationPasswordLength {
+            get {
+                return ResourceManager.GetString("ValidationPasswordLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid current password.
+        /// </summary>
+        public static string ValidationPasswordOldNotMatch {
+            get {
+                return ResourceManager.GetString("ValidationPasswordOldNotMatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Passwords not match.
+        /// </summary>
+        public static string ValidationPasswordsNotMatch {
+            get {
+                return ResourceManager.GetString("ValidationPasswordsNotMatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Password must contain at least one letter and one digit.
+        /// </summary>
+        public static string ValidationPasswordStrength {
+            get {
+                return ResourceManager.GetString("ValidationPasswordStrength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Field is required.
         /// </summary>
         public static string ValidationRequired {

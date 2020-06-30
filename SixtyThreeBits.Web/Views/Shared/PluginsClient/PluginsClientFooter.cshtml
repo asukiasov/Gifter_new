@@ -1,4 +1,8 @@
-﻿@model PluginClient
+﻿@model PluginsClient
+@if (Model.IsJsClientEnabled)
+{
+    <script src="~/plugins/jsClient/jsClient.min.js"></script>
+}
 @if (Model.IsBootstrapEnabled)
 {
     <script src="~/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -7,11 +11,7 @@
 {
     <script src="~/plugins/utils/utils.js"></script>
 }
-@if (Model.IsPreloaderEnabled)
-{
-    <script src="~/plugins/preloader/preloader.js"></script>
-}
-@if (Model.IsJQueryUIEnabled)
+@if (Model.IsJQueryUIJsEnabled)
 {
     <script src="~/plugins/jquery-ui/jquery-ui.js"></script>
 }
@@ -22,6 +22,18 @@
 @if (Model.IsJQueryNestedSortableEnabled)
 {
     <script src="~/plugins/jquery-nestedSortable/jquery.mjs.nestedSortable.js"></script>
+}
+@if (Model.IsPageBuilderEnabled)
+{
+    <script src="~/plugins/63bits-pageBuilder/js/template63.js"></script>
+}
+@if (Model.IsPageBuilderEditorEnabled)
+{
+    <script src="~/plugins/63bits-pageBuilder/js/page-builder.js"></script>
+}
+@if (Model.IsPreloaderEnabled)
+{
+    <script src="~/plugins/preloader/preloader.js"></script>
 }
 @if (Model.Is63BitsComponentsEnabled)
 {
@@ -44,7 +56,11 @@
 {
     <script src="~/plugins/select2/js/select2.full.min.js"></script>
 }
-@if(Model.IsTemplate7Enabled)
+@if (Model.IsSlickSliderEnabled)
+{
+    <script src="~/plugins/slick/slick.min.js"></script>
+}
+@if (Model.IsTemplate7Enabled)
 {
     <script src="~/plugins/template7/template7.min.js"></script>
 }
@@ -52,14 +68,9 @@
 {
     <script src="~/plugins/jszip/jszip.min.js"></script>
 }
-@if (Model.IsDataTablesEnabled)
+@if (Model.IsTinyMceEnabled)
 {
-    <script src="~/plugins/datatables/datatables.min.js"></script>
-    <script src="~/plugins/datatables/DataTables-1.10.20/js/jquery.dataTables.min.js"></script>
-    <script src="~/plugins/datatables/DataTables-1.10.20/js/dataTables.bootstrap4.min.js"></script>
-    <script src="~/plugins/datatables/Buttons-1.6.1/js/dataTables.buttons.min.js"></script>
-    <script src="~/plugins/datatables/Buttons-1.6.1/js/buttons.foundation.min.js"></script>
-    <script src="~/plugins/datatables/Buttons-1.6.1/js/buttons.bootstrap4.min.js"></script>
-    <script src="~/plugins/datatables/Buttons-1.6.1/js/buttons.html5.min.js"></script>
-    <script src="~/plugins/datatables/Buttons-1.6.1/js/buttons.print.min.js"></script>
+    <script src="~/plugins/tinymce/tinymce.min.js"></script>
+    <script src="~/plugins/tinymce/jquery.tinymce.min.js"></script>
+    <script src="~/plugins/tinymce/TinyMceHelper.js"></script>
 }

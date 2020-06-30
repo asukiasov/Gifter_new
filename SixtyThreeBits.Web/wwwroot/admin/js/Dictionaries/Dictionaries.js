@@ -6,6 +6,9 @@
         DictionariesModel.DictionariesTree = e.component;
         Globals.Devexpress.SetGridFullHeight(DictionariesModel.DictionariesTree, e.element[0]);
     },
+    OnDictionariesTreeToolbarPreparing: function (e) {
+        e.toolbarOptions.visible = false;
+    },
     OnDictionariesTreeReorder: function (e) {
 
         const DictionaryID = e.itemData.DictionaryID

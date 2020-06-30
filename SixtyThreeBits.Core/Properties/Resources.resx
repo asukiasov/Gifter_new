@@ -159,6 +159,21 @@
   <data name="ValidationEmailFormatInvalid" xml:space="preserve">
     <value>Email format is invalid</value>
   </data>
+  <data name="ValidationPageSlugNotUniq" xml:space="preserve">
+    <value>Page slug is not unique</value>
+  </data>
+  <data name="ValidationPasswordLength" xml:space="preserve">
+    <value>Password length must be more then 8 symbols</value>
+  </data>
+  <data name="ValidationPasswordOldNotMatch" xml:space="preserve">
+    <value>Invalid current password</value>
+  </data>
+  <data name="ValidationPasswordsNotMatch" xml:space="preserve">
+    <value>Passwords not match</value>
+  </data>
+  <data name="ValidationPasswordStrength" xml:space="preserve">
+    <value>Password must contain at least one letter and one digit</value>
+  </data>
   <data name="ValidationRequired" xml:space="preserve">
     <value>Field is required</value>
   </data>

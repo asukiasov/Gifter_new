@@ -25,9 +25,9 @@ namespace SixtyThreeBits.Web.Reusables.Core
         }
 
         public override void OnActionExecuting(ActionExecutingContext FilterContext)
-        {
-            var C = FilterContext.Controller as Controller;
-            var Model = LocalUtilities.GetWebProjectModelBaseFromController(C);                        
+        {            
+            var C = FilterContext.Controller as Controller;            
+            var Model = LocalUtilities.GetWebProjectModelBaseFromController(C);
             if (Model != null)
             {
                 var ActionDescriptor = FilterContext.ActionDescriptor as ControllerActionDescriptor;
@@ -38,6 +38,8 @@ namespace SixtyThreeBits.Web.Reusables.Core
                 Model.UrlCurrentPage = C.Request.Path;
                 Model.WebsiteDomain = Model.GetWebsiteDomain(C.Request);
 
+                Model.IsHttps = C.Request.IsHttps;
+
                 Model.AppSettings = this.AppSettings;
                 Model.Utilities = this.Utilities;                
                 Model.DataAccessFactory = this.DataAccessFactory;
@@ -45,7 +47,7 @@ namespace SixtyThreeBits.Web.Reusables.Core
                 Model.SessionAssistance = new SessionAssistance(C.HttpContext.Session);
                 Model.CookieAssistance = new CookieAssistance(C.Request, C.Response);
                 Model.Url = C.Url;
-                Model.PluginClient = new PluginClient();
+                Model.PluginsClient = new PluginsClient();
                 Model.Form = new FormViewModelBase();
             }
         }

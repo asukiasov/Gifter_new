@@ -40,15 +40,12 @@
 
 .close-popup-btn svg{
 	display: block;
-    width: 10px;
-    height: 10px;
-	fill: #555;
-	opacity: 0.8;
+    width: 14px;
+    height: 14px;
+	fill: #000;
 	
 	position: relative;
 	z-index: 2;
-	
-	transition: opacity .25s;
 }
 .close-popup-btn:before {
     content: '';
@@ -89,8 +86,26 @@
 /* ----------- fancybox-content ----------- */
 .fancybox-content{
 	padding: 20px;
+	margin: 0 auto;
 }
-/* ----------- /fancybox-slide ----------- */
+
+[class*=popup-container]{
+	width: 100%;
+	margin: 0 auto;
+}
+.popup-container-xs{
+	max-width: 340px;
+}
+.popup-container-sm{
+	max-width: 480px;
+}
+.popup-container-md{
+	max-width: 640px;
+}
+.popup-container-lg{
+	max-width: 980px;
+}
+/* ----------- /fancybox-content ----------- */
 
 
 /* ----------- iframe ----------- */
@@ -102,7 +117,7 @@
 	margin: 0;
 }
 .fancybox-slide--iframe .fancybox-content > .close-popup-btn{
-	right: 24px;
+	top: 18px;
 }
 
 .iframe-body .modal-content{
@@ -126,25 +141,12 @@
 
 
 /* ----------- inline ----------- */
-.fancybox-inline-popup .fancybox-slide{
-	text-align: center;
-}
 .fancybox-inline-popup-content{
 	display: none;
-}
-.fancybox-inline-popup-content:not(.container){
-	max-width: 640px;
-	margin: 0 auto;
 }
 /* ----------- /inline ----------- */
 
 
 /* ----------- ajax ----------- */
-.fancybox-ajax-popup .fancybox-slide{
-	text-align: center;
-}
-.fancybox-ajax-popup-content:not(.container):not(.popup-container){
-	max-width: 640px;
-	margin: 0 auto;
-}
+
 /* ----------- /inline ----------- */

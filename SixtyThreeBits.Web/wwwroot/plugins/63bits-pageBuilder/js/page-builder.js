@@ -251,6 +251,7 @@ var PageBuilderModel = {
 
             text: {
                 isActive: true,
+                isFullfeatured: false,
                 html: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum a tempor dolor, ac faucibus ligula. Fusce sit amet magna at elit porttitor fringilla. Praesent lorem purus, lobortis at iaculis non, tincidunt sit amet metus. Quisque ac augue in eros lobortis egestas et in ipsum. Curabitur dapibus ex orci, id semper magna vulputate nec. Curabitur lacinia cursus lobortis. Nullam dolor velit, rutrum at mi non, efficitur ullamcorper leo. Suspendisse non ipsum consectetur, ornare urna vel, lobortis mi. Sed vel nibh nec lacus fringilla varius. Nunc sed bibendum dolor.',
             },
 
@@ -263,14 +264,15 @@ var PageBuilderModel = {
             button: {
                 isActive: 'true',
                 name: 'see more',
-                href: '',
-                target: '_blank'
+                href: '#',
+                //target: '_self'
+                isTargetBlank: false
             },
 
             image: {
                 isActive: true,
                 hasControls: false,
-                url: '/content/plugins/63bits-pageBuilder/images/demo/slide1.jpg'
+                url: '/plugins/63bits-pageBuilder/images/demo/slide1.jpg'
             },
 
             video: {
@@ -302,14 +304,28 @@ var PageBuilderModel = {
                     isActive: true,
                     name: 'see more',
                     href: '#',
-                    target: '_blank'
+                    isTargetBlank: false
                 },
                 image: {
-                    url: '/content/plugins/63bits-pageBuilder/images/demo/grid_img.jpg'
+                    url: '/plugins/63bits-pageBuilder/images/demo/grid_img.jpg'
                 },
             },
 
             articlesGridItem: function () {
+                return {
+                    components: {
+                        title: PageBuilderModel.settings.components.title,
+                        text: PageBuilderModel.settings.components.text,
+                        button: PageBuilderModel.settings.components.button,
+                        image: {
+                            ...PageBuilderModel.settings.components.image,
+                            hasControls: true
+                        }
+                    }
+                };
+            },
+
+            articlesListItem: function () {
                 return {
                     components: {
                         title: PageBuilderModel.settings.components.title,
@@ -333,7 +349,7 @@ var PageBuilderModel = {
                 }
             },
 
-            faqItem: function (){
+            faqItem: function () {
                 return {
                     components: {
                         title: PageBuilderModel.settings.components.title,
@@ -351,7 +367,8 @@ var PageBuilderModel = {
                         },
                         image: {
                             ...PageBuilderModel.settings.components.image,
-                            url: '/content/plugins/63bits-pageBuilder/images/demo/no_avatar.jpg'
+                            url: '/plugins/63bits-pageBuilder/images/demo/no_avatar.jpg',
+                            hasControls: true
                         },
                         author: {
                             ...PageBuilderModel.settings.components.textPlain,
@@ -385,7 +402,7 @@ var PageBuilderModel = {
                         button: PageBuilderModel.settings.components.button,
                         image: {
                             ...PageBuilderModel.settings.components.image,
-                            url: '/content/plugins/63bits-pageBuilder/images/demo/services_item.svg',
+                            url: '/plugins/63bits-pageBuilder/images/demo/services_item.svg',
                             hasControls: true
                         }
                     }
@@ -399,7 +416,6 @@ var PageBuilderModel = {
                     ...PageBuilderModel.settings.defaults,
                     name: 'slide',
                     contentSizes: PageBuilderModel.settings.defaults.contentSizes(),
-                    contentSizeSelected: 'sm',
 
                     contentAlignment: 'center', //topLeft,topCenter,topRight  centerLeft,center,centerRight  bottomLeft,bottomCenter,bottomRight
 
@@ -416,7 +432,6 @@ var PageBuilderModel = {
                     ...PageBuilderModel.settings.defaults,
                     name: 'slider',
                     contentSizes: PageBuilderModel.settings.defaults.contentSizes(),
-                    contentSizeSelected: 'sm',
 
                     contentAlignment: 'center', //topLeft,topCenter,topRight  centerLeft,center,centerRight  bottomLeft,bottomCenter,bottomRight
 
@@ -428,7 +443,7 @@ var PageBuilderModel = {
                                 button: PageBuilderModel.settings.components.sliderItem().components.button,
                                 image: {
                                     ...PageBuilderModel.settings.components.sliderItem().components.image,
-                                    url: '/content/plugins/63bits-pageBuilder/images/demo/slide2.jpg'
+                                    url: '/plugins/63bits-pageBuilder/images/demo/slide2.jpg'
                                 }
                             }
                         }
@@ -444,7 +459,10 @@ var PageBuilderModel = {
 
                     components: {
                         title: PageBuilderModel.settings.components.title,
-                        text: PageBuilderModel.settings.components.text
+                        text: {
+                            ...PageBuilderModel.settings.components.text,
+                            isFullfeatured: true
+                        }
                     }
                 };
             },
@@ -507,7 +525,10 @@ var PageBuilderModel = {
 
                     components: {
                         title: PageBuilderModel.settings.components.title,
-                        text: PageBuilderModel.settings.components.text,
+                        text: {
+                            ...PageBuilderModel.settings.components.text,
+                            isFullfeatured: true
+                        },
                         attachements: null
                     },
                 }
@@ -521,7 +542,10 @@ var PageBuilderModel = {
 
                     components: {
                         title: PageBuilderModel.settings.components.title,
-                        text: PageBuilderModel.settings.components.text,
+                        text: {
+                            ...PageBuilderModel.settings.components.text,
+                            isFullfeatured: true
+                        },
                         video: PageBuilderModel.settings.components.video,
                     },
                 }
@@ -549,6 +573,8 @@ var PageBuilderModel = {
 
                     components: {
                         text: {
+                            isActive: true,
+                            isFullfeatured: true,
                             html: 'enter html'
                         },
                     },
@@ -560,8 +586,7 @@ var PageBuilderModel = {
                     ...PageBuilderModel.settings.defaults,
                     name: 'imgGrid',
                     contentSizes: PageBuilderModel.settings.defaults.contentSizes({
-                        xs: { exists: false },
-                        sm: { exists: false }
+                        xs: { exists: false }
                     }),
 
                     components: {
@@ -583,9 +608,30 @@ var PageBuilderModel = {
                     ...PageBuilderModel.settings.defaults,
                     name: 'articlesGrid',
                     contentSizes: PageBuilderModel.settings.defaults.contentSizes({
-                        xs: { exists: false },
-                        sm: { exists: false }
+                        xs: { exists: false }
                     }),
+
+                    components: {
+                        title: PageBuilderModel.settings.components.title,
+                    },
+
+                    items: [
+                        { ...PageBuilderModel.settings.components.articlesGridItem() }
+                    ]
+                };
+            },
+
+            articlesList: function () {
+                return {
+                    ...PageBuilderModel.settings.defaults,
+                    name: 'articlesList',
+                    contentSizes: PageBuilderModel.settings.defaults.contentSizes({
+                        xs: { exists: false }
+                    }),
+
+                    components: {
+                        title: PageBuilderModel.settings.components.title,
+                    },
 
                     items: [
                         { ...PageBuilderModel.settings.components.articlesGridItem() }
@@ -609,7 +655,7 @@ var PageBuilderModel = {
 
                     items: [
                         { ...PageBuilderModel.settings.components.faqItem() }
-                    ]   
+                    ]
                 }
             },
 
@@ -682,7 +728,7 @@ var PageBuilderModel = {
                         ...sections.article2ColWithImg().components,
                         image: {
                             ...sections.article2ColWithImg().components.image,
-                            url: '/content/plugins/63bits-pageBuilder/images/demo/01.jpg'
+                            url: '/plugins/63bits-pageBuilder/images/demo/01.jpg'
                         },
                     },
                 },
@@ -696,7 +742,7 @@ var PageBuilderModel = {
                         ...sections.article2ColWithImg().components,
                         image: {
                             ...sections.article2ColWithImg().components.image,
-                            url: '/content/plugins/63bits-pageBuilder/images/demo/02.jpg'
+                            url: '/plugins/63bits-pageBuilder/images/demo/02.jpg'
                         },
                     },
                 },
@@ -710,7 +756,7 @@ var PageBuilderModel = {
                         ...sections.article2ColWithImg().components,
                         image: {
                             ...sections.article2ColWithImg().components.image,
-                            url: '/content/plugins/63bits-pageBuilder/images/demo/03.png'
+                            url: '/plugins/63bits-pageBuilder/images/demo/03.png'
                         },
                     },
                 },
@@ -724,7 +770,7 @@ var PageBuilderModel = {
                         ...sections.article2ColWithImg().components,
                         image: {
                             ...sections.article2ColWithImg().components.image,
-                            url: '/content/plugins/63bits-pageBuilder/images/demo/04.png'
+                            url: '/plugins/63bits-pageBuilder/images/demo/04.png'
                         },
                     },
                 },
@@ -747,6 +793,9 @@ var PageBuilderModel = {
                     ...sections.articlesGrid()
                 },
                 {
+                    ...sections.articlesList()
+                },
+                {
                     ...sections.faq()
                 },
                 {
@@ -766,11 +815,12 @@ var PageBuilderModel = {
                     return {
                         isActive: $(container).find('.js-title-visibility-toggler input:checked').length > 0,
                         html: $(container).find('.js-title').html().replace(/"/g, '&quot'),
-                    }
+                    };
                 },
                 text: function (container) {
                     return {
                         isActive: $(container).find('.js-text-visibility-toggler input:checked').length > 0,
+                        isFullfeatured: $(container).find('.js-tinymce-full').length > 0,
                         html: $(container).find('.js-text-wrap').html().replace(/"/g, '&quot'),
                     };
                 },
@@ -786,13 +836,13 @@ var PageBuilderModel = {
                         isActive: $(container).find('.js-btn-visibility-toggler input:checked').length > 0,
                         name: $(container).find('.js-btn').text().replace(/"/g, '&quot'),
                         href: $(container).find('.js-btn').attr('href'),
-                        target: $(container).find('.js-btn').attr('target')
-                    }
+                        isTargetBlank: $(container).find('.js-btn-target-checkbox:checked').length > 0
+                    };
                 },
                 image: function (container) {
                     return {
-                        isActive: $(container).find('.js-image-visibility-toggler input:checked').length > 0,
-                        url: $(container).find('.js-img').css('background-image').replace('url(', '').replace(')', '').replace(/\"/gi, "")
+                        isActive: $(container).find('.js-image-visibility-toggler').length > 0 ? $(container).find('.js-image-visibility-toggler input').is(':checked') : true,
+                        url: $(container).find('.js-img').attr('data-img-src')
                     };
                 },
                 video: function (container) {
@@ -946,6 +996,7 @@ var PageBuilderModel = {
                             button: {
                                 ...components.button(gridItem),
                                 isActive: $(gridItem).find('.js-btn-toggler input:checked').length > 0,
+                                isTargetBlank: $(container).find('.js-btn-target-checkbox:checked').length > 0
                             },
                             image: components.image(gridItem)
                         };
@@ -954,6 +1005,10 @@ var PageBuilderModel = {
                 }
 
                 if (sectionName == PageBuilderModel.settings.sections.articlesGrid().name) {
+                    model.components = {
+                        title: components.title(section)
+                    };
+
                     model.items = [];
 
                     section.find('.js-articles-grid-item').each(function () {
@@ -969,6 +1024,30 @@ var PageBuilderModel = {
                                 }
                             }
                         }
+                        model.items.push(item);
+                    });
+                }
+
+                if (sectionName == PageBuilderModel.settings.sections.articlesList().name) {
+                    model.components = {
+                        title: components.title(section)
+                    };
+
+                    model.items = [];
+
+                    section.find('.js-articles-list-item').each(function () {
+                        var listItem = $(this);
+                        var item = {
+                            components: {
+                                title: components.title(listItem),
+                                text: components.text(listItem),
+                                button: components.button(listItem),
+                                image: {
+                                    ...components.image(listItem),
+                                    hasControls: PageBuilderModel.settings.components.articlesListItem().components.image.hasControls
+                                }
+                            }
+                        };
                         model.items.push(item);
                     });
                 }
@@ -1010,7 +1089,10 @@ var PageBuilderModel = {
                         var item = {
                             components: {
                                 text: components.text(slide),
-                                image: components.image(slide),
+                                image: {
+                                    ...components.image(slide),
+                                    hasControls: PageBuilderModel.settings.components.testimonialsItem().components.image.hasControls
+                                },
                                 author: components.textPlain(slide.find('.js-author-wrap')),
                                 description: components.textPlain(slide.find('.js-description-wrap'))
                             }
@@ -1155,13 +1237,13 @@ var PageBuilderModel = {
             text: {
                 partial:
                     `<div class="section-row text-container js-section--container{{#unless components.text.isActive}} component-disabled{{/unless}}" data-container="text">
-                        <div class="text-wrap js-text-wrap js-tinymce">{{components.text.html}}</div>
+                        <div class="text-wrap js-text-wrap js-tinymce {{#if components.text.isFullfeatured}}js-tinymce-full{{else}}js-tinymce-basic{{/if}}">{{components.text.html}}</div>
                         {{textControlsHepler components.text}}
                     </div>`,
 
                 template:
                     `<div class="section-row text-container js-section--container{{#unless text.isActive}} component-disabled{{/unless}}" data-container="text">
-                        <div class="text-wrap js-text-wrap js-tinymce">{{text.html}}</div>
+                        <div class="text-wrap js-text-wrap js-tinymce  {{#if text.isFullfeatured}}js-tinymce-full{{else}}js-tinymce-basic{{/if}}">{{text.html}}</div>
                         {{textControlsHepler text}}
                     </div>`,
 
@@ -1191,14 +1273,14 @@ var PageBuilderModel = {
             button: {
                 partial:
                     `<div class="section-row btn-container js-section--container{{#unless components.button.isActive}} component-disabled{{/unless}}" data-container="button">
-                        <a href="{{components.button.href}}" class="btn btn-primary js-btn" target="{{components.button.target}}">{{components.button.name}}</a>
+                        <a href="{{components.button.href}}" class="btn btn-primary js-btn"{{#if components.button.isTargetBlank}} target="_blank"{{/if}}>{{components.button.name}}</a>
                         {{actionButtonsHepler actionButtons.button}}
 						{{buttonControlsHepler components.button}}
                     </div>`,
 
                 template:
                     `<div class="section-row btn-container js-section--container{{#unless button.isActive}} component-disabled{{/unless}}" data-container="button">
-                        <a href="{{button.href}}" class="btn btn-primary js-btn" target="{{button.target}}">{{button.name}}</a>
+                        <a href="{{button.href}}" class="btn btn-primary js-btn"{{#if button.isTargetBlank}} target="_blank"{{/if}}>{{button.name}}</a>
                         {{actionButtonsHepler actionButtons}}
 						{{buttonControlsHepler button}}
                     </div>`,
@@ -1211,7 +1293,7 @@ var PageBuilderModel = {
             image: {
                 partial:
                     `<div class="img-container js-section--container{{#unless components.image.isActive}} component-disabled{{/unless}}" data-container="image">
-                        <span class="bg-img js-img" style="background-image: url({{components.image.url}})"></span>
+                        <span class="bg-img js-img" style="background-image: url({{components.image.url}})" data-img-src="{{components.image.url}}"></span>
                         {{actionButtonsHepler actionButtons.image }}
                         {{#if components.image.hasControls}}
                             {{imageControlsHepler components.image}}
@@ -1220,7 +1302,7 @@ var PageBuilderModel = {
 
                 template:
                     `<div class="img-container js-section--container{{#unless image.isActive}} component-disabled{{/unless}}" data-container="image">
-                        <span class="bg-img js-img" style="background-image: url({{image.url}})"></span>
+                        <span class="bg-img js-img" style="background-image: url({{image.url}})" data-img-src="{{image.url}}"></span>
                         {{actionButtonsHepler actionButtons}}
                         {{#if image.hasControls}}
                             {{imageControlsHepler image}}
@@ -1255,7 +1337,7 @@ var PageBuilderModel = {
                     partial:
                         `{{#each components.attachements}}
 						<li class="file-item js-section--container" data-container="file">
-							<img class="icon" src="/content/plugins/63bits-pageBuilder/images/icons/file.svg" alt="file icon">
+							<img class="icon" src="/plugins/63bits-pageBuilder/images/icons/file.svg" alt="file icon">
 							<div class="name">
 								<a class="link js-file-name" href="{{url}}" download>{{name}}</a>
 								{{> "fileControlsPartial"}}
@@ -1450,8 +1532,8 @@ var PageBuilderModel = {
                 `<section class="t63-section js-page-section" data-section="articleWithVideo" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}">
 					<article class="container t63-article">
 						{{> "titlePartial"}}
-						{{> "textPartial"}}
 						{{> "videoPartial"}}
+                        {{> "textPartial"}}
 					</article>
 					{{> "sectionEditorContainerPartial"}}
 				</section>`,
@@ -1548,6 +1630,7 @@ var PageBuilderModel = {
             template:
                 `<section class="t63-section t63-articles-grid-section js-page-section" data-section="articlesGrid" data-type="{{type}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}">
 					<div class="container t63-padding-v">
+                        {{> "titlePartial"}}
 						<div class="row js-articles-grid-row">
 							{{> "articlesGridItemsPartial"}}
 						</div>
@@ -1588,6 +1671,49 @@ var PageBuilderModel = {
             }
         },
 
+        articlesList: {
+            template:
+                `<section class="t63-section t63-articles-list-section js-page-section" data-section="articlesList" data-type="{{type}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}">
+					<div class="container t63-padding-v">
+                        {{> "titlePartial"}}
+						<div class="js-articles-list-container">
+							{{> "articlesListItemsPartial"}}
+						</div>
+						<div class="btn-row add-new-list-item-btn-wrap js-additional-action-buttons">
+							<div class="justify-content-center">
+								<button class="btn editor-btn js-add-articles-list-item-btn">New item</button>
+							</div>
+						</div>
+					</div>
+					{{> "sectionEditorContainerPartial"}}
+                </section>`,
+
+            getHtml: function (model) {
+                return PageBuilderModel.sections.articlesList.template(model);
+            },
+
+            items: {
+                partial:
+                    `{{#each items}}
+                    <div class="list-item js-articles-list-item js-section--container" data-container="articlesListItem">
+                        {{imageHepler components.image ../actionButtons.image}}
+                        <div class="content">
+                            {{titleHepler components.title}}
+							{{textHepler components.text}}
+							{{buttonHepler components.button ../actionButtons.button}}
+                        </div>
+						{{actionButtonsHepler ../actionButtons.articlesListItem}}
+                    </div>
+					{{/each}}`,
+
+                template: '{{> "articlesListItemsPartial"}}',
+
+                getHtml: function (model) {
+                    return PageBuilderModel.sections.articlesList.items.template(model);
+                }
+            }
+        },
+
         faq: {
             template:
                 `<section class="t63-section js-page-section" data-section="faq" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}">
@@ -1613,7 +1739,7 @@ var PageBuilderModel = {
                 partial:
                     `{{#each items}}
 					<article class="faq-item js-section--container js-faq-item" data-container="faqItem">
-                        <i class="handle js-additional-action-buttons"><img src="/Content/Plugins/63bits-pageBuilder/images/icons/drug.svg" alt="drag icon"></i>
+                        <i class="handle js-additional-action-buttons"><img src="/plugins/63bits-pageBuilder/images/icons/drug.svg" alt="drag icon"></i>
 						<div class="faq-item-head js-faq-item-head">
                             {{titleHepler components.title}}
                         </div>
@@ -1752,7 +1878,7 @@ var PageBuilderModel = {
         //-- functions
         addTopage: function (item, index) {
             var sectionHtml, currentSection;
-            
+
             if (item) {
                 var sectionName = item.data('item') || null;
                 var sectionType = item.data('type') || 1;
@@ -1781,13 +1907,14 @@ var PageBuilderModel = {
                     PageBuilderModel.data.fromServer.forEach(function (item) {
                         item.actionButtons = PageBuilderModel.editors.actionButtons.settings;
                         sectionHtml = PageBuilderModel.sections[item.name].getHtml(item).replace(/&quot/g, '"');
-
                         $(PageBuilderModel.currentViewSelector).append(sectionHtml);
                     });
                     currentSection = $(PageBuilderModel.sections.selector);
                 }
             }
-            
+
+
+
             //init plugins
             PageBuilderModel.editors.title.tinymce.init(currentSection);
             PageBuilderModel.editors.text.tinymce.init(currentSection);
@@ -1850,6 +1977,11 @@ var PageBuilderModel = {
                     removeBtn: true
                 },
                 articlesGridItem: {
+                    editBtn: null,
+                    doneBtn: null,
+                    removeBtn: true,
+                },
+                articlesListItem: {
                     editBtn: null,
                     doneBtn: null,
                     removeBtn: true,
@@ -1937,39 +2069,39 @@ var PageBuilderModel = {
 						<div>
 							<label>
 								<input class="js-alignment-input" type="radio" name="alignment-{{id}}" value="topLeft" {{#js_if "this.contentAlignment === 'topLeft' "}}checked{{/js_if}}>
-								<span><img src="/content/plugins/63bits-pageBuilder/images/icons/alignment/1_1.svg" /></span>
+								<span><img src="/plugins/63bits-pageBuilder/images/icons/alignment/1_1.svg" /></span>
 							</label>
 							<label>
 								<input class="js-alignment-input" type="radio" name="alignment-{{id}}" value="topCenter" {{#js_if "this.contentAlignment === 'topCenter' "}}checked{{/js_if}}>
-								<span><img src="/content/plugins/63bits-pageBuilder/images/icons/alignment/1_2.svg" /></span>
+								<span><img src="/plugins/63bits-pageBuilder/images/icons/alignment/1_2.svg" /></span>
 							</label>
 							<label>
 								<input class="js-alignment-input" type="radio" name="alignment-{{id}}" value="topRight" {{#js_if "this.contentAlignment === 'topRight' "}}checked{{/js_if}}>
-								<span><img src="/content/plugins/63bits-pageBuilder/images/icons/alignment/1_3.svg" /></span>
+								<span><img src="/plugins/63bits-pageBuilder/images/icons/alignment/1_3.svg" /></span>
 							</label>
 							<label>
 								<input class="js-alignment-input" type="radio" name="alignment-{{id}}" value="centerLeft" {{#js_if "this.contentAlignment === 'centerLeft' "}}checked{{/js_if}}>
-								<span><img src="/content/plugins/63bits-pageBuilder/images/icons/alignment/2_1.svg" /></span>
+								<span><img src="/plugins/63bits-pageBuilder/images/icons/alignment/2_1.svg" /></span>
 							</label>
 							<label>
 								<input class="js-alignment-input" type="radio" name="alignment-{{id}}" value="center" {{#js_if "this.contentAlignment === 'center' "}}checked{{/js_if}}>
-								<span><img src="/content/plugins/63bits-pageBuilder/images/icons/alignment/2_2.svg" /></span>
+								<span><img src="/plugins/63bits-pageBuilder/images/icons/alignment/2_2.svg" /></span>
 							</label>
 							<label>
 								<input class="js-alignment-input" type="radio" name="alignment-{{id}}" value="centerRight" {{#js_if "this.contentAlignment === 'centerRight' "}}checked{{/js_if}}>
-								<span><img src="/content/plugins/63bits-pageBuilder/images/icons/alignment/2_3.svg" /></span>
+								<span><img src="/plugins/63bits-pageBuilder/images/icons/alignment/2_3.svg" /></span>
 							</label>
 							<label>
 								<input class="js-alignment-input" type="radio" name="alignment-{{id}}" value="bottomLeft" {{#js_if "this.contentAlignment === 'bottomLeft' "}}checked{{/js_if}}>
-								<span><img src="/content/plugins/63bits-pageBuilder/images/icons/alignment/3_1.svg" /></span>
+								<span><img src="/plugins/63bits-pageBuilder/images/icons/alignment/3_1.svg" /></span>
 							</label>
 							<label>
 								<input class="js-alignment-input" type="radio" name="alignment-{{id}}" value="bottomCenter" {{#js_if "this.contentAlignment === 'bottomCenter' "}}checked{{/js_if}}>
-								<span><img src="/content/plugins/63bits-pageBuilder/images/icons/alignment/3_2.svg" /></span>
+								<span><img src="/plugins/63bits-pageBuilder/images/icons/alignment/3_2.svg" /></span>
 							</label>
 							<label>
 								<input class="js-alignment-input" type="radio" name="alignment-{{id}}" value="bottomRight" {{#js_if "this.contentAlignment === 'bottomRight' "}}checked{{/js_if}}>
-								<span><img src="/content/plugins/63bits-pageBuilder/images/icons/alignment/3_3.svg" /></span>
+								<span><img src="/plugins/63bits-pageBuilder/images/icons/alignment/3_3.svg" /></span>
 							</label>
 						</div>
 					</div>`,
@@ -2013,7 +2145,7 @@ var PageBuilderModel = {
                 return (
                     `<div class="controls text-controls js-section-controls">
 						<div>
-                            <label class="toggler toggler-sm js-visibility-toggler js-title-visibility-toggler">
+                            <label class="toggler toggler-sm js-component-visibility-toggler js-title-visibility-toggler">
                                 <span>Is Active</span>
                                 <input type="checkbox" ${model.isActive ? 'checked' : ''}>
                                 <i></i>
@@ -2026,10 +2158,11 @@ var PageBuilderModel = {
             tinymce: {
                 init: function (section) {
                     var options = {
-                        toolbar: 'style-h1 style-h2 style-h3 style-h4 style-h5 style-h6 | bold italic | removeformat | code',
-                        plugins: 'code,paste,FormatingToolbarButtons,autoresize',
-                        paste_word_valid_elements: 'b,strong,i,em',
-                        forced_root_block: false
+                        toolbar: 'formatselect | alignleft aligncenter alignright alignjustify | bold italic | link | removeformat | code',
+                        plugins: 'paste autoresize link code help wordcount emoticons charmap',
+                        block_formats: 'Header 1=h1;Header 2=h2;Header 3=h3;Header 4=h4;Header 5=h5;Header 6=h6',
+                        paste_word_valid_elements: 'i,em',
+                        forced_root_block: ''
                     };
 
                     if ($(section).find('.js-tinymce.js-title').length > 0) {
@@ -2055,20 +2188,72 @@ var PageBuilderModel = {
             },
 
             tinymce: {
+                addImage: function (files) {
+                    if (files) {
+                        var urlDownload = escape(files[0].urlDownload);
+                        PageBuilderModel.plugins.fileManager.tinymce.callback(urlDownload, { alt: '' });
+                    }
+                    PageBuilderModel.plugins.fileManager.hide();
+
+                    PageBuilderModel.plugins.fileManager.tinymce.isEnabled = false;
+                    PageBuilderModel.plugins.fileManager.tinymce.callback = null;
+                },
+                addMedia: function (files) {
+                    if (files) {
+                        var urlDownload = escape(files[0].urlDownload);
+                        PageBuilderModel.plugins.fileManager.tinymce.callback(urlDownload, { source2: '', poster: '' });
+                    }
+                    PageBuilderModel.plugins.fileManager.hide();
+
+                    PageBuilderModel.plugins.fileManager.tinymce.isEnabled = false;
+                    PageBuilderModel.plugins.fileManager.tinymce.callback = null;
+                },
                 init: function (section) {
-                    var options = {
-                        toolbar: 'formatselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist | link | removeformat | code',
-                        plugins: 'link,code,paste,FormatingToolbarButtons,autoresize',
-                        block_formats: 'Header 3=h3;Header 4=h4;Header 5=h5;Header 6=h6; Text =p',
-                        paste_word_valid_elements: 'b,strong,i,em,ul,li,ol,p,br,sub,sup,h2,h3',
-                        forced_root_block: 'p'
+                    var optionsBasic = {
+                        toolbar: 'formatselect | blockquote | alignleft aligncenter alignright alignjustify | bullist numlist | removeformat | code',
+                        plugins: 'paste autoresize link hr lists advlist code help wordcount emoticons charmap visualblocks searchreplace',
+                        block_formats: 'Header 1=h1;Header 2=h2;Header 3=h3;Header 4=h4;Header 5=h5;Header 6=h6; Paragraph=p',
+                        paste_word_valid_elements: 'b,strong,i,em,ul,li,ol,p,br,sub,sup',
+                        forced_root_block: ''
                     };
 
-                    if ($(section).find('.js-tinymce.js-text-wrap').length > 0) {
-                        PageBuilderModel.plugins.tinymce.init($(section).find('.js-tinymce.js-text-wrap'), options);
+                    var optionsFullFeatured = {
+                        toolbar: [
+                            'formatselect | bullist numlist outdent indent | link | hr | image media | table | code',
+                            'fontsizeselect | forecolor | bold italic underline strikethrough superscript subscript | blockquote | alignleft aligncenter alignright alignjustify | removeformat'
+                        ],
+                        plugins: 'paste autoresize image link media table hr lists advlist code help wordcount emoticons charmap visualblocks searchreplace',
+                        block_formats: 'Header 1=h1;Header 2=h2;Header 3=h3;Header 4=h4;Header 5=h5;Header 6=h6; Paragraph=p',
+                        paste_word_valid_elements: 'b,strong,i,em,ul,li,ol,p,br,sub,sup',
+                        forced_root_block: '',
+
+                        image_advtab: true,
+
+                        file_picker_types: 'image media',
+                        file_picker_callback: function (callback, value, meta) {
+                            PageBuilderModel.plugins.fileManager.tinymce.isEnabled = true;
+                            PageBuilderModel.plugins.fileManager.tinymce.callback = callback;
+                            PageBuilderModel.plugins.fileManager.tinymce.type = meta.filetype;
+
+                            if (meta.filetype == 'media') {
+                                PageBuilderModel.plugins.fileManager.show(PageBuilderModel.plugins.fileManager.getSingleFileUrl());
+                            } else {
+                                PageBuilderModel.plugins.fileManager.show(PageBuilderModel.plugins.fileManager.getSingleImageUrl());
+                            }
+                        },
+
+                        toolbar_sticky: true
+                    };
+
+                    if ($(section).find('.js-tinymce-basic.js-text-wrap').length > 0) {
+                        PageBuilderModel.plugins.tinymce.init($(section).find('.js-tinymce-basic.js-text-wrap'), optionsBasic);
+                    }
+
+                    if ($(section).find('.js-tinymce-full.js-text-wrap').length > 0) {
+                        PageBuilderModel.plugins.tinymce.init($(section).find('.js-tinymce-full.js-text-wrap'), optionsFullFeatured);
                     }
                 }
-            },
+            }
         },
 
         textPlain: {
@@ -2111,8 +2296,14 @@ var PageBuilderModel = {
                         <div class="form-group">
                             <input type="text" class="form-control js-btn-url-input" placeholder="http://example.com" value="${model.href}">
                         </div>
+                        <div class="d-flex btn-target-checkbox-wrap">
+                            <label>
+                                <input class="js-btn-target-checkbox" type="checkbox" ${model.isTargetBlank ? 'checked' : ''}>
+                                <span>Open in new window</span>
+                            </label>
+                        </div>
                     </div>`
-                )
+                );
             },
 
             edit: function (container) {
@@ -2126,6 +2317,7 @@ var PageBuilderModel = {
                 var isActive = container.find('.js-btn-visibility-toggler input:checked').length > 0;
                 var btnName = container.find('.js-btn-name-input').val();
                 var btnUrl = container.find('.js-btn-url-input').val();
+                var isTargetBlank = container.find('.js-btn-target-checkbox').is(':checked');
 
                 if (isActive) {
                     container.removeClass('component-disabled');
@@ -2136,9 +2328,16 @@ var PageBuilderModel = {
                 container.children('.js-btn').text(btnName);
                 container.children('.js-btn').attr('href', btnUrl);
 
+                if (isTargetBlank) {
+                    container.children('.js-btn').attr('target', '_blank');
+                }
+                else {
+                    container.children('.js-btn').removeAttr('target');
+                }
+
                 //
                 PageBuilderModel.editors.hide(container);
-            },
+            }
         },
 
         image: {
@@ -2165,10 +2364,10 @@ var PageBuilderModel = {
             add: function (files) {
                 if (files) {
                     var urlDownload = escape(files[0].urlDownload);
-                    PageBuilderModel.editors.image.container.children('.js-img').css({ 'background-image': 'url(' + urlDownload + ')' });
+                    PageBuilderModel.editors.image.container.children('.js-img').css({ 'background-image': 'url(' + urlDownload + ')' }).attr('data-img-src', urlDownload);
 
                     var slider = PageBuilderModel.editors.image.container.closest('.js-t63-slider-container');
-                    
+
                     if ($(slider).length > 0) {
                         $(slider).closest('.js-page-section').find('.js-slider-settings-container li.active .js-go-to-slide-btn').css({ 'background-image': 'url(' + urlDownload + ')' });
                     }
@@ -2188,6 +2387,23 @@ var PageBuilderModel = {
                 )
             },
 
+            getInfo: function (url) {
+                url.match(/(player.|www.)?(vimeo\.com|youtu(be\.com|\.be|be\.googleapis\.com))\/(video\/|embed\/|watch\?v=|v\/)?([A-Za-z0-9._%-]*)(\&\S+)?/);
+
+                var type;
+
+                if (RegExp.$2.indexOf('youtu') > -1) {
+                    type = 'youtube';
+                } else if (RegExp.$2.indexOf('vimeo') > -1) {
+                    type = 'vimeo';
+                }
+
+                return {
+                    type: type,
+                    id: RegExp.$5
+                };
+            },
+
             edit: function (container) {
                 PageBuilderModel.editors.actionButtons.toggleVisibility(container);
                 PageBuilderModel.editors.show(container);
@@ -2197,26 +2413,20 @@ var PageBuilderModel = {
 
                 //
                 var url = $.trim(container.find('.js-video-input').val());
-                var newUrl, params = '';
 
                 if (url != '') {
-                    if (url.indexOf('youtube') > -1) {
 
-                        if (url.indexOf('?') == -1) {
-                            params = '?rel=0';
-                        }
+                    var newUrl, params = '';
 
-                        if (url.indexOf('v=') > -1) {
-                            newUrl = 'https://www.youtube.com/embed/' + url.slice(url.lastIndexOf('v=') + 2) + params;
-                        }
-                        else {
-                            newUrl = 'https://www.youtube.com/embed/' + url.slice(url.lastIndexOf('/') + 1) + params;
-                        }
+                    var type = PageBuilderModel.editors.video.getInfo(url).type;
+                    var id = PageBuilderModel.editors.video.getInfo(url).id;
+
+                    if (type == 'youtube') {
+                        newUrl = 'https://www.youtube.com/embed/' + id + params;
                     }
-                    else if (url.indexOf('vimeo') > -1) {
-                        newUrl = 'https://player.vimeo.com/video/' + url.slice(url.lastIndexOf('/') + 1);
+                    else {
+                        newUrl = 'https://player.vimeo.com/video/' + id;
                     }
-                    else { }
 
                     container.find('.js-iframe-container iframe').attr('src', newUrl);
                     container.find('.js-video-input').val('');
@@ -2261,7 +2471,7 @@ var PageBuilderModel = {
             },
             add: function (files) {
                 if (files) {
-                    
+
                     var model = {
                         components: {
                             attachements: []
@@ -2465,6 +2675,31 @@ var PageBuilderModel = {
             }
         },
 
+        articlesListItem: {
+            add: function (_this) {
+                var section = _this.closest('.js-page-section');
+                var itemsContainer = section.find('.js-articles-list-container');
+
+                var model = {
+                    items: [
+                        {
+                            ...PageBuilderModel.settings.components.articlesListItem()
+                        }
+                    ],
+                    actionButtons: PageBuilderModel.editors.actionButtons.settings
+                };
+
+                itemsContainer.append(PageBuilderModel.sections.articlesList.items.getHtml(model));
+
+                PageBuilderModel.editors.title.tinymce.init(itemsContainer);
+                PageBuilderModel.editors.text.tinymce.init(itemsContainer);
+            },
+
+            remove: function (container) {
+                container.parent().remove();
+            }
+        },
+
         sliderItem: {
             controls: {
                 containerPartial:
@@ -2502,7 +2737,7 @@ var PageBuilderModel = {
                 var sectionName = section.data('section');
                 var slider = section.find('.js-t63-slider-container');
                 var settingItemsContainer = section.find('.js-slider-settings-container ul');
-                
+
                 var model = {
                     items: [
                         { ...PageBuilderModel.settings.components[sectionName + 'Item']() }
@@ -2702,13 +2937,17 @@ var PageBuilderModel = {
                 PageBuilderModel.editors.file.choose(section);
             });
 
-            //--- add grid item
+            //--- add grid/list item
             $(PageBuilderModel.currentViewSelector).on('click', '.js-add-grid-col-btn', function () {
                 PageBuilderModel.editors.imgGridItem.add($(this));
             });
 
             $(PageBuilderModel.currentViewSelector).on('click', '.js-add-articles-grid-item-btn', function () {
                 PageBuilderModel.editors.articlesGridItem.add($(this));
+            });
+
+            $(PageBuilderModel.currentViewSelector).on('click', '.js-add-articles-list-item-btn', function () {
+                PageBuilderModel.editors.articlesListItem.add($(this));
             });
 
             $(PageBuilderModel.currentViewSelector).on('click', '.js-add-services-grid-item-btn', function () {
@@ -2768,6 +3007,7 @@ var PageBuilderModel = {
         Template7.registerPartial('filesPartial', PageBuilderModel.sections.components.attachements.files.partial);
         Template7.registerPartial('imgGridItemsPartial', PageBuilderModel.sections.imgGrid.items.partial);
         Template7.registerPartial('articlesGridItemsPartial', PageBuilderModel.sections.articlesGrid.items.partial);
+        Template7.registerPartial('articlesListItemsPartial', PageBuilderModel.sections.articlesList.items.partial);
         Template7.registerPartial('sliderItemsPartial', PageBuilderModel.sections.slider.items.partial);
         Template7.registerPartial('faqItemsPartial', PageBuilderModel.sections.faq.items.partial);
         Template7.registerPartial('testimonialsItemsPartial', PageBuilderModel.sections.testimonials.items.partial);
@@ -2781,6 +3021,7 @@ var PageBuilderModel = {
         PageBuilderModel.sections.components.image.template = Template7.compile(PageBuilderModel.sections.components.image.template);
         PageBuilderModel.sections.components.attachements.files.template = Template7.compile(PageBuilderModel.sections.components.attachements.files.template);
         PageBuilderModel.sections.articlesGrid.items.template = Template7.compile(PageBuilderModel.sections.articlesGrid.items.template);
+        PageBuilderModel.sections.articlesList.items.template = Template7.compile(PageBuilderModel.sections.articlesList.items.template);
         PageBuilderModel.sections.imgGrid.items.template = Template7.compile(PageBuilderModel.sections.imgGrid.items.template);
         PageBuilderModel.sections.slider.items.template = Template7.compile(PageBuilderModel.sections.slider.items.template);
         PageBuilderModel.sections.faq.items.template = Template7.compile(PageBuilderModel.sections.faq.items.template);
@@ -2799,6 +3040,7 @@ var PageBuilderModel = {
         PageBuilderModel.sections.video.template = Template7.compile(PageBuilderModel.sections.video.template);
         PageBuilderModel.sections.imgGrid.template = Template7.compile(PageBuilderModel.sections.imgGrid.template);
         PageBuilderModel.sections.articlesGrid.template = Template7.compile(PageBuilderModel.sections.articlesGrid.template);
+        PageBuilderModel.sections.articlesList.template = Template7.compile(PageBuilderModel.sections.articlesList.template);
         PageBuilderModel.sections.faq.template = Template7.compile(PageBuilderModel.sections.faq.template);
         PageBuilderModel.sections.html.template = Template7.compile(PageBuilderModel.sections.html.template);
         PageBuilderModel.sections.testimonials.template = Template7.compile(PageBuilderModel.sections.testimonials.template);
@@ -2816,11 +3058,7 @@ var PageBuilderModel = {
         Template7.registerPartial('sliderItemsControlsPartial', PageBuilderModel.editors.sliderItem.controls.containerPartial);
         Template7.registerPartial('sliderItemsControlsItemPartial', PageBuilderModel.editors.sliderItem.controls.items.partial);
 
-        //Template7.registerPartial('testimonialsItemsControlsPartial', PageBuilderModel.editors.testimonialsItem.controls.containerPartial);
-        //Template7.registerPartial('testimonialsItemsControlsItemPartial', PageBuilderModel.editors.testimonialsItem.controls.items.partial);
-
         PageBuilderModel.editors.sliderItem.controls.items.template = Template7.compile(PageBuilderModel.editors.sliderItem.controls.items.template);
-        //PageBuilderModel.editors.testimonialsItem.controls.items.template = Template7.compile(PageBuilderModel.editors.testimonialsItem.controls.items.template);
 
 
         //--- scrollTo navigation
@@ -2833,20 +3071,60 @@ var PageBuilderModel = {
             init: function (selector, options) {
                 $(selector).tinymce({
                     width: '100%',
-                    menubar: false,
+
+                    menubar: 'edit view insert format tools table tc help',
+                    menu: {
+                        edit: { title: 'Edit', items: 'undo redo | cut copy paste | selectall | searchreplace' },
+                        view: { title: 'View', items: 'code | visualchars visualblocks | spellchecker | preview fullscreen' },
+                        insert: { title: 'Insert', items: 'image link media template codesample inserttable | charmap emoticons hr | pagebreak nonbreaking anchor toc | insertdatetime' },
+                        format: { title: 'Format', items: 'bold italic underline strikethrough superscript subscript | blockformats fontsizes align | forecolor | removeformat' },
+                        tools: { title: 'Tools', items: 'code wordcount' },
+                        table: { title: 'Table', items: 'inserttable | cell row column | tableprops deletetable' },
+                        help: { title: 'Help', items: 'help' }
+                    },
+
                     toolbar_items_size: 'small',
+                    toolbar_mode: 'floating',
                     statusbar: false,
                     inline: true,
 
                     toolbar: options.toolbar,
+                    toolbar_sticky: options.toolbar_sticky,
                     plugins: options.plugins,
                     block_formats: options.block_formats,
                     paste_word_valid_elements: options.paste_word_valid_elements,
+
+                    image_advtab: options.image_advtab,
+                    file_picker_types: options.file_picker_types,
+                    file_picker_callback: options.file_picker_callback,
+
+                    force_br_newlines: true,
+                    force_p_newlines: false,
                     forced_root_block: options.forced_root_block,
 
-                    force_p_newlines: false,
+                    fontsize_formats: '10px 11px 12px 14px 16px 18px 20px 22px 24px 26px 30px',
+                    indentation: '24px',
+
+                    link_class_list: [
+                        { title: 'None', value: '' },
+                        { title: 'Primary', value: 'btn btn-primary' },
+                        { title: 'Secondary', value: 'btn btn-secondary' }
+                    ],
+
+                    table_class_list: [
+                        { title: 'None', value: '' },
+                        { title: 'Plain', value: 'table-plain' },
+                        { title: 'Striped', value: 'table-striped' },
+                        { title: 'Light', value: 'table-light' },
+                        { title: 'Dark', value: 'table-dark' },
+                        { title: 'Light Striped', value: 'table-light table-striped' },
+                        { title: 'Dark Striped', value: 'table-dark table-striped' }
+                    ],
+                    table_advtab: false,
+
+                    contextmenu: 'link linkchecker image imagetools media table spellchecker configurepermanentpen bold italic',
+
                     remove_linebreaks: false,
-                    force_br_newlines: true,
                     remove_trailing_nbsp: false,
                     verify_html: false,
                     apply_source_formatting: true,
@@ -2862,16 +3140,27 @@ var PageBuilderModel = {
             url: null,
             getSingleImageUrl: function () {
                 if (PageBuilderModel.plugins.fileManager.url) {
-                    return PageBuilderModel.plugins.fileManager.url + '&AllowedExtensions=.jpg,.jpeg,.png,.gif&OnSelectedFilesChooseClientCallback=PageBuilderModel.plugins.fileManager.onSelectedFilesChooseClientCallback';
+                    return PageBuilderModel.plugins.fileManager.url + '&AllowedExtensions=.jpg,.jpeg,.png,.gif&AllowSelectMultiple=false&OnSelectedFilesChooseClientCallback=PageBuilderModel.plugins.fileManager.onSelectedFilesChooseClientCallback';
+                }
+            },
+            getSingleFileUrl: function () {
+                if (PageBuilderModel.plugins.fileManager.url) {
+                    return PageBuilderModel.plugins.fileManager.url + '&AllowSelectMultiple=false&OnSelectedFilesChooseClientCallback=PageBuilderModel.plugins.fileManager.onSelectedFilesChooseClientCallback';
                 }
             },
             getMultipleFilesUrl: function () {
                 if (PageBuilderModel.plugins.fileManager.url) {
-                    return PageBuilderModel.plugins.fileManager.url + '&AllowSelectMultiple=true&OnSelectedFilesChooseClientCallback=PageBuilderModel.plugins.fileManager.onSelectedFilesChooseClientCallback';
+                    return PageBuilderModel.plugins.fileManager.url + '&OnSelectedFilesChooseClientCallback=PageBuilderModel.plugins.fileManager.onSelectedFilesChooseClientCallback';
                 }
             },
             file: {
-                isImage: true
+                isImage: true,
+            },
+            isTinymce: false,
+            tinymce: {
+                isEnabled: false,
+                callback: null,
+                type: null
             },
             show: function (fileManagerUrl) {
                 FancyBox.Init({
@@ -2884,10 +3173,18 @@ var PageBuilderModel = {
                 window.FancyBox.ClosePopup();
             },
             onSelectedFilesChooseClientCallback: function (files) {
-                if (PageBuilderModel.plugins.fileManager.file.isImage) {
-                    PageBuilderModel.editors.image.add(files);
+                if (PageBuilderModel.plugins.fileManager.tinymce.isEnabled) {
+                    if (PageBuilderModel.plugins.fileManager.tinymce.type == 'image') {
+                        PageBuilderModel.editors.text.tinymce.addImage(files, PageBuilderModel.plugins.fileManager.tinymce.callback);
+                    } else {
+                        PageBuilderModel.editors.text.tinymce.addMedia(files, PageBuilderModel.plugins.fileManager.tinymce.callback);
+                    }
                 } else {
-                    PageBuilderModel.editors.file.add(files);
+                    if (PageBuilderModel.plugins.fileManager.file.isImage) {
+                        PageBuilderModel.editors.image.add(files);
+                    } else {
+                        PageBuilderModel.editors.file.add(files);
+                    }
                 }
             }
         },
@@ -2902,6 +3199,12 @@ var PageBuilderModel = {
             pageContent = $(pageContent);
             PageBuilderModel.editors.remove(pageContent);
             pageContent.find('.component-disabled').remove();
+
+            //replace special img with audio
+            pageContent.find('img.mce-object-audio').each(function (index, item) {
+                var audioFile = $(item).attr('data-mce-p-src');
+                $(item).replaceWith('<audio controls><source src="' + audioFile + '" type="audio/mpeg"></audio>');
+            });
 
             return pageContent.html();
         },

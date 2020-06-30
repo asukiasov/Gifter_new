@@ -1,8 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SixtyThreeBits.Core.DB;
-using SixtyThreeBits.Core.DB.Tables;
 using SixtyThreeBits.Core.Utilities;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -27,24 +25,24 @@ namespace SixtyThreeBits.Core.Modules
             });
         }
 
-        public async Task<List<Permissions>> ListPermissions()
+        public async Task<List<DBCoreDataContext.PermissionsListResultItem>> ListPermissions()
         {
             return await TryToReturnStaticAsyncTask($"{nameof(ListPermissions)}()", async () =>
             {
                 using (var db = ConnectionFactory.GetDBCoreDataContext())
                 {
-                    return await db.Permissions.OrderBy(P => P.PermissionSortIndex).ToListAsync();
+                    return await db.PermissionsList().OrderBy(P => P.PermissionSortIndex).ToListAsync();
                 }
             });
         }
 
-        public async Task<List<int>> ListPermissionsByRoleID(int? RoleID)
+        public async Task<List<int?>> ListPermissionsByRoleID(int? RoleID)
         {
             return await TryToReturnStaticAsyncTask($"{nameof(ListPermissionsByRoleID)}({nameof(RoleID)} = {RoleID}", async () =>
             {
                 using (var db = ConnectionFactory.GetDBCoreDataContext())
                 {
-                    return await db.RolePermissions.Where(Item => Item.RoleID == RoleID).Select(Item => Item.PermissionID).ToListAsync();
+                    return await db.RolePermissionsList(RoleID).Select(Item => Item.PermissionID).ToListAsync();
                 }
             });
         }
@@ -55,41 +53,7 @@ namespace SixtyThreeBits.Core.Modules
             {
                 using (var db = ConnectionFactory.GetDBCoreDataContext())
                 {
-                    if (DatabaseAction == Enums.DatabaseActions.CREATE)
-                    {
-                        var Permission = new Permissions
-                        {
-                            PermissionParentID = PermissionParentID,
-                            PermissionCaption = PermissionCaption,
-                            PermissionPagePath = PermissionPagePath,
-                            PermissionCodeName = PermissionCodeName,
-                            PermissionCode = PermissionCode,
-                            PermissionSortIndex = PermissionSortIndex,
-                            PermissionIsMenuItem = PermissionIsMenuItem ?? false,
-                            PermissionMenuIcon = PermissionMenuIcon
-                        };
-                        await db.Permissions.AddAsync(Permission);
-                        await db.SaveChangesAsync();
-                    }
-                    else if (DatabaseAction == Enums.DatabaseActions.UPDATE)
-                    {
-                        var Permission = await db.Permissions.FirstOrDefaultAsync(Item => Item.PermissionID == PermissionID);
-                        if (Permission != null)
-                        {
-                            Permission.PermissionParentID = PermissionParentID == Constants.NullValueFor.Int ? null : PermissionParentID ?? Permission.PermissionParentID;
-                            Permission.PermissionCaption = PermissionCaption ?? Permission.PermissionCaption;
-                            Permission.PermissionPagePath = PermissionPagePath == Constants.NullValueFor.String ? null : PermissionPagePath ?? Permission.PermissionPagePath;
-                            Permission.PermissionCodeName = PermissionCodeName == Constants.NullValueFor.String ? null : PermissionCodeName ?? Permission.PermissionCodeName;
-                            Permission.PermissionCode = PermissionCode == Constants.NullValueFor.String ? null : PermissionCode ?? Permission.PermissionCode;
-                            Permission.PermissionSortIndex = PermissionSortIndex == Constants.NullValueFor.Int ? null : PermissionSortIndex ?? Permission.PermissionSortIndex;
-                            Permission.PermissionIsMenuItem = PermissionIsMenuItem ?? Permission.PermissionIsMenuItem;
-                            Permission.PermissionMenuIcon = PermissionMenuIcon == Constants.NullValueFor.String ? null : PermissionMenuIcon ?? Permission.PermissionMenuIcon;
-
-                            db.Permissions.Update(Permission);
-                            await db.SaveChangesAsync();
-                        }
-                    }
-
+                    PermissionID = await db.PermissionsIUD(DatabaseAction, PermissionID, PermissionParentID, PermissionCaption, PermissionPagePath, PermissionCodeName, PermissionCode, PermissionIsMenuItem, PermissionMenuIcon, PermissionSortIndex);
                     return PermissionID;
                 }
             });
@@ -97,7 +61,6 @@ namespace SixtyThreeBits.Core.Modules
         #endregion
     }
 
-    [Serializable]
     public class Permission
     {
         #region Properties

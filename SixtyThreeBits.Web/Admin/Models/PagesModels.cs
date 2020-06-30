@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using SixtyThreeBits.Core.Modules;
 using SixtyThreeBits.Core.Properties;
+using SixtyThreeBits.Core.Services;
 using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries;
 using SixtyThreeBits.Web.Reusables.Core;
@@ -165,21 +167,87 @@ namespace SixtyThreeBits.Web.Admin.Models
     public class PageModel : PageModelBase
     {
         #region Methods
-        public PagePropertiesViewModel GetPagePropertiesViewModel()
+        public PagePropertiesViewModel GetPagePropertiesViewModel(PagePropertiesViewModel ViewModel)
         {
-            var ViewModel = new PagePropertiesViewModel();            
-            ViewModel.PageIsPublished = DBItemPage.PageIsPublished;
-            ViewModel.PageIsMenuItem = DBItemPage.PageIsMenuItem;
+            if (ViewModel == null)
+            {
+                ViewModel = new PagePropertiesViewModel();
+                ViewModel.PageIsPublished = DBItemPage.PageIsPublished;
+                ViewModel.PageIsMenuItem = DBItemPage.PageIsMenuItem;
+                ViewModel.PageIsFooterItem = DBItemPage.PageIsFooterItem;
+                ViewModel.PageIsExternalUrl = DBItemPage.PageIsExternalUrl;
+                ViewModel.PageExternalUrl = DBItemPage.PageExternalUrl;
+                ViewModel.PageSlug = DBItemPage.PageSlug;
+                ViewModel.PageTitle = DBItemPage.PageTitle;
+                ViewModel.PageTitleEng = DBItemPage.PageTitleEng;
+                ViewModel.PageTitleRus = DBItemPage.PageTitleRus;
+                ViewModel.PageShortDescription = DBItemPage.PageShortDescription;
+                ViewModel.PageShortDescriptionEng = DBItemPage.PageShortDescriptionEng;
+                ViewModel.PageShortDescriptionRus = DBItemPage.PageShortDescriptionRus;
+            }
+
             ViewModel.PageImageFilename = DBItemPage.PageImageFilename;
             ViewModel.PageImageHttpPath = DBItemPage.PageImageFilenameHttpPath;
-            ViewModel.PageSlug = DBItemPage.PageSlug;
-            ViewModel.PageTitle = DBItemPage.PageTitle;
-            ViewModel.PageTitleEng = DBItemPage.PageTitleEng;
-            ViewModel.PageTitleRus = DBItemPage.PageTitleRus;
-            ViewModel.PageShortDescription = DBItemPage.PageShortDescription;
-            ViewModel.PageShortDescriptionEng = DBItemPage.PageShortDescriptionEng;
-            ViewModel.PageShortDescriptionRus = DBItemPage.PageShortDescriptionRus;
+
             return ViewModel;
+        }
+
+        public async Task ValidatePagePropertiesViewModel(PagePropertiesViewModel ViewModel)
+        {
+            ViewModel.Errors = new List<SimpleKeyValue<string, string>>
+            {
+                Validation.ValidateRequired(ErrorKey:$"[name=\"{nameof(ViewModel.PageTitle)}\"]", ValueToValidate:ViewModel.PageTitle),
+                Validation.ValidateRequired(ErrorKey:$"[name=\"{nameof(ViewModel.PageSlug)}\"]", ValueToValidate:ViewModel.PageSlug),
+                await Validation.ValidateAsync(
+                    ErrorAction: async () =>
+                    {
+                        var IsUniq = await DataAccessFactory.Pages.IsPageSlugUniq(PageSlug:ViewModel.PageSlug,PageID:DBItemPage.PageID);
+                        return !IsUniq;
+                    },
+                    ErrorKey: $"[name=\"{nameof(ViewModel.PageSlug)}\"]",
+                    ErrorMessage: Resources.ValidationPageSlugNotUniq
+                )
+            };
+            ViewModel.Errors.RemoveAll(Item => Item == null);
+        }
+
+        public async Task<bool> SavePageProperties(PagePropertiesViewModel ViewModel)
+        {
+            var HasPageImage = ViewModel.PageImageFile?.Length > 0;
+            var PageImageFilename = HasPageImage ? GetFilenameFromUploadedFile(ViewModel.PageImageFile) : null;
+            if (HasPageImage)
+            {
+                Utilities.DeleteUploadedFile(DBItemPage.PageImageFilename, DBItemPage.FolderPhysicalPath);
+            }
+
+            await DataAccessFactory.Pages.PagesIUD(
+                DatabaseAction: Enums.DatabaseActions.UPDATE,
+                PageID: DBItemPage.PageID,
+                PageSlug: ViewModel.PageSlug,
+                PageTitle: ViewModel.PageTitle,
+                PageTitleEng: ViewModel.PageTitleEng,
+                PageTitleRus: ViewModel.PageTitleRus,
+                PageShortDescription: ViewModel.PageShortDescription,
+                PageShortDescriptionEng: ViewModel.PageShortDescriptionEng,
+                PageShortDescriptionRus: ViewModel.PageShortDescriptionRus,
+                PageImageFilename: PageImageFilename,
+                PageIsPublished: ViewModel.PageIsPublished,
+                PageIsMenuItem: ViewModel.PageIsMenuItem,
+                PageIsFooterItem: ViewModel.PageIsFooterItem,
+                PageIsExternalUrl: ViewModel.PageIsExternalUrl,
+                PageExternalUrl: ViewModel.PageExternalUrl
+            );
+
+            if (!DataAccessFactory.Pages.IsError)
+            {
+                ViewModel.IsSaved = true;
+                if (HasPageImage)
+                {
+                    await SaveUploadedFile(PostedFile: ViewModel.PageImageFile, Filename: PageImageFilename, FolderPhysicalPath: DBItemPage.FolderPhysicalPath);
+                }
+            }
+
+            return ViewModel.IsSaved;
         }
 
         public PageBuilderViewModel GetPageBuilderViewModel(int? PageID, string Language)
@@ -197,9 +265,9 @@ namespace SixtyThreeBits.Web.Admin.Models
             ViewModel.IsPublished = DBItemPage.PageIsPublished;
             ViewModel.Language = Language;
             ViewModel.UrlBack = Url.RouteUrl(ControllerActionRouteNames.Admin.Pages.Index);
-            ViewModel.UrlPreview = Url.RouteUrl(ControllerActionRouteNames.Website.Home.StaticPagePreviewCulture, new { Culture = Language, PageID });
+            ViewModel.UrlPreview = GetRouteByName(ControllerActionRouteNames.Website.Home.StaticPagePreview, new { Culture = Language, PageID });
             ViewModel.UrlSave = UrlCurrentPage;
-            //Model.UrlFileManager = LocalUtilities.GetFileManagerUrl(C.Url, C.DBItemPage.FolderPhysicalPath, C.DBItemPage.FolderVirtualPath);
+            ViewModel.UrlFileManager = GetFileManagerUrl(DBItemPage.FolderPhysicalPath, DBItemPage.FolderVirtualPath);
 
             ViewModel.SelectedLanguage = Utilities.GetValuesByLanguage(Language, Enums.Languages.GEORGIAN, Enums.Languages.ENGLISH, Enums.Languages.RUSSIAN);
             ViewModel.LanguageOptions = new List<SimpleKeyValue<string, string>>
@@ -209,81 +277,97 @@ namespace SixtyThreeBits.Web.Admin.Models
                 new SimpleKeyValue<string, string>{ Key = nameof(Enums.Languages.RUSSIAN), Value = Url.RouteUrl(ControllerActionRouteNames.Admin.Pages.Page.BuilderLanguage, new { PageID, Language = Enums.Languages.RUSSIAN}), IsSelected = Language == Enums.Languages.RUSSIAN}
             };
 
+            ViewModel.PluginsClient = new PluginsClient();
+            ViewModel.PluginsClient
+               .EnableGoogleFonts(true)
+               .EnableJsClient(true)
+               .EnableJQuery(true)
+               .EnableJQueryUI(EnableJs: true, EnableCss: false)
+               .EnableBootstrap(true)
+               .EnableFancybox(true)
+               .EnablePreloader(true)
+               .EnableTemplate7(true)
+               .EnableTinyMce(true)
+               .EnableFancybox(true)
+               .EnableUtils(true)
+               .EnablePageBuilderEditor(true);
+
             return ViewModel;
         }
 
-        //public static AjaxResponse Save(int? PageID, PageSubmitModel SubmitModel)
-        //{
-        //    var AR = new AjaxResponse();
-        //    var DAL = new PagesDataAccess();
+        public async Task<List<SimpleKeyValue<string, string>>> ValidatePageBuilderSubmitModel(PageBuilderSubmitModel SubmitModel)
+        {
+            var Errors = new List<SimpleKeyValue<string, string>>
+            {
+                Validation.ValidateRequired(ErrorKey: $"[name=\"{nameof(SubmitModel.PageTitle)}\"]", ValueToValidate: SubmitModel.PageTitle),
+                Validation.ValidateRequired(ErrorKey: $"[name=\"{nameof(SubmitModel.PageSlug)}\"]", ValueToValidate: SubmitModel.PageSlug),
+                await Validation.ValidateAsync(
+                    ErrorAction: async () =>
+                    {
+                        var IsUniq = await DataAccessFactory.Pages.IsPageSlugUniq(PageSlug:SubmitModel.PageSlug, PageID:DBItemPage.PageID);
+                        return !IsUniq;
+                    },
+                    ErrorKey: $"[name=\"{nameof(SubmitModel.PageSlug)}\"]",
+                    ErrorMessage: Resources.ValidationPageSlugNotUniq
+                )
+            };
+            
 
-        //    switch (SubmitModel.Language)
-        //    {
-        //        case Enums.Languages.GEORGIAN:
-        //            {
-        //                DAL.PagesIUD(
-        //                    DatabaseAction: Enums.DatabaseActions.UPDATE,
-        //                    PageID: PageID,
-        //                    PageSlug: SubmitModel.PageSlug,
-        //                    PageTitle: SubmitModel.PageTitle ?? Constants.NullValueFor.String,
-        //                    PageText: SubmitModel.PageText ?? Constants.NullValueFor.String,
-        //                    PageData: SubmitModel.PageData ?? Constants.NullValueFor.String,
-        //                    PageIsPublished: SubmitModel.IsPublished
-        //                );
-        //                break;
-        //            }
-        //        case Enums.Languages.ENGLISH:
-        //            {
-        //                DAL.PagesIUD(
-        //                    DatabaseAction: Enums.DatabaseActions.UPDATE,
-        //                    PageID: PageID,
-        //                    PageSlug: SubmitModel.PageSlug,
-        //                    PageTitleEng: SubmitModel.PageTitle ?? Constants.NullValueFor.String,
-        //                    PageTextEng: SubmitModel.PageText ?? Constants.NullValueFor.String,
-        //                    PageDataEng: SubmitModel.PageData ?? Constants.NullValueFor.String,
-        //                    PageIsPublished: SubmitModel.IsPublished
-        //                );
-        //                break;
-        //            }
-        //        case Enums.Languages.RUSSIAN:
-        //            {
-        //                DAL.PagesIUD(
-        //                    DatabaseAction: Enums.DatabaseActions.UPDATE,
-        //                    PageID: PageID,
-        //                    PageSlug: SubmitModel.PageSlug,
-        //                    PageTitleRus: SubmitModel.PageTitle ?? Constants.NullValueFor.String,
-        //                    PageTextRus: SubmitModel.PageText ?? Constants.NullValueFor.String,
-        //                    PageDataRus: SubmitModel.PageData ?? Constants.NullValueFor.String,
-        //                    PageIsPublished: SubmitModel.IsPublished
-        //                );
-        //                break;
-        //            }
-        //    }
-        //    AR.IsSuccess = !DAL.IsError;
+            Errors.RemoveAll(Item => Item == null);
 
-        //    return AR;
-        //}
+            return Errors;
+        }
 
-        //public static List<SimpleKeyValue<string, string>> Validate(int? PageID, PageSubmitModel SubmitModel)
-        //{
-        //    var Errors = new List<SimpleKeyValue<string, string>>
-        //    {
-        //        Validation.ValidateRequired(ErrorKey: $"[name=\"{nameof(SubmitModel.PageTitle)}\"]", ValueToValidate: SubmitModel.PageTitle)
-        //    };
+        public async Task<AjaxResponse> SavePageBuilder(PageBuilderSubmitModel SubmitModel)
+        {
+            var AR = new AjaxResponse();
 
-        //    if (string.IsNullOrWhiteSpace(SubmitModel.PageSlug))
-        //    {
-        //        Errors.Add(Validation.GetError(ErrorKey: $"[name=\"{nameof(SubmitModel.PageSlug)}\"]", ErrorMessage: Resources.ValidationRequiredField));
-        //    }
-        //    else if (!PagesDataAccess.IsPageSlugUniq(SubmitModel.PageSlug, PageID))
-        //    {
-        //        Errors.Add(Validation.GetError(ErrorKey: $"[name=\"{nameof(SubmitModel.PageSlug)}\"]", ErrorMessage: Resources.TextSlugNotUniq));
-        //    }
+            switch (SubmitModel.Language)
+            {
+                case Enums.Languages.GEORGIAN:
+                    {
+                        await DataAccessFactory.Pages.PagesIUD(
+                            DatabaseAction: Enums.DatabaseActions.UPDATE,
+                            PageID: DBItemPage.PageID,
+                            PageSlug: SubmitModel.PageSlug,
+                            PageTitle: SubmitModel.PageTitle ?? Constants.NullValueFor.String,
+                            PageText: SubmitModel.PageText ?? Constants.NullValueFor.String,
+                            PageData: SubmitModel.PageData ?? Constants.NullValueFor.String,
+                            PageIsPublished: SubmitModel.IsPublished
+                        );
+                        break;
+                    }
+                case Enums.Languages.ENGLISH:
+                    {
+                        await DataAccessFactory.Pages.PagesIUD(
+                            DatabaseAction: Enums.DatabaseActions.UPDATE,
+                            PageID: DBItemPage.PageID,
+                            PageSlug: SubmitModel.PageSlug,
+                            PageTitleEng: SubmitModel.PageTitle ?? Constants.NullValueFor.String,
+                            PageTextEng: SubmitModel.PageText ?? Constants.NullValueFor.String,
+                            PageDataEng: SubmitModel.PageData ?? Constants.NullValueFor.String,
+                            PageIsPublished: SubmitModel.IsPublished
+                        );
+                        break;
+                    }
+                case Enums.Languages.RUSSIAN:
+                    {
+                        await DataAccessFactory.Pages.PagesIUD(
+                            DatabaseAction: Enums.DatabaseActions.UPDATE,
+                            PageID: DBItemPage.PageID,
+                            PageSlug: SubmitModel.PageSlug,
+                            PageTitleRus: SubmitModel.PageTitle ?? Constants.NullValueFor.String,
+                            PageTextRus: SubmitModel.PageText ?? Constants.NullValueFor.String,
+                            PageDataRus: SubmitModel.PageData ?? Constants.NullValueFor.String,
+                            PageIsPublished: SubmitModel.IsPublished
+                        );
+                        break;
+                    }
+            }
+            AR.IsSuccess = !DataAccessFactory.Pages.IsError;
 
-        //    Errors.RemoveAll(Item => Item == null);
-
-        //    return Errors;
-        //}
+            return AR;
+        }        
         #endregion
 
         #region Sub Classes
@@ -303,16 +387,20 @@ namespace SixtyThreeBits.Web.Admin.Models
             public bool HasPageImage => !string.IsNullOrWhiteSpace(PageImageFilename);
 
             public bool PageIsPublished { get; set; }
-            public bool PageIsMenuItem { get; set; }            
+            public bool PageIsMenuItem { get; set; }
+            public bool PageIsFooterItem { get; set; }
+            public bool PageIsExternalUrl { get; set; }
+            public string PageExternalUrl { get; set; }
             public IFormFile PageImageFile { get; set; }            
             public string UrlDeleteImage { get; set; }
-            public string TextConfirmDelete { get; set; } = Resources.TextConfirmDelete;
+            public readonly string TextConfirmDelete = Resources.TextConfirmDelete;
             #endregion
         }
 
         public class PageBuilderViewModel
         {
             #region Properties
+            public PluginsClient PluginsClient { get; set; }
             public string PageTitle { get; set; }
             public string PageSlug { get; set; }
             public string PageText { get; set; }
@@ -327,7 +415,7 @@ namespace SixtyThreeBits.Web.Admin.Models
             public List<SimpleKeyValue<string, string>> LanguageOptions { get; set; }
             public bool HasLanguageOptions => LanguageOptions?.Count > 0;
 
-            public string TextError { get; set; } = Resources.TextError;
+            public readonly string TextError = Resources.TextError;
             #endregion
         }
 

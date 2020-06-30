@@ -1,6 +1,7 @@
 ﻿using SixtyThreeBits.Core.Properties;
 using SixtyThreeBits.Libraries;
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace SixtyThreeBits.Core.Utilities
@@ -67,18 +68,7 @@ namespace SixtyThreeBits.Core.Utilities
                 Directory.Delete(FolderPath, true);
             }
         }
-
-        public T GetValuesByLanguage<T>(string Culture = null, T GeorgianValue = default(T), T EnglishValue = default(T), T RussianValue = default(T))
-        {
-            switch (Culture)
-            {
-                case Enums.Languages.GEORGIAN: { return GeorgianValue; }
-                case Enums.Languages.ENGLISH: { return EnglishValue; }
-                case Enums.Languages.RUSSIAN: { return RussianValue; }
-                default: { return GeorgianValue; }
-            }
-        }
-
+        
         public string GetDatabaseErrorMessage(SixtyThreeBitsDataObject DALItem)
         {
             string ErrorMessage = null;
@@ -100,6 +90,17 @@ namespace SixtyThreeBits.Core.Utilities
             return ErrorMessage;
         }
 
+        public T GetValuesByLanguage<T>(string Culture = null, T GeorgianValue = default(T), T EnglishValue = default(T), T RussianValue = default(T))
+        {
+            switch (Culture)
+            {
+                case Enums.Languages.GEORGIAN: { return GeorgianValue; }
+                case Enums.Languages.ENGLISH: { return EnglishValue; }
+                case Enums.Languages.RUSSIAN: { return RussianValue; }
+                default: { return GeorgianValue; }
+            }
+        }
+        
         /// <summary>
         /// Get http path of file
         /// </summary>
@@ -121,6 +122,11 @@ namespace SixtyThreeBits.Core.Utilities
         {            
             return $"{AppSettings.UploadFolderPhysicalPath}{SubFolders}{Filename}";
         }                
+
+        public bool IsImage(string Filename)
+        {
+            return string.IsNullOrWhiteSpace(Filename) ? false : new List<string> { ".JPG", ".JPE", ".BMP", ".GIF", ".PNG" }.Contains(Path.GetExtension(Filename).ToUpper());
+        }
         #endregion
     }
 }

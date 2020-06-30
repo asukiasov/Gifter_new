@@ -1,12 +1,12 @@
-﻿using SixtyThreeBits.Libraries;
+﻿using Microsoft.EntityFrameworkCore;
 using SixtyThreeBits.Core.DB;
+using SixtyThreeBits.Core.Utilities;
+using SixtyThreeBits.Libraries;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using SixtyThreeBits.Core.Utilities;
 
 namespace SixtyThreeBits.Core.Modules
 {
@@ -24,7 +24,7 @@ namespace SixtyThreeBits.Core.Modules
                 using (var db = ConnectionFactory.GetDBCoreDataContext())
                 {
                     var Result = await db.UsersGetSingleUserByUserID(UserID);
-                    return Result.DeserializeTo<User>();
+                    return Result?.DeserializeTo<User>();
                 }
             });
         }
@@ -52,13 +52,13 @@ namespace SixtyThreeBits.Core.Modules
             });
         }
 
-        public async Task<List<DB.Tables.Users>> ListUsers()
+        public async Task<List<DBCoreDataContext.UsersListResultItem>> ListUsers()
         {
             return await TryToReturnAsyncTask($"{nameof(ListUsers)}()", async () =>
             {
                 using (var db = ConnectionFactory.GetDBCoreDataContext())
                 {
-                    return await db.Users.OrderByDescending(Item => Item.CRTime).ToListAsync();
+                    return await db.UsersList().OrderByDescending(Item => Item.UserDateCreated).ToListAsync();
                 }
             });
         }
@@ -69,66 +69,14 @@ namespace SixtyThreeBits.Core.Modules
             {
                 using (var db = ConnectionFactory.GetDBCoreDataContext())
                 {
-                    //await db.UsersIUD(DatabaseAction, UserID, UserEmail, UserPassword, UserFirstname, UserLastname, UserRoleID, UserBirthdate, UserPhoneNumberMobile, UserPersonalNumber, UserAvatarFilename, UserIsActive);
-
-
-                    if (DatabaseAction == Enums.DatabaseActions.CREATE)
-                    {
-                        UserID = await db.UsersIUD(DatabaseAction, UserID, UserEmail, UserPassword, UserFirstname, UserLastname, UserRoleID, UserBirthdate, UserPhoneNumberMobile, UserPersonalNumber, UserAvatarFilename, UserIsActive);
-                        var User = new DB.Tables.Users
-                        {
-                            UserEmail = UserEmail,
-                            UserPassword = UserPassword.MD5(),
-                            UserFirstname = UserFirstname,
-                            UserLastname = UserLastname,
-                            UserRoleID = UserRoleID,
-                            UserBirthdate = UserBirthdate,
-                            UserPhoneNumberMobile = UserPhoneNumberMobile,
-                            UserPersonalNumber = UserPersonalNumber,
-                            UserAvatarFilename = UserAvatarFilename,
-                            UserIsActive = UserIsActive ?? false
-                        };
-                        await db.Users.AddAsync(User);
-                        await db.SaveChangesAsync();
-                        UserID = User.UserID;
-                    }
-                    else if (DatabaseAction == Enums.DatabaseActions.UPDATE)
-                    {
-                        var User = await db.Users.FirstOrDefaultAsync(Item => Item.UserID == UserID);
-                        if (User != null)
-                        {
-                            User.UserEmail = UserEmail ?? User.UserEmail;
-                            User.UserPassword = UserPassword.MD5() ?? User.UserPassword;
-                            User.UserFirstname = UserFirstname ?? User.UserFirstname;
-                            User.UserLastname = UserLastname ?? User.UserLastname;
-                            User.UserRoleID = UserRoleID == Constants.NullValueFor.Int ? null : UserRoleID ?? User.UserRoleID;
-                            User.UserBirthdate = UserBirthdate == Constants.NullValueFor.Date ? null : UserBirthdate ?? User.UserBirthdate;
-                            User.UserPhoneNumberMobile = UserPhoneNumberMobile == Constants.NullValueFor.String ? null : UserPhoneNumberMobile ?? User.UserPhoneNumberMobile;
-                            User.UserPersonalNumber = UserPersonalNumber == Constants.NullValueFor.String ? null : UserPersonalNumber ?? User.UserPersonalNumber;
-                            User.UserAvatarFilename = UserAvatarFilename == Constants.NullValueFor.String ? null : UserAvatarFilename ?? User.UserAvatarFilename;
-                            User.UserIsActive = UserIsActive ?? User.UserIsActive;
-                            db.Users.Update(User);
-                            await db.SaveChangesAsync();
-                        }
-                    }
-                    else if (DatabaseAction == Enums.DatabaseActions.DELETE)
-                    {
-                        var User = await db.Users.FirstOrDefaultAsync(Item => Item.UserID == UserID);
-                        if (User != null)
-                        {
-                            db.Users.Remove(User);
-                            await db.SaveChangesAsync();
-                        }
-                    }
-
+                    await db.UsersIUD(DatabaseAction, UserID, UserEmail, UserPassword, UserFirstname, UserLastname, UserRoleID, UserBirthdate, UserPhoneNumberMobile, UserPersonalNumber, UserAvatarFilename, UserIsActive);                    
                     return UserID;
                 }
             });
         }
         #endregion Methods
     }
-
-    [Serializable]
+    
     public class User
     {
         #region Properties
@@ -144,7 +92,7 @@ namespace SixtyThreeBits.Core.Modules
         public bool UserIsAdmin { get; set; }
         public int? UserRoleID { get; set; }        
         public string UserAvatarFilename { get; set; }        
-        public DateTime? CRTime { get; set; }
+        public DateTime? UserDateCreated { get; set; }
         public List<Permission> Permissions { get; set; }        
         #endregion Properties
 

@@ -16,12 +16,7 @@ namespace SixtyThreeBits.Core.DB
         }
 
         public virtual DbSet<Dictionaries> Dictionaries { get; set; }
-        public virtual DbSet<Pages> Pages { get; set; }
-        public virtual DbSet<Permissions> Permissions { get; set; }
-        public virtual DbSet<RolePermissions> RolePermissions { get; set; }
-        public virtual DbSet<Roles> Roles { get; set; }
         public virtual DbSet<SystemProperties> SystemProperties { get; set; }
-        public virtual DbSet<Users> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -57,95 +52,6 @@ namespace SixtyThreeBits.Core.DB
                     .HasConstraintName("FK_Dictionaries_Dictionaries");
             });
 
-            modelBuilder.Entity<Pages>(entity =>
-            {
-                entity.HasKey(e => e.PageID);
-
-                entity.Property(e => e.PageDateCreated)
-                    .HasColumnType("datetime")
-                    .HasDefaultValueSql("(getdate())");
-
-                entity.Property(e => e.PageImageFilename).HasMaxLength(200);
-
-                entity.Property(e => e.PageShortDescription).HasMaxLength(500);
-
-                entity.Property(e => e.PageShortDescriptionEng).HasMaxLength(500);
-
-                entity.Property(e => e.PageShortDescriptionRus).HasMaxLength(500);
-
-                entity.Property(e => e.PageSlug)
-                    .IsRequired()
-                    .HasMaxLength(100)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.PageTitle).HasMaxLength(100);
-
-                entity.Property(e => e.PageTitleEng).HasMaxLength(100);
-
-                entity.Property(e => e.PageTitleRus).HasMaxLength(100);
-
-                entity.HasOne(d => d.PageParent)
-                    .WithMany(p => p.InversePageParent)
-                    .HasForeignKey(d => d.PageParentID)
-                    .HasConstraintName("FK_Pages_Pages");
-            });
-
-            modelBuilder.Entity<Permissions>(entity =>
-            {
-                entity.HasKey(e => e.PermissionID);
-
-                entity.Property(e => e.CRTime)
-                    .HasColumnType("datetime")
-                    .HasDefaultValueSql("(getdate())");
-
-                entity.Property(e => e.PermissionCaption).HasMaxLength(100);
-
-                entity.Property(e => e.PermissionCode)
-                    .IsRequired()
-                    .HasMaxLength(100)
-                    .IsUnicode(false)
-                    .HasDefaultValueSql("(CONVERT([varchar](40),newid(),(0)))");
-
-                entity.Property(e => e.PermissionCodeName).HasMaxLength(100);
-
-                entity.Property(e => e.PermissionMenuIcon).HasMaxLength(50);
-
-                entity.Property(e => e.PermissionPagePath).HasMaxLength(100);
-
-                entity.HasOne(d => d.PermissionParent)
-                    .WithMany(p => p.InversePermissionParent)
-                    .HasForeignKey(d => d.PermissionParentID)
-                    .HasConstraintName("FK_Permissions_Permissions");
-            });
-
-            modelBuilder.Entity<RolePermissions>(entity =>
-            {
-                entity.HasKey(e => e.RecordID);
-
-                entity.HasOne(d => d.Permission)
-                    .WithMany(p => p.RolePermissions)
-                    .HasForeignKey(d => d.PermissionID)
-                    .HasConstraintName("FK_RolePermissions_Permissions");
-
-                entity.HasOne(d => d.Role)
-                    .WithMany(p => p.RolePermissions)
-                    .HasForeignKey(d => d.RoleID)
-                    .HasConstraintName("FK_RolePermissions_Roles");
-            });
-
-            modelBuilder.Entity<Roles>(entity =>
-            {
-                entity.HasKey(e => e.RoleID);
-
-                entity.Property(e => e.CRTime)
-                    .HasColumnType("datetime")
-                    .HasDefaultValueSql("(getdate())");
-
-                entity.Property(e => e.RoleName)
-                    .IsRequired()
-                    .HasMaxLength(100);
-            });
-
             modelBuilder.Entity<SystemProperties>(entity =>
             {
                 entity.Property(e => e.SystemPropertiesID).ValueGeneratedNever();
@@ -167,51 +73,6 @@ namespace SixtyThreeBits.Core.DB
                 entity.Property(e => e.TwitterUrl).HasMaxLength(200);
 
                 entity.Property(e => e.YoutubeUrl).HasMaxLength(200);
-            });
-
-            modelBuilder.Entity<Users>(entity =>
-            {
-                entity.HasKey(e => e.UserID);
-
-                entity.HasIndex(e => e.UserEmail)
-                    .HasName("IX_Users_Email_Uniq")
-                    .IsUnique();
-
-                entity.Property(e => e.CRTime)
-                    .HasColumnType("datetime")
-                    .HasDefaultValueSql("(getdate())");
-
-                entity.Property(e => e.UserAvatarFilename).HasMaxLength(500);
-
-                entity.Property(e => e.UserBirthdate).HasColumnType("date");
-
-                entity.Property(e => e.UserEmail)
-                    .IsRequired()
-                    .HasMaxLength(500)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.UserFirstname).HasMaxLength(50);
-
-                entity.Property(e => e.UserFullname).HasMaxLength(100);
-
-                entity.Property(e => e.UserLastname).HasMaxLength(50);
-
-                entity.Property(e => e.UserPassword)
-                    .IsRequired()
-                    .HasMaxLength(500);
-
-                entity.Property(e => e.UserPersonalNumber)
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.UserPhoneNumberMobile)
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.HasOne(d => d.UserRole)
-                    .WithMany(p => p.Users)
-                    .HasForeignKey(d => d.UserRoleID)
-                    .HasConstraintName("FK_Users_Roles");
             });
 
             OnModelCreatingPartial(modelBuilder);

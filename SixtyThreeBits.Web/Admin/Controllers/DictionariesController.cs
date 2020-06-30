@@ -22,7 +22,7 @@ namespace SixtyThreeBits.Web.Admin.Controllers
         [Route("", Name = ControllerActionRouteNames.Admin.Dictionaries.Page)]
         public ActionResult Dictionaries()
         {
-            Model.PluginClient.EnableDevextreme(true);
+            Model.PluginsClient.EnableDevextreme(true);
             var ViewModel = Model.GetPageViewModel();
             return View(ViewNames.Admin.Dictionaries.Page, ViewModel);
         }

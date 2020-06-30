@@ -18,27 +18,7 @@
       },
       {
          "HasPrimaryKey": true,
-         "Name": "[dbo].[Pages]"
-      },
-      {
-         "HasPrimaryKey": true,
-         "Name": "[dbo].[Permissions]"
-      },
-      {
-         "HasPrimaryKey": true,
-         "Name": "[dbo].[RolePermissions]"
-      },
-      {
-         "HasPrimaryKey": true,
-         "Name": "[dbo].[Roles]"
-      },
-      {
-         "HasPrimaryKey": true,
          "Name": "[dbo].[SystemProperties]"
-      },
-      {
-         "HasPrimaryKey": true,
-         "Name": "[dbo].[Users]"
       }
    ],
    "UseDatabaseNames": true,

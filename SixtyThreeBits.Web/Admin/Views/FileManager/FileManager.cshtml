@@ -1,0 +1,24 @@
+﻿@model FileManagerModel.PageViewModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />    
+    @await Html.PartialAsync(ViewNames.Shared.PluginsClient.Header, Model.PluginClient)    
+</head>
+<body>
+    @Model.FileManager.Render(Html)    
+    @await Html.PartialAsync(ViewNames.Shared.PluginsClient.Footer, Model.PluginClient)
+    <script src="~/admin/js/FileManager/FileManager.js"></script>
+    <script>
+        @if (Model.HasOnSelectedFilesChooseClientCallback)
+        {
+        <text>FileManagerModel.OnSelectedFilesChooseClientCallback = '@Model.OnSelectedFilesChooseClientCallback';</text>
+        }
+        FileManagerModel.FileManagerFolderHttpPath = '@Model.FileManager.FolderVirtualPath';
+        FileManagerModel.IsTinyMce = @Model.IsTinyMce;
+    </script>
+</body>
+</html>

@@ -8,7 +8,6 @@ using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries;
 using SixtyThreeBits.Web.Reusables.Core;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -18,7 +17,7 @@ namespace SixtyThreeBits.Web.Admin.Models
     {        
         #region Methods
         public async Task<PageViewModel> GetPageViewModel()
-        {
+        {            
             var ViewModel = new PageViewModel();
             ViewModel.ShowAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.UserManagement.UsersGridAdd);
             ViewModel.Grid = new PageViewModel.GridModel();
@@ -348,7 +347,8 @@ namespace SixtyThreeBits.Web.Admin.Models
                     Tree
                     .ID("PermissionsTree")
                     .OnInitialized("function(e){ PermissionsModel.OnPermissionsTreeInit(e); }")
-                    .OnInitNewRow($"function(e){{ e.data.{nameof(TreeItem.PermissionIsMenuItem)} = false; }}")                    
+                    .OnInitNewRow($"function(e){{ e.data.{nameof(TreeItem.PermissionIsMenuItem)} = false; }}")        
+                    .OnToolbarPreparing("function(e) { PermissionsModel.OnPermissionsTreeToolbarPreparing(e); }")
                     .RowDragging(Options =>
                     {
                         if (AllowUpdate)

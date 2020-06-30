@@ -1,4 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ApplicationModels;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using SixtyThreeBits.Libraries;
 using SixtyThreeBits.Web.Admin.Controllers;
 using SixtyThreeBits.Web.Admin.Filters;
 using SixtyThreeBits.Web.Admin.Models;
@@ -20,7 +23,7 @@ namespace SixtyThreeBits.Web.Areas.Admin.Controllers
         [Route("", Name = ControllerActionRouteNames.Admin.Pages.Index)]
         public async Task<ActionResult> Pages()
         {
-            Model.PluginClient.EnableJQueryUI(true).EnableJQueryNestedSortable(true).Enable63BitsForms(true).EnableTemplate7(true);
+            Model.PluginsClient.EnableJQueryUI(EnableJs: true, EnableCss: false).EnableJQueryNestedSortable(true).Enable63BitsForms(true).EnableTemplate7(true);
             var ViewModel = await Model.GetPageViewModel();
             return View(ViewNames.Admin.Pages.Tree, ViewModel);
         }
@@ -60,10 +63,8 @@ namespace SixtyThreeBits.Web.Areas.Admin.Controllers
 
     [Route("admin/pages/{PageID:int}")]
     [TypeFilter(typeof(BeforePagesPageLoad), Order = 2)]    
-    [TabsInitialization(Order = 2, ParentRoute = ControllerActionRouteNames.Admin.Pages.Page.Root)]
     public class PageController : AdminControllerBase<PageModel>
     {
-
         #region Constructors
         public PageController()
         {
@@ -71,14 +72,43 @@ namespace SixtyThreeBits.Web.Areas.Admin.Controllers
         }
         #endregion
 
-
         #region Page Properties
+        [HttpGet]
         [Route("properties", Name = ControllerActionRouteNames.Admin.Pages.Page.Properties)]
         public IActionResult PageProperties()
         {
-            Model.PluginClient.Enable63BitsForms(true).EnableFancybox(true);
-            var ViewModel = Model.GetPagePropertiesViewModel();
-            Model.SetPageTitle(Model.DBItemPage.PageTitle);
+            Model.PluginsClient.Enable63BitsForms(true).EnableFancybox(true);
+            var ViewModel = Model.GetPagePropertiesViewModel(ViewModel: null);
+            Model.PageTitle.Set(Model.DBItemPage.PageTitle);
+            Model.Breadcrumbs.RenameLastItem(Model.DBItemPage.PageTitle);
+            return View(ViewNames.Admin.Pages.Page.Properties, ViewModel);
+        }
+
+        [HttpPost]
+        [Route("properties")]
+        public async Task<IActionResult> PageProperties(PageModel.PagePropertiesViewModel SubmitModel)
+        {
+            Model.PluginsClient.Enable63BitsForms(true).EnableFancybox(true);
+            var ViewModel = Model.GetPagePropertiesViewModel(ViewModel: SubmitModel);
+
+            Model.PageTitle.Set(Model.DBItemPage.PageTitle);
+            Model.Breadcrumbs.RenameLastItem(Model.DBItemPage.PageTitle);
+
+            await Model.ValidatePagePropertiesViewModel(ViewModel);
+            if(ViewModel.IsValid)
+            {
+                var IsSaved = await Model.SavePageProperties(ViewModel);
+                if (IsSaved)
+                {
+                    Model.ShowSuccess();
+                    return Redirect(Url.RouteUrl(ControllerActionRouteNames.Admin.Pages.Page.Properties, new { PageID = Model.DBItemPage.PageID }));
+                }
+                else
+                {
+                    Model.ShowError();
+                }
+            }
+            
             return View(ViewNames.Admin.Pages.Page.Properties, ViewModel);
         }
         #endregion
@@ -96,21 +126,39 @@ namespace SixtyThreeBits.Web.Areas.Admin.Controllers
         //[ValidateInput(false)]
         [Route("page-builder")]
         [Route("page-builder/{Language:length(2)}")]
-        public IActionResult PageBuilder(int? PageID, string Language, PageModel.PageBuilderSubmitModel SubmitModel)
+        public async Task<IActionResult> PageBuilder(int? PageID, PageModel.PageBuilderSubmitModel SubmitModel)
         {
-            //var Errors = PageBuilderModel.Validate(PageID, SubmitModel);
-            //var Model = new AjaxResponse();
-            //if (Errors.Count == 0)
-            //{
-            //    Model = PageBuilderModel.Save(PageID, SubmitModel);
-            //}
-            //else
-            //{
-            //    Model.Data = Errors;
-            //}
-            //return Json(Model);
+            var ViewModel = new AjaxResponse();
+            var Errors = await Model.ValidatePageBuilderSubmitModel(SubmitModel);
+            if (Errors.Count == 0)
+            {
+                ViewModel = await Model.SavePageBuilder(SubmitModel);
+            }
+            else
+            {
+                ViewModel.Data = Errors;
+            }
+            return Json(ViewModel);
+        }
+        #endregion
+
+        #region Page Text
+        [Route("page-text", Name = ControllerActionRouteNames.Admin.Pages.Page.Text)]
+        [Route("page-text/{Language:length(2)}", Name = ControllerActionRouteNames.Admin.Pages.Page.TextLanguage)]
+        public IActionResult PageText(int? PageID, string Language)
+        {
+            var ViewModel = Model.GetPageBuilderViewModel(PageID, Language);
+            return View(ViewNames.Admin.Pages.Page.Builder, ViewModel);
+        }
+
+        [HttpPost]
+        //[ValidateInput(false)]
+        [Route("page-text")]
+        [Route("page-text/{Language:length(2)}")]
+        public IActionResult PageText(int? PageID,PageModel.PageBuilderSubmitModel SubmitModel)
+        {
             return Json("OK");
         }
         #endregion
-    }    
+    }
 }

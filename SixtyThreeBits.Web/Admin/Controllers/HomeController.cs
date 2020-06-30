@@ -16,7 +16,7 @@ namespace SixtyThreeBits.Web.Admin.Controllers
 
         [HttpGet]        
         [Route("", Name = ControllerActionRouteNames.Admin.Home.Page)]
-        public ActionResult Index()
+        public IActionResult Index()
         {            
             return View(ViewNames.Admin.Home.Index);
         }        

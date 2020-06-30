@@ -1,4 +1,4 @@
-﻿@model PluginClient
+﻿@model PluginsClient
 @if (Model.IsGoogleFontsEnabled)
 {
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700&display=swap" rel="stylesheet">
@@ -24,13 +24,15 @@
 {
     <link href="~/plugins/jquery-confirm/jquery-confirm.min.css" rel="stylesheet" />
 }
-@if (Model.IsJQueryUIEnabled)
+@if (Model.IsJQueryUICssEnabled)
 {
-    <link href="~/plugins/jquery-ui/jquery-ui.css" rel="stylesheet" />
+    <link href="~/plugins/jquery-ui/jquery-ui.min.css" rel="stylesheet" />
+    <link href="~/plugins/jquery-ui/jquery-ui.theme.min.css" rel="stylesheet" />
 }
 @if (Model.IsFancyboxEnabled)
 {
     <link href="~/plugins/fancybox/jquery.fancybox.css" rel="stylesheet" />
+    <link href="~/plugins/fancybox/style.css" rel="stylesheet" />
 }
 @if (Model.IsUtilsEnabled)
 {
@@ -44,19 +46,24 @@
 {
     <link href="~/plugins/preloader/preloader.css" rel="stylesheet" />
 }
+@if (Model.IsPageBuilderEnabled)
+{
+    <link href="~/plugins/63bits-pageBuilder/css/template63.css" rel="stylesheet" />
+}
+@if (Model.IsPageBuilderEditorEnabled)
+{
+    <link href="~/plugins/63bits-pageBuilder/css/template63.css" rel="stylesheet" />
+    <link href="~/css/style.css" rel="stylesheet" />
+    <link href="~/plugins/63bits-pageBuilder/css/page-builder.css" rel="stylesheet" />
+}
 @if (Model.IsSelect2Enabled)
 {
     <link href="~/plugins/select2/css/select2-bootstrap4.min.css" rel="stylesheet" />
     <link href="~/plugins/select2/css/select2.min.css" rel="stylesheet" />
 }
-@if (Model.IsDataTablesEnabled)
+@if (Model.IsSlickSliderEnabled)
 {
-    <link href="~/plugins/datatables/datatables.min.css" rel="stylesheet" />
-    <link href="~/plugins/datatables/DataTables-1.10.20/css/jquery.dataTables.min.css" rel="stylesheet" />
-    <link href="~/plugins/datatables/DataTables-1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
-    <link href="~/plugins/datatables/Buttons-1.6.1/css/buttons.dataTables.min.css" rel="stylesheet" />
-    <link href="~/plugins/datatables/Buttons-1.6.1/css/buttons.bootstrap4.min.css" rel="stylesheet" />
-
+    <link href="~/Content/Plugins/slick/slick.min.css" rel="stylesheet" />
 }
 @if (Model.IsJQueryEnabled)
 {

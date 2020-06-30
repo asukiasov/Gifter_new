@@ -33,7 +33,7 @@ namespace SixtyThreeBits.Web.Admin.Models
         }
 
         public async Task<List<PageViewModel.TreeModel.TreeItem>> GetTreeModel()
-        {
+        {            
             var ViewModel = (await DataAccessFactory.Dictionaries.ListDictionaries()).Select(Item => new PageViewModel.TreeModel.TreeItem
             {
                 DictionaryID = Item.DictionaryID,
@@ -66,7 +66,7 @@ namespace SixtyThreeBits.Web.Admin.Models
                 DictionarySortIndex: SubmitModel.DictionarySortIndex
             );
 
-            if (DataAccessFactory.Roles.IsError)
+            if (DataAccessFactory.Dictionaries.IsError)
             {
                 Form.AddError(Resources.TextError);
             }
@@ -100,7 +100,8 @@ namespace SixtyThreeBits.Web.Admin.Models
                     var Tree = GetTreeWithStartupValues<TreeItem>(Html: Html, KeyFieldName: nameof(TreeItem.DictionaryID), ParentFieldName: nameof(TreeItem.DictionaryParentID));
 
                     Tree
-                    .ID("DictionariesTree")                    
+                    .ID("DictionariesTree")
+                    .OnToolbarPreparing("function(e) { DictionariesModel.OnDictionariesTreeToolbarPreparing(e); }")
                     .OnInitialized("function(e){ DictionariesModel.OnDictionariesTreeInit(e); }")
                     .RowDragging(Options =>
                     {
@@ -109,7 +110,7 @@ namespace SixtyThreeBits.Web.Admin.Models
                             Options.AllowDropInsideItem(true);
                             Options.AllowReordering(false);
                             Options.ShowDragIcons(true);
-                            Options.OnReorder("function(e){ PermissionsModel.OnPermissionsTreeReorder(e); }");
+                            Options.OnReorder("function(e){ DictionariesModel.OnPermissionsTreeReorder(e); }");
                         }
                     })
                     .AutoExpandAll(false)

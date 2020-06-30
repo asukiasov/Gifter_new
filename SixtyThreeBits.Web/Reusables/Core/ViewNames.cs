@@ -62,8 +62,7 @@
             public class FileManager
             {
                 #region Properties
-                public const string Index = "~/Admin/Views/FileManager/Index.cshtml";
-                public const string Files = "~/Admin/Views/FileManager/FileManager.cshtml";
+                public const string Page = "~/Admin/Views/FileManager/FileManager.cshtml";                
                 #endregion
             }
 
@@ -195,9 +194,18 @@
             public class Home
             {
                 #region Properties
-                public const string Page = "~/Views/Home/Index.cshtml";                
+                public const string Page = "~/Views/Home/Index.cshtml";
+                public const string StaticPage = "~/Views/Home/StaticPage.cshtml";
+                public const string StaticPagePreview = "~/Views/Home/StaticPagePreview.cshtml";
                 #endregion
             } 
+
+            public class Shared
+            {
+                #region Properties
+                public const string Layout = "~/Views/Shared/Layout.cshtml"; 
+                #endregion
+            }
             #endregion
         }
 

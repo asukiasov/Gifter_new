@@ -16,7 +16,7 @@ namespace SixtyThreeBits.Web.Reusables.Core
             var Header = Request?.Headers["X-Requested-With"].ToString();
             return Header == "XMLHttpRequest";
         }
-
+        
         public static WebProjectModelBase GetWebProjectModelBaseFromController(object Controller)
         {
             dynamic C = Controller;
@@ -29,8 +29,8 @@ namespace SixtyThreeBits.Web.Reusables.Core
             ViewData[Key] = ViewModel;            
         }
 
-        public static T GetLayoutViewModel<T>(ViewDataDictionary ViewData, string Key = null)
-        {
+        public static T GetLayoutViewModel<T>(ViewDataDictionary ViewData, string Key = Constants.ViewData.LayoutViewModel)
+        {            
             return (T)ViewData[Key];
         }
     }    

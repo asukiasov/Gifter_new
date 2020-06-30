@@ -148,6 +148,9 @@
                     public const string Properties = "AdminPagesPageProperties";
                     public const string DeleteImage = "AdminPagesPagePropertiesDeleteImage";
 
+                    public const string Text = "AdminPagesPageText";
+                    public const string TextLanguage = "AdminPagesPageTextLanguage";
+
                     public const string Builder = "AdminPagesPageBuilder";
                     public const string BuilderLanguage = "AdminPagesPageBuilderLanguage";
                     #endregion
@@ -293,6 +296,9 @@
             {
                 #region Properties
                 public const string Page = "WebsiteHome";
+                public const string PageCulture = "WebsiteHomeCulture";
+                public const string StaticPage = "WebsiteHomeStaticPage";
+                public const string StaticPageCulture = "WebsiteHomeStaticPageCulture";
                 public const string StaticPagePreview = "WebsiteHomeStaticPagePreview";
                 public const string StaticPagePreviewCulture = "WebsiteHomeStaticPagePreviewCulture";
                 #endregion

@@ -1,4 +1,4 @@
-﻿@{ var Model = LocalUtilities.GetLayoutViewModel<AdminLayoutViewModel>(ViewData: ViewData, Key: Constants.ViewData.LayoutViewModel); }
+﻿@{ var Model = LocalUtilities.GetLayoutViewModel<AdminLayoutViewModel>(ViewData: ViewData); }
 <!DOCTYPE html>
 <html lang="en" class="csstransforms3d">
 
@@ -6,8 +6,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <link rel="icon" type="image/png" href="/img/favicon.png">
-    <title>@Html.Raw(Model.PageTitle) | @Html.Raw(Constants.ProjectName)</title>
-    @await Html.PartialAsync(ViewNames.Shared.PluginsClient.Header, Model.PluginClient)
+    <title>@Html.Raw(Model.PageTitle.TitleHead) | @Html.Raw(Constants.ProjectName)</title>
+    @await Html.PartialAsync(ViewNames.Shared.PluginsClient.Header, Model.PluginsClient)
     <link href="~/admin/css/style.css" rel="stylesheet" />
     @RenderSection(Constants.ViewSections.HeaderSection, false)
 </head>
@@ -127,7 +127,7 @@
             <div class="content-wrapper">
                 <div class="content-heading">
                     <div>
-                        @Html.Raw(Model.PageTitle)
+                        @Html.Raw(Model.PageTitle.Value)
                         @*<small>Standard and custom elements for any form</small>*@
                     </div>
                 </div>
@@ -138,17 +138,17 @@
                         {
                             if (Item.IsLastItem)
                             {
-                                <li class="breadcrumb-item active">@Html.Raw(Item.Caption)</li>
+                                <li class="breadcrumb-item active">@Html.Raw(Item.Title)</li>
                             }
                             else if (Item.HasNavigateUrl)
                             {
                                 <li class="breadcrumb-item">
-                                    <a href="@Html.Raw(Item.NavigateUrl)">@Html.Raw(Item.Caption)</a>
+                                    <a href="@Html.Raw(Item.NavigateUrl)">@Html.Raw(Item.Title)</a>
                                 </li>
                             }
                             else
                             {
-                                <li class="breadcrumb-item">@Html.Raw(Item.Caption)</li>
+                                <li class="breadcrumb-item">@Html.Raw(Item.Title)</li>
                             }
                         }
                     </ol>
@@ -164,7 +164,7 @@
         <script src="~/plugins/successErrorMessage/successErrorMessage.js"></script>
         @await Html.PartialAsync(ViewNames.Admin.Shared.SuccessErrorPartialView, Model.SuccessErrorPartialViewModel)
     }
-    @await Html.PartialAsync(ViewNames.Shared.PluginsClient.Footer, Model.PluginClient)
+    @await Html.PartialAsync(ViewNames.Shared.PluginsClient.Footer, Model.PluginsClient)
 
     <script src="~/js/Global.js"></script>
     <script src="~/admin/js/Layout.js"></script>

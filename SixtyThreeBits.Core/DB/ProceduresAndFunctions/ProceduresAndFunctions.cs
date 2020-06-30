@@ -84,6 +84,48 @@ namespace SixtyThreeBits.Core.DB
         }
         #endregion
 
+        #region PagesList
+        public class PagesListResultItem
+        {
+            #region Properties
+            public int? PageID { get; set; }
+            public int? PageParentID { get; set; }
+            public string PageSlug { get; set; }
+            public string PageTitle { get; set; }
+            public string PageTitleEng { get; set; }
+            public string PageTitleRus { get; set; }
+            public string PageShortDescription { get; set; }
+            public string PageShortDescriptionEng { get; set; }
+            public string PageShortDescriptionRus { get; set; }
+            public string PageImageFilename { get; set; }
+            public int? PageCode { get; set; }
+            public bool PageIsPublished { get; set; }
+            public int? PageSortIndex { get; set; }
+            public bool PageIsMenuItem { get; set; }
+            public bool PageIsFooterItem { get; set; }
+            public bool PageIsExternalUrl { get; set; }
+            public string PageExternalUrl { get; set; }
+            public DateTime? PageDateCreated { get; set; }
+            #endregion
+        }
+        internal virtual DbSet<PagesListResultItem> PagesListResult { get; set; }
+        public IQueryable<PagesListResultItem> PagesList(bool? PageIsPublished, bool? PageIsMenuItem)
+        {
+            var PR = new PrepareQueryExecution(
+              DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
+              DatabaseObjectName: nameof(PagesList),
+              ResultItemType: typeof(PagesListResultItem),
+              SqlParameters: new SqlParameter[]
+              {
+                  PageIsPublished.ToSqlParameter(nameof(PageIsPublished), SqlDbType.Bit),
+                  PageIsMenuItem.ToSqlParameter(nameof(PageIsMenuItem), SqlDbType.Bit)
+              }
+            );
+            var DBResult = PagesListResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
+            return DBResult;
+        }
+        #endregion
+
         #region PagesListForDeleteRecursive        
         public class PagesListForDeleteRecursiveResultItem
         {
@@ -105,6 +147,82 @@ namespace SixtyThreeBits.Core.DB
               }
             );
             var DBResult = PagesListForDeleteRecursiveResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
+            return DBResult;
+        }
+        #endregion
+
+        #region PermissionsList
+        public class PermissionsListResultItem
+        {
+            #region Properties
+            public int? PermissionID { get; set; }
+            public int? PermissionParentID { get; set; }
+            public string PermissionCaption { get; set; }
+            public string PermissionPagePath { get; set; }
+            public string PermissionCodeName { get; set; }
+            public string PermissionCode { get; set; }
+            public bool PermissionIsMenuItem { get; set; }
+            public string PermissionMenuIcon { get; set; }
+            public int? PermissionSortIndex { get; set; }
+            public DateTime? PermissionDateCreated { get; set; }
+            #endregion
+        }
+        internal virtual DbSet<PermissionsListResultItem> PermissionsListResult { get; set; }
+        public IQueryable<PermissionsListResultItem> PermissionsList()
+        {
+            var PR = new PrepareQueryExecution(
+              DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
+              DatabaseObjectName: nameof(PermissionsList),
+              ResultItemType: typeof(PermissionsListResultItem)
+            );
+            var DBResult = PermissionsListResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
+            return DBResult;
+        }
+        #endregion
+
+        #region RolesList
+        public class RolesListResultItem
+        {
+            #region Properties
+            public int? RoleID { get; set; }
+            public string RoleName { get; set; }
+            public int? RoleCode { get; set; }
+            public DateTime? RoleDateCreated { get; set; }
+            #endregion
+        }
+        internal virtual DbSet<RolesListResultItem> RolesListResult { get; set; }
+        public IQueryable<RolesListResultItem> RolesList()
+        {
+            var PR = new PrepareQueryExecution(
+              DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
+              DatabaseObjectName: nameof(RolesList),
+              ResultItemType: typeof(RolesListResultItem)
+            );
+            var DBResult = RolesListResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
+            return DBResult;
+        }
+        #endregion
+
+        #region RolesList
+        public class RolePermissionsListResultItem
+        {
+            #region Properties
+            public int? PermissionID { get; set; }
+            #endregion
+        }
+        internal virtual DbSet<RolePermissionsListResultItem> RolePermissionsListResult { get; set; }
+        public IQueryable<RolePermissionsListResultItem> RolePermissionsList(int? RoleID)
+        {
+            var PR = new PrepareQueryExecution(
+                DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
+                DatabaseObjectName: nameof(RolePermissionsList),
+                ResultItemType: typeof(RolePermissionsListResultItem),
+                SqlParameters: new SqlParameter[]
+                {
+                    RoleID.ToSqlParameter(nameof(RoleID), SqlDbType.Int)
+                }
+            );
+            var DBResult = RolePermissionsListResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
             return DBResult;
         }
         #endregion
@@ -163,6 +281,38 @@ namespace SixtyThreeBits.Core.DB
         }
         #endregion
 
+        #region UsersList
+        public class UsersListResultItem
+        {
+            #region Properties
+            public int? UserID { get; set; }
+            public string UserEmail { get; set; }
+            public string UserPassword { get; set; }
+            public string UserFirstname { get; set; }
+            public string UserLastname { get; set; }
+            public string UserFullname { get; set; }
+            public int? UserRoleID { get; set; }
+            public DateTime? UserBirthdate { get; set; }
+            public string UserPhoneNumberMobile { get; set; }
+            public string UserPersonalNumber { get; set; }
+            public string UserAvatarFilename { get; set; }
+            public bool UserIsActive { get; set; }
+            public DateTime? UserDateCreated { get; set; }
+            #endregion
+        }
+        internal virtual DbSet<UsersListResultItem> UsersListResult { get; set; }
+        public IQueryable<UsersListResultItem> UsersList()
+        {
+            var PR = new PrepareQueryExecution(
+              DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
+              DatabaseObjectName: nameof(UsersList),
+              ResultItemType: typeof(UsersListResultItem)
+            );
+            var DBResult = UsersListResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
+            return DBResult;
+        }
+        #endregion
+
         #region UsersIsEmailUnique
         internal virtual DbSet<ScalarFunctionResult<bool>> UsersIsEmailUniqueResult { get; set; }
         public async Task<bool> UsersIsEmailUnique(string Email, int? UserID)
@@ -215,6 +365,47 @@ namespace SixtyThreeBits.Core.DB
             var DBResult = await Database.ExecuteSqlRawAsync(PR.SqlQuery, PR.SqlParameters);
         }
 
+        public async Task<int?> PagesIUD(Enums.DatabaseActions iud, int? PageID, int? PageParentID, string PageSlug, string PageTitle, string PageTitleEng, string PageTitleRus, string PageText, string PageTextEng, string PageTextRus, string PageData, string PageDataEng, string PageDataRus, string PageShortDescription, string PageShortDescriptionEng, string PageShortDescriptionRus, string PageImageFilename, int? PageCode, bool? PageIsPublished, int? PageSortIndex, bool? PageIsMenuItem, bool? PageIsFooterItem, bool? PageIsExternalUrl, string PageExternalUrl)
+        {
+            var PR = new PrepareQueryExecution(
+                DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.STORED_PROCEDURE,
+                DatabaseObjectName: nameof(PagesIUD),
+                ResultItemType: null,
+                SqlParameters: new SqlParameter[]
+                {
+                    iud.ToSqlParameter(nameof(iud),SqlDbType.TinyInt),
+                    PageID.ToSqlParameter(nameof(PageID),SqlDbType.Int, true),
+                    PageParentID.ToSqlParameter(nameof(PageParentID),SqlDbType.Int),
+                    PageSlug.ToSqlParameter(nameof(PageSlug),SqlDbType.VarChar),
+                    PageTitle.ToSqlParameter(nameof(PageTitle),SqlDbType.NVarChar),
+                    PageTitleEng.ToSqlParameter(nameof(PageTitleEng),SqlDbType.NVarChar),
+                    PageTitleRus.ToSqlParameter(nameof(PageTitleRus),SqlDbType.NVarChar),
+                    PageText.ToSqlParameter(nameof(PageText),SqlDbType.NVarChar),
+                    PageTextEng.ToSqlParameter(nameof(PageTextEng),SqlDbType.NVarChar),
+                    PageTextRus.ToSqlParameter(nameof(PageTextRus),SqlDbType.NVarChar),
+                    PageData.ToSqlParameter(nameof(PageData),SqlDbType.NVarChar),
+                    PageDataEng.ToSqlParameter(nameof(PageDataEng),SqlDbType.NVarChar),
+                    PageDataRus.ToSqlParameter(nameof(PageDataRus),SqlDbType.NVarChar),
+                    PageShortDescription.ToSqlParameter(nameof(PageShortDescription),SqlDbType.NVarChar),
+                    PageShortDescriptionEng.ToSqlParameter(nameof(PageShortDescriptionEng),SqlDbType.NVarChar),
+                    PageShortDescriptionRus.ToSqlParameter(nameof(PageShortDescriptionRus),SqlDbType.NVarChar),
+                    PageImageFilename.ToSqlParameter(nameof(PageImageFilename),SqlDbType.NVarChar),
+                    PageCode.ToSqlParameter(nameof(PageCode),SqlDbType.Int),
+                    PageIsPublished.ToSqlParameter(nameof(PageIsPublished),SqlDbType.Bit),
+                    PageSortIndex.ToSqlParameter(nameof(PageSortIndex),SqlDbType.Int),
+                    PageIsMenuItem.ToSqlParameter(nameof(PageIsMenuItem),SqlDbType.Bit),
+                    PageIsFooterItem.ToSqlParameter(nameof(PageIsFooterItem),SqlDbType.Bit),
+                    PageIsExternalUrl.ToSqlParameter(nameof(PageIsExternalUrl),SqlDbType.Bit),
+                    PageExternalUrl.ToSqlParameter(nameof(PageExternalUrl),SqlDbType.NVarChar)
+
+                }
+            );
+
+            var DBResult = await Database.ExecuteSqlRawAsync(PR.SqlQuery, PR.SqlParameters);
+            PageID = PR.SqlParameters[1].Value?.ToString().ToInt();
+            return PageID;
+        }
+
         public async Task PagesSyncParentsAndSortIndexes(string ParentsAndSortIndexesXml)
         {
             var PR = new PrepareQueryExecution(
@@ -245,6 +436,52 @@ namespace SixtyThreeBits.Core.DB
             var DBResult = await Database.ExecuteSqlRawAsync(PR.SqlQuery, PR.SqlParameters);
         }
 
+        public async Task<int?> PermissionsIUD(Enums.DatabaseActions iud, int? PermissionID, int? PermissionParentID, string PermissionCaption, string PermissionPagePath, string PermissionCodeName, string PermissionCode, bool? PermissionIsMenuItem, string PermissionMenuIcon, int? PermissionSortIndex)
+        {
+            var PR = new PrepareQueryExecution(
+             DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.STORED_PROCEDURE,
+             DatabaseObjectName: nameof(PermissionsIUD),
+             ResultItemType: null,
+             SqlParameters: new SqlParameter[]
+             {
+                 iud.ToSqlParameter(nameof(iud),SqlDbType.TinyInt),
+                 PermissionID.ToSqlParameter(nameof(PermissionID),SqlDbType.Int,true),
+                 PermissionParentID.ToSqlParameter(nameof(PermissionParentID),SqlDbType.Int),
+                 PermissionCaption.ToSqlParameter(nameof(PermissionCaption),SqlDbType.NVarChar),
+                 PermissionPagePath.ToSqlParameter(nameof(PermissionPagePath),SqlDbType.NVarChar),
+                 PermissionCodeName.ToSqlParameter(nameof(PermissionCodeName),SqlDbType.NVarChar),
+                 PermissionCode.ToSqlParameter(nameof(PermissionCode),SqlDbType.VarChar),
+                 PermissionIsMenuItem.ToSqlParameter(nameof(PermissionIsMenuItem),SqlDbType.Bit),
+                 PermissionMenuIcon.ToSqlParameter(nameof(PermissionMenuIcon),SqlDbType.NVarChar),
+                 PermissionSortIndex.ToSqlParameter(nameof(PermissionSortIndex),SqlDbType.Int)
+             }
+             );
+
+            var DBResult = await Database.ExecuteSqlRawAsync(PR.SqlQuery, PR.SqlParameters);
+            PermissionID = PR.SqlParameters[1].Value?.ToString().ToInt();
+            return PermissionID;
+        }
+
+        public async Task<int?> RolesIUD(Enums.DatabaseActions iud, int? RoleID, string RoleName, int? RoleCode)
+        {
+            var PR = new PrepareQueryExecution(
+             DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.STORED_PROCEDURE,
+             DatabaseObjectName: nameof(RolesIUD),
+             ResultItemType: null,
+             SqlParameters: new SqlParameter[]
+             {
+                 iud.ToSqlParameter(nameof(iud),SqlDbType.TinyInt),
+                 RoleID.ToSqlParameter(nameof(RoleID),SqlDbType.Int,true),
+                 RoleName.ToSqlParameter(nameof(RoleName),SqlDbType.NVarChar),
+                 RoleCode.ToSqlParameter(nameof(RoleCode),SqlDbType.Int),
+             }
+             );
+
+            var DBResult = await Database.ExecuteSqlRawAsync(PR.SqlQuery, PR.SqlParameters);
+            RoleID = PR.SqlParameters[1].Value?.ToString().ToInt();
+            return RoleID;
+        }
+
         public async Task RolePermissionsUpdate(int? RoleID, string PermissionsXml)
         {
             var PR = new PrepareQueryExecution(
@@ -257,8 +494,7 @@ namespace SixtyThreeBits.Core.DB
                  PermissionsXml.ToSqlParameter(nameof(PermissionsXml),SqlDbType.Xml)
              }
            );
-
-            var DBResult = await Database.ExecuteSqlRawAsync(PR.SqlQuery, PR.SqlParameters);            
+            await Database.ExecuteSqlRawAsync(PR.SqlQuery, PR.SqlParameters);
         }
         
         public async Task<int?> UsersIUD(Enums.DatabaseActions iud, int? UserID, string UserEmail, string UserPassword, string UserFirstname, string UserLastname, int? UserRoleID, DateTime? UserBirthdate, string UserPhoneNumberMobile, string UserPersonalNumber, string UserAvatarFilename, bool? UserIsActive)
@@ -285,9 +521,7 @@ namespace SixtyThreeBits.Core.DB
            );
 
             var DBResult = await Database.ExecuteSqlRawAsync(PR.SqlQuery, PR.SqlParameters);
-
             UserID = PR.SqlParameters[1].Value?.ToString().ToInt();
-
             return UserID;
         }
         #endregion
@@ -295,8 +529,13 @@ namespace SixtyThreeBits.Core.DB
         partial void OnModelCreatingPartial(ModelBuilder ModelBuilder)
         {
             ModelBuilder.Entity<ScalarFunctionResult<string>>(Entity => { Entity.HasNoKey(); });
-            ModelBuilder.Entity<ScalarFunctionResult<bool>>(Entity => { Entity.HasNoKey(); });
-            ModelBuilder.Entity<PagesListForDeleteRecursiveResultItem>(Entity => { Entity.HasNoKey(); });       
+            ModelBuilder.Entity<ScalarFunctionResult<bool>>(Entity => { Entity.HasNoKey(); });            
+            ModelBuilder.Entity<PagesListResultItem>(Entity => { Entity.HasNoKey(); });
+            ModelBuilder.Entity<PagesListForDeleteRecursiveResultItem>(Entity => { Entity.HasNoKey(); });
+            ModelBuilder.Entity<RolesListResultItem>(Entity => { Entity.HasNoKey(); });
+            ModelBuilder.Entity<RolePermissionsListResultItem>(Entity => { Entity.HasNoKey(); });            
+            ModelBuilder.Entity<UsersListResultItem>(Entity => { Entity.HasNoKey(); });
+            ModelBuilder.Entity<PermissionsListResultItem>(Entity => { Entity.HasNoKey(); });
         }
 
         #region Query Preparation
