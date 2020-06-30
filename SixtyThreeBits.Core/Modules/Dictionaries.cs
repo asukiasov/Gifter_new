@@ -2,6 +2,7 @@
 using SixtyThreeBits.Core.DB;
 using SixtyThreeBits.Core.DB.Tables;
 using SixtyThreeBits.Core.Utilities;
+using SixtyThreeBits.Libraries;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -87,6 +88,23 @@ namespace SixtyThreeBits.Core.Modules
                 using (var db = ConnectionFactory.GetDBCoreDataContext())
                 {
                     return await db.Dictionaries.OrderBy(Item => Item.DictionarySortIndex).ThenBy(Item => Item.DictionaryCaption).ToListAsync();
+                }
+            });
+        }
+
+        public async Task<List<SimpleKeyValue<int?, string>>> ListDictionariesAsSimpleKeyValue(int? DictionaryCode, int? SelectedValue = null)
+        {
+            return await TryToReturnAsyncTask($"{nameof(ListDictionariesAsSimpleKeyValue)}({nameof(DictionaryCode)} = {DictionaryCode})", async () =>
+            {
+                using (var db = ConnectionFactory.GetDBCoreDataContext())
+                {
+                    var Result = await db.Dictionaries.Where(Item => Item.DictionaryLevel == 1 && Item.DictionaryCode == DictionaryCode).OrderBy(Item => Item.DictionarySortIndex).ThenBy(Item => Item.DictionaryCaption).ToListAsync();
+                    return Result.Select(Item => new SimpleKeyValue<int?, string>
+                    {
+                        Key = Item.DictionaryID,
+                        Value = Item.DictionaryCaption,
+                        IsSelected = Item.DictionaryID == SelectedValue
+                    }).ToList();
                 }
             });
         }
