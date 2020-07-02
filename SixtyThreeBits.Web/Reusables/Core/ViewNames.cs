@@ -92,7 +92,8 @@
                 {
                     #region Properties
                     public const string Properties = "~/Admin/Views/Pages/Page/PageProperties.cshtml";
-                    public const string Builder = "~/Admin/Views/Pages/Page/PageBuilder.cshtml"; 
+                    public const string Builder = "~/Admin/Views/Pages/Page/PageBuilder.cshtml";
+                    public const string Text = "~/Admin/Views/Pages/Page/Text.cshtml";
                     #endregion
                 }
                 #endregion

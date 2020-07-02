@@ -277,21 +277,7 @@ namespace SixtyThreeBits.Web.Admin.Models
                 new SimpleKeyValue<string, string>{ Key = nameof(Enums.Languages.RUSSIAN), Value = Url.RouteUrl(ControllerActionRouteNames.Admin.Pages.Page.BuilderLanguage, new { PageID, Language = Enums.Languages.RUSSIAN}), IsSelected = Language == Enums.Languages.RUSSIAN}
             };
 
-            ViewModel.PluginsClient = new PluginsClient();
-            ViewModel.PluginsClient
-               .EnableGoogleFonts(true)
-               .EnableJsClient(true)
-               .EnableJQuery(true)
-               .EnableJQueryUI(EnableJs: true, EnableCss: false)
-               .EnableBootstrap(true)
-               .EnableFancybox(true)
-               .EnablePreloader(true)
-               .EnableTemplate7(true)
-               .EnableTinyMce(true)
-               .EnableFancybox(true)
-               .EnableUtils(true)
-               .EnablePageBuilderEditor(true);
-
+            ViewModel.PluginsClient = new PluginsClient();            
             return ViewModel;
         }
 

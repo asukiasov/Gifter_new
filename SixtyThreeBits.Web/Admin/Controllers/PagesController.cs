@@ -119,6 +119,7 @@ namespace SixtyThreeBits.Web.Areas.Admin.Controllers
         public IActionResult PageBuilder(int? PageID, string Language)
         {
             var ViewModel = Model.GetPageBuilderViewModel(PageID, Language);
+            ViewModel.PluginsClient.EnableGoogleFonts(true).EnableJsClient(true).EnableJQuery(true).EnableJQueryUI(EnableJs: true, EnableCss: false).EnableBootstrap(true).EnableFancybox(true).EnablePreloader(true).EnableTemplate7(true).EnableTinyMce(true).EnableFancybox(true).EnableUtils(true).EnablePageBuilderEditor(true);
             return View(ViewNames.Admin.Pages.Page.Builder, ViewModel);
         }
 
@@ -148,6 +149,7 @@ namespace SixtyThreeBits.Web.Areas.Admin.Controllers
         public IActionResult PageText(int? PageID, string Language)
         {
             var ViewModel = Model.GetPageBuilderViewModel(PageID, Language);
+            ViewModel.PluginsClient.EnableGoogleFonts(true).EnableJsClient(true).EnableJQuery(true).EnableBootstrap(true).EnableFancybox(true).EnablePreloader(true).EnableTinyMce(true).EnableUtils(true);
             return View(ViewNames.Admin.Pages.Page.Builder, ViewModel);
         }
 
@@ -155,9 +157,19 @@ namespace SixtyThreeBits.Web.Areas.Admin.Controllers
         //[ValidateInput(false)]
         [Route("page-text")]
         [Route("page-text/{Language:length(2)}")]
-        public IActionResult PageText(int? PageID,PageModel.PageBuilderSubmitModel SubmitModel)
+        public async Task<IActionResult> PageText(int? PageID,PageModel.PageBuilderSubmitModel SubmitModel)
         {
-            return Json("OK");
+            var ViewModel = new AjaxResponse();
+            var Errors = await Model.ValidatePageBuilderSubmitModel(SubmitModel);
+            if (Errors.Count == 0)
+            {
+                ViewModel = await Model.SavePageBuilder(SubmitModel);
+            }
+            else
+            {
+                ViewModel.Data = Errors;
+            }
+            return Json(ViewModel);
         }
         #endregion
     }
