@@ -150,7 +150,7 @@ namespace SixtyThreeBits.Web.Areas.Admin.Controllers
         {
             var ViewModel = Model.GetPageBuilderViewModel(PageID, Language);
             ViewModel.PluginsClient.EnableGoogleFonts(true).EnableJsClient(true).EnableJQuery(true).EnableBootstrap(true).EnableFancybox(true).EnablePreloader(true).EnableTinyMce(true).EnableUtils(true);
-            return View(ViewNames.Admin.Pages.Page.Builder, ViewModel);
+            return View(ViewNames.Admin.Pages.Page.Text, ViewModel);
         }
 
         [HttpPost]
