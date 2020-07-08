@@ -3150,7 +3150,7 @@ var PageBuilderModel = {
             },
             getMultipleFilesUrl: function () {
                 if (PageBuilderModel.plugins.fileManager.url) {
-                    return PageBuilderModel.plugins.fileManager.url + '&OnSelectedFilesChooseClientCallback=PageBuilderModel.plugins.fileManager.onSelectedFilesChooseClientCallback';
+                    return PageBuilderModel.plugins.fileManager.url + '&AllowSelectMultiple=true&OnSelectedFilesChooseClientCallback=PageBuilderModel.plugins.fileManager.onSelectedFilesChooseClientCallback';
                 }
             },
             file: {
