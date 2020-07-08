@@ -1,14 +1,4 @@
-﻿.form-group label,
-.form-group .badge
-{
-    font-family:'BPG DejaVu Sans MT', 'Roboto', sans-serif;
-    text-transform:uppercase;
-}
-.form-group .badge{
-    padding-top:7px;
-}
-
-/* ----------- form elements ----------- */
+﻿/* ----------- form elements ----------- */
 select.form-control:not([size]):not([multiple]){
     height: 35px;
 }

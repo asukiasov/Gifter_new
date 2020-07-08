@@ -67,6 +67,14 @@ a .fa-upload:not([class*=color-]):not([class*=text-]) {
 /*--------- /icons ----------*/
 
 
+/*---------- badge ----------*/
+.form-group .badge{
+    padding-top: 7px;
+    text-transform: uppercase;
+}
+/*---------- /badge ----------*/
+
+
 /*--------- btn ----------*/
 .btn{
     min-height:35px;
