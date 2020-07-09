@@ -25,9 +25,9 @@ namespace SixtyThreeBits.Web.Admin.Controllers
         }
 
         [Route("files", Name = ControllerActionRouteNames.Admin.FileManager.Files)]
-        public object FileSystem(FileSystemCommand command, string arguments, string FolderVirtualPathHash, string FolderPhysicalPathHash)
+        public object FileSystem(FileSystemCommand command, string arguments, string FolderVirtualPathHash, string FolderPhysicalPathHash, string AllowedExtensions, bool AllowSelectMultiple = false)
         {
-            var Result = Model.GetFileManagerResult(Request, command, arguments, FolderVirtualPathHash, FolderPhysicalPathHash);
+            var Result = Model.GetFileManagerResult(Request, command, arguments, FolderVirtualPathHash, FolderPhysicalPathHash, AllowedExtensions, AllowSelectMultiple);
             return Result;
         }
 
