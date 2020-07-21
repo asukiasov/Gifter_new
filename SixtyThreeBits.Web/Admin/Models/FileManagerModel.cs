@@ -1,5 +1,6 @@
 ﻿using DevExtreme.AspNet.Mvc;
 using DevExtreme.AspNet.Mvc.Builders;
+using DevExtreme.AspNet.Mvc.Factories;
 using DevExtreme.AspNet.Mvc.FileManagement;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -15,8 +16,8 @@ namespace SixtyThreeBits.Web.Admin.Models
     public class FileManagerModel : WebProjectModelBase
     {
         #region Properties
-        public const string FileManagerFolderName = "FileManager";        
-        #endregion        
+        public const string FileManagerFolderName = "FileManager";
+        #endregion
 
         #region Methods
         public PageViewModel GetPageViewModel(string FolderVirtualPathHash, string FolderPhysicalPathHash, bool AllowSelectMultiple, string AllowedExtensions, string OnSelectedFilesChooseClientCallback, string Opener)
@@ -38,8 +39,10 @@ namespace SixtyThreeBits.Web.Admin.Models
             return ViewModel;
         }
 
-        public object GetFileManagerResult(HttpRequest Request, FileSystemCommand Command, string Arguments,string FolderVirtualPathHash, string FolderPhysicalPathHash)
+        public object GetFileManagerResult(HttpRequest Request, FileSystemCommand Command, string Arguments, string FolderVirtualPathHash, string FolderPhysicalPathHash, string AllowedExtensions, bool AllowSelectMultiple)
         {
+            var FileManagerPartialViewModel = new PageViewModel.FileManagerPartialViewModel();
+            FileManagerPartialViewModel.AllowSelectMultiple = AllowSelectMultiple;
             var FileManagerFolderPhysicalPath = FolderPhysicalPathHash.DecryptWeb();
             var FileManagerFolderVirtualPath = FolderVirtualPathHash.DecryptWeb();
             if (!Directory.Exists(FileManagerFolderPhysicalPath))
@@ -55,7 +58,7 @@ namespace SixtyThreeBits.Web.Admin.Models
                 {
                     if (!ClientItem.IsDirectory)
                     {
-                        ClientItem.Thumbnail = $"{WebsiteDomain}{FileManagerFolderVirtualPath}{FileSystemItem.Name}";                        
+                        ClientItem.Thumbnail = $"{WebsiteDomain}{FileManagerFolderVirtualPath}{FileSystemItem.Name}";
                         ClientItem.CustomFields["url"] = $"{WebsiteDomain}{FileManagerFolderVirtualPath}{FileSystemItem.Name}";
                         if (Utilities.IsImage(FileSystemItem.Name))
                         {
@@ -64,6 +67,7 @@ namespace SixtyThreeBits.Web.Admin.Models
                     }
                 }
             );
+            Config.AllowedFileExtensions = AllowedExtensions == null ? new string[0] : AllowedExtensions.Split(',');
 
             //uncomment the code below to enable file/directory management
             //Config.AllowCopy = true;
@@ -77,7 +81,7 @@ namespace SixtyThreeBits.Web.Admin.Models
             Config.AllowRename = true;
             Config.AllowUpload = true;
             Config.AllowDownload = true;
-            
+
             var Processor = new FileSystemCommandProcessor(Config);
             var Result = Processor.Execute(Command, Arguments);
 
@@ -105,7 +109,7 @@ namespace SixtyThreeBits.Web.Admin.Models
                 public string FolderVirtualPath { get; set; }
                 public string FolderPhysicalPath { get; set; }
                 public bool AllowSelectMultiple { get; set; }
-                public string[] AllowedExtensions { get; set; }                
+                public string[] AllowedExtensions { get; set; }
                 #endregion
 
                 #region Methods
@@ -134,24 +138,10 @@ namespace SixtyThreeBits.Web.Admin.Models
                                     .Widget(Widget => Widget.Menu()
                                         .Items(MenuItems => {
                                             MenuItems.Add()
-                                                .Text("Insert")
-                                                .Icon("tags")
-                                                .Items(subItems => {
-                                                    subItems.Add()
-                                                        .Text("Default")
-                                                        .Option("position", "Default");
-                                                    subItems.Add()
-                                                        .Text("Left Aligned")
-                                                        .Option("position", "LeftAligned");
-                                                    subItems.Add()
-                                                        .Text("Right Aligned")
-                                                        .Option("position", "RightAligned");
-                                                    subItems.Add()
-                                                        .Text("Center Aligned")
-                                                        .Option("position", "CenterAligned");
-                                                });
+                                                .Text("Choose")
+                                                .Icon("tags").Option("commandName", "ChoosePictureButton");
                                         })
-                                        .OnItemClick("FileManagerModel.InsertIntoTinyMce"))
+                                        .OnItemClick("FileManagerModel.OnFileManagerCustomCommand"))
                                         .Location(ToolbarItemLocation.Before);
 
                                 Items.Add().Name(FileManagerToolbarItem.ClearSelection);
@@ -159,8 +149,8 @@ namespace SixtyThreeBits.Web.Admin.Models
                         })
                         .AllowedFileExtensions(AllowedExtensions)
                         .FileSystemProvider(Provider => Provider.Remote().Url(UrlListFiles))
-                        .SelectionMode(FileManagerSelectionMode.Single)
-                        .CustomizeThumbnail("function (fileManagerItem) { console.log(fileManagerItem.dataItem); return fileManagerItem.dataItem ? fileManagerItem.dataItem.thumbnailUrl : null; }")
+                        .SelectionMode(AllowSelectMultiple ? FileManagerSelectionMode.Multiple : FileManagerSelectionMode.Single)
+                        .CustomizeThumbnail("function (fileManagerItem) { return fileManagerItem.dataItem ? fileManagerItem.dataItem.thumbnailUrl : null; }")
                         .Permissions(Permissions =>
                         {
                             Permissions.Upload(true);
@@ -168,10 +158,10 @@ namespace SixtyThreeBits.Web.Admin.Models
                             Permissions.Download(true);
                             Permissions.Rename(true);
                         })
-                        .ItemView(ItemView=> {
+                        .ItemView(ItemView => {
                             ItemView.ShowFolders(false);
                             ItemView.ShowParentFolder(false);
-                            ItemView.Mode(FileManagerItemViewMode.Thumbnails);                            
+                            ItemView.Mode(FileManagerItemViewMode.Thumbnails);
                         })
                         .OnSelectedFileOpened("FileManagerModel.OnSelectedFileOpened");
                 }
