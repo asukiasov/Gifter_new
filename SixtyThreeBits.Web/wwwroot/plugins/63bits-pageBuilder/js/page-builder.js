@@ -996,7 +996,7 @@ var PageBuilderModel = {
                             button: {
                                 ...components.button(gridItem),
                                 isActive: $(gridItem).find('.js-btn-toggler input:checked').length > 0,
-                                isTargetBlank: $(container).find('.js-btn-target-checkbox:checked').length > 0
+                                isTargetBlank: $(gridItem).find('.js-btn-target-checkbox:checked').length > 0
                             },
                             image: components.image(gridItem)
                         };
