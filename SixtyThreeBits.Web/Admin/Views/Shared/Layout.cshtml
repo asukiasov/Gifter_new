@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <link rel="icon" type="image/png" href="/img/favicon.png">
+    <link rel="icon" type="image/png" href="/images/favicon.png">
     <title>@Html.Raw(Model.PageTitle.TitleHead) | @Html.Raw(Constants.ProjectName)</title>
     @await Html.PartialAsync(ViewNames.Shared.PluginsClient.Header, Model.PluginsClient)
     <link href="~/admin/css/style.css" rel="stylesheet" />
@@ -18,10 +18,10 @@
                 <div class="navbar-header">
                     <a class="navbar-brand">
                         <div class="brand-logo">
-                            <img class="img-fluid" src="/img/logo.svg" alt="App Logo" width="160">
+                            <img class="img-fluid" src="/images/logo.svg" alt="App Logo" width="160">
                         </div>
                         <div class="brand-logo-collapsed">
-                            <img class="img-fluid" src="/img/logo.svg" alt="App Logo">
+                            <img class="img-fluid" src="/images/logo.svg" alt="App Logo">
                         </div>
                     </a>
                 </div>
@@ -68,7 +68,7 @@
                                     <!-- User picture-->
                                     <div class="user-block-picture">
                                         <div class="user-block-status">
-                                            <img class="img-thumbnail rounded-circle" src="/img/no-avatar.svg" alt="Avatar" width="60" height="60" title="@Model.UserFullname">
+                                            <img class="img-thumbnail rounded-circle" src="/images/no-avatar.svg" alt="Avatar" width="60" height="60" title="@Model.UserFullname">
                                             @*<div class="circle circle-success circle-lg"></div>*@
                                         </div>
                                     </div>
@@ -114,11 +114,11 @@
                 <span>
                     <span>Developed by</span>
                     <a href="http://63bits.com/" target="_blank">
-                        <img src="/img/63bits.svg" alt="63BITS" height="13" />
+                        <img src="/images/63bits.svg" alt="63BITS" height="13" />
                     </a>
                 </span>
                 <a href="http://63bits.com/" target="_blank">
-                    <img src="/img/63bits.svg" height="10" />
+                    <img src="/images/63bits.svg" height="10" />
                 </a>
             </footer>
         </aside>
