@@ -2126,7 +2126,7 @@ var PageBuilderModel = {
                 section.attr('data-isScrolltoNavItem', isScrollToNavItem);
                 PageBuilderModel.scrollToNavigation.init();
 
-                section.find('[data-align-content]').attr('data-align-content', $('.js-alignment-input:checked').val());
+                section.find('[data-align-content]').attr('data-align-content', section.find('.js-alignment-input:checked').val());
 
                 section.attr('data-content-size', itemSize);
                 //
