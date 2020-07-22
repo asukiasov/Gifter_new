@@ -41,8 +41,7 @@ namespace SixtyThreeBits.Web
         public void ConfigureServices(IServiceCollection Services) 
         {
             Services.AddSingleton(AppSettings);
-            Services.AddSingleton(Utilities);
-            Services.AddSingleton(new DataAccessFactory(AppSettings));
+            Services.AddSingleton(Utilities);            
             //Honestly, EFCore team are idiots !!! because of "A second operation started on this context before a previous operation completed. Any instance members are not guaranteed to be thread safe."
             //The whole idea of .NET Core + DI is create once use anywhere. I'm not able to use same DBDataContext to perform multiple db queries, so what is the point of DI then?
             //Services.AddDbContext<DBCoreDataContext>(Options => Options.UseSqlServer(AppSettings.DBConnectionStrings.DBConnectionString), optionsLifetime: ServiceLifetime.Scoped);

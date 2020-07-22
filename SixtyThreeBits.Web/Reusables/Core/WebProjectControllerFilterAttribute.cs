@@ -7,16 +7,14 @@ using SixtyThreeBits.Core.Utilities;
 namespace SixtyThreeBits.Web.Reusables.Core
 {
     public class BeforeWebProjectControllerLoaded : ActionFilterAttribute
-    {
-        DataAccessFactory DataAccessFactory;
+    {        
         AppSettingsCollection AppSettings;
         UtilityCollection Utilities;
 
-        public BeforeWebProjectControllerLoaded(AppSettingsCollection AppSettings, UtilityCollection Utilities, DataAccessFactory DataAccessFactory)
+        public BeforeWebProjectControllerLoaded(AppSettingsCollection AppSettings, UtilityCollection Utilities)
         {
             this.AppSettings = AppSettings;
-            this.Utilities = Utilities;
-            this.DataAccessFactory = DataAccessFactory;
+            this.Utilities = Utilities;            
         }
 
         public override void OnActionExecuted(ActionExecutedContext FilterContext)
@@ -36,13 +34,14 @@ namespace SixtyThreeBits.Web.Reusables.Core
                 Model.ControllerName = ActionDescriptor.ControllerTypeInfo.Name;
 
                 Model.UrlCurrentPage = C.Request.Path;
-                Model.WebsiteDomain = Model.GetWebsiteDomain(C.Request);
+                Model.WebsiteDomain = LocalUtilities.GetWebsiteDomain(C.Request);
 
                 Model.IsHttps = C.Request.IsHttps;
+                Model.IP = LocalUtilities.GetClientIP(C.Request);
 
                 Model.AppSettings = this.AppSettings;
-                Model.Utilities = this.Utilities;                
-                Model.DataAccessFactory = this.DataAccessFactory;
+                Model.Utilities = this.Utilities;
+                Model.DataAccessFactory = new DataAccessFactory(AppSettings);
 
                 Model.SessionAssistance = new SessionAssistance(C.HttpContext.Session);
                 Model.CookieAssistance = new CookieAssistance(C.Request, C.Response);

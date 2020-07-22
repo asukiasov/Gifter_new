@@ -298,6 +298,7 @@ namespace SixtyThreeBits.Web.Reusables.Core
         public string UrlCurrentPage { get; set; }
         public string WebsiteDomain { get; set; }
         public string WebsiteHttpPath => $"{WebsiteDomain}/";
+        public string IP { get; set; }
         public bool IsHttps { get; set; }
         public DataAccessFactory DataAccessFactory { get; set; }
         public AppSettingsCollection AppSettings { get; set; }
@@ -366,40 +367,7 @@ namespace SixtyThreeBits.Web.Reusables.Core
             var UrlResult = Url.RouteUrl(RouteName, RouteValues, Protocol);            
             return UrlResult;
         }
-
-        public string GetWebsiteDomain(HttpRequest Request)
-        {            
-            var Port = Request.Host.Port;
-            var HostString = Request.Host.Host.TrimEnd(':');            
-            var PortString = (Port == 80 || Port == 443 || Port == null) ? "" : $":{Port}";            
-
-            var WebsiteDomain = $"{Request.Scheme}://{HostString}{PortString}";
-            return WebsiteDomain;
-        }
-
-        public void LogRequest(HttpRequest Request, string LogFilePhysicalPath = null)
-        {
-            var SB = new StringBuilder();
-            SB.Append($"QueryString:{Environment.NewLine}");
-            foreach (var Key in Request.Query.Keys)
-            {
-                SB.Append($"{Key}: {Request.Query[Key]}{Environment.NewLine}");
-            }
-            SB.Append($"{Environment.NewLine}{Environment.NewLine}Form:{Environment.NewLine}");
-            foreach (var Key in Request.Form.Keys)
-            {
-                SB.Append($"{Key}: {Request.Form[Key]}{Environment.NewLine}");
-            }
-            SB.Append($"{Environment.NewLine}{Environment.NewLine}Body:{Environment.NewLine}");
-            SB.Append(Request.Body);
-
-            var LogString = SB.ToString();
-            if (!string.IsNullOrWhiteSpace(LogFilePhysicalPath))
-            {
-                LogString.LogString(LogFilePhysicalPath);
-            }
-        }
-
+                
         public async Task SaveUploadedFile(IFormFile PostedFile, string Filename, string FolderPhysicalPath = null)
         {
             if (string.IsNullOrWhiteSpace(FolderPhysicalPath))
