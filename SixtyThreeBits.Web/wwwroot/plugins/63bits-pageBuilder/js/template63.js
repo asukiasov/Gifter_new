@@ -31,10 +31,10 @@ $(function () {
     }
 
     //--- faq
-    $('.js-faq-item-head').click(function () {
-        const container = $(this).closest('.js-faq-item');
+    $('.js-accordion-item-head').click(function () {
+        const container = $(this).closest('.js-accordion-item');
         $(container).toggleClass('is-open');
-        $(container).find('.js-faq-item-body').slideToggle(200);
+        $(container).find('.js-accordion-item-body').slideToggle(200);
     });
 
 

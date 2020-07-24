@@ -349,7 +349,7 @@ var PageBuilderModel = {
                 }
             },
 
-            faqItem: function () {
+            accordionItem: function () {
                 return {
                     components: {
                         title: PageBuilderModel.settings.components.title,
@@ -639,22 +639,22 @@ var PageBuilderModel = {
                 };
             },
 
-            faq: function () {
+            accordion: function () {
                 return {
                     ...PageBuilderModel.settings.defaults,
-                    name: 'faq',
+                    name: 'accordion',
                     contentSizes: PageBuilderModel.settings.defaults.contentSizes(),
                     contentSizeSelected: 'sm',
 
                     components: {
                         title: {
                             isActive: true,
-                            html: '<h3>FAQ</h3>'
+                            html: '<h3>Accordion</h3>'
                         }
                     },
 
                     items: [
-                        { ...PageBuilderModel.settings.components.faqItem() }
+                        { ...PageBuilderModel.settings.components.accordionItem() }
                     ]
                 }
             },
@@ -796,7 +796,7 @@ var PageBuilderModel = {
                     ...sections.articlesList()
                 },
                 {
-                    ...sections.faq()
+                    ...sections.accordion()
                 },
                 {
                     ...sections.testimonials()
@@ -1052,14 +1052,14 @@ var PageBuilderModel = {
                     });
                 }
 
-                if (sectionName == PageBuilderModel.settings.sections.faq().name) {
+                if (sectionName == PageBuilderModel.settings.sections.accordion().name) {
                     model.components = {
                         title: components.title(section)
                     };
 
                     model.items = [];
 
-                    section.find('.js-faq-item').each(function () {
+                    section.find('.js-accordion-item').each(function () {
                         var gridItem = $(this);
                         var item = {
                             components: {
@@ -1714,17 +1714,17 @@ var PageBuilderModel = {
             }
         },
 
-        faq: {
+        accordion: {
             template:
-                `<section class="t63-section js-page-section" data-section="faq" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}">
-                    <div class="container t63-padding-v faq-container">
+                `<section class="t63-section js-page-section" data-section="accordion" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}">
+                    <div class="container t63-padding-v accordion-container">
                         {{> "titlePartial"}}
-                        <div class="js-faq-items-row">
-					        {{> "faqItemsPartial"}}
+                        <div class="js-accordion-items-row">
+					        {{> "accordionItemsPartial"}}
 						</div>
-					    <div class="btn-row add-faq-item-btn-wrap js-additional-action-buttons">
+					    <div class="btn-row add-accordion-item-btn-wrap js-additional-action-buttons">
 							<div class="justify-content-center">
-								<button class="btn editor-btn js-add-faq-item-btn">New item</button>
+								<button class="btn editor-btn js-add-accordion-item-btn">New item</button>
 							</div>
 						</div>
                     </div>
@@ -1732,42 +1732,42 @@ var PageBuilderModel = {
 				</section>`,
 
             getHtml: function (model) {
-                return PageBuilderModel.sections.faq.template(model);
+                return PageBuilderModel.sections.accordion.template(model);
             },
 
             items: {
                 partial:
                     `{{#each items}}
-					<article class="faq-item js-section--container js-faq-item" data-container="faqItem">
+					<article class="accordion-item js-section--container js-accordion-item" data-container="accordionItem">
                         <i class="handle js-additional-action-buttons"><img src="/plugins/63bits-pageBuilder/images/icons/drug.svg" alt="drag icon"></i>
-						<div class="faq-item-head js-faq-item-head">
+						<div class="accordion-item-head js-accordion-item-head">
                             {{titleHepler components.title}}
                         </div>
 
-						<div class="faq-item-body js-faq-item-body">
+						<div class="accordion-item-body js-accordion-item-body">
 						    {{textHepler components.text}}
 						</div>
-                        {{actionButtonsHepler ../actionButtons.faqItem}}
+                        {{actionButtonsHepler ../actionButtons.accordionItem}}
 					</article>
 					{{/each}}`,
 
-                template: '{{> "faqItemsPartial"}}',
+                template: '{{> "accordionItemsPartial"}}',
 
                 getHtml: function (model) {
-                    return PageBuilderModel.sections.faq.items.template(model);
+                    return PageBuilderModel.sections.accordion.items.template(model);
                 }
             },
 
             sortable: function (container) {
-                if (container || $('.js-faq-items-row').length > 0) {
-                    container = container || '.js-faq-items-row';
+                if (container || $('.js-accordion-items-row').length > 0) {
+                    container = container || '.js-accordion-items-row';
 
                     $(container).sortable({
                         handle: '.handle',
-                        placeholder: 'faq-item-placeholder',
+                        placeholder: 'accordion-item-placeholder',
                         start: function (event, ui) {
                             var className = $(ui.item).attr('class').replace('ui-sortable-handle', '');
-                            $('.faq-item-placeholder').addClass(className);
+                            $('.accordion-item-placeholder').addClass(className);
                         }
                     });
                 }
@@ -1920,7 +1920,7 @@ var PageBuilderModel = {
             PageBuilderModel.editors.text.tinymce.init(currentSection);
 
             PageBuilderModel.sections.imgGrid.sortable();
-            PageBuilderModel.sections.faq.sortable();
+            PageBuilderModel.sections.accordion.sortable();
 
             PageBuilderModel.editors.sliderItem.init(currentSection);
         },
@@ -1986,7 +1986,7 @@ var PageBuilderModel = {
                     doneBtn: null,
                     removeBtn: true,
                 },
-                faqItem: {
+                accordionItem: {
                     editBtn: null,
                     doneBtn: null,
                     removeBtn: true,
@@ -2836,21 +2836,21 @@ var PageBuilderModel = {
             },
         },
 
-        faqItem: {
+        accordionItem: {
             add: function (_this) {
                 var section = _this.closest('.js-page-section');
-                var itemsRow = section.find('.js-faq-items-row');
+                var itemsRow = section.find('.js-accordion-items-row');
 
                 var model = {
                     items: [
                         {
-                            ...PageBuilderModel.settings.components.faqItem()
+                            ...PageBuilderModel.settings.components.accordionItem()
                         }
                     ],
                     actionButtons: PageBuilderModel.editors.actionButtons.settings
                 };
 
-                itemsRow.append(PageBuilderModel.sections.faq.items.getHtml(model));
+                itemsRow.append(PageBuilderModel.sections.accordion.items.getHtml(model));
 
                 PageBuilderModel.editors.title.tinymce.init(itemsRow);
                 PageBuilderModel.editors.text.tinymce.init(itemsRow);
@@ -2954,9 +2954,9 @@ var PageBuilderModel = {
                 PageBuilderModel.editors.servicesGridItem.add($(this));
             });
 
-            //--- add faq item
-            $(PageBuilderModel.currentViewSelector).on('click', '.js-add-faq-item-btn', function () {
-                PageBuilderModel.editors.faqItem.add($(this));
+            //--- add accordion item
+            $(PageBuilderModel.currentViewSelector).on('click', '.js-add-accordion-item-btn', function () {
+                PageBuilderModel.editors.accordionItem.add($(this));
             });
 
             //
@@ -3009,7 +3009,7 @@ var PageBuilderModel = {
         Template7.registerPartial('articlesGridItemsPartial', PageBuilderModel.sections.articlesGrid.items.partial);
         Template7.registerPartial('articlesListItemsPartial', PageBuilderModel.sections.articlesList.items.partial);
         Template7.registerPartial('sliderItemsPartial', PageBuilderModel.sections.slider.items.partial);
-        Template7.registerPartial('faqItemsPartial', PageBuilderModel.sections.faq.items.partial);
+        Template7.registerPartial('accordionItemsPartial', PageBuilderModel.sections.accordion.items.partial);
         Template7.registerPartial('testimonialsItemsPartial', PageBuilderModel.sections.testimonials.items.partial);
         Template7.registerPartial('servicesGridItemsPartial', PageBuilderModel.sections.services.items.partial);
 
@@ -3024,7 +3024,7 @@ var PageBuilderModel = {
         PageBuilderModel.sections.articlesList.items.template = Template7.compile(PageBuilderModel.sections.articlesList.items.template);
         PageBuilderModel.sections.imgGrid.items.template = Template7.compile(PageBuilderModel.sections.imgGrid.items.template);
         PageBuilderModel.sections.slider.items.template = Template7.compile(PageBuilderModel.sections.slider.items.template);
-        PageBuilderModel.sections.faq.items.template = Template7.compile(PageBuilderModel.sections.faq.items.template);
+        PageBuilderModel.sections.accordion.items.template = Template7.compile(PageBuilderModel.sections.accordion.items.template);
         PageBuilderModel.sections.testimonials.items.template = Template7.compile(PageBuilderModel.sections.testimonials.items.template);
         PageBuilderModel.sections.services.items.template = Template7.compile(PageBuilderModel.sections.services.items.template);
 
@@ -3041,7 +3041,7 @@ var PageBuilderModel = {
         PageBuilderModel.sections.imgGrid.template = Template7.compile(PageBuilderModel.sections.imgGrid.template);
         PageBuilderModel.sections.articlesGrid.template = Template7.compile(PageBuilderModel.sections.articlesGrid.template);
         PageBuilderModel.sections.articlesList.template = Template7.compile(PageBuilderModel.sections.articlesList.template);
-        PageBuilderModel.sections.faq.template = Template7.compile(PageBuilderModel.sections.faq.template);
+        PageBuilderModel.sections.accordion.template = Template7.compile(PageBuilderModel.sections.accordion.template);
         PageBuilderModel.sections.html.template = Template7.compile(PageBuilderModel.sections.html.template);
         PageBuilderModel.sections.testimonials.template = Template7.compile(PageBuilderModel.sections.testimonials.template);
         PageBuilderModel.sections.services.template = Template7.compile(PageBuilderModel.sections.services.template);

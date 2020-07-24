@@ -1629,12 +1629,12 @@ div.mce-edit-area,
 /* ----------- /articlesGrid ----------- */
 
 
-/* ---------- faq ---------- */
-.faq-item{
+/* ---------- accordion ---------- */
+.accordion-item{
     position: relative;
     margin-bottom: 30px;
 }
-.faq-item:not(.faq-item-placeholder)::before{
+.accordion-item:not(.accordion-item-placeholder)::before{
     content: "";
     background-color: #fff;
     position:absolute;
@@ -1644,30 +1644,30 @@ div.mce-edit-area,
     right: -20px;
     z-index: -1;
 }
-.t63-section:nth-child(odd) .faq-item:not(.faq-item-placeholder)::before{
+.t63-section:nth-child(odd) .accordion-item:not(.accordion-item-placeholder)::before{
     background-color: #f8f8f8;
 }
-.faq-item .action-buttons{
+.accordion-item .action-buttons{
     position:absolute;
     top: 12px;
     right: 0;
 }
-.faq-item-head{
+.accordion-item-head{
     margin-right: 34px;
     cursor: default;
 }
-.faq-item-head::after{
+.accordion-item-head::after{
     display: none;
 }
-.faq-item-body{
+.accordion-item-body{
     display: block;
 }
 
-.faq-item .action-buttons{
+.accordion-item .action-buttons{
     z-index: 1;
 }
 
-.faq-item .handle{
+.accordion-item .handle{
 	flex-shrink: 0;
 	display: flex;
 	align-items: center;
@@ -1679,11 +1679,11 @@ div.mce-edit-area,
     right: 100%;
     top: 0;
 }
-.faq-item .handle img{
+.accordion-item .handle img{
 	display: block;
 	width: 5px;
 }
-.faq-item-placeholder::before{
+.accordion-item-placeholder::before{
 	content: "";
 	display: block;
 	width: 100%;
@@ -1691,7 +1691,7 @@ div.mce-edit-area,
 	background-color: #ccc;
 	position: relative;
 }
-/* ---------- /faq ---------- */
+/* ---------- /accordion ---------- */
 
 
 /* ----------- html ----------- */

@@ -614,21 +614,21 @@
 /* ---------- video ---------- */
 
 
-/* ---------- faq ---------- */
-.faq-container > .title-container{
+/* ---------- accordion ---------- */
+.accordion-container > .title-container{
 	text-align: center;
     margin-top: 0;
 }
-.faq-item{
+.accordion-item{
 	border-bottom: 1px solid #e9eaec;
 }
-.faq-item-head{
+.accordion-item-head{
 	display: flex;
 	justify-content: space-between;
 	padding: 12px 0;
 	cursor: pointer;
 }
-.faq-item-head::after{
+.accordion-item-head::after{
     flex-shrink: 0;
 	content: "";
 	display: block;
@@ -641,31 +641,31 @@
 	transition: all 0.2s ease;
 }
 
-.faq-item .title-container,
-.faq-item .text-container{
+.accordion-item .title-container,
+.accordion-item .text-container{
     margin: 0 !important;
 }
 
-.faq-item .title-container{
+.accordion-item .title-container{
     flex-grow: 1;
     padding-right: 10px;
 }
-.faq-item-head .title{
+.accordion-item-head .title{
 	font-size: 20px !important;
 	font-weight: bold;
     line-height: 1.2;
 }
-.faq-item-body{
+.accordion-item-body{
 	display: none;
 }
-.faq-item-body .text-container{
+.accordion-item-body .text-container{
 	padding: 10px 0 24px;
 }
 
-.faq-item.is-open .faq-item-head::after{
+.accordion-item.is-open .accordion-item-head::after{
 	transform: rotate(-180deg);
 }
-/* ---------- /faq ---------- */
+/* ---------- /accordion ---------- */
 
 
 /* ----------- html section ----------- */
