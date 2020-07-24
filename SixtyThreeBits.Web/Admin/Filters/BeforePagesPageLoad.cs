@@ -13,20 +13,17 @@ using System.Threading.Tasks;
 namespace SixtyThreeBits.Web.Admin.Filters
 {
     public class BeforePagesPageLoad : IAsyncActionFilter
-    {
-        DataAccessFactory DataAccessFactory;
+    {        
 
-        public BeforePagesPageLoad(DataAccessFactory DataAccessFactory)
-        {
-            this.DataAccessFactory = DataAccessFactory;
+        public BeforePagesPageLoad()
+        {            
         }
         
         public async Task OnActionExecutionAsync(ActionExecutingContext context,ActionExecutionDelegate next)
         {
-            var PageID = context.RouteData.Values["PageID"].ToString().ToInt();
-            var DBItem = await DataAccessFactory.Pages.GetSinglePageByID(PageID);
+            var PageID = context.RouteData.Values["PageID"].ToString().ToInt();            
             var C = context.Controller as PageController;
-
+            var DBItem = await C.Model.DataAccessFactory.Pages.GetSinglePageByID(PageID);
             if (DBItem == null)
             {
                 context.Result = C.NotFoundAdmin();                

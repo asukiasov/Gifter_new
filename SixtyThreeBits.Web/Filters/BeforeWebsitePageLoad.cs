@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.IdentityModel.Tokens;
-using SixtyThreeBits.Core.Modules;
 using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Web.Models;
 using SixtyThreeBits.Web.Reusables.Core;
