@@ -17,14 +17,14 @@ namespace SixtyThreeBits.Web.Filters
         public async Task OnActionExecutionAsync(ActionExecutingContext FilterContext, ActionExecutionDelegate next)
         {
             ViewModel = new WebsiteLayoutViewModel();
-            Model = WebsiteUtilities.GetWebProjectModelBaseFromController(FilterContext.Controller);
+            Model = LocalUtilities.GetModelFromController<WebProjectModelBase>(FilterContext.Controller);
             var C = FilterContext.Controller as Controller;
 
             InitStartUp(FilterContext);
             InitClientPlugins();
             await InitMenu();
 
-            WebsiteUtilities.SetLayoutViewModel(ViewData: C.ViewData, ViewModel: ViewModel, Key: Constants.ViewData.LayoutViewModel);
+            LocalUtilities.SetLayoutViewModel(ViewData: C.ViewData, ViewModel: ViewModel, Key: Constants.ViewData.LayoutViewModel);
             await next();
         }
 

@@ -4,17 +4,73 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace SixtyThreeBits.Web.Reusables.Core
 {
     public class LocalUtilities
-    {                        
+    {
+        #region Methods
+        public static bool IsAjaxRequest(HttpRequest Request)
+        {
+            var Header = Request?.Headers["X-Requested-With"].ToString();
+            return Header == "XMLHttpRequest";
+        }
+
         public static string GetClientIP(HttpRequest Request)
         {
             return Request.HttpContext.Connection.RemoteIpAddress.ToString();
+        }
+
+        public static T GetModelFromController<T>(object Controller) where T : class
+        {
+            dynamic C = Controller;
+            var Model = C.Model as T;
+            return Model;
+        }
+
+        public static T GetLayoutViewModel<T>(ViewDataDictionary ViewData, string Key = null)
+        {
+            if (Key == null)
+            {
+                Key = Constants.ViewData.LayoutViewModel;
+            }
+            return (T)ViewData[Key];
+        }
+
+        public static List<DevExtremeGridFilterItem> GetDevExtremeGridFilterValues(string FilterString)
+        {
+            var Filters = string.IsNullOrWhiteSpace(FilterString) ? new List<DevExtremeGridFilterItem>() :
+            Regex.Matches(FilterString, @"\[\""(?<key>\w+)\"",\""(?<operator>[^\""]+)\"",(\"")?(?<value>[^\""|\]]+)(\"")?\]").OfType<Match>()
+
+            .Select(Item => new DevExtremeGridFilterItem
+            {
+                FieldName = Item.Groups["key"].Value,
+                Operator = Item.Groups["operator"].Value,
+                Value = Item.Groups["value"].Value,
+            }).ToList() ?? new List<DevExtremeGridFilterItem>();
+
+            return Filters;
+        }
+
+        public static List<DevExtremeGridSortItem> GetDevExtremeGridSortValues(string SortString)
+        {
+            var SortValues = string.IsNullOrWhiteSpace(SortString) ? new List<DevExtremeGridSortItem>() :
+            //[{"selector":"CaseID","desc":false}]
+            Regex.Matches(SortString, @"\{\""selector\"":\""(?<key>\w+)\"",\""desc\"":(?<value>\w+)\}")
+            .OfType<Match>()
+            .Select(Item => new DevExtremeGridSortItem
+            {
+                FieldName = Item.Groups["key"].Value,
+                IsDescending = Item.Groups["value"].Value == "true",
+            }).ToList() ?? new List<DevExtremeGridSortItem>();
+
+            return SortValues;
         }
 
         public static string GetWebsiteDomain(HttpRequest Request)
@@ -25,50 +81,14 @@ namespace SixtyThreeBits.Web.Reusables.Core
 
             var WebsiteDomain = $"{Request.Scheme}://{HostString}{PortString}";
             return WebsiteDomain;
-        }                
-
-        public static T GetLayoutViewModel<T>(ViewDataDictionary ViewData, string Key = Constants.ViewData.LayoutViewModel)
-        {            
-            return (T)ViewData[Key];
         }
 
-        public static WebProjectModelBase GetWebProjectModelBaseFromController(object Controller)
+        public async static Task SaveUploadedFile(IFormFile PostedFile, string Filename, AppSettingsCollection AppSettings)
         {
-            dynamic C = Controller;
-            var Model = C.Model as WebProjectModelBase;
-            return Model;
-        }
-
-        public static bool IsAjaxRequest(HttpRequest Request)
-        {
-            var Header = Request?.Headers["X-Requested-With"].ToString();
-            return Header == "XMLHttpRequest";
-        }
-
-        public void LogRequest(HttpRequest Request, string LogFilePhysicalPath = null)
-        {
-            var SB = new StringBuilder();
-            SB.AppendLine($"QueryString: ");
-            foreach (var Key in Request.Query.Keys)
+            var FilePhysicalPath = $"{AppSettings.UploadFolderPhysicalPath}{Filename}";
+            using (var FS = new FileStream(FilePhysicalPath, FileMode.Create))
             {
-                SB.AppendLine($"{Key}={Request.Query[Key]}");
-            }
-            SB.AppendLine();
-
-            SB.AppendLine($"Form: ");
-            foreach (var Key in Request.Form.Keys)
-            {
-                SB.AppendLine($"{Key}={Request.Form[Key]}");
-            }
-
-            SB.Append($"Body: ");
-            SB.Append(Request.Body);
-            SB.AppendLine();
-
-            var LogString = SB.ToString();
-            if (!string.IsNullOrWhiteSpace(LogFilePhysicalPath))
-            {
-                LogString.LogString(LogFilePhysicalPath);
+                await PostedFile.CopyToAsync(FS);
             }
         }
 
@@ -76,5 +96,6 @@ namespace SixtyThreeBits.Web.Reusables.Core
         {
             ViewData[Key] = ViewModel;
         }
-    }    
+        #endregion
+    }
 }

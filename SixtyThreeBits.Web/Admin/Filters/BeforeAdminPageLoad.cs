@@ -17,7 +17,7 @@ namespace SixtyThreeBits.Web.Admin.Filters
         public async Task OnActionExecutionAsync(ActionExecutingContext FilterContext, ActionExecutionDelegate next)
         {
             ViewModel = new AdminLayoutViewModel();
-            Model = WebsiteUtilities.GetWebProjectModelBaseFromController(FilterContext.Controller);
+            Model = LocalUtilities.GetModelFromController<WebProjectModelBase>(FilterContext.Controller);
             var C = FilterContext.Controller as Controller;
 
             var IsAuthorized = await AdminAuthorize();            
@@ -30,9 +30,8 @@ namespace SixtyThreeBits.Web.Admin.Filters
                 InitTabs();
                 InitPageTitle();
                 InitSuccessErrorMessage();
-                InitSidebar();
-
-                WebsiteUtilities.SetLayoutViewModel(ViewData: C.ViewData, ViewModel: ViewModel, Key: Constants.ViewData.LayoutViewModel);
+                InitSidebar();                
+                LocalUtilities.SetLayoutViewModel(ViewData: C.ViewData, ViewModel: ViewModel, Key: Constants.ViewData.LayoutViewModel);
                 await next();
             }
             else

@@ -24,8 +24,8 @@ namespace SixtyThreeBits.Web.Reusables.Core
 
         public override void OnActionExecuting(ActionExecutingContext FilterContext)
         {            
-            var C = FilterContext.Controller as Controller;            
-            var Model = LocalUtilities.GetWebProjectModelBaseFromController(C);
+            var C = FilterContext.Controller as Controller;
+            var Model = LocalUtilities.GetModelFromController<WebProjectModelBase>(C);
             if (Model != null)
             {
                 var ActionDescriptor = FilterContext.ActionDescriptor as ControllerActionDescriptor;

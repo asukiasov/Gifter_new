@@ -17,12 +17,6 @@ namespace SixtyThreeBits.Web.Admin.Controllers
         public JsonResult GetDevexpressSuccessResult()
         {
             return Json("OK");
-        }
-
-        [NonAction]
-        public ActionResult NotFoundAdmin()
-        {
-            return View(ViewNames.Admin.Shared.NotFound);
-        }
+        }                
     }
 }
