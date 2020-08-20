@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using SixtyThreeBits.Core.Modules;
 using SixtyThreeBits.Core.Utilities;
@@ -89,8 +90,17 @@ namespace SixtyThreeBits.Web
                 });
                 App.UseHsts();
             }
-            App.UseImageflow(new ImageflowMiddlewareOptions().SetMapWebRoot(true).SetAllowMemoryCaching(false));
+            App.UseImageflow(new ImageflowMiddlewareOptions()
+                .SetMapWebRoot(false)
+                .SetAllowMemoryCaching(false)
+                .MapPath(AppSettings.UploadFolderVirtualPath, AppSettings.UploadFolderPhysicalPath));
+
             App.UseFileServer();
+            App.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(AppSettings.UploadFolderPhysicalPath),
+                RequestPath = $"/{AppSettings.UploadFolderVirtualName}"
+            });
             App.UseRouting();
             App.UseSession();
 
@@ -101,6 +111,7 @@ namespace SixtyThreeBits.Web
             RequestLocalizationOptions.RequestCultureProviders.Add(new CustomCultureProvider(Utilities));
             RequestLocalizationOptions.SupportedCultures = new List<CultureInfo> { new CultureInfo(Enums.Languages.GEORGIAN), new CultureInfo(Enums.Languages.ENGLISH) };
             RequestLocalizationOptions.SupportedUICultures = new List<CultureInfo> { new CultureInfo(Enums.Languages.GEORGIAN), new CultureInfo(Enums.Languages.ENGLISH) };
+            //App.UseRequestLocalization(RequestLocalizationOptions);
 
             App.UseEndpoints(Endpoints =>
             {
@@ -119,18 +130,16 @@ namespace SixtyThreeBits.Web
 
             public override async Task<ProviderCultureResult> DetermineProviderCultureResult(HttpContext Context)
             {
-                string Language = null;
+                string Culture = null;
                 var Path = Context.Request.Path.ToString() ?? string.Empty;
-                if (Path.StartsWith("/admin/"))                    
+                if (Path.StartsWith("/admin/"))
                 {
-                    Language = Enums.Languages.GEORGIAN;
+                    Culture = Enums.Languages.ENGLISH;
                 }
                 else
                 {
-                    Language = Path.Length > 2 ? Path.Substring(1, 2) : string.Empty;
+                    Culture = Context.Request.RouteValues["Culture"]?.ToString() ?? Enums.Languages.GEORGIAN;
                 }
-                
-                var Culture = string.IsNullOrEmpty(Language) ? Enums.Languages.GEORGIAN : Enums.Languages.ENGLISH;
 
                 await Task.Yield();
                 return new ProviderCultureResult(Culture);
