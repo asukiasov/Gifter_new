@@ -14,8 +14,8 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="63BITS-Libraries-DotNetStandart" Version="1.1.27" />
-    <PackageReference Include="DevExtreme.AspNet.Core" Version="20.1.4" />
-    <PackageReference Include="DevExtreme.AspNet.Data" Version="2.6.2" />
+    <PackageReference Include="DevExtreme.AspNet.Core" Version="20.1.6" />
+    <PackageReference Include="DevExtreme.AspNet.Data" Version="2.6.1" />
     <PackageReference Include="Imageflow.Net" Version="0.7.1" />
     <PackageReference Include="Imageflow.Server" Version="0.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.Session" Version="2.2.0" />
@@ -46,7 +46,7 @@
   </ItemGroup>
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties DismissedDevExtremeVersion="20.1.4" />
+      <UserProperties DismissedDevExtremeVersion="" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>
