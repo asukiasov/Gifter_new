@@ -360,6 +360,16 @@ namespace SixtyThreeBits.Web.Reusables.Core
             return PostedFile?.FileName.ToAZ09Dash(GuidInlcuded: true);
         }
 
+        public IActionResult GetNotFoundViewResult()
+        {
+            return new ViewResult { ViewName = ViewNames.Admin.Shared.NotFound };
+        }
+
+        public IActionResult GetNotFoundAdminViewResult()
+        {
+            return new ViewResult { ViewName = ViewNames.Admin.Shared.NotFound };
+        }
+
         public string GetRouteByName(string RouteName, object RouteValues = null, bool GetFullPath = false)
         {
             string Protocol = GetFullPath ? (IsHttps ? Constants.Protocols.HTTPS : Constants.Protocols.HTTP) : null;

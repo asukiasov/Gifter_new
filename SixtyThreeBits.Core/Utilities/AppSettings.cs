@@ -20,7 +20,8 @@ namespace SixtyThreeBits.Core.Utilities
         public string SMTPFromName => GetConfigValue();
 
         public string UploadFolderPhysicalPath => GetConfigValue();
-        public readonly string UploadFolderVirtualPath = "/upload/";
+        public readonly string UploadFolderVirtualName = "upload";
+        public string UploadFolderVirtualPath => $"/{UploadFolderVirtualName}/";
         public bool IsDevelopment { get; set; }
 
         #endregion
