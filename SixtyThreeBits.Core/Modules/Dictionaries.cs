@@ -29,56 +29,18 @@ namespace SixtyThreeBits.Core.Modules
             });
         }
 
-        public async Task<int?> DictionariesIUD(Enums.DatabaseActions DatabaseAction, int? DictionaryID = null, int? DictionaryParentID = null, string DictionaryCaption = null, string DictionaryCaptionEng = null, string DictionaryCaptionRus = null, string DictionaryStringCode = null, int? DictionaryIntCode = null, decimal? DictionaryDecimalValue = null, int? DictionaryCode = null, bool? DictionaryIsDefault = null, bool? DictionaryIsVisible = null, int? DictionarySortIndex = null)
+        public async Task<int?> DictionariesIUD(Enums.DatabaseActions DatabaseAction, int? DictionaryID = null, string DictionaryCaption = null, string DictionaryCaptionEng = null, string DictionaryCaptionRus = null, int? DictionaryParentID = null, string DictionaryStringCode = null, int? DictionaryIntCode = null, decimal? DictionaryDecimalValue = null, int? DictionaryCode = null, bool? DictionaryIsDefault = null, bool? DictionaryIsVisible = null, int? DictionarySortIndex = null)
         {
-            return await TryToReturnAsyncTask($"{nameof(DictionariesIUD)}({nameof(DatabaseAction)} = {DatabaseAction}, {nameof(DictionaryID)} = {DictionaryID}, {nameof(DictionaryParentID)} = {DictionaryParentID}, {nameof(DictionaryCaption)} = {DictionaryCaption}, {nameof(DictionaryCaptionEng)} = {DictionaryCaptionEng}, {nameof(DictionaryCaptionRus)} = {DictionaryCaptionRus}, {nameof(DictionaryStringCode)} = {DictionaryStringCode}, {nameof(DictionaryIntCode)} = {DictionaryIntCode}, {nameof(DictionaryDecimalValue)} = {DictionaryDecimalValue}, {nameof(DictionaryCode)} = {DictionaryCode}, {nameof(DictionaryIsDefault)} = {DictionaryIsDefault}, {nameof(DictionaryIsVisible)} = {DictionaryIsVisible}, {nameof(DictionarySortIndex)} = {DictionarySortIndex})", async () =>
+            return await TryToReturnAsyncTask($"{nameof(DictionariesIUD)}({nameof(DatabaseAction)} = {DatabaseAction}, {nameof(DictionaryID)} = {DictionaryID}, {nameof(DictionaryCaption)} = {DictionaryCaption}, {nameof(DictionaryCaptionEng)} = {DictionaryCaptionEng}, {nameof(DictionaryCaptionRus)} = {DictionaryCaptionRus}, {nameof(DictionaryParentID)} = {DictionaryParentID}, {nameof(DictionaryStringCode)} = {DictionaryStringCode}, {nameof(DictionaryIntCode)} = {DictionaryIntCode}, {nameof(DictionaryDecimalValue)} = {DictionaryDecimalValue}, {nameof(DictionaryCode)} = {DictionaryCode}, {nameof(DictionaryIsDefault)} = {DictionaryIsDefault}, {nameof(DictionaryIsVisible)} = {DictionaryIsVisible}, {nameof(DictionarySortIndex)} = {DictionarySortIndex})", async () =>
             {
                 using (var db = ConnectionFactory.GetDBCoreDataContext())
                 {
-                    if (DatabaseAction == Enums.DatabaseActions.CREATE)
-                    {
-                        var DBItem = new Dictionaries();
-                        DBItem.DictionaryParentID = DictionaryParentID == Constants.NullValueFor.Int ? null : DictionaryParentID;
-                        DBItem.DictionaryCaption = DictionaryCaption;
-                        DBItem.DictionaryCaptionEng = DictionaryCaptionEng;
-                        DBItem.DictionaryCaptionRus = DictionaryCaptionRus;
-                        DBItem.DictionaryStringCode = DictionaryStringCode;
-                        DBItem.DictionaryIntCode = DictionaryIntCode;
-                        DBItem.DictionaryDecimalValue = DictionaryDecimalValue;
-                        DBItem.DictionaryCode = DictionaryCode;
-                        DBItem.DictionaryIsDefault = DictionaryIsDefault ?? false;
-                        DBItem.DictionaryIsVisible = DictionaryIsVisible ?? false;
-                        DBItem.DictionarySortIndex = DictionarySortIndex;
-                        await db.Dictionaries.AddAsync(DBItem);
-                        await db.SaveChangesAsync();
 
-                        DictionaryID = DBItem.DictionaryID;
-                    }
-                    else if (DatabaseAction == Enums.DatabaseActions.UPDATE)
-                    {
-                        var DBItem = await db.Dictionaries.FirstOrDefaultAsync(Item => Item.DictionaryID == DictionaryID);
-                        if (DBItem != null)
-                        {
-                            DBItem.DictionaryParentID = DictionaryParentID == Constants.NullValueFor.Int ? null : DictionaryParentID ?? DBItem.DictionaryParentID;
-                            DBItem.DictionaryCaption = DictionaryCaption == Constants.NullValueFor.String ? null : DictionaryCaption ?? DBItem.DictionaryCaption;
-                            DBItem.DictionaryCaptionEng = DictionaryCaptionEng == Constants.NullValueFor.String ? null : DictionaryCaptionEng ?? DBItem.DictionaryCaptionEng;
-                            DBItem.DictionaryCaptionRus = DictionaryCaptionRus == Constants.NullValueFor.String ? null : DictionaryCaptionRus ?? DBItem.DictionaryCaptionRus;
-                            DBItem.DictionaryStringCode = DictionaryStringCode == Constants.NullValueFor.String ? null : DictionaryStringCode ?? DBItem.DictionaryStringCode;
-                            DBItem.DictionaryIntCode = DictionaryIntCode == Constants.NullValueFor.Int ? null : DictionaryIntCode ?? DBItem.DictionaryIntCode;
-                            DBItem.DictionaryDecimalValue = DictionaryDecimalValue == Constants.NullValueFor.Int ? null : DictionaryDecimalValue ?? DBItem.DictionaryDecimalValue;
-                            DBItem.DictionaryCode = DictionaryCode == Constants.NullValueFor.Int ? null : DictionaryCode ?? DBItem.DictionaryCode;
-                            DBItem.DictionaryIsDefault = DictionaryIsDefault ?? DBItem.DictionaryIsDefault;
-                            DBItem.DictionaryIsVisible = DictionaryIsVisible ?? DBItem.DictionaryIsVisible;
-                            DBItem.DictionarySortIndex = DictionarySortIndex == Constants.NullValueFor.Int ? null : DictionarySortIndex ?? DBItem.DictionarySortIndex;
-                            db.Dictionaries.Update(DBItem);
-                            await db.SaveChangesAsync();
-                        }
-
-                    }
+                    DictionaryID = await db.DictionariesIUD(DatabaseAction, DictionaryID, DictionaryCaption, DictionaryCaptionEng, DictionaryCaptionRus, DictionaryParentID, DictionaryStringCode, DictionaryIntCode, DictionaryDecimalValue, DictionaryCode, DictionaryIsDefault, DictionaryIsVisible, DictionarySortIndex);
 
                     return DictionaryID;
                 }
-            });            
+            });
         }
 
         public async Task<List<Dictionaries>> ListDictionaries()

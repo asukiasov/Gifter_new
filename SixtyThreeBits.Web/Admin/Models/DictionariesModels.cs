@@ -110,7 +110,7 @@ namespace SixtyThreeBits.Web.Admin.Models
                             Options.AllowDropInsideItem(true);
                             Options.AllowReordering(false);
                             Options.ShowDragIcons(true);
-                            Options.OnReorder("function(e){ DictionariesModel.OnPermissionsTreeReorder(e); }");
+                            Options.OnReorder("function(e){ DictionariesModel.OnDictionariesTreeReorder(e); }");
                         }
                     })
                     .AutoExpandAll(false)

@@ -1,4 +1,4 @@
-﻿ using Microsoft.Data.SqlClient;
+﻿using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries;
@@ -131,7 +131,7 @@ namespace SixtyThreeBits.Core.DB
         {
             #region Properties
             public int? PageID { get; set; }
-            
+
             #endregion
         }
         internal virtual DbSet<PagesListForDeleteRecursiveResultItem> PagesListForDeleteRecursiveResult { get; set; }
@@ -143,7 +143,7 @@ namespace SixtyThreeBits.Core.DB
               ResultItemType: typeof(PagesListForDeleteRecursiveResultItem),
               SqlParameters: new SqlParameter[]
               {
-                  PageID.ToSqlParameter(nameof(PageID), SqlDbType.Int),                  
+                  PageID.ToSqlParameter(nameof(PageID), SqlDbType.Int),
               }
             );
             var DBResult = PagesListForDeleteRecursiveResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
@@ -260,7 +260,7 @@ namespace SixtyThreeBits.Core.DB
             return DBFunctionResult?.Value;
         }
         #endregion
-        
+
         #region UsersGetSingleUserByEmailAndPassword
         internal virtual DbSet<ScalarFunctionResult<string>> UsersGetSingleUserByEmailAndPasswordResult { get; set; }
         public async Task<string> UsersGetSingleUserByEmailAndPassword(string Email, string Password)
@@ -349,6 +349,36 @@ namespace SixtyThreeBits.Core.DB
 
             var DBResult = await Database.ExecuteSqlRawAsync(PR.SqlQuery, PR.SqlParameters);
         }
+
+        public async Task<int?> DictionariesIUD(Enums.DatabaseActions iud, int? DictionaryID, string DictionaryCaption, string DictionaryCaptionEng, string DictionaryCaptionRus, int? DictionaryParentID, string DictionaryStringCode, int? DictionaryIntCode, decimal? DictionaryDecimalValue, int? DictionaryCode, bool? DictionaryIsDefault, bool? DictionaryIsVisible, int? DictionarySortIndex)
+        {
+            var PR = new PrepareQueryExecution(
+             DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.STORED_PROCEDURE,
+             DatabaseObjectName: nameof(DictionariesIUD),
+             ResultItemType: null,
+             SqlParameters: new SqlParameter[]
+             {
+                    iud.ToSqlParameter(nameof(iud),SqlDbType.TinyInt),
+                    DictionaryID.ToSqlParameter(nameof(DictionaryID),SqlDbType.Int, true),
+                    DictionaryCaption.ToSqlParameter(nameof(DictionaryCaption),SqlDbType.NVarChar),
+                    DictionaryCaptionEng.ToSqlParameter(nameof(DictionaryCaptionEng),SqlDbType.NVarChar),
+                    DictionaryCaptionRus.ToSqlParameter(nameof(DictionaryCaptionRus),SqlDbType.NVarChar),
+                    DictionaryParentID.ToSqlParameter(nameof(DictionaryParentID),SqlDbType.Int),
+                    DictionaryStringCode.ToSqlParameter(nameof(DictionaryStringCode),SqlDbType.NVarChar),
+                    DictionaryIntCode.ToSqlParameter(nameof(DictionaryIntCode),SqlDbType.Int),
+                    DictionaryDecimalValue.ToSqlParameter(nameof(DictionaryDecimalValue),SqlDbType.Money),
+                    DictionaryCode.ToSqlParameter(nameof(DictionaryCode),SqlDbType.Int),
+                    DictionaryIsDefault.ToSqlParameter(nameof(DictionaryIsDefault),SqlDbType.Bit),
+                    DictionaryIsVisible.ToSqlParameter(nameof(DictionaryIsVisible),SqlDbType.Bit),
+                    DictionarySortIndex.ToSqlParameter(nameof(DictionarySortIndex),SqlDbType.Int),
+             }
+           );
+
+            var DBResult = await Database.ExecuteSqlRawAsync(PR.SqlQuery, PR.SqlParameters);
+            DictionaryID = PR.SqlParameters[1].Value?.ToString().ToInt();
+            return DictionaryID;
+        }
+
 
         public async Task PagesDeleteRecursive(int? PageID)
         {
@@ -496,7 +526,7 @@ namespace SixtyThreeBits.Core.DB
            );
             await Database.ExecuteSqlRawAsync(PR.SqlQuery, PR.SqlParameters);
         }
-        
+
         public async Task<int?> UsersIUD(Enums.DatabaseActions iud, int? UserID, string UserEmail, string UserPassword, string UserFirstname, string UserLastname, int? UserRoleID, DateTime? UserBirthdate, string UserPhoneNumberMobile, string UserPersonalNumber, string UserAvatarFilename, bool? UserIsActive)
         {
             var PR = new PrepareQueryExecution(
@@ -529,11 +559,11 @@ namespace SixtyThreeBits.Core.DB
         partial void OnModelCreatingPartial(ModelBuilder ModelBuilder)
         {
             ModelBuilder.Entity<ScalarFunctionResult<string>>(Entity => { Entity.HasNoKey(); });
-            ModelBuilder.Entity<ScalarFunctionResult<bool>>(Entity => { Entity.HasNoKey(); });            
+            ModelBuilder.Entity<ScalarFunctionResult<bool>>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<PagesListResultItem>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<PagesListForDeleteRecursiveResultItem>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<RolesListResultItem>(Entity => { Entity.HasNoKey(); });
-            ModelBuilder.Entity<RolePermissionsListResultItem>(Entity => { Entity.HasNoKey(); });            
+            ModelBuilder.Entity<RolePermissionsListResultItem>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<UsersListResultItem>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<PermissionsListResultItem>(Entity => { Entity.HasNoKey(); });
         }
@@ -549,7 +579,7 @@ namespace SixtyThreeBits.Core.DB
 
             readonly DatabaseObjectTypes DatabaseObjectType;
             readonly string DatabaseObjectName;
-            readonly Type ResultType;            
+            readonly Type ResultType;
             #endregion
 
             #region Constructors
@@ -576,7 +606,7 @@ namespace SixtyThreeBits.Core.DB
                         }
                     case DatabaseObjectTypes.TABLE_VALUED_FUNCTION:
                         {
-                            BuildTableValuedFunction();                                
+                            BuildTableValuedFunction();
                             break;
                         }
                 }
@@ -600,7 +630,7 @@ namespace SixtyThreeBits.Core.DB
                 var PropertyNames = ResultType.GetProperties().Select(Item => Item.Name);
                 var PropertiesString = string.Join(", ", PropertyNames);
 
-                SqlQuery = $"SELECT {PropertiesString} FROM dbo.{DatabaseObjectName}({ParametersString})";                
+                SqlQuery = $"SELECT {PropertiesString} FROM dbo.{DatabaseObjectName}({ParametersString})";
             }
 
             void BuildParameters()
@@ -609,10 +639,10 @@ namespace SixtyThreeBits.Core.DB
 
                 if (SqlParameters.Length > 0)
                 {
-                    foreach(var P in SqlParameters)
+                    foreach (var P in SqlParameters)
                     {
                         ParametersStringBuilder.Append($", @{P.ParameterName}");
-                        if(P.Direction == System.Data.ParameterDirection.InputOutput)
+                        if (P.Direction == System.Data.ParameterDirection.InputOutput)
                         {
                             ParametersStringBuilder.Append(" OUTPUT");
                         }
@@ -630,22 +660,22 @@ namespace SixtyThreeBits.Core.DB
                 #region Properties
                 STORED_PROCEDURE,
                 TABLE_VALUED_FUNCTION,
-                SCALAR_VALUED_FUNCTION 
+                SCALAR_VALUED_FUNCTION
                 #endregion
             }
             #endregion
-        }      
+        }
         #endregion
     }
 
     static class SqlParameterConverter
     {
         #region Methods
-        public static SqlParameter ToSqlParameter(this object Parameter, string ParameterName,SqlDbType SqlDbType,bool IsOutput = false)
-        {            
+        public static SqlParameter ToSqlParameter(this object Parameter, string ParameterName, SqlDbType SqlDbType, bool IsOutput = false)
+        {
             var ParameterValue = Parameter == null ? DBNull.Value : Parameter;
             var P = new SqlParameter(ParameterName, ParameterValue);
-            
+
             P.SqlDbType = SqlDbType;
 
             if (Parameter != null && Parameter.GetType() == typeof(string))
@@ -653,13 +683,13 @@ namespace SixtyThreeBits.Core.DB
                 P.Size = (Parameter as string).Length;
             }
 
-            if(IsOutput)
+            if (IsOutput)
             {
                 P.Direction = ParameterDirection.InputOutput;
             }
 
             return P;
-        }        
+        }
         #endregion
     }
 }
