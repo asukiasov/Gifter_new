@@ -3206,6 +3206,17 @@ var PageBuilderModel = {
                 $(item).replaceWith('<audio controls><source src="' + audioFile + '" type="audio/mpeg"></audio>');
             });
 
+            //replace special img with video
+            pageContent.find('img.mce-object-video').each(function (index, item) {
+                var controls = $(item).attr('data-mce-p-controls') || false;
+                var autoplay = $(item).attr('data-mce-p-autoplay') || false;
+                var source1 = unescape($(item).attr('data-mce-html'));
+                var width = $(item).attr('width');
+                var height = $(item).attr('height');
+                var poster = $(item).attr('data-mce-p-poster') || false;
+                $(item).replaceWith('<video width="' + width + '" height="' + height + '"' + (poster ? ' poster="' + poster + '"' : '') + ' controls="' + controls + '" autoplay="' + autoplay + '">\n' + source1 + '</video>');
+            });
+
             return pageContent.html();
         },
         getSubmitModel: function () {

@@ -462,6 +462,11 @@ div.mce-edit-area,
     width: 100%;
     height: 40px;
 }
+.mce-content-body img.mce-object-video{
+    display: block;
+    width: 100%;
+    height: 400px;
+}
 /* ----------- /tinymce ----------- */
 
 
