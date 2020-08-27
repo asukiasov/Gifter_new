@@ -18,7 +18,7 @@ namespace SixtyThreeBits.Core.Modules
         #endregion
 
         #region Contructors
-        public PagesDataAccess(ConnectionFactory ConnectionFactory, AppSettingsCollection AppSettings) : base(ConnectionFactory) 
+        public PagesDataAccess(ConnectionFactory ConnectionFactory, AppSettingsCollection AppSettings) : base(ConnectionFactory)
         {
             this.AppSettings = AppSettings;
         }
@@ -37,7 +37,7 @@ namespace SixtyThreeBits.Core.Modules
                         var Folder = $"{AppSettings.UploadFolderPhysicalPath}{Page.FolderName}\\{Item.PageID}";
                         if (System.IO.Directory.Exists(Folder))
                         {
-                            System.IO.Directory.Delete(Folder);
+                            System.IO.Directory.Delete(Folder, true);
                         }
                     }
 
@@ -99,10 +99,24 @@ namespace SixtyThreeBits.Core.Modules
         {
             return await TryToReturnAsyncTask($"{nameof(PagesIUD)}({nameof(DatabaseAction)} = {DatabaseAction}, {nameof(PageID)} = {PageID}, {nameof(PageParentID)} = {PageParentID}, {nameof(PageSlug)} = {PageSlug}, {nameof(PageTitle)} = {PageTitle}, {nameof(PageTitleEng)} = {PageTitleEng}, {nameof(PageTitleRus)} = {PageTitleRus}, {nameof(PageText)} = {PageText}, {nameof(PageTextEng)} = {PageTextEng}, {nameof(PageTextRus)} = {PageTextRus}, {nameof(PageData)} = {PageData}, {nameof(PageDataEng)} = {PageDataEng}, {nameof(PageDataRus)} = {PageDataRus}, {nameof(PageShortDescription)} = {PageShortDescription}, {nameof(PageShortDescriptionEng)} = {PageShortDescriptionEng}, {nameof(PageShortDescriptionRus)} = {PageShortDescriptionRus}, {nameof(PageImageFilename)} = {PageImageFilename}, {nameof(PageCode)} = {PageCode}, {nameof(PageIsPublished)} = {PageIsPublished}, {nameof(PageSortIndex)} = {PageSortIndex}, {nameof(PageIsMenuItem)} = {PageIsMenuItem}, {nameof(PageIsFooterItem)} = {PageIsFooterItem}, {nameof(PageIsExternalUrl)} = {PageIsExternalUrl}, {nameof(PageExternalUrl)} = {PageExternalUrl})", async () =>
             {
-                using(var db = ConnectionFactory.GetDBCoreDataContext())
+                if (DatabaseAction == Enums.DatabaseActions.DELETE)
+                {
+                    var Folder = $"{AppSettings.UploadFolderPhysicalPath}{Page.FolderName}\\{PageID}";
+                    if (System.IO.Directory.Exists(Folder))
+                    {
+                        System.IO.Directory.Delete(Folder, true);
+                    }
+                }
+                using (var db = ConnectionFactory.GetDBCoreDataContext())
                 {
 
                     PageID = await db.PagesIUD(DatabaseAction, PageID, PageParentID, PageSlug, PageTitle, PageTitleEng, PageTitleRus, PageText, PageTextEng, PageTextRus, PageData, PageDataEng, PageDataRus, PageShortDescription, PageShortDescriptionEng, PageShortDescriptionRus, PageImageFilename, PageCode, PageIsPublished, PageSortIndex, PageIsMenuItem, PageIsFooterItem, PageIsExternalUrl, PageExternalUrl);
+
+
+                    if (DatabaseAction == Enums.DatabaseActions.CREATE)
+                    {
+                        System.IO.Directory.CreateDirectory($"{AppSettings.UploadFolderPhysicalPath}{Page.FolderName}\\{PageID}");
+                    }
                     return PageID;
                 }
             });
