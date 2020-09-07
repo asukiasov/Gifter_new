@@ -14,6 +14,19 @@
                 #endregion
             }
 
+            public class Blog
+            {
+                #region Properties
+                public const string Page = "AdminBlog";
+                public const string Grid = "AdminBlogGrid";
+                public const string GridAdd = "AdminBlogGridAdd";
+                public const string GridUpdate = "AdminBlogGridUpdate";
+                public const string GridDelete = "AdminBlogGridDelete";
+                public const string BlogItem = "AdminBlogBlogItem";
+                public const string BlogItemDeleteImage = "AdminBlogBlogItemPropertiesDeleteImage";
+                #endregion
+            }
+
             public class Carousel
             {
                 #region Properties

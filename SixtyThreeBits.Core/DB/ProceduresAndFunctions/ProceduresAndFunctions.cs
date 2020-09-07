@@ -24,6 +24,69 @@ namespace SixtyThreeBits.Core.DB
         #endregion
 
         #region Functions
+        #region BlogsList
+        public class BlogsListResultItem
+        {
+            #region Properties
+            public int? BlogID { get; set; }
+            public string BlogTitle { get; set; }
+            public string BlogAuthorName { get; set; }
+            public DateTime? BlogDate { get; set; }
+            #endregion
+        }
+        internal virtual DbSet<BlogsListResultItem> BlogsListResult { get; set; }
+        public IQueryable<BlogsListResultItem> BlogList()
+        {
+            var PR = new PrepareQueryExecution(
+              DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
+              DatabaseObjectName: nameof(BlogList),
+              ResultItemType: typeof(BlogsListResultItem)
+            );
+            var DBResult = BlogsListResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
+            return DBResult;
+        }
+        #endregion
+
+        #region BlogsGetSingleByID
+        internal virtual DbSet<ScalarFunctionResult<string>> BlogsGetSingleByIDResult { get; set; }
+        public async Task<string> BlogGetSingleByID(int? BlogsID)
+        {
+            var PR = new PrepareQueryExecution(
+                DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
+                DatabaseObjectName: nameof(BlogGetSingleByID),
+                ResultItemType: typeof(ScalarFunctionResult<string>),
+                SqlParameters: new SqlParameter[]
+                {
+                    BlogsID.ToSqlParameter(nameof(BlogsID), SqlDbType.Int),
+                }
+            );
+            var DBResult = BlogsGetSingleByIDResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
+            var DBFunctionResult = await DBResult.FirstOrDefaultAsync();
+            return DBFunctionResult?.Value;
+        }
+        #endregion
+
+        #region BlogsIsSlugUniq
+        internal virtual DbSet<ScalarFunctionResult<bool>> BlogsIsSlugUniqResult { get; set; }
+        public async Task<bool> BlogIsSlugUniq(string Blogslug, int? BlogsID)
+        {
+            var PR = new PrepareQueryExecution(
+                DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
+                DatabaseObjectName: nameof(BlogIsSlugUniq),
+                ResultItemType: typeof(ScalarFunctionResult<string>),
+                SqlParameters: new SqlParameter[]
+                {
+                    Blogslug.ToSqlParameter(nameof(Blogslug), SqlDbType.NVarChar),
+                    BlogsID.ToSqlParameter(nameof(BlogsID), SqlDbType.Int)
+                }
+            );
+            var DBResult = BlogsIsSlugUniqResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
+            var DBFunctionResult = await DBResult.FirstOrDefaultAsync();
+            return DBFunctionResult?.Value == true;
+        }
+        #endregion 
+
+
         #region PagesGetSingleByID
         internal virtual DbSet<ScalarFunctionResult<string>> PagesGetSingleByIDResult { get; set; }
         public async Task<string> PagesGetSingleByID(int? PageID, bool? PageIsPublished)
@@ -203,7 +266,7 @@ namespace SixtyThreeBits.Core.DB
         }
         #endregion
 
-        #region RolesList
+        #region RolePermissionsList
         public class RolePermissionsListResultItem
         {
             #region Properties
@@ -334,7 +397,31 @@ namespace SixtyThreeBits.Core.DB
         #endregion
         #endregion
 
-        #region Stored Procedures        
+        #region Stored Procedures  
+        public async Task<int?> BlogIUD(Enums.DatabaseActions iud, int? BlogsID, string Blogslug, string BlogsTitle, string BlogsText, string BlogsAuthorName, string BlogsImageFilename, DateTime? BlogsDate)
+        {
+            var PR = new PrepareQueryExecution(
+             DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.STORED_PROCEDURE,
+             DatabaseObjectName: nameof(BlogIUD),
+             ResultItemType: null,
+             SqlParameters: new SqlParameter[]
+             {
+                 iud.ToSqlParameter(nameof(iud),SqlDbType.TinyInt),
+                 BlogsID.ToSqlParameter(nameof(BlogsID),SqlDbType.Int,true),
+                 Blogslug.ToSqlParameter(nameof(Blogslug),SqlDbType.NVarChar),
+                 BlogsTitle.ToSqlParameter(nameof(BlogsTitle),SqlDbType.NVarChar),
+                 BlogsText.ToSqlParameter(nameof(BlogsText),SqlDbType.NVarChar),
+                 BlogsAuthorName.ToSqlParameter(nameof(BlogsAuthorName),SqlDbType.NVarChar),
+                 BlogsImageFilename.ToSqlParameter(nameof(BlogsImageFilename),SqlDbType.NVarChar),
+                 BlogsDate.ToSqlParameter(nameof(BlogsDate),SqlDbType.Date),
+             }
+             );
+
+            var DBResult = await Database.ExecuteSqlRawAsync(PR.SqlQuery, PR.SqlParameters);
+            BlogsID = PR.SqlParameters[1].Value?.ToString().ToInt();
+            return BlogsID;
+        }
+
         public async Task DictionariesDeleteRecursive(int? DictionaryID)
         {
             var PR = new PrepareQueryExecution(
@@ -566,6 +653,7 @@ namespace SixtyThreeBits.Core.DB
             ModelBuilder.Entity<RolePermissionsListResultItem>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<UsersListResultItem>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<PermissionsListResultItem>(Entity => { Entity.HasNoKey(); });
+            ModelBuilder.Entity<BlogsListResultItem>(Entity => { Entity.HasNoKey(); });
         }
 
         #region Query Preparation

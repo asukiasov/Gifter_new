@@ -7,6 +7,7 @@ namespace SixtyThreeBits.Core.Modules
     public class DataAccessFactory
     {
         #region Properties        
+        public BlogsDataAccess Blog{ get; set; }
         public DictionariesDataAccess Dictionaries { get; set; }
         public PagesDataAccess Pages { get; set; }
         public PermissionsDataAccess Permissions { get; set; }
@@ -19,12 +20,13 @@ namespace SixtyThreeBits.Core.Modules
         public DataAccessFactory(AppSettingsCollection AppSettings)
         {
             var ConnectionFactory = new ConnectionFactory(AppSettings.DBConnectionStrings.DBConnectionString);
+            Blog = new BlogsDataAccess(ConnectionFactory);
             Dictionaries = new DictionariesDataAccess(ConnectionFactory);
             Pages = new PagesDataAccess(ConnectionFactory, AppSettings);
             Permissions = new PermissionsDataAccess(ConnectionFactory);
             Roles = new RolesDataAccess(ConnectionFactory);
             SystemProperties = new SystemPropertiesAccess(ConnectionFactory);
-            Users = new UsersDataAccess(ConnectionFactory);            
+            Users = new UsersDataAccess(ConnectionFactory);
         } 
         #endregion
     }

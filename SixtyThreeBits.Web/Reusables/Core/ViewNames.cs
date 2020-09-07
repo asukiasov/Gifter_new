@@ -6,6 +6,14 @@
         public class Admin
         {
             #region Sub Classes
+            public class Blog
+            {
+                #region Properties
+                public const string Page = "~/Admin/Views/Blog/Blog.cshtml";
+                public const string BlogItem = "~/Admin/Views/Blog/BlogItem.cshtml";
+                #endregion
+            }
+
             public class Auth
             {
                 #region Properties

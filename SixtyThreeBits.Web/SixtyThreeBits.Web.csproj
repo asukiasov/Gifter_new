@@ -13,17 +13,17 @@
     <None Remove="wwwroot\admin\html\**" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="63BITS-Libraries-DotNetStandart" Version="1.1.27" />
+    <PackageReference Include="63BITS-Libraries-DotNetStandart" Version="1.1.29" />
     <PackageReference Include="DevExtreme.AspNet.Core" Version="20.1.6" />
-    <PackageReference Include="DevExtreme.AspNet.Data" Version="2.6.1" />
+    <PackageReference Include="DevExtreme.AspNet.Data" Version="2.7.0" />
     <PackageReference Include="Imageflow.Net" Version="0.7.1" />
-    <PackageReference Include="Imageflow.Server" Version="0.3.0" />
+    <PackageReference Include="Imageflow.Server" Version="0.3.7" />
     <PackageReference Include="Microsoft.AspNetCore.Session" Version="2.2.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.5" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.5" />
-    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="3.1.5" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.1.5" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.7" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.7" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="3.1.7" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.1.7" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.4" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
   </ItemGroup>
   <ItemGroup>

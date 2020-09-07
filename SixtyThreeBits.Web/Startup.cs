@@ -8,7 +8,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
-using SixtyThreeBits.Core.Modules;
 using SixtyThreeBits.Core.Utilities;
 using System;
 using System.Collections.Generic;

@@ -178,6 +178,15 @@ namespace SixtyThreeBits.Core.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Blog slug is not unique.
+        /// </summary>
+        public static string ValidationBlogsSlugNotUniq {
+            get {
+                return ResourceManager.GetString("ValidationBlogsSlugNotUniq", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Email format is invalid.
         /// </summary>
         public static string ValidationEmailFormatInvalid {
@@ -237,6 +246,15 @@ namespace SixtyThreeBits.Core.Properties {
         public static string ValidationRequired {
             get {
                 return ResourceManager.GetString("ValidationRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Blog title is required.
+        /// </summary>
+        public static string ValidationRequiredBlogTitle {
+            get {
+                return ResourceManager.GetString("ValidationRequiredBlogTitle", resourceCulture);
             }
         }
         

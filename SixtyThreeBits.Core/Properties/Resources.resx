@@ -156,6 +156,9 @@
   <data name="TextYes" xml:space="preserve">
     <value>Yes</value>
   </data>
+  <data name="ValidationBlogsSlugNotUniq" xml:space="preserve">
+    <value>Blog slug is not unique</value>
+  </data>
   <data name="ValidationEmailFormatInvalid" xml:space="preserve">
     <value>Email format is invalid</value>
   </data>
@@ -176,6 +179,9 @@
   </data>
   <data name="ValidationRequired" xml:space="preserve">
     <value>Field is required</value>
+  </data>
+  <data name="ValidationRequiredBlogTitle" xml:space="preserve">
+    <value>Blog title is required</value>
   </data>
   <data name="ValidationRequiredPageTitle" xml:space="preserve">
     <value>Page title is required</value>

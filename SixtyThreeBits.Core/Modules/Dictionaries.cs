@@ -1,12 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SixtyThreeBits.Core.DB;
 using SixtyThreeBits.Core.DB.Tables;
 using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SixtyThreeBits.Core.Modules
