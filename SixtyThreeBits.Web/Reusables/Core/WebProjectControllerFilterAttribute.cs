@@ -24,7 +24,7 @@ namespace SixtyThreeBits.Web.Reusables.Core
 
         public override void OnActionExecuting(ActionExecutingContext FilterContext)
         {            
-            var C = FilterContext.Controller as Controller;
+            var C = FilterContext.Controller as Controller;            
             var Model = LocalUtilities.GetModelFromController<WebProjectModelBase>(C);
             if (Model != null)
             {
@@ -46,6 +46,8 @@ namespace SixtyThreeBits.Web.Reusables.Core
                 Model.SessionAssistance = new SessionAssistance(C.HttpContext.Session);
                 Model.CookieAssistance = new CookieAssistance(C.Request, C.Response);
                 Model.Url = C.Url;
+                Model.Request = C.Request;
+                Model.Response = C.Response;
                 Model.PluginsClient = new PluginsClient();
                 Model.Form = new FormViewModelBase();
             }

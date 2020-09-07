@@ -11,10 +11,6 @@ namespace SixtyThreeBits.Core.Modules
 {
     public class BlogsDataAccess : DataAccessBase
     {
-        #region Properties
-        AppSettingsCollection AppSettings;
-        #endregion
-
         #region Constructors
         public BlogsDataAccess(ConnectionFactory ConnectionFactory) : base(ConnectionFactory)
         {

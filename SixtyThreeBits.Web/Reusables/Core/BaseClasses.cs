@@ -306,6 +306,8 @@ namespace SixtyThreeBits.Web.Reusables.Core
         public ISessionAssistance SessionAssistance { get; set; }
         public ICookieAssistance CookieAssistance { get; set; }
         public IUrlHelper Url { get; set; }
+        public HttpRequest Request { get; set; }
+        public HttpResponse Response { get; set; }
         public IPageTitle PageTitle { get; set; }
         public ViewDataDictionary ViewData { get; set; }
         
