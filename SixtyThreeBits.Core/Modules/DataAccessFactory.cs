@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using SixtyThreeBits.Core.DB;
+﻿using SixtyThreeBits.Core.DB;
 using SixtyThreeBits.Core.Utilities;
 
 namespace SixtyThreeBits.Core.Modules
@@ -29,28 +28,5 @@ namespace SixtyThreeBits.Core.Modules
             Users = new UsersDataAccess(ConnectionFactory);
         } 
         #endregion
-    }
-
-    public class ConnectionFactory
-    {
-        #region Properties
-        readonly string DBConnectionString;
-        #endregion
-
-        #region Constructors
-        public ConnectionFactory(string DBConnectionString)
-        {
-            this.DBConnectionString = DBConnectionString;
-        } 
-        #endregion
-
-        #region Methods
-        public DBCoreDataContext GetDBCoreDataContext()
-        {
-            var OptionsBuilder = new DbContextOptionsBuilder<DBCoreDataContext>();
-            OptionsBuilder.UseSqlServer(DBConnectionString);
-            return new DBCoreDataContext(OptionsBuilder.Options);
-        } 
-        #endregion
-    }
+    }    
 }

@@ -3,10 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries;
 using System;
-using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -84,8 +82,46 @@ namespace SixtyThreeBits.Core.DB
             var DBFunctionResult = await DBResult.FirstOrDefaultAsync();
             return DBFunctionResult?.Value == true;
         }
-        #endregion 
+        #endregion
 
+        #region DictionariesList
+        public class DictionariesListResultItem
+        {
+            #region Properties
+            public int? DictionaryID { get; set; }
+            public string DictionaryCaption { get; set; }
+            public string DictionaryCaptionEng { get; set; }
+            public string DictionaryCaptionRus { get; set; }
+            public int? DictionaryParentID { get; set; }
+            public int? DictionaryLevel { get; set; }
+            public string DictionaryStringCode { get; set; }
+            public int? DictionaryIntCode { get; set; }
+            public decimal? DictionaryDecimalValue { get; set; }
+            public int? DictionaryCode { get; set; }
+            public bool DictionaryIsDefault { get; set; }
+            public bool DictionaryIsVisible { get; set; }
+            public int? DictionarySortIndex { get; set; }
+            public DateTime? DictionaryDateCreated { get; set; }
+            #endregion            
+        }
+        internal virtual DbSet<DictionariesListResultItem> DictionariesListResult { get; set; }
+        public IQueryable<DictionariesListResultItem> DictionariesList(int? DictionaryLevel, int? DictionaryCode, bool? DictionaryIsVisible)
+        {
+            var PR = new PrepareQueryExecution(
+                DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
+                DatabaseObjectName: nameof(DictionariesList),
+                ResultItemType: typeof(ScalarFunctionResult<string>),
+                SqlParameters: new SqlParameter[]
+                {
+                    DictionaryLevel.ToSqlParameter(nameof(DictionaryLevel), SqlDbType.Int),
+                    DictionaryCode.ToSqlParameter(nameof(DictionaryCode), SqlDbType.Int),
+                    DictionaryIsVisible.ToSqlParameter(nameof(DictionaryIsVisible), SqlDbType.Bit)
+                }
+            );
+            var DBResult = DictionariesListResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
+            return DBResult;
+        }
+        #endregion
 
         #region PagesGetSingleByID
         internal virtual DbSet<ScalarFunctionResult<string>> PagesGetSingleByIDResult { get; set; }

@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SixtyThreeBits.Core.DB.Tables;
+using SixtyThreeBits.Core.DB;
 using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries;
 using System.Collections.Generic;
@@ -40,13 +40,17 @@ namespace SixtyThreeBits.Core.Modules
             });
         }
 
-        public async Task<List<Dictionaries>> ListDictionaries()
+        public async Task<List<DBCoreDataContext.DictionariesListResultItem>> ListDictionaries(int? DictionaryLevel = null, int? DictionaryCode = null, bool? DictionaryIsVisible = null)
         {
             return await TryToReturnAsyncTask($"{nameof(ListDictionaries)}()", async () =>
             {
                 using (var db = ConnectionFactory.GetDBCoreDataContext())
                 {
-                    return await db.Dictionaries.OrderBy(Item => Item.DictionarySortIndex).ThenBy(Item => Item.DictionaryCaption).ToListAsync();
+                    return await db.DictionariesList(DictionaryLevel, DictionaryCode, DictionaryIsVisible)
+                    .OrderByDescending(Item => Item.DictionaryIsDefault)
+                    .ThenBy(Item => Item.DictionarySortIndex)
+                    .ThenBy(Item => Item.DictionaryCaption)
+                    .ToListAsync();
                 }
             });
         }
@@ -57,8 +61,8 @@ namespace SixtyThreeBits.Core.Modules
             {
                 using (var db = ConnectionFactory.GetDBCoreDataContext())
                 {
-                    var Result = await db.Dictionaries.Where(Item => Item.DictionaryLevel == 1 && Item.DictionaryCode == DictionaryCode).OrderBy(Item => Item.DictionarySortIndex).ThenBy(Item => Item.DictionaryCaption).ToListAsync();
-                    return Result.Select(Item => new SimpleKeyValue<int?, string>
+                    var Result = await ListDictionaries(DictionaryLevel: 1, DictionaryCode: DictionaryCode, DictionaryIsVisible: null);
+                    return Result?.Select(Item => new SimpleKeyValue<int?, string>
                     {
                         Key = Item.DictionaryID,
                         Value = Item.DictionaryCaption,

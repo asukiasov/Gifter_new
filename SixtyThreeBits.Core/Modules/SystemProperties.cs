@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SixtyThreeBits.Core.DB;
 using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries;
 using System.Threading.Tasks;

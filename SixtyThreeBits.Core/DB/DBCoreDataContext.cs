@@ -14,44 +14,11 @@ namespace SixtyThreeBits.Core.DB
             : base(options)
         {
         }
-
-        public virtual DbSet<Dictionaries> Dictionaries { get; set; }
+        
         public virtual DbSet<SystemProperties> SystemProperties { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<Dictionaries>(entity =>
-            {
-                entity.HasKey(e => e.DictionaryID);
-
-                entity.Property(e => e.CRTime)
-                    .HasColumnType("datetime")
-                    .HasDefaultValueSql("(getdate())");
-
-                entity.Property(e => e.DictionaryCaption).HasMaxLength(200);
-
-                entity.Property(e => e.DictionaryCaptionEng).HasMaxLength(200);
-
-                entity.Property(e => e.DictionaryCaptionRus).HasMaxLength(200);
-
-                entity.Property(e => e.DictionaryDecimalValue).HasColumnType("money");
-
-                entity.Property(e => e.DictionaryHierarchy)
-                    .HasMaxLength(200)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.DictionaryIsVisible)
-                    .IsRequired()
-                    .HasDefaultValueSql("((1))");
-
-                entity.Property(e => e.DictionaryStringCode).HasMaxLength(100);
-
-                entity.HasOne(d => d.DictionaryParent)
-                    .WithMany(p => p.InverseDictionaryParent)
-                    .HasForeignKey(d => d.DictionaryParentID)
-                    .HasConstraintName("FK_Dictionaries_Dictionaries");
-            });
-
+        {            
             modelBuilder.Entity<SystemProperties>(entity =>
             {
                 entity.Property(e => e.SystemPropertiesID).ValueGeneratedNever();
