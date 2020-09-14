@@ -2,18 +2,13 @@
 using DevExtreme.AspNet.Mvc.Builders;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using SixtyThreeBits.Core.Abstractions;
-using SixtyThreeBits.Core.DB;
 using SixtyThreeBits.Core.Modules;
 using SixtyThreeBits.Core.Properties;
 using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries;
-using SixtyThreeBits.Web.Reusables;
-using SixtyThreeBits.Web.Reusables.Core;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -293,6 +288,8 @@ namespace SixtyThreeBits.Web.Reusables.Core
     public class WebProjectModelBase 
     {
         #region Properties
+        public string Culture { get; set; }
+        public readonly string CultureDefault = Enums.Languages.GEORGIAN;
         public string ControllerName { get; set; }
         public string ActionName { get; set; }
         public string UrlCurrentPage { get; set; }
@@ -315,9 +312,7 @@ namespace SixtyThreeBits.Web.Reusables.Core
         public List<ProjectMenuItem> Tabs { get; set; } = new List<ProjectMenuItem>();
 
         public PluginsClient PluginsClient { get; set; }
-        public SuccessErrorPartialViewModel SuccessErrorPartialViewModel { get; set; } = new SuccessErrorPartialViewModel();
-        public string Culture { get; set; }
-        public readonly string CultureDefault = Enums.Languages.GEORGIAN;
+        public readonly SuccessErrorPartialViewModel SuccessErrorPartialViewModel = new SuccessErrorPartialViewModel();                
         public User User { get; set; }
         public bool IsLoggedIn => User != null;        
         public ValueReference<bool> IsSidebarCollapsed { get; set; }

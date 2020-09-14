@@ -20,7 +20,7 @@ namespace SixtyThreeBits.Web.Reusables
         ISession Session;
         #endregion
 
-        #region Sub Classes
+        #region Constructors
         public SessionAssistance(ISession Session)
         {
             this.Session = Session;                        

@@ -110,7 +110,7 @@ namespace SixtyThreeBits.Core.DB
             var PR = new PrepareQueryExecution(
                 DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
                 DatabaseObjectName: nameof(DictionariesList),
-                ResultItemType: typeof(ScalarFunctionResult<string>),
+                ResultItemType: typeof(DictionariesListResultItem),
                 SqlParameters: new SqlParameter[]
                 {
                     DictionaryLevel.ToSqlParameter(nameof(DictionaryLevel), SqlDbType.Int),
@@ -681,15 +681,16 @@ namespace SixtyThreeBits.Core.DB
 
         partial void OnModelCreatingPartial(ModelBuilder ModelBuilder)
         {
+            ModelBuilder.Entity<DictionariesListResultItem>(Entity => { Entity.HasNoKey(); });
+            ModelBuilder.Entity<BlogsListResultItem>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<ScalarFunctionResult<string>>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<ScalarFunctionResult<bool>>(Entity => { Entity.HasNoKey(); });
-            ModelBuilder.Entity<PagesListResultItem>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<PagesListForDeleteRecursiveResultItem>(Entity => { Entity.HasNoKey(); });
+            ModelBuilder.Entity<PagesListResultItem>(Entity => { Entity.HasNoKey(); });            
+            ModelBuilder.Entity<PermissionsListResultItem>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<RolesListResultItem>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<RolePermissionsListResultItem>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<UsersListResultItem>(Entity => { Entity.HasNoKey(); });
-            ModelBuilder.Entity<PermissionsListResultItem>(Entity => { Entity.HasNoKey(); });
-            ModelBuilder.Entity<BlogsListResultItem>(Entity => { Entity.HasNoKey(); });
         }
 
         #region Query Preparation
