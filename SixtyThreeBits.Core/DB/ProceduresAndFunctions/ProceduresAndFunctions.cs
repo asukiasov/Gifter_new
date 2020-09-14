@@ -681,6 +681,7 @@ namespace SixtyThreeBits.Core.DB
 
         partial void OnModelCreatingPartial(ModelBuilder ModelBuilder)
         {
+            ModelBuilder.Entity<DictionariesListResultItem>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<ScalarFunctionResult<string>>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<ScalarFunctionResult<bool>>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<PagesListResultItem>(Entity => { Entity.HasNoKey(); });
