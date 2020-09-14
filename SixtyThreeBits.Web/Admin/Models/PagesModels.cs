@@ -189,6 +189,8 @@ namespace SixtyThreeBits.Web.Admin.Models
             ViewModel.PageImageFilename = DBItemPage.PageImageFilename;
             ViewModel.PageImageHttpPath = DBItemPage.PageImageFilenameHttpPath;
 
+            ViewModel.UrlDeleteImage = Url.RouteUrl(ControllerActionRouteNames.Admin.Pages.Page.DeleteImage, values: new { PageID = DBItemPage.PageID });
+
             return ViewModel;
         }
 
@@ -248,6 +250,22 @@ namespace SixtyThreeBits.Web.Admin.Models
             }
 
             return ViewModel.IsSaved;
+        }
+
+        public async Task<AjaxResponse> DeleteImage()
+        {
+            Utilities.DeleteUploadedFile(DBItemPage.PageImageFilename, DBItemPage.FolderPhysicalPath);
+
+            var AR = new AjaxResponse();
+            await DataAccessFactory.Pages.PagesIUD(
+               DatabaseAction: Enums.DatabaseActions.UPDATE,
+                PageID: DBItemPage.PageID,
+                PageImageFilename: Constants.NullValueFor.String
+                );
+
+            AR.IsSuccess = !DataAccessFactory.Pages.IsError;
+
+            return AR;
         }
 
         public PageBuilderViewModel GetPageBuilderViewModel(int? PageID, string Language)

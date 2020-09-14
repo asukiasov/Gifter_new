@@ -111,6 +111,14 @@ namespace SixtyThreeBits.Web.Areas.Admin.Controllers
             
             return View(ViewNames.Admin.Pages.Page.Properties, ViewModel);
         }
+
+        [HttpPost]
+        [Route("properties/delete-image", Name = ControllerActionRouteNames.Admin.Pages.Page.DeleteImage)]
+        public async Task<IActionResult> PageDeleteImage()
+        {
+            var Response = await Model.DeleteImage();
+            return Json(Response);
+        }
         #endregion
 
         #region Page Builder
