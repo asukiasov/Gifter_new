@@ -502,7 +502,6 @@ namespace SixtyThreeBits.Core.DB
             return DictionaryID;
         }
 
-
         public async Task PagesDeleteRecursive(int? PageID)
         {
             var PR = new PrepareQueryExecution(

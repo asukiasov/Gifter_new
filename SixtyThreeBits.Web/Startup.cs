@@ -18,11 +18,12 @@ namespace SixtyThreeBits.Web
 {
     public class Startup
     {
-        AppSettingsCollection AppSettings;
-        UtilityCollection Utilities;
+        readonly AppSettingsCollection AppSettings;
+        readonly UtilityCollection Utilities;
 
         public Startup(IWebHostEnvironment Env)
         {
+
             if (Env.IsDevelopment())
             {
                 var Builder = new ConfigurationBuilder().SetBasePath(Env.ContentRootPath).AddJsonFile("appsettings.json");
@@ -31,9 +32,15 @@ namespace SixtyThreeBits.Web
             }
             else
             {
+                #if DEBUG
+                var Builder = new ConfigurationBuilder().SetBasePath(Env.ContentRootPath).AddJsonFile("appsettings.debug.json");
+                AppSettings = new AppSettingsCollection(Builder.Build());
+                AppSettings.IsDevelopment = true;
+                #else
                 var Builder = new ConfigurationBuilder().SetBasePath(Env.ContentRootPath).AddJsonFile("appsettings.release.json");
                 AppSettings = new AppSettingsCollection(Builder.Build());
                 AppSettings.IsDevelopment = false;
+                #endif
             }
             Utilities = new UtilityCollection(AppSettings);
         }

@@ -20,7 +20,7 @@ namespace SixtyThreeBits.Web.Admin.Filters
             Model = LocalUtilities.GetModelFromController<WebProjectModelBase>(FilterContext.Controller);
             var C = FilterContext.Controller as Controller;
 
-            var IsAuthorized = await AdminAuthorize();            
+            var IsAuthorized = AdminAuthorize();            
             if (IsAuthorized)
             {
                 InitStartUp();
@@ -41,24 +41,9 @@ namespace SixtyThreeBits.Web.Admin.Filters
             }            
         }
 
-        async Task<bool> AdminAuthorize() 
+        bool AdminAuthorize() 
         {
-            var IsAuthorized = false;
-            Model.User = Model.SessionAssistance.Get<User>(Constants.Session.User);
-
-            if (Model.AppSettings.IsDevelopment)
-            {
-                if (Model.User == null)
-                {
-                    var UserID = Model.CookieAssistance.Get<int?>(Constants.Cookies.User);
-                    if (UserID != null)
-                    {
-                        Model.User = await Model.DataAccessFactory.Users.GetSingleUserByID(UserID);
-                        Model.SessionAssistance.Set(Constants.Session.User, Model.User);
-                    }
-                }
-            }
-
+            var IsAuthorized = false;            
             if (Model.User != null)
             {
                 ViewModel.UserFullname = Model.User.UserFullname;

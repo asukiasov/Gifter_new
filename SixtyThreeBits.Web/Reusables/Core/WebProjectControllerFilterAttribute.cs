@@ -3,10 +3,11 @@ using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
 using SixtyThreeBits.Core.Modules;
 using SixtyThreeBits.Core.Utilities;
+using System.Threading.Tasks;
 
 namespace SixtyThreeBits.Web.Reusables.Core
 {
-    public class BeforeWebProjectControllerLoaded : ActionFilterAttribute
+    public class BeforeWebProjectControllerLoaded : IAsyncActionFilter
     {        
         AppSettingsCollection AppSettings;
         UtilityCollection Utilities;
@@ -17,12 +18,7 @@ namespace SixtyThreeBits.Web.Reusables.Core
             this.Utilities = Utilities;            
         }
 
-        public override void OnActionExecuted(ActionExecutedContext FilterContext)
-        {
-
-        }
-
-        public override void OnActionExecuting(ActionExecutingContext FilterContext)
+        public async Task OnActionExecutionAsync(ActionExecutingContext FilterContext, ActionExecutionDelegate next)
         {            
             var C = FilterContext.Controller as Controller;            
             var Model = LocalUtilities.GetModelFromController<WebProjectModelBase>(C);
@@ -50,6 +46,27 @@ namespace SixtyThreeBits.Web.Reusables.Core
                 Model.Response = C.Response;
                 Model.PluginsClient = new PluginsClient();
                 Model.Form = new FormViewModelBase();
+
+                await InitUser(Model);
+                await next();
+            }
+        }
+
+        async Task InitUser(WebProjectModelBase Model)
+        {
+            Model.User = Model.SessionAssistance.Get<User>(Constants.Session.User);
+
+            if (Model.AppSettings.IsDevelopment)
+            {
+                if (Model.User == null)
+                {
+                    var UserID = Model.CookieAssistance.Get<int?>(Constants.Cookies.User);
+                    if (UserID != null)
+                    {
+                        Model.User = await Model.DataAccessFactory.Users.GetSingleUserByID(UserID);
+                        Model.SessionAssistance.Set(Constants.Session.User, Model.User);
+                    }
+                }
             }
         }
     }    
