@@ -123,6 +123,59 @@ namespace SixtyThreeBits.Core.DB
         }
         #endregion
 
+        #region NewsList
+        public class NewsListResultItem
+        {
+            #region Properties
+            public int? NewsID { get; set; }
+            public string NewsSlug { get; set; }
+            public string NewsTitle { get; set; }
+            public string NewsTitleEng { get; set; }
+            public string NewsTitleRus { get; set; }
+            public string NewsText { get; set; }
+            public string NewsTextEng { get; set; }
+            public string NewsTextRus { get; set; }
+            public string NewsShortDescription { get; set; }
+            public string NewsShortDescriptionEng { get; set; }
+            public string NewsShortDescriptionRus { get; set; }
+            public string NewsImageFilename { get; set; }
+            public DateTime? NewsDatePublished { get; set; }
+            public bool NewsIsPublished { get; set; }
+            public DateTime? NewsDateCreated { get; set; }
+            #endregion
+        }
+        internal virtual DbSet<NewsListResultItem> NewsListResult { get; set; }
+        public IQueryable<NewsListResultItem> NewsList()
+        {
+            var PR = new PrepareQueryExecution(
+              DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
+              DatabaseObjectName: nameof(NewsList),
+              ResultItemType: typeof(NewsListResultItem)
+            );
+            var DBResult = NewsListResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
+            return DBResult;
+        }
+        #endregion
+
+        #region NewsGetSingleByID
+        internal virtual DbSet<ScalarFunctionResult<string>> NewsGetSingleByIDResult { get; set; }
+        public async Task<string> NewsGetSingleByID(int? NewsID)
+        {
+            var PR = new PrepareQueryExecution(
+                DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
+                DatabaseObjectName: nameof(NewsGetSingleByID),
+                ResultItemType: typeof(ScalarFunctionResult<string>),
+                SqlParameters: new SqlParameter[]
+                {
+                    NewsID.ToSqlParameter(nameof(NewsID), SqlDbType.Int)
+                }
+            );
+            var DBResult = NewsGetSingleByIDResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
+            var DBFunctionResult = await DBResult.FirstOrDefaultAsync();
+            return DBFunctionResult?.Value;
+        }
+        #endregion
+
         #region PagesGetSingleByID
         internal virtual DbSet<ScalarFunctionResult<string>> PagesGetSingleByIDResult { get; set; }
         public async Task<string> PagesGetSingleByID(int? PageID, bool? PageIsPublished)
@@ -502,6 +555,37 @@ namespace SixtyThreeBits.Core.DB
             return DictionaryID;
         }
 
+        public async Task<int?> NewsIUD(Enums.DatabaseActions iud, int? NewsID, string NewsSlug, string NewsTitle, string NewsTitleEng, string NewsTitleRus, string NewsText, string NewsTextEng, string NewsTextRus, string NewsShortDescription, string NewsShortDescriptionEng, string NewsShortDescriptionRus, string NewsImageFilename, DateTime? NewsDatePublished, bool NewsIsPublished, DateTime? NewsDateCreated)
+        {
+            var PR = new PrepareQueryExecution(
+             DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.STORED_PROCEDURE,
+             DatabaseObjectName: nameof(NewsIUD),
+             ResultItemType: null,
+             SqlParameters: new SqlParameter[]
+             {
+                 iud.ToSqlParameter(nameof(iud),SqlDbType.TinyInt),
+                 NewsID.ToSqlParameter(nameof(NewsID),SqlDbType.Int,true),
+                 NewsSlug.ToSqlParameter(nameof(NewsSlug),SqlDbType.NVarChar),
+                 NewsTitle.ToSqlParameter(nameof(NewsTitle),SqlDbType.NVarChar),
+                 NewsTitleEng.ToSqlParameter(nameof(NewsTitleEng),SqlDbType.NVarChar),
+                 NewsTitleRus.ToSqlParameter(nameof(NewsTitleRus),SqlDbType.NVarChar),
+                 NewsText.ToSqlParameter(nameof(NewsText),SqlDbType.NVarChar),
+                 NewsTextEng.ToSqlParameter(nameof(NewsTextEng),SqlDbType.NVarChar),
+                 NewsTextRus.ToSqlParameter(nameof(NewsTextRus),SqlDbType.NVarChar),
+                 NewsShortDescription.ToSqlParameter(nameof(NewsShortDescription),SqlDbType.NVarChar),
+                 NewsShortDescriptionEng.ToSqlParameter(nameof(NewsShortDescriptionEng),SqlDbType.NVarChar),
+                 NewsShortDescriptionRus.ToSqlParameter(nameof(NewsShortDescriptionRus),SqlDbType.NVarChar),
+                 NewsImageFilename.ToSqlParameter(nameof(NewsImageFilename),SqlDbType.NVarChar),
+                 NewsDatePublished.ToSqlParameter(nameof(NewsDatePublished),SqlDbType.DateTime),
+                 NewsIsPublished.ToSqlParameter(nameof(NewsIsPublished),SqlDbType.Bit)
+             }
+             );
+
+            var DBResult = await Database.ExecuteSqlRawAsync(PR.SqlQuery, PR.SqlParameters);
+            NewsID = PR.SqlParameters[1].Value?.ToString().ToInt();
+            return NewsID;
+        }
+
         public async Task PagesDeleteRecursive(int? PageID)
         {
             var PR = new PrepareQueryExecution(
@@ -682,10 +766,11 @@ namespace SixtyThreeBits.Core.DB
         {
             ModelBuilder.Entity<DictionariesListResultItem>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<BlogsListResultItem>(Entity => { Entity.HasNoKey(); });
+            ModelBuilder.Entity<NewsListResultItem>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<ScalarFunctionResult<string>>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<ScalarFunctionResult<bool>>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<PagesListForDeleteRecursiveResultItem>(Entity => { Entity.HasNoKey(); });
-            ModelBuilder.Entity<PagesListResultItem>(Entity => { Entity.HasNoKey(); });            
+            ModelBuilder.Entity<PagesListResultItem>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<PermissionsListResultItem>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<RolesListResultItem>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<RolePermissionsListResultItem>(Entity => { Entity.HasNoKey(); });
