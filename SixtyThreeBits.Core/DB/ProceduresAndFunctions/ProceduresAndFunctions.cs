@@ -642,7 +642,7 @@ namespace SixtyThreeBits.Core.DB
              ResultItemType: null,
              SqlParameters: new SqlParameter[]
              {
-                 RoleID.ToSqlParameter(nameof(RoleID),SqlDbType.TinyInt),
+                 RoleID.ToSqlParameter(nameof(RoleID),SqlDbType.Int),
                  PermissionsXml.ToSqlParameter(nameof(PermissionsXml),SqlDbType.Xml)
              }
            );

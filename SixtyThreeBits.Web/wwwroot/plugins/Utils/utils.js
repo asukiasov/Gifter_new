@@ -287,17 +287,17 @@ $.fn.extend({
     },
 
     Show: function () {
-        this.removeClass('hidden');
+        this.removeClass('d-none');
     },
     Hide: function () {
-        this.addClass('hidden');
+        this.addClass('d-none');
     },
     Toggle: function () {
-        if (this.hasClass('hidden')) {
-            this.removeClass('hidden');
+        if (this.hasClass('d-none')) {
+            this.removeClass('d-none');
         }
         else {
-            this.addClass('hidden');
+            this.addClass('d-none');
         }
     },
 

@@ -1,0 +1,17 @@
+﻿body{
+    font-family:'63Fonts', 'Roboto', sans-serif;
+    background-color: #f4f4fa;
+}
+
+.text-uppercase{
+    font-family:'63Fonts UP', 'Roboto', sans-serif;
+}
+
+.far,.fas,.fab{
+    font-size: 16px;
+}
+
+.card .card-header{
+    border-bottom:1px solid rgba(0,0,0,.125);    
+    background-color:none !important;
+}

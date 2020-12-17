@@ -8,12 +8,16 @@ using System.Threading.Tasks;
 namespace SixtyThreeBits.Web.Admin.Models
 {
     public class AuthModel : WebProjectModelBase
-    {        
+    {
         #region Methods
-        public LoginPageViewModel GetPageViewModel()
+        public LoginPageViewModel GetPageViewModel(LoginPageViewModel ViewModel = null)
         {
-            var Model = new LoginPageViewModel();        
-            return Model;
+            if (ViewModel == null)
+            {
+                ViewModel = new LoginPageViewModel();
+            }
+            ViewModel.PluginsClient = PluginsClient;
+            return ViewModel;
         }
 
         public bool IsUserLoggedIn()
@@ -25,7 +29,7 @@ namespace SixtyThreeBits.Web.Admin.Models
         public async Task<bool> AuthenticateUser(LoginPageViewModel ViewModel)
         {
             bool IsAuthenticated = false;
-            
+
             var User = await DataAccessFactory.Users.GetSingleUserByEmailAndPassword(ViewModel.Username, ViewModel.Password);
             if (User == null)
             {
@@ -35,7 +39,10 @@ namespace SixtyThreeBits.Web.Admin.Models
             {
                 IsAuthenticated = true;
                 SessionAssistance.Set(Constants.Session.User, User);
-                CookieAssistance.Set(Constants.Cookies.User, User.UserID, DateTime.Now.AddHours(12));
+                if (ViewModel.IsRememberMeChecked)
+                {
+                    CookieAssistance.Set(Constants.Cookies.User, User.UserID, DateTime.Now.AddDays(30));
+                }
             }
 
             return IsAuthenticated;
@@ -44,12 +51,13 @@ namespace SixtyThreeBits.Web.Admin.Models
         public void Logout()
         {
             SessionAssistance.Clear();
+            CookieAssistance.Remove(Constants.Cookies.User);
         }
 
         public async Task ReloginUser()
         {
-            var User = SessionAssistance.Get<User>(Constants.Session.User);
-            User = await DataAccessFactory.Users.GetSingleUserByID(User.UserID);
+            var SessionUser = SessionAssistance.Get<User>(Constants.Session.User);
+            var User = await DataAccessFactory.Users.GetSingleUserByID(SessionUser.UserID);
             if (User != null && User.UserIsActive)
             {
                 SessionAssistance.Set(Constants.Session.User, User);
@@ -59,14 +67,17 @@ namespace SixtyThreeBits.Web.Admin.Models
 
         #region Sub Classes
         public class LoginPageViewModel
-        {            
-            #region Properties            
+        {
+            #region Properties         
+            public PluginsClient PluginsClient { get; set; }
             public string Username { get; set; }
-            public string Password { get; set; }            
-            public string ErrorMessage { get; set; } = Resources.ValidationUserInvalidUsernameOrPassword;
+            public string Password { get; set; }
+            public bool IsRememberMeChecked { get; set; }
             public bool IsLoginFailed { get; set; }
+            public readonly string ErrorMessage = Resources.ValidationUserInvalidUsernameOrPassword;
+            public readonly string ProjectName = Constants.ProjectName;
             #endregion
-        } 
+        }
         #endregion
     }
 }

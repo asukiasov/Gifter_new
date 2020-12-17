@@ -56,16 +56,13 @@ namespace SixtyThreeBits.Web.Reusables.Core
         {
             Model.User = Model.SessionAssistance.Get<User>(Constants.Session.User);
 
-            if (Model.AppSettings.IsDevelopment)
+            if (Model.User == null)
             {
-                if (Model.User == null)
+                var UserID = Model.CookieAssistance.Get<int?>(Constants.Cookies.User);
+                if (UserID != null)
                 {
-                    var UserID = Model.CookieAssistance.Get<int?>(Constants.Cookies.User);
-                    if (UserID != null)
-                    {
-                        Model.User = await Model.DataAccessFactory.Users.GetSingleUserByID(UserID);
-                        Model.SessionAssistance.Set(Constants.Session.User, Model.User);
-                    }
+                    Model.User = await Model.DataAccessFactory.Users.GetSingleUserByID(UserID);
+                    Model.SessionAssistance.Set(Constants.Session.User, Model.User);
                 }
             }
         }

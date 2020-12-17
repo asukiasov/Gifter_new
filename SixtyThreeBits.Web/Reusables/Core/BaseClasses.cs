@@ -439,6 +439,7 @@ namespace SixtyThreeBits.Web.Reusables.Core
             }
             else
             {
+                SuccessErrorPartialViewModel.IsInitialized = true;
                 SuccessErrorPartialViewModel.ShowError = true;
                 SuccessErrorPartialViewModel.Message = Message;
             }

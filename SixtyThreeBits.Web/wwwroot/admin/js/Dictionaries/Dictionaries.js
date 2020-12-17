@@ -2,21 +2,21 @@
     DictionariesTree: null,
     UrlUpdate: null,
 
-    OnDictionariesTreeInit: function (e) {
-        DictionariesModel.DictionariesTree = e.component;
-        Globals.Devexpress.SetGridFullHeight(DictionariesModel.DictionariesTree, e.element[0]);
+    OnDictionariesTreeInit: function (s) {
+        DictionariesModel.DictionariesTree = s.component;
+        Globals.Devexpress.SetGridFullHeight(DictionariesModel.DictionariesTree, s.element[0]);
     },
-    OnDictionariesTreeToolbarPreparing: function (e) {
-        e.toolbarOptions.visible = false;
+    OnDictionariesTreeToolbarPreparing: function (s) {
+        s.toolbarOptions.visible = false;
     },
-    OnDictionariesTreeReorder: function (e) {
+    OnDictionariesTreeReorder: function (s) {
 
-        const DictionaryID = e.itemData.DictionaryID
+        const DictionaryID = s.itemData.DictionaryID
         let DictionaryParentID = Globals.Constants.NullValueFor.Int;
         
-        if (e.dropInsideItem) {
+        if (s.dropInsideItem) {
             visibleRows = DictionariesModel.DictionariesTree.getVisibleRows();
-            const Parent = visibleRows[e.toIndex].data;
+            const Parent = visibleRows[s.toIndex].data;
             DictionaryParentID = Parent.DictionaryID;
         }
 

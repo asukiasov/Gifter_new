@@ -2,25 +2,28 @@
     PermissionsTree: null,
     UrlUpdate: null,
 
-    OnPermissionsTreeInit: function (e) {
-        PermissionsModel.PermissionsTree = e.component;
-        Globals.Devexpress.SetGridFullHeight(PermissionsModel.PermissionsTree, e.element[0]);
+    OnPermissionsTreeInit: function (s) {
+        PermissionsModel.PermissionsTree = s.component;
+        Globals.Devexpress.SetGridFullHeight(PermissionsModel.PermissionsTree, s.element[0]);
     },
-    OnPermissionsTreeToolbarPreparing: function (e) {
-        e.toolbarOptions.visible = false;
-        //const ToolbarItems = e.toolbarOptions.items; 
+    OnPermissionsTreeInitNewRow: function (s) {
+        s.data.PermissionIsMenuItem = false;
+    },
+    OnPermissionsTreeToolbarPreparing: function (s) {
+        s.toolbarOptions.visible = false;
+        //const ToolbarItems = s.toolbarOptions.items; 
         //var AddButton = ToolbarItems[0];  // find the index of add button or loop and find
         //AddButton.visible = false; //hide the item
-        //e.event.toolbarOptions.items = []; // clear the toolbar
+        //s.event.toolbarOptions.items = []; // clear the toolbar
     },
-    OnPermissionsTreeReorder: function (e) {
+    OnPermissionsTreeReorder: function (s) {
 
-        const PermissionID = e.itemData.PermissionID
+        const PermissionID = s.itemData.PermissionID
         let PermissionParentID = Globals.Constants.NullValueFor.Int;
         
-        if (e.dropInsideItem) {
+        if (s.dropInsideItem) {
             visibleRows = PermissionsModel.PermissionsTree.getVisibleRows();
-            const Parent = visibleRows[e.toIndex].data;
+            const Parent = visibleRows[s.toIndex].data;
             PermissionParentID = Parent.PermissionID;
         }
 

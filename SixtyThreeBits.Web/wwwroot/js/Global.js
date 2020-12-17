@@ -42,6 +42,7 @@ const Globals = {
                 Editor.SetChecked(false);
             }
         },
+
         SetGridFullHeight: function (Grid, GridElement, HeightCorrectionInPixels) {
             // Making sure that number is passed, if not HeightCorrectionInPixels will be zero.
             HeightCorrectionInPixels = HeightCorrectionInPixels % 1 === 0 ? HeightCorrectionInPixels : 0;
@@ -54,6 +55,33 @@ const Globals = {
             Grid.option('height', GridHeight);
             
         },
+
+        GetGridSortIndexes: function (e, KeyFieldName) {
+            const Grid = e.component;
+            const FromIndex = e.event.fromIndex;
+            const ToIndex = e.event.toIndex;
+            const IsMovingUp = FromIndex > ToIndex;
+            const Rows = Grid.getVisibleRows();
+
+            var SortIndexes = new Array();
+
+            Rows.forEach(function (Item, Index) {
+                SortIndexes.push({
+                    ID: Item.data[KeyFieldName],
+                    SortIndex: Index
+                });
+            });
+
+            const Step = IsMovingUp ? 1 : - 1;
+            SortIndexes[ToIndex].SortIndex += Step;
+            let i = ToIndex + Step;
+            while (i != FromIndex) {
+                SortIndexes[i].SortIndex += Step;
+                i += Step;
+            }
+            SortIndexes[FromIndex].SortIndex = ToIndex;
+            return SortIndexes;
+        }
     },
     Common: {
         ProcessSelect2AjaxResultFromSimpleKeyValue: function (Result) {

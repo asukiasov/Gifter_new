@@ -72,7 +72,7 @@ namespace SixtyThreeBits.Web.Admin.Controllers
                 }
                 else
                 {
-                    Result = Ok();
+                    Result = GetDevexpressSuccessResult();
                 }
             }
 

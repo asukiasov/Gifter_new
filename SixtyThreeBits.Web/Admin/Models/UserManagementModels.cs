@@ -41,7 +41,7 @@ namespace SixtyThreeBits.Web.Admin.Models
                 UserLastname = Item.UserLastname,
                 UserEmail = Item.UserEmail,
                 UserRoleID = Item.UserRoleID,
-                IsActive = Item.UserIsActive
+                UserIsActive = Item.UserIsActive
             }).ToList();
             return Users;
         }
@@ -75,7 +75,7 @@ namespace SixtyThreeBits.Web.Admin.Models
                 UserFirstname: SubmitModel.UserFirstname,
                 UserLastname: SubmitModel.UserLastname,
                 UserRoleID: SubmitModel.UserRoleID,
-                UserIsActive: SubmitModel.IsActive
+                UserIsActive: SubmitModel.UserIsActive
             );
 
             if (DataAccessFactory.Users.IsError)
@@ -112,8 +112,8 @@ namespace SixtyThreeBits.Web.Admin.Models
                         Options.Mode(GridScrollingMode.Standard);
                         Options.ShowScrollbar(ShowScrollbarMode.Always);
                     })
-                    .OnInitialized("function(s){ UsersModel.OnUsersGridInit(s); }")
-                    .OnInitNewRow($"function(s){{ s.data.{nameof(GridItem.IsActive)} = false; }}")
+                    .OnInitialized("UsersModel.OnUsersGridInit")
+                    .OnInitNewRow("UsersModel.OnUsersGridInitNewRow")
                     .Columns(Columns =>
                     {                        
                         Columns.AddFor(m => m.UserFirstname).Caption("Firstname").Width(150).ValidationRules(Options =>
@@ -131,7 +131,7 @@ namespace SixtyThreeBits.Web.Admin.Models
                         var UserRoleIDColumn = Columns.AddFor(m => m.UserRoleID).Caption("Role").Width(150);
                         InitLookupColumn(Column: UserRoleIDColumn, Data: Roles);
 
-                        var IsActiveColumn = Columns.AddFor(m => m.IsActive).Caption("Active").Width(80);
+                        var IsActiveColumn = Columns.AddFor(m => m.UserIsActive).Caption("Active").Width(80);
                         InitCheckboxColumn(IsActiveColumn);
                         
                         Columns.Add();
@@ -152,7 +152,7 @@ namespace SixtyThreeBits.Web.Admin.Models
                     public string UserEmail { get; set; }
                     public string UserPassword { get; set; }
                     public int? UserRoleID { get; set; }
-                    public bool IsActive { get; set; }
+                    public bool? UserIsActive { get; set; }
                     #endregion
                 }
                 #endregion
@@ -227,7 +227,7 @@ namespace SixtyThreeBits.Web.Admin.Models
 
                     Grid
                     .ID("RolesGrid")                    
-                    .OnInitialized("function(s){ RolesModel.OnRolesGridInit(s); }")                    
+                    .OnInitialized("RolesModel.OnRolesGridInit")                    
                     .Columns(Columns =>
                     {
                         Columns.AddFor(m => m.RoleName).Caption("Role").Width(150).ValidationRules(Options =>
@@ -346,9 +346,9 @@ namespace SixtyThreeBits.Web.Admin.Models
 
                     Tree
                     .ID("PermissionsTree")
-                    .OnInitialized("function(e){ PermissionsModel.OnPermissionsTreeInit(e); }")
-                    .OnInitNewRow($"function(e){{ e.data.{nameof(TreeItem.PermissionIsMenuItem)} = false; }}")        
-                    .OnToolbarPreparing("function(e) { PermissionsModel.OnPermissionsTreeToolbarPreparing(e); }")
+                    .OnInitialized("PermissionsModel.OnPermissionsTreeInit")
+                    .OnInitNewRow("PermissionsModel.OnPermissionsTreeInitNewRow")        
+                    .OnToolbarPreparing("PermissionsModel.OnPermissionsTreeToolbarPreparing")
                     .RowDragging(Options =>
                     {
                         if (AllowUpdate)
@@ -356,7 +356,7 @@ namespace SixtyThreeBits.Web.Admin.Models
                             Options.AllowDropInsideItem(true);
                             Options.AllowReordering(false);
                             Options.ShowDragIcons(true);
-                            Options.OnReorder("function(e){ PermissionsModel.OnPermissionsTreeReorder(e); }");
+                            Options.OnReorder("PermissionsModel.OnPermissionsTreeReorder");
                         }
                     })
                     .AutoExpandAll(false)

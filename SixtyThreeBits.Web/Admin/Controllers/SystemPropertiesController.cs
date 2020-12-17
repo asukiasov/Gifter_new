@@ -28,6 +28,7 @@ namespace SixtyThreeBits.Web.Admin.Controllers
         [Route("")]
         public async Task<IActionResult> UpdateSystemProperies(SystemPropertiesModel.PageViewModel SubmitModel)
         {
+            Model.PluginsClient.Enable63BitsForms(true);
             var ViewModel = await Model.UpdateSystemProperties(SubmitModel);
             if (ViewModel.IsSaved)
             {

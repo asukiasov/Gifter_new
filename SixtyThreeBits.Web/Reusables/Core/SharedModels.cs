@@ -317,202 +317,176 @@ namespace SixtyThreeBits.Web.Reusables.Core
     public class PluginsClient
     {
         #region Properties
-        bool _Is63BitsFormsEnabled;
-        bool _Is63BitsComponentsEnabled;
-        bool _Is63BitsFontsEnabled;
-        bool _IsAngleEnabled;
-        bool _IsBootstrapEnabled;        
-        bool _IsDevextremeEnabled;
-        bool _IsGoogleFontsEnabled;
-        bool _IsFancyboxEnabled;
-        bool _IsFontAwesomeEnabled;
-        bool _IsJQueryEnabled;
-        bool _IsJQueryUIJsEnabled;
-        bool _IsJQueryUICssEnabled;
-        bool _IsJQueryConfirmEnabled;
-        bool _IsJQueryNestedSortableEnabled;
-        bool _IsJsClientEnabled;
-        bool _IsJsZipEnabled;
-        bool _IsPageBuilderEnabled;
-        bool _IsPageBuilderEditorEnabled;
-        bool _IsPreloaderEnabled;
-        bool _IsSelect2Enabled;
-        bool _IsSlickSliderEnabled;
-        bool _IsSuccessErrorMessageEnabled;
-        bool _IsTemplate7Enabled;
-        bool _IsTinyMceEnabled;
-        bool _IsUtilsEnabled;
-
-        public bool Is63BitsFormsEnabled => _Is63BitsFormsEnabled;
-        public bool Is63BitsComponentsEnabled => _Is63BitsComponentsEnabled;
-        public bool Is63BitsFontsEnabled => _Is63BitsFontsEnabled;
-        public bool IsAngleEnabled => _IsAngleEnabled;
-        public bool IsBootstrapEnabled => _IsBootstrapEnabled;        
-        public bool IsDevextremeEnabled => _IsDevextremeEnabled;
-        public bool IsGoogleFontsEnabled => _IsGoogleFontsEnabled;
-        public bool IsFancyboxEnabled => _IsFancyboxEnabled;
-        public bool IsFontAwesomeEnabled => _IsFontAwesomeEnabled;
-        public bool IsJQueryEnabled => _IsJQueryEnabled;
-        public bool IsJQueryConfirmEnabled => _IsJQueryConfirmEnabled;
-        public bool IsJQueryNestedSortableEnabled => _IsJQueryNestedSortableEnabled;
-        public bool IsJQueryUICssEnabled => _IsJQueryUICssEnabled;
-        public bool IsJQueryUIJsEnabled => _IsJQueryUIJsEnabled;
-        public bool IsJsClientEnabled => _IsJsClientEnabled;
-        public bool IsJsZipEnabled => _IsJsZipEnabled;
-        public bool IsPageBuilderEnabled => _IsPageBuilderEnabled;
-        public bool IsPageBuilderEditorEnabled => _IsPageBuilderEditorEnabled;
-        public bool IsPreloaderEnabled => _IsPreloaderEnabled;        
-        public bool IsSelect2Enabled => _IsSelect2Enabled;
-        public bool IsSlickSliderEnabled => _IsSelect2Enabled;        
-        public bool IsSuccessErrorMessageEnabled => _IsSuccessErrorMessageEnabled;
-        public bool IsTemplate7Enabled => _IsTemplate7Enabled;
-        public bool IsTinyMceEnabled => _IsTinyMceEnabled;        
-        public bool IsUtilsEnabled => _IsUtilsEnabled;
+        public bool Is63BitsFormsEnabled { get; private set; }
+        public bool Is63BitsComponentsEnabled { get; private set; }
+        public bool Is63BitsFontsEnabled { get; private set; }
+        public bool IsAngleEnabled { get; private set; }
+        public bool IsBootstrapEnabled { get; private set; }
+        public bool IsDevextremeEnabled { get; private set; }
+        public bool IsGoogleFontsEnabled { get; private set; }
+        public bool IsFancyboxEnabled { get; private set; }
+        public bool IsFontAwesomeEnabled { get; private set; }
+        public bool IsJQueryEnabled { get; private set; }
+        public bool IsJQueryConfirmEnabled { get; private set; }
+        public bool IsJQueryNestedSortableEnabled { get; private set; }
+        public bool IsJQueryUICssEnabled { get; private set; }
+        public bool IsJQueryUIJsEnabled { get; private set; }
+        public bool IsJsClientEnabled { get; private set; }
+        public bool IsJsZipEnabled { get; private set; }        
+        public bool IsPageBuilderEnabled { get; private set; }
+        public bool IsPageBuilderEditorEnabled { get; private set; }
+        public bool IsPreloaderEnabled { get; private set; }
+        public bool IsSelect2Enabled { get; private set; }
+        public bool IsSlickSliderEnabled { get; private set; }
+        public bool IsSuccessErrorMessageEnabled { get; private set; }
+        public bool IsTemplate7Enabled { get; private set; }
+        public bool IsTinyMceEnabled { get; private set; }
+        public bool IsUtilsEnabled { get; private set; }
         #endregion
 
         #region Methods
         public PluginsClient Enable63BitsForms(bool Value)
         {
-            _Is63BitsFormsEnabled = Value;
+            Is63BitsFormsEnabled = Value;
             return this;
         }
 
         public PluginsClient Enable63BitsComponents(bool Value)
         {
-            _Is63BitsComponentsEnabled = Value;
+            Is63BitsComponentsEnabled = Value;
             return this;
         }
 
         public PluginsClient Enable63BitsFonts(bool Value)
         {
-            _Is63BitsFontsEnabled = Value;
+            Is63BitsFontsEnabled = Value;
             return this;
         }
 
         public PluginsClient EnableAngle(bool Value)
         {
-            _IsAngleEnabled = Value;
+            IsAngleEnabled = Value;
             return this;
         }
 
         public PluginsClient EnableBootstrap(bool Value)
         {
-            _IsBootstrapEnabled = Value;
+            IsBootstrapEnabled = Value;
             return this;
-        }        
+        }
 
         public PluginsClient EnableDevextreme(bool Value)
         {
-            _IsDevextremeEnabled = Value;
+            IsDevextremeEnabled = Value;
             return this;
         }
 
         public PluginsClient EnableFancybox(bool Value)
         {
-            _IsFancyboxEnabled = Value;
+            IsFancyboxEnabled = Value;
             return this;
         }
 
         public PluginsClient EnableGoogleFonts(bool Value)
         {
-            _IsGoogleFontsEnabled = Value;
+            IsGoogleFontsEnabled = Value;
             return this;
         }
 
         public PluginsClient EnableFontAwesome(bool Value)
         {
-            _IsFontAwesomeEnabled = Value;
+            IsFontAwesomeEnabled = Value;
             return this;
         }
 
         public PluginsClient EnableJQuery(bool Value)
         {
-            _IsJQueryEnabled = Value;
+            IsJQueryEnabled = Value;
             return this;
         }
 
         public PluginsClient EnableJQueryUI(bool EnableJs, bool EnableCss)
         {
-            _IsJQueryUIJsEnabled = EnableJs;
-            _IsJQueryUICssEnabled = EnableCss;
+            IsJQueryUIJsEnabled = EnableJs;
+            IsJQueryUICssEnabled = EnableCss;
             return this;
         }
 
         public PluginsClient EnableJQueryConfirm(bool Value)
         {
-            _IsJQueryConfirmEnabled = Value;
+            IsJQueryConfirmEnabled = Value;
             return this;
         }
 
         public PluginsClient EnableJQueryNestedSortable(bool Value)
         {
-            _IsJQueryNestedSortableEnabled = Value;
+            IsJQueryNestedSortableEnabled = Value;
             return this;
         }
 
         public PluginsClient EnableJsClient(bool Value)
         {
-            _IsJsClientEnabled = Value;
+            IsJsClientEnabled = Value;
             return this;
         }
 
         public PluginsClient EnableJsZip(bool Value)
         {
-            _IsJsZipEnabled = Value;
+            IsJsZipEnabled = Value;
             return this;
         }
-
+        
         public PluginsClient EnablePageBuilder(bool Value)
         {
-            _IsPageBuilderEnabled = Value;
+            IsPageBuilderEnabled = Value;
             return this;
         }
 
         public PluginsClient EnablePageBuilderEditor(bool Value)
         {
-            _IsPageBuilderEditorEnabled = Value;
+            IsPageBuilderEditorEnabled = Value;
             return this;
         }
 
         public PluginsClient EnablePreloader(bool Value)
         {
-            _IsPreloaderEnabled = Value;
+            IsPreloaderEnabled = Value;
             return this;
         }
 
         public PluginsClient EnableSelect2(bool Value)
         {
-            _IsSelect2Enabled = Value;
+            IsSelect2Enabled = Value;
             return this;
         }
 
         public PluginsClient EnableSlickSlider(bool Value)
         {
-            _IsSlickSliderEnabled = Value;
+            IsSlickSliderEnabled = Value;
             return this;
         }
 
         public PluginsClient EnableSuccessErrorMessage(bool Value)
         {
-            _IsSuccessErrorMessageEnabled = Value;
+            IsSuccessErrorMessageEnabled = Value;
             return this;
         }
 
         public PluginsClient EnableTemplate7(bool Value)
         {
-            _IsTemplate7Enabled = Value;
+            IsTemplate7Enabled = Value;
             return this;
         }
 
         public PluginsClient EnableTinyMce(bool Value)
         {
-            _IsTinyMceEnabled = Value;
+            IsTinyMceEnabled = Value;
             return this;
         }
 
         public PluginsClient EnableUtils(bool Value)
         {
-            _IsUtilsEnabled = Value;
+            IsUtilsEnabled = Value;
             return this;
         }
         #endregion
