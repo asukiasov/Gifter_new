@@ -17,14 +17,14 @@ using System.Threading.Tasks;
 
 namespace SixtyThreeBits.Web.Admin.Models
 {
-    public class BlogGridModel : WebProjectModelBase
+    public class BlogModel : WebProjectModelBase
     {
 
         #region Methods
         public PageViewModel GetPageViewModel()
         {
             var ViewModel = new PageViewModel();
-            ViewModel.ShowAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.Blog.Grid);
+            ViewModel.ShowAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.Blog.GridAdd);
 
             ViewModel.Grid = new PageViewModel.GridModel();
             ViewModel.Grid.AllowAdd = User.HasPermission(ControllerActionRouteNames.Admin.Blog.GridAdd);
@@ -72,6 +72,8 @@ namespace SixtyThreeBits.Web.Admin.Models
             }
         }
         #endregion
+
+        #region Sub Classes
         public class PageViewModel
         {
             #region Properties
@@ -89,7 +91,7 @@ namespace SixtyThreeBits.Web.Admin.Models
 
                     Grid
                     .ID("BlogGrid")
-                    .OnInitialized("function(s){ BlogModel.OnBlogGridInit(s); }")
+                    .OnInitialized("BlogModel.OnBlogGridInit")
                     .Columns(Columns =>
                     {
                         Columns.AddFor(m => m.BlogTitle).Caption("Title").Width(400).ValidationRules(Options =>
@@ -123,6 +125,7 @@ namespace SixtyThreeBits.Web.Admin.Models
             }
             #endregion
         }
+        #endregion
     }
 
     public class BlogModelBase : WebProjectModelBase
@@ -132,7 +135,7 @@ namespace SixtyThreeBits.Web.Admin.Models
         #endregion
     }
 
-    public class BlogModel : BlogModelBase
+    public class BlogPropertiesModel : BlogModelBase
     {
         #region Methods
         public BlogPropertiesViewModel GetBlogPropertiesViewModel(BlogPropertiesViewModel ViewModel)

@@ -110,7 +110,8 @@
                     ],
 
                     table_class_list: [
-                        { title: 'None', value: '' },
+                        { title: 'None', value: 'table-default' },
+                        { title: 'Borderless', value: 'table-borderless' },
                         { title: 'Plain', value: 'table-plain' },
                         { title: 'Striped', value: 'table-striped' },
                         { title: 'Light', value: 'table-light' },

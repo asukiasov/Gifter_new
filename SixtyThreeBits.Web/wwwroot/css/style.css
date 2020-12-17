@@ -499,6 +499,15 @@ button.link{
     border: 0;
     border-top: 1px solid #dee2e6;
 }
+
+.text-wrap .table-borderless,
+.text-wrap .table-borderless thead,
+.text-wrap .table-borderless tbody,
+.text-wrap .table-borderless tr,
+.text-wrap .table-borderless th,
+.text-wrap .table-borderless td{
+    border: 0;
+}
 /* ---------- /title,text ---------- */
 
 

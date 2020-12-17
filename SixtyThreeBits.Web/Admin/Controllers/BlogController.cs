@@ -12,12 +12,12 @@ using SixtyThreeBits.Web.Reusables.Core;
 namespace SixtyThreeBits.Web.Admin.Controllers
 {
     [Route("admin/blog")]
-    public class BlogController : AdminControllerBase<BlogGridModel>
+    public class BlogController : AdminControllerBase<BlogModel>
     {
         #region Constructors
         public BlogController()
         {
-            Model = new BlogGridModel();
+            Model = new BlogModel();
         }
         #endregion
 
@@ -41,7 +41,7 @@ namespace SixtyThreeBits.Web.Admin.Controllers
         [Route("grid/add", Name = ControllerActionRouteNames.Admin.Blog.GridAdd)]
         public async Task<ActionResult> BlogGridAdd(int? key, string values)
         {
-            var SubmitModel = values.FromJsonTo<BlogGridModel.PageViewModel.GridModel.GridItem>() ?? new BlogGridModel.PageViewModel.GridModel.GridItem();
+            var SubmitModel = values.FromJsonTo<BlogModel.PageViewModel.GridModel.GridItem>() ?? new BlogModel.PageViewModel.GridModel.GridItem();
             await Model.CRUD(DatabaseAction: Enums.DatabaseActions.CREATE, BlogID: key, SubmitModel: SubmitModel);
             if (Model.Form.HasErrors)
             {
@@ -57,7 +57,7 @@ namespace SixtyThreeBits.Web.Admin.Controllers
         [Route("grid/update", Name = ControllerActionRouteNames.Admin.Blog.GridUpdate)]
         public async Task<ActionResult> BlogGridUpdate(int? key, string values)
         {
-            var SubmitModel = values.FromJsonTo<BlogGridModel.PageViewModel.GridModel.GridItem>() ?? new BlogGridModel.PageViewModel.GridModel.GridItem();
+            var SubmitModel = values.FromJsonTo<BlogModel.PageViewModel.GridModel.GridItem>() ?? new BlogModel.PageViewModel.GridModel.GridItem();
             await Model.CRUD(DatabaseAction: Enums.DatabaseActions.UPDATE, BlogID: key, SubmitModel: SubmitModel);
             if (Model.Form.HasErrors)
             {
@@ -73,7 +73,7 @@ namespace SixtyThreeBits.Web.Admin.Controllers
         [Route("grid/delete", Name = ControllerActionRouteNames.Admin.Blog.GridDelete)]
         public async Task<ActionResult> BlogGridDelete(int? key)
         {
-            await Model.CRUD(DatabaseAction: Enums.DatabaseActions.DELETE, BlogID: key, SubmitModel: new BlogGridModel.PageViewModel.GridModel.GridItem());
+            await Model.CRUD(DatabaseAction: Enums.DatabaseActions.DELETE, BlogID: key, SubmitModel: new BlogModel.PageViewModel.GridModel.GridItem());
             if (Model.Form.HasErrors)
             {
                 return GetDevexpressErrorResult(Model.Form.ErrorMessage);
@@ -87,12 +87,12 @@ namespace SixtyThreeBits.Web.Admin.Controllers
     }
     [Route("admin/blog/{BlogID:int}")]
     [TypeFilter(typeof(BeforeBlogPageLoad), Order = 2)]
-    public class BlogPropertiesController : AdminControllerBase<BlogModel>
+    public class BlogPropertiesController : AdminControllerBase<BlogPropertiesModel>
         {
         #region Constructors
         public BlogPropertiesController()
         {
-            Model = new BlogModel();
+            Model = new BlogPropertiesModel();
         }
         #endregion
 
@@ -110,7 +110,7 @@ namespace SixtyThreeBits.Web.Admin.Controllers
 
         [HttpPost]
         [Route("properties")]
-        public async Task<IActionResult> Properties(BlogModel.BlogPropertiesViewModel SubmitModel)
+        public async Task<IActionResult> Properties(BlogPropertiesModel.BlogPropertiesViewModel SubmitModel)
         {
             Model.PluginsClient.Enable63BitsForms(true).EnableFancybox(true).EnableDevextreme(true).EnableTinyMce(true);
             var ViewModel = Model.GetBlogPropertiesViewModel(ViewModel: SubmitModel);
