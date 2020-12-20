@@ -1,0 +1,81 @@
+﻿@model NewsPropertiesModel.NewsPropertiesViewModel
+<div class="actions-row">
+    <button type="submit" class="btn btn-circle btn-primary js-save-button" form="NewsDetailsForm"><i class="fas fa-save"></i></button>
+</div>
+<div class="card">
+    <div class="card-body">
+        <form id="NewsDetailsForm" method="post" enctype="multipart/form-data">
+            <div class="row">
+                <div class="form-group col-lg-6">
+                    <label>Blog Title</label>
+                    <input type="text" name="@nameof(Model.NewsTitle)" class="form-control" value="@Model.NewsTitle" />
+                    <p class="help-block">
+                        <span class="error-text"></span>
+                    </p>
+                </div>
+                <div class="form-group col-lg-6">
+                    <label>Blog Slug</label>
+                    <input type="text" name="@nameof(Model.NewsSlug)" class="form-control js-slug-textbox" value="@Model.NewsSlug" />
+                    <p class="help-block">
+                        <span class="error-text"></span>
+                    </p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-lg-6">
+                    <label>Blog Date</label>
+                    @(Html.DevExtreme().DateBox()
+                        .ElementAttr("class", "form-control")
+                        .Name(nameof(Model.NewsDatePublished))
+                        .Value(Model.NewsDatePublished)
+                        .Type(DateBoxType.Date)
+                        .DisplayFormat(Constants.Formats.Date)
+                        .Height(34))
+                    <p class="help-block">
+                        <span class="error-text"></span>
+                    </p>
+                </div>
+                <div class="form-group col-lg-6">
+                    <label>Upload Image</label>
+                    <div class="input-group custom-file-group js-custom-file-upload">
+                        <div class="form-control">
+                            <a class="js-attachment js-image-attachment" href="@Html.Raw(Model.NewsImageHttpPath)">@Html.Raw(Model.NewsImageFilename)</a>
+                            <span class="js-new-attachment hidden"></span>
+                        </div>
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-warning hidden js-clear-button"><i class="fa fa-times"></i></button>
+                            @if (Model.HasNewsImage)
+                            {
+                                <button type="button" data-url="@Html.Raw(Model.UrlDeleteImage)" data-text-confirm="@Html.Raw(Model.TextConfirmDelete)" class="btn btn-danger js-delete-button"><i class="fas fa-trash-alt"></i></button>
+                            }
+                            <span class="btn btn-default custom-file-upload">
+                                <i class="fas fa-folder-open"></i>
+                                <input type="file" name="PostedFile" accept="" />
+                            </span>
+                        </span>
+                    </div>
+                    <span class="help-block"></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-lg-12">
+                    <label>Blog Text</label>
+                    <textarea name="@nameof(Model.NewsText)" class="form-control js-apply-tinymce">@Html.Raw(Model.NewsText)</textarea>
+                </div>
+
+            </div>
+        </form>
+
+    </div>
+</div>
+@section FooterSection{
+    <script src="~/admin/js/News/NewsItem.js"></script>
+    @if (Model.HasErrors)
+    {
+        <script>
+        $(function(){
+            Validation.Init({ErrorsJson:@Html.Raw(Model.ErrorsJson)}).ShowErrors();
+        });
+        </script>
+    }
+}

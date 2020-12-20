@@ -86,4 +86,65 @@ namespace SixtyThreeBits.Web.Admin.Controllers
 
     }
 
+    [Route("admin/news/{NewsID:int}")]
+    [TypeFilter(typeof(BeforeNewsPageLoad), Order = 2)]
+    public class NewsPropertiesController : AdminControllerBase<NewsPropertiesModel>
+    {
+        #region Constructors
+        public NewsPropertiesController()
+        {
+            Model = new NewsPropertiesModel();
+        }
+        #endregion
+
+        #region News Properties
+        [HttpGet]
+        [Route("properties", Name = ControllerActionRouteNames.Admin.News.NewsItem)]
+        public IActionResult Properties()
+        {
+            Model.PluginsClient.Enable63BitsForms(true).EnableFancybox(true).EnableDevextreme(true).EnableTinyMce(true);
+            var ViewModel = Model.GetNewsPropertiesViewModel(ViewModel: null);
+            Model.PageTitle.Set(Model.DBItemNews.NewsTitle);
+            Model.Breadcrumbs.RenameLastItem(Model.DBItemNews.NewsTitle);
+            return View(ViewNames.Admin.News.NewsItem, ViewModel);
+        }
+
+        [HttpPost]
+        [Route("properties")]
+        public async Task<IActionResult> Properties(NewsPropertiesModel.NewsPropertiesViewModel SubmitModel)
+        {
+            Model.PluginsClient.Enable63BitsForms(true).EnableFancybox(true).EnableDevextreme(true).EnableTinyMce(true);
+            var ViewModel = Model.GetNewsPropertiesViewModel(ViewModel: SubmitModel);
+
+            Model.PageTitle.Set(Model.DBItemNews.NewsTitle);
+            Model.Breadcrumbs.RenameLastItem(Model.DBItemNews.NewsTitle);
+
+            Model.ValidateNewsPropertiesViewModel(ViewModel);
+            if (ViewModel.IsValid)
+            {
+                var IsSaved = await Model.SaveNewsProperties(ViewModel);
+                if (IsSaved)
+                {
+                    Model.ShowSuccess();
+                    return Redirect(Url.RouteUrl(ControllerActionRouteNames.Admin.News.NewsItem, new { NewsID = Model.DBItemNews.NewsID }));
+                }
+                else
+                {
+                    Model.ShowError();
+                }
+            }
+
+            return View(ViewNames.Admin.News.NewsItem, ViewModel);
+        }
+
+        [HttpPost]
+        [Route("properties/delete-image", Name = ControllerActionRouteNames.Admin.News.NewsItemDeleteImage)]
+        public async Task<IActionResult> NewsItemDeleteImage(int? NewsID)
+        {
+            var Result = await Model.DeleteImage(NewsID);
+            return Json(Result);
+        }
+        #endregion
+    }
+
 }

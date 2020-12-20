@@ -3,6 +3,9 @@
     OnNewsGridInit: function (s) {
         NewsModel.NewsGrid = s.component;
         Globals.Devexpress.SetGridFullHeight(NewsModel.NewsGrid, s.element[0]);
+    },
+    GetDetailsButtonColumnCellHtml: function (Element, CellInfo) {
+        Element.append('<a href=\"' + CellInfo.data.UrlNewsProperties + '\"><i class=\"fas fa-info-circle\"></i> Detalis </a>')
     }
 };
 

@@ -45,6 +45,7 @@ namespace SixtyThreeBits.Web.Admin.Models
                 NewsID = Item.NewsID,
                 NewsTitle = Item.NewsTitle,
                 NewsDatePublished = Item.NewsDatePublished,
+                UrlNewsProperties = Url.RouteUrl(ControllerActionRouteNames.Admin.News.NewsItem, new { NewsID = Item.NewsID })
             }).ToList();
             return ViewModel;
         }
@@ -97,6 +98,7 @@ namespace SixtyThreeBits.Web.Admin.Models
                         });
                         var ColumnNewsDatePublished = Columns.AddFor(m => m.NewsDatePublished).Caption("Publish Date").DataType(GridColumnDataType.Date).Width(150);
                         InitDateColumn(ColumnNewsDatePublished);
+                        Columns.Add().Width(100).Caption(" ").CellTemplate(new JS("NewsModel.GetDetailsButtonColumnCellHtml"));
                         Columns.Add();
                     });
 
@@ -111,6 +113,7 @@ namespace SixtyThreeBits.Web.Admin.Models
                     public int? NewsID { get; set; }
                     public string NewsTitle { get; set; }
                     public DateTime? NewsDatePublished { get; set; }
+                    public string UrlNewsProperties { get; set; }
                     #endregion
                 }
                 #endregion
@@ -119,4 +122,115 @@ namespace SixtyThreeBits.Web.Admin.Models
         }
         #endregion
     }
+
+    public class NewsModelBase : WebProjectModelBase
+    {
+        #region Properties
+        public News DBItemNews { get; set; }
+        #endregion
+    }
+
+    public class NewsPropertiesModel : NewsModelBase
+    {
+        #region Methods
+        public NewsPropertiesViewModel GetNewsPropertiesViewModel(NewsPropertiesViewModel ViewModel)
+        {
+            if (ViewModel == null)
+            {
+                ViewModel = new NewsPropertiesViewModel();
+                ViewModel.NewsSlug = DBItemNews.NewsSlug;
+                ViewModel.NewsTitle = DBItemNews.NewsTitle;
+                ViewModel.NewsText = DBItemNews.NewsText;
+                ViewModel.NewsDatePublished = DBItemNews.NewsDatePublished;
+            }
+
+            ViewModel.NewsImageFilename = DBItemNews.NewsImageFilename;
+            ViewModel.NewsImageHttpPath = DBItemNews.NewsImageFilenameHttpPath;
+            ViewModel.UrlDeleteImage = Url.RouteUrl(ControllerActionRouteNames.Admin.News.NewsItemDeleteImage, new { NewsID = DBItemNews.NewsID });
+
+            return ViewModel;
+        }
+
+        public void ValidateNewsPropertiesViewModel(NewsPropertiesViewModel ViewModel)
+        {
+            ViewModel.Errors = new List<SimpleKeyValue<string, string>>
+            {
+                Validation.ValidateRequired(ErrorKey:$"[name=\"{nameof(ViewModel.NewsTitle)}\"]", ValueToValidate:ViewModel.NewsTitle),
+                Validation.ValidateRequired(ErrorKey:$"[name=\"{nameof(ViewModel.NewsSlug)}\"]", ValueToValidate:ViewModel.NewsSlug),
+                //here should be validation if news slug is unique or not
+            };
+            ViewModel.Errors.RemoveAll(Item => Item == null);
+        }
+
+        public async Task<bool> SaveNewsProperties(NewsPropertiesViewModel ViewModel)
+        {
+            var HasNewsImage = ViewModel.PostedFile?.Length > 0;
+            var NewsImageFilename = HasNewsImage ? GetFilenameFromUploadedFile(ViewModel.PostedFile) : null;
+            if (HasNewsImage)
+            {
+                Utilities.DeleteUploadedFile(DBItemNews.NewsImageFilename, DBItemNews.FolderPhysicalPath);
+            }
+
+            await DataAccessFactory.News.NewsIUD(
+                DatabaseAction: Enums.DatabaseActions.UPDATE,
+                NewsID: DBItemNews.NewsID,
+                NewsSlug: ViewModel.NewsSlug,
+                NewsTitle: ViewModel.NewsTitle,
+                NewsText: ViewModel.NewsText,
+                NewsImageFilename: NewsImageFilename,
+                NewsDatePublished: ViewModel.NewsDatePublished
+            );
+
+            if (!DataAccessFactory.News.IsError)
+            {
+                ViewModel.IsSaved = true;
+                if (HasNewsImage)
+                {
+                    await SaveUploadedFile(PostedFile: ViewModel.PostedFile, Filename: NewsImageFilename, FolderPhysicalPath: DBItemNews.FolderPhysicalPath);
+                }
+            }
+
+            return ViewModel.IsSaved;
+        }
+
+        public async Task<AjaxResponse> DeleteImage(int? NewsID)
+        {
+            var NewsItem = await DataAccessFactory.News.GetSingleNewsByID(NewsID);
+            Utilities.DeleteUploadedFile(NewsItem.NewsImageFilename);
+
+            var AR = new AjaxResponse();
+            var DAL = DataAccessFactory.News;
+            await DAL.NewsIUD(
+                DatabaseAction: Enums.DatabaseActions.UPDATE,
+                NewsID: NewsID,
+                NewsImageFilename: Constants.NullValueFor.String
+                );
+
+            AR.IsSuccess = !DAL.IsError;
+
+            return AR;
+        }
+
+        #endregion
+
+        #region Sub Classes
+        public class NewsPropertiesViewModel : FormViewModelBase
+        {
+
+            #region Properties             
+            public string NewsSlug { get; set; }
+            public string NewsTitle { get; set; }
+            public string NewsText { get; set; }
+            public DateTime? NewsDatePublished { get; set; }
+            public string NewsImageFilename { get; set; }
+            public string NewsImageHttpPath { get; set; }
+            public bool HasNewsImage => !string.IsNullOrWhiteSpace(NewsImageFilename);
+            public IFormFile PostedFile { get; set; }
+            public string UrlDeleteImage { get; set; }
+            public readonly string TextConfirmDelete = Resources.TextConfirmDelete;
+            #endregion
+        }
+        #endregion
+    }
+
 }
