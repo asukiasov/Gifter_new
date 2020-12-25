@@ -18,7 +18,7 @@ namespace SixtyThreeBits.Core.Modules
 
         public async Task<List<DBCoreDataContext.RolesListResultItem>> ListRoles()
         {
-            return await TryToReturnStatic($"{nameof(ListRoles)}()", async () =>
+            return await TryToReturnAsyncTask($"{nameof(ListRoles)}()", async () =>
             {
                 using (var db = ConnectionFactory.GetDBCoreDataContext())
                 {
@@ -41,7 +41,7 @@ namespace SixtyThreeBits.Core.Modules
 
         public async Task<int?> RolesIUD(Enums.DatabaseActions DatabaseAction, int? RoleID = null, string RoleName = null, int? RoleCode = null)
         {
-            return await TryToReturnStaticAsyncTask($"{nameof(RolesIUD)}({nameof(DatabaseAction)} = {DatabaseAction}, {nameof(RoleID)} = {RoleID}, {nameof(RoleName)} = {RoleName}, {nameof(RoleCode)} = {RoleCode})", async () =>
+            return await TryToReturnAsyncTask($"{nameof(RolesIUD)}({nameof(DatabaseAction)} = {DatabaseAction}, {nameof(RoleID)} = {RoleID}, {nameof(RoleName)} = {RoleName}, {nameof(RoleCode)} = {RoleCode})", async () =>
             {
                 using (var db = ConnectionFactory.GetDBCoreDataContext())
                 {

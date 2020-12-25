@@ -55,16 +55,16 @@ namespace SixtyThreeBits.Core.Modules
             });
         }
 
-        public async Task<List<SimpleKeyValue<int?, string>>> ListDictionariesAsSimpleKeyValue(int? DictionaryCode, int? SelectedValue = null)
+        public async Task<List<SimpleKeyValue<int?, string>>> ListDictionariesAsSimpleKeyValue(int? DictionaryCode, int? SelectedValue = null, bool DictionaryCodeAsKey = false)
         {
-            return await TryToReturnAsyncTask($"{nameof(ListDictionariesAsSimpleKeyValue)}({nameof(DictionaryCode)} = {DictionaryCode})", async () =>
+            return await TryToReturnAsyncTask($"{nameof(ListDictionariesAsSimpleKeyValue)}({nameof(DictionaryCode)} = {DictionaryCode}, {nameof(DictionaryCodeAsKey)} = {DictionaryCodeAsKey})", async () =>
             {
                 using (var db = ConnectionFactory.GetDBCoreDataContext())
                 {
                     var Result = await ListDictionaries(DictionaryLevel: 1, DictionaryCode: DictionaryCode, DictionaryIsVisible: null);
                     return Result?.Select(Item => new SimpleKeyValue<int?, string>
                     {
-                        Key = Item.DictionaryID,
+                        Key = DictionaryCodeAsKey ? Item.DictionaryCode : Item.DictionaryID,
                         Value = Item.DictionaryCaption,
                         IsSelected = Item.DictionaryID == SelectedValue
                     }).ToList();

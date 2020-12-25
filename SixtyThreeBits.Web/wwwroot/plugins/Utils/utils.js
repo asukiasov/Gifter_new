@@ -173,13 +173,51 @@
 
                 Resolve({
                     Filename: file.name,
-                    FileBase64: reader.result.slice(SliceIndex)
+                    FileBase64: reader.result.slice(SliceIndex),
+                    FileBase64Original: reader.result
                 });
             };
             reader.onerror = function (error) {
                 Reject(error)
             };
         });
+    },
+
+    GetBase64ArrayFromInputFileMultiplePromise: function (Selector) {
+        return new Promise(function (Resolve, Reject) {
+            var PromiseArray = [];
+            var files = document.querySelector(Selector).files;
+            var filesLength = files.length;
+
+            for (i = 0; i < filesLength; i++) {
+                var p = new Promise(function (Resolve1, Reject1) {
+                    var file = files[i];
+                    var reader = new FileReader();
+
+                    reader.readAsDataURL(file);
+                    reader.onload = function (event) {
+
+                        var SliceIndex = reader.result.indexOf(',') + 1;
+                        Resolve1({
+                            Filename: file.name,
+                            FileBase64: reader.result.slice(SliceIndex),
+                            FileBase64Original: reader.result
+                        });
+                    };
+                    reader.onerror = function (error) {
+                        Reject1(error)
+                    };
+                });
+
+                PromiseArray.push(p);
+            }
+
+            Promise.all(PromiseArray).then(function (values) {
+                Resolve(values)
+            }).catch(function (error) {
+                Reject(error)
+            });
+        })
     },
 
     GUP: function (name, url) {

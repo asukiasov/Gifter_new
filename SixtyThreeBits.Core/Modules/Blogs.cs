@@ -32,7 +32,7 @@ namespace SixtyThreeBits.Core.Modules
 
         public async Task<List<DBCoreDataContext.BlogsListResultItem>> ListBlog()
         {
-            return await TryToReturnStatic($"{nameof(ListBlog)}()", async () =>
+            return await TryToReturn($"{nameof(ListBlog)}()", async () =>
             {
                 using (var db = ConnectionFactory.GetDBCoreDataContext())
                 {
@@ -54,7 +54,7 @@ namespace SixtyThreeBits.Core.Modules
 
         public async Task<int?> BlogIUD(Enums.DatabaseActions DatabaseAction, int? BlogID = null, string BlogSlug = null, string BlogTitle = null, string BlogText = null, string BlogAuthorName = null, string BlogImageFilename = null, DateTime? BlogDate = null)
         {
-            return await TryToReturnStaticAsyncTask($"{nameof(BlogIUD)}({nameof(DatabaseAction)} = {DatabaseAction}, {nameof(BlogID)} = {BlogID}, {nameof(BlogSlug)} = {BlogSlug}, {nameof(BlogTitle)} = {BlogTitle}, {nameof(BlogText)} = {BlogText}, {nameof(BlogAuthorName)} = {BlogAuthorName}, {nameof(BlogImageFilename)} = {BlogImageFilename}, {nameof(BlogDate)} = {BlogDate})", async () =>
+            return await TryToReturnAsyncTask($"{nameof(BlogIUD)}({nameof(DatabaseAction)} = {DatabaseAction}, {nameof(BlogID)} = {BlogID}, {nameof(BlogSlug)} = {BlogSlug}, {nameof(BlogTitle)} = {BlogTitle}, {nameof(BlogText)} = {BlogText}, {nameof(BlogAuthorName)} = {BlogAuthorName}, {nameof(BlogImageFilename)} = {BlogImageFilename}, {nameof(BlogDate)} = {BlogDate})", async () =>
             {
                 using (var db = ConnectionFactory.GetDBCoreDataContext())
                 {

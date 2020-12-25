@@ -16,7 +16,7 @@ namespace SixtyThreeBits.Core.Modules
         #region Methods
         public async Task DeleteRecursive(int? PermissionID)
         {
-            await TryExecuteStaticAsyncTask($"{nameof(DeleteRecursive)}({nameof(PermissionID)} = {PermissionID})", async () =>
+            await TryExecuteAsyncTask($"{nameof(DeleteRecursive)}({nameof(PermissionID)} = {PermissionID})", async () =>
             {
                 using (var db = ConnectionFactory.GetDBCoreDataContext())
                 {
@@ -27,7 +27,7 @@ namespace SixtyThreeBits.Core.Modules
 
         public async Task<List<DBCoreDataContext.PermissionsListResultItem>> ListPermissions()
         {
-            return await TryToReturnStaticAsyncTask($"{nameof(ListPermissions)}()", async () =>
+            return await TryToReturnAsyncTask($"{nameof(ListPermissions)}()", async () =>
             {
                 using (var db = ConnectionFactory.GetDBCoreDataContext())
                 {
@@ -38,7 +38,7 @@ namespace SixtyThreeBits.Core.Modules
 
         public async Task<List<int?>> ListPermissionsByRoleID(int? RoleID)
         {
-            return await TryToReturnStaticAsyncTask($"{nameof(ListPermissionsByRoleID)}({nameof(RoleID)} = {RoleID}", async () =>
+            return await TryToReturnAsyncTask($"{nameof(ListPermissionsByRoleID)}({nameof(RoleID)} = {RoleID}", async () =>
             {
                 using (var db = ConnectionFactory.GetDBCoreDataContext())
                 {
