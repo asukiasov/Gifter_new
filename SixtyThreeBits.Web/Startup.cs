@@ -97,8 +97,7 @@ namespace SixtyThreeBits.Web
                 App.UseHsts();
             }
             App.UseImageflow(new ImageflowMiddlewareOptions()
-                .SetMapWebRoot(false)
-                .SetAllowMemoryCaching(false)
+                .SetMapWebRoot(false)                
                 .MapPath(AppSettings.UploadFolderVirtualPath, AppSettings.UploadFolderPhysicalPath));
 
             App.UseFileServer();

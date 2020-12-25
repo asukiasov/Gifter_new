@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using SixtyThreeBits.Core.DB;
-using SixtyThreeBits.Core.Utilities;
+﻿using SixtyThreeBits.Core.DB;
 using SixtyThreeBits.Libraries;
 using System.Threading.Tasks;
 
@@ -23,7 +21,7 @@ namespace SixtyThreeBits.Core.Modules
                 using(var db = ConnectionFactory.GetDBCoreDataContext())
                 {
                     var DBResult = await db.SystemPropertiesGet();
-                    var Result = DBResult?.DeserializeTo<SystemProperties>();
+                    var Result = DBResult.Value?.DeserializeTo<SystemProperties>();
                     return Result ?? new SystemProperties();
                 }
             });
@@ -35,21 +33,7 @@ namespace SixtyThreeBits.Core.Modules
             {
                 using (var db = ConnectionFactory.GetDBCoreDataContext())
                 {
-                    var DBItem = await db.SystemProperties.FirstOrDefaultAsync();
-                    if (DBItem != null)
-                    {
-                        DBItem.ContactEmail = ContactEmail == Constants.NullValueFor.String ? null : ContactEmail ?? DBItem.ContactEmail;
-                        DBItem.ContactPhone = ContactPhone == Constants.NullValueFor.String ? null : ContactPhone ?? DBItem.ContactPhone;
-                        DBItem.ContactAddress = ContactPhone == Constants.NullValueFor.String ? null : ContactAddress ?? DBItem.ContactAddress;
-                        DBItem.FacebookUrl = FacebookUrl == Constants.NullValueFor.String ? null : FacebookUrl ?? DBItem.FacebookUrl;
-                        DBItem.InstagramUrl = InstagramUrl == Constants.NullValueFor.String ? null : InstagramUrl ?? DBItem.InstagramUrl;
-                        DBItem.TwitterUrl = TwitterUrl == Constants.NullValueFor.String ? null : TwitterUrl ?? DBItem.TwitterUrl;
-                        DBItem.YoutubeUrl = YoutubeUrl == Constants.NullValueFor.String ? null : YoutubeUrl ?? DBItem.YoutubeUrl;
-                        DBItem.LinkedInUrl = LinkedInUrl == Constants.NullValueFor.String ? null : LinkedInUrl ?? DBItem.LinkedInUrl;                        
-                        DBItem.GoogleMapsIFrame = GoogleMapsIFrame == Constants.NullValueFor.String ? null : GoogleMapsIFrame ?? DBItem.GoogleMapsIFrame;
-                        db.SystemProperties.Update(DBItem);
-                        await db.SaveChangesAsync();
-                    }
+                    await db.SystemPropertiesUpdate(ContactEmail, ContactPhone, ContactAddress, FacebookUrl, InstagramUrl, TwitterUrl, YoutubeUrl, LinkedInUrl, GoogleMapsIFrame);
                 }
             });
         }

@@ -13,35 +13,10 @@ namespace SixtyThreeBits.Core.DB
         public DBCoreDataContext(DbContextOptions<DBCoreDataContext> options)
             : base(options)
         {
-        }
-        
-        public virtual DbSet<SystemProperties> SystemProperties { get; set; }
+        }                
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {            
-            modelBuilder.Entity<SystemProperties>(entity =>
-            {
-                entity.Property(e => e.SystemPropertiesID).ValueGeneratedNever();
-
-                entity.Property(e => e.ContactAddress).HasMaxLength(200);
-
-                entity.Property(e => e.ContactEmail).HasMaxLength(200);
-
-                entity.Property(e => e.ContactPhone).HasMaxLength(200);
-
-                entity.Property(e => e.FacebookUrl).HasMaxLength(200);
-
-                entity.Property(e => e.GoogleMapsIFrame).HasMaxLength(2000);
-
-                entity.Property(e => e.InstagramUrl).HasMaxLength(200);
-
-                entity.Property(e => e.LinkedInUrl).HasMaxLength(200);
-
-                entity.Property(e => e.TwitterUrl).HasMaxLength(200);
-
-                entity.Property(e => e.YoutubeUrl).HasMaxLength(200);
-            });
-
+        {                        
             OnModelCreatingPartial(modelBuilder);
         }
 

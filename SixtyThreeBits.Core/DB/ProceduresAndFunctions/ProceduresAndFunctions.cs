@@ -381,7 +381,7 @@ namespace SixtyThreeBits.Core.DB
 
         #region SystemPropertiesGet
         internal virtual DbSet<ScalarFunctionResult<string>> SystemPropertiesGetResult { get; set; }
-        public async Task<string> SystemPropertiesGet()
+        public Task<ScalarFunctionResult<string>> SystemPropertiesGet()
         {
             var PR = new PrepareQueryExecution(
                 DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
@@ -389,8 +389,7 @@ namespace SixtyThreeBits.Core.DB
                 ResultItemType: typeof(ScalarFunctionResult<string>)
             );
             var DBResult = SystemPropertiesGetResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
-            var DBFunctionResult = await DBResult.FirstOrDefaultAsync();
-            return DBFunctionResult?.Value;
+            return DBResult.FirstOrDefaultAsync();            
         }
         #endregion
 
@@ -728,6 +727,28 @@ namespace SixtyThreeBits.Core.DB
              {
                  RoleID.ToSqlParameter(nameof(RoleID),SqlDbType.Int),
                  PermissionsXml.ToSqlParameter(nameof(PermissionsXml),SqlDbType.Xml)
+             }
+           );
+            await Database.ExecuteSqlRawAsync(PR.SqlQuery, PR.SqlParameters);
+        }
+
+        public async Task SystemPropertiesUpdate(string ContactEmail, string ContactPhone, string ContactAddress, string FacebookUrl, string InstagramUrl, string TwitterUrl, string YoutubeUrl, string LinkedInUrl, string GoogleMapsIFrame)
+        {
+            var PR = new PrepareQueryExecution(
+             DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.STORED_PROCEDURE,
+             DatabaseObjectName: nameof(SystemPropertiesUpdate),
+             ResultItemType: null,
+             SqlParameters: new SqlParameter[]
+             {
+                 ContactEmail.ToSqlParameter(nameof(ContactEmail),SqlDbType.NVarChar),
+                 ContactPhone.ToSqlParameter(nameof(ContactPhone),SqlDbType.NVarChar),
+                 ContactAddress.ToSqlParameter(nameof(ContactAddress),SqlDbType.NVarChar),
+                 FacebookUrl.ToSqlParameter(nameof(FacebookUrl),SqlDbType.NVarChar),
+                 InstagramUrl.ToSqlParameter(nameof(InstagramUrl),SqlDbType.NVarChar),
+                 TwitterUrl.ToSqlParameter(nameof(TwitterUrl),SqlDbType.NVarChar),
+                 YoutubeUrl.ToSqlParameter(nameof(YoutubeUrl),SqlDbType.NVarChar),
+                 LinkedInUrl.ToSqlParameter(nameof(LinkedInUrl),SqlDbType.NVarChar),
+                 GoogleMapsIFrame.ToSqlParameter(nameof(GoogleMapsIFrame),SqlDbType.NVarChar)                 
              }
            );
             await Database.ExecuteSqlRawAsync(PR.SqlQuery, PR.SqlParameters);
