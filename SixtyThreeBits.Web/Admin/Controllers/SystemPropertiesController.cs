@@ -24,6 +24,14 @@ namespace SixtyThreeBits.Web.Admin.Controllers
             return View(ViewNames.Admin.SystemProperties.Page, ViewModel);
         }
 
+        [HttpPost]
+        [Route("test-smtp", Name = ControllerActionRouteNames.Admin.SystemProperties.TestSmtp)]
+        public IActionResult TestSmtp(SystemPropertiesModel.SmtpTestModel SubmitModel)
+        {
+            var ViewModel = Model.TestSmtp(SubmitModel);
+            return Json(ViewModel);
+        }
+
         [HttpPost]        
         [Route("")]
         public async Task<IActionResult> UpdateSystemProperies(SystemPropertiesModel.PageViewModel SubmitModel)
@@ -41,5 +49,6 @@ namespace SixtyThreeBits.Web.Admin.Controllers
                 return View(ViewNames.Admin.SystemProperties.Page, ViewModel);
             }
         }
+
     }
 }

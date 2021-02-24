@@ -249,7 +249,8 @@
             public class SystemProperties
             {
                 #region Properties
-                public const string Page = "AdminSystemPropertiesPage"; 
+                public const string Page = "AdminSystemProperties";
+                public const string TestSmtp = "AdminSystemPropertiesTestSmtp";
                 #endregion
             }
 

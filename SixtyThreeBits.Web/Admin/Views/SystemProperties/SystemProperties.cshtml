@@ -4,74 +4,153 @@
 <div class="actions-row">
     <button type="submit" class="btn btn-circle btn-primary js-save-button" form="SystemPropertiesForm"><i class="fas fa-save"></i></button>
 </div>
-<div class="card">
-    <div class="card-body">
-        <form id="SystemPropertiesForm" method="post" enctype="multipart/form-data">
-            <div class="row">
-                <div class="form-group col-lg-4">
-                    <label>Contact Phone</label>
-                    <input type="text" name="@nameof(Model.ContactPhone)" class="form-control" value="@Model.ContactPhone" />
-                    <p class="help-block">
-                        <span class="error-text"></span>
-                    </p>
+<form id="SystemPropertiesForm" method="post" enctype="multipart/form-data">
+    <div class="card">
+        <div class="card-body">
+            <div class="card">
+                <div class="card-header">
+                    General
                 </div>
-                <div class="form-group col-lg-4">
-                    <label>Contact Email</label>
-                    <input type="text" name="@nameof(Model.ContactEmail)" class="form-control" value="@Model.ContactEmail" />
-                    <p class="help-block">
-                        <span class="error-text"></span>
-                    </p>
-                </div>
-                <div class="form-group col-lg-4">
-                    <label>Contact Address</label>
-                    <input type="text" name="@nameof(Model.ContactAddress)" class="form-control" value="@Model.ContactAddress" />
-                    <p class="help-block">
-                        <span class="error-text"></span>
-                    </p>
-                </div>
-            </div>
-            <div class="row">
-                <div class="form-group col-lg-4">
-                    <label>Facebook Url</label>
-                    <input type="text" name="@nameof(Model.FacebookUrl)" class="form-control" value="@Html.Raw(Model.FacebookUrl)" />
-                </div>
-                <div class="form-group col-lg-4">
-                    <label>Instagram Url</label>
-                    <input type="text" name="@nameof(Model.InstagramUrl)" class="form-control" value="@Html.Raw(Model.InstagramUrl)" />
-                </div>
-                <div class="form-group col-lg-4">
-                    <label>Twitter Url</label>
-                    <input type="text" name="@nameof(Model.TwitterUrl)" class="form-control" value="@Html.Raw(Model.TwitterUrl)" />
-                </div>
-            </div>
-            <div class="row">
-                <div class="form-group col-lg-4">
-                    <label>Youtube Url</label>
-                    <input type="text" name="@nameof(Model.YoutubeUrl)" class="form-control" value="@Html.Raw(Model.YoutubeUrl)" />
-                </div>
-                <div class="form-group col-lg-4">
-                    <label>LinkedIn Url</label>
-                    <input type="text" name="@nameof(Model.LinkedInUrl)" class="form-control" value="@Html.Raw(Model.LinkedInUrl)" />
-                </div>
-                <div class="form-group col-lg-4">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="form-group col-lg-4">
+                            <label>Contact Phone</label>
+                            <input type="text" name="@nameof(Model.ContactPhone)" class="form-control" value="@Model.ContactPhone" />
+                            <p class="help-block">
+                                <span class="error-text"></span>
+                            </p>
+                        </div>
+                        <div class="form-group col-lg-4">
+                            <label>Contact Email</label>
+                            <input type="text" name="@nameof(Model.ContactEmail)" class="form-control" value="@Model.ContactEmail" />
+                            <p class="help-block">
+                                <span class="error-text"></span>
+                            </p>
+                        </div>
+                        <div class="form-group col-lg-4">
+                            <label>Contact Address</label>
+                            <input type="text" name="@nameof(Model.ContactAddress)" class="form-control" value="@Model.ContactAddress" />
+                            <p class="help-block">
+                                <span class="error-text"></span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-lg-4">
+                            <label>Facebook Url</label>
+                            <input type="text" name="@nameof(Model.FacebookUrl)" class="form-control" value="@Html.Raw(Model.FacebookUrl)" />
+                        </div>
+                        <div class="form-group col-lg-4">
+                            <label>Instagram Url</label>
+                            <input type="text" name="@nameof(Model.InstagramUrl)" class="form-control" value="@Html.Raw(Model.InstagramUrl)" />
+                        </div>
+                        <div class="form-group col-lg-4">
+                            <label>Twitter Url</label>
+                            <input type="text" name="@nameof(Model.TwitterUrl)" class="form-control" value="@Html.Raw(Model.TwitterUrl)" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-lg-4">
+                            <label>Youtube Url</label>
+                            <input type="text" name="@nameof(Model.YoutubeUrl)" class="form-control" value="@Html.Raw(Model.YoutubeUrl)" />
+                        </div>
+                        <div class="form-group col-lg-4">
+                            <label>LinkedIn Url</label>
+                            <input type="text" name="@nameof(Model.LinkedInUrl)" class="form-control" value="@Html.Raw(Model.LinkedInUrl)" />
+                        </div>
+                        <div class="form-group col-lg-4">
 
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-lg-12">
+                            <label>Footer Scripts</label>
+                            <textarea class="form-control" rows="5" name="@nameof(Model.FooterScripts)">@Html.Raw(Model.FooterScripts)</textarea>                            
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="form-group col-lg-12">
-                    <label>Google iFrame <a href="/images/google-maps-iframe-help.png" class="js-google-iframe-help"><i class="fas fa-question-circle"></i></a></label>
-                    <textarea name="@nameof(Model.GoogleMapsIFrame)" class="form-control">@Html.Raw(Model.GoogleMapsIFrame)</textarea>
+            <div class="card">
+                <div class="card-header">SMTP</div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="form-group col-lg-3">
+                            <label>SMTP Address</label>
+                            <input type="text" name="@nameof(Model.SMTPAddress)" class="form-control js-smtp-address-textbox" value="@Model.SMTPAddress" />
+                            <p class="help-block">
+                                <span class="error-text"></span>
+                            </p>
+                        </div>
+                        <div class="form-group col-lg-3">
+                            <label>SMTP From</label>
+                            <input type="text" name="@nameof(Model.SMTPFrom)" class="form-control js-smtp-from-textbox" value="@Model.SMTPFrom" />
+                            <p class="help-block">
+                                <span class="error-text"></span>
+                            </p>
+                        </div>
+                        <div class="form-group col-lg-3">
+                            <label>SMTP Port</label>
+                            <input type="text" name="@nameof(Model.SMTPPort)" class="form-control js-smtp-port-textbox" value="@Model.SMTPPort" />
+                            <p class="help-block">
+                                <span class="error-text"></span>
+                            </p>
+                        </div>
+                        <div class="form-group col-lg-3">
+                            <label>SMTP Use SSL?</label>
+                            <label class="toggler toggler-lg">
+                                <input type="checkbox" name="@nameof(Model.SMTPUseSSL)" class="js-smtp-use-ssl-checkbox" value="true" @(Model.SMTPUseSSL ? Html.Raw("checked") : null) />
+                                <i></i>
+                            </label>
+                        </div>
+                        <div class="form-group col-lg-6">
+                            <label>SMTP Username</label>
+                            <input type="text" name="@nameof(Model.SMTPUsername)" class="form-control js-smtp-username-textbox" value="@Model.SMTPUsername" />
+                            <p class="help-block">
+                                <span class="error-text"></span>
+                            </p>
+                        </div>
+                        <div class="form-group col-lg-6">
+                            <label>SMTP Password</label>
+                            <input type="text" name="@nameof(Model.SMTPPassword)" class="form-control js-smtp-password-textbox" value="@Model.SMTPPassword" />
+                            <p class="help-block">
+                                <span class="error-text"></span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12 d-flex justify-content-center">
+                            <button type="button" class="btn btn-primary js-test-smtp-button"><i class="fas fa-paper-plane"></i> TEST</button>                            
+                        </div>
+                        <div class="col-lg-12">
+                            <p class="text-success text-center d-none mt-3 js-test-smtp-success-message">@Model.TextSuccess</p>
+                            <p class="text-danger text-center d-none mt-3 js-test-smtp-error-message">Sorry Something went wrong</p>
+                        </div>
+                    </div>                    
                 </div>
             </div>
-            <div class="row">
-                <div class="form-group col-lg-12">                    
-                    @Html.Raw(Model.GoogleMapsIFrame)
+            <div class="card">
+                <div class="card-header">Google Maps</div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="form-group col-lg-12">
+                            <label>Google iFrame <a href="/images/google-maps-iframe-help.png" class="js-google-iframe-help"><i class="fas fa-question-circle"></i></a></label>
+                            <textarea name="@nameof(Model.GoogleMapsIFrame)" class="form-control">@Html.Raw(Model.GoogleMapsIFrame)</textarea>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-lg-12">
+                            @Html.Raw(Model.GoogleMapsIFrame)
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </form>
+            </div>            
+        </div>
     </div>
-</div>
+</form>
 
 @section FooterSection{
-    <script src="~/admin/js/SystemProperties/SystemProperties.js"></script>        
+    <script src="/admin/js/SystemProperties/SystemProperties.js"></script>        
+    <script>
+        SystemPropertiesModel.UrlTestSmtp = '@Html.Raw(Model.UrlTestSmtp)';
+    </script>
 }

@@ -56,6 +56,34 @@
                 closeAnimation: 'scale',
                 animateFromElement: false
             });
+        },
+        Prompt: function (Options) {
+
+            const Title = Options.Title
+            const Label = Options.Label ? Options.Label : '';
+            const InputPlaceHolder = Options.InputPlaceHolder ? Options.InputPlaceHolder : '';
+            const ButtonColor = Options.ButtonColor ? Options.ButtonColor : Components63Bits.Dialog.ButtonColors.Blue;
+            const Resolve = Options.Resolve;
+
+            $.confirm({
+                title: Title,
+                content: '<div class="form-group"><label>' + Label + '</label><input type="text" placeholder="' + InputPlaceHolder +'" class="form-control js-63bits-components-prompt" /></div>',
+                buttons: {
+                    OK: {
+                        text: 'OK',
+                        btnClass: ButtonColor,
+                        action: function () {
+                            const InputValue = this.$content.find('.js-63bits-components-prompt').val();
+                            if (Resolve) {
+                                Resolve(InputValue);
+                            }
+                        }
+                    },
+                    Cancel: function () {
+                        
+                    },
+                }                
+            });
         }
     },
     Select2: {
