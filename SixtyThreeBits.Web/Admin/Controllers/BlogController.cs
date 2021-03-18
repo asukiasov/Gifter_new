@@ -21,6 +21,7 @@ namespace SixtyThreeBits.Web.Admin.Controllers
         }
         #endregion
 
+        #region Actions
         [HttpGet]
         [Route("", Name = ControllerActionRouteNames.Admin.Blog.Page)]
         public ActionResult Blog()
@@ -82,13 +83,14 @@ namespace SixtyThreeBits.Web.Admin.Controllers
             {
                 return GetDevexpressSuccessResult();
             }
-        }
-
+        } 
+        #endregion
     }
+
     [Route("admin/blog/{BlogID:int}")]
     [TypeFilter(typeof(BeforeBlogPageLoad), Order = 2)]
     public class BlogPropertiesController : AdminControllerBase<BlogPropertiesModel>
-        {
+    {
         #region Constructors
         public BlogPropertiesController()
         {
@@ -139,12 +141,10 @@ namespace SixtyThreeBits.Web.Admin.Controllers
         [HttpPost]
         [Route("properties/delete-image", Name = ControllerActionRouteNames.Admin.Blog.BlogItemDeleteImage)]
         public async Task<IActionResult> BlogItemDeleteImage(int? BlogID)
-        {   
+        {
             var Result = await Model.DeleteImage(BlogID);
             return Json(Result);
         }
         #endregion
     }
-
-
 }
