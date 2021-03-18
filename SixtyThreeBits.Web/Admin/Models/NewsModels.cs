@@ -205,7 +205,7 @@ namespace SixtyThreeBits.Web.Admin.Models
                 NewsID: NewsID,
                 NewsImageFilename: Constants.NullValueFor.String
                 );
-
+            
             AR.IsSuccess = !DAL.IsError;
 
             return AR;
