@@ -351,6 +351,26 @@ namespace SixtyThreeBits.Core.DB
         }
         #endregion
 
+        #region ProjectsIsSlugUniq
+        internal virtual DbSet<ScalarFunctionResult<bool>> ProjectsIsSlugUniqResult { get; set; }
+        public async Task<bool> ProjectsIsSlugUniq(string ProjectSlug, int? ProjectID)
+        {
+            var PR = new PrepareQueryExecution(
+                DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
+                DatabaseObjectName: nameof(ProjectsIsSlugUniq),
+                ResultItemType: typeof(ScalarFunctionResult<string>),
+                SqlParameters: new SqlParameter[]
+                {
+                    ProjectSlug.ToSqlParameter(nameof(ProjectSlug), SqlDbType.NVarChar),
+                    ProjectID.ToSqlParameter(nameof(ProjectID), SqlDbType.Int)
+                }
+            );
+            var DBResult = ProjectsIsSlugUniqResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
+            var DBFunctionResult = await DBResult.FirstOrDefaultAsync();
+            return DBFunctionResult?.Value == true;
+        }
+        #endregion
+
         #region ProjectsList
         public class ProjectsListResultItem
         {
@@ -370,7 +390,7 @@ namespace SixtyThreeBits.Core.DB
             public string ProjectVideoUrl { get; set; }
             public bool ProjectIsPublished { get; set; }
             public int? ProjectSortIndex { get; set; }
-
+            public DateTime ProjectDateCreated { get; set; }
             #endregion
         }
         internal virtual DbSet<ProjectsListResultItem> ProjectsListResult { get; set; }
