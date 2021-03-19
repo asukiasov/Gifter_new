@@ -6,11 +6,12 @@ namespace SixtyThreeBits.Core.Modules
     public class DataAccessFactory
     {
         #region Properties        
-        public BlogsDataAccess Blog{ get; set; }
+        public BlogsDataAccess Blog { get; set; }
         public DictionariesDataAccess Dictionaries { get; set; }
         public NewsDataAccess News { get; set; }
         public PagesDataAccess Pages { get; set; }
         public PermissionsDataAccess Permissions { get; set; }
+        public ProjectsDataAccess Projects { get; set; }
         public RolesDataAccess Roles { get; set; }
         public SystemPropertiesAccess SystemProperties { get; set; }
         public UsersDataAccess Users { get; set; }
@@ -25,6 +26,7 @@ namespace SixtyThreeBits.Core.Modules
             News = new NewsDataAccess(ConnectionFactory);
             Pages = new PagesDataAccess(ConnectionFactory, AppSettings);
             Permissions = new PermissionsDataAccess(ConnectionFactory);
+            Projects = new ProjectsDataAccess(ConnectionFactory);
             Roles = new RolesDataAccess(ConnectionFactory);
             SystemProperties = new SystemPropertiesAccess(ConnectionFactory);
             Users = new UsersDataAccess(ConnectionFactory);
