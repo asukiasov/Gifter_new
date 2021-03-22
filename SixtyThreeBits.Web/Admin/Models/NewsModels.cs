@@ -199,14 +199,13 @@ namespace SixtyThreeBits.Web.Admin.Models
             Utilities.DeleteUploadedFile(NewsItem.NewsImageFilename);
 
             var AR = new AjaxResponse();
-            var DAL = DataAccessFactory.News;
-            await DAL.NewsIUD(
+            await DataAccessFactory.News.NewsIUD(
                 DatabaseAction: Enums.DatabaseActions.UPDATE,
                 NewsID: NewsID,
                 NewsImageFilename: Constants.NullValueFor.String
-                );
-            
-            AR.IsSuccess = !DAL.IsError;
+            );
+
+            AR.IsSuccess = !DataAccessFactory.News.IsError;
 
             return AR;
         }

@@ -113,6 +113,7 @@ namespace SixtyThreeBits.Web.Admin.Controllers
         [Route("properties")]
         public async Task<IActionResult> Properties(NewsPropertiesModel.NewsPropertiesViewModel SubmitModel)
         {
+            var Result = default(IActionResult);
             Model.PluginsClient.Enable63BitsForms(true).EnableFancybox(true).EnableDevextreme(true).EnableTinyMce(true);
             var ViewModel = Model.GetNewsPropertiesViewModel(ViewModel: SubmitModel);
 
@@ -126,15 +127,19 @@ namespace SixtyThreeBits.Web.Admin.Controllers
                 if (IsSaved)
                 {
                     Model.ShowSuccess();
-                    return Redirect(Url.RouteUrl(ControllerActionRouteNames.Admin.News.NewsItem, new { NewsID = Model.DBItemNews.NewsID }));
+                    Result = Redirect(Url.RouteUrl(ControllerActionRouteNames.Admin.News.NewsItem, new { NewsID = Model.DBItemNews.NewsID }));
                 }
                 else
                 {
                     Model.ShowError();
+                    Result = View(ViewNames.Admin.News.NewsItem, ViewModel);
                 }
             }
-
-            return View(ViewNames.Admin.News.NewsItem, ViewModel);
+            else
+            {
+                Result = View(ViewNames.Admin.News.NewsItem, ViewModel);
+            }
+            return Result;
         }
 
         [HttpPost]

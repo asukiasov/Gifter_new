@@ -11,9 +11,13 @@ namespace SixtyThreeBits.Core.Modules
 {
     public class ProjectsDataAccess : DataAccessBase
     {
+        #region Properties
+        readonly UtilityCollection Utilities;
+        #endregion
         #region Constructors
-        public ProjectsDataAccess(ConnectionFactory ConnectionFactory) : base(ConnectionFactory)
+        public ProjectsDataAccess(ConnectionFactory ConnectionFactory, UtilityCollection Utilities) : base(ConnectionFactory)
         {
+            this.Utilities = Utilities;
         }
         #endregion
 
@@ -54,6 +58,12 @@ namespace SixtyThreeBits.Core.Modules
         {
             return await TryToReturnAsyncTask($"{nameof(ProjectsIUD)}({nameof(DatabaseAction)} = {DatabaseAction}, {nameof(ProjectID)} = {ProjectID}, {nameof(ProjectSlug)} = {ProjectSlug}, {nameof(ProjectCaption)} = {ProjectCaption}, {nameof(ProjectCaptionEng)} = {ProjectCaptionEng}, {nameof(ProjectCaptionRus)} = {ProjectCaptionRus}, {nameof(ProjectShortDescription)} = {ProjectShortDescription}, {nameof(ProjectShortDescriptionEng)} = {ProjectShortDescriptionEng}) {nameof(ProjectShortDescriptionRus)} = {ProjectShortDescriptionRus}) {nameof(ProjectDescription)} = {ProjectDescription}) {nameof(ProjectDescriptionEng)} = {ProjectDescriptionEng}) {nameof(ProjectDescriptionRus)} = {ProjectDescriptionRus}) {nameof(ProjectCoverImageFilename)} = {ProjectCoverImageFilename}) {nameof(ProjectVideoUrl)} = {ProjectVideoUrl}) {nameof(ProjectIsPublished)} = {ProjectIsPublished}))", async () =>
             {
+                if (DatabaseAction== Enums.DatabaseActions.DELETE)
+                {
+                    var DBItem =  await GetSingleProjectByID(ProjectID);
+                    Utilities.DeleteUploadedFile(DBItem?.ProjectCoverImageFilename);
+                }
+
                 using (var db = ConnectionFactory.GetDBCoreDataContext())
                 {
                     ProjectID = await db.ProjectsIUD(DatabaseAction, ProjectID, ProjectSlug, ProjectCaption, ProjectCaptionEng, ProjectCaptionRus, ProjectShortDescription, ProjectShortDescriptionEng, ProjectShortDescriptionRus, ProjectDescription, ProjectDescriptionEng, ProjectDescriptionRus, ProjectCoverImageFilename, ProjectVideoUrl, ProjectIsPublished);

@@ -151,7 +151,7 @@ namespace SixtyThreeBits.Web.Admin.Models
 
             ViewModel.BlogImageFilename = DBItemBlog.BlogImageFilename;
             ViewModel.BlogImageHttpPath = DBItemBlog.BlogImageFilenameHttpPath;
-            ViewModel.UrlDeleteImage = Url.RouteUrl(ControllerActionRouteNames.Admin.Blog.BlogItemDeleteImage,new {BlogID = DBItemBlog.BlogID });
+            ViewModel.UrlDeleteImage = Url.RouteUrl(ControllerActionRouteNames.Admin.Blog.BlogItemDeleteImage, new { BlogID = DBItemBlog.BlogID });
 
             return ViewModel;
         }
@@ -175,7 +175,7 @@ namespace SixtyThreeBits.Web.Admin.Models
             ViewModel.Errors.RemoveAll(Item => Item == null);
         }
 
-        public async Task<bool> SaveBlogProperties(BlogPropertiesViewModel ViewModel)
+        public async Task SaveBlogProperties(BlogPropertiesViewModel ViewModel)
         {
             var HasBlogImage = ViewModel.PostedFile?.Length > 0;
             var BlogImageFilename = HasBlogImage ? GetFilenameFromUploadedFile(ViewModel.PostedFile) : null;
@@ -203,8 +203,6 @@ namespace SixtyThreeBits.Web.Admin.Models
                     await SaveUploadedFile(PostedFile: ViewModel.PostedFile, Filename: BlogImageFilename, FolderPhysicalPath: DBItemBlog.FolderPhysicalPath);
                 }
             }
-
-            return ViewModel.IsSaved;
         }
 
         public async Task<AjaxResponse> DeleteImage(int? BlogID)
@@ -213,14 +211,13 @@ namespace SixtyThreeBits.Web.Admin.Models
             Utilities.DeleteUploadedFile(BlogItem.BlogImageFilename);
 
             var AR = new AjaxResponse();
-            var DAL = DataAccessFactory.Blog;
-            await DAL.BlogIUD(
+            await DataAccessFactory.Blog.BlogIUD(
                 DatabaseAction: Enums.DatabaseActions.UPDATE,
                 BlogID: BlogID,
                 BlogImageFilename: Constants.NullValueFor.String
-                );
+            );
 
-            AR.IsSuccess = !DAL.IsError;
+            AR.IsSuccess = !DataAccessFactory.Blog.IsError;
 
             return AR;
         }

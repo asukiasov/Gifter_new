@@ -18,7 +18,7 @@ namespace SixtyThreeBits.Core.Modules
         #endregion
 
         #region Constructors
-        public DataAccessFactory(AppSettingsCollection AppSettings)
+        public DataAccessFactory(AppSettingsCollection AppSettings, UtilityCollection Utilities)
         {
             var ConnectionFactory = new ConnectionFactory(AppSettings.DBConnectionStrings.DBConnectionString);
             Blog = new BlogsDataAccess(ConnectionFactory);
@@ -26,7 +26,7 @@ namespace SixtyThreeBits.Core.Modules
             News = new NewsDataAccess(ConnectionFactory);
             Pages = new PagesDataAccess(ConnectionFactory, AppSettings);
             Permissions = new PermissionsDataAccess(ConnectionFactory);
-            Projects = new ProjectsDataAccess(ConnectionFactory);
+            Projects = new ProjectsDataAccess(ConnectionFactory, Utilities);
             Roles = new RolesDataAccess(ConnectionFactory);
             SystemProperties = new SystemPropertiesAccess(ConnectionFactory);
             Users = new UsersDataAccess(ConnectionFactory);
