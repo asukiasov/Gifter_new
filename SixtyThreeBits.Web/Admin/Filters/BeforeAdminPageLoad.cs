@@ -43,14 +43,15 @@ namespace SixtyThreeBits.Web.Admin.Filters
 
         bool AdminAuthorize() 
         {
-            var IsAuthorized = false;            
+            var HasPermission = false;
             if (Model.User != null)
             {
                 ViewModel.UserFullname = Model.User.UserFullname;
-                IsAuthorized = true;
-            }
 
-            return IsAuthorized;
+                HasPermission = Model.User.HasPermission(Model.UrlCurrentPage);
+            }
+            
+            return HasPermission;
         }
 
         void InitStartUp()

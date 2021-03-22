@@ -35,6 +35,7 @@ namespace SixtyThreeBits.Web.Admin.Controllers
         [Route("login")]
         public async Task<ActionResult> Login(AuthModel.LoginPageViewModel SubmitModel)
         {
+            Model.PluginsClient.EnableFontAwesome(true).EnableBootstrap(true).EnableAngle(true).Enable63BitsFonts(true);
             var ViewModel = Model.GetPageViewModel(SubmitModel);
             var IsAuthenticated = await Model.AuthenticateUser(ViewModel: ViewModel);
             if (IsAuthenticated)

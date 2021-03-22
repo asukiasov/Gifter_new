@@ -21,12 +21,12 @@ namespace SixtyThreeBits.Web.Admin.Models
         public PageViewModel GetPageViewModel()
         {
             var ViewModel = new PageViewModel();
-            ViewModel.ShowAddNewButton = true;
+            ViewModel.ShowAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.Projects.ProjectsGridAdd);
 
             ViewModel.Grid = new PageViewModel.GridModel();
-            ViewModel.Grid.AllowAdd = true;
-            ViewModel.Grid.AllowUpdate = true;
-            ViewModel.Grid.AllowDelete = true;
+            ViewModel.Grid.AllowAdd = User.HasPermission(ControllerActionRouteNames.Admin.Projects.ProjectsGridAdd);
+            ViewModel.Grid.AllowUpdate = User.HasPermission(ControllerActionRouteNames.Admin.Projects.ProjectsGridUpdate);
+            ViewModel.Grid.AllowDelete = User.HasPermission(ControllerActionRouteNames.Admin.Projects.ProjectsGridDelete);
             ViewModel.Grid.UrlLoad = Url.RouteUrl(ControllerActionRouteNames.Admin.Projects.ProjectsGrid);
             ViewModel.Grid.UrlAddNew = Url.RouteUrl(ControllerActionRouteNames.Admin.Projects.ProjectsGridAdd);
             ViewModel.Grid.UrlUpdate = Url.RouteUrl(ControllerActionRouteNames.Admin.Projects.ProjectsGridUpdate);

@@ -57,10 +57,13 @@ namespace SixtyThreeBits.Web.Admin.Models
         public async Task ReloginUser()
         {
             var SessionUser = SessionAssistance.Get<User>(Constants.Session.User);
-            var User = await DataAccessFactory.Users.GetSingleUserByID(SessionUser.UserID);
-            if (User != null && User.UserIsActive)
+            if (SessionUser != null)
             {
-                SessionAssistance.Set(Constants.Session.User, User);
+                var User = await DataAccessFactory.Users.GetSingleUserByID(SessionUser.UserID);
+                if (User != null && User.UserIsActive)
+                {
+                    SessionAssistance.Set(Constants.Session.User, User);
+                }
             }
         }
         #endregion
