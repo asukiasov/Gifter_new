@@ -352,17 +352,18 @@ $.fn.extend({
         this.removeAttr('disabled');
         this.find('.js-overlay-disable').remove();
     },
-    ScrollTo: function (selector, milliseconds) {
+    ScrollTo: function (selector, milliseconds, offsetTop) {
         var _this = this;
-        return new Promise(function (Resolve, Reject) {
-            if (this != null && this != undefined) {
+        return new Promise(function (Resolve) {
+            if (this != null && this != undefined && _this.length != 0) {
 
                 selector = selector == undefined ? 'html' : selector;
-                milliseconds = milliseconds == undefined ? 500 : millisecond;
+                milliseconds = milliseconds == undefined ? 500 : milliseconds;
+                offsetTop = offsetTop == undefined ? 100 : offsetTop;
 
                 if ($(selector).length > 0) {
                     $(selector).animate({
-                        scrollTop: _this.offset().top - 100
+                        scrollTop: _this.offset().top - offsetTop
                     }, milliseconds, function () {
                         Resolve();
                     });
