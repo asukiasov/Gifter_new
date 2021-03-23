@@ -705,7 +705,7 @@ namespace SixtyThreeBits.Core.DB
             var DBResult = await Database.ExecuteSqlRawAsync(PR.SqlQuery, PR.SqlParameters);
         }
 
-        public async Task<int?> PagesIUD(Enums.DatabaseActions iud, int? PageID, int? PageParentID, string PageSlug, string PageTitle, string PageTitleEng, string PageTitleRus, string PageText, string PageTextEng, string PageTextRus, string PageData, string PageDataEng, string PageDataRus, string PageShortDescription, string PageShortDescriptionEng, string PageShortDescriptionRus, string PageImageFilename, int? PageCode, bool? PageIsPublished, int? PageSortIndex, bool? PageIsMenuItem, bool? PageIsFooterItem, bool? PageIsExternalUrl, string PageExternalUrl)
+        public async Task<int?> PagesIUD(Enums.DatabaseActions iud, int? PageID, int? PageParentID, string PageSlug, string PageTitle, string PageTitleEng, string PageTitleRus, string PageText, string PageTextEng, string PageTextRus, string PageTextHeaderHtml, string PageTextHeaderHtmlEng, string PageTextHeaderHtmlRus, string PageTextFooterHtml, string PageTextFooterHtmlEng, string PageTextFooterHtmlRus, string PageData, string PageDataEng, string PageDataRus, string PageShortDescription, string PageShortDescriptionEng, string PageShortDescriptionRus, string PageImageFilename, int? PageCode, bool? PageIsPublished, int? PageSortIndex, bool? PageIsMenuItem, bool? PageIsFooterItem, bool? PageIsExternalUrl, string PageExternalUrl)
         {
             var PR = new PrepareQueryExecution(
                 DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.STORED_PROCEDURE,
@@ -719,10 +719,16 @@ namespace SixtyThreeBits.Core.DB
                     PageSlug.ToSqlParameter(nameof(PageSlug),SqlDbType.VarChar),
                     PageTitle.ToSqlParameter(nameof(PageTitle),SqlDbType.NVarChar),
                     PageTitleEng.ToSqlParameter(nameof(PageTitleEng),SqlDbType.NVarChar),
-                    PageTitleRus.ToSqlParameter(nameof(PageTitleRus),SqlDbType.NVarChar),
+                    PageTitleRus.ToSqlParameter(nameof(PageTitleRus),SqlDbType.NVarChar),                    
                     PageText.ToSqlParameter(nameof(PageText),SqlDbType.NVarChar),
                     PageTextEng.ToSqlParameter(nameof(PageTextEng),SqlDbType.NVarChar),
                     PageTextRus.ToSqlParameter(nameof(PageTextRus),SqlDbType.NVarChar),
+                    PageTextHeaderHtml.ToSqlParameter(nameof(PageTextHeaderHtml),SqlDbType.NVarChar),
+                    PageTextHeaderHtmlEng.ToSqlParameter(nameof(PageTextHeaderHtmlEng),SqlDbType.NVarChar),
+                    PageTextHeaderHtmlRus.ToSqlParameter(nameof(PageTextHeaderHtmlRus),SqlDbType.NVarChar),
+                    PageTextFooterHtml.ToSqlParameter(nameof(PageTextFooterHtml),SqlDbType.NVarChar),
+                    PageTextFooterHtmlEng.ToSqlParameter(nameof(PageTextFooterHtmlEng),SqlDbType.NVarChar),
+                    PageTextFooterHtmlRus.ToSqlParameter(nameof(PageTextFooterHtmlRus),SqlDbType.NVarChar),
                     PageData.ToSqlParameter(nameof(PageData),SqlDbType.NVarChar),
                     PageDataEng.ToSqlParameter(nameof(PageDataEng),SqlDbType.NVarChar),
                     PageDataRus.ToSqlParameter(nameof(PageDataRus),SqlDbType.NVarChar),

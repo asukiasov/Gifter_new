@@ -494,7 +494,7 @@
         PageBuilderModel.textError = '@Model.TextError';
         PageBuilderModel.language = '@Model.Language';
         PageBuilderModel.plugins.fileManager.url = '@Html.Raw(Model.UrlFileManager)';
-        PageBuilderModel.plugins.pdfViewer.url = null;
+        PageBuilderModel.plugins.pdfViewer.url = '@Html.Raw(Model.UrlPdfViewer)';
         PageBuilderModel.data.fromServer = @Html.Raw(Model.PageData);
 
         //$(function () {

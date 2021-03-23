@@ -92,9 +92,9 @@ namespace SixtyThreeBits.Core.Modules
             });
         }
 
-        public async Task<int?> PagesIUD(Enums.DatabaseActions DatabaseAction, int? PageID = null, int? PageParentID = null, string PageSlug = null, string PageTitle = null, string PageTitleEng = null, string PageTitleRus = null, string PageText = null, string PageTextEng = null, string PageTextRus = null, string PageData = null, string PageDataEng = null, string PageDataRus = null, string PageShortDescription = null, string PageShortDescriptionEng = null, string PageShortDescriptionRus = null, string PageImageFilename = null, int? PageCode = null, bool? PageIsPublished = null, int? PageSortIndex = null, bool? PageIsMenuItem = null, bool? PageIsFooterItem = null, bool? PageIsExternalUrl = null, string PageExternalUrl = null)
+        public async Task<int?> PagesIUD(Enums.DatabaseActions DatabaseAction, int? PageID = null, int? PageParentID = null, string PageSlug = null, string PageTitle = null, string PageTitleEng = null, string PageTitleRus = null, string PageText = null, string PageTextEng = null, string PageTextRus = null, string PageTextHeaderHtml = null, string PageTextHeaderHtmlEng = null, string PageTextHeaderHtmlRus = null, string PageTextFooterHtml = null, string PageTextFooterHtmlEng = null, string PageTextFooterHtmlRus = null, string PageData = null, string PageDataEng = null, string PageDataRus = null, string PageShortDescription = null, string PageShortDescriptionEng = null, string PageShortDescriptionRus = null, string PageImageFilename = null, int? PageCode = null, bool? PageIsPublished = null, int? PageSortIndex = null, bool? PageIsMenuItem = null, bool? PageIsFooterItem = null, bool? PageIsExternalUrl = null, string PageExternalUrl = null)
         {
-            return await TryToReturnAsyncTask($"{nameof(PagesIUD)}({nameof(DatabaseAction)} = {DatabaseAction}, {nameof(PageID)} = {PageID}, {nameof(PageParentID)} = {PageParentID}, {nameof(PageSlug)} = {PageSlug}, {nameof(PageTitle)} = {PageTitle}, {nameof(PageTitleEng)} = {PageTitleEng}, {nameof(PageTitleRus)} = {PageTitleRus}, {nameof(PageText)} = {PageText}, {nameof(PageTextEng)} = {PageTextEng}, {nameof(PageTextRus)} = {PageTextRus}, {nameof(PageData)} = {PageData}, {nameof(PageDataEng)} = {PageDataEng}, {nameof(PageDataRus)} = {PageDataRus}, {nameof(PageShortDescription)} = {PageShortDescription}, {nameof(PageShortDescriptionEng)} = {PageShortDescriptionEng}, {nameof(PageShortDescriptionRus)} = {PageShortDescriptionRus}, {nameof(PageImageFilename)} = {PageImageFilename}, {nameof(PageCode)} = {PageCode}, {nameof(PageIsPublished)} = {PageIsPublished}, {nameof(PageSortIndex)} = {PageSortIndex}, {nameof(PageIsMenuItem)} = {PageIsMenuItem}, {nameof(PageIsFooterItem)} = {PageIsFooterItem}, {nameof(PageIsExternalUrl)} = {PageIsExternalUrl}, {nameof(PageExternalUrl)} = {PageExternalUrl})", async () =>
+            return await TryToReturnAsyncTask($"{nameof(PagesIUD)}({nameof(DatabaseAction)} = {DatabaseAction}, {nameof(PageID)} = {PageID}, {nameof(PageParentID)} = {PageParentID}, {nameof(PageSlug)} = {PageSlug}, {nameof(PageTitle)} = {PageTitle}, {nameof(PageTitleEng)} = {PageTitleEng}, {nameof(PageTitleRus)} = {PageTitleRus}, {nameof(PageText)} = {PageText}, {nameof(PageTextEng)} = {PageTextEng}, {nameof(PageTextRus)} = {PageTextRus}, {nameof(PageTextHeaderHtml)} = {PageTextHeaderHtml}, {nameof(PageTextHeaderHtmlEng)} = {PageTextHeaderHtmlEng}, {nameof(PageTextHeaderHtmlRus)} = {PageTextHeaderHtmlRus}, {nameof(PageTextFooterHtml)} = {PageTextFooterHtml}, {nameof(PageTextFooterHtmlEng)} = {PageTextFooterHtmlEng}, {nameof(PageTextFooterHtmlRus)} = {PageTextFooterHtmlRus}, {nameof(PageData)} = {PageData}, {nameof(PageDataEng)} = {PageDataEng}, {nameof(PageDataRus)} = {PageDataRus}, {nameof(PageShortDescription)} = {PageShortDescription}, {nameof(PageShortDescriptionEng)} = {PageShortDescriptionEng}, {nameof(PageShortDescriptionRus)} = {PageShortDescriptionRus}, {nameof(PageImageFilename)} = {PageImageFilename}, {nameof(PageCode)} = {PageCode}, {nameof(PageIsPublished)} = {PageIsPublished}, {nameof(PageSortIndex)} = {PageSortIndex}, {nameof(PageIsMenuItem)} = {PageIsMenuItem}, {nameof(PageIsFooterItem)} = {PageIsFooterItem}, {nameof(PageIsExternalUrl)} = {PageIsExternalUrl}, {nameof(PageExternalUrl)} = {PageExternalUrl})", async () =>
             {
                 if (DatabaseAction == Enums.DatabaseActions.DELETE)
                 {
@@ -107,7 +107,7 @@ namespace SixtyThreeBits.Core.Modules
                 using (var db = ConnectionFactory.GetDBCoreDataContext())
                 {
 
-                    PageID = await db.PagesIUD(DatabaseAction, PageID, PageParentID, PageSlug, PageTitle, PageTitleEng, PageTitleRus, PageText, PageTextEng, PageTextRus, PageData, PageDataEng, PageDataRus, PageShortDescription, PageShortDescriptionEng, PageShortDescriptionRus, PageImageFilename, PageCode, PageIsPublished, PageSortIndex, PageIsMenuItem, PageIsFooterItem, PageIsExternalUrl, PageExternalUrl);
+                    PageID = await db.PagesIUD(DatabaseAction, PageID, PageParentID, PageSlug, PageTitle, PageTitleEng, PageTitleRus, PageText, PageTextEng, PageTextRus, PageTextHeaderHtml, PageTextHeaderHtmlEng, PageTextHeaderHtmlRus, PageTextFooterHtml, PageTextFooterHtmlEng, PageTextFooterHtmlRus, PageData, PageDataEng, PageDataRus, PageShortDescription, PageShortDescriptionEng, PageShortDescriptionRus, PageImageFilename, PageCode, PageIsPublished, PageSortIndex, PageIsMenuItem, PageIsFooterItem, PageIsExternalUrl, PageExternalUrl);
 
 
                     if (DatabaseAction == Enums.DatabaseActions.CREATE)
@@ -145,6 +145,12 @@ namespace SixtyThreeBits.Core.Modules
         public string PageText { get; set; }
         public string PageTextEng { get; set; }
         public string PageTextRus { get; set; }
+        public string PageTextHeaderHtml { get; set; }
+        public string PageTextHeaderHtmlEng { get; set; }
+        public string PageTextHeaderHtmlRus { get; set; }
+        public string PageTextFooterHtml { get; set; }
+        public string PageTextFooterHtmlEng { get; set; }
+        public string PageTextFooterHtmlRus { get; set; }
         public string PageData { get; set; }
         public string PageDataEng { get; set; }
         public string PageDataRus { get; set; }

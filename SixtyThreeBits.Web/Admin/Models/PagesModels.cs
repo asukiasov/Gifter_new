@@ -286,6 +286,7 @@ namespace SixtyThreeBits.Web.Admin.Models
             ViewModel.UrlPreview = Url.RouteUrl(ControllerActionRouteNames.Website.Home.StaticPage, new { PageSlug = DBItemPage.PageSlug });
             ViewModel.UrlSave = UrlCurrentPage;
             ViewModel.UrlFileManager = GetFileManagerUrl(DBItemPage.FolderPhysicalPath, DBItemPage.FolderVirtualPath);
+            ViewModel.UrlPdfViewer = Url.RouteUrl(ControllerActionRouteNames.Website.FileViewer.Pdf);
 
             ViewModel.SelectedLanguage = Utilities.GetValuesByLanguage(Language, Enums.Languages.GEORGIAN, Enums.Languages.ENGLISH, Enums.Languages.RUSSIAN);
             ViewModel.LanguageOptions = new List<SimpleKeyValue<string, string>>
@@ -336,6 +337,8 @@ namespace SixtyThreeBits.Web.Admin.Models
                             PageSlug: SubmitModel.PageSlug,
                             PageTitle: SubmitModel.PageTitle ?? Constants.NullValueFor.String,
                             PageText: SubmitModel.PageText ?? Constants.NullValueFor.String,
+                            PageTextHeaderHtml: SubmitModel.HeaderSectionHtml ?? Constants.NullValueFor.String,
+                            PageTextFooterHtml: SubmitModel.FooterSectionHtml ?? Constants.NullValueFor.String,
                             PageData: SubmitModel.PageData ?? Constants.NullValueFor.String,
                             PageIsPublished: SubmitModel.IsPublished
                         );
@@ -349,6 +352,8 @@ namespace SixtyThreeBits.Web.Admin.Models
                             PageSlug: SubmitModel.PageSlug,
                             PageTitleEng: SubmitModel.PageTitle ?? Constants.NullValueFor.String,
                             PageTextEng: SubmitModel.PageText ?? Constants.NullValueFor.String,
+                            PageTextHeaderHtmlEng: SubmitModel.HeaderSectionHtml ?? Constants.NullValueFor.String,
+                            PageTextFooterHtmlEng: SubmitModel.FooterSectionHtml ?? Constants.NullValueFor.String,
                             PageDataEng: SubmitModel.PageData ?? Constants.NullValueFor.String,
                             PageIsPublished: SubmitModel.IsPublished
                         );
@@ -362,6 +367,8 @@ namespace SixtyThreeBits.Web.Admin.Models
                             PageSlug: SubmitModel.PageSlug,
                             PageTitleRus: SubmitModel.PageTitle ?? Constants.NullValueFor.String,
                             PageTextRus: SubmitModel.PageText ?? Constants.NullValueFor.String,
+                            PageTextHeaderHtmlRus: SubmitModel.HeaderSectionHtml ?? Constants.NullValueFor.String,
+                            PageTextFooterHtmlRus: SubmitModel.FooterSectionHtml ?? Constants.NullValueFor.String,
                             PageDataRus: SubmitModel.PageData ?? Constants.NullValueFor.String,
                             PageIsPublished: SubmitModel.IsPublished
                         );
@@ -415,6 +422,7 @@ namespace SixtyThreeBits.Web.Admin.Models
             public string UrlPreview { get; set; }
             public string UrlSave { get; set; }
             public string UrlFileManager { get; set; }
+            public string UrlPdfViewer { get; set; }
             public string SelectedLanguage { get; set; }
             public List<SimpleKeyValue<string, string>> LanguageOptions { get; set; }
             public bool HasLanguageOptions => LanguageOptions?.Count > 0;
@@ -431,6 +439,8 @@ namespace SixtyThreeBits.Web.Admin.Models
             public string PageText { get; set; }
             public string Language { get; set; }
             public string PageData { get; set; }
+            public string HeaderSectionHtml { get; set; }
+            public string FooterSectionHtml { get; set; }
             public bool IsPublished { get; set; }
             #endregion
         }

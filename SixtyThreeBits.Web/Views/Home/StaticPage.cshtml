@@ -1,11 +1,10 @@
 ﻿@model HomeModel.StaticPageViewModel
 @section HeaderSection{
-    
+    @Html.Raw(Model.PageTextHeaderHtml)
 }
-<main class="app-page t63-page">
-    <h1>@Html.Raw(Model.PageTitle)</h1>
+<main class="app-page t63-page">    
     @Html.Raw(Model.PageText)
 </main>
 @section FooterSection{
-    
+    @Html.Raw(Model.PageTextFooterHtml)
 }

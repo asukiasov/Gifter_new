@@ -312,9 +312,14 @@
                 public const string Page = "WebsiteHome";
                 public const string PageCulture = "WebsiteHomeCulture";
                 public const string StaticPage = "WebsiteHomeStaticPage";
-                public const string StaticPageCulture = "WebsiteHomeStaticPageCulture";
-                public const string StaticPagePreview = "WebsiteHomeStaticPagePreview";
-                public const string StaticPagePreviewCulture = "WebsiteHomeStaticPagePreviewCulture";
+                public const string StaticPageCulture = "WebsiteHomeStaticPageCulture";                                
+                #endregion
+            }
+
+            public class FileViewer
+            {
+                #region Properties
+                public const string Pdf = "FileViewerPdf";
                 #endregion
             }
             #endregion
