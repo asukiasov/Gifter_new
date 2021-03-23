@@ -8,13 +8,13 @@
     <link rel="icon" type="image/png" href="~/Content/Images/favicon.png">
     <title>@Html.Raw(Model.PageTitle.TitleHead)</title>
     @await Html.PartialAsync(ViewNames.Shared.PluginsClient.Header, Model.PluginsClient)    
-    <link href="~/Content/Css/style.css" rel="stylesheet" />
+    <link href="/css/style.css" rel="stylesheet" />
     
     @RenderSection("HeaderSection", false)
 </head>
 <body>
     <div class="app">
-        <header>
+        <header class="app-header">
             @if (Model.HasMenu)
             {
                 <nav>
@@ -49,12 +49,11 @@
 
         </header>
         @RenderBody()
-        <footer>
+        <footer class="app-page">
         </footer>
     </div>
     @await Html.PartialAsync(ViewNames.Shared.PluginsClient.Footer, Model.PluginsClient)
+    <script src="~/js/Layout.js"></script>
     @RenderSection("FooterSection", false)
-
-    <script src="~/Content/Scripts/Layout.js"></script>
 </body>
 </html>

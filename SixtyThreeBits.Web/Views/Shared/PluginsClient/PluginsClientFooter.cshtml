@@ -11,6 +11,10 @@
 {
     <script src="~/plugins/utils/utils.js"></script>
 }
+@if (Model.IsJQueryAppearEnabled)
+{
+    <script src="~/plugins/jquery-appear/jquery.appear.js"></script>
+}
 @if (Model.IsJQueryUIJsEnabled)
 {
     <script src="~/plugins/jquery-ui/jquery-ui.js"></script>
@@ -73,4 +77,9 @@
     <script src="~/plugins/tinymce/tinymce.min.js"></script>
     <script src="~/plugins/tinymce/jquery.tinymce.min.js"></script>
     <script src="~/plugins/tinymce/TinyMceHelper.js"></script>
+}
+@if (Model.IsJWPlayerEnabled)
+{
+    <script src="~/plugins/jwplayer8/jwplayer.js"></script>
+    <script src="~/plugins/jwplayer8/player.js"></script>
 }

@@ -283,7 +283,7 @@ namespace SixtyThreeBits.Web.Admin.Models
             ViewModel.IsPublished = DBItemPage.PageIsPublished;
             ViewModel.Language = Language;
             ViewModel.UrlBack = Url.RouteUrl(ControllerActionRouteNames.Admin.Pages.Index);
-            ViewModel.UrlPreview = GetRouteByName(ControllerActionRouteNames.Website.Home.StaticPagePreview, new { Culture = Language, PageID });
+            ViewModel.UrlPreview = Url.RouteUrl(ControllerActionRouteNames.Website.Home.StaticPage, new { PageSlug = DBItemPage.PageSlug });
             ViewModel.UrlSave = UrlCurrentPage;
             ViewModel.UrlFileManager = GetFileManagerUrl(DBItemPage.FolderPhysicalPath, DBItemPage.FolderVirtualPath);
 
