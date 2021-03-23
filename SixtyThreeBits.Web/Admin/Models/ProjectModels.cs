@@ -91,7 +91,6 @@ namespace SixtyThreeBits.Web.Admin.Models
                         Columns.Add();
                     });
 
-
                     return Grid;
                 }
                 #endregion
