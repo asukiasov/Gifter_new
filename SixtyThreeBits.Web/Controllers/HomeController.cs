@@ -23,7 +23,7 @@ namespace SixtyThreeBits.Web.Controllers
         [Route("{Culture:length(2)}/{PageSlug:regex(^(?!admin|sitemap)[[A-Za-z0-9,-]]{{3,}}$)}", Order = 100000)]
         public async Task<IActionResult> StaticPage(string Culture,string PageSlug)
         {
-            Model.PluginsClient.EnablePageBuilder(true).EnableSlickSlider(true);
+            Model.PluginsClient.EnablePageBuilder(true).EnableSlickSlider(true).EnableJQueryAppear(true).EnableJWPlayer(true);
             var ViewModel = await Model.GetStaticPageViewModel(PageSlug);
             if (ViewModel == null)
             {
@@ -39,7 +39,7 @@ namespace SixtyThreeBits.Web.Controllers
         [Route("page/{PageID:int}/preview", Name = ControllerActionRouteNames.Website.Home.StaticPagePreview)]
         public async Task<IActionResult> StaticPagePreview(int? PageID)
         {
-            Model.PluginsClient.EnablePageBuilder(true).EnableSlickSlider(true);
+            Model.PluginsClient.EnablePageBuilder(true).EnableSlickSlider(true).EnableJQueryAppear(true).EnableJWPlayer(true);
             var ViewModel = await Model.GetStaticPagePreviewViewModel(PageID);
             if (ViewModel == null)
             {

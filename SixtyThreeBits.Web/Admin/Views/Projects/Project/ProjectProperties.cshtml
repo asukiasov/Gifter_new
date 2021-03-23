@@ -1,0 +1,104 @@
+﻿@model ProjectsPropertiesModel.ProjectsPropertiesViewModel
+<div class="actions-row">
+    <button type="submit" class="btn btn-circle btn-primary js-save-button" form="ProjectsDetailsForm"><i class="fas fa-save"></i></button>
+</div>
+<div class="card">
+    <div class="card-body">
+        <form id="ProjectsDetailsForm" method="post" enctype="multipart/form-data">
+            <div class="row">
+                <div class="form-group col-lg-2">
+                    <label>Project Is Published</label>
+                    <label class="toggler toggler-lg">
+                        <input type="checkbox" name="@nameof(Model.ProjectIsPublished)" class="js-smtp-use-ssl-checkbox" value="true" @(Model.ProjectIsPublished ? Html.Raw("checked") : null) />
+                        <i></i>
+                    </label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-lg-4">
+                    <label>Project Slug</label>
+                    <input type="text" name="@nameof(Model.ProjectSlug)" class="form-control js-slug-textbox" value="@Model.ProjectSlug" />
+                    <p class="help-block">
+                        <span class="error-text"></span>
+                    </p>
+                </div>
+                <div class="form-group col-lg-4">
+                    <label>Project Video</label>
+                    <input type="text" name="@nameof(Model.ProjectVideoUrl)" class="form-control js-slug-textbox" value="@Model.ProjectVideoUrl" />
+                </div>
+                <div class="form-group col-lg-4">
+                    <label>Upload Image</label>
+                    <div class="input-group custom-file-group js-custom-file-upload">
+                        <div class="form-control">
+                            <a class="js-attachment js-image-attachment" href="@Html.Raw(Model.ProjectImageHttpPath)">@Html.Raw(Model.ProjectCoverImageFilename)</a>
+                            <span class="js-new-attachment hidden"></span>
+                        </div>
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-warning hidden js-clear-button"><i class="fa fa-times"></i></button>
+                            @if (Model.HasProjectImage)
+                            {
+                                <button type="button" data-url="@Html.Raw(Model.UrlDeleteImage)" data-text-confirm="@Html.Raw(Model.TextConfirmDelete)" class="btn btn-danger js-delete-button"><i class="fas fa-trash-alt"></i></button>
+                            }
+                            <span class="btn btn-default custom-file-upload">
+                                <i class="fas fa-folder-open"></i>
+                                <input type="file" name="PostedFile" accept="" />
+                            </span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-lg-4">
+                    <label>Project Caption</label>
+                    <input type="text" name="@nameof(Model.ProjectCaption)" class="form-control" value="@Model.ProjectCaption" />
+                </div>
+                <div class="form-group col-lg-4">
+                    <label>Project Caption Eng</label>
+                    <input type="text" name="@nameof(Model.ProjectCaptionEng)" class="form-control" value="@Model.ProjectCaptionEng" />
+                </div>
+                <div class="form-group col-lg-4">
+                    <label>Project Caption Rus</label>
+                    <input type="text" name="@nameof(Model.ProjectCaptionRus)" class="form-control" value="@Model.ProjectCaptionRus" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-lg-4">
+                    <label>Project Short Description</label>
+                    <input type="text" name="@nameof(Model.ProjectShortDescription)" class="form-control" value="@Model.ProjectShortDescription" />
+                </div>
+                <div class="form-group col-lg-4">
+                    <label>Project Short Description Eng</label>
+                    <input type="text" name="@nameof(Model.ProjectShortDescriptionEng)" class="form-control" value="@Model.ProjectShortDescriptionEng" />
+                </div>
+                <div class="form-group col-lg-4">
+                    <label>Project Short Description Rus</label>
+                    <input type="text" name="@nameof(Model.ProjectShortDescriptionRus)" class="form-control" value="@Model.ProjectShortDescriptionRus" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-lg-4">
+                    <label>Project Description</label>
+                    <textarea name="@nameof(Model.ProjectDescription)" class="form-control js-apply-tinymce">@Html.Raw(Model.ProjectDescription)</textarea>
+                </div>
+                <div class="form-group col-lg-4">
+                    <label>Project Description Eng</label>
+                    <textarea name="@nameof(Model.ProjectDescriptionEng)" class="form-control js-apply-tinymce">@Html.Raw(Model.ProjectDescriptionEng)</textarea>
+                </div>
+                <div class="form-group col-lg-4">
+                    <label>Project Description Rus</label>
+                    <textarea name="@nameof(Model.ProjectDescriptionRus)" class="form-control js-apply-tinymce">@Html.Raw(Model.ProjectDescriptionRus)</textarea>
+                </div>
+            </div>
+        </form>
+
+    </div>
+</div>
+@section FooterSection{
+    <script src="~/admin/js/Projects/ProjectsItem.js"></script>
+    @if (Model.HasErrors)
+    {
+        <script>
+            Validation.Init({ErrorsJson:@Html.Raw(Model.ErrorsJson)}).ShowErrors();
+        </script>
+    }
+}

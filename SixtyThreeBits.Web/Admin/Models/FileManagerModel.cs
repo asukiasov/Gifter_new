@@ -137,9 +137,8 @@ namespace SixtyThreeBits.Web.Admin.Models
                                 Items.Add()
                                     .Widget(Widget => Widget.Menu()
                                         .Items(MenuItems => {
-                                            MenuItems.Add()
-                                                .Text("Choose")
-                                                .Icon("tags").Option("commandName", "ChoosePictureButton");
+                                            MenuItems.Add().Text("Get Url").Icon("link").Option("commandName", "GetLinkButton");
+                                            MenuItems.Add().Text("Choose").Icon("check").Option("commandName", "ChoosePictureButton");
                                         })
                                         .OnItemClick("FileManagerModel.OnFileManagerCustomCommand"))
                                         .Location(ToolbarItemLocation.Before);

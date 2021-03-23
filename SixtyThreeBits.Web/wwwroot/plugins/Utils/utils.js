@@ -326,6 +326,7 @@ $.fn.extend({
 
     Show: function () {
         this.removeClass('d-none');
+        this.removeClass('hidden');
     },
     Hide: function () {
         this.addClass('d-none');

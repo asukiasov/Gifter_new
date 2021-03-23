@@ -10,18 +10,23 @@
     },
     OnSelectedFilesChooseClientCallback: null,
     OnFileManagerCustomCommand: function (args) {
-        if (args.itemData.commandName == 'ChoosePictureButton') {
-            var SelectedFiles = [];
-            FileManagerModel.FileManager.getSelectedItems().forEach(function (Item, Index) {
-                SelectedFiles.push({
-                    urlDownload: FileManagerModel.FileManagerFolderHttpPath + Item.name,
-                    name: Item.name
-                });
+        var SelectedFiles = [];
+        FileManagerModel.FileManager.getSelectedItems().forEach(function (Item, Index) {
+            SelectedFiles.push({
+                urlDownload: FileManagerModel.FileManagerFolderHttpPath + Item.name,
+                name: Item.name
             });
-            //console.log(SelectedFiles);
+        });
+
+        if (args.itemData.commandName == 'ChoosePictureButton') {
             if (FileManagerModel.OnSelectedFilesChooseClientCallback) {
                 FileManagerModel.SelectedFiles = SelectedFiles;
                 eval('window.parent.' + FileManagerModel.OnSelectedFilesChooseClientCallback + '(FileManagerModel.SelectedFiles);');
+            }
+        }
+        else if (args.itemData.commandName == 'GetLinkButton') {
+            if (SelectedFiles.length > 0) {
+                prompt('File Url', SelectedFiles[0].urlDownload);
             }
         }
     }

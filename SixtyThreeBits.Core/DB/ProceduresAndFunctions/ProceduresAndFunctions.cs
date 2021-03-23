@@ -332,6 +332,80 @@ namespace SixtyThreeBits.Core.DB
         }
         #endregion
 
+        #region ProjectsGetSingleByID
+        internal virtual DbSet<ScalarFunctionResult<string>> ProjectsGetSingleByIDResult { get; set; }
+        public async Task<string> ProjectsGetSingleByID(int? ProjectID)
+        {
+            var PR = new PrepareQueryExecution(
+                DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
+                DatabaseObjectName: nameof(ProjectsGetSingleByID),
+                ResultItemType: typeof(ScalarFunctionResult<string>),
+                SqlParameters: new SqlParameter[]
+                {
+                    ProjectID.ToSqlParameter(nameof(ProjectID), SqlDbType.Int)
+                }
+            );
+            var DBResult = ProjectsGetSingleByIDResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
+            var DBFunctionResult = await DBResult.FirstOrDefaultAsync();
+            return DBFunctionResult?.Value;
+        }
+        #endregion
+
+        #region ProjectsIsSlugUniq
+        internal virtual DbSet<ScalarFunctionResult<bool>> ProjectsIsSlugUniqResult { get; set; }
+        public async Task<bool> ProjectsIsSlugUniq(string ProjectSlug, int? ProjectID)
+        {
+            var PR = new PrepareQueryExecution(
+                DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
+                DatabaseObjectName: nameof(ProjectsIsSlugUniq),
+                ResultItemType: typeof(ScalarFunctionResult<string>),
+                SqlParameters: new SqlParameter[]
+                {
+                    ProjectSlug.ToSqlParameter(nameof(ProjectSlug), SqlDbType.NVarChar),
+                    ProjectID.ToSqlParameter(nameof(ProjectID), SqlDbType.Int)
+                }
+            );
+            var DBResult = ProjectsIsSlugUniqResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
+            var DBFunctionResult = await DBResult.FirstOrDefaultAsync();
+            return DBFunctionResult?.Value == true;
+        }
+        #endregion
+
+        #region ProjectsList
+        public class ProjectsListResultItem
+        {
+            #region Properties
+            public int? ProjectID { get; set; }
+            public string ProjectSlug { get; set; }
+            public string ProjectCaption { get; set; }
+            public string ProjectCaptionEng { get; set; }
+            public string ProjectCaptionRus { get; set; }
+            public string ProjectShortDescription { get; set; }
+            public string ProjectShortDescriptionEng { get; set; }
+            public string ProjectShortDescriptionRus { get; set; }
+            public string ProjectDescription { get; set; }
+            public string ProjectDescriptionEng { get; set; }
+            public string ProjectDescriptionRus { get; set; }
+            public string ProjectCoverImageFilename { get; set; }
+            public string ProjectVideoUrl { get; set; }
+            public bool ProjectIsPublished { get; set; }
+            public int? ProjectSortIndex { get; set; }
+            public DateTime ProjectDateCreated { get; set; }
+            #endregion
+        }
+        internal virtual DbSet<ProjectsListResultItem> ProjectsListResult { get; set; }
+        public IQueryable<ProjectsListResultItem> ProjectsList()
+        {
+            var PR = new PrepareQueryExecution(
+                DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
+                DatabaseObjectName: nameof(ProjectsList),
+                ResultItemType: typeof(ProjectsListResultItem)
+            );
+            var DBResult = ProjectsListResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
+            return DBResult;
+        }
+        #endregion
+
         #region RolesList
         public class RolesListResultItem
         {
@@ -389,7 +463,7 @@ namespace SixtyThreeBits.Core.DB
                 ResultItemType: typeof(ScalarFunctionResult<string>)
             );
             var DBResult = SystemPropertiesGetResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
-            return DBResult.FirstOrDefaultAsync();            
+            return DBResult.FirstOrDefaultAsync();
         }
         #endregion
 
@@ -486,6 +560,37 @@ namespace SixtyThreeBits.Core.DB
         #endregion
 
         #region Stored Procedures  
+        public async Task<int?> ProjectsIUD(Enums.DatabaseActions iud, int? ProjectID, string ProjectSlug, string ProjectCaption, string ProjectCaptionEng, string ProjectCaptionRus, string ProjectShortDescription, string ProjectShortDescriptionEng, string ProjectShortDescriptionRus, string ProjectDescription,string ProjectDescriptionEng, string ProjectDescriptionRus, string ProjectCoverImageFilename, string ProjectVideoUrl, bool? ProjectIsPublished)
+        {
+            var PR = new PrepareQueryExecution(
+                DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.STORED_PROCEDURE,
+                DatabaseObjectName: nameof(ProjectsIUD),
+                ResultItemType: null,
+                SqlParameters: new SqlParameter[]
+                {
+                    iud.ToSqlParameter(nameof(iud), SqlDbType.TinyInt),
+                    ProjectID.ToSqlParameter(nameof(ProjectID), SqlDbType.Int, true),
+                    ProjectSlug.ToSqlParameter(nameof(ProjectSlug), SqlDbType.NVarChar),
+                    ProjectCaption.ToSqlParameter(nameof(ProjectCaption), SqlDbType.NVarChar),
+                    ProjectCaptionEng.ToSqlParameter(nameof(ProjectCaptionEng), SqlDbType.NVarChar),
+                    ProjectCaptionRus.ToSqlParameter(nameof(ProjectCaptionRus), SqlDbType.NVarChar),
+                    ProjectShortDescription.ToSqlParameter(nameof(ProjectShortDescription), SqlDbType.NVarChar),
+                    ProjectShortDescriptionEng.ToSqlParameter(nameof(ProjectShortDescriptionEng), SqlDbType.NVarChar),
+                    ProjectShortDescriptionRus.ToSqlParameter(nameof(ProjectShortDescriptionRus), SqlDbType.NVarChar),
+                    ProjectDescription.ToSqlParameter(nameof(ProjectDescription), SqlDbType.NVarChar),
+                    ProjectDescriptionEng.ToSqlParameter(nameof(ProjectDescriptionEng), SqlDbType.NVarChar),
+                    ProjectDescriptionRus.ToSqlParameter(nameof(ProjectDescriptionRus), SqlDbType.NVarChar),
+                    ProjectCoverImageFilename.ToSqlParameter(nameof(ProjectCoverImageFilename), SqlDbType.NVarChar),
+                    ProjectVideoUrl.ToSqlParameter(nameof(ProjectVideoUrl), SqlDbType.NVarChar),
+                    ProjectIsPublished.ToSqlParameter(nameof(ProjectIsPublished), SqlDbType.Bit)
+                }
+            );
+            var DBResult = await Database.ExecuteSqlRawAsync(PR.SqlQuery, PR.SqlParameters);
+            ProjectID = PR.SqlParameters[1].Value?.ToString().ToInt();
+            return ProjectID;
+        }
+
+
         public async Task<int?> BlogIUD(Enums.DatabaseActions iud, int? BlogsID, string Blogslug, string BlogsTitle, string BlogsText, string BlogsAuthorName, string BlogsImageFilename, DateTime? BlogsDate)
         {
             var PR = new PrepareQueryExecution(
@@ -755,7 +860,7 @@ namespace SixtyThreeBits.Core.DB
                  SMTPUsername.ToSqlParameter(nameof(SMTPUsername),SqlDbType.NVarChar),
                  SMTPPassword.ToSqlParameter(nameof(SMTPPassword),SqlDbType.NVarChar),
                  SMTPUseSSL.ToSqlParameter(nameof(SMTPUseSSL),SqlDbType.Bit),
-                 SMTPFrom.ToSqlParameter(nameof(SMTPFrom),SqlDbType.NVarChar),                 
+                 SMTPFrom.ToSqlParameter(nameof(SMTPFrom),SqlDbType.NVarChar),
              }
            );
             await Database.ExecuteSqlRawAsync(PR.SqlQuery, PR.SqlParameters);
@@ -800,6 +905,7 @@ namespace SixtyThreeBits.Core.DB
             ModelBuilder.Entity<PagesListForDeleteRecursiveResultItem>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<PagesListResultItem>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<PermissionsListResultItem>(Entity => { Entity.HasNoKey(); });
+            ModelBuilder.Entity<ProjectsListResultItem>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<RolesListResultItem>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<RolePermissionsListResultItem>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<UsersListResultItem>(Entity => { Entity.HasNoKey(); });

@@ -92,7 +92,8 @@ namespace SixtyThreeBits.Web.Reusables.Core
             })
             .Editing(Options =>
             {
-                Options.Mode(GridEditMode.Cell);
+                Options.Mode(GridEditMode.Row);
+                //Options.Mode(GridEditMode.Cell);
                 Options.AllowAdding(AllowAdd);
                 Options.AllowUpdating(AllowUpdate);
                 Options.AllowDeleting(AllowDelete);
@@ -119,7 +120,8 @@ namespace SixtyThreeBits.Web.Reusables.Core
             {                
                 if (AllowAdd || AllowUpdate || AllowDelete)
                 {
-                    var Width = 30;
+                    var Width = 60;
+                    //var Width = 30;
                     Columns.Add().Type(GridCommandColumnType.Buttons).Alignment(HorizontalAlignment.Center).Width(Width).Visible(AllowDelete).Buttons(b =>
                     {                           
                         b.Add().Name(GridColumnButtonName.Edit).Icon("fas fa-pencil-alt").Text(Resources.TextUpdate);
@@ -452,7 +454,7 @@ namespace SixtyThreeBits.Web.Reusables.Core
     {        
         #region Properties        
         public List<SimpleKeyValue<string, string>> Errors { get; set; }
-        public string ErrorMessage => string.Join("<br />", Errors?.Select(Item => Item.Value));
+        public string ErrorMessage => Errors == null ? null : string.Join("<br />", Errors.Select(Item => Item.Value));
         public bool HasErrors => Errors?.Count > 0;
         public bool IsValid => !HasErrors;
         public string ErrorsJson => Errors.ToJSON();        

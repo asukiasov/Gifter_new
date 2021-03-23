@@ -70,6 +70,10 @@
                 </div>
             </div>
 
+            <button class="editor-btn-rounded js-show-filemanager-popup-btn" data-toggle="tooltip" data-placement="bottom" title="Upload files"><img src="/plugins/63bits-pageBuilder/images/icons/upload.svg" alt="filemanager"></button>
+
+            <button class="editor-btn-rounded js-show-page-scripts-popup-btn" data-toggle="tooltip" data-placement="bottom" title="Add custom Styles & Scripts"><img src="/plugins/63bits-pageBuilder/images/icons/settings.svg" alt="settings"></button>
+
             <a href="@Html.Raw(Model.UrlPreview)" target="_blank" class="editor-btn-rounded" data-toggle="tooltip" data-placement="left" title="Preview"><img src="/plugins/63bits-pageBuilder/images/icons/eye.svg" alt="preview"></a>
 
             <button class="editor-btn-rounded bg-green js-save-btn" data-toggle="tooltip" data-placement="left" title="Save">
@@ -124,7 +128,7 @@
                 <li class="editor-sections-builder-item js-builder-item" data-item="article2ColWithImg" data-type="1">
                     <div>
                         <i class="handle js-builder-item-handle"><img src="/plugins/63bits-pageBuilder/images/icons/drug.svg" alt="drag icon"></i>
-                        <img class="thumb" src="/plugins/63bits-pageBuilder/images/icons/builder/bl_text_img.svg" alt="photo + text center">
+                        <img class="thumb" src="/plugins/63bits-pageBuilder/images/icons/builder/bl_text_img.svg" alt="Text + Photo">
                         <span class="name js-builder-item-name">Text+Photo</span>
                     </div>
                     <div class="controls">
@@ -134,7 +138,7 @@
                 <li class="editor-sections-builder-item js-builder-item" data-item="article2ColWithImg" data-type="2">
                     <div>
                         <i class="handle js-builder-item-handle"><img src="/plugins/63bits-pageBuilder/images/icons/drug.svg" alt="drag icon"></i>
-                        <img class="thumb" src="/plugins/63bits-pageBuilder/images/icons/builder/bl_img_text.svg" alt="photo + text center">
+                        <img class="thumb" src="/plugins/63bits-pageBuilder/images/icons/builder/bl_img_text.svg" alt="Photo + Text">
                         <span class="name js-builder-item-name">Photo+Text</span>
                     </div>
                     <div class="controls">
@@ -144,7 +148,7 @@
                 <li class="editor-sections-builder-item js-builder-item" data-item="article2ColWithImg" data-type="3">
                     <div>
                         <i class="handle js-builder-item-handle"><img src="/plugins/63bits-pageBuilder/images/icons/drug.svg" alt="drag icon"></i>
-                        <img class="thumb" src="/plugins/63bits-pageBuilder/images/icons/builder/bl_text_img_sm.svg" alt="photo + text center">
+                        <img class="thumb" src="/plugins/63bits-pageBuilder/images/icons/builder/bl_text_img_sm.svg" alt="Text + Photo small">
                         <span class="name js-builder-item-name">Text+Photo small</span>
                     </div>
                     <div class="controls">
@@ -154,7 +158,7 @@
                 <li class="editor-sections-builder-item js-builder-item" data-item="article2ColWithImg" data-type="4">
                     <div>
                         <i class="handle js-builder-item-handle"><img src="/plugins/63bits-pageBuilder/images/icons/drug.svg" alt="drag icon"></i>
-                        <img class="thumb" src="/plugins/63bits-pageBuilder/images/icons/builder/bl_img_text_sm.svg" alt="photo + text center">
+                        <img class="thumb" src="/plugins/63bits-pageBuilder/images/icons/builder/bl_img_text_sm.svg" alt="Photo small + Text">
                         <span class="name js-builder-item-name">Photo small+Text</span>
                     </div>
                     <div class="controls">
@@ -165,7 +169,7 @@
                 <li class="editor-sections-builder-item js-builder-item" data-item="article" data-type="1">
                     <div>
                         <i class="handle js-builder-item-handle"><img src="/plugins/63bits-pageBuilder/images/icons/drug.svg" alt="drag icon"></i>
-                        <img class="thumb" src="/plugins/63bits-pageBuilder/images/icons/builder/bl_title_text.svg" alt="photo + text center">
+                        <img class="thumb" src="/plugins/63bits-pageBuilder/images/icons/builder/bl_title_text.svg" alt="Text">
                         <span class="name js-builder-item-name">Text</span>
                     </div>
                     <div class="controls">
@@ -176,7 +180,7 @@
                 <li class="editor-sections-builder-item js-builder-item" data-item="article2Col" data-type="1">
                     <div>
                         <i class="handle js-builder-item-handle"><img src="/plugins/63bits-pageBuilder/images/icons/drug.svg" alt="drag icon"></i>
-                        <img class="thumb" src="/plugins/63bits-pageBuilder/images/icons/builder/bl_title_text_title_text.svg" alt="photo + text center">
+                        <img class="thumb" src="/plugins/63bits-pageBuilder/images/icons/builder/bl_title_text_title_text.svg" alt="Text + Text">
                         <span class="name js-builder-item-name">Text+Text</span>
                     </div>
                     <div class="controls">
@@ -187,7 +191,7 @@
                 <li class="editor-sections-builder-item js-builder-item" data-item="articleText2Col" data-type="1">
                     <div>
                         <i class="handle js-builder-item-handle"><img src="/plugins/63bits-pageBuilder/images/icons/drug.svg" alt="drag icon"></i>
-                        <img class="thumb" src="/plugins/63bits-pageBuilder/images/icons/builder/bl_title_text_text.svg" alt="photo + text center">
+                        <img class="thumb" src="/plugins/63bits-pageBuilder/images/icons/builder/bl_title_text_text.svg" alt="Title + Text2col">
                         <span class="name js-builder-item-name">Title+Text2col</span>
                     </div>
                     <div class="controls">
@@ -209,17 +213,18 @@
                 <li class="editor-sections-builder-item js-builder-item" data-item="video" data-type="1">
                     <div>
                         <i class="handle js-builder-item-handle"><img src="/plugins/63bits-pageBuilder/images/icons/drug.svg" alt="drag icon"></i>
-                        <img class="thumb" src="/plugins/63bits-pageBuilder/images/icons/builder/bl_video.svg" alt="photo + text center">
-                        <span class="name js-builder-item-name">Video</span>
+                        <img class="thumb" src="/plugins/63bits-pageBuilder/images/icons/builder/bl_video.svg" alt="Video">
+                        <span class="name js-builder-item-name">Video (Youtube, Vimeo)</span>
                     </div>
                     <div class="controls">
                         <button class="js-delete-section"><img src="/plugins/63bits-pageBuilder/images/icons/remove.svg" alt="remove"></button>
                     </div>
                 </li>
+
                 <li class="editor-sections-builder-item js-builder-item" data-item="articleWithVideo" data-type="1">
                     <div>
                         <i class="handle js-builder-item-handle"><img src="/plugins/63bits-pageBuilder/images/icons/drug.svg" alt="drag icon"></i>
-                        <img class="thumb" src="/plugins/63bits-pageBuilder/images/icons/builder/bl_video.svg" alt="photo + text center">
+                        <img class="thumb" src="/plugins/63bits-pageBuilder/images/icons/builder/bl_video.svg" alt="Video + text">
                         <span class="name js-builder-item-name">Video + text</span>
                     </div>
                     <div class="controls">
@@ -230,8 +235,8 @@
                 <li class="editor-sections-builder-item js-builder-item" data-item="articlesGrid" data-type="1">
                     <div>
                         <i class="handle js-builder-item-handle"><img src="/plugins/63bits-pageBuilder/images/icons/drug.svg" alt="drag icon"></i>
-                        <img class="thumb" src="/plugins/63bits-pageBuilder/images/icons/builder/bl_articles_grid.svg" alt="photo + text center">
-                        <span class="name js-builder-item-name">articles grid</span>
+                        <img class="thumb" src="/plugins/63bits-pageBuilder/images/icons/builder/bl_articles_grid.svg" alt="Articles grid">
+                        <span class="name js-builder-item-name">Articles grid</span>
                     </div>
                     <div class="controls">
                         <button class="js-delete-section"><img src="/plugins/63bits-pageBuilder/images/icons/remove.svg" alt="remove"></button>
@@ -240,8 +245,8 @@
                 <li class="editor-sections-builder-item js-builder-item" data-item="articlesList" data-type="1">
                     <div>
                         <i class="handle js-builder-item-handle"><img src="/plugins/63bits-pageBuilder/images/icons/drug.svg" alt="drag icon"></i>
-                        <img class="thumb" src="/plugins/63bits-pageBuilder/images/icons/builder/bl_articles_list.svg" alt="photo + text center">
-                        <span class="name js-builder-item-name">articles list</span>
+                        <img class="thumb" src="/plugins/63bits-pageBuilder/images/icons/builder/bl_articles_list.svg" alt="Articles list">
+                        <span class="name js-builder-item-name">Articles list</span>
                     </div>
                     <div class="controls">
                         <button class="js-delete-section"><img src="/plugins/63bits-pageBuilder/images/icons/remove.svg" alt="remove"></button>
@@ -250,8 +255,8 @@
                 <li class="editor-sections-builder-item js-builder-item" data-item="imgGrid" data-type="1">
                     <div>
                         <i class="handle js-builder-item-handle"><img src="/plugins/63bits-pageBuilder/images/icons/drug.svg" alt="drag icon"></i>
-                        <img class="thumb" src="/plugins/63bits-pageBuilder/images/icons/builder/bl_img_grid.svg" alt="photo + text center">
-                        <span class="name js-builder-item-name">img grid</span>
+                        <img class="thumb" src="/plugins/63bits-pageBuilder/images/icons/builder/bl_img_grid.svg" alt="Img grid">
+                        <span class="name js-builder-item-name">Img grid</span>
                     </div>
                     <div class="controls">
                         <button class="js-delete-section"><img src="/plugins/63bits-pageBuilder/images/icons/remove.svg" alt="remove"></button>
@@ -260,7 +265,7 @@
                 <li class="editor-sections-builder-item js-builder-item" data-item="services" data-type="1">
                     <div>
                         <i class="handle js-builder-item-handle"><img src="/plugins/63bits-pageBuilder/images/icons/drug.svg" alt="drag icon"></i>
-                        <img class="thumb" src="/plugins/63bits-pageBuilder/images/icons/builder/bl_services.svg" alt="photo + text center">
+                        <img class="thumb" src="/plugins/63bits-pageBuilder/images/icons/builder/bl_services.svg" alt="Services">
                         <span class="name js-builder-item-name">Services</span>
                     </div>
                     <div class="controls">
@@ -270,18 +275,8 @@
                 <li class="editor-sections-builder-item js-builder-item" data-item="testimonials" data-type="1">
                     <div>
                         <i class="handle js-builder-item-handle"><img src="/plugins/63bits-pageBuilder/images/icons/drug.svg" alt="drag icon"></i>
-                        <img class="thumb" src="/plugins/63bits-pageBuilder/images/icons/builder/bl_testimonials.svg" alt="photo + text center">
+                        <img class="thumb" src="/plugins/63bits-pageBuilder/images/icons/builder/bl_testimonials.svg" alt="Testimonials">
                         <span class="name js-builder-item-name">Testimonials</span>
-                    </div>
-                    <div class="controls">
-                        <button class="js-delete-section"><img src="/plugins/63bits-pageBuilder/images/icons/remove.svg" alt="remove"></button>
-                    </div>
-                </li>
-                <li class="editor-sections-builder-item js-builder-item" data-item="accordion" data-type="1">
-                    <div>
-                        <i class="handle js-builder-item-handle"><img src="/plugins/63bits-pageBuilder/images/icons/drug.svg" alt="drag icon"></i>
-                        <img class="thumb" src="/plugins/63bits-pageBuilder/images/icons/builder/bl_accordion.svg" alt="photo + text center">
-                        <span class="name js-builder-item-name">Accordion</span>
                     </div>
                     <div class="controls">
                         <button class="js-delete-section"><img src="/plugins/63bits-pageBuilder/images/icons/remove.svg" alt="remove"></button>
@@ -290,8 +285,162 @@
                 <li class="editor-sections-builder-item js-builder-item" data-item="html" data-type="1">
                     <div>
                         <i class="handle js-builder-item-handle"><img src="/plugins/63bits-pageBuilder/images/icons/drug.svg" alt="drag icon"></i>
-                        <img class="thumb" src="/plugins/63bits-pageBuilder/images/icons/builder/bl_html.svg" alt="photo + text center">
+                        <img class="thumb" src="/plugins/63bits-pageBuilder/images/icons/builder/bl_html.svg" alt="Html">
                         <span class="name js-builder-item-name">Html</span>
+                    </div>
+                    <div class="controls">
+                        <button class="js-delete-section"><img src="/plugins/63bits-pageBuilder/images/icons/remove.svg" alt="remove"></button>
+                    </div>
+                </li>
+                <li class="editor-sections-builder-item js-builder-item" data-item="pageHead" data-type="1">
+                    <div>
+                        <i class="handle js-builder-item-handle"><img src="/plugins/63bits-pageBuilder/images/icons/drug.svg" alt="drag icon"></i>
+                        <img class="thumb" src="/plugins/63bits-pageBuilder/images/icons/builder/bl_head.svg" alt="Head">
+                        <span class="name js-builder-item-name">Head</span>
+                    </div>
+                    <div class="controls">
+                        <button class="js-delete-section"><img src="/plugins/63bits-pageBuilder/images/icons/remove.svg" alt="remove"></button>
+                    </div>
+                </li>
+                <li class="editor-sections-builder-item js-builder-item" data-item="flipCardsGrid" data-type="1">
+                    <div>
+                        <i class="handle js-builder-item-handle"><img src="/plugins/63bits-pageBuilder/images/icons/drug.svg" alt="drag icon"></i>
+                        <img class="thumb" src="/plugins/63bits-pageBuilder/images/icons/builder/bl_flip_cards.svg" alt="Flip Cards">
+                        <span class="name js-builder-item-name">Flip Cards</span>
+                    </div>
+                    <div class="controls">
+                        <button class="js-delete-section"><img src="/plugins/63bits-pageBuilder/images/icons/remove.svg" alt="remove"></button>
+                    </div>
+                </li>
+                <li class="editor-sections-builder-item js-builder-item" data-item="accordion" data-type="1">
+                    <div>
+                        <i class="handle js-builder-item-handle"><img src="/plugins/63bits-pageBuilder/images/icons/drug.svg" alt="drag icon"></i>
+                        <img class="thumb" src="/plugins/63bits-pageBuilder/images/icons/builder/bl_accordion.svg" alt="Accordion">
+                        <span class="name js-builder-item-name">Accordion</span>
+                    </div>
+                    <div class="controls">
+                        <button class="js-delete-section"><img src="/plugins/63bits-pageBuilder/images/icons/remove.svg" alt="remove"></button>
+                    </div>
+                </li>
+                <li class="editor-sections-builder-item js-builder-item" data-item="tabs" data-type="1">
+                    <div>
+                        <i class="handle js-builder-item-handle"><img src="/plugins/63bits-pageBuilder/images/icons/drug.svg" alt="drag icon"></i>
+                        <img class="thumb" src="/plugins/63bits-pageBuilder/images/icons/builder/bl_tabs.svg" alt="Accordion">
+                        <span class="name js-builder-item-name">Tabs</span>
+                    </div>
+                    <div class="controls">
+                        <button class="js-delete-section"><img src="/plugins/63bits-pageBuilder/images/icons/remove.svg" alt="remove"></button>
+                    </div>
+                </li>
+                <li class="editor-sections-builder-item js-builder-item" data-item="card" data-type="1">
+                    <div>
+                        <i class="handle js-builder-item-handle"><img src="/plugins/63bits-pageBuilder/images/icons/drug.svg" alt="drag icon"></i>
+                        <img class="thumb" src="/plugins/63bits-pageBuilder/images/icons/builder/bl_card.svg" alt="Icon + text">
+                        <span class="name js-builder-item-name">Icon + text</span>
+                    </div>
+                    <div class="controls">
+                        <button class="js-delete-section"><img src="/plugins/63bits-pageBuilder/images/icons/remove.svg" alt="remove"></button>
+                    </div>
+                </li>
+                <li class="editor-sections-builder-item js-builder-item" data-item="packagesGrid" data-type="1">
+                    <div>
+                        <i class="handle js-builder-item-handle"><img src="/plugins/63bits-pageBuilder/images/icons/drug.svg" alt="drag icon"></i>
+                        <img class="thumb" src="/plugins/63bits-pageBuilder/images/icons/builder/bl_packages_grid.svg" alt="Packages">
+                        <span class="name js-builder-item-name">Packages</span>
+                    </div>
+                    <div class="controls">
+                        <button class="js-delete-section"><img src="/plugins/63bits-pageBuilder/images/icons/remove.svg" alt="remove"></button>
+                    </div>
+                </li>
+                <li class="editor-sections-builder-item js-builder-item" data-item="article2colWithBgImgAndImg" data-type="1">
+                    <div>
+                        <i class="handle js-builder-item-handle"><img src="/plugins/63bits-pageBuilder/images/icons/drug.svg" alt="quote"></i>
+                        <img class="thumb" src="/plugins/63bits-pageBuilder/images/icons/builder/bl_text_with_bg_and_img.svg" alt="Text with bg + Img">
+                        <span class="name js-builder-item-name">Text with bg + Img</span>
+                    </div>
+                    <div class="controls">
+                        <button class="js-delete-section"><img src="/plugins/63bits-pageBuilder/images/icons/remove.svg" alt="remove"></button>
+                    </div>
+                </li>
+                <li class="editor-sections-builder-item js-builder-item" data-item="quote" data-type="1">
+                    <div>
+                        <i class="handle js-builder-item-handle"><img src="/plugins/63bits-pageBuilder/images/icons/drug.svg" alt="quote"></i>
+                        <img class="thumb" src="/plugins/63bits-pageBuilder/images/icons/builder/bl_quote.svg" alt="Packages">
+                        <span class="name js-builder-item-name">Quote</span>
+                    </div>
+                    <div class="controls">
+                        <button class="js-delete-section"><img src="/plugins/63bits-pageBuilder/images/icons/remove.svg" alt="remove"></button>
+                    </div>
+                </li>
+                <li class="editor-sections-builder-item js-builder-item" data-item="iframe" data-type="1">
+                    <div>
+                        <i class="handle js-builder-item-handle"><img src="/plugins/63bits-pageBuilder/images/icons/drug.svg" alt="quote"></i>
+                        <img class="thumb" src="/plugins/63bits-pageBuilder/images/icons/builder/bl_iframe.svg" alt="Packages">
+                        <span class="name js-builder-item-name">Iframe</span>
+                    </div>
+                    <div class="controls">
+                        <button class="js-delete-section"><img src="/plugins/63bits-pageBuilder/images/icons/remove.svg" alt="remove"></button>
+                    </div>
+                </li>
+
+                <li class="editor-sections-builder-item js-builder-item" data-item="jwPlayer" data-type="1">
+                    <div>
+                        <i class="handle js-builder-item-handle"><img src="/plugins/63bits-pageBuilder/images/icons/drug.svg" alt="drag icon"></i>
+                        <img class="thumb" src="/plugins/63bits-pageBuilder/images/icons/builder/bl_video.svg" alt="Video">
+                        <span class="name js-builder-item-name">Video (JW Player)</span>
+                    </div>
+                    <div class="controls">
+                        <button class="js-delete-section"><img src="/plugins/63bits-pageBuilder/images/icons/remove.svg" alt="remove"></button>
+                    </div>
+                </li>
+
+                <li class="editor-sections-builder-item js-builder-item" data-item="videoGrid" data-type="1">
+                    <div>
+                        <i class="handle js-builder-item-handle"><img src="/plugins/63bits-pageBuilder/images/icons/drug.svg" alt="drag icon"></i>
+                        <img class="thumb" src="/plugins/63bits-pageBuilder/images/icons/builder/bl_video.svg" alt="Video">
+                        <span class="name js-builder-item-name">Video Grid (Youtube, Vimeo)</span>
+                    </div>
+                    <div class="controls">
+                        <button class="js-delete-section"><img src="/plugins/63bits-pageBuilder/images/icons/remove.svg" alt="remove"></button>
+                    </div>
+                </li>
+                <li class="editor-sections-builder-item js-builder-item" data-item="jwPlayerGrid" data-type="1">
+                    <div>
+                        <i class="handle js-builder-item-handle"><img src="/plugins/63bits-pageBuilder/images/icons/drug.svg" alt="drag icon"></i>
+                        <img class="thumb" src="/plugins/63bits-pageBuilder/images/icons/builder/bl_video.svg" alt="Video">
+                        <span class="name js-builder-item-name">Video Grid (JW Player)</span>
+                    </div>
+                    <div class="controls">
+                        <button class="js-delete-section"><img src="/plugins/63bits-pageBuilder/images/icons/remove.svg" alt="remove"></button>
+                    </div>
+                </li>
+                <li class="editor-sections-builder-item js-builder-item" data-item="pdfViewer" data-type="1">
+                    <div>
+                        <i class="handle js-builder-item-handle"><img src="/plugins/63bits-pageBuilder/images/icons/drug.svg" alt="drag icon"></i>
+                        <img class="thumb" src="/plugins/63bits-pageBuilder/images/icons/builder/bl_pdf.svg" alt="Video">
+                        <span class="name js-builder-item-name">PDF Viewer</span>
+                    </div>
+                    <div class="controls">
+                        <button class="js-delete-section"><img src="/plugins/63bits-pageBuilder/images/icons/remove.svg" alt="remove"></button>
+                    </div>
+                </li>
+
+                <li class="editor-sections-builder-item js-builder-item" data-item="postCardsGrid" data-type="1">
+                    <div>
+                        <i class="handle js-builder-item-handle"><img src="/plugins/63bits-pageBuilder/images/icons/drug.svg" alt="drag icon"></i>
+                        <img class="thumb" src="/plugins/63bits-pageBuilder/images/icons/builder/bl_articles_grid.svg" alt="Post cards grid">
+                        <span class="name js-builder-item-name">Post cards grid</span>
+                    </div>
+                    <div class="controls">
+                        <button class="js-delete-section"><img src="/plugins/63bits-pageBuilder/images/icons/remove.svg" alt="remove"></button>
+                    </div>
+                </li>
+
+                <li class="editor-sections-builder-item js-builder-item" data-item="booksGrid" data-type="1">
+                    <div>
+                        <i class="handle js-builder-item-handle"><img src="/plugins/63bits-pageBuilder/images/icons/drug.svg" alt="drag icon"></i>
+                        <img class="thumb" src="/plugins/63bits-pageBuilder/images/icons/builder/bl_books_grid.svg" alt="Post cards grid">
+                        <span class="name js-builder-item-name">Books grid</span>
                     </div>
                     <div class="controls">
                         <button class="js-delete-section"><img src="/plugins/63bits-pageBuilder/images/icons/remove.svg" alt="remove"></button>
@@ -301,14 +450,69 @@
         </div>
     </div>
 
-    <main class="page editor-page js-editor-page"></main>
-    @await Html.PartialAsync(ViewNames.Shared.PluginsClient.Footer, Model.PluginsClient)                    
+    <main class="app-page editor-page js-editor-page"></main>
+
+    <div class="page-scripts-popup js-page-scripts-popup">
+        <div class="container">
+            <div class="content">
+                <div class="head">
+                    <h3 class="title">Upload css and js</h3>
+
+                    <button type="button" class="close-popup-btn js-close-popup-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" version="1" viewBox="0 0 13.6 13.6"><polygon points="8.3,6.8 13.5,1.7 11.9,0.1 6.8,5.2 1.7,0.1 0.1,1.7 5.2,6.8 0.1,11.9 1.7,13.5 6.8,8.3 11.9,13.5 13.5,11.9"></polygon></svg>
+                    </button>
+                </div>
+                <div class="body">
+                    <section>
+                        <h4 class="title">Css</h4>
+
+                        <ul class="file-list js-css-files-container js-sortable"></ul>
+
+                        <div class="btn-wrap">
+                            <button class="btn editor-btn js-choose-css-files-btn">Choose CSS</button>
+                        </div>
+                    </section>
+
+                    <section>
+                        <h4 class="title">Js</h4>
+
+                        <ul class="file-list js-js-files-container js-sortable"></ul>
+
+                        <div class="btn-wrap">
+                            <button class="btn editor-btn js-choose-js-files-btn">Choose JS</button>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @await Html.PartialAsync(ViewNames.Shared.PluginsClient.Footer, Model.PluginsClient)
+
     <script>
         PageBuilderModel.urlSave = '@Model.UrlSave';
         PageBuilderModel.textError = '@Model.TextError';
         PageBuilderModel.language = '@Model.Language';
         PageBuilderModel.plugins.fileManager.url = '@Html.Raw(Model.UrlFileManager)';
+        PageBuilderModel.plugins.pdfViewer.url = null;
         PageBuilderModel.data.fromServer = @Html.Raw(Model.PageData);
+
+        //$(function () {
+        //    $('.js-toggle-aside-btn').click(function () {
+        //        $(this).toggleClass('is-active');
+        //        $('.js-course-sections-aside').toggleClass('show');
+        //    });
+
+        //});
+
+        //$(window).on('load', function () {
+        //    $('.desktop .js-scrollable-container').mCustomScrollbar({
+        //        theme: 'minimal',
+        //        scrollInertia: 100
+        //    });
+
+        //    $('.desktop .js-scrollable-container').ScrollTo('.js-current');
+        //});
     </script>
 </body>
 </html>

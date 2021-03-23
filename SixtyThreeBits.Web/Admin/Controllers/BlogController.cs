@@ -21,6 +21,7 @@ namespace SixtyThreeBits.Web.Admin.Controllers
         }
         #endregion
 
+        #region Actions
         [HttpGet]
         [Route("", Name = ControllerActionRouteNames.Admin.Blog.Page)]
         public ActionResult Blog()
@@ -83,12 +84,13 @@ namespace SixtyThreeBits.Web.Admin.Controllers
                 return GetDevexpressSuccessResult();
             }
         }
-
+        #endregion
     }
+
     [Route("admin/blog/{BlogID:int}")]
     [TypeFilter(typeof(BeforeBlogPageLoad), Order = 2)]
     public class BlogPropertiesController : AdminControllerBase<BlogPropertiesModel>
-        {
+    {
         #region Constructors
         public BlogPropertiesController()
         {
@@ -112,6 +114,7 @@ namespace SixtyThreeBits.Web.Admin.Controllers
         [Route("properties")]
         public async Task<IActionResult> Properties(BlogPropertiesModel.BlogPropertiesViewModel SubmitModel)
         {
+            var Result = default(IActionResult);
             Model.PluginsClient.Enable63BitsForms(true).EnableFancybox(true).EnableDevextreme(true).EnableTinyMce(true);
             var ViewModel = Model.GetBlogPropertiesViewModel(ViewModel: SubmitModel);
 
@@ -121,30 +124,32 @@ namespace SixtyThreeBits.Web.Admin.Controllers
             await Model.ValidateBlogPropertiesViewModel(ViewModel);
             if (ViewModel.IsValid)
             {
-                var IsSaved = await Model.SaveBlogProperties(ViewModel);
-                if (IsSaved)
+                await Model.SaveBlogProperties(ViewModel);
+                if (ViewModel.IsSaved)
                 {
                     Model.ShowSuccess();
-                    return Redirect(Url.RouteUrl(ControllerActionRouteNames.Admin.Blog.BlogItem, new { BlogID = Model.DBItemBlog.BlogID }));
+                    Result = Redirect(Url.RouteUrl(ControllerActionRouteNames.Admin.Blog.BlogItem, new { BlogID = Model.DBItemBlog.BlogID }));
                 }
                 else
                 {
                     Model.ShowError();
+                    Result = View(ViewNames.Admin.Blog.BlogItem, ViewModel);
                 }
             }
-
-            return View(ViewNames.Admin.Blog.BlogItem, ViewModel);
+            else
+            {
+                Result = View(ViewNames.Admin.Blog.BlogItem, ViewModel);
+            }
+            return Result;
         }
 
         [HttpPost]
         [Route("properties/delete-image", Name = ControllerActionRouteNames.Admin.Blog.BlogItemDeleteImage)]
         public async Task<IActionResult> BlogItemDeleteImage(int? BlogID)
-        {   
+        {
             var Result = await Model.DeleteImage(BlogID);
             return Json(Result);
         }
         #endregion
     }
-
-
 }

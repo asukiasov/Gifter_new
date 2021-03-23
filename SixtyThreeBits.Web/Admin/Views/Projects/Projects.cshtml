@@ -1,0 +1,15 @@
+﻿@model ProjectsModel.PageViewModel
+@if (Model.ShowAddNewButton)
+{
+    <div class="actions-row">
+        <button class="btn btn-oval btn-default js-add-new-button"><i class="fas fa-plus"></i> Add</button>
+    </div>
+}
+<div class="row">
+    <div class="col">
+        @Model.Grid.Render(Html)
+    </div>
+</div>
+@section FooterSection{
+    <script src="~/admin/js/Projects/Projects.js"></script>
+}

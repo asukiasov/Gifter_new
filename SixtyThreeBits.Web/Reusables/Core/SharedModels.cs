@@ -327,12 +327,14 @@ namespace SixtyThreeBits.Web.Reusables.Core
         public bool IsFancyboxEnabled { get; private set; }
         public bool IsFontAwesomeEnabled { get; private set; }
         public bool IsJQueryEnabled { get; private set; }
+        public bool IsJQueryAppearEnabled { get; private set; }
         public bool IsJQueryConfirmEnabled { get; private set; }
         public bool IsJQueryNestedSortableEnabled { get; private set; }
         public bool IsJQueryUICssEnabled { get; private set; }
         public bool IsJQueryUIJsEnabled { get; private set; }
         public bool IsJsClientEnabled { get; private set; }
-        public bool IsJsZipEnabled { get; private set; }        
+        public bool IsJsZipEnabled { get; private set; }
+        public bool IsJWPlayerEnabled { get; private set; }
         public bool IsPageBuilderEnabled { get; private set; }
         public bool IsPageBuilderEditorEnabled { get; private set; }
         public bool IsPreloaderEnabled { get; private set; }
@@ -405,6 +407,12 @@ namespace SixtyThreeBits.Web.Reusables.Core
             return this;
         }
 
+        public PluginsClient EnableJQueryAppear(bool Value)
+        {
+            IsJQueryAppearEnabled = Value;
+            return this;
+        }
+
         public PluginsClient EnableJQueryUI(bool EnableJs, bool EnableCss)
         {
             IsJQueryUIJsEnabled = EnableJs;
@@ -435,7 +443,13 @@ namespace SixtyThreeBits.Web.Reusables.Core
             IsJsZipEnabled = Value;
             return this;
         }
-        
+
+        public PluginsClient EnableJWPlayer(bool Value)
+        {
+            IsJWPlayerEnabled = Value;
+            return this;
+        }
+
         public PluginsClient EnablePageBuilder(bool Value)
         {
             IsPageBuilderEnabled = Value;

@@ -35,9 +35,9 @@ namespace SixtyThreeBits.Web.Reusables.Core
                 Model.IsHttps = C.Request.IsHttps;
                 Model.IP = LocalUtilities.GetClientIP(C.Request);
 
-                Model.AppSettings = this.AppSettings;
-                Model.Utilities = this.Utilities;
-                Model.DataAccessFactory = new DataAccessFactory(AppSettings);
+                Model.AppSettings = AppSettings;
+                Model.Utilities = Utilities;
+                Model.DataAccessFactory = new DataAccessFactory(AppSettings, Utilities);
 
                 Model.SessionAssistance = new SessionAssistance(C.HttpContext.Session);
                 Model.CookieAssistance = new CookieAssistance(C.Request, C.Response);
