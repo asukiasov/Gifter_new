@@ -118,7 +118,7 @@ namespace SixtyThreeBits.Web.Admin.Controllers
             var Result = default(IActionResult);
             Model.PluginsClient.Enable63BitsForms(true).EnableFancybox(true).EnableDevextreme(true).EnableTinyMce(true);
             var ViewModel = await Model.GetPageViewModel(ProjectID, SubmitModel);
-            Model.ValidatePageViewModel(ViewModel);
+           await Model.ValidatePageViewModel(ViewModel);
             if (ViewModel.IsValid)
             {
                 await Model.SaveProjectsProperties(ProjectID, ViewModel);
