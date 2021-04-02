@@ -177,6 +177,9 @@
   <data name="ValidationPasswordStrength" xml:space="preserve">
     <value>Password must contain at least one letter and one digit</value>
   </data>
+  <data name="ValidationProjectsSlugNotUniq" xml:space="preserve">
+    <value>Projects Slug is Not Uniq</value>
+  </data>
   <data name="ValidationRequired" xml:space="preserve">
     <value>Field is required</value>
   </data>

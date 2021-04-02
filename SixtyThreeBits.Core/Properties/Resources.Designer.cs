@@ -241,6 +241,15 @@ namespace SixtyThreeBits.Core.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Projects Slug is Not Uniq.
+        /// </summary>
+        public static string ValidationProjectsSlugNotUniq {
+            get {
+                return ResourceManager.GetString("ValidationProjectsSlugNotUniq", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Field is required.
         /// </summary>
         public static string ValidationRequired {

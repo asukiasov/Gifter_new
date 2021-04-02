@@ -737,10 +737,6 @@
 
 
 /* ---------- video ---------- */
-.t63-section[data-section="video"]{
-    background-color: transparent;
-}
-
 .t63-section[data-section="video"] + .t63-section[data-section="video"]{
     margin-top: 60px;
 }

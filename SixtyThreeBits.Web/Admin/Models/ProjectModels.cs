@@ -124,6 +124,7 @@ namespace SixtyThreeBits.Web.Admin.Models
         public async Task<ProjectsPropertiesViewModel> GetPageViewModel(int? ProjectID, ProjectsPropertiesViewModel ViewModel)
         {
             var DBItem = await DataAccessFactory.Projects.GetSingleProjectByID(ProjectID);
+            DBItemProjects = DBItem;
             if (DBItem == null)
             {
                 ViewModel = null;
@@ -153,11 +154,20 @@ namespace SixtyThreeBits.Web.Admin.Models
             return ViewModel;
         }
 
-        public void ValidatePageViewModel(ProjectsPropertiesViewModel ViewModel)
+        public  async Task ValidatePageViewModel(ProjectsPropertiesViewModel ViewModel)
         {
             ViewModel.Errors = new List<SimpleKeyValue<string, string>>
             {
-                Validation.ValidateRequired(ErrorKey:$"[name=\"{nameof(ViewModel.ProjectSlug)}\"]", ValueToValidate:ViewModel.ProjectSlug)
+                Validation.ValidateRequired(ErrorKey:$"[name=\"{nameof(ViewModel.ProjectSlug)}\"]", ValueToValidate:ViewModel.ProjectSlug),
+                await Validation.ValidateAsync(
+                    ErrorAction: async () =>
+                    {
+                        var IsUniq = await DataAccessFactory.Projects.IsProjectSlugUniq(ProjectSlug:ViewModel.ProjectSlug, ProjectID: DBItemProjects.ProjectID);
+                        return !IsUniq;
+                    },
+                    ErrorKey: $"[name=\"{nameof(ViewModel.ProjectSlug)}\"]",
+                    ErrorMessage: Resources.ValidationProjectsSlugNotUniq
+                )
             };
             ViewModel.Errors.RemoveAll(Item => Item == null);
         }

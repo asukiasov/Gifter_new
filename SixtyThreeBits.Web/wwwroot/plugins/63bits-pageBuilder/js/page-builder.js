@@ -5499,7 +5499,9 @@ var PageBuilderModel = {
                 PageBuilderModel.editors[containerName].edit(container);
 
                 //
-                container.find('input[type="text"]').first().focus().select();
+                if (containerName !== 'imgGridItem') {
+                    container.find('input[type="text"]').first().select().focus();
+                }
 
                 //
                 $('body').click(function (e) {
