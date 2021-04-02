@@ -68,7 +68,67 @@ namespace SixtyThreeBits.Core.Utilities
                 Directory.Delete(FolderPath, true);
             }
         }
-        
+
+        public static string FormatDate(object Date)
+        {
+            return string.Format(Constants.Formats.DateEval, Date);
+        }
+
+        public string FormatDateTimeAsVerbal(DateTime? InputDate)
+        {
+            if (InputDate.HasValue)
+            {
+                var DaysPassed = Math.Round((DateTime.Now - InputDate.Value).TotalDays);
+                string DateTimeString;
+                switch (DaysPassed)
+                {
+                    case 0:
+                        {
+                            DateTimeString = $"Today {string.Format("{0:HH:mm}", InputDate)}";
+                            break;
+                        }
+                    case 1:
+                        {
+                            DateTimeString = $"Yesterday {string.Format("{0:HH:mm}", InputDate)}";
+                            break;
+                        }
+                    default:
+                        {
+                            DateTimeString = FormatDateTime(InputDate);
+                            break;
+                        }
+                }
+                return DateTimeString;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public string FormatPrice(object Value, bool WithDollarSign = true)
+        {
+            if (WithDollarSign)
+            {
+                return string.Format("${0:#,#.#}", Value);
+                //return string.Format(Constants.Formats.MoneyEval, Value);
+            }
+            else
+            {
+                return string.Format("{0:#,#.#}", Value);
+            }
+        }
+
+        public string FormatQuantity(object Value)
+        {
+            return string.Format("{0:#,#.#}", Value);
+        }
+
+        public string FormatDateTime(object Date)
+        {
+            return string.Format(Constants.Formats.DateTimeEval, Date);
+        }
+
         public string GetDatabaseErrorMessage(SixtyThreeBitsDataObject DALItem)
         {
             string ErrorMessage = null;

@@ -1029,7 +1029,7 @@ namespace SixtyThreeBits.Core.DB
 
             if (Parameter != null && Parameter.GetType() == typeof(string))
             {
-                P.Size = (Parameter as string).Length;
+                P.Size = (Parameter as string)?.Length ?? 3000;
             }
 
             if (IsOutput)

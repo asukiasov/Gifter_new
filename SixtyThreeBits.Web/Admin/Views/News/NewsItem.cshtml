@@ -7,7 +7,7 @@
         <form id="NewsDetailsForm" method="post" enctype="multipart/form-data">
             <div class="row">
                 <div class="form-group col-lg-6">
-                    <label>Blog Title</label>
+                    <label>News Title</label>
                     <input type="text" name="@nameof(Model.NewsTitle)" class="form-control" value="@Model.NewsTitle" />
                     <p class="help-block">
                         <span class="error-text"></span>
@@ -23,7 +23,7 @@
             </div>
             <div class="row">
                 <div class="form-group col-lg-6">
-                    <label>Blog Date</label>
+                    <label>News Date</label>
                     @(Html.DevExtreme().DateBox()
                         .ElementAttr("class", "form-control")
                         .Name(nameof(Model.NewsDatePublished))
@@ -56,13 +56,12 @@
                     </div>
                     <span class="help-block"></span>
                 </div>
-            </div>
+            </div>            
             <div class="row">
                 <div class="form-group col-lg-12">
-                    <label>Blog Text</label>
+                    <label>News Text</label>
                     <textarea name="@nameof(Model.NewsText)" class="form-control js-apply-tinymce">@Html.Raw(Model.NewsText)</textarea>
                 </div>
-
             </div>
         </form>
 

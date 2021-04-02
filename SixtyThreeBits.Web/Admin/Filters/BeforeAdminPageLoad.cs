@@ -20,7 +20,7 @@ namespace SixtyThreeBits.Web.Admin.Filters
             Model = LocalUtilities.GetModelFromController<WebProjectModelBase>(FilterContext.Controller);
             var C = FilterContext.Controller as Controller;
 
-            var IsAuthorized = AdminAuthorize();            
+            var IsAuthorized = Authorize();            
             if (IsAuthorized)
             {
                 InitStartUp();
@@ -41,7 +41,7 @@ namespace SixtyThreeBits.Web.Admin.Filters
             }            
         }
 
-        bool AdminAuthorize() 
+        bool Authorize() 
         {
             var HasPermission = false;
             if (Model.User != null)

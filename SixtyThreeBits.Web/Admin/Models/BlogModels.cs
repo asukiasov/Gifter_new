@@ -227,7 +227,6 @@ namespace SixtyThreeBits.Web.Admin.Models
         #region Sub Classes
         public class BlogPropertiesViewModel : FormViewModelBase
         {
-
             #region Properties             
             public string BlogSlug { get; set; }
             public string BlogTitle { get; set; }
