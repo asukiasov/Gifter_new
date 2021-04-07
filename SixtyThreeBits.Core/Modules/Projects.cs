@@ -14,6 +14,7 @@ namespace SixtyThreeBits.Core.Modules
         #region Properties
         readonly UtilityCollection Utilities;
         #endregion
+
         #region Constructors
         public ProjectsDataAccess(ConnectionFactory ConnectionFactory, UtilityCollection Utilities) : base(ConnectionFactory)
         {

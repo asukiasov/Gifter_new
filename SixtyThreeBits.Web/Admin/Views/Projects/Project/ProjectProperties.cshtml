@@ -6,10 +6,10 @@
     <div class="card-body">
         <form id="ProjectsDetailsForm" method="post" enctype="multipart/form-data">
             <div class="row">
-                <div class="form-group col-lg-2">
+                <div class="form-group col-lg-12">
                     <label>Project Is Published</label>
                     <label class="toggler toggler-lg">
-                        <input type="checkbox" name="@nameof(Model.ProjectIsPublished)" class="js-smtp-use-ssl-checkbox" value="true" @(Model.ProjectIsPublished ? Html.Raw("checked") : null) />
+                        <input type="checkbox" name="@nameof(Model.ProjectIsPublished)" value="true" @(Model.ProjectIsPublished ? Html.Raw("checked") : null) />
                         <i></i>
                     </label>
                 </div>

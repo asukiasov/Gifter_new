@@ -5,7 +5,7 @@
         Globals.Devexpress.SetGridFullHeight(BlogModel.BlogGrid, s.element[0]);
     },
     GetDetailsButtonColumnCellHtml: function (Element, CellInfo) {
-        Element.append('<a href=\"' + CellInfo.data.UrlBlogProperties + '\"><i class=\"fas fa-info-circle\"></i> Detalis </a>')
+        Element.append('<a href=\"' + CellInfo.data.UrlBlogPost + '\"><i class=\"fas fa-info-circle\"></i></a>');
     }
 };
 

@@ -6,23 +6,23 @@
     <div class="card-body">
         <form id="NewsDetailsForm" method="post" enctype="multipart/form-data">
             <div class="row">
-                <div class="form-group col-lg-6">
-                    <label>News Title</label>
-                    <input type="text" name="@nameof(Model.NewsTitle)" class="form-control" value="@Model.NewsTitle" />
-                    <p class="help-block">
-                        <span class="error-text"></span>
-                    </p>
-                </div>
-                <div class="form-group col-lg-6">
+                <div class="form-group col-lg-12">
+                    <label>Published?</label>
+                    <label class="toggler toggler-lg">
+                        <input type="checkbox" name="@nameof(Model.NewsIsPublished)" value="true" @(Model.NewsIsPublished ? Html.Raw("checked") : null) />
+                        <i></i>
+                    </label>
+                </div>                
+            </div>
+            <div class="row">
+                <div class="form-group col-lg-4">
                     <label>Blog Slug</label>
                     <input type="text" name="@nameof(Model.NewsSlug)" class="form-control js-slug-textbox" value="@Model.NewsSlug" />
                     <p class="help-block">
                         <span class="error-text"></span>
                     </p>
                 </div>
-            </div>
-            <div class="row">
-                <div class="form-group col-lg-6">
+                <div class="form-group col-lg-4">
                     <label>News Date</label>
                     @(Html.DevExtreme().DateBox()
                         .ElementAttr("class", "form-control")
@@ -35,7 +35,7 @@
                         <span class="error-text"></span>
                     </p>
                 </div>
-                <div class="form-group col-lg-6">
+                <div class="form-group col-lg-4">
                     <label>Upload Image</label>
                     <div class="input-group custom-file-group js-custom-file-upload">
                         <div class="form-control">
@@ -56,11 +56,56 @@
                     </div>
                     <span class="help-block"></span>
                 </div>
-            </div>            
+            </div>
             <div class="row">
-                <div class="form-group col-lg-12">
+                <div class="form-group col-lg-4">
+                    <label>Title</label>
+                    <input type="text" name="@nameof(Model.NewsTitle)" class="form-control" value="@Model.NewsTitle" />
+                    <p class="help-block">
+                        <span class="error-text"></span>
+                    </p>
+                </div>
+                <div class="form-group col-lg-4">
+                    <label>Title Eng</label>
+                    <input type="text" name="@nameof(Model.NewsTitleEng)" class="form-control" value="@Model.NewsTitleEng" />
+                    <p class="help-block">
+                        <span class="error-text"></span>
+                    </p>
+                </div>
+                <div class="form-group col-lg-4">
+                    <label>Title Rus</label>
+                    <input type="text" name="@nameof(Model.NewsTitleRus)" class="form-control" value="@Model.NewsTitleRus" />
+                    <p class="help-block">
+                        <span class="error-text"></span>
+                    </p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-lg-4">
+                    <label>Short Text</label>
+                    <textarea name="@nameof(Model.NewsShortDescription)" class="form-control" rows="3">@Html.Raw(Model.NewsShortDescription)</textarea>
+                </div>
+                <div class="form-group col-lg-4">
+                    <label>Short Text Eng</label>
+                    <textarea name="@nameof(Model.NewsShortDescriptionEng)" class="form-control" rows="3">@Html.Raw(Model.NewsShortDescriptionEng)</textarea>
+                </div>
+                <div class="form-group col-lg-4">
+                    <label>Short Text Rus</label>
+                    <textarea name="@nameof(Model.NewsShortDescriptionRus)" class="form-control" rows="3">@Html.Raw(Model.NewsShortDescriptionRus)</textarea>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-lg-4">
                     <label>News Text</label>
                     <textarea name="@nameof(Model.NewsText)" class="form-control js-apply-tinymce">@Html.Raw(Model.NewsText)</textarea>
+                </div>
+                <div class="form-group col-lg-4">
+                    <label>News Text</label>
+                    <textarea name="@nameof(Model.NewsTextEng)" class="form-control js-apply-tinymce">@Html.Raw(Model.NewsTextEng)</textarea>
+                </div>
+                <div class="form-group col-lg-4">
+                    <label>News Text</label>
+                    <textarea name="@nameof(Model.NewsTextRus)" class="form-control js-apply-tinymce">@Html.Raw(Model.NewsTextRus)</textarea>
                 </div>
             </div>
         </form>

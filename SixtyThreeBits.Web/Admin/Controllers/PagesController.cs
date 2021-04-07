@@ -94,7 +94,7 @@ namespace SixtyThreeBits.Web.Areas.Admin.Controllers
             Model.PageTitle.Set(Model.DBItemPage.PageTitle);
             Model.Breadcrumbs.RenameLastItem(Model.DBItemPage.PageTitle);
 
-            await Model.ValidatePagePropertiesViewModel(ViewModel);
+            Model.ValidatePagePropertiesViewModel(ViewModel);
             if(ViewModel.IsValid)
             {
                 var IsSaved = await Model.SavePageProperties(ViewModel);
@@ -138,7 +138,7 @@ namespace SixtyThreeBits.Web.Areas.Admin.Controllers
         public async Task<IActionResult> PageBuilder(int? PageID, PageModel.PageBuilderSubmitModel SubmitModel)
         {
             var ViewModel = new AjaxResponse();
-            var Errors = await Model.ValidatePageBuilderSubmitModel(SubmitModel);
+            var Errors = Model.ValidatePageBuilderSubmitModel(SubmitModel);
             if (Errors.Count == 0)
             {
                 ViewModel = await Model.SavePageBuilder(SubmitModel);
@@ -168,7 +168,7 @@ namespace SixtyThreeBits.Web.Areas.Admin.Controllers
         public async Task<IActionResult> PageText(int? PageID,PageModel.PageBuilderSubmitModel SubmitModel)
         {
             var ViewModel = new AjaxResponse();
-            var Errors = await Model.ValidatePageBuilderSubmitModel(SubmitModel);
+            var Errors = Model.ValidatePageBuilderSubmitModel(SubmitModel);
             if (Errors.Count == 0)
             {
                 ViewModel = await Model.SavePageBuilder(SubmitModel);

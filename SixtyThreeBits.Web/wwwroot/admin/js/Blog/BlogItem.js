@@ -3,7 +3,12 @@
         Selector: '.js-apply-tinymce'
     }).Display();
 
-    $('.js-slug-textbox').change(function () {
+    $('.js-slugfy-button').click(function () {
+        var Slug = $('.js-blog-post-title-textbox').ToSlug();
+        $('.js-blog-post-slug-textbox').val(Slug);
+    })
+
+    $('.js-blog-post-slug-textbox').change(function () {
         $(this).val($(this).ToSlug());
     });
 

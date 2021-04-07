@@ -10,10 +10,11 @@ using System.Threading.Tasks;
 namespace SixtyThreeBits.Core.Modules
 {
     public class NewsDataAccess : DataAccessBase
-    {
+    {        
         #region Constructors
         public NewsDataAccess(ConnectionFactory ConnectionFactory) : base(ConnectionFactory)
         {
+            
         }
         #endregion
 
@@ -26,6 +27,17 @@ namespace SixtyThreeBits.Core.Modules
                 {
                     var Result = await db.NewsGetSingleByID(NewsID);
                     return Result?.DeserializeTo<News>();
+                }
+            });
+        }
+
+        public async Task<bool> IsSlugUniq(string NewsSlug, int? NewsID = null)
+        {
+            return await TryToReturnAsyncTask($"{nameof(IsSlugUniq)}({nameof(NewsSlug)} = {NewsSlug}, {nameof(NewsID)} = {NewsID})", async () =>
+            {
+                using(var db = ConnectionFactory.GetDBCoreDataContext())
+                {
+                    return await db.NewsIsSlugUniq(NewsSlug, NewsID);
                 }
             });
         }
@@ -58,7 +70,7 @@ namespace SixtyThreeBits.Core.Modules
     public class News
     {
         #region Properties
-        AppSettingsCollection AppSettings;
+        
         public int? NewsID { get; set; }
         public string NewsSlug { get; set; }
         public string NewsTitle { get; set; }
@@ -73,31 +85,7 @@ namespace SixtyThreeBits.Core.Modules
         public string NewsImageFilename { get; set; }
         public DateTime? NewsDatePublished { get; set; }
         public bool NewsIsPublished { get; set; }
-        public bool HasNewsImage => !string.IsNullOrWhiteSpace(NewsImageFilename);
-        public string NewsImageFilenameHttpPath => HasNewsImage ? $"{FolderVirtualPath}{NewsImageFilename}" : null;
-        public string NewsImageHttpPath => HasNewsImage ? $"{NewsImageFilename}" : null;
-        public string FolderPhysicalPath => $"{AppSettings.UploadFolderPhysicalPath}\\";
-        public string FolderVirtualPath => $"{AppSettings.UploadFolderVirtualPath}/";
-        #endregion
-
-        #region Constructors
-        public News() { }
-
-        public News(AppSettingsCollection AppSettings)
-        {
-            this.AppSettings = AppSettings;
-        }
-        #endregion
-
-        #region Methods
-        public void SetAppSettings(AppSettingsCollection AppSettings)
-        {
-            this.AppSettings = AppSettings;
-        }
-        public string GetFolderPhysicalPath()
-        {
-            return $"{AppSettings.UploadFolderPhysicalPath}\\";
-        }
-        #endregion
+        public bool HasNewsImage => !string.IsNullOrWhiteSpace(NewsImageFilename);        
+        #endregion        
     }
 }

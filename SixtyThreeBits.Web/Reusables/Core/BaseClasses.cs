@@ -319,6 +319,7 @@ namespace SixtyThreeBits.Web.Reusables.Core
         public bool IsLoggedIn => User != null;        
         public ValueReference<bool> IsSidebarCollapsed { get; set; }
         public FormViewModelBase Form { get; set; }
+        public SystemProperties SystemProperties { get; set; }
         #endregion
 
         #region Methods

@@ -178,29 +178,11 @@ namespace SixtyThreeBits.Core.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Blog slug is not unique.
-        /// </summary>
-        public static string ValidationBlogsSlugNotUniq {
-            get {
-                return ResourceManager.GetString("ValidationBlogsSlugNotUniq", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Email format is invalid.
         /// </summary>
         public static string ValidationEmailFormatInvalid {
             get {
                 return ResourceManager.GetString("ValidationEmailFormatInvalid", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Page slug is not unique.
-        /// </summary>
-        public static string ValidationPageSlugNotUniq {
-            get {
-                return ResourceManager.GetString("ValidationPageSlugNotUniq", resourceCulture);
             }
         }
         
@@ -241,15 +223,6 @@ namespace SixtyThreeBits.Core.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Projects Slug is Not Uniq.
-        /// </summary>
-        public static string ValidationProjectsSlugNotUniq {
-            get {
-                return ResourceManager.GetString("ValidationProjectsSlugNotUniq", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Field is required.
         /// </summary>
         public static string ValidationRequired {
@@ -259,20 +232,11 @@ namespace SixtyThreeBits.Core.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Blog title is required.
+        ///   Looks up a localized string similar to URL Slug is not uniq.
         /// </summary>
-        public static string ValidationRequiredBlogTitle {
+        public static string ValidationSlugNotUniq {
             get {
-                return ResourceManager.GetString("ValidationRequiredBlogTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Page title is required.
-        /// </summary>
-        public static string ValidationRequiredPageTitle {
-            get {
-                return ResourceManager.GetString("ValidationRequiredPageTitle", resourceCulture);
+                return ResourceManager.GetString("ValidationSlugNotUniq", resourceCulture);
             }
         }
         

@@ -166,7 +166,7 @@ namespace SixtyThreeBits.Web.Admin.Models
                         return !IsUniq;
                     },
                     ErrorKey: $"[name=\"{nameof(ViewModel.ProjectSlug)}\"]",
-                    ErrorMessage: Resources.ValidationProjectsSlugNotUniq
+                    ErrorMessage: Resources.ValidationSlugNotUniq
                 )
             };
             ViewModel.Errors.RemoveAll(Item => Item == null);

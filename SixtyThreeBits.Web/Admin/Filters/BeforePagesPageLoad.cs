@@ -31,12 +31,11 @@ namespace SixtyThreeBits.Web.Admin.Filters
                 FilterContext.Result = Model.GetNotFoundAdminViewResult();
             }
             else
-            {
-                Model.DBItemPage.SetAppSettings(Model.AppSettings);                
+            {                
+                ReinitBreadCrumbs(Model);
                 InitTabs(Model);
-            }
-
-            await next();
+                await next();
+            }            
         }
 
         void ReinitBreadCrumbs(PageModelBase Model)

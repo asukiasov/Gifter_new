@@ -309,10 +309,9 @@
             public class Home
             {
                 #region Properties
-                public const string Page = "WebsiteHome";
-                public const string PageCulture = "WebsiteHomeCulture";
-                public const string StaticPage = "WebsiteHomeStaticPage";
-                public const string StaticPageCulture = "WebsiteHomeStaticPageCulture";                                
+                public const string Index = "WebsiteHomeIndex";
+                public const string IndexCulture = "WebsiteHomeIndexCulture";
+                
                 #endregion
             }
 
@@ -320,6 +319,14 @@
             {
                 #region Properties
                 public const string Pdf = "FileViewerPdf";
+                #endregion
+            }
+
+            public class Pages
+            {
+                #region Properties
+                public const string Page = "WebsitePagesPage";
+                public const string PageCulture = "WebsitePagesPageCulture"; 
                 #endregion
             }
             #endregion

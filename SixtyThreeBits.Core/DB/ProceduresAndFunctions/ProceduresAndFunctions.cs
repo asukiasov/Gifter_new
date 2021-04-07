@@ -23,62 +23,65 @@ namespace SixtyThreeBits.Core.DB
 
         #region Functions
         #region BlogsList
-        public class BlogsListResultItem
+        public class BlogPostListResultItem
         {
             #region Properties
-            public int? BlogID { get; set; }
-            public string BlogTitle { get; set; }
-            public string BlogAuthorName { get; set; }
-            public DateTime? BlogDate { get; set; }
+            public int? BlogPostID { get; set; }
+            public string BlogPostSlug { get; set; }
+            public string BlogPostTitle { get; set; }
+            public string BlogPostShortText { get; set; }
+            public string BlogPostAuthorName { get; set; }
+            public bool BlogPostIsPublished { get; set; }
+            public DateTime? BlogPostDate { get; set; }
             #endregion
         }
-        internal virtual DbSet<BlogsListResultItem> BlogsListResult { get; set; }
-        public IQueryable<BlogsListResultItem> BlogList()
+        internal virtual DbSet<BlogPostListResultItem> BlogPostListResult { get; set; }
+        public IQueryable<BlogPostListResultItem> BlogPostList()
         {
             var PR = new PrepareQueryExecution(
               DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
-              DatabaseObjectName: nameof(BlogList),
-              ResultItemType: typeof(BlogsListResultItem)
+              DatabaseObjectName: nameof(BlogPostList),
+              ResultItemType: typeof(BlogPostListResultItem)
             );
-            var DBResult = BlogsListResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
+            var DBResult = BlogPostListResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
             return DBResult;
         }
         #endregion
 
         #region BlogsGetSingleByID
-        internal virtual DbSet<ScalarFunctionResult<string>> BlogsGetSingleByIDResult { get; set; }
-        public async Task<string> BlogGetSingleByID(int? BlogsID)
+        internal virtual DbSet<ScalarFunctionResult<string>> BlogPostGetSingleByIDResult { get; set; }
+        public async Task<string> BlogPostGetSingleByID(int? BlogPostID)
         {
             var PR = new PrepareQueryExecution(
                 DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
-                DatabaseObjectName: nameof(BlogGetSingleByID),
+                DatabaseObjectName: nameof(BlogPostGetSingleByID),
                 ResultItemType: typeof(ScalarFunctionResult<string>),
                 SqlParameters: new SqlParameter[]
                 {
-                    BlogsID.ToSqlParameter(nameof(BlogsID), SqlDbType.Int),
+                    BlogPostID.ToSqlParameter(nameof(BlogPostID), SqlDbType.Int),
                 }
             );
-            var DBResult = BlogsGetSingleByIDResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
+            var DBResult = BlogPostGetSingleByIDResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
             var DBFunctionResult = await DBResult.FirstOrDefaultAsync();
             return DBFunctionResult?.Value;
         }
         #endregion
 
         #region BlogsIsSlugUniq
-        internal virtual DbSet<ScalarFunctionResult<bool>> BlogsIsSlugUniqResult { get; set; }
-        public async Task<bool> BlogIsSlugUniq(string Blogslug, int? BlogsID)
+        internal virtual DbSet<ScalarFunctionResult<bool>> BlogPostIsSlugUniqResult { get; set; }
+        public async Task<bool> BlogPostIsSlugUniq(string BlogPostSlug, int? BlogPostID)
         {
             var PR = new PrepareQueryExecution(
                 DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
-                DatabaseObjectName: nameof(BlogIsSlugUniq),
+                DatabaseObjectName: nameof(BlogPostIsSlugUniq),
                 ResultItemType: typeof(ScalarFunctionResult<string>),
                 SqlParameters: new SqlParameter[]
                 {
-                    Blogslug.ToSqlParameter(nameof(Blogslug), SqlDbType.NVarChar),
-                    BlogsID.ToSqlParameter(nameof(BlogsID), SqlDbType.Int)
+                    BlogPostSlug.ToSqlParameter(nameof(BlogPostSlug), SqlDbType.NVarChar),
+                    BlogPostID.ToSqlParameter(nameof(BlogPostID), SqlDbType.Int)
                 }
             );
-            var DBResult = BlogsIsSlugUniqResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
+            var DBResult = BlogPostIsSlugUniqResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
             var DBFunctionResult = await DBResult.FirstOrDefaultAsync();
             return DBFunctionResult?.Value == true;
         }
@@ -176,6 +179,26 @@ namespace SixtyThreeBits.Core.DB
         }
         #endregion
 
+        #region NewsIsSlugUniq
+        internal virtual DbSet<ScalarFunctionResult<bool>> NewsIsSlugUniqResult { get; set; }
+        public async Task<bool> NewsIsSlugUniq(string NewsSlug, int? NewsID)
+        {
+            var PR = new PrepareQueryExecution(
+                DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
+                DatabaseObjectName: nameof(NewsIsSlugUniq),
+                ResultItemType: typeof(ScalarFunctionResult<string>),
+                SqlParameters: new SqlParameter[]
+                {
+                    NewsSlug.ToSqlParameter(nameof(NewsSlug), SqlDbType.NVarChar),
+                    NewsID.ToSqlParameter(nameof(NewsID), SqlDbType.Int)
+                }
+            );
+            var DBResult = ProjectsIsSlugUniqResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
+            var DBFunctionResult = await DBResult.FirstOrDefaultAsync();
+            return DBFunctionResult?.Value == true;
+        }
+        #endregion
+
         #region PagesGetSingleByID
         internal virtual DbSet<ScalarFunctionResult<string>> PagesGetSingleByIDResult { get; set; }
         public async Task<string> PagesGetSingleByID(int? PageID, bool? PageIsPublished)
@@ -198,11 +221,11 @@ namespace SixtyThreeBits.Core.DB
 
         #region PagesGetSingleBySlug
         internal virtual DbSet<ScalarFunctionResult<string>> PagesGetSingleBySlugResult { get; set; }
-        public async Task<string> PagesGetSingleBySlug(string PageSlug, bool? PageIsPublished)
+        public async Task<string> PagesGetSingleBySlugHierarchy(string PageSlug, bool? PageIsPublished)
         {
             var PR = new PrepareQueryExecution(
                 DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
-                DatabaseObjectName: nameof(PagesGetSingleBySlug),
+                DatabaseObjectName: nameof(PagesGetSingleBySlugHierarchy),
                 ResultItemType: typeof(ScalarFunctionResult<string>),
                 SqlParameters: new SqlParameter[]
                 {
@@ -214,35 +237,15 @@ namespace SixtyThreeBits.Core.DB
             var DBFunctionResult = await DBResult.FirstOrDefaultAsync();
             return DBFunctionResult?.Value;
         }
-        #endregion
-
-        #region PagesIsSlugUniq
-        internal virtual DbSet<ScalarFunctionResult<bool>> PagesIsSlugUniqResult { get; set; }
-        public async Task<bool> PagesIsSlugUniq(string PageSlug, int? PageID)
-        {
-            var PR = new PrepareQueryExecution(
-                DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
-                DatabaseObjectName: nameof(PagesIsSlugUniq),
-                ResultItemType: typeof(ScalarFunctionResult<string>),
-                SqlParameters: new SqlParameter[]
-                {
-                    PageSlug.ToSqlParameter(nameof(PageSlug), SqlDbType.NVarChar),
-                    PageID.ToSqlParameter(nameof(PageID), SqlDbType.Int)
-                }
-            );
-            var DBResult = PagesIsSlugUniqResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
-            var DBFunctionResult = await DBResult.FirstOrDefaultAsync();
-            return DBFunctionResult?.Value == true;
-        }
-        #endregion
+        #endregion        
 
         #region PagesList
         public class PagesListResultItem
         {
             #region Properties
             public int? PageID { get; set; }
-            public int? PageParentID { get; set; }
-            public string PageSlug { get; set; }
+            public int? PageParentID { get; set; }            
+            public string PageSlugHierarchy { get; set; }
             public string PageTitle { get; set; }
             public string PageTitleEng { get; set; }
             public string PageTitleRus { get; set; }
@@ -559,39 +562,8 @@ namespace SixtyThreeBits.Core.DB
         #endregion
         #endregion
 
-        #region Stored Procedures  
-        public async Task<int?> ProjectsIUD(Enums.DatabaseActions iud, int? ProjectID, string ProjectSlug, string ProjectCaption, string ProjectCaptionEng, string ProjectCaptionRus, string ProjectShortDescription, string ProjectShortDescriptionEng, string ProjectShortDescriptionRus, string ProjectDescription,string ProjectDescriptionEng, string ProjectDescriptionRus, string ProjectCoverImageFilename, string ProjectVideoUrl, bool? ProjectIsPublished)
-        {
-            var PR = new PrepareQueryExecution(
-                DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.STORED_PROCEDURE,
-                DatabaseObjectName: nameof(ProjectsIUD),
-                ResultItemType: null,
-                SqlParameters: new SqlParameter[]
-                {
-                    iud.ToSqlParameter(nameof(iud), SqlDbType.TinyInt),
-                    ProjectID.ToSqlParameter(nameof(ProjectID), SqlDbType.Int, true),
-                    ProjectSlug.ToSqlParameter(nameof(ProjectSlug), SqlDbType.NVarChar),
-                    ProjectCaption.ToSqlParameter(nameof(ProjectCaption), SqlDbType.NVarChar),
-                    ProjectCaptionEng.ToSqlParameter(nameof(ProjectCaptionEng), SqlDbType.NVarChar),
-                    ProjectCaptionRus.ToSqlParameter(nameof(ProjectCaptionRus), SqlDbType.NVarChar),
-                    ProjectShortDescription.ToSqlParameter(nameof(ProjectShortDescription), SqlDbType.NVarChar),
-                    ProjectShortDescriptionEng.ToSqlParameter(nameof(ProjectShortDescriptionEng), SqlDbType.NVarChar),
-                    ProjectShortDescriptionRus.ToSqlParameter(nameof(ProjectShortDescriptionRus), SqlDbType.NVarChar),
-                    ProjectDescription.ToSqlParameter(nameof(ProjectDescription), SqlDbType.NVarChar),
-                    ProjectDescriptionEng.ToSqlParameter(nameof(ProjectDescriptionEng), SqlDbType.NVarChar),
-                    ProjectDescriptionRus.ToSqlParameter(nameof(ProjectDescriptionRus), SqlDbType.NVarChar),
-                    ProjectCoverImageFilename.ToSqlParameter(nameof(ProjectCoverImageFilename), SqlDbType.NVarChar),
-                    ProjectVideoUrl.ToSqlParameter(nameof(ProjectVideoUrl), SqlDbType.NVarChar),
-                    ProjectIsPublished.ToSqlParameter(nameof(ProjectIsPublished), SqlDbType.Bit)
-                }
-            );
-            var DBResult = await Database.ExecuteSqlRawAsync(PR.SqlQuery, PR.SqlParameters);
-            ProjectID = PR.SqlParameters[1].Value?.ToString().ToInt();
-            return ProjectID;
-        }
-
-
-        public async Task<int?> BlogIUD(Enums.DatabaseActions iud, int? BlogsID, string Blogslug, string BlogsTitle, string BlogsText, string BlogsAuthorName, string BlogsImageFilename, DateTime? BlogsDate)
+        #region Stored Procedures          
+        public async Task<int?> BlogIUD(Enums.DatabaseActions iud, int? BlogPostID, string BlogPostlug, string BlogPostTitle, string BlogPostShortText, string BlogPostText, string BlogPostAuthorName, string BlogPostImageFilename, DateTime? BlogPostDate, bool? BlogPostIsPublished)
         {
             var PR = new PrepareQueryExecution(
              DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.STORED_PROCEDURE,
@@ -600,19 +572,20 @@ namespace SixtyThreeBits.Core.DB
              SqlParameters: new SqlParameter[]
              {
                  iud.ToSqlParameter(nameof(iud),SqlDbType.TinyInt),
-                 BlogsID.ToSqlParameter(nameof(BlogsID),SqlDbType.Int,true),
-                 Blogslug.ToSqlParameter(nameof(Blogslug),SqlDbType.NVarChar),
-                 BlogsTitle.ToSqlParameter(nameof(BlogsTitle),SqlDbType.NVarChar),
-                 BlogsText.ToSqlParameter(nameof(BlogsText),SqlDbType.NVarChar),
-                 BlogsAuthorName.ToSqlParameter(nameof(BlogsAuthorName),SqlDbType.NVarChar),
-                 BlogsImageFilename.ToSqlParameter(nameof(BlogsImageFilename),SqlDbType.NVarChar),
-                 BlogsDate.ToSqlParameter(nameof(BlogsDate),SqlDbType.Date),
-             }
-             );
+                 BlogPostID.ToSqlParameter(nameof(BlogPostID),SqlDbType.Int,true),
+                 BlogPostlug.ToSqlParameter(nameof(BlogPostlug),SqlDbType.NVarChar),
+                 BlogPostTitle.ToSqlParameter(nameof(BlogPostTitle),SqlDbType.NVarChar),
+                 BlogPostShortText.ToSqlParameter(nameof(BlogPostShortText),SqlDbType.NVarChar),
+                 BlogPostText.ToSqlParameter(nameof(BlogPostText),SqlDbType.NVarChar),
+                 BlogPostAuthorName.ToSqlParameter(nameof(BlogPostAuthorName),SqlDbType.NVarChar),
+                 BlogPostImageFilename.ToSqlParameter(nameof(BlogPostImageFilename),SqlDbType.NVarChar),
+                 BlogPostDate.ToSqlParameter(nameof(BlogPostDate),SqlDbType.Date),
+                 BlogPostIsPublished.ToSqlParameter(nameof(BlogPostIsPublished), SqlDbType.Bit)
+             });
 
             var DBResult = await Database.ExecuteSqlRawAsync(PR.SqlQuery, PR.SqlParameters);
-            BlogsID = PR.SqlParameters[1].Value?.ToString().ToInt();
-            return BlogsID;
+            BlogPostID = PR.SqlParameters[1].Value?.ToString().ToInt();
+            return BlogPostID;
         }
 
         public async Task DictionariesDeleteRecursive(int? DictionaryID)
@@ -808,6 +781,36 @@ namespace SixtyThreeBits.Core.DB
             return PermissionID;
         }
 
+        public async Task<int?> ProjectsIUD(Enums.DatabaseActions iud, int? ProjectID, string ProjectSlug, string ProjectCaption, string ProjectCaptionEng, string ProjectCaptionRus, string ProjectShortDescription, string ProjectShortDescriptionEng, string ProjectShortDescriptionRus, string ProjectDescription, string ProjectDescriptionEng, string ProjectDescriptionRus, string ProjectCoverImageFilename, string ProjectVideoUrl, bool? ProjectIsPublished)
+        {
+            var PR = new PrepareQueryExecution(
+                DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.STORED_PROCEDURE,
+                DatabaseObjectName: nameof(ProjectsIUD),
+                ResultItemType: null,
+                SqlParameters: new SqlParameter[]
+                {
+                    iud.ToSqlParameter(nameof(iud), SqlDbType.TinyInt),
+                    ProjectID.ToSqlParameter(nameof(ProjectID), SqlDbType.Int, true),
+                    ProjectSlug.ToSqlParameter(nameof(ProjectSlug), SqlDbType.NVarChar),
+                    ProjectCaption.ToSqlParameter(nameof(ProjectCaption), SqlDbType.NVarChar),
+                    ProjectCaptionEng.ToSqlParameter(nameof(ProjectCaptionEng), SqlDbType.NVarChar),
+                    ProjectCaptionRus.ToSqlParameter(nameof(ProjectCaptionRus), SqlDbType.NVarChar),
+                    ProjectShortDescription.ToSqlParameter(nameof(ProjectShortDescription), SqlDbType.NVarChar),
+                    ProjectShortDescriptionEng.ToSqlParameter(nameof(ProjectShortDescriptionEng), SqlDbType.NVarChar),
+                    ProjectShortDescriptionRus.ToSqlParameter(nameof(ProjectShortDescriptionRus), SqlDbType.NVarChar),
+                    ProjectDescription.ToSqlParameter(nameof(ProjectDescription), SqlDbType.NVarChar),
+                    ProjectDescriptionEng.ToSqlParameter(nameof(ProjectDescriptionEng), SqlDbType.NVarChar),
+                    ProjectDescriptionRus.ToSqlParameter(nameof(ProjectDescriptionRus), SqlDbType.NVarChar),
+                    ProjectCoverImageFilename.ToSqlParameter(nameof(ProjectCoverImageFilename), SqlDbType.NVarChar),
+                    ProjectVideoUrl.ToSqlParameter(nameof(ProjectVideoUrl), SqlDbType.NVarChar),
+                    ProjectIsPublished.ToSqlParameter(nameof(ProjectIsPublished), SqlDbType.Bit)
+                }
+            );
+            var DBResult = await Database.ExecuteSqlRawAsync(PR.SqlQuery, PR.SqlParameters);
+            ProjectID = PR.SqlParameters[1].Value?.ToString().ToInt();
+            return ProjectID;
+        }
+
         public async Task<int?> RolesIUD(Enums.DatabaseActions iud, int? RoleID, string RoleName, int? RoleCode)
         {
             var PR = new PrepareQueryExecution(
@@ -904,7 +907,7 @@ namespace SixtyThreeBits.Core.DB
         partial void OnModelCreatingPartial(ModelBuilder ModelBuilder)
         {
             ModelBuilder.Entity<DictionariesListResultItem>(Entity => { Entity.HasNoKey(); });
-            ModelBuilder.Entity<BlogsListResultItem>(Entity => { Entity.HasNoKey(); });
+            ModelBuilder.Entity<BlogPostListResultItem>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<NewsListResultItem>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<ScalarFunctionResult<string>>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<ScalarFunctionResult<bool>>(Entity => { Entity.HasNoKey(); });

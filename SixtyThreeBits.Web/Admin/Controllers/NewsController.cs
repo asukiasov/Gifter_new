@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries;
 using SixtyThreeBits.Web.Admin.Filters;
 using SixtyThreeBits.Web.Admin.Models;
 using SixtyThreeBits.Web.Reusables.Core;
+using System.Threading.Tasks;
 
 namespace SixtyThreeBits.Web.Admin.Controllers
 {
@@ -120,7 +117,7 @@ namespace SixtyThreeBits.Web.Admin.Controllers
             Model.PageTitle.Set(Model.DBItemNews.NewsTitle);
             Model.Breadcrumbs.RenameLastItem(Model.DBItemNews.NewsTitle);
 
-            Model.ValidateNewsPropertiesViewModel(ViewModel);
+            await Model.ValidateNewsPropertiesViewModel(ViewModel);
             if (ViewModel.IsValid)
             {
                 var IsSaved = await Model.SaveNewsProperties(ViewModel);

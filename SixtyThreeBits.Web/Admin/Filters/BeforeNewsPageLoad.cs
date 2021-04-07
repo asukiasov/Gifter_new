@@ -25,10 +25,8 @@ namespace SixtyThreeBits.Web.Admin.Filters
             }
             else
             {
-                Model.DBItemNews.SetAppSettings(Model.AppSettings);                
+                await next();
             }
-
-            await next();
         }
     }
 }

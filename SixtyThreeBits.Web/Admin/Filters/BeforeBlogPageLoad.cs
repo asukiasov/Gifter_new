@@ -16,24 +16,24 @@ namespace SixtyThreeBits.Web.Admin.Filters
         public async Task OnActionExecutionAsync(ActionExecutingContext FilterContext, ActionExecutionDelegate next)
         {
             var Model = LocalUtilities.GetModelFromController<BlogModelBase>(FilterContext.Controller);
-            var BlogID = FilterContext.RouteData.Values["BlogID"].ToString().ToInt();
+            var BlogPostID = FilterContext.RouteData.Values["BlogPostID"].ToString().ToInt();
 
-            Model.DBItemBlog = await Model.DataAccessFactory.Blog.GetSingleBlogByID(BlogID);
+            Model.DBItemBlog = await Model.DataAccessFactory.Blog.GetSingleBlogByID(BlogPostID);
             if (Model.DBItemBlog == null)
-            {
+            {                
                 FilterContext.Result = Model.GetNotFoundAdminViewResult();
             }
             else
             {
-                Model.DBItemBlog.SetAppSettings(Model.AppSettings);                
+                ReinitBreadCrumbs(Model);
+                await next();
             }
-
-            await next();
         }
 
         void ReinitBreadCrumbs(BlogModelBase Model)
         {
             Model.Breadcrumbs.DeleteLastItem();
+            Model.Breadcrumbs.RenameLastItem(Model.DBItemBlog.BlogPostTitle);
         } 
     }
 }

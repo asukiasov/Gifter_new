@@ -143,18 +143,18 @@ namespace SixtyThreeBits.Web.Admin.Models
 
             #region Urls
             public string UrlCreateNew { get; set; }
-            public string UrlUpdate { get; set; }            
+            public string UrlUpdate { get; set; }
             public string UrlSyncParentsAndSortIndexes { get; set; }
             public string UrlDelete { get; set; }
             #endregion
 
             #region Texts
-            public string TextConfirmDeleteRecord { get; set; } = Resources.TextConfirmDelete;
-            public string TextConfirmDeleteRecursive { get; set; } = Resources.TextConfirmDeleteRecursive;
-            public string ValidationRequiredPageTitle { get; set; } = Resources.ValidationRequiredPageTitle;
+            public readonly string TextConfirmDeleteRecord = Resources.TextConfirmDelete;
+            public readonly string TextConfirmDeleteRecursive = Resources.TextConfirmDeleteRecursive;
+            public readonly string ValidationRequired = Resources.ValidationRequired;
             #endregion
             #endregion
-        }        
+        }
     }
 
     public class PageModelBase : WebProjectModelBase
@@ -187,28 +187,19 @@ namespace SixtyThreeBits.Web.Admin.Models
             }
 
             ViewModel.PageImageFilename = DBItemPage.PageImageFilename;
-            ViewModel.PageImageHttpPath = DBItemPage.PageImageFilenameHttpPath;
+            ViewModel.PageImageHttpPath = DataAccessFactory.Pages.GetPageFileHttpPath(DBItemPage.PageID, DBItemPage.PageImageFilename);
 
             ViewModel.UrlDeleteImage = Url.RouteUrl(ControllerActionRouteNames.Admin.Pages.Page.DeleteImage, values: new { PageID = DBItemPage.PageID });
 
             return ViewModel;
         }
 
-        public async Task ValidatePagePropertiesViewModel(PagePropertiesViewModel ViewModel)
+        public void ValidatePagePropertiesViewModel(PagePropertiesViewModel ViewModel)
         {
             ViewModel.Errors = new List<SimpleKeyValue<string, string>>
             {
-                Validation.ValidateRequired(ErrorKey:$"[name=\"{nameof(ViewModel.PageTitle)}\"]", ValueToValidate:ViewModel.PageTitle),
-                Validation.ValidateRequired(ErrorKey:$"[name=\"{nameof(ViewModel.PageSlug)}\"]", ValueToValidate:ViewModel.PageSlug),
-                await Validation.ValidateAsync(
-                    ErrorAction: async () =>
-                    {
-                        var IsUniq = await DataAccessFactory.Pages.IsPageSlugUniq(PageSlug:ViewModel.PageSlug,PageID:DBItemPage.PageID);
-                        return !IsUniq;
-                    },
-                    ErrorKey: $"[name=\"{nameof(ViewModel.PageSlug)}\"]",
-                    ErrorMessage: Resources.ValidationPageSlugNotUniq
-                )
+                Validation.ValidateRequired(ErrorKey: Validation.GetJQueryNameSelectorFor(nameof(ViewModel.PageTitle)), ValueToValidate:ViewModel.PageTitle),
+                Validation.ValidateRequired(ErrorKey: Validation.GetJQueryNameSelectorFor(nameof(ViewModel.PageSlug)), ValueToValidate:ViewModel.PageSlug)
             };
             ViewModel.Errors.RemoveAll(Item => Item == null);
         }
@@ -219,7 +210,7 @@ namespace SixtyThreeBits.Web.Admin.Models
             var PageImageFilename = HasPageImage ? GetFilenameFromUploadedFile(ViewModel.PageImageFile) : null;
             if (HasPageImage)
             {
-                Utilities.DeleteUploadedFile(DBItemPage.PageImageFilename, DBItemPage.FolderPhysicalPath);
+                Utilities.DeleteUploadedFile(DBItemPage.PageImageFilename, DataAccessFactory.Pages.GetPageFolderPhysicalPath(DBItemPage.PageID));
             }
 
             await DataAccessFactory.Pages.PagesIUD(
@@ -245,7 +236,7 @@ namespace SixtyThreeBits.Web.Admin.Models
                 ViewModel.IsSaved = true;
                 if (HasPageImage)
                 {
-                    await SaveUploadedFile(PostedFile: ViewModel.PageImageFile, Filename: PageImageFilename, FolderPhysicalPath: DBItemPage.FolderPhysicalPath);
+                    await SaveUploadedFile(PostedFile: ViewModel.PageImageFile, Filename: PageImageFilename, FolderPhysicalPath: DataAccessFactory.Pages.GetPageFolderPhysicalPath(DBItemPage.PageID));
                 }
             }
 
@@ -254,14 +245,14 @@ namespace SixtyThreeBits.Web.Admin.Models
 
         public async Task<AjaxResponse> DeleteImage()
         {
-            Utilities.DeleteUploadedFile(DBItemPage.PageImageFilename, DBItemPage.FolderPhysicalPath);
+            Utilities.DeleteUploadedFile(DBItemPage.PageImageFilename, DataAccessFactory.Pages.GetPageFolderPhysicalPath(DBItemPage.PageID));
 
             var AR = new AjaxResponse();
             await DataAccessFactory.Pages.PagesIUD(
-               DatabaseAction: Enums.DatabaseActions.UPDATE,
+                DatabaseAction: Enums.DatabaseActions.UPDATE,
                 PageID: DBItemPage.PageID,
                 PageImageFilename: Constants.NullValueFor.String
-                );
+            );
 
             AR.IsSuccess = !DataAccessFactory.Pages.IsError;
 
@@ -283,9 +274,9 @@ namespace SixtyThreeBits.Web.Admin.Models
             ViewModel.IsPublished = DBItemPage.PageIsPublished;
             ViewModel.Language = Language;
             ViewModel.UrlBack = Url.RouteUrl(ControllerActionRouteNames.Admin.Pages.Index);
-            ViewModel.UrlPreview = Url.RouteUrl(ControllerActionRouteNames.Website.Home.StaticPage, new { PageSlug = DBItemPage.PageSlug });
+            ViewModel.UrlPreview = Url.RouteUrl(ControllerActionRouteNames.Website.Pages.Page, new { PageSlugHierarchy = DBItemPage.PageSlugHierarchy });
             ViewModel.UrlSave = UrlCurrentPage;
-            ViewModel.UrlFileManager = GetFileManagerUrl(DBItemPage.FolderPhysicalPath, DBItemPage.FolderVirtualPath);
+            ViewModel.UrlFileManager = GetFileManagerUrl(DataAccessFactory.Pages.GetPageFolderPhysicalPath(DBItemPage.PageID), DataAccessFactory.Pages.GetPageFolderHttpPath(DBItemPage.PageID));
             ViewModel.UrlPdfViewer = Url.RouteUrl(ControllerActionRouteNames.Website.FileViewer.Pdf);
 
             ViewModel.SelectedLanguage = Utilities.GetValuesByLanguage(Language, Enums.Languages.GEORGIAN, Enums.Languages.ENGLISH, Enums.Languages.RUSSIAN);
@@ -300,21 +291,12 @@ namespace SixtyThreeBits.Web.Admin.Models
             return ViewModel;
         }
 
-        public async Task<List<SimpleKeyValue<string, string>>> ValidatePageBuilderSubmitModel(PageBuilderSubmitModel SubmitModel)
+        public List<SimpleKeyValue<string, string>> ValidatePageBuilderSubmitModel(PageBuilderSubmitModel SubmitModel)
         {
             var Errors = new List<SimpleKeyValue<string, string>>
             {
-                Validation.ValidateRequired(ErrorKey: $"[name=\"{nameof(SubmitModel.PageTitle)}\"]", ValueToValidate: SubmitModel.PageTitle),
-                Validation.ValidateRequired(ErrorKey: $"[name=\"{nameof(SubmitModel.PageSlug)}\"]", ValueToValidate: SubmitModel.PageSlug),
-                await Validation.ValidateAsync(
-                    ErrorAction: async () =>
-                    {
-                        var IsUniq = await DataAccessFactory.Pages.IsPageSlugUniq(PageSlug:SubmitModel.PageSlug, PageID:DBItemPage.PageID);
-                        return !IsUniq;
-                    },
-                    ErrorKey: $"[name=\"{nameof(SubmitModel.PageSlug)}\"]",
-                    ErrorMessage: Resources.ValidationPageSlugNotUniq
-                )
+                Validation.ValidateRequired(ErrorKey: Validation.GetJQueryNameSelectorFor(nameof(SubmitModel.PageTitle)), ValueToValidate: SubmitModel.PageTitle),
+                Validation.ValidateRequired(ErrorKey: Validation.GetJQueryNameSelectorFor(nameof(SubmitModel.PageSlug)), ValueToValidate: SubmitModel.PageSlug)
             };
             
 

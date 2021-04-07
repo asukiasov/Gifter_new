@@ -16,15 +16,15 @@ namespace SixtyThreeBits.Core.Modules
         #region Methods
         public async Task<SystemProperties> GetSystemProperties()
         {
-            return await TryToReturnAsyncTask($"{nameof(GetSystemProperties)}()", async () =>
+            var Result = await TryToReturnAsyncTask($"{nameof(GetSystemProperties)}()", async () =>
             {
-                using(var db = ConnectionFactory.GetDBCoreDataContext())
+                using (var db = ConnectionFactory.GetDBCoreDataContext())
                 {
                     var DBResult = await db.SystemPropertiesGet();
-                    var Result = DBResult.Value?.DeserializeTo<SystemProperties>();
-                    return Result ?? new SystemProperties();
+                    return DBResult.Value?.DeserializeTo<SystemProperties>();
                 }
             });
+            return Result ?? new SystemProperties();
         }
 
         public async Task UpdateSystemProperties(string ContactEmail, string ContactPhone, string ContactAddress, string FacebookUrl, string InstagramUrl, string TwitterUrl, string YoutubeUrl, string LinkedInUrl, string GoogleMapsIFrame, string FooterScripts, string SMTPAddress, int? SMTPPort, string SMTPUsername, string SMTPPassword, bool SMTPUseSSL, string SMTPFrom)

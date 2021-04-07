@@ -21,14 +21,13 @@ namespace SixtyThreeBits.Web.Filters
             var C = FilterContext.Controller as Controller;
 
             InitStartUp(FilterContext);
+            await InitSystemProperties();
             InitClientPlugins();
-            await InitMenu();
+            await InitMenu();            
 
             LocalUtilities.SetLayoutViewModel(ViewData: C.ViewData, ViewModel: ViewModel, Key: Constants.ViewData.LayoutViewModel);
             await next();
         }
-
-        
 
         void InitStartUp(ActionExecutingContext FilterContext)
         {
@@ -71,7 +70,7 @@ namespace SixtyThreeBits.Web.Filters
                     }
                     else
                     {
-                        ParentItem.NavigateUrl = Model.GetRouteByName(ControllerActionRouteNames.Website.Home.StaticPage, new { Culture = Model.Culture , PageSlug = P1.PageSlug }); ;
+                        ParentItem.NavigateUrl = Model.GetRouteByName(ControllerActionRouteNames.Website.Pages.Page, new { Culture = Model.Culture , PageSlugHierarchy = P1.PageSlugHierarchy }); ;
                     }
                     ParentItem.IsSelected = ParentItem.NavigateUrl == $"{Model.WebsiteDomain}{Model.UrlCurrentPage}";
 
@@ -81,7 +80,7 @@ namespace SixtyThreeBits.Web.Filters
                     {
                         var ChildItem = new ProjectMenuItem();
                         ChildItem.Caption = Model.Utilities.GetValuesByLanguage(Model.Culture, P2.PageTitle, P2.PageTitleEng, P2.PageTitleRus);
-                        ChildItem.NavigateUrl = Model.GetRouteByName(ControllerActionRouteNames.Website.Home.StaticPage, new { Culture = Model.Culture, PageSlug = P2.PageSlug });
+                        ChildItem.NavigateUrl = Model.GetRouteByName(ControllerActionRouteNames.Website.Pages.Page, new { Culture = Model.Culture, PageSlugHierarchy = P2.PageSlugHierarchy });
                         if (P2.PageIsExternalUrl)
                         {
                             ChildItem.NavigateUrl = P2.PageExternalUrl;
@@ -92,7 +91,7 @@ namespace SixtyThreeBits.Web.Filters
                         }
                         else
                         {
-                            ChildItem.NavigateUrl = Model.GetRouteByName(ControllerActionRouteNames.Website.Home.StaticPage, new { Culture = Model.Culture, PageSlug = P2.PageSlug });
+                            ChildItem.NavigateUrl = Model.GetRouteByName(ControllerActionRouteNames.Website.Pages.Page, new { Culture = Model.Culture, PageSlugHierarchy = P2.PageSlugHierarchy });
                         }
                         ChildItem.IsSelected = ChildItem.NavigateUrl == $"{Model.WebsiteDomain}{Model.UrlCurrentPage}";
                         ParentItem.Children.Add(ChildItem);
@@ -100,6 +99,11 @@ namespace SixtyThreeBits.Web.Filters
                     ViewModel.Menu.Add(ParentItem);
                 }
             }
+        }
+
+        async Task InitSystemProperties()
+        {
+            Model.SystemProperties = await Model.DataAccessFactory.SystemProperties.GetSystemProperties();
         }
     }
 }

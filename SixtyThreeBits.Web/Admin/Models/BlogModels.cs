@@ -18,7 +18,6 @@ namespace SixtyThreeBits.Web.Admin.Models
 {
     public class BlogModel : WebProjectModelBase
     {
-
         #region Methods
         public PageViewModel GetPageViewModel()
         {
@@ -41,28 +40,31 @@ namespace SixtyThreeBits.Web.Admin.Models
         {
             var ViewModel = (await DataAccessFactory.Blog.ListBlog()).Select(Item => new PageViewModel.GridModel.GridItem
             {
-                BlogID = Item.BlogID,
-                BlogTitle = Item.BlogTitle,
-                BlogAuthorName = Item.BlogAuthorName,
-                BlogDate = Item.BlogDate,
-                UrlBlogProperties = Url.RouteUrl(ControllerActionRouteNames.Admin.Blog.BlogItem, new { BlogID = Item.BlogID })
+                BlogPostID = Item.BlogPostID,
+                BlogPostTitle = Item.BlogPostTitle,
+                BlogPostAuthorName = Item.BlogPostAuthorName,
+                BlogPostDate = Item.BlogPostDate,
+                BlogPostIsPublished = Item.BlogPostIsPublished,
+                UrlBlogPost = Url.RouteUrl(ControllerActionRouteNames.Admin.Blog.BlogItem, new { BlogPostID = Item.BlogPostID })
             }).ToList();
             return ViewModel;
         }
 
-        public async Task CRUD(Enums.DatabaseActions DatabaseAction, int? BlogID, PageViewModel.GridModel.GridItem SubmitModel)
+        public async Task CRUD(Enums.DatabaseActions DatabaseAction, int? BlogPostID, PageViewModel.GridModel.GridItem SubmitModel)
         {
             if (DatabaseAction == Enums.DatabaseActions.DELETE)
             {
-                var DBItem = await DataAccessFactory.Blog.GetSingleBlogByID(BlogID);
-                Utilities.DeleteUploadedFile(DBItem?.BlogImageFilename);
+                var DBItem = await DataAccessFactory.Blog.GetSingleBlogByID(BlogPostID);
+                Utilities.DeleteUploadedFile(DBItem?.BlogPostImageFilename);
             }
+
             await DataAccessFactory.Blog.BlogIUD(
                 DatabaseAction: DatabaseAction,
-                BlogID: BlogID,
-                BlogTitle: SubmitModel.BlogTitle,
-                BlogAuthorName: SubmitModel.BlogAuthorName,
-                BlogDate: SubmitModel.BlogDate
+                BlogPostID: BlogPostID,
+                BlogPostTitle: SubmitModel.BlogPostTitle,
+                BlogPostAuthorName: SubmitModel.BlogPostAuthorName,
+                BlogPostDate: SubmitModel.BlogPostDate,
+                BlogPostIsPublished: SubmitModel.BlogPostIsPublished
             );
 
             if (DataAccessFactory.Blog.IsError)
@@ -86,21 +88,23 @@ namespace SixtyThreeBits.Web.Admin.Models
                 #region Methods
                 public DataGridBuilder<GridItem> Render(IHtmlHelper Html)
                 {
-                    var Grid = GetGridWithStartupValues<GridItem>(Html: Html, KeyFieldName: nameof(GridItem.BlogID));
+                    var Grid = GetGridWithStartupValues<GridItem>(Html: Html, KeyFieldName: nameof(GridItem.BlogPostID));
 
                     Grid
                     .ID("BlogGrid")
                     .OnInitialized("BlogModel.OnBlogGridInit")
                     .Columns(Columns =>
                     {
-                        Columns.AddFor(m => m.BlogTitle).Caption("Title").Width(400).ValidationRules(Options =>
+                        Columns.Add().Width(30).Caption(" ").Alignment(HorizontalAlignment.Center).CellTemplate(new JS("BlogModel.GetDetailsButtonColumnCellHtml"));
+                        Columns.AddFor(m => m.BlogPostTitle).Caption("Title").Width(400).ValidationRules(Options =>
                         {
                             Options.AddRequired();
                         });
-                        Columns.AddFor(m => m.BlogAuthorName).Caption("Author Name").Width(150);
-                        var ColumnBlogDate = Columns.AddFor(m => m.BlogDate).Caption("Date").DataType(GridColumnDataType.Date).Width(150);
+                        Columns.AddFor(m => m.BlogPostAuthorName).Caption("Author").Width(150);
+                        var ColumnBlogDate = Columns.AddFor(m => m.BlogPostDate).Caption("Date").DataType(GridColumnDataType.Date).Width(150);
                         InitDateColumn(ColumnBlogDate);
-                        Columns.Add().Width(100).Caption(" ").CellTemplate(new JS("BlogModel.GetDetailsButtonColumnCellHtml"));
+                        var BlogIsPublishedColumn = Columns.AddFor(m => m.BlogPostIsPublished).Caption("Published?").DataType(GridColumnDataType.Boolean).Width(100);
+                        InitCheckboxColumn(BlogIsPublishedColumn);
                         Columns.Add();
                     });
 
@@ -113,11 +117,12 @@ namespace SixtyThreeBits.Web.Admin.Models
                 public class GridItem
                 {
                     #region Properties
-                    public int? BlogID { get; set; }
-                    public string BlogTitle { get; set; }
-                    public string BlogAuthorName { get; set; }
-                    public DateTime? BlogDate { get; set; }
-                    public string UrlBlogProperties { get; set; }
+                    public int? BlogPostID { get; set; }
+                    public string BlogPostTitle { get; set; }
+                    public string BlogPostAuthorName { get; set; }
+                    public DateTime? BlogPostDate { get; set; }
+                    public bool BlogPostIsPublished { get; set; }
+                    public string UrlBlogPost { get; set; }
                     #endregion
                 }
                 #endregion
@@ -130,7 +135,7 @@ namespace SixtyThreeBits.Web.Admin.Models
     public class BlogModelBase : WebProjectModelBase
     {
         #region Properties
-        public Blog DBItemBlog { get; set; }
+        public BlogPost DBItemBlog { get; set; }
         #endregion
     }
 
@@ -142,16 +147,18 @@ namespace SixtyThreeBits.Web.Admin.Models
             if (ViewModel == null)
             {
                 ViewModel = new BlogPropertiesViewModel();
-                ViewModel.BlogSlug = DBItemBlog.BlogSlug;
-                ViewModel.BlogTitle = DBItemBlog.BlogTitle;
-                ViewModel.BlogText = DBItemBlog.BlogText;
-                ViewModel.BlogAuthorName = DBItemBlog.BlogAuthorName;
-                ViewModel.BlogDate = DBItemBlog.BlogDate;
+                ViewModel.BlogPostIsPublished = DBItemBlog.BlogPostIsPublished;
+                ViewModel.BlogPostSlug = DBItemBlog.BlogPostSlug;
+                ViewModel.BlogPostTitle = DBItemBlog.BlogPostTitle;
+                ViewModel.BlogPostShortText = DBItemBlog.BlogPostShortText;
+                ViewModel.BlogPostText = DBItemBlog.BlogPostText;
+                ViewModel.BlogPostAuthorName = DBItemBlog.BlogPostAuthorName;
+                ViewModel.BlogPostDate = DBItemBlog.BlogPostDate;
             }
 
-            ViewModel.BlogImageFilename = DBItemBlog.BlogImageFilename;
-            ViewModel.BlogImageHttpPath = DBItemBlog.BlogImageFilenameHttpPath;
-            ViewModel.UrlDeleteImage = Url.RouteUrl(ControllerActionRouteNames.Admin.Blog.BlogItemDeleteImage, new { BlogID = DBItemBlog.BlogID });
+            ViewModel.BlogPostImageFilename = DBItemBlog.BlogPostImageFilename;
+            ViewModel.BlogPostImageHttpPath = Utilities.GetUploadedFileHttpPath(DBItemBlog.BlogPostImageFilename);
+            ViewModel.UrlDeleteImage = Url.RouteUrl(ControllerActionRouteNames.Admin.Blog.BlogItemDeleteImage, new { BlogPostID = DBItemBlog.BlogPostID });
 
             return ViewModel;
         }
@@ -160,16 +167,16 @@ namespace SixtyThreeBits.Web.Admin.Models
         {
             ViewModel.Errors = new List<SimpleKeyValue<string, string>>
             {
-                Validation.ValidateRequired(ErrorKey:$"[name=\"{nameof(ViewModel.BlogTitle)}\"]", ValueToValidate:ViewModel.BlogTitle),
-                Validation.ValidateRequired(ErrorKey:$"[name=\"{nameof(ViewModel.BlogSlug)}\"]", ValueToValidate:ViewModel.BlogSlug),
+                Validation.ValidateRequired(ErrorKey: Validation.GetJQueryNameSelectorFor(nameof(ViewModel.BlogPostTitle)), ValueToValidate:ViewModel.BlogPostTitle),
+                Validation.ValidateRequired(ErrorKey: Validation.GetJQueryNameSelectorFor(nameof(ViewModel.BlogPostSlug)), ValueToValidate:ViewModel.BlogPostSlug),
                 await Validation.ValidateAsync(
                     ErrorAction: async () =>
                     {
-                        var IsUniq = await DataAccessFactory.Blog.IsBlogSlugUniq(BlogSlug:ViewModel.BlogSlug,BlogID:DBItemBlog.BlogID);
+                        var IsUniq = await DataAccessFactory.Blog.IsBlogSlugUniq(BlogPostSlug:ViewModel.BlogPostSlug, BlogPostID:DBItemBlog.BlogPostID);
                         return !IsUniq;
                     },
-                    ErrorKey: $"[name=\"{nameof(ViewModel.BlogSlug)}\"]",
-                    ErrorMessage: Resources.ValidationBlogsSlugNotUniq
+                    ErrorKey: Validation.GetJQueryNameSelectorFor(nameof(ViewModel.BlogPostSlug)),
+                    ErrorMessage: Resources.ValidationSlugNotUniq
                 )
             };
             ViewModel.Errors.RemoveAll(Item => Item == null);
@@ -178,21 +185,23 @@ namespace SixtyThreeBits.Web.Admin.Models
         public async Task SaveBlogProperties(BlogPropertiesViewModel ViewModel)
         {
             var HasBlogImage = ViewModel.PostedFile?.Length > 0;
-            var BlogImageFilename = HasBlogImage ? GetFilenameFromUploadedFile(ViewModel.PostedFile) : null;
+            var BlogPostImageFilename = HasBlogImage ? GetFilenameFromUploadedFile(ViewModel.PostedFile) : null;
             if (HasBlogImage)
             {
-                Utilities.DeleteUploadedFile(DBItemBlog.BlogImageFilename, DBItemBlog.FolderPhysicalPath);
+                Utilities.DeleteUploadedFile(DBItemBlog.BlogPostImageFilename);
             }
 
             await DataAccessFactory.Blog.BlogIUD(
                 DatabaseAction: Enums.DatabaseActions.UPDATE,
-                BlogID: DBItemBlog.BlogID,
-                BlogSlug: ViewModel.BlogSlug,
-                BlogTitle: ViewModel.BlogTitle,
-                BlogText: ViewModel.BlogText,
-                BlogAuthorName: ViewModel.BlogAuthorName,
-                BlogImageFilename: BlogImageFilename,
-                BlogDate: ViewModel.BlogDate
+                BlogPostID: DBItemBlog.BlogPostID,
+                BlogPostSlug: ViewModel.BlogPostSlug,
+                BlogPostTitle: ViewModel.BlogPostTitle,
+                BlogPostShortText: ViewModel.BlogPostShortText,
+                BlogPostText: ViewModel.BlogPostText,
+                BlogPostAuthorName: ViewModel.BlogPostAuthorName,
+                BlogPostImageFilename: BlogPostImageFilename,
+                BlogPostDate: ViewModel.BlogPostDate,
+                BlogPostIsPublished: ViewModel.BlogPostIsPublished
             );
 
             if (!DataAccessFactory.Blog.IsError)
@@ -200,21 +209,20 @@ namespace SixtyThreeBits.Web.Admin.Models
                 ViewModel.IsSaved = true;
                 if (HasBlogImage)
                 {
-                    await SaveUploadedFile(PostedFile: ViewModel.PostedFile, Filename: BlogImageFilename, FolderPhysicalPath: DBItemBlog.FolderPhysicalPath);
+                    await SaveUploadedFile(PostedFile: ViewModel.PostedFile, Filename: BlogPostImageFilename);
                 }
             }
         }
 
-        public async Task<AjaxResponse> DeleteImage(int? BlogID)
+        public async Task<AjaxResponse> DeleteImage(int? BlogPostID)
         {
-            var BlogItem = await DataAccessFactory.Blog.GetSingleBlogByID(BlogID);
-            Utilities.DeleteUploadedFile(BlogItem.BlogImageFilename);
+            Utilities.DeleteUploadedFile(DBItemBlog.BlogPostImageFilename);
 
             var AR = new AjaxResponse();
             await DataAccessFactory.Blog.BlogIUD(
                 DatabaseAction: Enums.DatabaseActions.UPDATE,
-                BlogID: BlogID,
-                BlogImageFilename: Constants.NullValueFor.String
+                BlogPostID: BlogPostID,
+                BlogPostImageFilename: Constants.NullValueFor.String
             );
 
             AR.IsSuccess = !DataAccessFactory.Blog.IsError;
@@ -227,15 +235,17 @@ namespace SixtyThreeBits.Web.Admin.Models
         #region Sub Classes
         public class BlogPropertiesViewModel : FormViewModelBase
         {
-            #region Properties             
-            public string BlogSlug { get; set; }
-            public string BlogTitle { get; set; }
-            public string BlogText { get; set; }
-            public string BlogAuthorName { get; set; }
-            public DateTime? BlogDate { get; set; }
-            public string BlogImageFilename { get; set; }
-            public string BlogImageHttpPath { get; set; }
-            public bool HasBlogImage => !string.IsNullOrWhiteSpace(BlogImageFilename);
+            #region Properties           
+            public bool BlogPostIsPublished { get; set; }
+            public string BlogPostSlug { get; set; }
+            public string BlogPostTitle { get; set; }
+            public string BlogPostShortText { get; set; }            
+            public string BlogPostText { get; set; }
+            public string BlogPostAuthorName { get; set; }
+            public DateTime? BlogPostDate { get; set; }
+            public string BlogPostImageFilename { get; set; }
+            public string BlogPostImageHttpPath { get; set; }
+            public bool HasBlogPostImage => !string.IsNullOrWhiteSpace(BlogPostImageFilename);
             public IFormFile PostedFile { get; set; }
             public string UrlDeleteImage { get; set; }
             public readonly string TextConfirmDelete = Resources.TextConfirmDelete;

@@ -203,14 +203,22 @@
             public class Home
             {
                 #region Properties
-                public const string Page = "~/Views/Home/Index.cshtml";
-                public const string StaticPage = "~/Views/Home/StaticPage.cshtml";                
+                public const string Page = "~/Views/Home/Index.cshtml";                
                 #endregion
             } 
 
             public class FileViewer
             {
-                public const string Pdf = "~/Views/PdfViewer/PdfViewer.cshtml";
+                #region Properties
+                public const string Pdf = "~/Views/PdfViewer/PdfViewer.cshtml"; 
+                #endregion
+            }
+
+            public class Pages
+            {
+                #region Properties
+                public const string Page = "~/Views/Pages/Page.cshtml"; 
+                #endregion
             }
 
             public class Shared

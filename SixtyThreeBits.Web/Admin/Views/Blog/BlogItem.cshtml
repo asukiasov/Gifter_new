@@ -7,48 +7,22 @@
         <form id="BlogDetailsForm" method="post" enctype="multipart/form-data">
             <div class="row">
                 <div class="form-group col-lg-6">
-                    <label>Blog Title</label>
-                    <input type="text" name="@nameof(Model.BlogTitle)" class="form-control" value="@Model.BlogTitle" />
-                    <p class="help-block">
-                        <span class="error-text"></span>
-                    </p>
+                    <label>Published?</label>
+                    <label class="toggler toggler-lg">
+                        <input type="checkbox" name="@nameof(Model.BlogPostIsPublished)" value="true" @(Model.BlogPostIsPublished ? Html.Raw("checked") : null) />
+                        <i></i>
+                    </label>
                 </div>
                 <div class="form-group col-lg-6">
-                    <label>Blog Slug</label>
-                    <input type="text" name="@nameof(Model.BlogSlug)" class="form-control js-slug-textbox" value="@Model.BlogSlug" />
-                    <p class="help-block">
-                        <span class="error-text"></span>
-                    </p>
-                </div>
-            </div>
-            <div class="row">
-                <div class="form-group col-lg-6">
-                    <label>Blog Author Name</label>
-                    <input type="text" name="@nameof(Model.BlogAuthorName)" class="form-control" value="@Model.BlogAuthorName" />
-                </div>
-                <div class="form-group col-lg-6">
-                    <label>Blog Date</label>
-                    @(Html.DevExtreme().DateBox()
-                        .ElementAttr("class", "form-control")
-                        .Name(nameof(Model.BlogDate))
-                        .Value(Model.BlogDate)
-                        .Type(DateBoxType.Date)
-                        .DisplayFormat(Constants.Formats.Date)
-                        .Height(34))
-                    <p class="help-block">
-                        <span class="error-text"></span>
-                    </p>
-                </div>
-                <div class="form-group col-lg-12">
                     <label>Upload Image</label>
                     <div class="input-group custom-file-group js-custom-file-upload">
                         <div class="form-control">
-                            <a class="js-attachment js-image-attachment" href="@Html.Raw(Model.BlogImageHttpPath)">@Html.Raw(Model.BlogImageFilename)</a>
+                            <a class="js-attachment js-image-attachment" href="@Html.Raw(Model.BlogPostImageHttpPath)">@Html.Raw(Model.BlogPostImageFilename)</a>
                             <span class="js-new-attachment hidden"></span>
                         </div>
                         <span class="input-group-btn">
                             <button type="button" class="btn btn-warning hidden js-clear-button"><i class="fa fa-times"></i></button>
-                            @if (Model.HasBlogImage)
+                            @if (Model.HasBlogPostImage)
                             {
                                 <button type="button" data-url="@Html.Raw(Model.UrlDeleteImage)" data-text-confirm="@Html.Raw(Model.TextConfirmDelete)" class="btn btn-danger js-delete-button"><i class="fas fa-trash-alt"></i></button>
                             }
@@ -62,11 +36,56 @@
                 </div>
             </div>
             <div class="row">
+                <div class="form-group col-lg-6">
+                    <label>Blog Title</label>
+                    <div class="input-group">
+                        <input type="text" name="@nameof(Model.BlogPostTitle)" class="form-control js-blog-post-title-textbox" value="@Model.BlogPostTitle" />
+                        <div class="input-group-append">
+                            <button class="btn btn-primary js-slugfy-button" type="button">Slugfy <i class="fas fa-arrow-right"></i></button>
+                        </div>
+                    </div>
+                    <p class="help-block">
+                        <span class="error-text"></span>
+                    </p>
+                </div>
+                <div class="form-group col-lg-6">
+                    <label>Blog Slug</label>
+                    <input type="text" name="@nameof(Model.BlogPostSlug)" class="form-control js-blog-post-slug-textbox" value="@Model.BlogPostSlug" />
+                    <p class="help-block">
+                        <span class="error-text"></span>
+                    </p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-lg-6">
+                    <label>Blog Author Name</label>
+                    <input type="text" name="@nameof(Model.BlogPostAuthorName)" class="form-control" value="@Model.BlogPostAuthorName" />
+                </div>
+                <div class="form-group col-lg-6">
+                    <label>Blog Date</label>
+                    @(Html.DevExtreme().DateBox()
+                        .ElementAttr("class", "form-control")
+                        .Name(nameof(Model.BlogPostDate))
+                        .Value(Model.BlogPostDate)
+                        .Type(DateBoxType.Date)
+                        .DisplayFormat(Constants.Formats.Date)
+                        .Height(34))
+                    <p class="help-block">
+                        <span class="error-text"></span>
+                    </p>
+                </div>                
+            </div>
+            <div class="row">
                 <div class="form-group col-lg-12">
                     <label>Blog Text</label>
-                    <textarea name="@nameof(Model.BlogText)" class="form-control js-apply-tinymce">@Html.Raw(Model.BlogText)</textarea>
+                    <textarea name="@nameof(Model.BlogPostShortText)" class="form-control" rows="4">@Html.Raw(Model.BlogPostShortText)</textarea>
                 </div>
-
+            </div>
+            <div class="row">
+                <div class="form-group col-lg-12">
+                    <label>Blog Text</label>
+                    <textarea name="@nameof(Model.BlogPostText)" class="form-control js-apply-tinymce">@Html.Raw(Model.BlogPostText)</textarea>
+                </div>
             </div>
         </form>
 

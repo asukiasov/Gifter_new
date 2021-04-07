@@ -12,6 +12,7 @@ namespace SixtyThreeBits.Core.Modules
     {
         #region Properties
         AppSettingsCollection AppSettings;
+        public const string FolderName = "pages";
         #endregion
 
         #region Contructors
@@ -31,7 +32,7 @@ namespace SixtyThreeBits.Core.Modules
                     var DBItems = db.PagesListForDeleteRecursive(PageID).ToList();
                     foreach (var Item in DBItems)
                     {
-                        var Folder = $"{AppSettings.UploadFolderPhysicalPath}{Page.FolderName}\\{Item.PageID}";
+                        var Folder = GetPageFolderPhysicalPath(Item.PageID);
                         if (System.IO.Directory.Exists(Folder))
                         {
                             System.IO.Directory.Delete(Folder, true);
@@ -41,6 +42,28 @@ namespace SixtyThreeBits.Core.Modules
                     await db.PagesDeleteRecursive(PageID);
                 }
             });
+        }
+
+        public string GetPageFolderPhysicalPath(int? PageID)
+        {
+            return $"{AppSettings.UploadFolderPhysicalPath}{FolderName}\\{PageID}\\";
+        }
+
+        public string GetPageFolderHttpPath(int? PageID)
+        {
+            return $"{AppSettings.UploadFolderVirtualPath}{FolderName}/{PageID}/";
+        }
+
+        public string GetPageFileHttpPath(int? PageID, string Filename)
+        {
+            if (string.IsNullOrWhiteSpace(Filename))
+            {
+                return null;
+            }
+            else
+            {
+                return $"{GetPageFolderHttpPath(PageID)}{Filename}";
+            }
         }
 
         public async Task<Page> GetSinglePageByID(int? PageID, bool? PageIsPublished = null)
@@ -55,28 +78,17 @@ namespace SixtyThreeBits.Core.Modules
             });
         }
 
-        public async Task<Page> GetSinglePageBySlug(string PageSlug, bool? IsPublished = null)
+        public async Task<Page> GetSinglePageBySlugHierarchy(string PageSlug, bool? IsPublished = null)
         {
-            return await TryToReturnAsyncTask($"{nameof(GetSinglePageBySlug)}({nameof(PageSlug)} = {PageSlug}, {nameof(IsPublished)} = {IsPublished})", async () =>
+            return await TryToReturnAsyncTask($"{nameof(GetSinglePageBySlugHierarchy)}({nameof(PageSlug)} = {PageSlug}, {nameof(IsPublished)} = {IsPublished})", async () =>
             {
                 using (var db = ConnectionFactory.GetDBCoreDataContext())
                 {
-                    var Result = await db.PagesGetSingleBySlug(PageSlug, IsPublished);
+                    var Result = await db.PagesGetSingleBySlugHierarchy(PageSlug, IsPublished);
                     return Result?.DeserializeTo<Page>();
                 }
             });
-        }
-
-        public async Task<bool> IsPageSlugUniq(string PageSlug, int? PageID = null)
-        {
-            return await TryToReturnAsyncTask($"{nameof(IsPageSlugUniq)}({nameof(PageSlug)} = {PageSlug}, {nameof(PageID)} = {PageID})", async () =>
-            {
-                using (var db = ConnectionFactory.GetDBCoreDataContext())
-                {
-                    return await db.PagesIsSlugUniq(PageSlug, PageID);
-                }
-            });
-        }
+        }        
 
         public async Task PagesSyncParentsAndSortIndexes(List<SyncSortIndexesItem> SortIndexes)
         {
@@ -98,7 +110,7 @@ namespace SixtyThreeBits.Core.Modules
             {
                 if (DatabaseAction == Enums.DatabaseActions.DELETE)
                 {
-                    var Folder = $"{AppSettings.UploadFolderPhysicalPath}{Page.FolderName}\\{PageID}";
+                    var Folder = GetPageFolderPhysicalPath(PageID);
                     if (System.IO.Directory.Exists(Folder))
                     {
                         System.IO.Directory.Delete(Folder, true);
@@ -112,7 +124,8 @@ namespace SixtyThreeBits.Core.Modules
 
                     if (DatabaseAction == Enums.DatabaseActions.CREATE)
                     {
-                        System.IO.Directory.CreateDirectory($"{AppSettings.UploadFolderPhysicalPath}{Page.FolderName}\\{PageID}");
+                        var Folder = GetPageFolderPhysicalPath(PageID);
+                        System.IO.Directory.CreateDirectory(Folder);
                     }
                     return PageID;
                 }
@@ -135,10 +148,10 @@ namespace SixtyThreeBits.Core.Modules
     public class Page
     {
         #region Properties
-        AppSettingsCollection AppSettings;
         public int? PageID { get; set; }
         public int? ParentID { get; set; }
         public string PageSlug { get; set; }
+        public string PageSlugHierarchy { get; set; }
         public string PageTitle { get; set; }
         public string PageTitleEng { get; set; }
         public string PageTitleRus { get; set; }
@@ -157,9 +170,7 @@ namespace SixtyThreeBits.Core.Modules
         public string PageShortDescription { get; set; }
         public string PageShortDescriptionEng { get; set; }
         public string PageShortDescriptionRus { get; set; }
-        public string PageImageFilename { get; set; }
-        public bool HasPageImage => !string.IsNullOrWhiteSpace(PageImageFilename);
-        public string PageImageFilenameHttpPath => HasPageImage ? $"{FolderVirtualPath}{PageImageFilename}" : null;
+        public string PageImageFilename { get; set; }        
         public int? PageCode { get; set; }
         public bool PageIsPublished { get; set; }
         public int? PageSortIndex { get; set; }
@@ -167,30 +178,6 @@ namespace SixtyThreeBits.Core.Modules
         public bool PageIsFooterItem { get; set; }
         public bool PageIsExternalUrl { get; set; }
         public string PageExternalUrl { get; set; }
-
-        public const string FolderName = "pages";
-        public string FolderPhysicalPath => $"{AppSettings.UploadFolderPhysicalPath}{FolderName}\\{PageID}\\";
-        public string FolderVirtualPath => $"{AppSettings.UploadFolderVirtualPath}{FolderName}/{PageID}/";
-        #endregion
-
-        #region Constructors
-        public Page() { }
-
-        public Page(AppSettingsCollection AppSettings)
-        {
-            this.AppSettings = AppSettings;
-        }
-        #endregion
-
-        #region Methods
-        public void SetAppSettings(AppSettingsCollection AppSettings)
-        {
-            this.AppSettings = AppSettings;
-        }
-        public string GetFolderPhysicalPath(int? PageID)
-        {
-            return $"{AppSettings.UploadFolderPhysicalPath}{FolderName}\\{PageID}\\";
-        }
-        #endregion
+        #endregion        
     }
 }

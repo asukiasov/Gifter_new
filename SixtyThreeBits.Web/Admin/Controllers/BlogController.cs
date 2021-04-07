@@ -43,7 +43,7 @@ namespace SixtyThreeBits.Web.Admin.Controllers
         public async Task<ActionResult> BlogGridAdd(int? key, string values)
         {
             var SubmitModel = values.FromJsonTo<BlogModel.PageViewModel.GridModel.GridItem>() ?? new BlogModel.PageViewModel.GridModel.GridItem();
-            await Model.CRUD(DatabaseAction: Enums.DatabaseActions.CREATE, BlogID: key, SubmitModel: SubmitModel);
+            await Model.CRUD(DatabaseAction: Enums.DatabaseActions.CREATE, BlogPostID: key, SubmitModel: SubmitModel);
             if (Model.Form.HasErrors)
             {
                 return GetDevexpressErrorResult(Model.Form.ErrorMessage);
@@ -59,7 +59,7 @@ namespace SixtyThreeBits.Web.Admin.Controllers
         public async Task<ActionResult> BlogGridUpdate(int? key, string values)
         {
             var SubmitModel = values.FromJsonTo<BlogModel.PageViewModel.GridModel.GridItem>() ?? new BlogModel.PageViewModel.GridModel.GridItem();
-            await Model.CRUD(DatabaseAction: Enums.DatabaseActions.UPDATE, BlogID: key, SubmitModel: SubmitModel);
+            await Model.CRUD(DatabaseAction: Enums.DatabaseActions.UPDATE, BlogPostID: key, SubmitModel: SubmitModel);
             if (Model.Form.HasErrors)
             {
                 return GetDevexpressErrorResult(Model.Form.ErrorMessage);
@@ -74,7 +74,7 @@ namespace SixtyThreeBits.Web.Admin.Controllers
         [Route("grid/delete", Name = ControllerActionRouteNames.Admin.Blog.GridDelete)]
         public async Task<ActionResult> BlogGridDelete(int? key)
         {
-            await Model.CRUD(DatabaseAction: Enums.DatabaseActions.DELETE, BlogID: key, SubmitModel: new BlogModel.PageViewModel.GridModel.GridItem());
+            await Model.CRUD(DatabaseAction: Enums.DatabaseActions.DELETE, BlogPostID: key, SubmitModel: new BlogModel.PageViewModel.GridModel.GridItem());
             if (Model.Form.HasErrors)
             {
                 return GetDevexpressErrorResult(Model.Form.ErrorMessage);
@@ -87,7 +87,7 @@ namespace SixtyThreeBits.Web.Admin.Controllers
         #endregion
     }
 
-    [Route("admin/blog/{BlogID:int}")]
+    [Route("admin/blog/{BlogPostID:int}")]
     [TypeFilter(typeof(BeforeBlogPageLoad), Order = 2)]
     public class BlogPropertiesController : AdminControllerBase<BlogPropertiesModel>
     {
@@ -105,8 +105,8 @@ namespace SixtyThreeBits.Web.Admin.Controllers
         {
             Model.PluginsClient.Enable63BitsForms(true).EnableFancybox(true).EnableDevextreme(true).EnableTinyMce(true);
             var ViewModel = Model.GetBlogPropertiesViewModel(ViewModel: null);
-            Model.PageTitle.Set(Model.DBItemBlog.BlogTitle);
-            Model.Breadcrumbs.RenameLastItem(Model.DBItemBlog.BlogTitle);
+            Model.PageTitle.Set(Model.DBItemBlog.BlogPostTitle);
+            Model.Breadcrumbs.RenameLastItem(Model.DBItemBlog.BlogPostTitle);
             return View(ViewNames.Admin.Blog.BlogItem, ViewModel);
         }
 
@@ -118,8 +118,8 @@ namespace SixtyThreeBits.Web.Admin.Controllers
             Model.PluginsClient.Enable63BitsForms(true).EnableFancybox(true).EnableDevextreme(true).EnableTinyMce(true);
             var ViewModel = Model.GetBlogPropertiesViewModel(ViewModel: SubmitModel);
 
-            Model.PageTitle.Set(Model.DBItemBlog.BlogTitle);
-            Model.Breadcrumbs.RenameLastItem(Model.DBItemBlog.BlogTitle);
+            Model.PageTitle.Set(Model.DBItemBlog.BlogPostTitle);
+            Model.Breadcrumbs.RenameLastItem(Model.DBItemBlog.BlogPostTitle);
 
             await Model.ValidateBlogPropertiesViewModel(ViewModel);
             if (ViewModel.IsValid)
@@ -128,7 +128,7 @@ namespace SixtyThreeBits.Web.Admin.Controllers
                 if (ViewModel.IsSaved)
                 {
                     Model.ShowSuccess();
-                    Result = Redirect(Url.RouteUrl(ControllerActionRouteNames.Admin.Blog.BlogItem, new { BlogID = Model.DBItemBlog.BlogID }));
+                    Result = Redirect(Url.RouteUrl(ControllerActionRouteNames.Admin.Blog.BlogItem, new { BlogPostID = Model.DBItemBlog.BlogPostID }));
                 }
                 else
                 {
@@ -145,9 +145,9 @@ namespace SixtyThreeBits.Web.Admin.Controllers
 
         [HttpPost]
         [Route("properties/delete-image", Name = ControllerActionRouteNames.Admin.Blog.BlogItemDeleteImage)]
-        public async Task<IActionResult> BlogItemDeleteImage(int? BlogID)
+        public async Task<IActionResult> BlogItemDeleteImage(int? BlogPostID)
         {
-            var Result = await Model.DeleteImage(BlogID);
+            var Result = await Model.DeleteImage(BlogPostID);
             return Json(Result);
         }
         #endregion

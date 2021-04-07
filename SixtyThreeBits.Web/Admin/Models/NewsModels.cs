@@ -45,6 +45,7 @@ namespace SixtyThreeBits.Web.Admin.Models
                 NewsID = Item.NewsID,
                 NewsTitle = Item.NewsTitle,
                 NewsDatePublished = Item.NewsDatePublished,
+                NewsIsPublished = Item.NewsIsPublished,
                 UrlNewsProperties = Url.RouteUrl(ControllerActionRouteNames.Admin.News.NewsItem, new { NewsID = Item.NewsID })
             }).ToList();
             return ViewModel;
@@ -60,8 +61,9 @@ namespace SixtyThreeBits.Web.Admin.Models
             await DataAccessFactory.News.NewsIUD(
                 DatabaseAction: DatabaseAction,
                 NewsID: NewsID,
-                NewsTitle: SubmitModel.NewsTitle,
-                NewsDatePublished: SubmitModel.NewsDatePublished
+                NewsTitle: SubmitModel.NewsTitle,                
+                NewsDatePublished: SubmitModel.NewsDatePublished,
+                NewsIsPublished: SubmitModel.NewsIsPublished
             );
 
             if (DataAccessFactory.News.IsError)
@@ -92,13 +94,15 @@ namespace SixtyThreeBits.Web.Admin.Models
                     .OnInitialized("NewsModel.OnNewsGridInit")
                     .Columns(Columns =>
                     {
+                        Columns.Add().Width(30).Caption(" ").Alignment(HorizontalAlignment.Center).CellTemplate(new JS("NewsModel.GetDetailsButtonColumnCellHtml"));
                         Columns.AddFor(m => m.NewsTitle).Caption("Title").Width(400).ValidationRules(Options =>
                         {
                             Options.AddRequired();
                         });
                         var ColumnNewsDatePublished = Columns.AddFor(m => m.NewsDatePublished).Caption("Publish Date").DataType(GridColumnDataType.Date).Width(150);
                         InitDateColumn(ColumnNewsDatePublished);
-                        Columns.Add().Width(100).Caption(" ").CellTemplate(new JS("NewsModel.GetDetailsButtonColumnCellHtml"));
+                        var NewsIsPublishedColumn = Columns.AddFor(m => m.NewsIsPublished).Caption("Published?").DataType(GridColumnDataType.Boolean).Width(100);
+                        InitCheckboxColumn(NewsIsPublishedColumn);
                         Columns.Add();
                     });
 
@@ -113,6 +117,7 @@ namespace SixtyThreeBits.Web.Admin.Models
                     public int? NewsID { get; set; }
                     public string NewsTitle { get; set; }
                     public DateTime? NewsDatePublished { get; set; }
+                    public bool NewsIsPublished { get; set; }
                     public string UrlNewsProperties { get; set; }
                     #endregion
                 }
@@ -140,24 +145,38 @@ namespace SixtyThreeBits.Web.Admin.Models
                 ViewModel = new NewsPropertiesViewModel();
                 ViewModel.NewsSlug = DBItemNews.NewsSlug;
                 ViewModel.NewsTitle = DBItemNews.NewsTitle;
+                ViewModel.NewsTitleEng = DBItemNews.NewsTitleEng;
+                ViewModel.NewsTitleRus = DBItemNews.NewsTitleRus;                
+                ViewModel.NewsShortDescription = DBItemNews.NewsShortDescription;
+                ViewModel.NewsShortDescriptionEng = DBItemNews.NewsShortDescriptionEng;
+                ViewModel.NewsShortDescriptionRus = DBItemNews.NewsShortDescriptionRus;
                 ViewModel.NewsText = DBItemNews.NewsText;
+                ViewModel.NewsIsPublished = DBItemNews.NewsIsPublished;
                 ViewModel.NewsDatePublished = DBItemNews.NewsDatePublished;
             }
 
             ViewModel.NewsImageFilename = DBItemNews.NewsImageFilename;
-            ViewModel.NewsImageHttpPath = DBItemNews.NewsImageFilenameHttpPath;
+            ViewModel.NewsImageHttpPath = Utilities.GetUploadedFileHttpPath(DBItemNews.NewsImageFilename);
             ViewModel.UrlDeleteImage = Url.RouteUrl(ControllerActionRouteNames.Admin.News.NewsItemDeleteImage, new { NewsID = DBItemNews.NewsID });
 
             return ViewModel;
         }
 
-        public void ValidateNewsPropertiesViewModel(NewsPropertiesViewModel ViewModel)
+        public async Task ValidateNewsPropertiesViewModel(NewsPropertiesViewModel ViewModel)
         {
             ViewModel.Errors = new List<SimpleKeyValue<string, string>>
             {
-                Validation.ValidateRequired(ErrorKey:$"[name=\"{nameof(ViewModel.NewsTitle)}\"]", ValueToValidate:ViewModel.NewsTitle),
-                Validation.ValidateRequired(ErrorKey:$"[name=\"{nameof(ViewModel.NewsSlug)}\"]", ValueToValidate:ViewModel.NewsSlug),
-                //here should be validation if news slug is unique or not
+                Validation.ValidateRequired(ErrorKey: Validation.GetJQueryNameSelectorFor(nameof(ViewModel.NewsTitle)), ValueToValidate:ViewModel.NewsTitle),
+                Validation.ValidateRequired(ErrorKey: Validation.GetJQueryNameSelectorFor(nameof(ViewModel.NewsSlug)), ValueToValidate:ViewModel.NewsSlug),
+                await Validation.ValidateAsync(
+                    ErrorAction: async () =>
+                    {
+                        var IsUniq = await DataAccessFactory.News.IsSlugUniq(NewsSlug:ViewModel.NewsSlug, NewsID: DBItemNews.NewsID);
+                        return !IsUniq;
+                    },
+                    ErrorKey: Validation.GetJQueryNameSelectorFor(nameof(ViewModel.NewsSlug)),
+                    ErrorMessage: Resources.ValidationSlugNotUniq
+                )
             };
             ViewModel.Errors.RemoveAll(Item => Item == null);
         }
@@ -168,7 +187,7 @@ namespace SixtyThreeBits.Web.Admin.Models
             var NewsImageFilename = HasNewsImage ? GetFilenameFromUploadedFile(ViewModel.PostedFile) : null;
             if (HasNewsImage)
             {
-                Utilities.DeleteUploadedFile(DBItemNews.NewsImageFilename, DBItemNews.FolderPhysicalPath);
+                Utilities.DeleteUploadedFile(DBItemNews.NewsImageFilename);
             }
 
             await DataAccessFactory.News.NewsIUD(
@@ -176,9 +195,17 @@ namespace SixtyThreeBits.Web.Admin.Models
                 NewsID: DBItemNews.NewsID,
                 NewsSlug: ViewModel.NewsSlug,
                 NewsTitle: ViewModel.NewsTitle,
+                NewsTitleEng: ViewModel.NewsTitleEng,
+                NewsTitleRus: ViewModel.NewsTitleRus,
+                NewsShortDescription: ViewModel.NewsShortDescription,
+                NewsShortDescriptionEng: ViewModel.NewsShortDescriptionEng,
+                NewsShortDescriptionRus: ViewModel.NewsShortDescriptionRus,
                 NewsText: ViewModel.NewsText,
+                NewsTextEng: ViewModel.NewsTextEng,
+                NewsTextRus: ViewModel.NewsTextRus,
                 NewsImageFilename: NewsImageFilename,
-                NewsDatePublished: ViewModel.NewsDatePublished
+                NewsDatePublished: ViewModel.NewsDatePublished,
+                NewsIsPublished: ViewModel.NewsIsPublished
             );
 
             if (!DataAccessFactory.News.IsError)
@@ -186,7 +213,7 @@ namespace SixtyThreeBits.Web.Admin.Models
                 ViewModel.IsSaved = true;
                 if (HasNewsImage)
                 {
-                    await SaveUploadedFile(PostedFile: ViewModel.PostedFile, Filename: NewsImageFilename, FolderPhysicalPath: DBItemNews.FolderPhysicalPath);
+                    await SaveUploadedFile(PostedFile: ViewModel.PostedFile, Filename: NewsImageFilename);
                 }
             }
 
@@ -215,12 +242,19 @@ namespace SixtyThreeBits.Web.Admin.Models
         #region Sub Classes
         public class NewsPropertiesViewModel : FormViewModelBase
         {
-
             #region Properties             
             public string NewsSlug { get; set; }
             public string NewsTitle { get; set; }
+            public string NewsTitleEng { get; set; }
+            public string NewsTitleRus { get; set; }
+            public string NewsShortDescription { get; set; }
+            public string NewsShortDescriptionEng { get; set; }
+            public string NewsShortDescriptionRus { get; set; }
             public string NewsText { get; set; }
+            public string NewsTextEng { get; set; }
+            public string NewsTextRus { get; set; }
             public DateTime? NewsDatePublished { get; set; }
+            public bool NewsIsPublished { get; set; }
             public string NewsImageFilename { get; set; }
             public string NewsImageHttpPath { get; set; }
             public bool HasNewsImage => !string.IsNullOrWhiteSpace(NewsImageFilename);

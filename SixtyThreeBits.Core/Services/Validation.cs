@@ -131,6 +131,19 @@ namespace SixtyThreeBits.Core.Services
 
             return Error;
         }
+
+        public static string GetJQueryClassSelectorFor(string Key)
+        {
+            return $".{Key}";
+        }
+        public static string GetJQueryIDSelectorFor(string Key)
+        {
+            return $"#{Key}";
+        }
+        public static string GetJQueryNameSelectorFor(string Key)
+        {
+            return $"[name=\"{Key}\"]";
+        }
         #endregion
     }
 }
