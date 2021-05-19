@@ -2,12 +2,10 @@
 @section HeaderSection{
 }
 <div class="actions-row">
-    <button type="submit" class="btn btn-circle btn-primary js-save-button" form="PagePropertiesForm"><i class="fas fa-save"></i></button>
+    @await Html.PartialAsync(ViewNames.Admin.Shared.ButtonSave, new ButtonSaveViewModel { FormID = "PagePropertiesForm" })    
 </div>
 <div class="card">
     <div class="card-body">
-
-
         <form id="PagePropertiesForm" method="post" enctype="multipart/form-data">
             <div class="row">
                 <div class="col-lg-4">

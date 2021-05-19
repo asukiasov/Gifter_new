@@ -1,11 +1,10 @@
 ﻿@model RolePermissionsModel.PageViewModel
+@if (Model.ShowSaveButton)
+{
 <div class="actions-row">
-    @if (Model.ShowSaveButton)
-    {
-        @await Html.PartialAsync(ViewNames.Admin.Shared.ButtonSave, new ButtonSaveViewModel())
-    }
+    @await Html.PartialAsync(ViewNames.Admin.Shared.ButtonSave, new ButtonSaveViewModel())
 </div>
-
+}
 <div class="row">
     <div class="col-xl-4">
         <div class="card mb-0">
