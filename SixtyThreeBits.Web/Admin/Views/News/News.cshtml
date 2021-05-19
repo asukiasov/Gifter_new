@@ -1,9 +1,9 @@
 ﻿@model NewsModel.PageViewModel
 @if (Model.ShowAddNewButton)
 {
-    <div class="actions-row">
-        <button class="btn btn-oval btn-default js-add-new-button"><i class="fas fa-plus"></i> Add</button>
-    </div>
+<div class="actions-row">
+    @await Html.PartialAsync(ViewNames.Admin.Shared.ButtonAddNew, new ButtonAddNewViewModel())
+</div>
 }
 <div class="row">
     <div class="col">

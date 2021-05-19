@@ -1,6 +1,6 @@
 ﻿@model ProjectsPropertiesModel.ProjectsPropertiesViewModel
-<div class="actions-row">
-    <button type="submit" class="btn btn-circle btn-primary js-save-button" form="ProjectsDetailsForm"><i class="fas fa-save"></i></button>
+<div class="actions-row">    
+    @await Html.PartialAsync(ViewNames.Admin.Shared.ButtonSave, new ButtonSaveViewModel { FormID = "ProjectsDetailsForm" })
 </div>
 <div class="card">
     <div class="card-body">

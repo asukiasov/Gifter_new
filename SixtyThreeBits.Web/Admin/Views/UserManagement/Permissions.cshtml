@@ -2,7 +2,7 @@
 @if (Model.ShowAddNewButton)
 {
     <div class="actions-row">
-        <button class="btn btn-oval btn-default js-add-new-button"><i class="fas fa-plus"></i> Add</button>
+        @await Html.PartialAsync(ViewNames.Admin.Shared.ButtonAddNew, new ButtonAddNewViewModel())
     </div>
 }
 <div class="row">
@@ -11,8 +11,8 @@
     </div>
 </div>
 @section FooterSection{
-<script src="~/admin/js/UserManagement/Permissions.js"></script>
-<script>
+    <script src="~/admin/js/UserManagement/Permissions.js"></script>
+    <script>
     PermissionsModel.UrlUpdate = '@Model.UrlUpdate';
-</script>
+    </script>
 }

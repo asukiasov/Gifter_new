@@ -2,7 +2,7 @@
 <div class="actions-row">
     @if (Model.ShowSaveButton)
     {
-        <button class="btn btn-circle btn-primary js-save-button"><i class="fas fa-save"></i></button>
+        @await Html.PartialAsync(ViewNames.Admin.Shared.ButtonSave, new ButtonSaveViewModel())
     }
 </div>
 

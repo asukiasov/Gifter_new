@@ -1,8 +1,8 @@
 ﻿@model SystemPropertiesModel.PageViewModel 
 @section HeaderSection{
 }
-<div class="actions-row">
-    <button type="submit" class="btn btn-circle btn-primary js-save-button" form="SystemPropertiesForm"><i class="fas fa-save"></i></button>
+<div class="actions-row">    
+    @await Html.PartialAsync(ViewNames.Admin.Shared.ButtonSave, new ButtonSaveViewModel { FormID = "SystemPropertiesForm" })
 </div>
 <form id="SystemPropertiesForm" method="post" enctype="multipart/form-data">
     <div class="card">

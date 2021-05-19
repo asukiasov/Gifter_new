@@ -1,9 +1,12 @@
 ﻿@model List<TreeNodeItem>
 <div class="sortable">
     <ul class="js-file-tree-editor">
-        @foreach (var Item in Model)
-        {            
+        @if (Model != null)
+        {
+        foreach (var Item in Model)
+        {
             @await Html.PartialAsync(ViewNames.Admin.Shared.FileTreeEditor.File, Item)            
+        }
         }
     </ul>
 </div>

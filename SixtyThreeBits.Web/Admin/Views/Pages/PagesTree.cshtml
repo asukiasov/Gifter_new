@@ -6,9 +6,9 @@
 
 @if (Model.ShowAddNewButton)
 {
-    <div class="actions-row">
-        <button class="btn btn-oval btn-default js-show-create-new-page-modal-button"><i class="fas fa-plus"></i> <span>Add</span></button>
-    </div>
+<div class="actions-row">
+    @await Html.PartialAsync(ViewNames.Admin.Shared.ButtonAddNew, new ButtonAddNewViewModel { CssClass = "js-show-create-new-page-modal-button" })    
+</div>
 }
 <div class="row">
     <div class="col-12">

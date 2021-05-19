@@ -370,7 +370,7 @@ namespace SixtyThreeBits.Web.Admin.Models
                     })
                     .Columns(Columns =>
                     {
-                        Columns.AddFor(m => m.PermissionCaption).Caption("Caption").Width(200).ValidationRules(Options =>
+                        Columns.AddFor(m => m.PermissionCaption).Caption("Caption").Width(400).ValidationRules(Options =>
                         {
                             Options.AddRequired();
                         });

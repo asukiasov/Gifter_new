@@ -157,6 +157,9 @@
                 public const string PopupLayout = "~/Admin/Views/Shared/PopupLayout.cshtml";
                 public const string Tabs = "~/Admin/Views/Shared/Tabs.cshtml";
                 public const string SuccessErrorPartialView = "~/Admin/Views/Shared/SuccessErrorPartialView.cshtml";
+
+                public const string ButtonAddNew = "~/Admin/Views/Shared/ButtonAddNew.cshtml";
+                public const string ButtonSave = "~/Admin/Views/Shared/ButtonSave.cshtml";
                 #endregion
 
                 #region Sub Classes
