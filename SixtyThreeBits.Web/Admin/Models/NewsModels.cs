@@ -99,10 +99,8 @@ namespace SixtyThreeBits.Web.Admin.Models
                         {
                             Options.AddRequired();
                         });
-                        var ColumnNewsDatePublished = Columns.AddFor(m => m.NewsDatePublished).Caption("Publish Date").DataType(GridColumnDataType.Date).Width(150);
-                        InitDateColumn(ColumnNewsDatePublished);
-                        var NewsIsPublishedColumn = Columns.AddFor(m => m.NewsIsPublished).Caption("Published?").DataType(GridColumnDataType.Boolean).Width(100);
-                        InitCheckboxColumn(NewsIsPublishedColumn);
+                        Columns.AddFor(m => m.NewsDatePublished).Caption("Publish Date").DataType(GridColumnDataType.Date).Width(150).InitDateColumn();
+                        Columns.AddFor(m => m.NewsIsPublished).Caption("Published?").DataType(GridColumnDataType.Boolean).Width(100).InitCheckboxColumn();
                         Columns.Add();
                     });
 

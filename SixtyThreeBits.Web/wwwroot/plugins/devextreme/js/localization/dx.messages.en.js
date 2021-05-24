@@ -1,9 +1,9 @@
 /*!
 * DevExtreme (dx.messages.en.js)
-* Version: 20.2.4
-* Build date: Tue Dec 01 2020
+* Version: 20.2.7
+* Build date: Thu Apr 22 2021
 *
-* Copyright (c) 2012 - 2020 Developer Express Inc. ALL RIGHTS RESERVED
+* Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
 */
 "use strict";
@@ -157,20 +157,25 @@
             "dxDataGrid-headerFilterEmptyValue": "(Blanks)",
             "dxDataGrid-headerFilterOK": "OK",
             "dxDataGrid-headerFilterCancel": "Cancel",
+            "dxDataGrid-ariaAdaptiveCollapse": "Hide additional data",
+            "dxDataGrid-ariaAdaptiveExpand": "Display additional data",
             "dxDataGrid-ariaColumn": "Column",
             "dxDataGrid-ariaValue": "Value",
             "dxDataGrid-ariaFilterCell": "Filter cell",
             "dxDataGrid-ariaCollapse": "Collapse",
             "dxDataGrid-ariaExpand": "Expand",
             "dxDataGrid-ariaDataGrid": "Data grid",
-            "dxDataGrid-ariaSearchInGrid": "Search in data grid",
+            "dxDataGrid-ariaSearchInGrid": "Search in the data grid",
             "dxDataGrid-ariaSelectAll": "Select all",
             "dxDataGrid-ariaSelectRow": "Select row",
+            "dxDataGrid-ariaToolbar": "Data grid toolbar",
             "dxDataGrid-filterBuilderPopupTitle": "Filter Builder",
             "dxDataGrid-filterPanelCreateFilter": "Create Filter",
             "dxDataGrid-filterPanelClearFilter": "Clear",
             "dxDataGrid-filterPanelFilterEnabledHint": "Enable the filter",
             "dxTreeList-ariaTreeList": "Tree list",
+            "dxTreeList-ariaSearchInGrid": "Search in the tree list",
+            "dxTreeList-ariaToolbar": "Tree list toolbar",
             "dxTreeList-editingAddRowToNode": "Add",
             "dxPager-infoText": "Page {0} of {1} ({2} items)",
             "dxPager-pagesCountText": "of",
@@ -520,7 +525,7 @@
             "dxGantt-contextMenuDeleteDependency": "Delete Dependency",
             "dxGantt-dialogTaskDeleteConfirmation": "Deleting a task also deletes all its dependencies and subtasks. Are you sure you want to delete this task?",
             "dxGantt-dialogDependencyDeleteConfirmation": "Are you sure you want to delete the dependency from the task?",
-            "dxGantt-dialogResourcesDeleteConfirmation": "Deleting a resource also deletes it from tasks to which this resource is assigned. Are you sure you want to delete these resources? Resource: {0}",
+            "dxGantt-dialogResourcesDeleteConfirmation": "Deleting a resource also deletes it from tasks to which this resource is assigned. Are you sure you want to delete these resources? Resources: {0}",
             "dxGantt-dialogConstraintCriticalViolationMessage": "The task you are attempting to move is linked to a second task by a dependency relation. This change would conflict with dependency rules. How would you like to proceed?",
             "dxGantt-dialogConstraintViolationMessage": "The task you are attempting to move is linked to a second task by a dependency relation. How would you like to proceed?",
             "dxGantt-dialogCancelOperationMessage": "Cancel the operation",

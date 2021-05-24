@@ -127,13 +127,8 @@ namespace SixtyThreeBits.Web.Admin.Models
                             Options.AddEmail();
                         });
                         Columns.AddFor(m => m.UserPassword).Caption("Password").Width(150);
-
-                        var UserRoleIDColumn = Columns.AddFor(m => m.UserRoleID).Caption("Role").Width(150);
-                        InitLookupColumn(Column: UserRoleIDColumn, Data: Roles);
-
-                        var IsActiveColumn = Columns.AddFor(m => m.UserIsActive).Caption("Active").Width(80);
-                        InitCheckboxColumn(IsActiveColumn);
-                        
+                        Columns.AddFor(m => m.UserRoleID).Caption("Role").Width(150).InitLookupColumn(Data: Roles);
+                        Columns.AddFor(m => m.UserIsActive).Caption("Active").Width(80).InitCheckboxColumn();
                         Columns.Add();
                     });
 
