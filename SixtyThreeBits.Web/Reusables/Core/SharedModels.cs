@@ -335,6 +335,7 @@ namespace SixtyThreeBits.Web.Reusables.Core
         public bool IsJsClientEnabled { get; private set; }
         public bool IsJsZipEnabled { get; private set; }
         public bool IsJWPlayerEnabled { get; private set; }
+        public bool IsMalihuScrollEnabled { get; private set; }
         public bool IsPageBuilderEnabled { get; private set; }
         public bool IsPageBuilderEditorEnabled { get; private set; }
         public bool IsPreloaderEnabled { get; private set; }
@@ -447,6 +448,12 @@ namespace SixtyThreeBits.Web.Reusables.Core
         public PluginsClient EnableJWPlayer(bool Value)
         {
             IsJWPlayerEnabled = Value;
+            return this;
+        }
+
+        public PluginsClient EnableMalihuScroll(bool Value)
+        {
+            IsMalihuScrollEnabled = Value;
             return this;
         }
 

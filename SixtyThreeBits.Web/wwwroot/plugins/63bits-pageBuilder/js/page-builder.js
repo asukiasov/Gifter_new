@@ -7438,6 +7438,40 @@ var PageBuilderModel = {
         }
     },
 
+    Sideabr: {
+        Show: function () {
+            $('.js-editor-sidebar-toggle-btn').addClass('is-active');
+            $('.js-editor-sidebar').addClass('show');
+        },
+        Hide: function () {
+            $('.js-editor-sidebar-toggle-btn').removeClass('is-active');
+            $('.js-editor-sidebar').removeClass('show');
+        },
+        IsOpen: function () {
+            return $('.js-editor-sidebar.show').length > 0;
+        },
+        Init: function () {
+            if ($('.js-editor-sidebar').length > 0) {
+                $('.desktop .js-editor-sidebar-scrollable-container').mCustomScrollbar({
+                    theme: 'minimal-dark',
+                    scrollInertia: 100
+                });
+
+                $('.js-editor-sidebar-toggle-btn').click(function () {
+                    if (PageBuilderModel.Sideabr.IsOpen()) {
+                        PageBuilderModel.Sideabr.Hide();
+                    } else {
+                        PageBuilderModel.Sideabr.Show();
+                    }
+                });
+
+                $('.js-editor-sidebar-close-btn').click(function () {
+                    PageBuilderModel.Sideabr.Hide();
+                });
+            }
+        }
+    },
+
     init: function () {
         PageBuilderModel.plugins.init();
         PageBuilderModel.compileTemplates();
@@ -7451,6 +7485,8 @@ var PageBuilderModel = {
             PageBuilderModel.editors.done();
             PageBuilderModel.save.promise().then(PageBuilderModel.save.successAnimation).catch(PageBuilderModel.save.validation.ShowErrors);
         });
+
+        PageBuilderModel.Sideabr.Init();
     }
 };
 

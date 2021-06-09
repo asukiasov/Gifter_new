@@ -127,7 +127,7 @@ namespace SixtyThreeBits.Web.Areas.Admin.Controllers
         public IActionResult PageBuilder(int? PageID, string Language)
         {
             var ViewModel = Model.GetPageBuilderViewModel(PageID, Language);
-            ViewModel.PluginsClient.EnableGoogleFonts(true).EnableJsClient(true).EnableJQuery(true).EnableJQueryUI(EnableJs: true, EnableCss: false).EnableBootstrap(true).EnableFancybox(true).EnablePreloader(true).EnableTemplate7(true).EnableTinyMce(true).EnableFancybox(true).EnableUtils(true).EnablePageBuilderEditor(true).EnableJWPlayer(true).EnableFontAwesome(true);
+            ViewModel.PluginsClient.EnableGoogleFonts(true).EnableJsClient(true).EnableJQuery(true).EnableJQueryUI(EnableJs: true, EnableCss: false).EnableBootstrap(true).EnableFancybox(true).EnablePreloader(true).EnableTemplate7(true).EnableTinyMce(true).EnableFancybox(true).EnableUtils(true).EnablePageBuilderEditor(true).EnableJWPlayer(true).EnableFontAwesome(true).EnableMalihuScroll(true);
             return View(ViewNames.Admin.Pages.Page.Builder, ViewModel);
         }
 

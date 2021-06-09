@@ -12,29 +12,28 @@
         },
         appear: {
             init: function (selector, func) {
-                $(selector).appear();
+                if ($(LayoutModel.Animations.cssAnimations.selector).length) {
+                    $(selector).appear();
 
-                if ($().appear) {
+                    if ($().appear) {
 
-                    $(selector).filter(':appeared').each(function (index, item) {
-                        func($(item), index);
-                    });
-
-                    $('body').on('appear', selector, function (e, $affected) {
-                        $($affected).each(function (index, item) {
+                        $(selector).filter(':appeared').each(function (index, item) {
                             func($(item), index);
                         });
-                    });
-                }
 
+                        $('body').on('appear', selector, function (e, $affected) {
+                            $($affected).each(function (index, item) {
+                                func($(item), index);
+                            });
+                        });
+                    }
+                }
             }
         },
     },
 };
 
 $(function () {
-
-
     //--- animations
     LayoutModel.Animations.appear.init(LayoutModel.Animations.cssAnimations.selector, LayoutModel.Animations.cssAnimations.init);
 });

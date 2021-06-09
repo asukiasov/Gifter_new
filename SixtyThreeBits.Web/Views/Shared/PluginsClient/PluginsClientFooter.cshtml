@@ -64,6 +64,10 @@
 {
     <script src="~/plugins/slick/slick.min.js"></script>
 }
+@if (Model.IsMalihuScrollEnabled)
+{
+    <script src="~/plugins/malihu-scrollbar/jquery.mCustomScrollbar.concat.min.js"></script>
+}
 @if (Model.IsTemplate7Enabled)
 {
     <script src="~/plugins/template7/template7.min.js"></script>

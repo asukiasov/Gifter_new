@@ -52,8 +52,8 @@
 }
 @if (Model.IsPageBuilderEditorEnabled)
 {
-    <link href="~/plugins/63bits-pageBuilder/css/template63.css" rel="stylesheet" />
     <link href="~/css/style.css" rel="stylesheet" />
+    <link href="~/plugins/63bits-pageBuilder/css/template63.css" rel="stylesheet" />
     <link href="~/plugins/63bits-pageBuilder/css/page-builder.css" rel="stylesheet" />
 }
 @if (Model.IsSelect2Enabled)
@@ -64,6 +64,10 @@
 @if (Model.IsSlickSliderEnabled)
 {
     <link href="~/Plugins/slick/slick.min.css" rel="stylesheet" />
+}
+@if (Model.IsMalihuScrollEnabled)
+{
+    <link href="~/plugins/malihu-scrollbar/jquery.mCustomScrollbar.min.css" rel="stylesheet" />
 }
 @if (Model.IsJQueryEnabled)
 {
