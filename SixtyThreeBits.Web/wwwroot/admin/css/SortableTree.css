@@ -91,7 +91,7 @@
     justify-content:space-between;
     min-height: 38px;
     margin: 5px 0;
-    padding: 4px 12px 4px 30px;
+    padding: 4px 12px 4px 0;
     background: #F8FAFF;
     border: 1px solid #DAE2EA;
     color: #7C9EB2;
@@ -107,6 +107,36 @@
     background: #F4F6F7;
     border-color: #DCE2E8;
 }
+
+.tree-item .drag + .handle{
+    padding-left: 30px;
+}
+
+.tree-item .handle .drag{
+    flex-shrink: 0;
+    width: 30px;
+    position: relative;
+    top: 0;
+    left: 0;
+}
+
+.tree-item-toggle-btn{
+    flex-shrink: 0;
+    background-color: transparent;
+    border: 0;
+    outline: none;
+    padding: 0 0 0 5px;
+}
+.tree-item-toggle-btn i{
+    color: #747474;
+    font-size: 14px;
+
+    transition: transform 0.2s ease;
+}
+.tree-item.is-open > .handle .tree-item-toggle-btn i{
+    transform: rotate(-180deg);
+}
+
 
 /* icons */
 .tree-item .handle .fa-arrows,

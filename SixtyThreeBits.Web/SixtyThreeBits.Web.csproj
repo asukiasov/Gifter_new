@@ -14,8 +14,8 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="63BITS-Libraries-DotNetStandart" Version="1.1.30" />
-    <PackageReference Include="DevExtreme.AspNet.Core" Version="20.2.4" />
-    <PackageReference Include="DevExtreme.AspNet.Data" Version="2.8.0" />
+    <PackageReference Include="DevExtreme.AspNet.Core" Version="20.2.7" />
+    <PackageReference Include="DevExtreme.AspNet.Data" Version="2.7.1" />
     <PackageReference Include="Imageflow.Net" Version="0.7.20" />
     <PackageReference Include="Imageflow.Server" Version="0.5.3" />
     <PackageReference Include="Microsoft.AspNetCore.Session" Version="2.2.0" />
@@ -43,40 +43,46 @@
     <None Include="wwwroot\plugins\63bits-pageBuilder\images\icons\alignment\3_1.svg" />
     <None Include="wwwroot\plugins\63bits-pageBuilder\images\icons\alignment\3_2.svg" />
     <None Include="wwwroot\plugins\63bits-pageBuilder\images\icons\alignment\3_3.svg" />
+    <None Include="wwwroot\plugins\63bits-pageBuilder\images\icons\arrow_right_white.svg" />
     <None Include="wwwroot\plugins\63bits-pageBuilder\images\icons\back.svg" />
     <None Include="wwwroot\plugins\63bits-pageBuilder\images\icons\builder\bl_accordion.svg" />
     <None Include="wwwroot\plugins\63bits-pageBuilder\images\icons\builder\bl_articles_grid.svg" />
     <None Include="wwwroot\plugins\63bits-pageBuilder\images\icons\builder\bl_articles_list.svg" />
     <None Include="wwwroot\plugins\63bits-pageBuilder\images\icons\builder\bl_books_grid.svg" />
-    <None Include="wwwroot\plugins\63bits-pageBuilder\images\icons\builder\bl_card.svg" />
-    <None Include="wwwroot\plugins\63bits-pageBuilder\images\icons\builder\bl_faq.svg" />
+    <None Include="wwwroot\plugins\63bits-pageBuilder\images\icons\builder\bl_cards_grid.svg" />
+    <None Include="wwwroot\plugins\63bits-pageBuilder\images\icons\builder\bl_card_2col.svg" />
     <None Include="wwwroot\plugins\63bits-pageBuilder\images\icons\builder\bl_flip_cards.svg" />
+    <None Include="wwwroot\plugins\63bits-pageBuilder\images\icons\builder\bl_form.svg" />
+    <None Include="wwwroot\plugins\63bits-pageBuilder\images\icons\builder\bl_form_signup.svg" />
     <None Include="wwwroot\plugins\63bits-pageBuilder\images\icons\builder\bl_head.svg" />
     <None Include="wwwroot\plugins\63bits-pageBuilder\images\icons\builder\bl_html.svg" />
     <None Include="wwwroot\plugins\63bits-pageBuilder\images\icons\builder\bl_iframe.svg" />
-    <None Include="wwwroot\plugins\63bits-pageBuilder\images\icons\builder\bl_img_1.svg" />
-    <None Include="wwwroot\plugins\63bits-pageBuilder\images\icons\builder\bl_img_2.svg" />
-    <None Include="wwwroot\plugins\63bits-pageBuilder\images\icons\builder\bl_img_3.svg" />
-    <None Include="wwwroot\plugins\63bits-pageBuilder\images\icons\builder\bl_img_4.svg" />
     <None Include="wwwroot\plugins\63bits-pageBuilder\images\icons\builder\bl_img_grid.svg" />
-    <None Include="wwwroot\plugins\63bits-pageBuilder\images\icons\builder\bl_img_text.svg" />
-    <None Include="wwwroot\plugins\63bits-pageBuilder\images\icons\builder\bl_img_text_sm.svg" />
+    <None Include="wwwroot\plugins\63bits-pageBuilder\images\icons\builder\bl_media_object.svg" />
+    <None Include="wwwroot\plugins\63bits-pageBuilder\images\icons\builder\bl_media_objects_grid.svg" />
     <None Include="wwwroot\plugins\63bits-pageBuilder\images\icons\builder\bl_packages_grid.svg" />
     <None Include="wwwroot\plugins\63bits-pageBuilder\images\icons\builder\bl_pdf.svg" />
-    <None Include="wwwroot\plugins\63bits-pageBuilder\images\icons\builder\bl_product.svg" />
+    <None Include="wwwroot\plugins\63bits-pageBuilder\images\icons\builder\bl_people_grid.svg" />
+    <None Include="wwwroot\plugins\63bits-pageBuilder\images\icons\builder\bl_post_cards_grid.svg" />
     <None Include="wwwroot\plugins\63bits-pageBuilder\images\icons\builder\bl_quote.svg" />
     <None Include="wwwroot\plugins\63bits-pageBuilder\images\icons\builder\bl_services.svg" />
+    <None Include="wwwroot\plugins\63bits-pageBuilder\images\icons\builder\bl_slide.svg" />
+    <None Include="wwwroot\plugins\63bits-pageBuilder\images\icons\builder\bl_slider.svg" />
     <None Include="wwwroot\plugins\63bits-pageBuilder\images\icons\builder\bl_tabs.svg" />
     <None Include="wwwroot\plugins\63bits-pageBuilder\images\icons\builder\bl_testimonials.svg" />
     <None Include="wwwroot\plugins\63bits-pageBuilder\images\icons\builder\bl_text_img.svg" />
     <None Include="wwwroot\plugins\63bits-pageBuilder\images\icons\builder\bl_text_img_sm.svg" />
     <None Include="wwwroot\plugins\63bits-pageBuilder\images\icons\builder\bl_text_with_bg_and_img.svg" />
-    <None Include="wwwroot\plugins\63bits-pageBuilder\images\icons\builder\bl_timeline.svg" />
     <None Include="wwwroot\plugins\63bits-pageBuilder\images\icons\builder\bl_title_text.svg" />
     <None Include="wwwroot\plugins\63bits-pageBuilder\images\icons\builder\bl_title_text_text.svg" />
     <None Include="wwwroot\plugins\63bits-pageBuilder\images\icons\builder\bl_title_text_title_text.svg" />
     <None Include="wwwroot\plugins\63bits-pageBuilder\images\icons\builder\bl_uploads.svg" />
     <None Include="wwwroot\plugins\63bits-pageBuilder\images\icons\builder\bl_video.svg" />
+    <None Include="wwwroot\plugins\63bits-pageBuilder\images\icons\builder\bl_video_grid.svg" />
+    <None Include="wwwroot\plugins\63bits-pageBuilder\images\icons\builder\bl_video_jwp.svg" />
+    <None Include="wwwroot\plugins\63bits-pageBuilder\images\icons\builder\bl_video_jwp_grid.svg" />
+    <None Include="wwwroot\plugins\63bits-pageBuilder\images\icons\builder\bl_video_text.svg" />
+    <None Include="wwwroot\plugins\63bits-pageBuilder\images\icons\chevron.svg" />
     <None Include="wwwroot\plugins\63bits-pageBuilder\images\icons\close.svg" />
     <None Include="wwwroot\plugins\63bits-pageBuilder\images\icons\copy.svg" />
     <None Include="wwwroot\plugins\63bits-pageBuilder\images\icons\css.svg" />
@@ -94,6 +100,7 @@
     <None Include="wwwroot\plugins\63bits-pageBuilder\images\icons\loader_white.svg" />
     <None Include="wwwroot\plugins\63bits-pageBuilder\images\icons\nav.svg" />
     <None Include="wwwroot\plugins\63bits-pageBuilder\images\icons\pencil.svg" />
+    <None Include="wwwroot\plugins\63bits-pageBuilder\images\icons\plus.svg" />
     <None Include="wwwroot\plugins\63bits-pageBuilder\images\icons\plus_white.svg" />
     <None Include="wwwroot\plugins\63bits-pageBuilder\images\icons\remove.svg" />
     <None Include="wwwroot\plugins\63bits-pageBuilder\images\icons\rotate.svg" />

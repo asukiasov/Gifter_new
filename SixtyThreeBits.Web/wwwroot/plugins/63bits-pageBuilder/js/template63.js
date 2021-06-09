@@ -21,26 +21,57 @@ const t63Model = {
             });
         }
     },
+    scrollToNav: {
+        init: function () {
+            if ($('.js-t63-scrollto-nav').length > 0) {
+                $('.app-page').addClass('has-scroll-to-nav');
+                $('.js-t63-scrollto-nav-item a').click(function () {
+                    var href = $(this).attr('href').slice(1);
+                    var posTop = $('.t63-section[data-id="' + href + '"]').offset().top - $('.js-t63-scrollto-nav').outerHeight();
+                    $('html,body').animate({ scrollTop: posTop }, 200);
+                    return false;
+                });
+
+                $(window).on('load scroll', function () {
+                    if ($(window).scrollTop() > $('.app-header').outerHeight()) {
+                        $('.js-t63-scrollto-nav').addClass('position-fixed');
+                    } else {
+                        $('.js-t63-scrollto-nav').removeClass('position-fixed');
+                    }
+                });
+
+            }
+        }
+    },
+    setSlideFullHeight: function () {
+        var height = $(window).height() - $('.app-page').offset().top - ($('.js-t63-scrollto-nav').height() || 0);
+        $('.js-page-section[data-is-fullheight="true"] .js-slide-content').css({ 'min-height': height });
+        $('.js-page-section[data-is-fullheight="true"]').removeClass('t63-invisible');
+    }
 }
 
 $(function () {
     //--- scrollto nav
-    if ($('.js-t63-scrollto-nav').length > 0) {
-        $('.app-page').addClass('has-scroll-to-nav');
-        $('.js-t63-scrollto-nav-item a').click(function () {
-            var href = $(this).attr('href').slice(1);
-            var section = $('.t63-section[data-id="' + href + '"]');
-            var posTop = section.offset().top - 116;
-            $('html,body').animate({ scrollTop: posTop }, 200);
-            return false;
-        });
-    }
+    t63Model.scrollToNav.init();
+    
+    //--- img & slider section height
+    t63Model.setSlideFullHeight();
+    
 
     //--- slider
     if ($('.js-t63-slider').length > 0) {
-        $('.js-t63-slider').slick({
-            dots: true
-        });
+        $('.js-t63-slider').each(function (index, item) {
+            const autoplay = $(item).attr('data-slider-autoplay') == 'true';
+            const autoplaySpeed = $(item).attr('data-slider-autoplay-speed');
+            $(item).slick({
+                dots: true,
+                adaptiveHeight: true,
+                pauseOnFocus: false,
+                pauseOnHover: false,
+                autoplay: autoplay,
+                autoplaySpeed: autoplaySpeed,
+            });
+        })
     }
 
     if ($('.js-t63-testimonials-slider').length > 0) {
@@ -103,4 +134,8 @@ $(function () {
             }).Init();
         }
     });
+});
+
+$(window).on('load resize', function () {
+    t63Model.setSlideFullHeight();
 });

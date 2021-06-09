@@ -123,6 +123,16 @@
             },
             update: function (event, ui) {
                 PagesTreeModel.SyncParentsAndSortIndexes();
+
+                $('.js-file-tree-editor-item').each(function (index, item) {
+                    const toggleBtn = $(item).children('div').find('.js-tree-item-toggle-btn');
+
+                    if ($(item).children('ul').children().length) {
+                        toggleBtn.removeClass('hidden');
+                    } else {
+                        toggleBtn.addClass('hidden');
+                    }
+                });
             }
         });                        
     },
@@ -249,5 +259,19 @@ $(function () {
             PageID: PageID,
             IsMenuItem: IsMenuItem
         });
+    });
+
+
+    //--- accordion
+    $('.js-tree-item-toggle-btn').click(function () {
+        const item = $(this).closest('li');
+        const childrenContainer = item.children('ul');
+        if ($(item).hasClass('is-open')) {
+            $(item).removeClass('is-open');
+            childrenContainer.slideUp(100);
+        } else {
+            $(item).addClass('is-open');
+            childrenContainer.slideDown(100);
+        }
     });
 });
