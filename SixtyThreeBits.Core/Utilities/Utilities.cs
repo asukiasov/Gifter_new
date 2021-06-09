@@ -74,6 +74,11 @@ namespace SixtyThreeBits.Core.Utilities
             return string.Format(Constants.Formats.DateEval, Date);
         }
 
+        public string FormatDateTime(object Date)
+        {
+            return string.Format(Constants.Formats.DateTimeEval, Date);
+        }
+
         public string FormatDateTimeAsVerbal(DateTime? InputDate)
         {
             if (InputDate.HasValue)
@@ -106,12 +111,11 @@ namespace SixtyThreeBits.Core.Utilities
             }
         }
 
-        public string FormatPrice(object Value, bool WithDollarSign = true)
+        public string FormatPrice(object Value, bool WithCurrencySign, string CurrencySign = "₾")
         {
-            if (WithDollarSign)
+            if (WithCurrencySign)
             {
-                return string.Format("${0:#,#.#}", Value);
-                //return string.Format(Constants.Formats.MoneyEval, Value);
+                return string.Format("{0:#,#.#}{1}", Value, CurrencySign);
             }
             else
             {
@@ -122,11 +126,6 @@ namespace SixtyThreeBits.Core.Utilities
         public string FormatQuantity(object Value)
         {
             return string.Format("{0:#,#.#}", Value);
-        }
-
-        public string FormatDateTime(object Date)
-        {
-            return string.Format(Constants.Formats.DateTimeEval, Date);
         }
 
         public string GetDatabaseErrorMessage(SixtyThreeBitsDataObject DALItem)

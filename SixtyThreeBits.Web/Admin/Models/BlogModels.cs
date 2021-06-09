@@ -101,10 +101,8 @@ namespace SixtyThreeBits.Web.Admin.Models
                             Options.AddRequired();
                         });
                         Columns.AddFor(m => m.BlogPostAuthorName).Caption("Author").Width(150);
-                        var ColumnBlogDate = Columns.AddFor(m => m.BlogPostDate).Caption("Date").DataType(GridColumnDataType.Date).Width(150);
-                        InitDateColumn(ColumnBlogDate);
-                        var BlogIsPublishedColumn = Columns.AddFor(m => m.BlogPostIsPublished).Caption("Published?").DataType(GridColumnDataType.Boolean).Width(100);
-                        InitCheckboxColumn(BlogIsPublishedColumn);
+                        Columns.AddFor(m => m.BlogPostDate).Caption("Date").DataType(GridColumnDataType.Date).Width(150).InitDateColumn();
+                        Columns.AddFor(m => m.BlogPostIsPublished).Caption("Published?").DataType(GridColumnDataType.Boolean).Width(100).InitCheckboxColumn();
                         Columns.Add();
                     });
 

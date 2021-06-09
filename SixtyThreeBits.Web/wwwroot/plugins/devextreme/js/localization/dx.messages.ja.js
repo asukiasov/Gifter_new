@@ -1,9 +1,9 @@
 /*!
 * DevExtreme (dx.messages.ja.js)
-* Version: 20.2.4
-* Build date: Tue Dec 01 2020
+* Version: 20.2.7
+* Build date: Thu Apr 22 2021
 *
-* Copyright (c) 2012 - 2020 Developer Express Inc. ALL RIGHTS RESERVED
+* Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
 */
 "use strict";
@@ -157,6 +157,8 @@
             "dxDataGrid-headerFilterEmptyValue": "(\u7a7a\u767d)",
             "dxDataGrid-headerFilterOK": "OK",
             "dxDataGrid-headerFilterCancel": "\u30ad\u30e3\u30f3\u30bb\u30eb",
+            "dxDataGrid-ariaAdaptiveCollapse": "\u8ffd\u52a0\u30c7\u30fc\u30bf\u3092\u975e\u8868\u793a\u306b\u3059\u308b",
+            "dxDataGrid-ariaAdaptiveExpand": "\u8ffd\u52a0\u30c7\u30fc\u30bf\u3092\u8868\u793a\u3059\u308b",
             "dxDataGrid-ariaColumn": "\u5217",
             "dxDataGrid-ariaValue": "\u5024",
             "dxDataGrid-ariaFilterCell": "\u30d5\u30a3\u30eb\u30bf\u30fc \u30bb\u30eb",
@@ -166,11 +168,14 @@
             "dxDataGrid-ariaSearchInGrid": "\u30c7\u30fc\u30bf \u30b0\u30ea\u30c3\u30c9\u5185\u3067\u691c\u7d22",
             "dxDataGrid-ariaSelectAll": "\u3059\u3079\u3066\u3092\u9078\u629e",
             "dxDataGrid-ariaSelectRow": "\u884c\u306e\u9078\u629e",
+            "dxDataGrid-ariaToolbar": "\u30c7\u30fc\u30bf \u30b0\u30ea\u30c3\u30c9\u306e\u30c4\u30fc\u30eb \u30d0\u30fc",
             "dxDataGrid-filterBuilderPopupTitle": "\u30d5\u30a3\u30eb\u30bf\u30fc \u30d3\u30eb\u30c0\u30fc",
             "dxDataGrid-filterPanelCreateFilter": "\u30d5\u30a3\u30eb\u30bf\u30fc\u306e\u4f5c\u6210",
             "dxDataGrid-filterPanelClearFilter": "\u30af\u30ea\u30a2",
             "dxDataGrid-filterPanelFilterEnabledHint": "\u30d5\u30a3\u30eb\u30bf\u30fc\u306e\u6709\u52b9\u5316",
             "dxTreeList-ariaTreeList": "\u30c4\u30ea\u30fc \u30ea\u30b9\u30c8",
+            "dxTreeList-ariaSearchInGrid": "\u30c4\u30ea\u30fc \u30ea\u30b9\u30c8\u5185\u3092\u691c\u7d22\u3059\u308b",
+            "dxTreeList-ariaToolbar": "\u30c4\u30ea\u30fc \u30ea\u30b9\u30c8\u306e\u30c4\u30fc\u30eb \u30d0\u30fc",
             "dxTreeList-editingAddRowToNode": "\u8ffd\u52a0",
             "dxPager-infoText": "\u30da\u30fc\u30b8 {0} / {1} ({2} \u30a2\u30a4\u30c6\u30e0)",
             "dxPager-pagesCountText": "/",

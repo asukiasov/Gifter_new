@@ -203,9 +203,77 @@ namespace SixtyThreeBits.Web.Reusables.Core
                     });
                 }
             });
+        }        
+        #endregion
+    }
+
+    public static class DevExtremeBuilderCustomExtensions
+    {
+        #region Methods
+        public static DataGridColumnBuilder<T> InitCheckboxColumn<T>(this DataGridColumnBuilder<T> Column)
+        {
+            Column.TrueText(Resources.TextYes);
+            Column.FalseText(Resources.TextNo);
+            return Column;
         }
 
-        public void InitTextboxColumn<T>(DataGridColumnBuilder<T> Column, bool IsRequired = false, bool ShouldValidateEmailFormat = false, int? MaxLength = null)
+        public static DataGridColumnBuilder<T> InitDateColumn<T>(this DataGridColumnBuilder<T> Column, bool FormatDateTime = false)
+        {
+            if (FormatDateTime)
+            {
+                Column.Format(Constants.Formats.DateTime);
+            }
+            else
+            {
+                Column.Format(Constants.Formats.Date);
+            }
+            return Column;
+        }
+
+        public static DataGridColumnBuilder<T1> InitLookupColumn<T1, T2, T3>(this DataGridColumnBuilder<T1> Column, IEnumerable<SimpleKeyValue<T2, T3>> Data, bool IsRequired = false)
+        {
+            Column.Lookup(Options =>
+            {
+                Options.DataSource(d => d.Array().Data(Data).Key(nameof(SimpleKeyValue<T2, T3>.Key))).ValueExpr(nameof(SimpleKeyValue<T2, T3>.Key)).DisplayExpr(nameof(SimpleKeyValue<T2, T3>.Value));
+            });
+
+            if (IsRequired)
+            {
+                Column.ValidationRules(Options =>
+                {
+                    Options.AddRequired().Message(Resources.ValidationRequired).Trim(true);
+                });
+            }
+            return Column;
+        }
+
+        public static DataGridColumnBuilder<T> InitNumberColumn<T>(this DataGridColumnBuilder<T> Column, NumberColumnFormatType Format = NumberColumnFormatType.Default)
+        {
+            switch (Format)
+            {
+                case NumberColumnFormatType.Money:
+                    {
+                        Column.Format(Options =>
+                        {
+                            Options.Type(DevExtreme.AspNet.Mvc.Format.FixedPoint);
+                            Options.Precision(2);
+                        });
+                        break;
+                    }
+                case NumberColumnFormatType.Quantity:
+                    {
+                        Column.Format(Options =>
+                        {
+                            Options.Type(DevExtreme.AspNet.Mvc.Format.FixedPoint);
+                            Options.Precision(0);
+                        });
+                        break;
+                    }
+            }
+            return Column;
+        }
+
+        public static DataGridColumnBuilder<T> InitTextboxColumn<T>(this DataGridColumnBuilder<T> Column, bool IsRequired = false, bool ShouldValidateEmailFormat = false, int? MaxLength = null)
         {
             Column.ValidationRules(Options =>
             {
@@ -222,44 +290,34 @@ namespace SixtyThreeBits.Web.Reusables.Core
                     Options.AddStringLength().Min(1).Max(MaxLength.Value).Message(string.Format(Resources.ValidationTextMaxLength, MaxLength));
                 }
             });
+            return Column;
         }
 
-        public void InitLookupColumn<T1,T2,T3>(DataGridColumnBuilder<T1> Column, IEnumerable<SimpleKeyValue<T2, T3>> Data, bool IsRequired = false)
-        {
-            Column.Lookup(Options =>
-            {
-                Options.DataSource(d => d.Array().Data(Data).Key(nameof(SimpleKeyValue<T2, T3>.Key))).ValueExpr(nameof(SimpleKeyValue<T2, T3>.Key)).DisplayExpr(nameof(SimpleKeyValue<T2, T3>.Value));
-            });
-
-            if (IsRequired)
-            {
-                Column.ValidationRules(Options =>
-                {
-                    Options.AddRequired().Message(Resources.ValidationRequired).Trim(true);
-                });
-            }
-        }
-
-        public void InitCheckboxColumn<T>(DataGridColumnBuilder<T> Column)
-        {            
-            Column.TrueText(Resources.TextYes);
-            Column.FalseText(Resources.TextNo);
-        }
-
-        public void InitDateColumn<T>(DataGridColumnBuilder<T> Column, bool FormatDateTime = false)
+        public static DateBoxBuilder InitDateBox(this DateBoxBuilder DateBox, bool FormatDateTime = false)
         {
             if (FormatDateTime)
             {
-                Column.Format(Constants.Formats.DateTime);
+                DateBox.DisplayFormat(Constants.Formats.DateTime);
             }
             else
             {
-                Column.Format(Constants.Formats.Date);                
-            }            
+                DateBox.DisplayFormat(Constants.Formats.Date);
+            }
+
+            return DateBox;
+        }
+        #endregion
+
+        #region Enums
+        public enum NumberColumnFormatType
+        {
+            Default,
+            Money,
+            Quantity
         }
         #endregion
     }
-    
+
     public class LayoutViewModelBase
     {
         #region Properties
