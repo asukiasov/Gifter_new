@@ -80,7 +80,7 @@
             else {
                 return false;
             }
-        },
+        },        
         ToShortDate: function (Input) {
             const D = new Date(Input);
             if (Input && !isNaN(D.getTime())) {
@@ -442,7 +442,21 @@ $.fn.extend({
         const ElementHeight = ScreenHeight - OffsetTop - PaddingBottom + HeightCorrectionInPixels;
         return ElementHeight;
     },
-
+    MaskPhoneNumberGeorgian: function () {
+        $.mask.definitions['9'] = '';
+        $.mask.definitions['d'] = '[0-9]';
+        this.mask('+995 (ddd) dd-dd-dd');
+    },
+    MaskUserPersonalNumberGeorgian: function () {
+        $.mask.definitions['9'] = '';
+        $.mask.definitions['d'] = '[0-9]';
+        this.mask('?ddddddddddd');
+    },
+    MaskCompanyNumberGeorgian: function () {
+        $.mask.definitions['9'] = '';
+        $.mask.definitions['d'] = '[0-9]';
+        this.mask('ddddddddd');
+    },
     // call example $(['path to image1','path to image2', '...']).PreloadImages();
     PreloadImages: function () {
         this.each(function () {

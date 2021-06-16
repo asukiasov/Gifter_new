@@ -69,7 +69,7 @@ namespace SixtyThreeBits.Core.Modules
             {
                 using (var db = ConnectionFactory.GetDBCoreDataContext())
                 {
-                    await db.UsersIUD(DatabaseAction, UserID, UserEmail, UserPassword, UserFirstname, UserLastname, UserRoleID, UserBirthdate, UserPhoneNumberMobile, UserPersonalNumber, UserAvatarFilename, UserIsActive);                    
+                    UserID = await db.UsersIUD(DatabaseAction, UserID, UserEmail, UserPassword, UserFirstname, UserLastname, UserRoleID, UserBirthdate, UserPhoneNumberMobile, UserPersonalNumber, UserAvatarFilename, UserIsActive);                    
                     return UserID;
                 }
             });
