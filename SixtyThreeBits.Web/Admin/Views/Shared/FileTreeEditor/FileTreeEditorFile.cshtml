@@ -1,8 +1,9 @@
 ﻿@model TreeNodeItem
-<li data-id="@Model.NodeID" class="tree-item file js-file-tree-editor-item @(Model.IsNoNestingEnabled ? Html.Raw("js-no-nesting") : null)">
-    <span class="drag"><i class="fas fa-arrows-alt"></i></span>
+<li data-id="@Model.NodeID" class="tree-item file js-file-tree-editor-item is-open @(Model.IsNoNestingEnabled ? Html.Raw("js-no-nesting") : null)">
     <div class="handle @(Model.IsDisabled?Html.Raw("disabled"):null)">
         <div class="left-col">
+            <button class="tree-item-toggle-btn js-tree-item-toggle-btn @(Model.HasChildren ? null : Html.Raw("hidden"))"><i class="fas fa-chevron-down"></i></button>
+            <span class="drag"><i class="fas fa-arrows-alt"></i></span>
             @if (Model.IsFolder)
             {
                 <i class="fas fa-folder-open"></i>
@@ -49,13 +50,13 @@
             }
             @if (Model.ShowEditButton)
             {
-                <a href="#" class="js-file-tree-editor-item-add-edit-button">   
+                <a href="#" class="js-file-tree-editor-item-add-edit-button">
                     <i class="fas fa-pencil-alt"></i>
                 </a>
             }
             @if (Model.ShowDeleteButton)
             {
-                <a href="#" class="js-file-tree-editor-item-delete-button">   
+                <a href="#" class="js-file-tree-editor-item-delete-button">
                     <i class="fas fa-trash-alt"></i>
                 </a>
             }
@@ -67,7 +68,7 @@
             }
         </div>
     </div>
-    <ul>
+    <ul class="">
         @if (Model.HasChildren)
         {
             foreach (var Item in Model.Children)

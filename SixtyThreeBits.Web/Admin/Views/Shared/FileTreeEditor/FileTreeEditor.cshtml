@@ -13,10 +13,12 @@
 
 <script id="file-tree-editor-partial-template" type="text/template7">
     {{#each Children}}
-    <li data-id="{{NodeID}}" class="tree-item file js-file-tree-editor-item {{#if IsNoNestingEnabled}}js-no-nesting{{/if}}">
-        <span class="drag"><i class="fas fa-arrows-alt"></i></span>
+    <li data-id="{{NodeID}}" class="tree-item file js-file-tree-editor-item is-open {{#if IsNoNestingEnabled}}js-no-nesting{{/if}}">
         <div class="handle {{#if IsDisabled}}disabled{{/if}}">
             <div class="left-col">
+                <span class="drag"><i class="fas fa-arrows-alt"></i></span>
+                <button class="tree-item-toggle-btn js-tree-item-toggle-btn {{#unless HasChildren}}d-none{{/unless}}"><i class="fas fa-chevron-down"></i></button>
+                
                 {{#if IsFolder}}
                     <i class="fas fa-folder-open"></i>
                 {{#else}}
@@ -38,7 +40,7 @@
                     <i></i>
                 </label>
                 {{/if}}
-                {{#if ShowToggler2}}                
+                {{#if ShowToggler2}}
                 <label class="toggler">
                     <span>{{TextToggler2}}</span>
                     <input type="checkbox" {{#if IsToggler2Checked}} checked {{/if}} class="js-file-tree-editor-item-toggler-2-checkbox" />
@@ -50,7 +52,7 @@
                     <i class="fa {{CustomButtonIcon}}"></i>
                 </a>
                 {{/js_if}}
-                {{#if ShowAddNewButton}}                
+                {{#if ShowAddNewButton}}
                 <a href="#" class="js-file-tree-editor-item-add-new-button">
                     <i class="fas fa-plus"></i>
                 </a>
@@ -75,7 +77,7 @@
         </div>
         <ul>
             {{#if HasChildren}}
-            {{> "Children"}}            
+            {{> "Children"}}
             {{/if}}
         </ul>
     </li>

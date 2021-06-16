@@ -295,8 +295,7 @@ namespace SixtyThreeBits.Web.Admin.Models
         {
             var Errors = new List<SimpleKeyValue<string, string>>
             {
-                Validation.ValidateRequired(ErrorKey: Validation.GetJQueryNameSelectorFor(nameof(SubmitModel.PageTitle)), ValueToValidate: SubmitModel.PageTitle),
-                Validation.ValidateRequired(ErrorKey: Validation.GetJQueryNameSelectorFor(nameof(SubmitModel.PageSlug)), ValueToValidate: SubmitModel.PageSlug)
+                Validation.ValidateRequired(ErrorKey: Validation.GetJQueryNameSelectorFor(nameof(SubmitModel.PageTitle)), ValueToValidate: SubmitModel.PageTitle)
             };
             
 
@@ -316,13 +315,11 @@ namespace SixtyThreeBits.Web.Admin.Models
                         await DataAccessFactory.Pages.PagesIUD(
                             DatabaseAction: Enums.DatabaseActions.UPDATE,
                             PageID: DBItemPage.PageID,
-                            PageSlug: SubmitModel.PageSlug,
                             PageTitle: SubmitModel.PageTitle ?? Constants.NullValueFor.String,
                             PageText: SubmitModel.PageText ?? Constants.NullValueFor.String,
                             PageTextHeaderHtml: SubmitModel.HeaderSectionHtml ?? Constants.NullValueFor.String,
                             PageTextFooterHtml: SubmitModel.FooterSectionHtml ?? Constants.NullValueFor.String,
-                            PageData: SubmitModel.PageData ?? Constants.NullValueFor.String,
-                            PageIsPublished: SubmitModel.IsPublished
+                            PageData: SubmitModel.PageData ?? Constants.NullValueFor.String
                         );
                         break;
                     }
@@ -331,13 +328,11 @@ namespace SixtyThreeBits.Web.Admin.Models
                         await DataAccessFactory.Pages.PagesIUD(
                             DatabaseAction: Enums.DatabaseActions.UPDATE,
                             PageID: DBItemPage.PageID,
-                            PageSlug: SubmitModel.PageSlug,
                             PageTitleEng: SubmitModel.PageTitle ?? Constants.NullValueFor.String,
                             PageTextEng: SubmitModel.PageText ?? Constants.NullValueFor.String,
                             PageTextHeaderHtmlEng: SubmitModel.HeaderSectionHtml ?? Constants.NullValueFor.String,
                             PageTextFooterHtmlEng: SubmitModel.FooterSectionHtml ?? Constants.NullValueFor.String,
-                            PageDataEng: SubmitModel.PageData ?? Constants.NullValueFor.String,
-                            PageIsPublished: SubmitModel.IsPublished
+                            PageDataEng: SubmitModel.PageData ?? Constants.NullValueFor.String
                         );
                         break;
                     }
@@ -346,13 +341,11 @@ namespace SixtyThreeBits.Web.Admin.Models
                         await DataAccessFactory.Pages.PagesIUD(
                             DatabaseAction: Enums.DatabaseActions.UPDATE,
                             PageID: DBItemPage.PageID,
-                            PageSlug: SubmitModel.PageSlug,
                             PageTitleRus: SubmitModel.PageTitle ?? Constants.NullValueFor.String,
                             PageTextRus: SubmitModel.PageText ?? Constants.NullValueFor.String,
                             PageTextHeaderHtmlRus: SubmitModel.HeaderSectionHtml ?? Constants.NullValueFor.String,
                             PageTextFooterHtmlRus: SubmitModel.FooterSectionHtml ?? Constants.NullValueFor.String,
-                            PageDataRus: SubmitModel.PageData ?? Constants.NullValueFor.String,
-                            PageIsPublished: SubmitModel.IsPublished
+                            PageDataRus: SubmitModel.PageData ?? Constants.NullValueFor.String
                         );
                         break;
                     }
