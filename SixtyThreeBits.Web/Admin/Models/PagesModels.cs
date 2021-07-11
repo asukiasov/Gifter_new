@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using SixtyThreeBits.Core.Modules;
 using SixtyThreeBits.Core.Properties;
 using SixtyThreeBits.Core.Services;
@@ -32,10 +31,12 @@ namespace SixtyThreeBits.Web.Admin.Models
                 Caption = Item.PageTitle,
                 IsToggler1Checked = Item.PageIsPublished,
                 IsToggler2Checked = Item.PageIsMenuItem,
+                IsToggler3Checked = Item.PageIsFooterItem,
                 ShowAddNewButton = AllowAddNew,
                 ShowDeleteButton = AllowDelete,
                 ShowToggler1 = AllowUpdate,
-                ShowToggler2 = AllowUpdate
+                ShowToggler2 = AllowUpdate,
+                ShowToggler3 = AllowUpdate
             }).ToList();
             
             ViewModel.ShowAddNewButton = AllowAddNew;
@@ -67,7 +68,8 @@ namespace SixtyThreeBits.Web.Admin.Models
                 PageSlug: System.Guid.NewGuid().ToString(),
                 PageTitle: PageTitle,
                 PageIsMenuItem: false,
-                PageIsPublished: false                
+                PageIsPublished: false,
+                PageIsFooterItem: false
             );
 
             if (PageID > 0)
@@ -81,6 +83,7 @@ namespace SixtyThreeBits.Web.Admin.Models
                     Node.Caption = DBItem.PageTitle;
                     Node.ShowToggler1 = AllowUpdate;
                     Node.ShowToggler2 = AllowUpdate;
+                    Node.ShowToggler3 = AllowUpdate;
                     Node.NavigateUrl = Url.RouteUrl(ControllerActionRouteNames.Admin.Pages.Page.Properties, new { PageID = PageID });
                     Node.ShowAddNewButton = AllowAddNew;
                     Node.ShowDeleteButton = AllowDelete;                                       
@@ -108,7 +111,7 @@ namespace SixtyThreeBits.Web.Admin.Models
             };
         }
 
-        public async Task<AjaxResponse> UpdatePage(int? PageID, string PageTitle = null, bool? PageIsPublished = null, bool? PageIsMenuItem = null)
+        public async Task<AjaxResponse> UpdatePage(int? PageID, string PageTitle = null, bool? PageIsPublished = null, bool? PageIsMenuItem = null, bool? PageIsFooterItem = null)
         {
             var AR = new AjaxResponse();
             await DataAccessFactory.Pages.PagesIUD(
@@ -116,7 +119,8 @@ namespace SixtyThreeBits.Web.Admin.Models
                 PageID: PageID,
                 PageTitle: PageTitle,
                 PageIsPublished: PageIsPublished,
-                PageIsMenuItem: PageIsMenuItem
+                PageIsMenuItem: PageIsMenuItem,
+                PageIsFooterItem: PageIsFooterItem
             );
             AR.IsSuccess = !DataAccessFactory.Pages.IsError;
 

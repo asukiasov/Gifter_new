@@ -1,4 +1,5 @@
-﻿using SixtyThreeBits.Core.Utilities;
+﻿using SixtyThreeBits.Core.Properties;
+using SixtyThreeBits.Core.Utilities;
 using System.Collections.Generic;
 
 namespace SixtyThreeBits.Web.Reusables.Core
@@ -31,6 +32,7 @@ namespace SixtyThreeBits.Web.Reusables.Core
         public string CaptionEng { get; set; }
         public bool IsToggler1Checked { get; set; }
         public bool IsToggler2Checked { get; set; }
+        public bool IsToggler3Checked { get; set; }
         public string LanguageCode { get; set; }
         public bool IsFolder { get; set; }
         public bool HasChildren => Children?.Count > 0;
@@ -44,13 +46,15 @@ namespace SixtyThreeBits.Web.Reusables.Core
         public bool ShowDeleteButton { get; set; }
         public bool ShowToggler1 { get; set; }
         public bool ShowToggler2 { get; set; }
+        public bool ShowToggler3 { get; set; }
         public bool ShowCustomButton { get; set; }
         public bool ShowCustomButtonFirst { get; set; }
         public bool ShowCustomButtonLast => !ShowCustomButtonFirst;
 
         public string CustomButtonIcon { get; set; }
-        public string TextToggler1 { get; set; } = "Published?";
-        public string TextToggler2 { get; set; } = "Menu?";
+        public string TextToggler1 { get; set; } = Resources.TextPublished;
+        public string TextToggler2 { get; set; } = Resources.TextMenu;
+        public string TextToggler3 { get; set; } = Resources.TextFooter;
         #endregion        
     }
 

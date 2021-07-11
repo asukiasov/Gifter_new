@@ -116,19 +116,19 @@ namespace SixtyThreeBits.Web.Admin.Models
                     .OnInitNewRow("UsersModel.OnUsersGridInitNewRow")
                     .Columns(Columns =>
                     {                        
-                        Columns.AddFor(m => m.UserFirstname).Caption("Firstname").Width(150).ValidationRules(Options =>
+                        Columns.AddFor(m => m.UserFirstname).Caption("სახელი").Width(150).ValidationRules(Options =>
                         {
                             Options.AddRequired();
                         });
-                        Columns.AddFor(m => m.UserLastname).Caption("Lastname").Width(150);
-                        Columns.AddFor(m => m.UserEmail).Caption("Email").Width(200).ValidationRules(Options =>
+                        Columns.AddFor(m => m.UserLastname).Caption("გვარი").Width(150);
+                        Columns.AddFor(m => m.UserEmail).Caption("ელ-ფოსტა").Width(200).ValidationRules(Options =>
                         {
                             Options.AddRequired();
                             Options.AddEmail();
                         });
-                        Columns.AddFor(m => m.UserPassword).Caption("Password").Width(150);
-                        Columns.AddFor(m => m.UserRoleID).Caption("Role").Width(150).InitLookupColumn(Data: Roles);
-                        Columns.AddFor(m => m.UserIsActive).Caption("Active").Width(80).InitCheckboxColumn();
+                        Columns.AddFor(m => m.UserPassword).Caption("პაროლი").Width(150);
+                        Columns.AddFor(m => m.UserRoleID).Caption("როლი").Width(150).InitLookupColumn(Data: Roles);
+                        Columns.AddFor(m => m.UserIsActive).Caption("აქტიური").Width(80).InitCheckboxColumn();
                         Columns.Add();
                     });
 
@@ -225,11 +225,11 @@ namespace SixtyThreeBits.Web.Admin.Models
                     .OnInitialized("RolesModel.OnRolesGridInit")                    
                     .Columns(Columns =>
                     {
-                        Columns.AddFor(m => m.RoleName).Caption("Role").Width(150).ValidationRules(Options =>
+                        Columns.AddFor(m => m.RoleName).Caption("დასახელება").Width(300).ValidationRules(Options =>
                         {
                             Options.AddRequired();
                         });
-                        Columns.AddFor(m => m.RoleCode).Caption("Code").DataType(GridColumnDataType.Number).Width(150);                                                
+                        Columns.AddFor(m => m.RoleCode).Caption("კოდი").DataType(GridColumnDataType.Number).Width(150);                                                
                         Columns.Add();
                     });
 
@@ -365,16 +365,16 @@ namespace SixtyThreeBits.Web.Admin.Models
                     })
                     .Columns(Columns =>
                     {
-                        Columns.AddFor(m => m.PermissionCaption).Caption("Caption").Width(400).ValidationRules(Options =>
+                        Columns.AddFor(m => m.PermissionCaption).Caption("დასახელება").Width(400).ValidationRules(Options =>
                         {
                             Options.AddRequired();
                         });
-                        Columns.AddFor(m => m.PermissionPagePath).Caption("Page Path").Width(300);
-                        Columns.AddFor(m => m.PermissionCodeName).Caption("Codename").Width(300);
-                        Columns.AddFor(m => m.PermissionCode).Caption("Code").Width(250);
-                        Columns.AddFor(m => m.PermissionIsMenuItem).Caption("Is Menu").DataType(GridColumnDataType.Boolean).Width(80);
-                        Columns.AddFor(m => m.PermissionMenuIcon).Caption("Menu Icon fa").Width(100);
-                        Columns.AddFor(m => m.PermissionSortIndex).Caption("Sort Index").DataType(GridColumnDataType.Number).Width(80);
+                        Columns.AddFor(m => m.PermissionPagePath).Caption("გვერდის მისამართი").Width(300);
+                        Columns.AddFor(m => m.PermissionCodeName).Caption("კოდური სახელი").Width(300);
+                        Columns.AddFor(m => m.PermissionCode).Caption("კოდი").Width(250);
+                        Columns.AddFor(m => m.PermissionIsMenuItem).Caption("მენიუ").DataType(GridColumnDataType.Boolean).Width(80);
+                        Columns.AddFor(m => m.PermissionMenuIcon).Caption("მენიუს იკონკა").Width(100);
+                        Columns.AddFor(m => m.PermissionSortIndex).Caption("სორტ. ინდექსი").DataType(GridColumnDataType.Number).Width(100);
                         Columns.Add();
 
                     });
@@ -505,7 +505,7 @@ namespace SixtyThreeBits.Web.Admin.Models
                     })
                     .Columns(Columns =>
                     {
-                        Columns.AddFor(m => m.RoleName).Caption("Role");
+                        Columns.AddFor(m => m.RoleName).Caption("როლი");
                     });
 
 
@@ -554,7 +554,7 @@ namespace SixtyThreeBits.Web.Admin.Models
                     })
                     .Columns(Columns =>
                     {
-                        Columns.AddFor(m => m.PermissionCaption).Caption("Permission");
+                        Columns.AddFor(m => m.PermissionCaption).Caption("უფლება");
 
                     });
 

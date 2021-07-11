@@ -147,8 +147,17 @@
   <data name="TextError" xml:space="preserve">
     <value>Sorry something went wrong</value>
   </data>
+  <data name="TextFooter" xml:space="preserve">
+    <value>Footer</value>
+  </data>
+  <data name="TextMenu" xml:space="preserve">
+    <value>Menu</value>
+  </data>
   <data name="TextNo" xml:space="preserve">
     <value>No</value>
+  </data>
+  <data name="TextPublished" xml:space="preserve">
+    <value>Published</value>
   </data>
   <data name="TextSave" xml:space="preserve">
     <value>Save</value>

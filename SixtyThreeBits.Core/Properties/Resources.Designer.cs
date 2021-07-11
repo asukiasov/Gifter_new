@@ -151,11 +151,38 @@ namespace SixtyThreeBits.Core.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Footer.
+        /// </summary>
+        public static string TextFooter {
+            get {
+                return ResourceManager.GetString("TextFooter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Menu.
+        /// </summary>
+        public static string TextMenu {
+            get {
+                return ResourceManager.GetString("TextMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No.
         /// </summary>
         public static string TextNo {
             get {
                 return ResourceManager.GetString("TextNo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Published.
+        /// </summary>
+        public static string TextPublished {
+            get {
+                return ResourceManager.GetString("TextPublished", resourceCulture);
             }
         }
         

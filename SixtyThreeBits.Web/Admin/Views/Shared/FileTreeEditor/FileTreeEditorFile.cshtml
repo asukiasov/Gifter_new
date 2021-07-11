@@ -36,6 +36,14 @@
                     <i></i>
                 </label>
             }
+            @if (Model.ShowToggler3)
+            {
+                <label class="toggler">
+                    <span>@Model.TextToggler3</span>
+                    <input type="checkbox" @(Model.IsToggler3Checked ? Html.Raw("checked") : null) class="js-file-tree-editor-item-toggler-3-checkbox" />
+                    <i></i>
+                </label>
+            }
             @if (Model.ShowCustomButton && Model.ShowCustomButtonFirst)
             {
                 <a href="#" class="js-file-tree-editor-item-custom-button">

@@ -38,9 +38,9 @@ namespace SixtyThreeBits.Web.Areas.Admin.Controllers
 
         [HttpPost]
         [Route("update", Name = ControllerActionRouteNames.Admin.Pages.Update)]
-        public async Task<ActionResult> PagesUpdate(int? PageID,string PageTitle = null, bool? IsPublished = null, bool? IsMenuItem = null)
+        public async Task<ActionResult> PagesUpdate(int? PageID,string PageTitle = null, bool? PageIsPublished = null, bool? PageIsMenuItem = null, bool? PageIsFooterItem = null)
         {
-            var ViewModel = await Model.UpdatePage(PageID, PageTitle, IsPublished, IsMenuItem);
+            var ViewModel = await Model.UpdatePage(PageID, PageTitle, PageIsPublished, PageIsMenuItem, PageIsFooterItem);
             return Json(ViewModel);
         }
 
