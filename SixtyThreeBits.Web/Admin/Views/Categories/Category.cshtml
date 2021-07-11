@@ -1,0 +1,51 @@
+﻿@model CategoriesModel.PageViewModel
+
+@section HeaderSection{
+    <link href="~/admin/css/SortableTree.css" rel="stylesheet" />
+}
+
+@if (Model.ShowAddNewButton)
+{
+    <div class="actions-row">
+        <button class="btn btn-oval btn-default js-show-add-new-modal-button"><i class="fas fa-plus"></i> <span>დამატება</span></button>
+    </div>
+}
+<div class="row">
+    <div class="col-12">
+        @await Html.PartialAsync(ViewNames.Admin.Shared.FileTreeEditor.Editor, Model.Categories)
+    </div>
+</div>
+
+@section FooterSection{
+    <div class="modal fade js-create-new-category-modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">კატეგორიის დამატება</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col form-group">
+                            <label>კატეგორიის დასახელება</label>
+                            <input type="text" class="form-control js-category-name-textbox" />
+                            <input type="hidden" class="js-category-parent-id-hf" />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-circle btn-primary js-save-new-category-button"><i class="fas fa-save"></i></button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <script src="~/admin/js/Categories/Categories.js"></script>
+    <script>
+        CategoriesModel.UrlAddNew = '@Model.UrlAddNew';    
+        CategoriesModel.UrlDelete = '@Model.UrlDelete';
+        CategoriesModel.UrlSync = '@Model.UrlSync';
+        CategoriesModel.TextConfirmDeleteRecord = '@Html.Raw(Model.TextConfirmDeleteRecord)';
+        CategoriesModel.TextConfirmDeleteRecursive = '@Html.Raw(Model.TextConfirmDeleteRecursive)';        
+    </script>
+}

@@ -116,7 +116,7 @@ namespace SixtyThreeBits.Web
             RequestLocalizationOptions.RequestCultureProviders.Add(new CustomCultureProvider(Utilities));
             RequestLocalizationOptions.SupportedCultures = new List<CultureInfo> { new CultureInfo(Enums.Languages.GEORGIAN), new CultureInfo(Enums.Languages.ENGLISH) };
             RequestLocalizationOptions.SupportedUICultures = new List<CultureInfo> { new CultureInfo(Enums.Languages.GEORGIAN), new CultureInfo(Enums.Languages.ENGLISH) };
-            //App.UseRequestLocalization(RequestLocalizationOptions);
+            App.UseRequestLocalization(RequestLocalizationOptions);
 
             App.UseEndpoints(Endpoints =>
             {
@@ -139,7 +139,7 @@ namespace SixtyThreeBits.Web
                 var Path = Context.Request.Path.ToString() ?? string.Empty;
                 if (Path.StartsWith("/admin/"))
                 {
-                    Culture = Enums.Languages.ENGLISH;
+                    Culture = Enums.Languages.GEORGIAN;
                 }
                 else
                 {

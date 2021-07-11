@@ -27,6 +27,28 @@
                 #endregion
             }
 
+            public class Brands
+            {
+                #region Properties
+                public const string Index = "AdminBrands";
+                public const string BrandsGrid = "AdminBrandsGrid";
+                public const string BrandsGridAdd = "AdminBrandsGridAdd";
+                public const string BrandsGridUpdate = "AdminBrandsGridUpdate";
+                public const string BrandsGridDelete = "AdminBrandsGridDelete";
+                #endregion
+
+                #region Sub Classes
+                public class Brand
+                {
+                    #region Properties
+                    public const string Parent = "AdminBrandsBrand";
+                    public const string Properties = "AdminBrandsBrandProperties";
+                    public const string DeleteCoverImage = "AdminBrandsBrandPropertiesDeleteCoverImage";
+                    #endregion
+                }
+                #endregion
+            }
+
             public class Carousel
             {
                 #region Properties
@@ -54,15 +76,14 @@
                 #region Properties
                 public const string Index = "AdminCategories";
                 public const string Add = "AdminCategoriesAdd";
-                public const string Update = "AdminCategoriesUpdate";
                 public const string Delete = "AdminCategoriesDelete";
-                public const string SyncParentsAndSortIndexes = "AdminCategoriesSyncParentsAndSortIndexes";
+                public const string Sync = "AdminCategoriesSync";
                 #endregion
 
                 #region Sub Classes
                 public class Category
                 {
-                    #region Properties
+                    #region Properties                    
                     public const string Properties = "AdminCategoriesCategoryProperties";
                     public const string DeleteImage = "AdminCategoriesCategoryPropertiesDeleteImage";
                     #endregion
@@ -175,6 +196,7 @@
             {
                 #region Properties
                 public const string Index = "AdminProducts";
+                public const string ProductsRemainderSync = "ProductsRemainderSync";
                 public const string ProductsGrid = "AdminProductsGrid";
                 public const string ProductsGridAdd = "AdminProductsGridAdd";
                 public const string ProductsGridUpdate = "AdminProductsGridUpdate";
@@ -186,26 +208,14 @@
                 {
                     #region Properties
                     public const string Parent = "AdminProductsProduct";
-                    public const string Properties = "AdminProductsProductProperties";
-
-                    #region Gallery
-                    public const string Gallery = "AdminProductsProductGallery";
-                    public const string GalleryUpload = "AdminProductsProductGalleryUpload";
-                    public const string GalleryDelete = "AdminProductsProductGalleryDelete";
-                    public const string GallerySyncSortIndexes = "AdminProductsProductGalleryGallerySyncSortIndexes";
-                    #endregion
-
-                    #region Similar Products
-                    public const string SimilarProducts = "AdminProductsProductSimilarProducts";
-                    public const string SimilarProductsGrid = "AdminProductsProductSimilarProductsGrid";
-                    public const string SimilarProductsGridAdd = "AdminProductsProductSimilarProductsGridAdd";
-                    public const string SimilarProductsGridDelete = "AdminProductsProductSimilarProductsGridDelete";
-                    public const string SimilarProductsGridSyncSortIndexes = "AdminProductsProductSimilarProductsGridSyncSortIndexes";
-                    public const string NonSimilarProducts = "AdminProductsProductNonSimilarProducts";
-                    #endregion
-                    #endregion
+                    public const string Properties = "AdminProductsProduct";
+                    public const string PropertiesImagesUpload = "AdminProductsProductImagesUpload";
+                    public const string PropertiesImagesSort = "AdminProductsProductImagesSort";
+                    public const string PropertiesImagesDelete = "AdminProductsProductImagesDelete";
+                    #endregion                    
                 }
                 #endregion
+
             }
 
             public class Projects

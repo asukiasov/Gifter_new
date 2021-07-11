@@ -40,6 +40,22 @@ namespace SixtyThreeBits.Core.Modules
             });
         }
 
+        public async Task<List<SimpleKeyValue<int?, string>>> ListCountriesAsSimpleKeyValue(int? SelectedCountryID = null)
+        {
+            return await TryToReturnAsyncTask($"{nameof(ListCountriesAsSimpleKeyValue)}({nameof(SelectedCountryID)} = {SelectedCountryID})", async () =>
+            {
+                using (var db = ConnectionFactory.GetDBCoreDataContext())
+                {
+                    return (await db.CountriesList().OrderBy(Item => Item.CountryName).ToListAsync()).Select(Item => new SimpleKeyValue<int?, string>
+                    {
+                        Key = Item.CountryID,
+                        Value = Item.CountryName,
+                        IsSelected = Item.CountryID == SelectedCountryID
+                    }).ToList();
+                }
+            });
+        }
+
         public async Task<List<DBCoreDataContext.DictionariesListResultItem>> ListDictionaries(int? DictionaryLevel = null, int? DictionaryCode = null, bool? DictionaryIsVisible = null)
         {
             return await TryToReturnAsyncTask($"{nameof(ListDictionaries)}()", async () =>

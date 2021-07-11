@@ -1,0 +1,79 @@
+﻿@model ProductsModel.PageViewModel
+@if (Model.ShowAddNewButton)
+{
+    <div class="actions-row">
+        <button class="btn btn-oval btn-default js-add-new-button"><i class="fas fa-plus"></i> დამატება</button>
+        <button class="btn btn-oval btn-default js-upload-excel-button"><i class="fas fa-upload"></i> ნაშთის ატვირთვა</button>
+    </div>
+}
+<div class="row">
+    <div class="col">
+        @Model.Grid.Render(Html)
+    </div>
+</div>
+@section FooterSection{
+    <div class="modal fade js-upload-excel-file-modal" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <form action="@Html.Raw(Model.UploadExcelFileUrl)" method="post" enctype="multipart/form-data">
+                    <div class="modal-header">
+                        <h4 class="modal-title"> ექსელის ფაილის ატვირთვა</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+
+                        <div class="row">
+                            <div class="form-group col-lg-12">
+                                <label> ფაილის ატვირთვა</label>
+                                <div class="input-group custom-file-group js-custom-file-upload">
+                                    <div class="form-control">
+                                        <span class="js-new-attachment hidden"></span>
+                                    </div>
+                                    <span class="input-group-btn">
+                                        <button type="button" class="btn btn-warning hidden js-clear-button"><i class="fa fa-times"></i></button>
+                                        <span class="btn btn-default custom-file-upload">
+                                            <i class="fas fa-folder-open"></i>
+                                            <input type="file" name="PostedFile" class="js-file-input" accept="" />
+                                        </span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer d-flex justify-content-between">
+                        <button class="btn btn-oval btn-default js-download-excel-file-button"><i class="fas fa-download"></i> ექსელის შაბლონის გადმოწერა</button>
+                        <button class="btn btn-oval btn-default js-upload-excel-file-button"><i class="fas fa-upload"></i> ატვირთვა</button>
+                    </div>
+                    @if (Model.HasErrors)
+                    {
+                        <div class="row js-error-list">
+                            <div class="col-lg-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h2 class="h4 mb-1 text-danger text-center">შეცომების სია</h2>
+                                        <ul class="list-group">
+                                            @foreach (var Item in Model.Errors)
+                                            {
+                                                <li class="list-group-item">
+                                                    <div class="custom-control custom-checkbox">
+                                                        <input class="custom-control-input" id=@Item.Key type="checkbox">
+                                                        <label class="cursor-pointer custom-control-label" for=@Item.Key>@Item.Key @Item.Value</label>
+                                                    </div>
+                                                </li>
+                                            }
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/admin/js/Products/Products.js"></script>
+    <script>
+        ProductsModel.IsError = @Model.IsError;
+    </script>
+}

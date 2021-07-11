@@ -1,19 +1,11 @@
 ﻿using Microsoft.AspNetCore.Http;
+using SixtyThreeBits.Core.Abstractions;
 using SixtyThreeBits.Libraries;
 using System.Linq;
 
 namespace SixtyThreeBits.Web.Reusables
 {
-    public interface ISessionAssistance
-    {
-        void Clear();
-        T Get<T>(string Key);
-        string GetSessionID();
-        bool HasKey(string Key);        
-        void Set<T>(string Key, T Value);
-        void Remove(string Key);
-    }
-
+    
     public class SessionAssistance : ISessionAssistance
     {
         #region Properties

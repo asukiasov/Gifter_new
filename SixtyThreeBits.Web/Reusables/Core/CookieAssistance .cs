@@ -1,18 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
+using SixtyThreeBits.Core.Abstractions;
 using SixtyThreeBits.Libraries;
 using System;
 
 namespace SixtyThreeBits.Web.Reusables
 {
-    public interface ICookieAssistance
-    {
-        #region Properties
-        T Get<T>(string Key);
-        void Set<T>(string Key, T Value, DateTime? ExpirationDate);
-        void Remove(string Key); 
-        #endregion
-    }
-
     public class CookieAssistance : ICookieAssistance
     {
         #region Properties

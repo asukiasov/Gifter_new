@@ -1,4 +1,4 @@
-﻿var TinyMCE = {
+﻿var TinyMCEClass = {
     Selector: 'textarea',
     Width: '100%',
     Height: 250,
@@ -6,33 +6,26 @@
     FileManagerPath: null,
     CustomToolbars: '',
     Setup: null,
-
-    Init: function (Options) {
-        if (Options) {
-            TinyMCE.Selector = Options.Selector ? Options.Selector : TinyMCE.Selector;
-            TinyMCE.Width = Options.Width ? Options.Width : TinyMCE.Width;
-            TinyMCE.Height = Options.Height ? Options.Height : TinyMCE.Height;
-            TinyMCE.AutoSize = Options.AutoSize ? Options.AutoSize : TinyMCE.AutoSize;
-            TinyMCE.FileManagerPath = Options.FileManagerPath ? Options.FileManagerPath : TinyMCE.FileManagerPath;
-            TinyMCE.Setup = Options.Setup ? Options.Setup : TinyMCE.Setup;
-            TinyMCE.CustomToolbars = Options.CustomToolbars ? Options.CustomToolbars : TinyMCE.CustomToolbars;
-        }
-
-        return TinyMCE;
-    },
+    PlaceHolders: [],
 
     Display: function () {
-        $(TinyMCE.Selector).tinymce({
-            width: TinyMCE.Width,
-            height: TinyMCE.Height,
+        $(this.Selector).tinymce({
+            width: this.Width,
+            height: this.Height,
             menubar: false,
-            toolbar_items_size: 'small',
-            toolbar: 'bold italic underline strikethrough style-h2 style-h3 | alignleft aligncenter alignjustify alignright superscript subscript | bullist numlist | link image | forecolor backcolor | filemanager code' + TinyMCE.CustomToolbars,
-            plugins: 'link,image,media,lists,code,paste,FormatingToolbarButtons' + (TinyMCE.FileManagerPath == null ? '' : ',filemanager') + (TinyMCE.AutoSize ? ',autoresize' : ''),
+            
+            toolbar:
+                [
+                    'formatselect | bullist numlist outdent indent | link | hr | image media | table | filemanager code' + this.CustomToolbars,
+                    'fontsizeselect | forecolor backcolor | bold italic underline strikethrough superscript subscript | blockquote | alignleft aligncenter alignright alignjustify | removeformat | disableTooltip'
+                ],
+            plugins: 'paste autoresize image link media table hr lists advlist code help wordcount emoticons charmap visualblocks searchreplace'+ ((this.FileManagerPath == null ? '' : ',filemanager') + (this.AutoSize ? ',autoresize' : '')),            
 
-            filemanager_path: TinyMCE.FileManagerPath,
+            filemanager_path: this.FileManagerPath,
+            filemanager_title: 'My Files',
 
-            paste_word_valid_elements: 'b,strong,i,em,ul,li,ol,p,br,sub,sup,h2,h3',
+            block_formats: 'Header 1=h1;Header 2=h2;Header 3=h3;Header 4=h4;Header 5=h5;Header 6=h6; Paragraph=p',
+            paste_word_valid_elements: 'b,strong,i,em,ul,li,ol,p,br,sub,sup',
             forced_root_block: false,
             force_p_newlines: false,
             remove_linebreaks: false,
@@ -44,21 +37,20 @@
             remove_script_host: false,
             convert_urls: false,
             autoresize_bottom_margin: 10,
-            autoresize_min_height: TinyMCE.Height,
+            autoresize_min_height: this.Height,
 
-            setup: TinyMCE.Setup
-        });
+            setup: this.Setup
+        });        
     },
 
-    DisplaySimplified: function () {
-
-        $(TinyMCE.Selector).tinymce({
-            width: TinyMCE.Width,
-            height: TinyMCE.Height,
+    DisplaySimplified: function () {                
+        $(this.Selector).tinymce({
+            width: this.Width,
+            height: this.Height,
             menubar: false,
             toolbar_items_size: 'small',
-            toolbar: 'bold italic underline strikethrough | alignleft aligncenter alignjustify alignright sub sup | link | code ' + TinyMCE.CustomToolbars,
-            plugins: 'link,textcolor,code,paste',
+            toolbar: 'bold italic underline strikethrough | alignleft aligncenter alignjustify alignright sub sup | link | bullist numlist | code ' + this.CustomToolbars,
+            plugins: 'link textcolor code paste image lists',
             paste_word_valid_elements: 'b,strong,i,em,ul,li,ol,p,br,sub,sup',
             forced_root_block: false,
             force_p_newlines: false,
@@ -68,7 +60,66 @@
             verify_html: false,
             apply_source_formatting: true,
 
-            setup: TinyMCE.Setup
-        });
+            setup: this.Setup
+        });        
+    },
+
+    RemovePoweredBy: function () {        
+        $('[aria-label="Powered by Tiny"]').remove();
     }
 };
+
+function TinyMCE(Options) {
+    if (Options) {
+        const _this = this;
+        _this.Selector = Options.Selector ? Options.Selector : _this.Selector;
+        _this.Width = Options.Width ? Options.Width : _this.Width;
+        _this.Height = Options.Height ? Options.Height : _this.Height;
+        _this.AutoSize = Options.AutoSize ? Options.AutoSize : _this.AutoSize;
+        _this.FileManagerPath = Options.FileManagerPath ? Options.FileManagerPath : _this.FileManagerPath;
+        _this.CustomToolbars = Options.CustomToolbars ? Options.CustomToolbars : _this.CustomToolbars;
+        _this.PlaceHolders = Options.PlaceHolders ? Options.PlaceHolders : _this.PlaceHolders;
+        
+        if (_this.PlaceHolders && _this.PlaceHolders.length) {
+            _this.CustomToolbars += (' Placeholders');
+        }
+
+        _this.Setup = function (editor) {
+            if (Options.Setup) {
+                Options.Setup(editor);
+            }
+            
+            if (_this.PlaceHolders && _this.PlaceHolders.length) {
+                
+                editor.ui.registry.addSplitButton('Placeholders', {
+                    text: 'Insert',
+                    onAction: function () {
+
+                    },
+                    onItemAction: function (api, value) {
+                        editor.insertContent(value);
+                    },
+                    fetch: function (callback) {                                                
+                        const Menu = new Array();
+                        _this.PlaceHolders.forEach(function (Item, Index) {
+                            Menu.push({
+                                type: 'choiceitem',
+                                text: Item.Key,
+                                value: Item.Value
+                            });
+                        });
+                        
+                        callback(Menu);
+                    }
+                });
+
+            }
+
+            editor.on('init', function (e) {
+                _this.RemovePoweredBy();
+            });
+        }
+    }    
+}
+
+TinyMCE.prototype = TinyMCEClass;

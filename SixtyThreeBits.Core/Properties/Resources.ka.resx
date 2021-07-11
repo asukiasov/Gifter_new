@@ -132,11 +132,17 @@
   <data name="TextConfirmDeleteAttachment" xml:space="preserve">
     <value>ნამდვილად გნებავთ გაილის წაშლა?</value>
   </data>
+  <data name="TextConfirmDeleteImage" xml:space="preserve">
+    <value>ნამდვილად გნებავთ სურათის წაშლა?</value>
+  </data>
   <data name="TextConfirmDeleteRecursive" xml:space="preserve">
     <value>ჩანაწერის წაშლა აგრეთვე გამოიწვევს ყველა ქვე-ჩანაწერების წაშლას (ასეთების არსებობის შემთხვევაში). ნამდვილად გსურთ გაგრძელება?</value>
   </data>
   <data name="TextDelete" xml:space="preserve">
     <value>წაშლა</value>
+  </data>
+  <data name="TextDropzone" xml:space="preserve">
+    <value>ჩააგდეთ სურათები აქ &lt;br /&gt; ან &lt;br /&gt; დაკლიკეთ აქ</value>
   </data>
   <data name="TextError" xml:space="preserve">
     <value>უკაცრავად დაფიქსირდა შეცდომა</value>

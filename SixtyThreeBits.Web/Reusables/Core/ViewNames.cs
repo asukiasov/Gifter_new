@@ -6,6 +6,13 @@
         public class Admin
         {
             #region Sub Classes
+            public class Auth
+            {
+                #region Properties
+                public const string Login = "~/Admin/Views/Auth/Login.cshtml";
+                #endregion
+            }
+
             public class Blog
             {
                 #region Properties
@@ -14,10 +21,19 @@
                 #endregion
             }
 
-            public class Auth
+            public class Brands
             {
                 #region Properties
-                public const string Login = "~/Admin/Views/Auth/Login.cshtml";
+                public const string Page = "~/Admin/Views/Brands/Brands.cshtml";
+                #endregion
+
+                #region Sub Classes
+                public class Brand
+                {
+                    #region Properties
+                    public const string Properties = "~/Admin/Views/Brands/Brand/BrandProperties.cshtml";
+                    #endregion
+                }
                 #endregion
             }
 
@@ -34,6 +50,7 @@
                 #region Properties
                 public const string Tree = "~/Admin/Views/Categories/CategoriesTree.cshtml";
                 public const string Category = "~/Admin/Views/Categories/Category.cshtml";
+                public const string CategoryProperties = "~/Admin/Views/Categories/CategoryProperties.cshtml";
                 #endregion                
             }
 
@@ -111,18 +128,8 @@
             {
                 #region Properties
                 public const string Page = "~/Admin/Views/Products/Products.cshtml";
-                #endregion
-
-                #region Sub Classes
-                public class Product
-                {
-                    #region Properties
-                    public const string Properties = "~/Admin/Views/Products/Product/ProductProperties.cshtml";
-                    public const string Gallery = "~/Admin/Views/Products/Product/ProductGallery.cshtml";
-                    public const string SimilarProducts = "~/Admin/Views/Products/Product/ProductSimilarProducts.cshtml";
-                    #endregion
-                }
-                #endregion
+                public const string Product = "~/Admin/Views/Products/Product.cshtml";
+                #endregion                
             }
 
             public class Projects

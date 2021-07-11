@@ -106,6 +106,15 @@ namespace SixtyThreeBits.Core.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Do you really want to delete this image?.
+        /// </summary>
+        public static string TextConfirmDeleteImage {
+            get {
+                return ResourceManager.GetString("TextConfirmDeleteImage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Deleting this item will also delete all child items. Do you really want to continue?.
         /// </summary>
         public static string TextConfirmDeleteRecursive {
@@ -120,6 +129,15 @@ namespace SixtyThreeBits.Core.Properties {
         public static string TextDelete {
             get {
                 return ResourceManager.GetString("TextDelete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Drag Images Here &lt;br /&gt; OR &lt;br /&gt; Click to Upload.
+        /// </summary>
+        public static string TextDropzone {
+            get {
+                return ResourceManager.GetString("TextDropzone", resourceCulture);
             }
         }
         

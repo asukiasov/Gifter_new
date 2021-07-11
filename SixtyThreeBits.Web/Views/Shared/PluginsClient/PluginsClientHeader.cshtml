@@ -69,6 +69,11 @@
 {
     <link href="~/plugins/malihu-scrollbar/jquery.mCustomScrollbar.min.css" rel="stylesheet" />
 }
+@if (Model.IsDropzoneEnabled)
+{
+    <link href="~/plugins/Dropzone/basic.min.css" rel="stylesheet" />
+    <link href="~/plugins/Dropzone/dropzone.min.css" rel="stylesheet" />
+}
 @if (Model.IsJQueryEnabled)
 {
     <script src="~/plugins/jquery/jquery.min.js"></script>
@@ -82,5 +87,5 @@
     <script src="~/plugins/devextreme/js/dx.all.js"></script>
     <script src="~/plugins/devextreme/js/aspnet/dx.aspnet.data.js"></script>
     <script src="~/plugins/devextreme/js/aspnet/dx.aspnet.mvc.js"></script>
-    @*<script src="~/plugins/devextreme/js/localization/dx.messages.ka.js"></script>*@
+    <script src="~/plugins/devextreme/js/localization/dx.messages.ka.js"></script>
 }

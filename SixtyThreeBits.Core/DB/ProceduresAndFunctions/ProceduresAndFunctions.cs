@@ -87,6 +87,212 @@ namespace SixtyThreeBits.Core.DB
         }
         #endregion
 
+        #region BrandsGetSingleByID
+        internal virtual DbSet<ScalarFunctionResult<string>> BrandsGetSingleByIDResult { get; set; }
+        public async Task<string> BrandsGetSingleByID(int? BrandID)
+        {
+            var PR = new PrepareQueryExecution(
+                 DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
+                 DatabaseObjectName: nameof(BrandsGetSingleByID),
+                 ResultItemType: typeof(ScalarFunctionResult<string>),
+                 SqlParameters: new SqlParameter[]
+                 {
+                    BrandID.ToSqlParameter(nameof(BrandID), SqlDbType.Int)
+                 }
+             );
+            var DBResult = BrandsGetSingleByIDResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
+            var DBFunctionResult = await DBResult.FirstOrDefaultAsync();
+            return DBFunctionResult?.Value;
+        }
+        #endregion
+
+        #region BrandsList
+        public class BrandsListResultItem
+        {
+            #region Properties
+            public int? BrandID { get; set; }
+            public string BrandName { get; set; }
+            public string BrandNameEng { get; set; }
+            public string BrandNameRus { get; set; }
+            public string BrandImageFilename { get; set; }
+            public DateTime? BrandDateCreated { get; set; }
+            #endregion
+        }
+        internal virtual DbSet<BrandsListResultItem> BrandsListResult { get; set; }
+        public IQueryable<BrandsListResultItem> BrandsList()
+        {
+            var PR = new PrepareQueryExecution(
+              DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
+              DatabaseObjectName: nameof(BrandsList),
+              ResultItemType: typeof(BrandsListResultItem)
+            );
+            var DBResult = BrandsListResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
+            return DBResult;
+        }
+        #endregion
+
+        #region CarouselList
+        public class CarouselListResultItem
+        {
+            #region Properties
+            public int? CarouselID { get; set; }
+            public string CarouselCaption { get; set; }
+            public string CarouselCaptionEng { get; set; }
+            public string CarouselCaptionRus { get; set; }
+            public string CarouselText { get; set; }
+            public string CarouselTextEng { get; set; }
+            public string CarouselTextRus { get; set; }
+            public string CarouselUrl { get; set; }
+            public string CarouselUrlEng { get; set; }
+            public string CarouselUrlRus { get; set; }
+            public string CarouselImageFilename { get; set; }
+            public string CarouselImageFilenameEng { get; set; }
+            public string CarouselImageFilenameRus { get; set; }
+            public int? CarouselSortIndex { get; set; }
+            public bool CarouselIsPublished { get; set; }
+            public DateTime? CarouselDateCreated { get; set; }
+            #endregion
+        }
+        internal virtual DbSet<CarouselListResultItem> CarouselListResult { get; set; }
+        public IQueryable<CarouselListResultItem> CarouselList(bool? CarouselIsPublished)
+        {
+            var PR = new PrepareQueryExecution(
+               DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
+               DatabaseObjectName: nameof(CarouselList),
+               ResultItemType: typeof(CarouselListResultItem),
+               SqlParameters: new SqlParameter[]
+               {
+                    CarouselIsPublished.ToSqlParameter(nameof(CarouselIsPublished), SqlDbType.Bit)
+               }
+           );
+            var DBResult = CarouselListResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
+            return DBResult;
+        }
+        #endregion
+
+        #region CategoriesGetSingleByID
+        internal virtual DbSet<ScalarFunctionResult<string>> CategoriesGetSingleByIDResult { get; set; }
+        public async Task<string> CategoriesGetSingleByID(int? CategoryID)
+        {
+            var PR = new PrepareQueryExecution(
+                 DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
+                 DatabaseObjectName: nameof(CategoriesGetSingleByID),
+                 ResultItemType: typeof(ScalarFunctionResult<string>),
+                 SqlParameters: new SqlParameter[]
+                 {
+                    CategoryID.ToSqlParameter(nameof(CategoryID), SqlDbType.Int)
+                 }
+             );
+            var DBResult = CategoriesGetSingleByIDResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
+            var DBFunctionResult = await DBResult.FirstOrDefaultAsync();
+            return DBFunctionResult?.Value;
+        }
+        #endregion
+
+        #region CategoriesGetSingleBySlug
+        internal virtual DbSet<ScalarFunctionResult<string>> CategoriesGetSingleBySlugResult { get; set; }
+        public async Task<string> CategoriesGetSingleBySlug(string CategorySlug)
+        {
+            var PR = new PrepareQueryExecution(
+                 DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
+                 DatabaseObjectName: nameof(CategoriesGetSingleBySlug),
+                 ResultItemType: typeof(ScalarFunctionResult<string>),
+                 SqlParameters: new SqlParameter[]
+                 {
+                    CategorySlug.ToSqlParameter(nameof(CategorySlug), SqlDbType.NVarChar)
+                 }
+             );
+            var DBResult = CategoriesGetSingleBySlugResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
+            var DBFunctionResult = await DBResult.FirstOrDefaultAsync();
+            return DBFunctionResult?.Value;
+        }
+        #endregion
+
+        #region CategoriesList
+        public class CategoriesListResultItem
+        {
+            #region Properties
+            public int? CategoryID { get; set; }
+            public int? CategoryParentID { get; set; }
+            public string CategorySlug { get; set; }
+            public string CategoryName { get; set; }
+            public string CategoryNameEng { get; set; }
+            public string CategoryNameRus { get; set; }
+            public int? CategorySortIndex { get; set; }
+            public string CategoryImageFilename { get; set; }
+            public DateTime? CategoryDateCreated { get; set; }
+            #endregion
+        }
+        internal virtual DbSet<CategoriesListResultItem> CategoriesListResult { get; set; }
+        public IQueryable<CategoriesListResultItem> CategoriesList(int? CategoryParentID)
+        {
+            var PR = new PrepareQueryExecution(
+              DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
+              DatabaseObjectName: nameof(CategoriesList),
+              ResultItemType: typeof(CategoriesListResultItem),
+                SqlParameters: new SqlParameter[]
+                {
+                    CategoryParentID.ToSqlParameter(nameof(CategoryParentID), SqlDbType.Int),
+                }
+            );
+            var DBResult = CategoriesListResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
+            return DBResult;
+        }
+
+        #endregion
+
+        #region CategoriesListForDeleteRecursive
+        public class CategoriesListForDeleteRecursiveResultItem
+        {
+            #region Properties
+            public int? CategoryID { get; set; }
+            public string CategoryImageFilename { get; set; }
+            #endregion
+        }
+        internal virtual DbSet<CategoriesListForDeleteRecursiveResultItem> CategoriesListForDeleteRecursiveResult { get; set; }
+        public IQueryable<CategoriesListForDeleteRecursiveResultItem> CategoriesListForDeleteRecursive(int? CategoryID)
+        {
+            var PR = new PrepareQueryExecution(
+              DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
+              DatabaseObjectName: nameof(CategoriesListForDeleteRecursive),
+              ResultItemType: typeof(CategoriesListForDeleteRecursiveResultItem),
+              SqlParameters: new SqlParameter[]
+              {
+                  CategoryID.ToSqlParameter(nameof(CategoryID), SqlDbType.Int),
+              }
+            );
+            var DBResult = CategoriesListForDeleteRecursiveResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
+            return DBResult;
+        }
+        #endregion
+
+        #region CountriesList
+        public class CountriesListResultItem
+        {
+            #region Properties
+            public int? CountryID { get; set; }
+            public string CountryName { get; set; }
+            public string CountryNameEng { get; set; }
+            public string CountryNameRus { get; set; }
+            public string CountryCode2 { get; set; }
+            public string CountryCode3 { get; set; }
+            public int? CountryNumericCode { get; set; }
+            #endregion
+        }
+        internal virtual DbSet<CountriesListResultItem> CountriesListResult { get; set; }
+        public IQueryable<CountriesListResultItem> CountriesList()
+        {
+            var PR = new PrepareQueryExecution(
+              DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
+              DatabaseObjectName: nameof(CountriesList),
+              ResultItemType: typeof(CountriesListResultItem)
+            );
+            var DBResult = CountriesListResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
+            return DBResult;
+        }
+
+        #endregion
+
         #region DictionariesList
         public class DictionariesListResultItem
         {
@@ -333,6 +539,202 @@ namespace SixtyThreeBits.Core.DB
             var DBResult = PermissionsListResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
             return DBResult;
         }
+        #endregion
+
+        #region ProductsGetSingleByID
+        internal virtual DbSet<ScalarFunctionResult<string>> ProductsGetSingleByIDResult { get; set; }
+        public async Task<string> ProductsGetSingleByID(int? ProductID)
+        {
+            var PR = new PrepareQueryExecution(
+                 DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
+                 DatabaseObjectName: nameof(ProductsGetSingleByID),
+                 ResultItemType: typeof(ScalarFunctionResult<string>),
+                 SqlParameters: new SqlParameter[]
+                 {
+                    ProductID.ToSqlParameter(nameof(ProductID), SqlDbType.Int)
+                 }
+             );
+            var DBResult = ProductsGetSingleByIDResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
+            var DBFunctionResult = await DBResult.FirstOrDefaultAsync();
+            return DBFunctionResult?.Value;
+        }
+        #endregion
+
+        #region ProductsGetsingleBySlug
+        internal virtual DbSet<ScalarFunctionResult<string>> ProductsGetsingleBySlugResult { get; set; }
+        public async Task<string> ProductsGetsingleBySlug(string ProductSlug)
+        {
+            var PR = new PrepareQueryExecution(
+                DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
+                DatabaseObjectName: nameof(ProductsGetsingleBySlug),
+                ResultItemType: typeof(ScalarFunctionResult<string>),
+                SqlParameters: new SqlParameter[]
+                {
+                    ProductSlug.ToSqlParameter(nameof(ProductSlug), SqlDbType.NVarChar)
+                }
+            );
+            var DBResult = ProductsGetsingleBySlugResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
+            var DBFunctionResult = await DBResult.FirstOrDefaultAsync();
+            return DBFunctionResult?.Value;
+        }
+        #endregion
+
+        #region ProductsFiltersGet
+        internal virtual DbSet<ScalarFunctionResult<string>> ProductsFiltersGetResult { get; set; }
+        public async Task<string> ProductsFiltersGet(string Language, int? CategoryID)
+        {
+            var PR = new PrepareQueryExecution(
+                DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
+                DatabaseObjectName: nameof(ProductsFiltersGet),
+                ResultItemType: typeof(ScalarFunctionResult<string>),
+                SqlParameters: new SqlParameter[]
+                {
+                    Language.ToSqlParameter(nameof(Language), SqlDbType.VarChar),
+                    CategoryID.ToSqlParameter(nameof(CategoryID), SqlDbType.Int),
+                }
+            );
+            var DBResult = ProductsFiltersGetResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
+            var DBFunctionResult = await DBResult.FirstOrDefaultAsync();
+            return DBFunctionResult?.Value;
+        }
+        #endregion
+
+        #region ProductsImagesList
+        public class ProductsImagesListResultItem
+        {
+            #region Properties
+            public int? ProductImageID { get; set; }
+            public int? ProductID { get; set; }
+            public string ProductImageFilename { get; set; }
+            public int? ProductImageSortIndex { get; set; }
+            public DateTime? ProductImageDateCreated { get; set; }
+            #endregion
+        }
+        internal virtual DbSet<ProductsImagesListResultItem> ProductsImagesListResult { get; set; }
+        public IQueryable<ProductsImagesListResultItem> ProductsImagesList(int? ProductID)
+        {
+            var PR = new PrepareQueryExecution(
+                DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
+                DatabaseObjectName: nameof(ProductsImagesList),
+                ResultItemType: typeof(ProductsImagesListResultItem),
+                SqlParameters: new SqlParameter[]
+                {
+                    ProductID.ToSqlParameter(nameof(ProductID), SqlDbType.Int)
+                }
+            );
+            var DBResult = ProductsImagesListResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
+            return DBResult;
+        }
+        #endregion
+
+        #region ProductsIsSlugUniq
+        internal virtual DbSet<ScalarFunctionResult<bool>> ProductsIsSlugUniqResult { get; set; }
+        public async Task<bool> ProductsIsSlugUniq(string ProductSlug, int? ProductID)
+        {
+            var PR = new PrepareQueryExecution(
+                DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
+                DatabaseObjectName: nameof(ProductsIsSlugUniq),
+                ResultItemType: typeof(ScalarFunctionResult<string>),
+                SqlParameters: new SqlParameter[]
+                {
+                    ProductSlug.ToSqlParameter(nameof(ProductSlug), SqlDbType.NVarChar),
+                    ProductID.ToSqlParameter(nameof(ProductID), SqlDbType.Int)
+                }
+            );
+            var DBResult = ProductsIsSlugUniqResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
+            var DBFunctionResult = await DBResult.FirstOrDefaultAsync();
+            return DBFunctionResult?.Value == true;
+        }
+        #endregion        
+
+        #region ProductsList
+        public class ProductsListResultItem
+        {
+            #region Properties
+            public int? ProductID { get; set; }
+            public int? BrandID { get; set; }
+            public int? CategoryID { get; set; }
+            public string CategorySlug { get; set; }
+            public string CategorySlugParent { get; set; }
+            public string ProductSlug { get; set; }
+            public string ProductName { get; set; }
+            public string ProductCode { get; set; }
+            public string ProductNameEng { get; set; }
+            public string ProductNameRus { get; set; }
+            public decimal? ProductPrice { get; set; }
+            public decimal? ProductPriceOld { get; set; }
+            public decimal? ProductRemainder { get; set; }
+            public string ProductImageFilename { get; set; }
+            public bool ProductIsPublished { get; set; }
+            public string ProductDescriptionShort { get; set; }
+            public string ProductDescriptionShortEng { get; set; }
+            public string ProductDescriptionShortRus { get; set; }
+            public bool ProductIsFeatured { get; set; }
+            public DateTime? ProductDateCreated { get; set; }
+            #endregion
+        }
+        internal virtual DbSet<ProductsListResultItem> ProductsListResult { get; set; }
+        public IQueryable<ProductsListResultItem> ProductsList(bool? ProductIsPublished, bool? ProductIsFeatured)
+        {
+            var PR = new PrepareQueryExecution(
+                DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
+                DatabaseObjectName: nameof(ProductsList),
+                ResultItemType: typeof(ProductsListResultItem),
+                SqlParameters: new SqlParameter[]
+                {
+                    ProductIsPublished.ToSqlParameter(nameof(ProductIsPublished), SqlDbType.Bit),
+                    ProductIsFeatured.ToSqlParameter(nameof(ProductIsFeatured), SqlDbType.Bit)
+                }
+            );
+            var DBResult = ProductsListResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
+            return DBResult;
+        }
+        #endregion
+
+        #region ProductsListPager
+        public class ProductsListPagerResultItem
+        {
+            #region Properties
+            public int? ProductID { get; set; }
+            public string ProductSlug { get; set; }
+            public string ProductName { get; set; }
+            public string ProductNameEng { get; set; }
+            public string ProductNameRus { get; set; }
+            public decimal? ProductPrice { get; set; }
+            public decimal? ProductPriceOld { get; set; }
+            public decimal? ProductRemainder { get; set; }
+            public string ProductImageFilename { get; set; }
+            public string CategorySlug { get; set; }
+            public string CategorySlugParent { get; set; }
+            #endregion
+        }
+        internal virtual DbSet<ProductsListPagerResultItem> ProductsListPagerResult { get; set; }
+        public IQueryable<ProductsListPagerResultItem> ProductsListPager(string Language, int? PageNumber, int? ItemsPerPage, int? SortType, string SearchPhrase, decimal? ProductPriceMin, decimal? ProductPriceMax, bool? IsInStock, bool? HasDiscount, string CategoriesXml, string BrandsXml, string ProducerCountryCodesXml)
+        {
+            var PR = new PrepareQueryExecution(
+                DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
+                DatabaseObjectName: nameof(ProductsListPager),
+                ResultItemType: typeof(ProductsListPagerResultItem),
+                SqlParameters: new SqlParameter[]
+                {
+                    Language.ToSqlParameter(nameof(Language), SqlDbType.VarChar),
+                    PageNumber.ToSqlParameter(nameof(PageNumber), SqlDbType.Int),
+                    ItemsPerPage.ToSqlParameter(nameof(ItemsPerPage), SqlDbType.Int),
+                    SortType.ToSqlParameter(nameof(SortType), SqlDbType.Int),
+                    SearchPhrase.ToSqlParameter(nameof(SearchPhrase), SqlDbType.NVarChar),
+                    ProductPriceMin.ToSqlParameter(nameof(ProductPriceMin), SqlDbType.Money),
+                    ProductPriceMax.ToSqlParameter(nameof(ProductPriceMax), SqlDbType.Money),
+                    IsInStock.ToSqlParameter(nameof(IsInStock), SqlDbType.Bit),
+                    HasDiscount.ToSqlParameter(nameof(HasDiscount), SqlDbType.Bit),
+                    CategoriesXml.ToSqlParameter(nameof(CategoriesXml), SqlDbType.Xml),
+                    BrandsXml.ToSqlParameter(nameof(BrandsXml), SqlDbType.Xml),
+                    ProducerCountryCodesXml.ToSqlParameter(nameof(ProducerCountryCodesXml), SqlDbType.Xml)
+                }
+            );
+            var DBResult = ProductsListPagerResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
+            return DBResult;
+        }
+
         #endregion
 
         #region ProjectsGetSingleByID
@@ -588,6 +990,84 @@ namespace SixtyThreeBits.Core.DB
             return BlogPostID;
         }
 
+        public async Task<int?> BrandsIUD(Enums.DatabaseActions iud, int? BrandID, string BrandName, string BrandNameEng, string BrandNameRus, string BrandImageFilename)
+        {
+            var PR = new PrepareQueryExecution(
+             DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.STORED_PROCEDURE,
+             DatabaseObjectName: nameof(BrandsIUD),
+             ResultItemType: null,
+             SqlParameters: new SqlParameter[]
+             {
+                 iud.ToSqlParameter(nameof(iud),SqlDbType.TinyInt),
+                 BrandID.ToSqlParameter(nameof(BrandID),SqlDbType.Int,true),
+                 BrandName.ToSqlParameter(nameof(BrandName),SqlDbType.NVarChar),
+                 BrandNameEng.ToSqlParameter(nameof(BrandNameEng),SqlDbType.NVarChar),
+                 BrandNameRus.ToSqlParameter(nameof(BrandNameRus),SqlDbType.NVarChar),
+                 BrandImageFilename.ToSqlParameter(nameof(BrandImageFilename),SqlDbType.NVarChar)
+             }
+             );
+
+            var DBResult = await Database.ExecuteSqlRawAsync(PR.SqlQuery, PR.SqlParameters);
+            BrandID = PR.SqlParameters[1].Value?.ToString().ToInt();
+            return BrandID;
+        }
+
+        public async Task CategoriesDeleteRecursive(int? CategoryID)
+        {
+            var PR = new PrepareQueryExecution(
+             DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.STORED_PROCEDURE,
+             DatabaseObjectName: nameof(CategoriesDeleteRecursive),
+             ResultItemType: null,
+             SqlParameters: new SqlParameter[]
+             {
+                 CategoryID.ToSqlParameter(nameof(CategoryID),SqlDbType.Int)
+             }
+           );
+
+            var DBResult = await Database.ExecuteSqlRawAsync(PR.SqlQuery, PR.SqlParameters);
+        }
+
+        public async Task<int?> CategoriesIUD(Enums.DatabaseActions iud, int? CategoryID, int? CategoryParentID, string CategoryName, string CategoryNameEng, string CategoryNameRus, string CategoryImageFilename, string CategoryDescriptionShort, string CategoryDescriptionShortEng, string CategoryDescriptionShortRus)
+        {
+            var PR = new PrepareQueryExecution(
+              DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.STORED_PROCEDURE,
+              DatabaseObjectName: nameof(CategoriesIUD),
+              ResultItemType: null,
+              SqlParameters: new SqlParameter[]
+              {
+                  iud.ToSqlParameter(nameof(iud),SqlDbType.TinyInt),
+                  CategoryID.ToSqlParameter(nameof(CategoryID),SqlDbType.Int, true),
+                  CategoryParentID.ToSqlParameter(nameof(CategoryParentID),SqlDbType.Int),
+                  CategoryName.ToSqlParameter(nameof(CategoryName),SqlDbType.NVarChar),
+                  CategoryNameEng.ToSqlParameter(nameof(CategoryNameEng),SqlDbType.NVarChar),
+                  CategoryNameRus.ToSqlParameter(nameof(CategoryNameRus),SqlDbType.NVarChar),
+                  CategoryImageFilename.ToSqlParameter(nameof(CategoryImageFilename),SqlDbType.NVarChar),
+                  CategoryDescriptionShort.ToSqlParameter(nameof(CategoryDescriptionShort),SqlDbType.NVarChar),
+                  CategoryDescriptionShortEng.ToSqlParameter(nameof(CategoryDescriptionShortEng),SqlDbType.NVarChar),
+                  CategoryDescriptionShortRus.ToSqlParameter(nameof(CategoryDescriptionShortRus),SqlDbType.NVarChar),
+              }
+              );
+
+            var DBResult = await Database.ExecuteSqlRawAsync(PR.SqlQuery, PR.SqlParameters);
+            CategoryID = PR.SqlParameters[1].Value?.ToString().ToInt();
+            return CategoryID;
+        }
+
+        public async Task CategoriesSyncParentsAndSortIndexes(string ParentsAndSortIndexesXml)
+        {
+            var PR = new PrepareQueryExecution(
+             DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.STORED_PROCEDURE,
+             DatabaseObjectName: nameof(CategoriesSyncParentsAndSortIndexes),
+             ResultItemType: null,
+             SqlParameters: new SqlParameter[]
+             {
+                 ParentsAndSortIndexesXml.ToSqlParameter(nameof(ParentsAndSortIndexesXml),SqlDbType.Xml)
+             }
+           );
+
+            var DBResult = await Database.ExecuteSqlRawAsync(PR.SqlQuery, PR.SqlParameters);
+        }
+
         public async Task DictionariesDeleteRecursive(int? DictionaryID)
         {
             var PR = new PrepareQueryExecution(
@@ -781,6 +1261,112 @@ namespace SixtyThreeBits.Core.DB
             return PermissionID;
         }
 
+        public async Task ProductsSync(string ProductSyncItemsXml)
+        {
+            var PR = new PrepareQueryExecution(
+             DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.STORED_PROCEDURE,
+             DatabaseObjectName: nameof(ProductsSync),
+             ResultItemType: null,
+             SqlParameters: new SqlParameter[]
+             {
+                 ProductSyncItemsXml.ToSqlParameter(nameof(ProductSyncItemsXml),SqlDbType.Xml)
+             }
+         );
+
+            var DBResult = await Database.ExecuteSqlRawAsync(PR.SqlQuery, PR.SqlParameters);
+        }
+
+        public async Task<int?> ProductsIUD(Enums.DatabaseActions iud, int? ProductID, int? BrandID, int? CategoryID, string ProductCode, string ProductName, string ProductNameEng, string ProductNameRus, decimal? ProductPrice, decimal? ProductPriceOld, decimal? ProductRemainder, string ProductImageFilename, bool? ProductIsPublished, string ProductDescriptionShort, string ProductDescriptionShortEng, string ProductDescriptionShortRus, string ProductDescription, string ProductDescriptionEng, string ProductDescriptionRus, bool? ProductIsFeatured, string ProductSKU, int? ProductProducerCountryID)
+        {
+            var PR = new PrepareQueryExecution(
+              DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.STORED_PROCEDURE,
+              DatabaseObjectName: nameof(ProductsIUD),
+              ResultItemType: null,
+              SqlParameters: new SqlParameter[]
+              {
+                  iud.ToSqlParameter(nameof(iud),SqlDbType.TinyInt),
+                  ProductID.ToSqlParameter(nameof(ProductID),SqlDbType.Int, true),
+                  BrandID.ToSqlParameter(nameof(BrandID),SqlDbType.Int),
+                  CategoryID.ToSqlParameter(nameof(CategoryID),SqlDbType.Int),
+                  ProductCode.ToSqlParameter(nameof(ProductCode),SqlDbType.NVarChar),
+                  ProductName.ToSqlParameter(nameof(ProductName),SqlDbType.NVarChar),
+                  ProductNameEng.ToSqlParameter(nameof(ProductNameEng),SqlDbType.NVarChar),
+                  ProductNameRus.ToSqlParameter(nameof(ProductNameRus),SqlDbType.NVarChar),
+                  ProductPrice.ToSqlParameter(nameof(ProductPrice),SqlDbType.Money),
+                  ProductPriceOld.ToSqlParameter(nameof(ProductPriceOld),SqlDbType.Money),
+                  ProductRemainder.ToSqlParameter(nameof(ProductRemainder),SqlDbType.Decimal),
+                  ProductImageFilename.ToSqlParameter(nameof(ProductImageFilename),SqlDbType.NVarChar),
+                  ProductIsPublished.ToSqlParameter(nameof(ProductIsPublished),SqlDbType.Bit),
+                  ProductDescriptionShort.ToSqlParameter(nameof(ProductDescriptionShort),SqlDbType.NVarChar),
+                  ProductDescriptionShortEng.ToSqlParameter(nameof(ProductDescriptionShortEng),SqlDbType.NVarChar),
+                  ProductDescriptionShortRus.ToSqlParameter(nameof(ProductDescriptionShortRus),SqlDbType.NVarChar),
+                  ProductDescription.ToSqlParameter(nameof(ProductDescription),SqlDbType.NVarChar),
+                  ProductDescriptionEng.ToSqlParameter(nameof(ProductDescriptionEng),SqlDbType.NVarChar),
+                  ProductDescriptionRus.ToSqlParameter(nameof(ProductDescriptionRus),SqlDbType.NVarChar),
+                  ProductIsFeatured.ToSqlParameter(nameof(ProductIsFeatured),SqlDbType.Bit),
+                  ProductSKU.ToSqlParameter(nameof(ProductSKU),SqlDbType.NVarChar),
+                  ProductProducerCountryID.ToSqlParameter(nameof(ProductProducerCountryID),SqlDbType.Int)
+              }
+              );
+
+            var DBResult = await Database.ExecuteSqlRawAsync(PR.SqlQuery, PR.SqlParameters);
+            ProductID = PR.SqlParameters[1].Value?.ToString().ToInt();
+            return ProductID;
+        }
+
+        public async Task<int?> ProductsImagesIUD(Enums.DatabaseActions iud, int? ProductImageID, int? ProductID, string ProductImageFilename, int? ProductImageSortIndex)
+        {
+            var PR = new PrepareQueryExecution(
+              DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.STORED_PROCEDURE,
+              DatabaseObjectName: nameof(ProductsImagesIUD),
+              ResultItemType: null,
+              SqlParameters: new SqlParameter[]
+              {
+                  iud.ToSqlParameter(nameof(iud),SqlDbType.TinyInt),
+                  ProductImageID.ToSqlParameter(nameof(ProductImageID),SqlDbType.Int, true),
+                  ProductID.ToSqlParameter(nameof(ProductID), SqlDbType.Int),
+                  ProductImageFilename.ToSqlParameter(nameof(ProductImageFilename),SqlDbType.NVarChar),
+                  ProductImageSortIndex.ToSqlParameter(nameof(ProductImageSortIndex),SqlDbType.Int)
+              }
+              );
+
+            var DBResult = await Database.ExecuteSqlRawAsync(PR.SqlQuery, PR.SqlParameters);
+            ProductImageID = PR.SqlParameters[1].Value?.ToString().ToInt();
+            return ProductImageID;
+        }
+
+        public async Task ProductsImagesInsert(int? ProductID, string ProductImagesXml)
+        {
+            var PR = new PrepareQueryExecution(
+                DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.STORED_PROCEDURE,
+                DatabaseObjectName: nameof(ProductsImagesInsert),
+                ResultItemType: null,
+                SqlParameters: new SqlParameter[]
+                {
+                    ProductID.ToSqlParameter(nameof(ProductID),SqlDbType.Int),
+                    ProductImagesXml.ToSqlParameter(nameof(ProductImagesXml),SqlDbType.Xml)
+                }
+             );
+
+            var DBResult = await Database.ExecuteSqlRawAsync(PR.SqlQuery, PR.SqlParameters);
+        }
+
+        public async Task ProductsImagesSyncSortIndex(string SortIndexXml)
+        {
+            var PR = new PrepareQueryExecution(
+             DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.STORED_PROCEDURE,
+             DatabaseObjectName: nameof(ProductsImagesSyncSortIndex),
+             ResultItemType: null,
+             SqlParameters: new SqlParameter[]
+             {
+                 SortIndexXml.ToSqlParameter(nameof(SortIndexXml),SqlDbType.Xml)
+             }
+           );
+
+            var DBResult = await Database.ExecuteSqlRawAsync(PR.SqlQuery, PR.SqlParameters);
+        }
+
+
         public async Task<int?> ProjectsIUD(Enums.DatabaseActions iud, int? ProjectID, string ProjectSlug, string ProjectCaption, string ProjectCaptionEng, string ProjectCaptionRus, string ProjectShortDescription, string ProjectShortDescriptionEng, string ProjectShortDescriptionRus, string ProjectDescription, string ProjectDescriptionEng, string ProjectDescriptionRus, string ProjectCoverImageFilename, string ProjectVideoUrl, bool? ProjectIsPublished)
         {
             var PR = new PrepareQueryExecution(
@@ -906,14 +1492,22 @@ namespace SixtyThreeBits.Core.DB
 
         partial void OnModelCreatingPartial(ModelBuilder ModelBuilder)
         {
-            ModelBuilder.Entity<DictionariesListResultItem>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<BlogPostListResultItem>(Entity => { Entity.HasNoKey(); });
+            ModelBuilder.Entity<BrandsListResultItem>(Entity => { Entity.HasNoKey(); });
+            ModelBuilder.Entity<CarouselListResultItem>(Entity => { Entity.HasNoKey(); });
+            ModelBuilder.Entity<CategoriesListResultItem>(Entity => { Entity.HasNoKey(); });
+            ModelBuilder.Entity<CategoriesListForDeleteRecursiveResultItem>(Entity => { Entity.HasNoKey(); });
+            ModelBuilder.Entity<CountriesListResultItem>(Entity => { Entity.HasNoKey(); });
+            ModelBuilder.Entity<DictionariesListResultItem>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<NewsListResultItem>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<ScalarFunctionResult<string>>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<ScalarFunctionResult<bool>>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<PagesListForDeleteRecursiveResultItem>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<PagesListResultItem>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<PermissionsListResultItem>(Entity => { Entity.HasNoKey(); });
+            ModelBuilder.Entity<ProductsImagesListResultItem>(Entity => { Entity.HasNoKey(); });
+            ModelBuilder.Entity<ProductsListResultItem>(Entity => { Entity.HasNoKey(); });
+            ModelBuilder.Entity<ProductsListPagerResultItem>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<ProjectsListResultItem>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<RolesListResultItem>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<RolePermissionsListResultItem>(Entity => { Entity.HasNoKey(); });

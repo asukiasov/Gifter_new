@@ -132,11 +132,17 @@
   <data name="TextConfirmDeleteAttachment" xml:space="preserve">
     <value>Do you really want to delete this attachment?</value>
   </data>
+  <data name="TextConfirmDeleteImage" xml:space="preserve">
+    <value>Do you really want to delete this image?</value>
+  </data>
   <data name="TextConfirmDeleteRecursive" xml:space="preserve">
     <value>Deleting this item will also delete all child items. Do you really want to continue?</value>
   </data>
   <data name="TextDelete" xml:space="preserve">
     <value>Delete</value>
+  </data>
+  <data name="TextDropzone" xml:space="preserve">
+    <value>Drag Images Here &lt;br /&gt; OR &lt;br /&gt; Click to Upload</value>
   </data>
   <data name="TextError" xml:space="preserve">
     <value>Sorry something went wrong</value>

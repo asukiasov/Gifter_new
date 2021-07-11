@@ -124,19 +124,19 @@ namespace SixtyThreeBits.Web.Admin.Models
                     })
                     .Columns(Columns =>
                     {
-                        Columns.AddFor(m => m.DictionaryCaption).Caption("Caption").Width(200).ValidationRules(Options =>
+                        Columns.AddFor(m => m.DictionaryCaption).Caption("დასახელება").Width(300).ValidationRules(Options =>
                         {
                             Options.AddRequired();
                         });
-                        Columns.AddFor(m => m.DictionaryCaptionEng).Caption("Caption Eng").Width(200);
-                        Columns.AddFor(m => m.DictionaryCaptionRus).Caption("Caption Rus").Width(200);
-                        Columns.AddFor(m => m.DictionaryStringCode).Caption("String Code").Width(200);
-                        Columns.AddFor(m => m.DictionaryIntCode).Caption("Int Code").DataType(GridColumnDataType.Number).Width(100);
-                        Columns.AddFor(m => m.DictionaryCode).Caption("Dic. Code").DataType(GridColumnDataType.Number).Width(100).ValidationRules(Options =>
+                        Columns.AddFor(m => m.DictionaryCaptionEng).Caption("დასახელება Eng").Width(200);
+                        Columns.AddFor(m => m.DictionaryCaptionRus).Caption("დასახელება Rus").Width(200);
+                        Columns.AddFor(m => m.DictionaryStringCode).Caption("სტიქონი კოდი").Width(150);
+                        Columns.AddFor(m => m.DictionaryIntCode).Caption("რიცხვითი კოდი").DataType(GridColumnDataType.Number).Width(150);
+                        Columns.AddFor(m => m.DictionaryCode).Caption("ცნობარის კოდი").DataType(GridColumnDataType.Number).Width(150).ValidationRules(Options =>
                         {
                             Options.AddRequired();
                         }); 
-                        Columns.AddFor(m => m.DictionarySortIndex).Caption("Sort Index").Width(100);
+                        Columns.AddFor(m => m.DictionarySortIndex).Caption("სორტირება").Width(100);
                         
 
                         Columns.AddFor(m => m.DictionaryID).Caption("ID").EditCellTemplate($"<%= data.{nameof(TreeItem.DictionaryID)} %>");
