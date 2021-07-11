@@ -1,7 +1,7 @@
 /*!
  * DevExpress Diagram (dx-diagram)
- * Version: 2.0.23
- * Build date: Mon Apr 19 2021
+ * Version: 2.1.19
+ * Build date: Thu Jun 17 2021
  * 
  * Copyright (c) 2012 - 2021 Developer Express Inc. ALL RIGHTS RESERVED
  * Read about DevExpress licensing here: https://www.devexpress.com/Support/EULAs
@@ -5346,6 +5346,7 @@ var DiagramSettings = /** @class */ (function () {
         this._autoZoom = AutoZoomMode.Disabled;
         this._snapToGrid = true;
         this._showGrid = true;
+        this._contextMenuEnabled = true;
         this._gridSize = 180;
         this._gridSizeItems = [90, 180, 360, 720];
         this._pageSizeItems = [
@@ -5363,6 +5364,7 @@ var DiagramSettings = /** @class */ (function () {
         ];
         this._viewUnits = Enums_1.DiagramUnit.In;
         this._connectorRoutingMode = ConnectorRoutingMode.AllShapesOnly;
+        this._reloadInsertedItemRequired = false;
     }
     Object.defineProperty(DiagramSettings.prototype, "zoomLevel", {
         get: function () { return this._zoomLevel; },
@@ -5445,6 +5447,14 @@ var DiagramSettings = /** @class */ (function () {
         enumerable: false,
         configurable: true
     });
+    Object.defineProperty(DiagramSettings.prototype, "contextMenuEnabled", {
+        get: function () { return this._contextMenuEnabled; },
+        set: function (value) {
+            this._contextMenuEnabled = value;
+        },
+        enumerable: false,
+        configurable: true
+    });
     Object.defineProperty(DiagramSettings.prototype, "gridSize", {
         get: function () { return this._gridSize; },
         set: function (value) {
@@ -5488,6 +5498,14 @@ var DiagramSettings = /** @class */ (function () {
                 this._connectorRoutingMode = value;
                 this.onConnectorRoutingModeChanged.raise1(function (listener) { return listener.notifyConnectorRoutingModeChanged(value); });
             }
+        },
+        enumerable: false,
+        configurable: true
+    });
+    Object.defineProperty(DiagramSettings.prototype, "reloadInsertedItemRequired", {
+        get: function () { return this._reloadInsertedItemRequired; },
+        set: function (value) {
+            this._reloadInsertedItemRequired = value;
         },
         enumerable: false,
         configurable: true
@@ -12876,6 +12894,12 @@ var ShapeDescriptionManager = /** @class */ (function () {
             if (this.descriptionTypes[category].length === 0)
                 delete this.descriptionTypes[category];
         }
+    };
+    ShapeDescriptionManager.prototype.unregisterAllCustomShapes = function () {
+        var _this = this;
+        Object.keys(this.descriptions).forEach(function (shapeType) {
+            _this.unregisterCustomShape(shapeType);
+        });
     };
     ShapeDescriptionManager.prototype.notifyShapeDescriptionChanged = function (description) {
         this.onShapeDecriptionChanged.raise1(function (l) { return l.notifyShapeDescriptionChanged(description); });
@@ -29504,6 +29528,7 @@ var DiagramControl = /** @class */ (function () {
                 pageSize: this.model.pageSize,
                 simpleView: this.settings.simpleView,
                 readOnly: this.settings.readOnly,
+                contextMenuEnabled: this.settings.contextMenuEnabled,
                 gridSize: this.settings.gridSize,
                 gridVisible: this.settings.showGrid,
                 zoomLevel: this.settings.zoomLevel,
@@ -29610,6 +29635,22 @@ var DiagramControl = /** @class */ (function () {
         var item = this.model.findItemByDataKey(dataKey);
         return item && this.apiController.createNativeItem(item);
     };
+    DiagramControl.prototype.getNativeItems = function () {
+        var _this = this;
+        return this.model.items.map(function (item) { return _this.apiController.createNativeItem(item); });
+    };
+    DiagramControl.prototype.getNativeSelectedItems = function () {
+        var _this = this;
+        return this.selection.getKeys().map(function (key) { return _this.apiController.createNativeItem(_this.model.findItem(key)); });
+    };
+    DiagramControl.prototype.setSelectedItems = function (keys) {
+        this.selection.set(keys);
+    };
+    DiagramControl.prototype.scrollToItems = function (keys) {
+        var _this = this;
+        var rectangle = Utils_1.GeometryUtils.getCommonRectangle(keys.map(function (key) { return _this.model.findItem(key).rectangle; }));
+        this.view.scrollIntoView(rectangle);
+    };
     DiagramControl.prototype.setInitialStyleProperties = function (style) {
         this.selection.inputPosition.setInitialStyleProperties(style);
     };
@@ -29643,6 +29684,9 @@ var DiagramControl = /** @class */ (function () {
         shapeTypes.forEach(function (shapeType) {
             _this.shapeDescriptionManager.unregisterCustomShape(shapeType);
         });
+    };
+    DiagramControl.prototype.removeAllCustomShapes = function () {
+        this.shapeDescriptionManager.unregisterAllCustomShapes();
     };
     DiagramControl.prototype.importModel = function (model) {
         this.model = model;
@@ -29744,6 +29788,10 @@ var DiagramControl = /** @class */ (function () {
             this.onNodeRemoved(key, data, callback, errorCallback);
         else
             callback(key, data);
+    };
+    DiagramControl.prototype.reloadInsertedItem = function (dataKey) {
+        if (this.settings.reloadInsertedItemRequired)
+            this.reloadContent(dataKey);
     };
     DiagramControl.prototype.reloadContent = function (dataKey, getData, layoutParameters, isExternalChanges) {
         if (!this.documentDataSource)
@@ -33813,6 +33861,7 @@ var RenderManager = /** @class */ (function () {
         this.items = new CanvasItemsManager_1.CanvasItemsManager(this.view.canvasElement, settings.zoomLevel, this.dom);
         this.page = new CanvasPageManager_1.CanvasPageManager(this.view.pageElement, settings, this.dom);
         this.selection = new CanvasSelectionManager_1.CanvasSelectionManager(this.view.canvasElement, settings.zoomLevel, settings.readOnly, this.dom);
+        this.contextMenuEnabled = settings.contextMenuEnabled;
         this.view.onViewChanged.add(this.page);
         this.view.onViewChanged.add(this.items);
         this.view.onViewChanged.add(this.selection);
@@ -33960,6 +34009,8 @@ var RenderManager = /** @class */ (function () {
     };
     RenderManager.prototype.onContextMenu = function (evt) {
         var _this = this;
+        if (!this.contextMenuEnabled)
+            return;
         Utils_1.raiseEvent(evt, this.createDiagramContextMenuEvent(evt), function (e) { return _this.events.onContextMenu(e); });
         this.input.captureFocus();
         return evt_1.EvtUtils.preventEventAndBubble(evt);
@@ -36134,6 +36185,8 @@ var DocumentDataSource = /** @class */ (function (_super) {
             var item = this.updateNodeKeyRelatedObjectsStack[0];
             this.updateNodeKeyRelatedObjects(item.shape, item.nodeObj);
             this.updateNodeKeyRelatedObjectsStack.splice(0, 1);
+            if (item.shape.description.hasTemplate && item.nodeObj)
+                this.changesListener.reloadInsertedItem(item.nodeObj.key);
         }
         this.endUpdateNodeKeyRelatedObjects();
     };
@@ -36661,6 +36714,7 @@ var DataSource = /** @class */ (function () {
                 layoutShapes.push(connector.endItem);
         });
         ModelUtils_1.ModelUtils.deleteItems(history, model, selection, connectorsToRemove, true);
+        layoutShapes = this.purgeLayoutShapes(layoutShapes, shapesToRemove); // remove deleted shapes and duplicates from layoutShapes
         var nodeKeysToUpdate = updateDataKeys || [];
         nodeKeysToUpdate.forEach(function (dataKey) {
             if (changes.nodes.remained.indexOf(dataKey) === -1)
@@ -36742,6 +36796,16 @@ var DataSource = /** @class */ (function () {
         history.endTransaction(!addNewHistoryItem);
         this.endChangesNotification(false);
     };
+    DataSource.prototype.purgeLayoutShapes = function (layoutShapes, shapesToRemove) {
+        var shapesToRemoveKeySet = shapesToRemove.reduce(function (acc, shape) { return (acc[shape.key] = true) && acc; }, {});
+        return layoutShapes.reduce(function (acc, shape) {
+            if (acc.keySet[shape.key] === undefined && shapesToRemoveKeySet[shape.key] === undefined) {
+                acc.uniqueShapes.push(shape);
+                acc.keySet[shape.key] = true;
+            }
+            return acc;
+        }, { uniqueShapes: [], keySet: {} }).uniqueShapes;
+    };
     DataSource.prototype.applyShapeAutoSize = function (history, measurer, shapeSizeSettings, shape, snapToGrid, gridSize) {
         if (!shape.description.enableText)
             return;
@@ -36778,7 +36842,7 @@ var DataSource = /** @class */ (function () {
             for (var key in dataItem.style) {
                 if (!Object.prototype.hasOwnProperty.call(dataItem.style, key))
                     continue;
-                var value = Svg_1.isColorProperty(key) ? color_1.ColorUtils.stringToHash(dataItem.style[key]) : dataItem.style[key];
+                var value = this.getPreparedStyleValue(dataItem.style[key], Svg_1.isColorProperty(key));
                 if (value !== item.style[key])
                     history.addAndRedo(new ChangeStyleHistoryItem_1.ChangeStyleHistoryItem(item.key, key, value));
             }
@@ -36786,12 +36850,20 @@ var DataSource = /** @class */ (function () {
             for (var key in dataItem.styleText) {
                 if (!Object.prototype.hasOwnProperty.call(dataItem.styleText, key))
                     continue;
-                var value = Svg_1.isColorProperty(key) ? color_1.ColorUtils.stringToHash(dataItem.styleText[key]) : dataItem.styleText[key];
+                var value = this.getPreparedStyleValue(dataItem.styleText[key], Svg_1.isColorProperty(key));
                 if (value !== item.styleText[key])
                     history.addAndRedo(new ChangeStyleTextHistoryItem_1.ChangeStyleTextHistoryItem(item.key, key, value));
             }
         if (dataItem.locked !== undefined && dataItem.locked !== item.locked)
             history.addAndRedo(new ChangeLockedHistoryItem_1.ChangeLockedHistoryItem(item, dataItem.locked));
+    };
+    DataSource.prototype.getPreparedStyleValue = function (value, isColorProperty) {
+        if (isColorProperty) {
+            var colorValue = color_1.ColorUtils.stringToHash(value);
+            if (colorValue !== null)
+                value = colorValue;
+        }
+        return value;
     };
     DataSource.prototype.createShapeByNode = function (history, model, selection, shapeDescriptionManager, node, point, layoutParameters, snapToGrid, gridSize, measurer) {
         var insert = new AddShapeHistoryItem_1.AddShapeHistoryItem(shapeDescriptionManager.get(node.type), point, "", node.key);
@@ -37346,7 +37418,7 @@ var TextToolbox = /** @class */ (function (_super) {
             var itemEl = document.createElement("div");
             itemEl.setAttribute("class", "toolbox-text-item");
             itemEl.setAttribute("data-tb-type", shapeType);
-            itemEl.innerHTML = description.getDefaultText() || description.getTitle();
+            itemEl.textContent = description.getDefaultText() || description.getTitle();
             element.appendChild(itemEl);
         });
     };
@@ -37354,7 +37426,7 @@ var TextToolbox = /** @class */ (function (_super) {
         var element = document.createElement("DIV");
         element.setAttribute("class", "dxdi-toolbox-drag-text-item");
         var shapeDescription = this.shapeDescriptionManager.get(draggingObject.evt.data);
-        element.innerHTML = shapeDescription.getDefaultText() || shapeDescription.getTitle();
+        element.textContent = shapeDescription.getDefaultText() || shapeDescription.getTitle();
         document.body.appendChild(element);
         return element;
     };
