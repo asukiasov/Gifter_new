@@ -59,11 +59,13 @@ namespace SixtyThreeBits.Core.Modules
 
     public class Brand
     {
+        #region Properties
         public int? BrandID { get; set; }
         public string BrandName { get; set; }
         public string BrandNameEng { get; set; }
         public string BrandNameRus { get; set; }
         public string BrandImageFilename { get; set; }
-        public DateTime? CategoryDateCreated { get; set; }
+        public DateTime? BrandDateCreated { get; set; } 
+        #endregion
     }
 }

@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ApplicationModels;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using SixtyThreeBits.Libraries;
 using SixtyThreeBits.Web.Admin.Controllers;
 using SixtyThreeBits.Web.Admin.Filters;

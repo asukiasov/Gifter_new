@@ -85,7 +85,7 @@ namespace SixtyThreeBits.Web.Admin.Models
         {
             var AR = new AjaxResponse();
             await DataAccessFactory.Categories.SyncParentsAndSortIndexes(SubmitModel.SortIndexes);
-            AR.IsSuccess = !DataAccessFactory.Pages.IsError;
+            AR.IsSuccess = !DataAccessFactory.Categories.IsError;
             return AR;
         }
         #endregion

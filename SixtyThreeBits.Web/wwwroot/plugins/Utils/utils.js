@@ -164,22 +164,33 @@
 
     GetBase64FromInputFilePromise: function (Selector) {
         return new Promise(function (Resolve, Reject) {
-            var file = document.querySelector(Selector).files[0];
-            var reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = function () {
+            const Element = document.querySelector(Selector);
+            if (Element && Element.files && Element.files.length > 0) {
+                const file = Element.files[0];
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onerror = function (error) {
+                    Reject(error)
+                };
+                reader.onload = function () {
 
-                var SliceIndex = reader.result.indexOf(',') + 1;
+                    const SliceIndex = reader.result.indexOf(',') + 1;
 
+                    Resolve({
+                        Filename: file.name,
+                        FileBase64: reader.result.slice(SliceIndex),
+                        FileBase64Original: reader.result
+                    });
+                };
+
+            }
+            else {
                 Resolve({
-                    Filename: file.name,
-                    FileBase64: reader.result.slice(SliceIndex),
-                    FileBase64Original: reader.result
+                    Filename: null,
+                    FileBase64: null,
+                    FileBase64Original: null
                 });
-            };
-            reader.onerror = function (error) {
-                Reject(error)
-            };
+            }
         });
     },
 
