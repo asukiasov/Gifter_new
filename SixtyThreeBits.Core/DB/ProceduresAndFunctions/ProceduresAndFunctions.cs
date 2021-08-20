@@ -399,7 +399,7 @@ namespace SixtyThreeBits.Core.DB
                     NewsID.ToSqlParameter(nameof(NewsID), SqlDbType.Int)
                 }
             );
-            var DBResult = ProjectsIsSlugUniqResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
+            var DBResult = NewsIsSlugUniqResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
             var DBFunctionResult = await DBResult.FirstOrDefaultAsync();
             return DBFunctionResult?.Value == true;
         }

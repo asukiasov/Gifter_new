@@ -69,7 +69,7 @@ namespace SixtyThreeBits.Core.Utilities
             }
         }
 
-        public static string FormatDate(object Date)
+        public string FormatDate(object Date)
         {
             return string.Format(Constants.Formats.DateEval, Date);
         }
