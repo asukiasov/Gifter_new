@@ -148,6 +148,8 @@ namespace SixtyThreeBits.Web.Admin.Models
                 ViewModel.NewsShortDescriptionEng = DBItemNews.NewsShortDescriptionEng;
                 ViewModel.NewsShortDescriptionRus = DBItemNews.NewsShortDescriptionRus;
                 ViewModel.NewsText = DBItemNews.NewsText;
+                ViewModel.NewsTextEng = DBItemNews.NewsTextEng;
+                ViewModel.NewsTextRus = DBItemNews.NewsTextRus;
                 ViewModel.NewsIsPublished = DBItemNews.NewsIsPublished;
                 ViewModel.NewsDatePublished = DBItemNews.NewsDatePublished;
             }
