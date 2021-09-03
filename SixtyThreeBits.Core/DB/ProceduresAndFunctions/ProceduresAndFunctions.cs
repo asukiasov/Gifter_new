@@ -426,7 +426,7 @@ namespace SixtyThreeBits.Core.DB
         #endregion
 
         #region PagesGetSingleBySlug
-        internal virtual DbSet<ScalarFunctionResult<string>> PagesGetSingleBySlugResult { get; set; }
+        internal virtual DbSet<ScalarFunctionResult<string>> PagesGetSingleBySlugHierarchyResult { get; set; }
         public async Task<string> PagesGetSingleBySlugHierarchy(string PageSlug, bool? PageIsPublished)
         {
             var PR = new PrepareQueryExecution(
@@ -439,7 +439,7 @@ namespace SixtyThreeBits.Core.DB
                     PageIsPublished.ToSqlParameter(nameof(PageIsPublished), SqlDbType.Bit)
                 }
             );
-            var DBResult = PagesGetSingleBySlugResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
+            var DBResult = PagesGetSingleBySlugHierarchyResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
             var DBFunctionResult = await DBResult.FirstOrDefaultAsync();
             return DBFunctionResult?.Value;
         }
