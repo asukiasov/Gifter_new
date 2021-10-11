@@ -5,13 +5,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="DB\Tables\**" />
+    <EmbeddedResource Remove="DB\Tables\**" />
+    <None Remove="DB\Tables\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Remove="Services\TinifyService.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="63BITS-Libraries-DotNetStandart" Version="1.1.35" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.7" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.7" />
+    <PackageReference Include="63BITS-Libraries-DotNetStandart" Version="1.1.36" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.10" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.10" />
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="5.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
@@ -29,10 +35,6 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="DB\Tables\" />
   </ItemGroup>
 
 </Project>

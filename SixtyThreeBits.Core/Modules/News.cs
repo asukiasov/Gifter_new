@@ -65,12 +65,11 @@ namespace SixtyThreeBits.Core.Modules
             });
         }
         #endregion
-
     }
+
     public class News
     {
         #region Properties
-        
         public int? NewsID { get; set; }
         public string NewsSlug { get; set; }
         public string NewsTitle { get; set; }
