@@ -58,7 +58,7 @@ namespace SixtyThreeBits.Web
             {
                 options.IdleTimeout = TimeSpan.FromMinutes(30);
                 options.Cookie.HttpOnly = true;
-                options.Cookie.Name = AppSettings.IsDevelopment ? $".{Constants.ProjectName}Development" : $".{Constants.ProjectName}Production";
+                //options.Cookie.Name = AppSettings.IsDevelopment ? $".{Constants.ProjectName}Development" : $".{Constants.ProjectName}Production";
                 options.Cookie.IsEssential = true;
             });
             Services.Configure<CookiePolicyOptions>(Options =>
