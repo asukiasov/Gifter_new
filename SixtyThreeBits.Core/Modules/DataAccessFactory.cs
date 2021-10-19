@@ -17,6 +17,7 @@ namespace SixtyThreeBits.Core.Modules
         public ProjectsDataAccess Projects { get; set; }
         public RolesDataAccess Roles { get; set; }
         public SystemPropertiesAccess SystemProperties { get; set; }
+        public TeamMembersDataAccess TeamMembers { get; set; }
         public UsersDataAccess Users { get; set; }
         #endregion
 
@@ -34,6 +35,7 @@ namespace SixtyThreeBits.Core.Modules
             Permissions = new PermissionsDataAccess(ConnectionFactory);
             Projects = new ProjectsDataAccess(ConnectionFactory, Utilities);
             Roles = new RolesDataAccess(ConnectionFactory);
+            TeamMembers = new TeamMembersDataAccess(ConnectionFactory);
             SystemProperties = new SystemPropertiesAccess(ConnectionFactory);
             Users = new UsersDataAccess(ConnectionFactory);
         } 

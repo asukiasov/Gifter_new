@@ -97,7 +97,7 @@
                 public const string Page = "AdminDictionaries";
                 public const string DictionariesTree = "AdminDictionariesTree";
                 public const string DictionariesTreeAdd = "AdminDictionariesTreeAdd";
-                public const string DictionariesTreeUpdate = "AdminDictionariesTreeUpdate";                
+                public const string DictionariesTreeUpdate = "AdminDictionariesTreeUpdate";
                 public const string DictionariesTreeDelete = "AdminDictionariesTreeDelete";
                 #endregion
             }
@@ -264,6 +264,27 @@
                 #endregion
             }
 
+            public class TeamMembers
+            {
+                #region Properties
+                public const string TeamMembersPage = "AdminTeamMembers";
+                public const string TeamMembersGrid = "AdminTeamMembersGrid";
+                public const string TeamMembersGridAdd = "AdminTeamMembersGridAdd";
+                public const string TeamMembersGridUpdate = "AdminTeamMembersGridUpdate";
+                public const string TeamMembersGridDelete = "AdminTeamMembersGridDelete";
+                #endregion
+
+                #region Sub Classes
+                public class TeamMember
+                {
+                    #region Properties
+                    public const string Properties = "AdminTeamMembersTeamMemberProperties";
+                    public const string TeamMembersItemDeleteImage = "AdminTeamMembersTeamMemberPropertiesDeleteImage";
+                    #endregion
+                }
+                #endregion
+            }
+
             public class UserManagement
             {
                 #region Properties
@@ -321,7 +342,7 @@
                 #region Properties
                 public const string Index = "WebsiteHomeIndex";
                 public const string IndexCulture = "WebsiteHomeIndexCulture";
-                
+
                 #endregion
             }
 
@@ -336,7 +357,7 @@
             {
                 #region Properties
                 public const string Page = "WebsitePagesPage";
-                public const string PageCulture = "WebsitePagesPageCulture"; 
+                public const string PageCulture = "WebsitePagesPageCulture";
                 #endregion
             }
             #endregion

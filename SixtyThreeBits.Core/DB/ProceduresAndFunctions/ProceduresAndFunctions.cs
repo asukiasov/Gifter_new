@@ -899,9 +899,10 @@ namespace SixtyThreeBits.Core.DB
             public string TeamMemberFirstname { get; set; }
             public string TeamMemberLastname { get; set; }
             public string TeamMemberPosition { get; set; }
-            public string TeamMemberShortDescription { get; set; }
             public string TeamMemberLongDescription { get; set; }
             public string TeamMemberImageFilename { get; set; }
+            public bool? TeamMemberIsPublished { get; set; }
+            public int? TeamMemberCategoryID { get; set; }
             public DateTime? TeamMemberDateCreated { get; set; }
             #endregion
         }
@@ -1507,7 +1508,7 @@ namespace SixtyThreeBits.Core.DB
             await Database.ExecuteSqlRawAsync(PR.SqlQuery, PR.SqlParameters);
         }
 
-        public async Task<int?> TeamMembersIUD(Enums.DatabaseActions iud, int? TeamMemberID, string TeamMemberFirstName, string TeamMemberLastName, string TeamMemberPosition, string TeamMemberShortDescription, string TeamMemberLongDescription, string TeamMemberImageFilename)
+        public async Task<int?> TeamMembersIUD(Enums.DatabaseActions iud, int? TeamMemberID, string TeamMemberFirstName, string TeamMemberLastName, string TeamMemberPosition, string TeamMemberShortDescription, string TeamMemberLongDescription, string TeamMemberImageFilename, bool? TeamMemberIsPublished, int? TeamMemberCategoryID)
         {
             var PR = new PrepareQueryExecution(
                 DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.STORED_PROCEDURE,
@@ -1522,7 +1523,9 @@ namespace SixtyThreeBits.Core.DB
                     TeamMemberPosition.ToSqlParameter(nameof(TeamMemberPosition), SqlDbType.NVarChar),
                     TeamMemberShortDescription.ToSqlParameter(nameof(TeamMemberShortDescription), SqlDbType.NVarChar),
                     TeamMemberLongDescription.ToSqlParameter(nameof(TeamMemberLongDescription), SqlDbType.NVarChar),
-                    TeamMemberImageFilename.ToSqlParameter(nameof(TeamMemberImageFilename), SqlDbType.NVarChar)
+                    TeamMemberImageFilename.ToSqlParameter(nameof(TeamMemberImageFilename), SqlDbType.NVarChar),
+                    TeamMemberIsPublished.ToSqlParameter(nameof(TeamMemberIsPublished), SqlDbType.Bit),
+                    TeamMemberCategoryID.ToSqlParameter(nameof(TeamMemberCategoryID), SqlDbType.Int),
                 }
             );
             var DBResult = await Database.ExecuteSqlRawAsync(PR.SqlQuery, PR.SqlParameters);

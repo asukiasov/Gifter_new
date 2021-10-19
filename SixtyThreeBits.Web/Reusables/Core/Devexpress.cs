@@ -79,7 +79,8 @@ namespace SixtyThreeBits.Web.Reusables.Core
                 Options.ApplyFilter(GridApplyFilterMode.Auto);
                 Options.ShowAllText(Resources.TextAllDevexpressGridFilterRaw);
             })
-            .DataSource(Options => {
+            .DataSource(Options =>
+            {
                 var OptionsResult = Options.RemoteController();
                 OptionsResult.Key(KeyFieldName);
                 OptionsResult.LoadUrl(UrlLoad);
@@ -239,11 +240,12 @@ namespace SixtyThreeBits.Web.Reusables.Core
             return Column;
         }
 
-        public static DataGridColumnBuilder<T1> InitLookupColumn<T1, T2, T3>(this DataGridColumnBuilder<T1> Column, IEnumerable<SimpleKeyValue<T2, T3>> Data, bool IsRequired = false)
+        public static DataGridColumnBuilder<T1> InitLookupColumn<T1, T2, T3>(this DataGridColumnBuilder<T1> Column, IEnumerable<SimpleKeyValue<T2, T3>> Data, bool IsRequired = false, bool AllowNull = false)
         {
             Column.Lookup(Options =>
             {
                 Options.DataSource(d => d.Array().Data(Data).Key(nameof(SimpleKeyValue<T2, T3>.Key))).ValueExpr(nameof(SimpleKeyValue<T2, T3>.Key)).DisplayExpr(nameof(SimpleKeyValue<T2, T3>.Value));
+                Options.AllowClearing(AllowNull);
             });
 
             if (IsRequired)

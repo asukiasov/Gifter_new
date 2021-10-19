@@ -400,7 +400,6 @@ namespace SixtyThreeBits.Web.Admin.Models
             ViewModel.IsSaved = !DataAccessFactory.Products.IsError;            
         }
 
-
         public async Task<AjaxResponse> UploadImages(int? ProductID)
         {
             var AR = new AjaxResponse();
