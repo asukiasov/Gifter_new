@@ -6,7 +6,7 @@
         Globals.Devexpress.SetGridFullHeight(ProductsModel.ProductsGrid, s.element[0]);
     },
     GetDetailsButtonColumnCellHtml: function (Element, CellInfo) {
-        Element.append('<a href=\"' + CellInfo.data.UrlTeamMembersProperties + '\"><i class=\"fas fa-info-circle\"></i></a>')
+        Element.append('<a href=\"' + CellInfo.data.UrlProductsProperties + '\"><i class=\"fas fa-info-circle\"></i></a>')
     }
 };
 
