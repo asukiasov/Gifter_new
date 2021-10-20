@@ -58,7 +58,7 @@ namespace SixtyThreeBits.Core.Modules
                 using (var db = ConnectionFactory.GetDBCoreDataContext())
                 {
                     var Result = await db.CategoriesGetSingleByID(CategoryID);
-                    return Result?.DeserializeTo<Category>();
+                    return Result?.FromJsonTo<Category>();
                 }
             });
         }

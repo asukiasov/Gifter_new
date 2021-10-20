@@ -38,7 +38,7 @@ namespace SixtyThreeBits.Web.Admin.Models
 
         public async Task<List<PageViewModel.GridModel.GridItem>> GetGridViewModel()
         {
-            var ViewModel = (await DataAccessFactory.Blog.ListBlog()).Select(Item => new PageViewModel.GridModel.GridItem
+            var ViewModel = (await DataAccessFactory.Blog.ListBlog())?.Select(Item => new PageViewModel.GridModel.GridItem
             {
                 BlogPostID = Item.BlogPostID,
                 BlogPostTitle = Item.BlogPostTitle,

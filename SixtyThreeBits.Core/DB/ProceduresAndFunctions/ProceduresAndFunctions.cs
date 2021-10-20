@@ -1413,7 +1413,6 @@ namespace SixtyThreeBits.Core.DB
             var DBResult = await Database.ExecuteSqlRawAsync(PR.SqlQuery, PR.SqlParameters);
         }
 
-
         public async Task<int?> ProjectsIUD(Enums.DatabaseActions iud, int? ProjectID, string ProjectSlug, string ProjectCaption, string ProjectCaptionEng, string ProjectCaptionRus, string ProjectShortDescription, string ProjectShortDescriptionEng, string ProjectShortDescriptionRus, string ProjectDescription, string ProjectDescriptionEng, string ProjectDescriptionRus, string ProjectCoverImageFilename, string ProjectVideoUrl, bool? ProjectIsPublished)
         {
             var PR = new PrepareQueryExecution(

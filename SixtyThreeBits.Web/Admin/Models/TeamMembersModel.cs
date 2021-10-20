@@ -68,7 +68,7 @@ namespace SixtyThreeBits.Web.Admin.Models
                 TeamMemberLastName: SubmitModel.TeamMemberLastname,
                 TeamMemberPosition: SubmitModel.TeamMemberPosition,
                 TeamMemberIsPublished: SubmitModel.TeamMemberIsPublished,
-                TeamMemberCategoryID: SubmitModel.TeamMemberCategoryID ?? Constants.NullValueFor.Int
+                TeamMemberCategoryID: SubmitModel.TeamMemberCategoryID
             );
 
             if (DataAccessFactory.TeamMembers.IsError)
