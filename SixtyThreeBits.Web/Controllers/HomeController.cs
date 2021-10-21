@@ -15,9 +15,7 @@ namespace SixtyThreeBits.Web.Controllers
         [Route("{Culture:length(2)}", Name = ControllerActionRouteNames.Website.Home.IndexCulture)]
         public IActionResult Index()
         {
-            return Redirect(Url.RouteUrl(ControllerActionRouteNames.Admin.Home.Page));
-
-            //return View(ViewNames.Website.Home.Page);
+            return View(ViewNames.Website.Home.Page);
         }
 
         [Route("error/404/")]
