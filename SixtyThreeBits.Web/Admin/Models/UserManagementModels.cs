@@ -28,7 +28,6 @@ namespace SixtyThreeBits.Web.Admin.Models
             ViewModel.Grid.UrlDelete = Url.RouteUrl(ControllerActionRouteNames.Admin.UserManagement.UsersGridDelete);
             ViewModel.Grid.AllowUpdate = User.HasPermission(ControllerActionRouteNames.Admin.UserManagement.UsersGridUpdate);
             ViewModel.Grid.AllowDelete = User.HasPermission(ControllerActionRouteNames.Admin.UserManagement.UsersGridDelete);
-
             return ViewModel;
         }
 

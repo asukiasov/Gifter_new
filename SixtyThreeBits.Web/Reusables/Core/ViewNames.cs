@@ -187,6 +187,14 @@
                 #endregion
             }
 
+            public class TeamMembers
+            {
+                #region Properties
+                public const string TeamMembersPage = "~/Admin/Views/TeamMembers/TeamMembers.cshtml";
+                public const string TeamMember= "~/Admin/Views/TeamMembers/TeamMember.cshtml";
+                #endregion
+            }
+
             public class UserManagement
             {
                 #region Properties

@@ -23,7 +23,6 @@ namespace SixtyThreeBits.Web
 
         public Startup(IWebHostEnvironment Env)
         {
-
             if (Env.IsDevelopment())
             {
                 var Builder = new ConfigurationBuilder().SetBasePath(Env.ContentRootPath).AddJsonFile("appsettings.json");
@@ -45,10 +44,10 @@ namespace SixtyThreeBits.Web
             Utilities = new UtilityCollection(AppSettings);
         }
 
-        public void ConfigureServices(IServiceCollection Services) 
+        public void ConfigureServices(IServiceCollection Services)
         {
             Services.AddSingleton(AppSettings);
-            Services.AddSingleton(Utilities);            
+            Services.AddSingleton(Utilities);
             //Honestly, EFCore team are idiots !!! because of "A second operation started on this context before a previous operation completed. Any instance members are not guaranteed to be thread safe."
             //The whole idea of .NET Core + DI is create once use anywhere. I'm not able to use same DBDataContext to perform multiple db queries, so what is the point of DI then?
             //Services.AddDbContext<DBCoreDataContext>(Options => Options.UseSqlServer(AppSettings.DBConnectionStrings.DBConnectionString), optionsLifetime: ServiceLifetime.Scoped);
@@ -92,7 +91,6 @@ namespace SixtyThreeBits.Web
                 App.UseExceptionHandler(Options =>
                 {
                     App.UseExceptionHandler("/error/404/");
-
                 });
                 App.UseHsts();
             }
@@ -116,7 +114,7 @@ namespace SixtyThreeBits.Web
             RequestLocalizationOptions.RequestCultureProviders.Add(new CustomCultureProvider(Utilities));
             RequestLocalizationOptions.SupportedCultures = new List<CultureInfo> { new CultureInfo(Enums.Languages.GEORGIAN), new CultureInfo(Enums.Languages.ENGLISH) };
             RequestLocalizationOptions.SupportedUICultures = new List<CultureInfo> { new CultureInfo(Enums.Languages.GEORGIAN), new CultureInfo(Enums.Languages.ENGLISH) };
-            App.UseRequestLocalization(RequestLocalizationOptions);
+            //App.UseRequestLocalization(RequestLocalizationOptions);
 
             App.UseEndpoints(Endpoints =>
             {

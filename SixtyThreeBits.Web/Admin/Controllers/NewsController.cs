@@ -132,10 +132,7 @@ namespace SixtyThreeBits.Web.Admin.Controllers
                     Result = View(ViewNames.Admin.News.NewsItem, ViewModel);
                 }
             }
-            else
-            {
-                Result = View(ViewNames.Admin.News.NewsItem, ViewModel);
-            }
+            
             return Result;
         }
 

@@ -135,6 +135,7 @@ namespace SixtyThreeBits.Web.Admin.Models
     public class NewsPropertiesModel : NewsModelBase
     {
         #region Methods
+
         public NewsPropertiesViewModel GetNewsPropertiesViewModel(NewsPropertiesViewModel ViewModel)
         {
             if (ViewModel == null)

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SixtyThreeBits.Core.Modules
 {
-    class TeamMembersDataAccess : DataAccessBase
+    public class TeamMembersDataAccess : DataAccessBase
     {
         #region Constructors
         public TeamMembersDataAccess(ConnectionFactory ConnectionFactory) : base(ConnectionFactory)
@@ -20,13 +20,13 @@ namespace SixtyThreeBits.Core.Modules
 
         #region Methods
 
-        public async Task<int?> TeamMembersIUD(Enums.DatabaseActions DatabaseAction, int? TeamMemberID = null, string TeamMemberFirstname = null, string TeamMemberLastName = null, string TeamMemberPosition = null, string TeamMemberShortDescription = null, string TeamMemberLongDescription =null, string TeamMemberImageFilename = null)
+        public async Task<int?> TeamMembersIUD(Enums.DatabaseActions DatabaseAction, int? TeamMemberID = null, string TeamMemberFirstname = null, string TeamMemberLastName = null, string TeamMemberPosition = null, string TeamMemberShortDescription = null, string TeamMemberLongDescription =null, string TeamMemberImageFilename = null, bool? TeamMemberIsPublished = null, int? TeamMemberCategoryID = null )
         {
-            return await TryToReturnAsyncTask($"{nameof(TeamMembersIUD)}({nameof(DatabaseAction)} = {DatabaseAction}, {nameof(TeamMemberID)} = {TeamMemberID}, {nameof(TeamMemberFirstname)} = {TeamMemberFirstname}, {nameof(TeamMemberLastName)} = {TeamMemberLastName}, {nameof(TeamMemberPosition)} = {TeamMemberPosition}), {nameof(TeamMemberShortDescription)} = {TeamMemberShortDescription}, {nameof(TeamMemberLongDescription)} = {TeamMemberLongDescription},{nameof(TeamMemberImageFilename)} = {TeamMemberImageFilename}", async () =>
+            return await TryToReturnAsyncTask($"{nameof(TeamMembersIUD)}({nameof(DatabaseAction)} = {DatabaseAction}, {nameof(TeamMemberID)} = {TeamMemberID}, {nameof(TeamMemberFirstname)} = {TeamMemberFirstname}, {nameof(TeamMemberLastName)} = {TeamMemberLastName}, {nameof(TeamMemberPosition)} = {TeamMemberPosition}), {nameof(TeamMemberShortDescription)} = {TeamMemberShortDescription}, {nameof(TeamMemberLongDescription)} = {TeamMemberLongDescription},{nameof(TeamMemberImageFilename)} = {TeamMemberImageFilename},{nameof(TeamMemberIsPublished)} = {TeamMemberIsPublished}, {nameof(TeamMemberCategoryID)} = {TeamMemberCategoryID}", async () =>
             {
                 using (var db = ConnectionFactory.GetDBCoreDataContext())
                 {
-                    TeamMemberID = await db.TeamMembersIUD(DatabaseAction, TeamMemberID, TeamMemberFirstname, TeamMemberLastName, TeamMemberPosition, TeamMemberShortDescription, TeamMemberLongDescription, TeamMemberImageFilename);
+                    TeamMemberID = await db.TeamMembersIUD(DatabaseAction, TeamMemberID, TeamMemberFirstname, TeamMemberLastName, TeamMemberPosition, TeamMemberShortDescription, TeamMemberLongDescription, TeamMemberImageFilename, TeamMemberIsPublished, TeamMemberCategoryID);
                     return TeamMemberID;
                 }
             });
@@ -39,7 +39,7 @@ namespace SixtyThreeBits.Core.Modules
                 using (var db = ConnectionFactory.GetDBCoreDataContext())
                 {
                     var Result = await db.TeamMembersGetSingleByID(TeamMemberId);
-                    return Result?.DeserializeTo<TeamMember>();
+                    return Result?.FromJsonTo<TeamMember>();
                 }
             });
         }
@@ -54,19 +54,21 @@ namespace SixtyThreeBits.Core.Modules
                 }
             });
         }
+        #endregion
+    }
 
-        public class TeamMember
-        {
-            #region Properties
-            public int? TeamMemberID { get; set; }
-            public string TeamMemberFirstname { get; set; }
-            public string TeamMemberLastname { get; set; }
-            public string TeamMemberPosition { get; set; }
-            public string TeamMemberShortDescription { get; set; }
-            public string TeamMemberLongDescription { get; set; }
-            public string TeamMemberImageFilename { get; set; }
-            #endregion
-        }
+    public class TeamMember
+    {
+        #region Properties
+        public int? TeamMemberID { get; set; }
+        public string TeamMemberFirstname { get; set; }
+        public string TeamMemberLastname { get; set; }
+        public string TeamMemberPosition { get; set; }
+        public string TeamMemberShortDescription { get; set; }
+        public string TeamMemberLongDescription { get; set; }
+        public string TeamMemberImageFilename { get; set; }
+        public bool TeamMemberIsPublished { get; set; }
+        public int TeamMemberCategoryID { get; set; }
         #endregion
     }
 }

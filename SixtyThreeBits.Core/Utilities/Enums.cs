@@ -119,6 +119,7 @@ namespace SixtyThreeBits.Core.Utilities
             public const int OrderDeliveryTypes = 9;
             public const int OrderDeliveryCities = 10;
             public const int PaymentTypes = 11;
+            public const int TeamMemberCategories = 12;
             #endregion
         }
 
