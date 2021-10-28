@@ -272,6 +272,7 @@
                 public const string TeamMembersGridAdd = "AdminTeamMembersGridAdd";
                 public const string TeamMembersGridUpdate = "AdminTeamMembersGridUpdate";
                 public const string TeamMembersGridDelete = "AdminTeamMembersGridDelete";
+                public const string TeamMembersSyncSortIndexes = "AdminTeamMembersSortIndexes";
                 #endregion
 
                 #region Sub Classes

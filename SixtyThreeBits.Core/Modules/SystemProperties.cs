@@ -21,7 +21,7 @@ namespace SixtyThreeBits.Core.Modules
                 using (var db = ConnectionFactory.GetDBCoreDataContext())
                 {
                     var DBResult = await db.SystemPropertiesGet();
-                    return DBResult.Value?.FromJsonTo<SystemProperties>();
+                    return DBResult.Value?.DeserializeJsonTo<SystemProperties>();
                 }
             });
             return Result ?? new SystemProperties();

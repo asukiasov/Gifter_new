@@ -39,7 +39,7 @@ namespace SixtyThreeBits.Core.Modules
                 using (var db = ConnectionFactory.GetDBCoreDataContext())
                 {
                     var Result = await db.TeamMembersGetSingleByID(TeamMemberId);
-                    return Result?.FromJsonTo<TeamMember>();
+                    return Result?.DeserializeJsonTo<TeamMember>();
                 }
             });
         }
@@ -54,6 +54,18 @@ namespace SixtyThreeBits.Core.Modules
                 }
             });
         }
+
+        public async Task TeamMembersSyncSortIndexes(List<SyncSortIndexesItem> SortIndexes)
+        {
+            await TryExecuteAsyncTask($"{nameof(TeamMembersSyncSortIndexes)}({nameof(SortIndexes)} = {SortIndexes.ToJSON()})", async () =>
+            {
+                using (var db = ConnectionFactory.GetDBCoreDataContext())
+                {
+                    await db.TeamMembersSyncSortIndexes(SortIndexes.ToJSON());
+                }
+            });
+        }
+
         #endregion
     }
 

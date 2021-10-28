@@ -903,6 +903,7 @@ namespace SixtyThreeBits.Core.DB
             public string TeamMemberImageFilename { get; set; }
             public bool? TeamMemberIsPublished { get; set; }
             public int? TeamMemberCategoryID { get; set; }
+            public int? TeamMemberSortIndex { get; set; }
             public DateTime? TeamMemberDateCreated { get; set; }
             #endregion
         }
@@ -1443,6 +1444,21 @@ namespace SixtyThreeBits.Core.DB
             return ProjectID;
         }
 
+        public async Task ProjectsSyncSortIndexes(string ProjectsSyncSortIndexesJson)
+        {
+            var PR = new PrepareQueryExecution(
+                DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.STORED_PROCEDURE,
+                DatabaseObjectName: nameof(ProjectsSyncSortIndexes),
+                ResultItemType: null,
+                SqlParameters: new SqlParameter[]
+                {
+                    ProjectsSyncSortIndexesJson.ToSqlParameter(nameof(ProjectsSyncSortIndexesJson), SqlDbType.NVarChar)
+                }
+            );
+
+            var DBResult = await Database.ExecuteSqlRawAsync(PR.SqlQuery, PR.SqlParameters);
+        }
+
         public async Task<int?> RolesIUD(Enums.DatabaseActions iud, int? RoleID, string RoleName, int? RoleCode)
         {
             var PR = new PrepareQueryExecution(
@@ -1530,6 +1546,21 @@ namespace SixtyThreeBits.Core.DB
             var DBResult = await Database.ExecuteSqlRawAsync(PR.SqlQuery, PR.SqlParameters);
             TeamMemberID = PR.SqlParameters[1].Value?.ToString().ToInt();
             return TeamMemberID;
+        }
+
+        public async Task TeamMembersSyncSortIndexes(string TeamMembersSyncSortIndexesJson)
+        {
+            var PR = new PrepareQueryExecution(
+                DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.STORED_PROCEDURE,
+                DatabaseObjectName: nameof(TeamMembersSyncSortIndexes),
+                ResultItemType: null,
+                SqlParameters: new SqlParameter[]
+                {
+                    TeamMembersSyncSortIndexesJson.ToSqlParameter(nameof(TeamMembersSyncSortIndexesJson), SqlDbType.NVarChar)
+                }
+            );
+
+            var DBResult = await Database.ExecuteSqlRawAsync(PR.SqlQuery, PR.SqlParameters);
         }
 
         public async Task<int?> UsersIUD(Enums.DatabaseActions iud, int? UserID, string UserEmail, string UserPassword, string UserFirstname, string UserLastname, int? UserRoleID, DateTime? UserBirthdate, string UserPhoneNumberMobile, string UserPersonalNumber, string UserAvatarFilename, bool? UserIsActive)

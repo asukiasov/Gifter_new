@@ -42,7 +42,7 @@ namespace SixtyThreeBits.Web.Admin.Controllers
         [Route("grid/add", Name = ControllerActionRouteNames.Admin.Blog.GridAdd)]
         public async Task<ActionResult> BlogGridAdd(int? key, string values)
         {
-            var SubmitModel = values.FromJsonTo<BlogModel.PageViewModel.GridModel.GridItem>() ?? new BlogModel.PageViewModel.GridModel.GridItem();
+            var SubmitModel = values.DeserializeJsonTo<BlogModel.PageViewModel.GridModel.GridItem>() ?? new BlogModel.PageViewModel.GridModel.GridItem();
             await Model.CRUD(DatabaseAction: Enums.DatabaseActions.CREATE, BlogPostID: key, SubmitModel: SubmitModel);
             if (Model.Form.HasErrors)
             {
@@ -58,7 +58,7 @@ namespace SixtyThreeBits.Web.Admin.Controllers
         [Route("grid/update", Name = ControllerActionRouteNames.Admin.Blog.GridUpdate)]
         public async Task<ActionResult> BlogGridUpdate(int? key, string values)
         {
-            var SubmitModel = values.FromJsonTo<BlogModel.PageViewModel.GridModel.GridItem>() ?? new BlogModel.PageViewModel.GridModel.GridItem();
+            var SubmitModel = values.DeserializeJsonTo<BlogModel.PageViewModel.GridModel.GridItem>() ?? new BlogModel.PageViewModel.GridModel.GridItem();
             await Model.CRUD(DatabaseAction: Enums.DatabaseActions.UPDATE, BlogPostID: key, SubmitModel: SubmitModel);
             if (Model.Form.HasErrors)
             {

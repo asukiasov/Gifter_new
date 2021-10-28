@@ -39,7 +39,7 @@ namespace SixtyThreeBits.Web.Admin.Controllers
         [Route("grid/add", Name = ControllerActionRouteNames.Admin.Projects.ProjectsGridAdd)]
         public async Task<ActionResult> ProjectGridAdd(int? key, string values)
         {
-            var SubmitModel = values.FromJsonTo<ProjectsModel.PageViewModel.GridModel.GridItem>() ?? new ProjectsModel.PageViewModel.GridModel.GridItem();
+            var SubmitModel = values.DeserializeJsonTo<ProjectsModel.PageViewModel.GridModel.GridItem>() ?? new ProjectsModel.PageViewModel.GridModel.GridItem();
             await Model.CRUD(DatabaseAction: Enums.DatabaseActions.CREATE, ProjectID: key, SubmitModel: SubmitModel);
             if (Model.Form.HasErrors)
             {
@@ -55,7 +55,7 @@ namespace SixtyThreeBits.Web.Admin.Controllers
         [Route("grid/update", Name = ControllerActionRouteNames.Admin.Projects.ProjectsGridUpdate)]
         public async Task<ActionResult> ProjectGridUpdate(int? key, string values)
         {
-            var SubmitModel = values.FromJsonTo<ProjectsModel.PageViewModel.GridModel.GridItem>() ?? new ProjectsModel.PageViewModel.GridModel.GridItem();
+            var SubmitModel = values.DeserializeJsonTo<ProjectsModel.PageViewModel.GridModel.GridItem>() ?? new ProjectsModel.PageViewModel.GridModel.GridItem();
             await Model.CRUD(DatabaseAction: Enums.DatabaseActions.UPDATE, ProjectID: key, SubmitModel: SubmitModel);
             if (Model.Form.HasErrors)
             {
@@ -81,6 +81,15 @@ namespace SixtyThreeBits.Web.Admin.Controllers
                 return GetDevexpressSuccessResult();
             }
         }
+
+        [HttpPost]
+        [Route("grid/sync-sort-indexes", Name = ControllerActionRouteNames.Admin.Projects.ProjectsGridSyncSortIndexes)]
+        public async Task<IActionResult> ProjectsSyncSortIndexes(SyncSortIndexesModel SubmitModel)
+        {
+            var ViewModel = await Model.ProjectsSyncSortIndexes(SubmitModel);
+            return Json(ViewModel);
+        }
+
         #endregion
     }
 

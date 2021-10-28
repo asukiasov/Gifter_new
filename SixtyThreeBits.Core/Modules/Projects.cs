@@ -30,7 +30,7 @@ namespace SixtyThreeBits.Core.Modules
                 using (var db = ConnectionFactory.GetDBCoreDataContext())
                 {
                     var Result = await db.ProjectsGetSingleByID(ProjectID);
-                    return Result?.FromJsonTo<Projects>();
+                    return Result?.DeserializeJsonTo<Projects>();
                 }
             });
         }
@@ -72,6 +72,18 @@ namespace SixtyThreeBits.Core.Modules
                 }
             });
         }
+
+        public async Task ProjectsSyncSortIndexes(List<SyncSortIndexesItem> SortIndexes)
+        {
+            await TryExecuteAsyncTask($"{nameof(ProjectsSyncSortIndexes)}({nameof(SortIndexes)} = {SortIndexes.ToJSON()})", async () =>
+            {
+                using (var db = ConnectionFactory.GetDBCoreDataContext())
+                {
+                    await db.ProjectsSyncSortIndexes(SortIndexes.ToJSON());
+                }
+            });
+        }
+
         #endregion
     }
     public class Projects

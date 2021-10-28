@@ -30,7 +30,7 @@ namespace SixtyThreeBits.Web.Admin.Models
             ViewModel.Grid.AllowUpdate = User.HasPermission(ControllerActionRouteNames.Admin.TeamMembers.TeamMembersGridUpdate);
             ViewModel.Grid.AllowDelete = User.HasPermission(ControllerActionRouteNames.Admin.TeamMembers.TeamMembersGridDelete);
             ViewModel.Grid.TeamMemberCategories = await DataAccessFactory.Dictionaries.ListDictionariesAsSimpleKeyValue(Enums.DictionaryCodes.TeamMemberCategories);
-
+            ViewModel.UrlSync = Url.RouteUrl(ControllerActionRouteNames.Admin.TeamMembers.TeamMembersSyncSortIndexes);
             return ViewModel;
         }
 
@@ -45,8 +45,9 @@ namespace SixtyThreeBits.Web.Admin.Models
                 TeamMemberPosition = Item.TeamMemberPosition,
                 TeamMemberIsPublished = Item.TeamMemberIsPublished,
                 TeamMemberCategoryID = Item.TeamMemberCategoryID,
+                TeamMemberSortIndex = Item.TeamMemberSortIndex,
                 UrlTeamMemberProperties = Url.RouteUrl(ControllerActionRouteNames.Admin.TeamMembers.TeamMember.Properties, new { TeamMemberID = Item.TeamMemberID })
-            }).ToList();
+            }).OrderBy(Item=> Item.TeamMemberSortIndex).ToList();
 
             return TeamMembers;
         }
@@ -76,6 +77,16 @@ namespace SixtyThreeBits.Web.Admin.Models
                 Form.AddError(Resources.TextError);
             }
         }
+
+        public async Task<AjaxResponse> TeamMembersSyncSortIndexes(SyncSortIndexesModel SubmitModel)
+        {
+            var AR = new AjaxResponse();
+            await DataAccessFactory.TeamMembers.TeamMembersSyncSortIndexes(SubmitModel.SortIndexes);
+
+            AR.IsSuccess = !DataAccessFactory.TeamMembers.IsError;
+            return AR;
+        }
+
         #endregion
 
         #region Sub Classes
@@ -83,6 +94,7 @@ namespace SixtyThreeBits.Web.Admin.Models
         {
             #region Properties
             public GridModel Grid { get; set; }
+            public string UrlSync { get; set; }
             #endregion
 
             #region Sub Classes
@@ -91,17 +103,36 @@ namespace SixtyThreeBits.Web.Admin.Models
                 #region Properties
                 public List<SimpleKeyValue<int?, string>> TeamMemberCategories { get; set; }
                 #endregion
+
                 #region Methods
                 public DataGridBuilder<GridItem> Render(IHtmlHelper Html)
                 {
                     var Grid = GetGridWithStartupValues<GridItem>(Html: Html, KeyFieldName: nameof(GridItem.TeamMemberID));
 
                     Grid
+                   .Sorting(sorting => sorting.Mode(GridSortingMode.None))
+                   .Pager(Options =>
+                   {
+                       Options.Visible(false);
+                   })
+                   .RowDragging(rd => rd
+                        .AllowReordering(true)
+                        .OnReorder("TeamMembersModel.OnReorder")
+                        .ShowDragIcons(true)
+                    )
+                   .Paging(Options =>
+                   {
+                       Options.Enabled(false);
+                   })
                    .ID("TeamMembersGrid")
                    .Scrolling(Options =>
                    {
                        Options.Mode(GridScrollingMode.Standard);
                        Options.ShowScrollbar(ShowScrollbarMode.Always);
+                   })
+                   .FilterRow(Options =>
+                   {
+                       Options.Visible(false);
                    })
                    .OnInitialized("TeamMembersModel.OnTeamMembersGridInit")
                    .OnInitNewRow("TeamMembersModel.OnTeamMembersGridInitNewRow")
@@ -137,6 +168,7 @@ namespace SixtyThreeBits.Web.Admin.Models
                     public string TeamMemberPosition { get; set; }
                     public bool? TeamMemberIsPublished { get; set; }
                     public int? TeamMemberCategoryID { get; set; }
+                    public int? TeamMemberSortIndex { get; set; }
                     public string UrlTeamMemberProperties { get; set; }
                     #endregion
                 }
@@ -231,7 +263,7 @@ namespace SixtyThreeBits.Web.Admin.Models
                 TeamMemberImageFilename: Constants.NullValueFor.String
             );
 
-            AR.IsSuccess = !DataAccessFactory.News.IsError;
+            AR.IsSuccess = !DataAccessFactory.TeamMembers.IsError;
 
             return AR;
         }
@@ -257,7 +289,6 @@ namespace SixtyThreeBits.Web.Admin.Models
             public string UrlDeleteImage { get; set; }
             public readonly string TextConfirmDelete = Resources.TextConfirmDelete;
             public IFormFile TeamMemberImageFile { get; set; }
-            public bool HasNewsImage => !string.IsNullOrWhiteSpace(TeamMemberImageFilename);
             #endregion
         }
         #endregion

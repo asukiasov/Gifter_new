@@ -31,6 +31,7 @@ namespace SixtyThreeBits.Web.Admin.Models
             ViewModel.Grid.UrlAddNew = Url.RouteUrl(ControllerActionRouteNames.Admin.Projects.ProjectsGridAdd);
             ViewModel.Grid.UrlUpdate = Url.RouteUrl(ControllerActionRouteNames.Admin.Projects.ProjectsGridUpdate);
             ViewModel.Grid.UrlDelete = Url.RouteUrl(ControllerActionRouteNames.Admin.Projects.ProjectsGridDelete);
+            ViewModel.UrlSync = Url.RouteUrl(ControllerActionRouteNames.Admin.Projects.ProjectsGridSyncSortIndexes);
 
             return ViewModel;
         }
@@ -41,8 +42,10 @@ namespace SixtyThreeBits.Web.Admin.Models
                 ProjectID = Item.ProjectID,
                 ProjectCaption = Item.ProjectCaption,
                 ProjectIsPublished = Item.ProjectIsPublished,
+                ProjectSortIndex = Item.ProjectSortIndex,
+
                 UrlProjectsProperties = Url.RouteUrl(ControllerActionRouteNames.Admin.Projects.Project.Properties, new { ProjectID = Item.ProjectID })
-            }).ToList();
+            }).OrderBy(Item => Item.ProjectSortIndex).ToList();
             return ViewModel;
         }
         public async Task CRUD(Enums.DatabaseActions DatabaseAction, int? ProjectID, PageViewModel.GridModel.GridItem SubmitModel)
@@ -61,12 +64,21 @@ namespace SixtyThreeBits.Web.Admin.Models
         }
         #endregion
 
+        public async Task<AjaxResponse> ProjectsSyncSortIndexes(SyncSortIndexesModel SubmitModel)
+        {
+            var AR = new AjaxResponse();
+            await DataAccessFactory.Projects.ProjectsSyncSortIndexes(SubmitModel.SortIndexes);
+            AR.IsSuccess = !DataAccessFactory.Projects.IsError;
+            return AR;
+        }
+
         #region Sub Classes
         public class PageViewModel
         {
             #region Properties
             public bool ShowAddNewButton { get; set; }
             public GridModel Grid { get; set; }
+            public string UrlSync { get; set; }
             #endregion
 
             #region Sub Classes
@@ -78,6 +90,24 @@ namespace SixtyThreeBits.Web.Admin.Models
                     var Grid = GetGridWithStartupValues<GridItem>(Html: Html, KeyFieldName: nameof(GridItem.ProjectID));
 
                     Grid
+                    .Sorting(sorting => sorting.Mode(GridSortingMode.None))
+                    .Pager(Options =>
+                    {
+                        Options.Visible(false);
+                    })
+                    .RowDragging(rd => rd
+                        .AllowReordering(true)
+                        .OnReorder("ProjectsModel.OnReorder")
+                        .ShowDragIcons(true)
+                    )
+                    .Paging(Options =>
+                    {
+                        Options.Enabled(false);
+                    })
+                    .FilterRow(Options =>
+                    {
+                        Options.Visible(false);
+                    })
                     .ID("ProjectsGrid")
                     .OnInitialized("ProjectsModel.OnProjectsGridInit")
                     .Columns(Columns =>
@@ -102,6 +132,7 @@ namespace SixtyThreeBits.Web.Admin.Models
                     public int? ProjectID { get; set; }
                     public string ProjectCaption { get; set; }
                     public bool ProjectIsPublished { get; set; }
+                    public int? ProjectSortIndex { get; set; }
                     public string UrlProjectsProperties { get; set; }
                     #endregion
                 }
@@ -154,7 +185,7 @@ namespace SixtyThreeBits.Web.Admin.Models
             return ViewModel;
         }
 
-        public  async Task ValidatePageViewModel(ProjectsPropertiesViewModel ViewModel)
+        public async Task ValidatePageViewModel(ProjectsPropertiesViewModel ViewModel)
         {
             ViewModel.Errors = new List<SimpleKeyValue<string, string>>
             {

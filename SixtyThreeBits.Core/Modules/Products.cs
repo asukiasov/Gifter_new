@@ -26,7 +26,7 @@ namespace SixtyThreeBits.Core.Modules
                 using(var db = ConnectionFactory.GetDBCoreDataContext())
                 {
                     var Result = await db.ProductsFiltersGet(Language, CategoryID);
-                    return Result?.DeserializeTo<ProductFilters>();
+                    return Result?.DeserializeJsonTo<ProductFilters>();
                 }
             });
         }
@@ -38,7 +38,7 @@ namespace SixtyThreeBits.Core.Modules
                 using (var db = ConnectionFactory.GetDBCoreDataContext())
                 {
                     var Result = await db.ProductsGetSingleByID(ProductID);
-                    return Result?.FromJsonTo<Product>();
+                    return Result?.DeserializeJsonTo<Product>();
                 }
             });
         }
@@ -50,7 +50,7 @@ namespace SixtyThreeBits.Core.Modules
                 using (var db = ConnectionFactory.GetDBCoreDataContext())
                 {
                     var Result = await db.ProductsGetsingleBySlug(ProductSlug);
-                    return Result?.DeserializeTo<Product>();
+                    return Result?.DeserializeJsonTo<Product>();
                 }
             });
         }
