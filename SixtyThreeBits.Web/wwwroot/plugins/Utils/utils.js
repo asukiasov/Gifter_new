@@ -1,4 +1,25 @@
 ﻿const Utilities = {
+    ConsoleLogDevelopedBy: function () {
+        console.log("DEVELOPED BY")
+        console.log(`%c                                                                               
+        66666666    333333333333333   BBBBBBBBBBBBBBBBB   IIIIIIIIIITTTTTTTTTTTTTTTTTTTTTTT   SSSSSSSSSSSSSSS 
+       6::::::6    3:::::::::::::::33 B::::::::::::::::B  I::::::::IT:::::::::::::::::::::T SS:::::::::::::::S
+      6::::::6     3::::::33333::::::3B::::::BBBBBB:::::B I::::::::IT:::::::::::::::::::::TS:::::SSSSSS::::::S
+     6::::::6      3333333     3:::::3BB:::::B     B:::::BII::::::IIT:::::TT:::::::TT:::::TS:::::S     SSSSSSS
+    6::::::6                   3:::::3  B::::B     B:::::B  I::::I  TTTTTT  T:::::T  TTTTTTS:::::S            
+   6::::::6                    3:::::3  B::::B     B:::::B  I::::I          T:::::T        S:::::S            
+  6::::::6             33333333:::::3   B::::BBBBBB:::::B   I::::I          T:::::T         S::::SSSS         
+ 6::::::::66666        3:::::::::::3    B:::::::::::::BB    I::::I          T:::::T          SS::::::SSSSS    
+6::::::::::::::66      33333333:::::3   B::::BBBBBB:::::B   I::::I          T:::::T            SSS::::::::SS  
+6::::::66666:::::6             3:::::3  B::::B     B:::::B  I::::I          T:::::T               SSSSSS::::S 
+6:::::6     6:::::6            3:::::3  B::::B     B:::::B  I::::I          T:::::T                    S:::::S
+6:::::6     6:::::6            3:::::3  B::::B     B:::::B  I::::I          T:::::T                    S:::::S
+6::::::66666::::::63333333     3:::::3BB:::::BBBBBB::::::BII::::::II      TT:::::::TT      SSSSSSS     S:::::S
+ 66:::::::::::::66 3::::::33333::::::3B:::::::::::::::::B I::::::::I      T:::::::::T      S::::::SSSSSS:::::S
+   66:::::::::66   3:::::::::::::::33 B::::::::::::::::B  I::::::::I      T:::::::::T      S:::::::::::::::SS 
+     666666666      333333333333333   BBBBBBBBBBBBBBBBB   IIIIIIIIII      TTTTTTTTTTT       SSSSSSSSSSSSSSS
+`, "color: #3CB986;");         
+    },
     Date: {
         MonthShortNames: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
         WeekDaysShortNames: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
