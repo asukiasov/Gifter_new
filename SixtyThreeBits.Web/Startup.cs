@@ -112,8 +112,8 @@ namespace SixtyThreeBits.Web
             var RequestLocalizationOptions = new RequestLocalizationOptions();
             RequestLocalizationOptions.RequestCultureProviders.Clear();
             RequestLocalizationOptions.RequestCultureProviders.Add(new CustomCultureProvider(Utilities));
-            RequestLocalizationOptions.SupportedCultures = new List<CultureInfo> { new CultureInfo(Enums.Languages.GEORGIAN), new CultureInfo(Enums.Languages.ENGLISH) };
-            RequestLocalizationOptions.SupportedUICultures = new List<CultureInfo> { new CultureInfo(Enums.Languages.GEORGIAN), new CultureInfo(Enums.Languages.ENGLISH) };
+            RequestLocalizationOptions.SupportedCultures = new List<CultureInfo> { new CultureInfo(Enums.Languages.GEORGIAN) { NumberFormat = new NumberFormatInfo { CurrencyDecimalSeparator = "." } }, new CultureInfo(Enums.Languages.ENGLISH) };
+            RequestLocalizationOptions.SupportedUICultures = new List<CultureInfo> { new CultureInfo(Enums.Languages.GEORGIAN) { NumberFormat = new NumberFormatInfo { CurrencyDecimalSeparator = "." } }, new CultureInfo(Enums.Languages.ENGLISH) };
             //App.UseRequestLocalization(RequestLocalizationOptions);
 
             App.UseEndpoints(Endpoints =>
