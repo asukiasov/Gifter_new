@@ -192,14 +192,14 @@ namespace SixtyThreeBits.Web.Admin.Models
             }
             return ViewModel.IsSaved;
         }
-        public async Task<AjaxResponse> DeleteImage(int? PartnersID)
+        public async Task<AjaxResponse> DeleteImage(int? PartnerID)
         {
-            var Partner = await DataAccessFactory.Partners.GetSinglePartnerByID(PartnersID);
+            var Partner = await DataAccessFactory.Partners.GetSinglePartnerByID(PartnerID);
             Utilities.DeleteUploadedFile(Partner.PartnerImageFilename);
             var AR = new AjaxResponse();
             await DataAccessFactory.Partners.PartnersIUD(
                 DatabaseAction: Enums.DatabaseActions.UPDATE,
-                PartnerID: PartnersID,
+                PartnerID: PartnerID,
                 PartnerImageFilename: Constants.NullValueFor.String
             );
             AR.IsSuccess = !DataAccessFactory.Partners.IsError;
