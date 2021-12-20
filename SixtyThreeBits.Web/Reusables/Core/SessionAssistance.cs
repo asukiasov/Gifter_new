@@ -27,7 +27,7 @@ namespace SixtyThreeBits.Web.Reusables
 
         public T Get<T>(string Key)
         {
-            return HasKey(Key) ? Session.GetString(Key).FromJsonTo<T>() : default(T);
+            return HasKey(Key) ? Session.GetString(Key).DeserializeJsonTo<T>() : default(T);
         }
 
         public string GetSessionID()

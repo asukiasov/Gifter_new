@@ -12,11 +12,13 @@ namespace SixtyThreeBits.Core.Modules
         public DictionariesDataAccess Dictionaries { get; set; }
         public NewsDataAccess News { get; set; }
         public PagesDataAccess Pages { get; set; }
+        public PartnersDataAccess Partners { get; set; }
         public PermissionsDataAccess Permissions { get; set; }
         public ProductsDataAccess Products { get; set; }
         public ProjectsDataAccess Projects { get; set; }
         public RolesDataAccess Roles { get; set; }
         public SystemPropertiesAccess SystemProperties { get; set; }
+        public TeamMembersDataAccess TeamMembers { get; set; }
         public UsersDataAccess Users { get; set; }
         #endregion
 
@@ -30,10 +32,12 @@ namespace SixtyThreeBits.Core.Modules
             Dictionaries = new DictionariesDataAccess(ConnectionFactory);
             News = new NewsDataAccess(ConnectionFactory);
             Pages = new PagesDataAccess(ConnectionFactory, AppSettings);
+            Partners = new PartnersDataAccess(ConnectionFactory);
             Products = new ProductsDataAccess(ConnectionFactory);
             Permissions = new PermissionsDataAccess(ConnectionFactory);
             Projects = new ProjectsDataAccess(ConnectionFactory, Utilities);
             Roles = new RolesDataAccess(ConnectionFactory);
+            TeamMembers = new TeamMembersDataAccess(ConnectionFactory);
             SystemProperties = new SystemPropertiesAccess(ConnectionFactory);
             Users = new UsersDataAccess(ConnectionFactory);
         } 

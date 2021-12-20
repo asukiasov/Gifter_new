@@ -25,7 +25,7 @@ namespace SixtyThreeBits.Core.Modules
                 using (var db = ConnectionFactory.GetDBCoreDataContext())
                 {
                     var Result = await db.BlogPostGetSingleByID(BlogPostID);
-                    return Result?.DeserializeTo<BlogPost>();
+                    return Result?.DeserializeJsonTo<BlogPost>();
                 }
             });
         }

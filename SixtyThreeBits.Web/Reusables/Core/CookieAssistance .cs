@@ -25,7 +25,7 @@ namespace SixtyThreeBits.Web.Reusables
         {
             if (Request.Cookies.ContainsKey(Key))
             {
-                return Request.Cookies[Key].FromJsonTo<T>();
+                return Request.Cookies[Key].DeserializeJsonTo<T>();
             }
             else
             {

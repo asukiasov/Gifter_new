@@ -3,7 +3,6 @@ using DevExtreme.AspNet.Mvc.Builders;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using SixtyThreeBits.Core.Modules;
 using SixtyThreeBits.Core.Properties;
 using SixtyThreeBits.Core.Services;
@@ -136,6 +135,7 @@ namespace SixtyThreeBits.Web.Admin.Models
     public class NewsPropertiesModel : NewsModelBase
     {
         #region Methods
+
         public NewsPropertiesViewModel GetNewsPropertiesViewModel(NewsPropertiesViewModel ViewModel)
         {
             if (ViewModel == null)
@@ -149,6 +149,8 @@ namespace SixtyThreeBits.Web.Admin.Models
                 ViewModel.NewsShortDescriptionEng = DBItemNews.NewsShortDescriptionEng;
                 ViewModel.NewsShortDescriptionRus = DBItemNews.NewsShortDescriptionRus;
                 ViewModel.NewsText = DBItemNews.NewsText;
+                ViewModel.NewsTextEng = DBItemNews.NewsTextEng;
+                ViewModel.NewsTextRus = DBItemNews.NewsTextRus;
                 ViewModel.NewsIsPublished = DBItemNews.NewsIsPublished;
                 ViewModel.NewsDatePublished = DBItemNews.NewsDatePublished;
             }
@@ -187,20 +189,19 @@ namespace SixtyThreeBits.Web.Admin.Models
             {
                 Utilities.DeleteUploadedFile(DBItemNews.NewsImageFilename);
             }
-
             await DataAccessFactory.News.NewsIUD(
                 DatabaseAction: Enums.DatabaseActions.UPDATE,
                 NewsID: DBItemNews.NewsID,
                 NewsSlug: ViewModel.NewsSlug,
                 NewsTitle: ViewModel.NewsTitle,
-                NewsTitleEng: ViewModel.NewsTitleEng,
-                NewsTitleRus: ViewModel.NewsTitleRus,
-                NewsShortDescription: ViewModel.NewsShortDescription,
-                NewsShortDescriptionEng: ViewModel.NewsShortDescriptionEng,
-                NewsShortDescriptionRus: ViewModel.NewsShortDescriptionRus,
-                NewsText: ViewModel.NewsText,
-                NewsTextEng: ViewModel.NewsTextEng,
-                NewsTextRus: ViewModel.NewsTextRus,
+                NewsTitleEng: ViewModel.NewsTitleEng ?? Constants.NullValueFor.String,
+                NewsTitleRus: ViewModel.NewsTitleRus ?? Constants.NullValueFor.String,
+                NewsShortDescription: ViewModel.NewsShortDescription ?? Constants.NullValueFor.String,
+                NewsShortDescriptionEng: ViewModel.NewsShortDescriptionEng ?? Constants.NullValueFor.String,
+                NewsShortDescriptionRus: ViewModel.NewsShortDescriptionRus ?? Constants.NullValueFor.String,
+                NewsText: ViewModel.NewsText ?? Constants.NullValueFor.String,
+                NewsTextEng: ViewModel.NewsTextEng ?? Constants.NullValueFor.String,
+                NewsTextRus: ViewModel.NewsTextRus ?? Constants.NullValueFor.String,
                 NewsImageFilename: NewsImageFilename,
                 NewsDatePublished: ViewModel.NewsDatePublished,
                 NewsIsPublished: ViewModel.NewsIsPublished
@@ -229,9 +230,7 @@ namespace SixtyThreeBits.Web.Admin.Models
                 NewsID: NewsID,
                 NewsImageFilename: Constants.NullValueFor.String
             );
-
             AR.IsSuccess = !DataAccessFactory.News.IsError;
-
             return AR;
         }
 

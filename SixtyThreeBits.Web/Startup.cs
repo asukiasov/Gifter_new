@@ -8,7 +8,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
+using SixtyThreeBits.Core.Modules;
 using SixtyThreeBits.Core.Utilities;
+using SixtyThreeBits.Web.Filters;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -23,7 +25,6 @@ namespace SixtyThreeBits.Web
 
         public Startup(IWebHostEnvironment Env)
         {
-
             if (Env.IsDevelopment())
             {
                 var Builder = new ConfigurationBuilder().SetBasePath(Env.ContentRootPath).AddJsonFile("appsettings.json");
@@ -45,10 +46,10 @@ namespace SixtyThreeBits.Web
             Utilities = new UtilityCollection(AppSettings);
         }
 
-        public void ConfigureServices(IServiceCollection Services) 
+        public void ConfigureServices(IServiceCollection Services)
         {
             Services.AddSingleton(AppSettings);
-            Services.AddSingleton(Utilities);            
+            Services.AddSingleton(Utilities);
             //Honestly, EFCore team are idiots !!! because of "A second operation started on this context before a previous operation completed. Any instance members are not guaranteed to be thread safe."
             //The whole idea of .NET Core + DI is create once use anywhere. I'm not able to use same DBDataContext to perform multiple db queries, so what is the point of DI then?
             //Services.AddDbContext<DBCoreDataContext>(Options => Options.UseSqlServer(AppSettings.DBConnectionStrings.DBConnectionString), optionsLifetime: ServiceLifetime.Scoped);
@@ -58,7 +59,7 @@ namespace SixtyThreeBits.Web
             {
                 options.IdleTimeout = TimeSpan.FromMinutes(30);
                 options.Cookie.HttpOnly = true;
-                options.Cookie.Name = AppSettings.IsDevelopment ? $".{Constants.ProjectName}Development" : $".{Constants.ProjectName}Production";
+                //options.Cookie.Name = AppSettings.IsDevelopment ? $".{Constants.ProjectName}Development" : $".{Constants.ProjectName}Production";
                 options.Cookie.IsEssential = true;
             });
             Services.Configure<CookiePolicyOptions>(Options =>
@@ -92,7 +93,6 @@ namespace SixtyThreeBits.Web
                 App.UseExceptionHandler(Options =>
                 {
                     App.UseExceptionHandler("/error/404/");
-
                 });
                 App.UseHsts();
             }
@@ -114,9 +114,9 @@ namespace SixtyThreeBits.Web
             var RequestLocalizationOptions = new RequestLocalizationOptions();
             RequestLocalizationOptions.RequestCultureProviders.Clear();
             RequestLocalizationOptions.RequestCultureProviders.Add(new CustomCultureProvider(Utilities));
-            RequestLocalizationOptions.SupportedCultures = new List<CultureInfo> { new CultureInfo(Enums.Languages.GEORGIAN), new CultureInfo(Enums.Languages.ENGLISH) };
-            RequestLocalizationOptions.SupportedUICultures = new List<CultureInfo> { new CultureInfo(Enums.Languages.GEORGIAN), new CultureInfo(Enums.Languages.ENGLISH) };
-            App.UseRequestLocalization(RequestLocalizationOptions);
+            RequestLocalizationOptions.SupportedCultures = new List<CultureInfo> { new CultureInfo(Enums.Languages.GEORGIAN) { NumberFormat = new NumberFormatInfo { CurrencyDecimalSeparator = "." } }, new CultureInfo(Enums.Languages.ENGLISH) };
+            RequestLocalizationOptions.SupportedUICultures = new List<CultureInfo> { new CultureInfo(Enums.Languages.GEORGIAN) { NumberFormat = new NumberFormatInfo { CurrencyDecimalSeparator = "." } }, new CultureInfo(Enums.Languages.ENGLISH) };
+            //App.UseRequestLocalization(RequestLocalizationOptions);
 
             App.UseEndpoints(Endpoints =>
             {

@@ -38,7 +38,7 @@ namespace SixtyThreeBits.Web.Admin.Controllers
         [Route("grid/add", Name = ControllerActionRouteNames.Admin.News.GridAdd)]
         public async Task<ActionResult> NewsGridAdd(int? key, string values)
         {
-            var SubmitModel = values.FromJsonTo<NewsModel.PageViewModel.GridModel.GridItem>() ?? new NewsModel.PageViewModel.GridModel.GridItem();
+            var SubmitModel = values.DeserializeJsonTo<NewsModel.PageViewModel.GridModel.GridItem>() ?? new NewsModel.PageViewModel.GridModel.GridItem();
             await Model.CRUD(DatabaseAction: Enums.DatabaseActions.CREATE, NewsID: key, SubmitModel: SubmitModel);
             if (Model.Form.HasErrors)
             {
@@ -54,7 +54,7 @@ namespace SixtyThreeBits.Web.Admin.Controllers
         [Route("grid/update", Name = ControllerActionRouteNames.Admin.News.GridUpdate)]
         public async Task<ActionResult> NewsGridUpdate(int? key, string values)
         {
-            var SubmitModel = values.FromJsonTo<NewsModel.PageViewModel.GridModel.GridItem>() ?? new NewsModel.PageViewModel.GridModel.GridItem();
+            var SubmitModel = values.DeserializeJsonTo<NewsModel.PageViewModel.GridModel.GridItem>() ?? new NewsModel.PageViewModel.GridModel.GridItem();
             await Model.CRUD(DatabaseAction: Enums.DatabaseActions.UPDATE, NewsID: key, SubmitModel: SubmitModel);
             if (Model.Form.HasErrors)
             {
@@ -132,10 +132,7 @@ namespace SixtyThreeBits.Web.Admin.Controllers
                     Result = View(ViewNames.Admin.News.NewsItem, ViewModel);
                 }
             }
-            else
-            {
-                Result = View(ViewNames.Admin.News.NewsItem, ViewModel);
-            }
+            
             return Result;
         }
 

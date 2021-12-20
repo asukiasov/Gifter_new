@@ -1,0 +1,19 @@
+﻿@model TeamMembersModel.PageViewModel
+
+<div class="actions-row">
+    @await Html.PartialAsync(ViewNames.Admin.Shared.ButtonAddNew, new ButtonAddNewViewModel())
+</div>
+
+
+<div class="row">
+    <div class="col">
+        @Model.Grid.Render(Html)
+    </div>
+</div>
+
+@section FooterSection{
+    <script src="~/admin/js/TeamMembers/TeamMembers.js"></script>
+    <script>
+        TeamMembersModel.UrlSync = '@Model.UrlSync';
+    </script>
+}

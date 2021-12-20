@@ -1,5 +1,5 @@
 ﻿@model NewsPropertiesModel.NewsPropertiesViewModel
-<div class="actions-row">    
+<div class="actions-row">
     @await Html.PartialAsync(ViewNames.Admin.Shared.ButtonSave, new ButtonSaveViewModel { FormID = "NewsDetailsForm" })
 </div>
 <div class="card">
@@ -12,11 +12,11 @@
                         <input type="checkbox" name="@nameof(Model.NewsIsPublished)" value="true" @(Model.NewsIsPublished ? Html.Raw("checked") : null) />
                         <i></i>
                     </label>
-                </div>                
+                </div>
             </div>
             <div class="row">
                 <div class="form-group col-lg-4">
-                    <label>Blog Slug</label>
+                    <label>News Slug</label>
                     <input type="text" name="@nameof(Model.NewsSlug)" class="form-control js-slug-textbox" value="@Model.NewsSlug" />
                     <p class="help-block">
                         <span class="error-text"></span>
@@ -117,9 +117,7 @@
     @if (Model.HasErrors)
     {
         <script>
-        $(function(){
             Validation.Init({ErrorsJson:@Html.Raw(Model.ErrorsJson)}).ShowErrors();
-        });
         </script>
     }
 }

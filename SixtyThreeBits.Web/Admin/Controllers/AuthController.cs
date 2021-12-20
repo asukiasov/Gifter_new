@@ -17,7 +17,7 @@ namespace SixtyThreeBits.Web.Admin.Controllers
 
         [HttpGet]
         [Route("login", Name = ControllerActionRouteNames.Admin.Auth.Login)]
-        public ActionResult Login()
+        public IActionResult Login()
         {
             if (Model.IsUserLoggedIn())
             {
@@ -33,14 +33,15 @@ namespace SixtyThreeBits.Web.Admin.Controllers
 
         [HttpPost]
         [Route("login")]
-        public async Task<ActionResult> Login(AuthModel.LoginPageViewModel SubmitModel)
+        public async Task<IActionResult> Login(AuthModel.LoginPageViewModel SubmitModel)
         {
             Model.PluginsClient.EnableFontAwesome(true).EnableBootstrap(true).EnableAngle(true).Enable63BitsFonts(true);
             var ViewModel = Model.GetPageViewModel(SubmitModel);
             var IsAuthenticated = await Model.AuthenticateUser(ViewModel: ViewModel);
             if (IsAuthenticated)
             {
-                return Redirect(Url.RouteUrl(ControllerActionRouteNames.Admin.Home.Page));
+                var UrlHome = Url.RouteUrl(ControllerActionRouteNames.Admin.Home.Page);
+                return Redirect(UrlHome);
             }
             else
             {
@@ -49,14 +50,14 @@ namespace SixtyThreeBits.Web.Admin.Controllers
         }
 
         [Route("logout", Name = ControllerActionRouteNames.Admin.Auth.Logout)]
-        public ActionResult Logout()
+        public IActionResult Logout()
         {
             Model.Logout();
             return Redirect(Url.RouteUrl(ControllerActionRouteNames.Admin.Auth.Login));
         }
 
         [Route("relogin", Name = ControllerActionRouteNames.Admin.Auth.Relogin)]
-        public async Task<ActionResult> Relogin()
+        public async Task<IActionResult> Relogin()
         {
             await Model.ReloginUser();
             return Redirect(Request.Headers["Referer"].ToString());

@@ -12,13 +12,6 @@ namespace SixtyThreeBits.Core.Utilities
 
         public readonly string OgImageDefaultHttpPath = "/img/og_image_default.jpg";
 
-        public string SMTPAddress => GetConfigValue();
-        public string SMTPUsername => GetConfigValue();
-        public string SMTPPassword => GetConfigValue();
-        public int SMTPPort => GetConfigValue().ToInt() ?? 0;
-        public bool SMTPEnableSSL => GetConfigValue().ToBooleanValue();
-        public string SMTPFromName => GetConfigValue();
-
         public string UploadFolderPhysicalPath => GetConfigValue();
         public readonly string UploadFolderVirtualName = "upload";
         public string UploadFolderVirtualPath => $"/{UploadFolderVirtualName}/";

@@ -73,7 +73,7 @@ namespace SixtyThreeBits.Core.Modules
                 using (var db = ConnectionFactory.GetDBCoreDataContext())
                 {
                     var Result = await db.PagesGetSingleByID(PageID, PageIsPublished);
-                    return Result?.DeserializeTo<Page>();
+                    return Result?.DeserializeJsonTo<Page>();
                 }
             });
         }
@@ -85,7 +85,7 @@ namespace SixtyThreeBits.Core.Modules
                 using (var db = ConnectionFactory.GetDBCoreDataContext())
                 {
                     var Result = await db.PagesGetSingleBySlugHierarchy(PageSlug, IsPublished);
-                    return Result?.DeserializeTo<Page>();
+                    return Result?.DeserializeJsonTo<Page>();
                 }
             });
         }        

@@ -38,7 +38,7 @@ namespace SixtyThreeBits.Web.Admin.Controllers
         [Route("tree/add", Name = ControllerActionRouteNames.Admin.Dictionaries.DictionariesTreeAdd)]
         public async Task<ActionResult> DictionariesTreeAdd(int? key, string values)
         {
-            var SubmitModel = values.FromJsonTo<DictionariesModel.PageViewModel.TreeModel.TreeItem>() ?? new DictionariesModel.PageViewModel.TreeModel.TreeItem();
+            var SubmitModel = values.DeserializeJsonTo<DictionariesModel.PageViewModel.TreeModel.TreeItem>() ?? new DictionariesModel.PageViewModel.TreeModel.TreeItem();
             await Model.CRUD(DatabaseAction: Enums.DatabaseActions.CREATE, DictionaryID: key, SubmitModel: SubmitModel);
             if (Model.Form.HasErrors)
             {
@@ -54,7 +54,7 @@ namespace SixtyThreeBits.Web.Admin.Controllers
         [Route("tree/update", Name = ControllerActionRouteNames.Admin.Dictionaries.DictionariesTreeUpdate)]
         public async Task<ActionResult> DictionariesTreeUpdate(int? key, string values)
         {
-            var SubmitModel = values.FromJsonTo<DictionariesModel.PageViewModel.TreeModel.TreeItem>() ?? new DictionariesModel.PageViewModel.TreeModel.TreeItem();
+            var SubmitModel = values.DeserializeJsonTo<DictionariesModel.PageViewModel.TreeModel.TreeItem>() ?? new DictionariesModel.PageViewModel.TreeModel.TreeItem();
             await Model.CRUD(DatabaseAction: Enums.DatabaseActions.UPDATE, DictionaryID: key, SubmitModel: SubmitModel);
             if (Model.Form.HasErrors)
             {
