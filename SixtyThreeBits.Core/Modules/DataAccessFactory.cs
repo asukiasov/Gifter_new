@@ -12,6 +12,7 @@ namespace SixtyThreeBits.Core.Modules
         public DictionariesDataAccess Dictionaries { get; set; }
         public NewsDataAccess News { get; set; }
         public PagesDataAccess Pages { get; set; }
+        public PartnersDataAccess Partners { get; set; }
         public PermissionsDataAccess Permissions { get; set; }
         public ProductsDataAccess Products { get; set; }
         public ProjectsDataAccess Projects { get; set; }
@@ -31,6 +32,7 @@ namespace SixtyThreeBits.Core.Modules
             Dictionaries = new DictionariesDataAccess(ConnectionFactory);
             News = new NewsDataAccess(ConnectionFactory);
             Pages = new PagesDataAccess(ConnectionFactory, AppSettings);
+            Partners = new PartnersDataAccess(ConnectionFactory);
             Products = new ProductsDataAccess(ConnectionFactory);
             Permissions = new PermissionsDataAccess(ConnectionFactory);
             Projects = new ProjectsDataAccess(ConnectionFactory, Utilities);

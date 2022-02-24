@@ -189,7 +189,6 @@ namespace SixtyThreeBits.Web.Admin.Models
             {
                 Utilities.DeleteUploadedFile(DBItemNews.NewsImageFilename);
             }
-
             await DataAccessFactory.News.NewsIUD(
                 DatabaseAction: Enums.DatabaseActions.UPDATE,
                 NewsID: DBItemNews.NewsID,
@@ -231,9 +230,7 @@ namespace SixtyThreeBits.Web.Admin.Models
                 NewsID: NewsID,
                 NewsImageFilename: Constants.NullValueFor.String
             );
-
             AR.IsSuccess = !DataAccessFactory.News.IsError;
-
             return AR;
         }
 

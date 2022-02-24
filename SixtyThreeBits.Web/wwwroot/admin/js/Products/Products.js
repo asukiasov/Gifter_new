@@ -27,7 +27,6 @@ $(function () {
     if (ProductsModel.IsError) {
         $('.js-upload-excel-file-modal').modal("show");
     }
-    
     //$('.js-upload-excel-file-button').click(function () {        
 
     //}); 

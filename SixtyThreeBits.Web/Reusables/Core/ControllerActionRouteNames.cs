@@ -192,6 +192,25 @@
                 #endregion
             }
 
+            public class Partners
+            {
+                #region Properties
+                public const string Page = "AdminPartners";
+                public const string PartnersGrid = "AdminPartnersGrid";
+                public const string PartnersGridAdd = "AdminParnersGridAdd";
+                public const string PartnersGridUpdate = "AdminPartnersGridUpdate";
+                public const string PartnersGridDelete = "AdminPartnersGridDelete";
+                public const string PartnersPartnerPropertiesDeleteImage = "AdminPartnersPartnerDeleteImage";
+                #endregion
+
+                #region Sub Classes
+                public class Partner
+                {
+                    public const string Properties = "AdminPartnersPartner";
+                }
+                #endregion
+            }
+
             public class Products
             {
                 #region Properties

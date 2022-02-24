@@ -124,6 +124,14 @@
                 #endregion
             }
 
+            public class Partners
+            {
+                #region Properties
+                public const string Page = "Admin/Views/Partners/Partners.cshtml";
+                public const string Partner = "Admin/Views/Partners/PartnerProperties.cshtml";
+                #endregion
+            }
+
             public class Products
             {
                 #region Properties

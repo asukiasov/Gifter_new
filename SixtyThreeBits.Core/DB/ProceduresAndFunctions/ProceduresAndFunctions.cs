@@ -513,6 +513,57 @@ namespace SixtyThreeBits.Core.DB
         }
         #endregion
 
+        #region PartnersGetSingleByID
+        internal virtual DbSet<ScalarFunctionResult<string>> PartnersGetSingleByIDResult { get; set; }
+        public async Task<string> PartnersGetSingleByID(int? PartnerID)
+        {
+            var PR = new PrepareQueryExecution(
+                DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
+                DatabaseObjectName: nameof(PartnersGetSingleByID),
+                ResultItemType: typeof(ScalarFunctionResult<string>),
+                SqlParameters: new SqlParameter[]
+                {
+                    PartnerID.ToSqlParameter(nameof(PartnerID),SqlDbType.Int)
+                }
+            );
+            var DBResult = PartnersGetSingleByIDResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
+            var DBFunctionResult = await DBResult.FirstOrDefaultAsync();
+            return DBFunctionResult?.Value;
+        }
+        #endregion
+
+        #region PartnersList
+        public class PartnersListResultItem
+        {
+            #region Properties
+            public int? PartnerID { get; set; }
+            public string PartnerName { get; set; }
+            public string PartnerNameEng { get; set; }
+            public string PartnerNameRus { get; set; }
+            public string PartnerShortDescription { get; set; }
+            public string PartnerShortDescriptionEng { get; set; }
+            public string PartnerShortDescriptionRus { get; set; }
+            public string PartnerFullDescription { get; set; }
+            public string PartnerFullDescriptionEng { get; set; }
+            public string PartnerFullDescriptionRus { get; set; }
+            public string PartnerWebSite { get; set; }
+            public string PartnerImageFilename { get; set; }
+            public DateTime? PartnerDateCreated { get; set; }
+            #endregion
+        }
+        internal virtual DbSet<PartnersListResultItem> PartnersListResult { get; set; }
+        public IQueryable<PartnersListResultItem> PartnersList()
+        {
+            var PR = new PrepareQueryExecution(
+                DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
+                DatabaseObjectName: nameof(PartnersList),
+                ResultItemType: typeof(PartnersListResultItem)
+            );
+            var DBResult = PartnersListResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
+            return DBResult;
+        }
+        #endregion
+
         #region PermissionsList
         public class PermissionsListResultItem
         {
@@ -1268,6 +1319,34 @@ namespace SixtyThreeBits.Core.DB
             var DBResult = await Database.ExecuteSqlRawAsync(PR.SqlQuery, PR.SqlParameters);
         }
 
+        public async Task<int?> PartnersIUD(Enums.DatabaseActions iud, int? PartnerID, string PartnerName, string PartnerNameEng, string PartnerNameRus, string PartnerShortDescription, string PartnerShortDescriptionEng, string PartnerShortDescriptionRus, string PartnerFullDescription, string PartnerFullDescriptionEng, string PartnerFullDescriptionRus, string PartnerWebSite, string PartnerImageFilename)
+        {
+            var PR = new PrepareQueryExecution(
+                DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.STORED_PROCEDURE,
+                DatabaseObjectName: nameof(PartnersIUD),
+                ResultItemType: null,
+                SqlParameters: new SqlParameter[]
+                {
+                    iud.ToSqlParameter(nameof(iud),SqlDbType.TinyInt),
+                    PartnerID.ToSqlParameter(nameof(PartnerID),SqlDbType.Int,true),
+                    PartnerName.ToSqlParameter(nameof(PartnerName),SqlDbType.NVarChar),
+                    PartnerNameEng.ToSqlParameter(nameof(PartnerNameEng),SqlDbType.NVarChar),
+                    PartnerNameRus.ToSqlParameter(nameof(PartnerNameRus),SqlDbType.NVarChar),
+                    PartnerShortDescription.ToSqlParameter(nameof(PartnerShortDescription),SqlDbType.NVarChar),
+                    PartnerShortDescriptionEng.ToSqlParameter(nameof(PartnerShortDescriptionEng),SqlDbType.NVarChar),
+                    PartnerShortDescriptionRus.ToSqlParameter(nameof(PartnerShortDescriptionRus),SqlDbType.NVarChar),
+                    PartnerFullDescription.ToSqlParameter(nameof(PartnerFullDescription),SqlDbType.NVarChar),
+                    PartnerFullDescriptionEng.ToSqlParameter(nameof(PartnerFullDescriptionEng),SqlDbType.NVarChar),
+                    PartnerFullDescriptionRus.ToSqlParameter(nameof(PartnerFullDescriptionRus),SqlDbType.NVarChar),
+                    PartnerWebSite.ToSqlParameter(nameof(PartnerWebSite),SqlDbType.NVarChar),
+                    PartnerImageFilename.ToSqlParameter(nameof(PartnerImageFilename),SqlDbType.NVarChar),
+                }
+            );
+            var DBResult = await Database.ExecuteSqlRawAsync(PR.SqlQuery, PR.SqlParameters);
+            PartnerID = PR.SqlParameters[1].Value?.ToString().ToInt();
+            return PartnerID;
+        }
+
         public async Task PermissionsDeleteRecursive(int? PermissionID)
         {
             var PR = new PrepareQueryExecution(
@@ -1606,6 +1685,7 @@ namespace SixtyThreeBits.Core.DB
             ModelBuilder.Entity<ScalarFunctionResult<bool>>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<PagesListForDeleteRecursiveResultItem>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<PagesListResultItem>(Entity => { Entity.HasNoKey(); });
+            ModelBuilder.Entity<PartnersListResultItem>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<PermissionsListResultItem>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<ProductsImagesListResultItem>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<ProductsListResultItem>(Entity => { Entity.HasNoKey(); });

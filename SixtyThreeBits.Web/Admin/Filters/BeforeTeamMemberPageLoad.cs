@@ -9,10 +9,10 @@ namespace SixtyThreeBits.Web.Admin.Filters
     public class BeforeTeamMemberPageLoad : IAsyncActionFilter
     {
         #region Constructors
-        #endregion
         public BeforeTeamMemberPageLoad()
         {
         }
+        #endregion
 
         public async Task OnActionExecutionAsync(ActionExecutingContext FilterContext, ActionExecutionDelegate next)
         {
