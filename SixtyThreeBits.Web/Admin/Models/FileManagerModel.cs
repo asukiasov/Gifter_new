@@ -29,8 +29,8 @@ namespace SixtyThreeBits.Web.Admin.Models
             ViewModel.OnSelectedFilesChooseClientCallback = OnSelectedFilesChooseClientCallback;
             ViewModel.FileManager = new PageViewModel.FileManagerPartialViewModel();
 
-            ViewModel.FileManager.FolderVirtualPath = FolderVirtualPathHash.DecryptWeb();
-            ViewModel.FileManager.FolderPhysicalPath = FolderPhysicalPathHash.DecryptWeb();
+            ViewModel.FileManager.FolderVirtualPath = FolderVirtualPathHash.AESDecryptString();
+            ViewModel.FileManager.FolderPhysicalPath = FolderPhysicalPathHash.AESDecryptString();
             ViewModel.FileManager.AllowedExtensions = AllowedExtensions == null ? new string[0] : AllowedExtensions.Split(',');
             ViewModel.FileManager.AllowSelectMultiple = AllowSelectMultiple;
             ViewModel.FileManager.UrlListFiles = Url.RouteUrl(ControllerActionRouteNames.Admin.FileManager.Files, new { FolderVirtualPathHash, FolderPhysicalPathHash, AllowSelectMultiple, AllowedExtensions });
@@ -43,8 +43,8 @@ namespace SixtyThreeBits.Web.Admin.Models
         {
             var FileManagerPartialViewModel = new PageViewModel.FileManagerPartialViewModel();
             FileManagerPartialViewModel.AllowSelectMultiple = AllowSelectMultiple;
-            var FileManagerFolderPhysicalPath = FolderPhysicalPathHash.DecryptWeb();
-            var FileManagerFolderVirtualPath = FolderVirtualPathHash.DecryptWeb();
+            var FileManagerFolderPhysicalPath = FolderPhysicalPathHash.AESDecryptString();
+            var FileManagerFolderVirtualPath = FolderVirtualPathHash.AESDecryptString();
             if (!Directory.Exists(FileManagerFolderPhysicalPath))
             {
                 Directory.CreateDirectory(FileManagerFolderPhysicalPath);

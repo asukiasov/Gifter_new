@@ -36,7 +36,7 @@ namespace SixtyThreeBits.Services
         #region Methods                
         public bool Send(string To, string Subject, string Body, string ReplyTo = null, IEnumerable<EmailAttachment> Attachments = null, IEnumerable<string> CCs = null, IEnumerable<string> BCCs = null)
         {
-            return TryToReturn($"{nameof(Send)}({nameof(To)} = {To}, {nameof(Subject)} = {Subject}, {nameof(Body)} = {Body}, {nameof(ReplyTo)} = {ReplyTo}, {nameof(Attachments)} = {Attachments?.ToJSON()})", () =>
+            return TryToReturn($"{nameof(Send)}({nameof(To)} = {To}, {nameof(Subject)} = {Subject}, {nameof(Body)} = {Body}, {nameof(ReplyTo)} = {ReplyTo}, {nameof(Attachments)} = {Attachments?.ToJson()})", () =>
             {
                 using (var Message = new MailMessage())
                 {

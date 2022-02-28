@@ -35,8 +35,10 @@ namespace SixtyThreeBits.Core.Modules
             {
                 using (var db = ConnectionFactory.GetDBCoreDataContext())
                 {
-                    var Result = await db.UsersGetSingleUserByEmailAndPassword(Email, Password);
-                    return Result.DeserializeJsonTo<User>();
+                    var Json = await db.UsersGetSingleUserByEmailAndPassword(Email, Password);
+                    //var Result = Json.DeserializeJsonTo<User>();
+                    var Result = System.Text.Json.JsonSerializer.Deserialize<User>(Json);
+                    return Result;
                 }
             });
         }

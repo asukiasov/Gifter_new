@@ -81,7 +81,7 @@ namespace SixtyThreeBits.Web.Reusables.Core
         public string GetFileManagerUrl(string FolderPhysicalPath, string FolderVirtualPath, bool AllowSelectMultiple = false, bool RestrictToImagesOnly = false, string OnSelectedFilesChooseClientCallback = null)
         {
             var SB = new StringBuilder();
-            SB.Append(Url.RouteUrl(ControllerActionRouteNames.Admin.FileManager.Index, new { FolderVirtualPathHash = FolderVirtualPath.EncryptWeb(), FolderPhysicalPathHash = FolderPhysicalPath.EncryptWeb() }));
+            SB.Append(Url.RouteUrl(ControllerActionRouteNames.Admin.FileManager.Index, new { FolderVirtualPathHash = FolderVirtualPath.AESEncryptString(), FolderPhysicalPathHash = FolderPhysicalPath.AESEncryptString() }));
             if (AllowSelectMultiple || RestrictToImagesOnly || !string.IsNullOrWhiteSpace(OnSelectedFilesChooseClientCallback))
             {
                 SB.Append("?");
@@ -226,7 +226,7 @@ namespace SixtyThreeBits.Web.Reusables.Core
         public string ErrorMessage => Errors == null ? null : string.Join("<br />", Errors.Select(Item => Item.Value));
         public bool HasErrors => Errors?.Count > 0;
         public bool IsValid => !HasErrors;
-        public string ErrorsJson => Errors.ToJSON();        
+        public string ErrorsJson => Errors.ToJson();        
         public bool IsSaved { get; set; }        
         #endregion
 

@@ -39,7 +39,7 @@ namespace SixtyThreeBits.Web.Reusables
             {
                 var options = new CookieOptions();
                 options.Expires = ExpirationDate.HasValue ? ExpirationDate.Value : DateTime.Now.AddDays(1);
-                Response.Cookies.Append(Key, Value.ToJSON());
+                Response.Cookies.Append(Key, Value.ToJson());
             }
         }         
 

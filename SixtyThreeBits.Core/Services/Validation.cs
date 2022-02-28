@@ -103,7 +103,7 @@ namespace SixtyThreeBits.Core.Services
             var Error = ValidateRequired(ErrorKey, OldPassword);
             if (Error == null)
             {
-                if (UserPassword != OldPassword.MD5())
+                if (UserPassword != OldPassword.MD5Encrypt())
                 {
                     Error = GetError(ErrorKey, Resources.ValidationPasswordOldNotMatch);
                 }

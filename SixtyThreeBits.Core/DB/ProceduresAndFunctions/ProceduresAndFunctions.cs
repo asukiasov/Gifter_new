@@ -1671,7 +1671,7 @@ namespace SixtyThreeBits.Core.DB
         }
         #endregion
 
-        partial void OnModelCreatingPartial(ModelBuilder ModelBuilder)
+        void OnModelCreatingPartial(ModelBuilder ModelBuilder)
         {
             ModelBuilder.Entity<BlogPostListResultItem>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<BrandsListResultItem>(Entity => { Entity.HasNoKey(); });

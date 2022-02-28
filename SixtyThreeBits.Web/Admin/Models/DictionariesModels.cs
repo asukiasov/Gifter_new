@@ -99,9 +99,9 @@ namespace SixtyThreeBits.Web.Admin.Models
                 {
                     var Tree = GetTreeWithStartupValues<TreeItem>(Html: Html, KeyFieldName: nameof(TreeItem.DictionaryID), ParentFieldName: nameof(TreeItem.DictionaryParentID));
 
-                    Tree
+                    Tree                        
                     .ID("DictionariesTree")
-                    .OnToolbarPreparing("DictionariesModel.OnDictionariesTreeToolbarPreparing")
+                    //.OnToolbarPreparing("DictionariesModel.OnDictionariesTreeToolbarPreparing")
                     .OnInitialized("DictionariesModel.OnDictionariesTreeInit")
                     .RowDragging(Options =>
                     {

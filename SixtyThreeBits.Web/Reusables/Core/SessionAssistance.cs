@@ -42,7 +42,7 @@ namespace SixtyThreeBits.Web.Reusables
 
         public void Set<T>(string Key, T Value)
         {            
-            Session.SetString(Key, Value.ToJSON());
+            Session.SetString(Key, Value.ToJson());
         }         
 
         public void Remove(string Key)

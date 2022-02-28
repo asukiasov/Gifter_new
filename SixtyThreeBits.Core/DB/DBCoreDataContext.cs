@@ -17,8 +17,6 @@ namespace SixtyThreeBits.Core.DB
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {                        
             OnModelCreatingPartial(modelBuilder);
-        }
-
-        partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+        }        
     }
 }

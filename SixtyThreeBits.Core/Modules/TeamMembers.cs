@@ -57,11 +57,11 @@ namespace SixtyThreeBits.Core.Modules
 
         public async Task TeamMembersSyncSortIndexes(List<SyncSortIndexesItem> SortIndexes)
         {
-            await TryExecuteAsyncTask($"{nameof(TeamMembersSyncSortIndexes)}({nameof(SortIndexes)} = {SortIndexes.ToJSON()})", async () =>
+            await TryExecuteAsyncTask($"{nameof(TeamMembersSyncSortIndexes)}({nameof(SortIndexes)} = {SortIndexes.ToJson()})", async () =>
             {
                 using (var db = ConnectionFactory.GetDBCoreDataContext())
                 {
-                    await db.TeamMembersSyncSortIndexes(SortIndexes.ToJSON());
+                    await db.TeamMembersSyncSortIndexes(SortIndexes.ToJson());
                 }
             });
         }
