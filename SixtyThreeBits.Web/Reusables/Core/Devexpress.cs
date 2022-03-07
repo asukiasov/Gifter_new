@@ -67,12 +67,15 @@ namespace SixtyThreeBits.Web.Reusables.Core
             .ShowRowLines(true)
             .FocusedRowEnabled(true)
             .FocusedRowIndex(0)
+            .Toolbar(Options =>
+            {
+                Options.Visible(false);
+            })
             .Scrolling(Options =>
             {
                 Options.Mode(GridScrollingMode.Standard);
                 Options.ShowScrollbar(ShowScrollbarMode.Always);
-            })
-            .OnToolbarPreparing("function(e){ e.toolbarOptions.visible = false;  }")
+            })            
             .FilterRow(Options =>
             {
                 Options.Visible(true);
