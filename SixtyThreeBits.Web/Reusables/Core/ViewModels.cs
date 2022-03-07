@@ -9,7 +9,7 @@ namespace SixtyThreeBits.Web.Reusables.Core
         public string UrlAddNew { get; set; }
         public bool HasUrlAddNew => !string.IsNullOrWhiteSpace(UrlAddNew);
         public string CssClass { get; set; } = "js-add-new-button";
-        public string ButtonText { get; set; } = "დამატება";
+        public string ButtonText { get; set; } = Resources.TextAdd;
         #endregion
     }
 
@@ -19,7 +19,7 @@ namespace SixtyThreeBits.Web.Reusables.Core
         public string FormID { get; set; }
         public bool HasFormID => !string.IsNullOrWhiteSpace(FormID);
         public string CssClass { get; set; } = "js-save-button";
-        public string ButtonText { get; set; } = "შენახვა";
+        public string ButtonText { get; set; } = Resources.TextSave;
         #endregion
     } 
     #endregion

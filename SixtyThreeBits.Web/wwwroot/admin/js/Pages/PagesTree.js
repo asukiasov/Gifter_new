@@ -29,7 +29,7 @@
         }
     },
 
-    CreateNewPagePromise: function (ParentID, PageTitle) {
+    CreateNewPagePromise: function (ParentID, PageTitle) {        
         return new Promise(function (Resolve, Reject) {
             ParentID = ParentID === undefined ? null : ParentID;
 

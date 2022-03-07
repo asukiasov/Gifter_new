@@ -86,7 +86,8 @@ namespace SixtyThreeBits.Web.Admin.Models
                     Node.ShowToggler3 = AllowUpdate;
                     Node.NavigateUrl = Url.RouteUrl(ControllerActionRouteNames.Admin.Pages.Page.Properties, new { PageID = PageID });
                     Node.ShowAddNewButton = AllowAddNew;
-                    Node.ShowDeleteButton = AllowDelete;                                       
+                    Node.ShowDeleteButton = AllowDelete;                                     
+                    
                 };
             }
 
@@ -138,6 +139,7 @@ namespace SixtyThreeBits.Web.Admin.Models
         }
         #endregion
 
+        #region Sub Classes
         public class PageViewModel
         {
             #region Properties
@@ -158,7 +160,8 @@ namespace SixtyThreeBits.Web.Admin.Models
             public readonly string ValidationRequired = Resources.ValidationRequired;
             #endregion
             #endregion
-        }
+        } 
+        #endregion
     }
 
     public class PageModelBase : WebProjectModelBase
