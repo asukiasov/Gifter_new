@@ -123,6 +123,9 @@
   <data name="TextAllDevexpressGridFilterRaw" xml:space="preserve">
     <value>(All)</value>
   </data>
+  <data name="TextBackToWebsite" xml:space="preserve">
+    <value>Back to Website</value>
+  </data>
   <data name="TextCancel" xml:space="preserve">
     <value>Cancel</value>
   </data>
@@ -159,8 +162,17 @@
   <data name="TextPublished" xml:space="preserve">
     <value>Published</value>
   </data>
+  <data name="TextRelogin" xml:space="preserve">
+    <value>Relogin</value>
+  </data>
   <data name="TextSave" xml:space="preserve">
     <value>Save</value>
+  </data>
+  <data name="TextSignIn" xml:space="preserve">
+    <value>Sign In</value>
+  </data>
+  <data name="TextSignOut" xml:space="preserve">
+    <value>Sign Out</value>
   </data>
   <data name="TextSuccess" xml:space="preserve">
     <value>Operation has been finished successfully</value>

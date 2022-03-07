@@ -19,7 +19,7 @@ namespace SixtyThreeBits.Core.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -75,6 +75,15 @@ namespace SixtyThreeBits.Core.Properties {
         public static string TextAllDevexpressGridFilterRaw {
             get {
                 return ResourceManager.GetString("TextAllDevexpressGridFilterRaw", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Back to Website.
+        /// </summary>
+        public static string TextBackToWebsite {
+            get {
+                return ResourceManager.GetString("TextBackToWebsite", resourceCulture);
             }
         }
         
@@ -187,11 +196,38 @@ namespace SixtyThreeBits.Core.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Relogin.
+        /// </summary>
+        public static string TextRelogin {
+            get {
+                return ResourceManager.GetString("TextRelogin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Save.
         /// </summary>
         public static string TextSave {
             get {
                 return ResourceManager.GetString("TextSave", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sign In.
+        /// </summary>
+        public static string TextSignIn {
+            get {
+                return ResourceManager.GetString("TextSignIn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sign Out.
+        /// </summary>
+        public static string TextSignOut {
+            get {
+                return ResourceManager.GetString("TextSignOut", resourceCulture);
             }
         }
         

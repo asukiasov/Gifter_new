@@ -123,6 +123,9 @@
   <data name="TextAllDevexpressGridFilterRaw" xml:space="preserve">
     <value> </value>
   </data>
+  <data name="TextBackToWebsite" xml:space="preserve">
+    <value>ვებ გვერდზე დაბრუნება</value>
+  </data>
   <data name="TextCancel" xml:space="preserve">
     <value>გაუქმება</value>
   </data>
@@ -159,8 +162,17 @@
   <data name="TextPublished" xml:space="preserve">
     <value>გამოქვეყნებული</value>
   </data>
+  <data name="TextRelogin" xml:space="preserve">
+    <value>რეავტორიზაცია</value>
+  </data>
   <data name="TextSave" xml:space="preserve">
     <value>შენახვა</value>
+  </data>
+  <data name="TextSignIn" xml:space="preserve">
+    <value>შესვლა</value>
+  </data>
+  <data name="TextSignOut" xml:space="preserve">
+    <value>გასვლა</value>
   </data>
   <data name="TextSuccess" xml:space="preserve">
     <value>ოპერაცია წარმატებით შესრულდა</value>
