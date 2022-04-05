@@ -38,7 +38,6 @@ namespace SixtyThreeBits.Web.Admin.Models
         {
             var Partners = (await DataAccessFactory.Partners.ListPartners())?.Select(Item => new PageViewModel.GridModel.GridItem
             {
-
                 PartnerID = Item.PartnerID,
                 PartnerName = Item.PartnerName,
                 PartnerWebSite = Item.PartnerWebSite,

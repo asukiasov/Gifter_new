@@ -341,8 +341,11 @@ namespace SixtyThreeBits.Web.Admin.Models
                     Tree
                     .ID("PermissionsTree")
                     .OnInitialized("PermissionsModel.OnPermissionsTreeInit")
-                    .OnInitNewRow("PermissionsModel.OnPermissionsTreeInitNewRow")        
-                    .OnToolbarPreparing("PermissionsModel.OnPermissionsTreeToolbarPreparing")
+                    .OnInitNewRow("PermissionsModel.OnPermissionsTreeInitNewRow")
+                     .Toolbar(Options =>
+                     {
+                         Options.Visible(false);
+                     })                    
                     .RowDragging(Options =>
                     {
                         if (AllowUpdate)

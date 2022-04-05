@@ -8,14 +8,7 @@
     },
     OnPermissionsTreeInitNewRow: function (s) {
         s.data.PermissionIsMenuItem = false;
-    },
-    OnPermissionsTreeToolbarPreparing: function (s) {
-        s.toolbarOptions.visible = false;
-        //const ToolbarItems = s.toolbarOptions.items; 
-        //var AddButton = ToolbarItems[0];  // find the index of add button or loop and find
-        //AddButton.visible = false; //hide the item
-        //s.event.toolbarOptions.items = []; // clear the toolbar
-    },
+    },    
     OnPermissionsTreeReorder: function (s) {
 
         const PermissionID = s.itemData.PermissionID

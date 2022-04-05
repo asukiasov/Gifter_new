@@ -58,9 +58,6 @@ const Globals = {
 
         GetGridSortIndexes: function (e, KeyFieldName) {
             const Grid = e.component;
-            const FromIndex = e.event.fromIndex;
-            const ToIndex = e.event.toIndex;
-            const IsMovingUp = FromIndex > ToIndex;
             const Rows = Grid.getVisibleRows();
 
             var SortIndexes = new Array();
@@ -72,14 +69,21 @@ const Globals = {
                 });
             });
 
-            const Step = IsMovingUp ? 1 : - 1;
-            SortIndexes[ToIndex].SortIndex += Step;
-            let i = ToIndex + Step;
-            while (i != FromIndex) {
-                SortIndexes[i].SortIndex += Step;
-                i += Step;
+            if (e.event != undefined) {
+                const FromIndex = e.fromIndex;
+                const ToIndex = e.toIndex;
+                const IsMovingUp = FromIndex > ToIndex;
+
+                const Step = IsMovingUp ? 1 : - 1;
+                SortIndexes[ToIndex].SortIndex += Step;
+                let i = ToIndex + Step;
+                while (i != FromIndex) {
+                    SortIndexes[i].SortIndex += Step;
+                    i += Step;
+                }
+                SortIndexes[FromIndex].SortIndex = ToIndex;
             }
-            SortIndexes[FromIndex].SortIndex = ToIndex;
+
             return SortIndexes;
         }
     },

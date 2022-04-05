@@ -56,27 +56,30 @@ namespace SixtyThreeBits.Web.Reusables.Core
         {
             var Items = new List<BreadCrumbItem>();
 
-            var Page = default(HierarchyItem<T>);
-            foreach (var Item in PageHierarchy)
+            if (PageHierarchy?.Any() == true)
             {
-                var UrlToCompare = Item.PageHttpPath?.ToLower();
-                if (UrlToCompare == UrlCurrentPage || (!string.IsNullOrWhiteSpace(Item.PageHttpPath) && Regex.IsMatch(UrlCurrentPage, $"{UrlToCompare}+$")))
+                var Page = default(HierarchyItem<T>);
+                foreach (var Item in PageHierarchy)
                 {
-                    Page = Item;
+                    var UrlToCompare = Item.PageHttpPath?.ToLower();
+                    if (UrlToCompare == UrlCurrentPage || (!string.IsNullOrWhiteSpace(Item.PageHttpPath) && Regex.IsMatch(UrlCurrentPage, $"{UrlToCompare}+$")))
+                    {
+                        Page = Item;
+                    }
                 }
-            }
 
-            if (Page != null)
-            {
-                Items.Add(new BreadCrumbItem { Title = Page.PageTitle, IsLastItem = true });
-            }
-
-            while (Page != null)
-            {
-                Page = PageHierarchy.Where(p => p.ID.Equals(Page.ParentID)).FirstOrDefault();
                 if (Page != null)
                 {
-                    Items.Add(new BreadCrumbItem { Title = Page.PageTitle, NavigateUrl = Page.PageHttpPath });
+                    Items.Add(new BreadCrumbItem { Title = Page.PageTitle, IsLastItem = true });
+                }
+
+                while (Page != null)
+                {
+                    Page = PageHierarchy.Where(p => p.ID.Equals(Page.ParentID)).FirstOrDefault();
+                    if (Page != null)
+                    {
+                        Items.Add(new BreadCrumbItem { Title = Page.PageTitle, NavigateUrl = Page.PageHttpPath });
+                    }
                 }
             }
 
