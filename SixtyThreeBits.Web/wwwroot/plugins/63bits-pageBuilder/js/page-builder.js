@@ -774,7 +774,8 @@ var PageBuilderModel = {
                         text: {
                             ...PageBuilderModel.settings.components.text,
                             html: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
-                        }
+                        },
+                        icon: PageBuilderModel.settings.components.icon
                     }
                 };
             },
@@ -2564,8 +2565,7 @@ var PageBuilderModel = {
                             components: {
                                 title: components.title(gridItem),
                                 text: components.text(gridItem),
-                                image: null,
-                                icon: null,
+                                icon: components.icon(gridItem)
                             }
                         }
                         model.items.push(item);
@@ -4234,8 +4234,11 @@ var PageBuilderModel = {
                 partial:
                     `{{#each items}}
 					<div class="{{columnClassesNames}}">
-                        <div class="cards-grid-item js-cards-grid-item js-section--container has-circled-icon{{#if ../../animations}} t63-invisible js-animate{{/if}}" data-container="cardsGridItem" data-id="{{id}}" data-size="{{size}}" data-media-link="true" data-animation="{{../../animations}}" data-children-animation="false">
-                            {{titleHepler components.title false false}}
+                        <div class="cards-grid-item js-cards-grid-item js-section--container{{#if ../../animations}} t63-invisible js-animate{{/if}}" data-container="cardsGridItem" data-id="{{id}}" data-size="{{size}}" data-media-link="true" data-animation="{{../../animations}}" data-children-animation="false">
+                            <div class="head">
+                                {{iconHepler components.icon ../actionButtons.icon}}
+                                {{titleHepler components.title false false}}
+                            </div>
 							{{textHepler components.text false false}}
 							{{actionButtonsHepler ../actionButtons.cardsGridItem}}
                             {{> "cardsGridItemControlsPartial"}}
@@ -4280,7 +4283,7 @@ var PageBuilderModel = {
                 currentSection = $(PageBuilderModel.sections.selector).eq(index);
             } else {
                 if (PageBuilderModel.data.fromServer.sections) {
-                    console.log(PageBuilderModel.data.fromServer.sections)
+                    //console.log(PageBuilderModel.data.fromServer.sections)
                     PageBuilderModel.data.fromServer.sections.forEach(function (item) {
                         item.actionButtons = PageBuilderModel.editors.actionButtons.settings;
                         item.hasCardToggler = PageBuilderModel.settings.sections[item.name]().hasCardToggler;

@@ -81,6 +81,9 @@ a.editor-btn-rounded{
 
 
 /* ----------- form elements ----------- */
+.form-group{
+	margin-bottom: 16px;
+}
 label{
 	margin-bottom: 6px;
 }
@@ -2375,6 +2378,13 @@ html:not(.desktop) .editor-sidebar > div {
 .t63-cards-grid-section .cards-grid-item .text-container .text-controls {
 	margin-top: -34px;
 }
+
+.t63-cards-grid-section .t63-icon-container .action-buttons{
+	top: -16px;
+	bottom: auto;
+	left: -24px;
+	margin: 0;
+}
 /* ----------- /action buttons & controls ----------- */
 
 
@@ -2983,7 +2993,7 @@ div.mce-edit-area,
 /* ----------- /course-sections-aside ----------- */
 
 
-/* ----------- ../plugins container ----------- */
+/* ----------- plugins container ----------- */
 [data-plagin-container]{
 	width: 100%;
 	height: 300px;		
@@ -3004,7 +3014,7 @@ div.mce-edit-area,
 	background-size: 80px auto;		
 	z-index:100;
 }
-/* ----------- ../plugins container ----------- */
+/* ----------- /plugins container ----------- */
 
 
 
