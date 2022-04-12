@@ -57,6 +57,26 @@ a.editor-btn-rounded{
 	color: #696969;
 	font-size: 14px;
 }
+
+
+/* btn-row */
+.add-new-grid-item-btn-wrap{
+	margin: 20px 0;
+}
+.add-new-grid-item-btn-wrap:last-child{
+	margin-bottom: 0;
+}
+.add-new-grid-item-btn-wrap > div{
+	display: flex;
+	flex-wrap: wrap;
+	align-items: flex-start;
+	justify-content: flex-start;
+	padding-left: -6px;
+	padding-right: -6px;
+}
+.add-new-grid-item-btn-wrap .btn{
+	margin: 6px;
+}
 /* ----------- /buttons ----------- */
 
 
