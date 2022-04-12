@@ -2122,6 +2122,9 @@
 [data-section="article2ColWithVideo"] .video-col > *{
 	margin: auto 0;
 }
+[data-section="article2ColWithVideo"][data-reverse="true"] .container{
+	flex-direction: row-reverse;
+}
 /* ---------- /article2ColWithVideo ---------- */
 
 
@@ -2133,6 +2136,9 @@
 }
 [data-section="article2ColWithJwPlayer"] .video-col > *{
 	margin: auto 0;
+}
+[data-section="article2ColWithJwPlayer"][data-reverse="true"] .container{
+	flex-direction: row-reverse;
 }
 /* ---------- /article2ColWithJwPlayer ---------- */
 

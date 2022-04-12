@@ -4612,7 +4612,7 @@ var PageBuilderModel = {
 								<label class="toggler toggler-sm js-background-color-toggler">
 									<input type="checkbox" {{#if backgroundColor}}checked{{/if}}>
 									<i></i>
-                                    <span>Gray</span>
+                                    <span>Dark</span>
 								</label>
 							</div>
                             <div class="form-group">
