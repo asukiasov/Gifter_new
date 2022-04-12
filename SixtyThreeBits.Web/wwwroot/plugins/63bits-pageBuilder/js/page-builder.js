@@ -3144,7 +3144,7 @@ var PageBuilderModel = {
 						    </div>
 					    </div>
 					    <div class="col-lg-6 img-col{{#if animations}} t63-invisible js-animate{{/if}}" data-animation="{{animations}}">
-						    {{> "bgImagePartial"}}
+						    {{> "imagePartial"}}
 					    </div>
                     </div>
 					{{> "sectionEditorContainerPartial"}}

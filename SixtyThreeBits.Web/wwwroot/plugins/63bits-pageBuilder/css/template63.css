@@ -109,7 +109,7 @@
 }*/
 
 .t63-section[data-background-color="true"]{
-	background-color: #e6e9ed;
+	background-color: #F5F5F5;
 }
 
 .t63-section .bg-img{
@@ -121,6 +121,9 @@
 }
 .t63-section.has-sm-img .bg-img{
 	background-size: contain;
+}
+.t63-section.has-sm-img .img-col figure img{
+	object-fit: contain;
 }
 
 .t63-section .title-container,
@@ -314,6 +317,11 @@
 	.t63-section .img-col .img-container{
 		min-height: 100px;
 		padding-top: 45%;
+	}
+	.t63-section .img-col .img-container figure{
+		position: absolute;
+		top: 0;
+		left: 0;
 	}
 	.t63-section.section--img-sm .text-col {
 		padding-bottom: 40px;

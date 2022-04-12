@@ -60,13 +60,16 @@ a.editor-btn-rounded{
 
 
 /* btn-row */
-.add-new-grid-item-btn-wrap{
+.add-new-grid-item-btn-wrap,
+.add-new-list-item-btn-wrap{
 	margin: 20px 0;
 }
-.add-new-grid-item-btn-wrap:last-child{
+.add-new-grid-item-btn-wrap:last-child,
+.add-new-list-item-btn-wrap:last-child{
 	margin-bottom: 0;
 }
-.add-new-grid-item-btn-wrap > div{
+.add-new-grid-item-btn-wrap > div,
+.add-new-list-item-btn-wrap > div{
 	display: flex;
 	flex-wrap: wrap;
 	align-items: flex-start;
@@ -74,7 +77,8 @@ a.editor-btn-rounded{
 	padding-left: -6px;
 	padding-right: -6px;
 }
-.add-new-grid-item-btn-wrap .btn{
+.add-new-grid-item-btn-wrap .btn,
+.add-new-list-item-btn-wrap .btn{
 	margin: 6px;
 }
 /* ----------- /buttons ----------- */
@@ -3015,7 +3019,6 @@ div.mce-edit-area,
 	z-index:100;
 }
 /* ----------- /plugins container ----------- */
-
 
 
 /* ----------- books grid ----------- */
