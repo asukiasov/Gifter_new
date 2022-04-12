@@ -268,6 +268,42 @@ var PageBuilderModel = {
             isFullScreen: false,
             isFullHeight: false,
 
+            verticalSpacing: function (args = {}) {
+                var none = {
+                    name: '0',
+                    exists: args['none'] ? args['none'].exists : true,
+                    value: 'none'
+                };
+                var xs = {
+                    name: 'xs',
+                    exists: args['xs'] ? args['xs'].exists : true,
+                    value: 'xs'
+                };
+                var sm = {
+                    name: 'sm',
+                    exists: args['sm'] ? args['sm'].exists : true,
+                    value: 'sm'
+                };
+                var md = {
+                    name: 'md',
+                    exists: args['md'] ? args['md'].exists : true,
+                    value: 'md'
+                };
+                var lg = {
+                    name: 'lg',
+                    exists: args['lg'] ? args['lg'].exists : true,
+                    value: 'lg'
+                };
+                var xl = {
+                    name: 'xl',
+                    exists: args['xl'] ? args['xl'].exists : true,
+                    value: 'xl'
+                };
+
+                return [none, xs, sm, md, lg, xl];
+            },
+            verticalSpacingSelected: 'md',
+
             components: null
         },
 
@@ -884,6 +920,42 @@ var PageBuilderModel = {
                         text: PageBuilderModel.settings.components.text,
                         button: PageBuilderModel.settings.components.button,
                         image: PageBuilderModel.settings.components.image,
+                    },
+                }
+            },
+
+            article2ColWithVideo: function () {
+                return {
+                    ...PageBuilderModel.settings.defaults,
+                    name: 'article2ColWithVideo',
+                    contentSizes: PageBuilderModel.settings.defaults.contentSizes(),
+
+                    components: {
+                        title: {
+                            ...PageBuilderModel.settings.components.title,
+                            isFullfeatured: true
+                        },
+                        text: PageBuilderModel.settings.components.text,
+                        button: PageBuilderModel.settings.components.button,
+                        video: PageBuilderModel.settings.components.video
+                    },
+                }
+            },
+
+            article2ColWithJwPlayer: function () {
+                return {
+                    ...PageBuilderModel.settings.defaults,
+                    name: 'article2ColWithJwPlayer',
+                    contentSizes: PageBuilderModel.settings.defaults.contentSizes(),
+
+                    components: {
+                        title: {
+                            ...PageBuilderModel.settings.components.title,
+                            isFullfeatured: true
+                        },
+                        text: PageBuilderModel.settings.components.text,
+                        button: PageBuilderModel.settings.components.button,
+                        jwPlayer: PageBuilderModel.settings.components.jwPlayer
                     },
                 }
             },
@@ -1653,6 +1725,12 @@ var PageBuilderModel = {
                     },
                 },*/
                 {
+                    ...sections.article2ColWithVideo(),
+                },
+                {
+                    ...sections.article2ColWithJwPlayer(),
+                },
+                {
                     ...sections.articleWithFiles()
                 },
                 {
@@ -1873,6 +1951,8 @@ var PageBuilderModel = {
                     isReversed: section.attr('data-reverse') === 'true',
                     isFullScreen: section.attr('data-is-fullscreen') === 'true',
                     isFullHeight: section.attr('data-is-fullheight') === 'true',
+
+                    verticalSpacingSelected: section.attr('data-spacing-v') || 'md',
                 };
 
                 if (sectionName == PageBuilderModel.settings.sections.slide().name) {
@@ -1949,6 +2029,24 @@ var PageBuilderModel = {
                         text: components.text(section),
                         button: components.button(section),
                         image: components.image(section)
+                    }
+                }
+
+                if (sectionName == PageBuilderModel.settings.sections.article2ColWithVideo().name) {
+                    model.components = {
+                        title: components.title(section),
+                        text: components.text(section),
+                        button: components.button(section),
+                        video: components.video(section)
+                    }
+                }
+
+                if (sectionName == PageBuilderModel.settings.sections.article2ColWithJwPlayer().name) {
+                    model.components = {
+                        title: components.title(section),
+                        text: components.text(section),
+                        button: components.button(section),
+                        jwPlayer: components.jwPlayer(section)
                     }
                 }
 
@@ -2133,7 +2231,11 @@ var PageBuilderModel = {
 
                 if (sectionName == PageBuilderModel.settings.sections.html().name) {
                     model.components = {
-                        text: components.text(section)
+                        text: {
+                            isActive: true,
+                            isFullfeatured: false,
+                            html: section.find('.js-plain-html-input').val().replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+                        },
                     }
                 }
 
@@ -2491,7 +2593,7 @@ var PageBuilderModel = {
                 }
                 data.pageScripts.footerSection.push(model);
             });
-            
+
             return JSON.stringify(data);
         }
     },
@@ -2961,7 +3063,7 @@ var PageBuilderModel = {
 
         article: {
             template:
-                `<section class="t63-section js-page-section" data-section="article" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-additional-classes="{{additionalClassNames}}" data-content-size="{{contentSizeSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-is-card="{{isCard}}">
+                `<section class="t63-section js-page-section" data-section="article" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-additional-classes="{{additionalClassNames}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-is-card="{{isCard}}">
 					<div class="container t63-padding-v">
 					<article class="t63-article {{additionalClassNames}}">
 						{{> "titlePartial"}}
@@ -2978,7 +3080,7 @@ var PageBuilderModel = {
 
         article2Col: {
             template:
-                `<section class="t63-section js-page-section" data-section="article2Col" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}">
+                `<section class="t63-section js-page-section" data-section="article2Col" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}">
                     <div class="container">
 					<div class="row text2col">
 						<div class="col-lg-6 js-left-col">
@@ -3007,7 +3109,7 @@ var PageBuilderModel = {
 
         articleText2Col: {
             template:
-                `<section class="t63-section js-page-section" data-section="articleText2Col" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}">
+                `<section class="t63-section js-page-section" data-section="articleText2Col" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}">
 					<article class="container t63-article">
 						{{> "titlePartial"}}
 						<div class="row text2col">
@@ -3032,7 +3134,7 @@ var PageBuilderModel = {
 
         article2ColWithImg: {
             template:
-                `<section class="t63-section js-page-section {{additionalClassNames}}" data-section="article2ColWithImg" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-additional-classes="{{additionalClassNames}}" data-content-size="{{contentSizeSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-reverse="{{isReversed}}">
+                `<section class="t63-section js-page-section {{additionalClassNames}}" data-section="article2ColWithImg" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-additional-classes="{{additionalClassNames}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-reverse="{{isReversed}}">
                     <div class="container d-lg-flex align-items-stretch {{additionalClassNames}}">
 					    <div class="col-lg-6 d-lg-flex align-items-center justify-content-end text-col{{#if animations}} t63-invisible js-animate{{/if}}" data-animation="{{animations}}">
 						    <div class="t63-article">
@@ -3053,9 +3155,61 @@ var PageBuilderModel = {
             }
         },
 
+        article2ColWithVideo: {
+            template:
+                `<section class="t63-section js-page-section {{additionalClassNames}}" data-section="article2ColWithVideo" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-additional-classes="{{additionalClassNames}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-reverse="{{isReversed}}">
+                    <div class="container d-lg-flex align-items-stretch {{additionalClassNames}}">
+					    <div class="col-lg-6 d-lg-flex align-items-center justify-content-end text-col{{#if animations}} t63-invisible js-animate{{/if}}" data-animation="{{animations}}">
+						    <div class="t63-article">
+							    {{> "titlePartial"}}
+							    {{> "textPartial"}}
+							    {{> "buttonPartial"}}
+						    </div>
+					    </div>
+					    <div class="col-lg-6 video-col{{#if animations}} t63-invisible js-animate{{/if}}" data-animation="{{animations}}">
+						    {{> "videoPartial"}}
+					    </div>
+                    </div>
+                    <div class="container citation-container">
+					    {{> "citationPartial"}}
+                    </div>
+					{{> "sectionEditorContainerPartial"}}
+				</section>`,
+
+            getHtml: function (model) {
+                return PageBuilderModel.sections.article2ColWithVideo.template(model);
+            }
+        },
+
+        article2ColWithJwPlayer: {
+            template:
+                `<section class="t63-section js-page-section {{additionalClassNames}}" data-section="article2ColWithJwPlayer" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-additional-classes="{{additionalClassNames}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-reverse="{{isReversed}}">
+                    <div class="container d-lg-flex align-items-stretch {{additionalClassNames}}">
+					    <div class="col-lg-6 d-lg-flex align-items-center justify-content-end text-col{{#if animations}} t63-invisible js-animate{{/if}}" data-animation="{{animations}}">
+						    <div class="t63-article">
+							    {{> "titlePartial"}}
+							    {{> "textPartial"}}
+							    {{> "buttonPartial"}}
+						    </div>
+					    </div>
+					    <div class="col-lg-6 video-col{{#if animations}} t63-invisible js-animate{{/if}}" data-animation="{{animations}}">
+						    {{> "jwPlayerPartial"}}
+					    </div>
+                    </div>
+                    <div class="container citation-container">
+					    {{> "citationPartial"}}
+                    </div>
+					{{> "sectionEditorContainerPartial"}}
+				</section>`,
+
+            getHtml: function (model) {
+                return PageBuilderModel.sections.article2ColWithJwPlayer.template(model);
+            }
+        },
+
         articleWithFiles: {
             template:
-                `<section class="t63-section js-page-section" data-section="articleWithFiles" data-type="{{type}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}">
+                `<section class="t63-section js-page-section" data-section="articleWithFiles" data-type="{{type}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}">
 					<article class="container t63-article">
 						{{> "titlePartial"}}
 						{{> "textPartial"}}
@@ -3076,7 +3230,7 @@ var PageBuilderModel = {
 
         articleWithVideo: {
             template:
-                `<section class="t63-section js-page-section" data-section="articleWithVideo" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}">
+                `<section class="t63-section js-page-section" data-section="articleWithVideo" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}">
 					<article class="container t63-article">
 						{{> "titlePartial"}}
 						{{> "videoPartial"}}
@@ -3092,7 +3246,7 @@ var PageBuilderModel = {
 
         video: {
             template:
-                `<section class="t63-section js-page-section" data-section="video" data-type="{{type}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}">
+                `<section class="t63-section js-page-section" data-section="video" data-type="{{type}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}">
 					<div class="container">
                         {{> "videoPartial"}}
                     </div>
@@ -3106,7 +3260,7 @@ var PageBuilderModel = {
 
         videoGrid: {
             template:
-                `<section class="t63-section t63-video-grid-section js-page-section" data-section="videoGrid" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}">
+                `<section class="t63-section t63-video-grid-section js-page-section" data-section="videoGrid" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}">
 					<div class="container t63-padding-v">
 						<div class="row js-video-grid-row">
                             {{> "videoGridItemsPartial"}}
@@ -3162,7 +3316,7 @@ var PageBuilderModel = {
 
         jwPlayer: {
             template:
-                `<section class="t63-section js-page-section" data-section="jwPlayer" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}">
+                `<section class="t63-section js-page-section" data-section="jwPlayer" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}">
 					<div class="container t63-padding-v{{#if animations}} t63-invisible js-animate{{/if}}" data-animation="{{animations}}">
                         {{> "jwPlayerPartial"}}
                     </div>
@@ -3176,7 +3330,7 @@ var PageBuilderModel = {
 
         jwPlayerGrid: {
             template:
-                `<section class="t63-section t63-jwp-grid-section js-page-section" data-section="jwPlayerGrid" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}">
+                `<section class="t63-section t63-jwp-grid-section js-page-section" data-section="jwPlayerGrid" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}">
 					<div class="container t63-padding-v">
 						<div class="row js-jwp-grid-row">
                             {{> "jwPlayerGridItemsPartial"}}
@@ -3232,7 +3386,7 @@ var PageBuilderModel = {
 
         imgGrid: {
             template:
-                `<section class="t63-section t63-img-grid-section js-page-section" data-section="imgGrid" data-id="{{id}}" data-type="{{type}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}">
+                `<section class="t63-section t63-img-grid-section js-page-section" data-section="imgGrid" data-id="{{id}}" data-type="{{type}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}">
 					<div class="container t63-padding-v">
 						{{> "titlePartial"}}
 						<div class="row js-img-grid-row">
@@ -3301,7 +3455,7 @@ var PageBuilderModel = {
 
         articlesGrid: {
             template:
-                `<section class="t63-section t63-articles-grid-section js-page-section" data-section="articlesGrid" data-type="{{type}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}">
+                `<section class="t63-section t63-articles-grid-section js-page-section" data-section="articlesGrid" data-type="{{type}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}">
 					<div class="container t63-padding-v">
                         <div class="t63-section-title-container js-section-title-container">{{> "titlePartial"}}</div>
                         <div class="t63-section-text-container js-section-text-container">{{> "textPartial"}}</div>
@@ -3347,7 +3501,7 @@ var PageBuilderModel = {
 
         articlesList: {
             template:
-                `<section class="t63-section t63-articles-list-section js-page-section" data-section="articlesList" data-type="{{type}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}">
+                `<section class="t63-section t63-articles-list-section js-page-section" data-section="articlesList" data-type="{{type}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}">
 					<div class="container t63-padding-v">
                         <div class="t63-section-title-container js-section-title-container">{{> "titlePartial"}}</div>
                         <div class="t63-section-text-container js-section-text-container">{{> "textPartial"}}</div>
@@ -3391,7 +3545,7 @@ var PageBuilderModel = {
 
         packagesGrid: {
             template:
-                `<section class="t63-section t63-packages-grid-section js-page-section" data-section="packagesGrid" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}">
+                `<section class="t63-section t63-packages-grid-section js-page-section" data-section="packagesGrid" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}">
 					<div class="container t63-padding-v">
                         <div class="t63-section-title-container js-section-title-container">{{> "titlePartial"}}</div>
                         <div class="t63-section-text-container js-section-text-container">{{> "textPartial"}}</div>
@@ -3437,7 +3591,7 @@ var PageBuilderModel = {
 
         accordion: {
             template:
-                `<section class="t63-section t63-accordion-section js-page-section" data-section="accordion" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}">
+                `<section class="t63-section t63-accordion-section js-page-section" data-section="accordion" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}">
                     <div class="container t63-padding-v">
                         <div class="t63-section-title-container js-section-title-container">{{> "titlePartial"}}</div>
                         <div class="t63-section-text-container js-section-text-container">{{> "textPartial"}}</div>
@@ -3503,7 +3657,7 @@ var PageBuilderModel = {
 
         tabs: {
             template:
-                `<section class="t63-section js-page-section" data-section="tabs" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}">
+                `<section class="t63-section js-page-section" data-section="tabs" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}">
                     <div class="container t63-padding-v tabs-container{{#if animations}} t63-invisible js-animate{{/if}}" data-animation="{{animations}}" data-children-animation="false">
                         <div class="t63-section-title-container js-section-title-container">{{> "titlePartial"}}</div>
                         <div class="t63-section-text-container js-section-text-container">{{> "textPartial"}}</div>
@@ -3566,9 +3720,12 @@ var PageBuilderModel = {
 
         html: {
             template:
-                `<section class="t63-section js-page-section" data-section="html" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}">
+                `<section class="t63-section js-page-section mt-0" data-section="html" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}">
 					<div class="container t63-padding-v">
-                        {{> "textPartial"}}
+                        <div class="section-row text-container js-section--container" data-container="text">
+                            <textarea class="form-control js-plain-html-input" rows="10">{{components.text.html}}</textarea>
+                            <div class="plain-html-wrap js-plain-html-wrap"><pre class="js-text-wrap"></pre></div>
+                        </div>
                     </div>
 					{{> "sectionEditorContainerPartial"}}
 				</section>`,
@@ -3580,7 +3737,7 @@ var PageBuilderModel = {
 
         testimonials: {
             template:
-                `<div class="t63-section testimonials-section js-page-section" data-section="testimonials" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}">
+                `<div class="t63-section testimonials-section js-page-section" data-section="testimonials" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}">
                     <div class="container t63-padding-v">
 					    {{> "titlePartial"}}
 					
@@ -3621,7 +3778,7 @@ var PageBuilderModel = {
 
         services: {
             template:
-                `<section class="t63-section t63-services-section js-page-section" data-section="services" data-type="{{type}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}">
+                `<section class="t63-section t63-services-section js-page-section" data-section="services" data-type="{{type}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}">
 					<div class="container t63-padding-v">
                         <div class="t63-section-title-container js-section-title-container">{{> "titlePartial"}}</div>
                         <div class="t63-section-text-container js-section-text-container">{{> "textPartial"}}</div>
@@ -3668,7 +3825,7 @@ var PageBuilderModel = {
 
         pageHead: {
             template:
-                `<div class="t63-section t63-page-head js-page-section" data-section="pageHead" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}">
+                `<div class="t63-section t63-page-head js-page-section" data-section="pageHead" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}">
                     <div class="container">
                         <div class="content">
                             <div class="info-wrap">
@@ -3689,7 +3846,7 @@ var PageBuilderModel = {
 
         mediaObject: {
             template:
-                `<section class="t63-section t63-media-object-section js-page-section" data-section="mediaObject" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-additional-classes="{{additionalClassNames}}" data-content-size="{{contentSizeSelected}}" data-is-card="{{isCard}}">
+                `<section class="t63-section t63-media-object-section js-page-section" data-section="mediaObject" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-additional-classes="{{additionalClassNames}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-is-card="{{isCard}}">
                     <div class="container t63-padding-v">
 					    <article class="has-circled-icon{{#if animations}} t63-invisible js-animate{{/if}}" data-animation="{{animations}}">
                             {{> "iconPartial"}}
@@ -3709,7 +3866,7 @@ var PageBuilderModel = {
 
         mediaObjectsGrid: {
             template:
-                `<section class="t63-section t63-media-objects-grid-section js-page-section" data-section="mediaObjectsGrid" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}">
+                `<section class="t63-section t63-media-objects-grid-section js-page-section" data-section="mediaObjectsGrid" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}">
 					<div class="container t63-padding-v">
                         <div class="t63-section-title-container js-section-title-container">{{> "titlePartial"}}</div>
                         <div class="t63-section-text-container js-section-text-container">{{> "textPartial"}}</div>
@@ -3757,7 +3914,7 @@ var PageBuilderModel = {
 
         card2Col: {
             template:
-                `<section class="t63-section t63-card2col-section js-page-section {{additionalClassNames}}" data-section="card2Col" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-additional-classes="{{additionalClassNames}}" data-content-size="{{contentSizeSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-reverse="{{isReversed}}">
+                `<section class="t63-section t63-card2col-section js-page-section {{additionalClassNames}}" data-section="card2Col" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-additional-classes="{{additionalClassNames}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-reverse="{{isReversed}}">
                     <article class="container">
 					    <div class="card-col{{#if animations}} t63-invisible js-animate{{/if}}" data-animation="{{animations}}">
 						    {{> "titlePartial"}}
@@ -3776,7 +3933,7 @@ var PageBuilderModel = {
 
         flipCardsGrid: {
             template:
-                `<section class="t63-section t63-flip-cards-section js-page-section" data-section="flipCardsGrid" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}">
+                `<section class="t63-section t63-flip-cards-section js-page-section" data-section="flipCardsGrid" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}">
 					<div class="container t63-padding-v">
                         <div class="t63-section-title-container js-section-title-container">{{> "titlePartial"}}</div>
                         <div class="t63-section-text-container js-section-text-container">{{> "textPartial"}}</div>
@@ -3835,7 +3992,7 @@ var PageBuilderModel = {
 
         quote: {
             template:
-                `<section class="t63-section t63-quote-section js-page-section" data-section="quote" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-additional-classes="{{additionalClassNames}}" data-content-size="{{contentSizeSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}">
+                `<section class="t63-section t63-quote-section js-page-section" data-section="quote" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-additional-classes="{{additionalClassNames}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}">
                     <div class="container t63-padding-v">
                         <article {{#if animations}}class="t63-invisible js-animate"{{/if}} data-animation="{{animations}}">
                             {{> "fontAwesomeIconPartial"}}
@@ -3852,7 +4009,7 @@ var PageBuilderModel = {
 
         article2colWithBgImgAndImg: {
             template:
-                `<section class="t63-section t63-article2colWithBgImgAndImg-section js-page-section {{additionalClassNames}}" data-section="article2colWithBgImgAndImg" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-additional-classes="{{additionalClassNames}}" data-content-size="{{contentSizeSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}">
+                `<section class="t63-section t63-article2colWithBgImgAndImg-section js-page-section {{additionalClassNames}}" data-section="article2colWithBgImgAndImg" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-additional-classes="{{additionalClassNames}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}">
                     <article class="container t63-padding-v">
                         {{> "titlePartial"}}
                         <div class="row">
@@ -3877,7 +4034,7 @@ var PageBuilderModel = {
 
         iframe: {
             template:
-                `<section class="t63-section js-page-section" data-section="iframe" data-type="{{type}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}">
+                `<section class="t63-section js-page-section" data-section="iframe" data-type="{{type}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}">
 					<div class="container t63-article">
                         {{> "titlePartial"}}
                         {{> "iframePartial"}}
@@ -3892,7 +4049,7 @@ var PageBuilderModel = {
 
         pdfViewer: {
             template:
-                `<section class="t63-section js-page-section" data-section="pdfViewer" data-type="{{type}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}">
+                `<section class="t63-section js-page-section" data-section="pdfViewer" data-type="{{type}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}">
 					<div class="container t63-article">
                         {{> "pdfViewerIframePartial"}}
                     </div>
@@ -3906,7 +4063,7 @@ var PageBuilderModel = {
 
         postCardsGrid: {
             template:
-                `<section class="t63-section t63-post-cards-grid-section js-page-section" data-section="postCardsGrid" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}">
+                `<section class="t63-section t63-post-cards-grid-section js-page-section" data-section="postCardsGrid" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}">
 					<div class="container t63-padding-v">
                         <div class="t63-section-title-container js-section-title-container">{{> "titlePartial"}}</div>
                         <div class="t63-section-text-container js-section-text-container">{{> "textPartial"}}</div>
@@ -3954,7 +4111,7 @@ var PageBuilderModel = {
 
         booksGrid: {
             template:
-                `<section class="t63-section t63-books-grid-section js-page-section" data-section="booksGrid" data-type="{{type}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}">
+                `<section class="t63-section t63-books-grid-section js-page-section" data-section="booksGrid" data-type="{{type}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}">
 					<div class="container t63-padding-v">
                         <div class="t63-section-title-container js-section-title-container">{{> "titlePartial"}}</div>
                         <div class="t63-section-text-container js-section-text-container">{{> "textPartial"}}</div>
@@ -4003,7 +4160,7 @@ var PageBuilderModel = {
 
         peopleGrid: {
             template:
-                `<section class="t63-section t63-people-grid-section js-page-section" data-section="peopleGrid" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}">
+                `<section class="t63-section t63-people-grid-section js-page-section" data-section="peopleGrid" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}">
 					<div class="container t63-padding-v">
                         <div class="t63-section-title-container js-section-title-container">{{> "titlePartial"}}</div>
                         <div class="t63-section-text-container js-section-text-container">{{> "textPartial"}}</div>
@@ -4051,7 +4208,7 @@ var PageBuilderModel = {
 
         cardsGrid: {
             template:
-                `<section class="t63-section t63-cards-grid-section js-page-section" data-section="cardsGrid" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}">
+                `<section class="t63-section t63-cards-grid-section js-page-section" data-section="cardsGrid" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}">
 					<div class="container t63-padding-v">
                         <div class="t63-section-title-container js-section-title-container">{{> "titlePartial"}}</div>
                         <div class="t63-section-text-container js-section-text-container">{{> "textPartial"}}</div>
@@ -4131,6 +4288,14 @@ var PageBuilderModel = {
                         item.hasFullScreenToggler = PageBuilderModel.settings.sections[item.name]().hasFullScreenToggler;
                         if (item.components && item.components.title) {
                             item.components.title.isFullfeatured = PageBuilderModel.settings.sections[item.name]().components.title.isFullfeatured;
+                        }
+                        if (item.name != 'slide' || item.name != 'slider') {
+                            if (!item.verticalSpacing) {
+                                item.verticalSpacing = PageBuilderModel.settings.defaults.verticalSpacing();
+                            }
+                            if (!item.verticalSpacingSelected) {
+                                item.verticalSpacingSelected = PageBuilderModel.settings.defaults.verticalSpacingSelected;
+                            }
                         }
                         sectionHtml = PageBuilderModel.sections[item.name].getHtml(item).replace(/&quot;/g, '"').replace(/&lt;/g, '<').replace(/&gt;/g, '>');
                         $(PageBuilderModel.currentViewSelector).append(sectionHtml);
@@ -4386,6 +4551,21 @@ var PageBuilderModel = {
                                 </div>
                             </div>
 							{{/if}}
+                            {{#js_if "this.name !== 'slide' || this.name !== 'slider'"}}
+                            <div class="form-group">
+                                <label class="form-label">Vertical Spacing</label>
+                                <div class="custom-input-group">
+                                    {{#each verticalSpacing}}
+                                        {{#if exists}}
+                                            <label>
+                                                <input class="js-vertical-spacing-input" type="radio" name="vertical-spacing-{{../../id}}" value="{{value}}" {{#js_if "this.value === ../../verticalSpacingSelected"}}checked{{/js_if}}>
+                                                <span>{{name}}</span>
+                                            </label>
+                                        {{/if}}
+                                    {{/each}}
+                                </div>
+                            </div>
+							{{/js_if}}
                             {{#if hasFullScreenToggler}}
                             <div class="form-group">
 								<label class="form-label">FullScreen</label>
@@ -4414,7 +4594,7 @@ var PageBuilderModel = {
 								</label>
 							</div>
 							{{/if}}
-                            {{#js_if "this.name === 'article2ColWithImg' || this.name === 'card2Col'"}}
+                            {{#js_if "this.name === 'article2ColWithImg' || this.name === 'article2ColWithVideo' || this.name === 'article2ColWithJwPlayer' || this.name === 'card2Col'"}}
                             <div class="form-group">
 								<label class="form-label">Reverse content</label>
 								<label class="toggler toggler-sm js-content-reverse-toggler">
@@ -4519,6 +4699,7 @@ var PageBuilderModel = {
                 var displayName = $.trim(container.find('.js-display-name-input').val()) || 'Nav Item';
                 var isScrollToNavItem = container.find('.js-toggler input:checked').length > 0;
                 var itemSize = container.find('.js-size-input:checked').val();
+                var verticalSpacing = container.find('.js-vertical-spacing-input:checked').val();
                 var backgoundColor = container.find('.js-background-color-toggler input:checked').length > 0;
                 var isCard = container.find('.js-card-toggler input:checked').length > 0;
                 var isReversed = container.find('.js-content-reverse-toggler input:checked').length > 0;
@@ -4534,6 +4715,8 @@ var PageBuilderModel = {
                 section.find('[data-align-content]').attr('data-align-content', section.find('.js-alignment-input:checked').val());
 
                 section.attr('data-content-size', itemSize);
+
+                section.attr('data-spacing-v', verticalSpacing);
 
                 section.attr('data-background-color', backgoundColor);
 
@@ -5139,7 +5322,7 @@ var PageBuilderModel = {
                     if (files) {
                         var urlDownload = files[0].urlDownload;
                         var fileExtension = urlDownload.slice(urlDownload.lastIndexOf('.') + 1);
-                        
+
                         var image = container.find('.js-multimedia-image');
                         var video = container.find('.js-multimedia-video');
 
@@ -5150,7 +5333,7 @@ var PageBuilderModel = {
                             var videoHtml = container.find('.js-multimedia-video-container').html()
                             container.find('.js-multimedia-video-container').html(videoHtml)
                         } else {
-                            image.attr({ 'src': urlDownload, 'data-image-src': urlDownload});
+                            image.attr({ 'src': urlDownload, 'data-image-src': urlDownload });
                         }
 
                         var multimediaType = fileExtension == 'mp4' ? 'video' : 'image';
@@ -5202,7 +5385,7 @@ var PageBuilderModel = {
 
                     var slider = container.closest('.js-t63-slider-container');
                     if ($(slider).length > 0) {
-                        
+
                         if (fileExtension == 'mp4') {
                             $(slider).closest('.js-page-section').find('.js-slider-settings-container li.active .js-multimedia-video-thumbnail-wrap source').attr('src', urlDownload);
                         } else {
@@ -6630,7 +6813,7 @@ var PageBuilderModel = {
                 var containerName = container.attr('data-container');
 
                 PageBuilderModel.editors[containerName].edit(container);
-                
+
                 //
                 if (containerName !== 'imgGridItem') {
                     container.find('input[type="text"]').first().select().focus();
@@ -7027,6 +7210,8 @@ var PageBuilderModel = {
         PageBuilderModel.sections.article2Col.template = Template7.compile(PageBuilderModel.sections.article2Col.template);
         PageBuilderModel.sections.articleText2Col.template = Template7.compile(PageBuilderModel.sections.articleText2Col.template);
         PageBuilderModel.sections.article2ColWithImg.template = Template7.compile(PageBuilderModel.sections.article2ColWithImg.template);
+        PageBuilderModel.sections.article2ColWithVideo.template = Template7.compile(PageBuilderModel.sections.article2ColWithVideo.template);
+        PageBuilderModel.sections.article2ColWithJwPlayer.template = Template7.compile(PageBuilderModel.sections.article2ColWithJwPlayer.template);
         PageBuilderModel.sections.articleWithFiles.template = Template7.compile(PageBuilderModel.sections.articleWithFiles.template);
         PageBuilderModel.sections.articleWithVideo.template = Template7.compile(PageBuilderModel.sections.articleWithVideo.template);
         PageBuilderModel.sections.video.template = Template7.compile(PageBuilderModel.sections.video.template);
@@ -7364,7 +7549,7 @@ var PageBuilderModel = {
         getSubmitModel: function () {
             return Page = {
                 Action: 'Save',
-                PageTitle: $('[name="PageTitle"]').val(),                
+                PageTitle: $('[name="PageTitle"]').val(),
                 PageText: PageBuilderModel.save.getCleanHtml(PageBuilderModel.currentViewSelector),
                 Language: PageBuilderModel.language,
                 IsPublished: $('[name="IsPublished"]').is(':checked') ? true : false,
@@ -7479,7 +7664,7 @@ var PageBuilderModel = {
         PageBuilderModel.sections.init();
         PageBuilderModel.builder.init();
         PageBuilderModel.editors.init();
-        PageBuilderModel.scrollToNavigation.init();        
+        PageBuilderModel.scrollToNavigation.init();
 
         $('.js-save-btn').click(function () {
             PageBuilderModel.editors.done();

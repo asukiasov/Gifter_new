@@ -1476,28 +1476,32 @@ html:not(.desktop) .editor-sidebar > div {
 	right: 12px;
 }
 
-.t63-section[data-section="video"] .video-container .action-buttons,
+/*.t63-section[data-section="video"] .video-container .action-buttons,
 .t63-section[data-section="videoGrid"] .video-container .action-buttons{
     bottom: 10px;
 	right: 10px;
-}
+}*/
 .t63-section[data-section="video"] .video-container > .action-buttons,
-.t63-section[data-section="videoGrid"] .video-container > .action-buttons{
+.t63-section[data-section="videoGrid"] .video-container > .action-buttons,
+.t63-section[data-section="article2ColWithVideo"] .video-container > .action-buttons{
     bottom: 10px;
 	right: 10px;
 }
 .t63-section[data-section="video"] .video-container .popover,
-.t63-section[data-section="videoGrid"] .video-container .popover{
+.t63-section[data-section="videoGrid"] .video-container .popover,
+.t63-section[data-section="article2ColWithVideo"] .video-container .popover{
     margin: 0 0 3px 0;
     right: 6px;
     bottom: 45px;
 }
 .t63-section[data-section="video"] .video-container .popover::before,
-.t63-section[data-section="videoGrid"] .video-container .popover::before{
+.t63-section[data-section="videoGrid"] .video-container .popover::before,
+.t63-section[data-section="article2ColWithVideo"] .video-container .popover::before{
     display:none;
 }
 .t63-section[data-section="video"] .video-container .popover::after,
-.t63-section[data-section="videoGrid"] .video-container .popover::after{
+.t63-section[data-section="videoGrid"] .video-container .popover::after,
+.t63-section[data-section="article2ColWithVideo"] .video-container .popover::after{
 	content: "";
 	border-left: 5px solid transparent;
 	border-right: 5px solid transparent;
