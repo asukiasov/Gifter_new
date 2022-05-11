@@ -1136,7 +1136,7 @@ var PageBuilderModel = {
                     },
 
                     items: [
-                        { ...PageBuilderModel.settings.components.articlesGridItem() }
+                        { ...PageBuilderModel.settings.components.articlesListItem() }
                     ]
                 };
             },
@@ -3802,7 +3802,7 @@ var PageBuilderModel = {
                 partial:
                     `{{#each items}}
 					<div class="col-sm-6 col-lg-4">
-                        <div class="grid-item js-t63-services-grid-item js-section--container{{#if ../animations}} t63-invisible js-animate{{/if}}" data-container="articlesGridItem" data-animation="{{../animations}}" data-children-animation="false">
+                        <div class="grid-item js-t63-services-grid-item js-section--container{{#if ../animations}} t63-invisible js-animate{{/if}}" data-container="servicesGridItem" data-animation="{{../animations}}" data-children-animation="false">
                             {{iconHepler components.icon ../actionButtons.icon}}
                             <div class="content">
                                 {{titleHepler components.title}}
@@ -4554,7 +4554,7 @@ var PageBuilderModel = {
                                 </div>
                             </div>
 							{{/if}}
-                            {{#js_if "this.name !== 'slide' || this.name !== 'slider'"}}
+                            {{#js_if "this.name !== 'slide' && this.name !== 'slider'"}}
                             <div class="form-group">
                                 <label class="form-label">Vertical Spacing</label>
                                 <div class="custom-input-group">
@@ -7543,6 +7543,13 @@ var PageBuilderModel = {
             //multimedia
             pageContent.find('[data-multimedia-type="image"] .js-multimedia-video-container').remove();
             pageContent.find('[data-multimedia-type="video"] .js-multimedia-image-container').remove();
+
+            //plain html
+            pageContent.find('[data-section="html"]').each(function (index, item) {
+                var textarea = $(item).find('.js-plain-html-input');
+                $(item).find('.js-plain-html-wrap').html(textarea.val());
+                textarea.remove();
+            });
 
             //animations
             pageContent.find('[data-children-animation="false"] [data-animation]').removeClass('t63-invisible').removeClass('js-animate').removeAttr('data-animation');
