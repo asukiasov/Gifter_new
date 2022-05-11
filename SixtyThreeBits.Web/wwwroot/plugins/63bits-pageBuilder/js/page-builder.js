@@ -3001,8 +3001,8 @@ var PageBuilderModel = {
         //-- sections
         slide: {
             template:
-                `<div class="t63-section img-section js-page-section{{#if isFullHeight}} t63-invisible{{/if}}" data-section="slide" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-animation="false" data-children-animation="false" data-is-fullscreen="{{isFullScreen}}" data-is-fullheight="{{isFullHeight}}">
-                    <div class="container">
+                `<div class="t63-section img-section js-page-section{{#if isFullHeight}} t63-invisible{{/if}}" data-section="slide" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-animation="false" data-children-animation="false" data-is-fullscreen="{{isFullScreen}}" data-is-fullheight="{{isFullHeight}}">
+                    <div class="container t63-padding-v">
                         <div class="t63-slide-container">
 					        {{> "bgImagePartial"}}
 					        <div class="container slide-content js-slide-content" data-align-content="{{contentAlignment}}">
@@ -3024,8 +3024,8 @@ var PageBuilderModel = {
 
         slider: {
             template:
-                `<div class="t63-section slider-section js-page-section{{#if isFullHeight}} t63-invisible{{/if}}" data-section="slider" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-animation="false" data-children-animation="false" data-is-fullscreen="{{isFullScreen}}" data-is-fullheight="{{isFullHeight}}">
-                    <div class="container">
+                `<div class="t63-section slider-section js-page-section{{#if isFullHeight}} t63-invisible{{/if}}" data-section="slider" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-animation="false" data-children-animation="false" data-is-fullscreen="{{isFullScreen}}" data-is-fullheight="{{isFullHeight}}">
+                    <div class="container t63-padding-v">
                         <div class="t63-slider js-t63-slider js-t63-slider-container" data-slider-autoplay="{{slider?.autoplay}}" data-slider-autoplay-speed="{{slider?.autoplaySpeed}}">
                             {{> "sliderItemsPartial"}}
                         </div>
@@ -4554,7 +4554,6 @@ var PageBuilderModel = {
                                 </div>
                             </div>
 							{{/if}}
-                            {{#js_if "this.name !== 'slide' && this.name !== 'slider'"}}
                             <div class="form-group">
                                 <label class="form-label">Vertical Spacing</label>
                                 <div class="custom-input-group">
@@ -4568,7 +4567,6 @@ var PageBuilderModel = {
                                     {{/each}}
                                 </div>
                             </div>
-							{{/js_if}}
                             {{#if hasFullScreenToggler}}
                             <div class="form-group">
 								<label class="form-label">FullScreen</label>
