@@ -380,7 +380,7 @@ h1,
 	font-size: 3rem;
 }
 h2,
-.title-gl{
+.title-lg{
 	/*font-size: 40px;*/
 	font-size: 2.5rem;
 }
@@ -414,11 +414,6 @@ h6,
 @media (max-width: 1199px){
 	html{
 		font-size: 14px;
-	}
-}
-@media (max-width: 991px){
-	html{
-		font-size: 12px;
 	}
 }
 
