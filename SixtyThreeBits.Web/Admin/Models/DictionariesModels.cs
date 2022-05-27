@@ -149,7 +149,6 @@ namespace SixtyThreeBits.Web.Admin.Models
                 }
                 #endregion
 
-
                 #region Sub CLasses
                 public class TreeItem
                 {

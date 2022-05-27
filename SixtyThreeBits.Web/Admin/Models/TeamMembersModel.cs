@@ -134,8 +134,7 @@ namespace SixtyThreeBits.Web.Admin.Models
                    {
                        Options.Visible(false);
                    })
-                   .OnInitialized("TeamMembersModel.OnTeamMembersGridInit")
-                   .OnInitNewRow("TeamMembersModel.OnTeamMembersGridInitNewRow")
+                   .OnInitialized("TeamMembersModel.OnTeamMembersGridInit")                   
                    .Columns(Columns =>
                    {
                        Columns.Add().Width(30).Caption(" ").Alignment(HorizontalAlignment.Center).CellTemplate(new JS("TeamMembersModel.GetDetailsButtonColumnCellHtml"));

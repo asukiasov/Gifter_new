@@ -1,7 +1,7 @@
 /*!
  * DevExpress Diagram (dx-diagram)
- * Version: 2.1.45
- * Build date: Thu Jan 13 2022
+ * Version: 2.1.47
+ * Build date: Wed Jan 19 2022
  * 
  * Copyright (c) 2012 - 2022 Developer Express Inc. ALL RIGHTS RESERVED
  * Read about DevExpress licensing here: https://www.devexpress.com/Support/EULAs
@@ -6088,6 +6088,7 @@ var DiagramSettings = /** @class */ (function () {
         this._viewUnits = Enums_1.DiagramUnit.In;
         this._connectorRoutingMode = ConnectorRoutingMode.AllShapesOnly;
         this._reloadInsertedItemRequired = false;
+        this._useCanvgForExportToImage = true;
     }
     Object.defineProperty(DiagramSettings.prototype, "zoomLevel", {
         get: function () { return this._zoomLevel; },
@@ -6235,6 +6236,14 @@ var DiagramSettings = /** @class */ (function () {
         get: function () { return this._reloadInsertedItemRequired; },
         set: function (value) {
             this._reloadInsertedItemRequired = value;
+        },
+        enumerable: false,
+        configurable: true
+    });
+    Object.defineProperty(DiagramSettings.prototype, "useCanvgForExportToImage", {
+        get: function () { return this._useCanvgForExportToImage; },
+        set: function (value) {
+            this._useCanvgForExportToImage = value;
         },
         enumerable: false,
         configurable: true
@@ -10232,11 +10241,11 @@ var Exporter = /** @class */ (function () {
     Exporter.prototype.exportSvg = function (modelSize, pageColor, exportManager, callback) {
         exportManager.exportSvgImage(modelSize, pageColor, callback);
     };
-    Exporter.prototype.exportPng = function (modelSize, pageColor, exportManager, callback) {
-        exportManager.exportPngImage(modelSize, pageColor, callback);
+    Exporter.prototype.exportPng = function (modelSize, pageColor, exportManager, callback, useCanvgForExportToImage) {
+        exportManager.exportPngImage(modelSize, pageColor, callback, useCanvgForExportToImage);
     };
-    Exporter.prototype.exportJpg = function (modelSize, pageColor, exportManager, callback) {
-        exportManager.exportJpgImage(modelSize, pageColor, callback);
+    Exporter.prototype.exportJpg = function (modelSize, pageColor, exportManager, callback, useCanvgForExportToImage) {
+        exportManager.exportJpgImage(modelSize, pageColor, callback, useCanvgForExportToImage);
     };
     return Exporter;
 }());
@@ -13269,7 +13278,7 @@ var ExportImageCommand = /** @class */ (function (_super) {
             exportFunc(this.control.model.size.clone(), this.control.model.pageColor, exportManager, function (url) {
                 parameter(url, _this.getExtension());
                 _this.tryDispose();
-            });
+            }, this.control.settings.useCanvgForExportToImage);
         }
         catch (e) {
             this.tryDispose();
@@ -26650,7 +26659,7 @@ var CanvasExportManager = /** @class */ (function (_super) {
     CanvasExportManager.prototype.exportSvgImage = function (modelSize, pageColor, callback) {
         callback(this.getSvgImageUrl(modelSize, pageColor, true));
     };
-    CanvasExportManager.prototype.exportBinaryImage = function (modelSize, pageColor, mimeType, callback) {
+    CanvasExportManager.prototype.exportBinaryImage = function (modelSize, pageColor, mimeType, callback, useCanvgForExportToImage) {
         var modelAbsSize = this.getAbsoluteSize(modelSize).clone().applyConverter(Math.ceil);
         var canvasEl = document.createElement("canvas");
         canvasEl.width = modelAbsSize.width;
@@ -26658,7 +26667,7 @@ var CanvasExportManager = /** @class */ (function (_super) {
         var ctx = canvasEl.getContext("2d");
         ctx.fillStyle = color_1.ColorUtils.colorToHash(pageColor);
         ctx.fillRect(0, 0, modelAbsSize.width, modelAbsSize.height);
-        if (browser_1.Browser.IE && typeof canvg === "object")
+        if ((useCanvgForExportToImage || browser_1.Browser.IE) && typeof canvg === "object")
             this.exportBinaryImageCanvgAsync(modelSize, pageColor, canvasEl, ctx, mimeType).then(function (dataUrl) { return callback(dataUrl); });
         else if (browser_1.Browser.IE && typeof canvg === "function")
             this.exportBinaryImageCanvgOld(modelSize, pageColor, canvasEl, ctx, mimeType, callback);
@@ -26700,11 +26709,11 @@ var CanvasExportManager = /** @class */ (function (_super) {
             });
         });
     };
-    CanvasExportManager.prototype.exportPngImage = function (modelSize, pageColor, callback) {
-        this.exportBinaryImage(modelSize, pageColor, "image/png", callback);
+    CanvasExportManager.prototype.exportPngImage = function (modelSize, pageColor, callback, useCanvgForExportToImage) {
+        this.exportBinaryImage(modelSize, pageColor, "image/png", callback, useCanvgForExportToImage);
     };
-    CanvasExportManager.prototype.exportJpgImage = function (modelSize, pageColor, callback) {
-        this.exportBinaryImage(modelSize, pageColor, "image/jpeg", callback);
+    CanvasExportManager.prototype.exportJpgImage = function (modelSize, pageColor, callback, useCanvgForExportToImage) {
+        this.exportBinaryImage(modelSize, pageColor, "image/jpeg", callback, useCanvgForExportToImage);
     };
     CanvasExportManager.prototype.notifyModelChanged = function (changes) { };
     CanvasExportManager.prototype.notifyPageColorChanged = function (color) { };
@@ -27606,13 +27615,12 @@ var MoveCommand = /** @class */ (function (_super) {
         var selection = this.control.selection;
         var selectedShapes = selection.getSelectedShapes();
         var selectedShapesWithoutDuplicates = selectedShapes.filter(function (shape) {
-            if (!shape.container)
-                return true;
             while (shape.container) {
                 if (selectedShapes.indexOf(shape.container) !== -1)
                     return false;
                 shape = shape.container;
             }
+            return true;
         });
         selectedShapesWithoutDuplicates.forEach(function (shape) {
             _this.permissionsProvider.addInteractingItem(shape, __1.DiagramModelOperation.MoveShape);
@@ -29724,6 +29732,7 @@ var DiagramControl = /** @class */ (function () {
         this.shapeDescriptionManager.unregisterAllCustomShapes();
     };
     DiagramControl.prototype.importModel = function (model) {
+        model.units = this.model.units; // don't rewrite units
         this.model = model;
         this.model.initializeKeyCounter();
         this.apiController.model = model;

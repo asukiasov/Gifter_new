@@ -1,7 +1,7 @@
 /*!
  * DevExtreme (dx.viz.debug.js)
- * Version: 21.2.5
- * Build date: Mon Jan 17 2022
+ * Version: 21.2.7
+ * Build date: Mon Apr 11 2022
  *
  * Copyright (c) 2012 - 2022 Developer Express Inc. ALL RIGHTS RESERVED
  * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -10064,6 +10064,8 @@
                         }(container) / 100
                     } else if (!isNaN(value)) {
                         value = parseInt(value)
+                    } else if (value.indexOf("vh") > 0) {
+                        value = window.innerHeight / 100 * parseInt(value.replace("vh", ""))
                     }
                     return value
                 };
@@ -10990,7 +10992,7 @@
               \*************************************************************/
             function(__unused_webpack_module, exports) {
                 exports.version = void 0;
-                exports.version = "21.2.5"
+                exports.version = "21.2.7"
             },
         67403:
             /*!********************************************************************!*\
@@ -11967,15 +11969,25 @@
                 }
 
                 function createObjectWithChanges(target, changes) {
-                    var result = function cloneInstance(instance) {
+                    var result = function cloneInstance(instance, clonedInstances) {
+                        clonedInstances = clonedInstances || new WeakMap;
                         var result = instance ? Object.create(Object.getPrototypeOf(instance)) : {};
+                        if (instance) {
+                            clonedInstances.set(instance, result)
+                        }
                         var instanceWithoutPrototype = (0, _extend.extendFromObject)({}, instance);
                         for (var name in instanceWithoutPrototype) {
                             var prop = instanceWithoutPrototype[name];
-                            if ((0, _type.isObject)(prop) && !(0, _type.isPlainObject)(prop) && prop !== instance) {
-                                instanceWithoutPrototype[name] = cloneInstance(prop)
+                            if ((0, _type.isObject)(prop) && !(0, _type.isPlainObject)(prop) && !clonedInstances.has(prop)) {
+                                instanceWithoutPrototype[name] = cloneInstance(prop, clonedInstances)
                             }
                         }(0, _object.deepExtendArraySafe)(result, instanceWithoutPrototype, true, true);
+                        for (var _name in result) {
+                            var _prop = result[_name];
+                            if ((0, _type.isObject)(_prop) && clonedInstances.has(_prop)) {
+                                result[_name] = clonedInstances.get(_prop)
+                            }
+                        }
                         return result
                     }(target);
                     return (0, _object.deepExtendArraySafe)(result, changes, true, true)
@@ -17953,7 +17965,6 @@
               \*************************************************************/
             function(__unused_webpack_module, exports, __webpack_require__) {
                 exports.visibility = exports.resize = exports.keyboard = exports.hover = exports.focus = exports.dxClick = exports.click = exports.active = void 0;
-                var _dom_adapter = _interopRequireDefault(__webpack_require__( /*! ../core/dom_adapter */ 73349));
                 var _events_engine = _interopRequireDefault(__webpack_require__( /*! ./core/events_engine */ 55994));
                 var _keyboard_processor = _interopRequireDefault(__webpack_require__( /*! ./core/keyboard_processor */ 51661));
                 var _index = __webpack_require__( /*! ./utils/index */ 39611);
@@ -18052,23 +18063,14 @@
                 exports.visibility = visibility;
                 var focus = {
                     on: function($el, focusIn, focusOut, _ref8) {
-                        var namespace = _ref8.namespace,
-                            isFocusable = _ref8.isFocusable;
+                        var namespace = _ref8.namespace;
                         _events_engine.default.on($el, addNamespace("focusin", namespace), focusIn);
-                        _events_engine.default.on($el, addNamespace("focusout", namespace), focusOut);
-                        if (_dom_adapter.default.hasDocumentProperty("onbeforeactivate")) {
-                            _events_engine.default.on($el, addNamespace("beforeactivate", namespace), (function(e) {
-                                return isFocusable(null, e.target) || e.preventDefault()
-                            }))
-                        }
+                        _events_engine.default.on($el, addNamespace("focusout", namespace), focusOut)
                     },
                     off: function($el, _ref9) {
                         var namespace = _ref9.namespace;
                         _events_engine.default.off($el, addNamespace("focusin", namespace));
-                        _events_engine.default.off($el, addNamespace("focusout", namespace));
-                        if (_dom_adapter.default.hasDocumentProperty("onbeforeactivate")) {
-                            _events_engine.default.off($el, addNamespace("beforeactivate", namespace))
-                        }
+                        _events_engine.default.off($el, addNamespace("focusout", namespace))
                     },
                     trigger: function($el) {
                         return _events_engine.default.trigger($el, "focus")
@@ -18737,15 +18739,16 @@
                 exports.normalizeKeyName = function(_ref4) {
                     var key = _ref4.key,
                         which = _ref4.which;
+                    var originalKey = key;
                     var isKeySupported = !!key;
-                    key = isKeySupported ? key : which;
-                    if (key) {
+                    if (key || which) {
                         if (isKeySupported) {
-                            key = KEY_MAP[key.toLowerCase()] || key
-                        } else {
-                            key = LEGACY_KEY_CODES[key] || String.fromCharCode(key)
+                            key = KEY_MAP[key.toLowerCase()]
                         }
-                        return key
+                        if (!isKeySupported || !key && which) {
+                            key = LEGACY_KEY_CODES[which] || String.fromCharCode(which)
+                        }
+                        return key || originalKey
                     }
                 };
                 exports.getChar = function(_ref5) {
@@ -20550,8 +20553,10 @@
                             mergeRowFieldValues = options.mergeRowFieldValues,
                             mergeColumnFieldValues = options.mergeColumnFieldValues;
                         var internalComponent = (null === (_component$_getIntern = component._getInternalInstance) || void 0 === _component$_getIntern ? void 0 : _component$_getIntern.call(component)) || component;
-                        var initialLoadPanelEnabledOption = internalComponent.option("loadPanel").enabled;
-                        component.option("loadPanel.enabled", false);
+                        var initialLoadPanelEnabledOption = internalComponent.option("loadPanel") && internalComponent.option("loadPanel").enabled;
+                        if (initialLoadPanelEnabledOption) {
+                            component.option("loadPanel.enabled", false)
+                        }
                         var exportLoadPanel;
                         if (loadPanel.enabled && (0, _window.hasWindow)()) {
                             var $targetElement = helpers._getLoadPanelTargetElement(component);
@@ -20609,7 +20614,9 @@
                                 }
                                 resolve(cellRange)
                             })).always((function() {
-                                component.option("loadPanel.enabled", initialLoadPanelEnabledOption);
+                                if (initialLoadPanelEnabledOption) {
+                                    component.option("loadPanel.enabled", initialLoadPanelEnabledOption)
+                                }
                                 if (loadPanel.enabled && (0, _window.hasWindow)()) {
                                     exportLoadPanel.dispose()
                                 }
@@ -21489,7 +21496,7 @@
                                     context.globalAlpha = options.globalAlpha;
                                     transformElement(context, options);
                                     clipElement(context, options, shared);
-                                    context.drawImage(image, options.x, options.y, options.width, options.height);
+                                    context.drawImage(image, options.x || 0, options.y || 0, options.width, options.height);
                                     context.restore();
                                     d.resolve()
                                 };
@@ -21986,8 +21993,10 @@
                             selectedRowsOnly = options.selectedRowsOnly,
                             loadPanel = options.loadPanel;
                         var internalComponent = (null === (_component$_getIntern = component._getInternalInstance) || void 0 === _component$_getIntern ? void 0 : _component$_getIntern.call(component)) || component;
-                        var initialLoadPanelEnabledOption = internalComponent.option("loadPanel").enabled;
-                        component.option("loadPanel.enabled", false);
+                        var initialLoadPanelEnabledOption = internalComponent.option("loadPanel") && internalComponent.option("loadPanel").enabled;
+                        if (initialLoadPanelEnabledOption) {
+                            component.option("loadPanel.enabled", false)
+                        }
                         var exportLoadPanel;
                         if (loadPanel.enabled && (0, _window.hasWindow)()) {
                             var rowsView = component.getView("rowsView");
@@ -22063,7 +22072,9 @@
                                 jsPDFDocument.autoTable(autoTableOptions);
                                 resolve()
                             })).always((function() {
-                                component.option("loadPanel.enabled", initialLoadPanelEnabledOption);
+                                if (initialLoadPanelEnabledOption) {
+                                    component.option("loadPanel.enabled", initialLoadPanelEnabledOption)
+                                }
                                 if (loadPanel.enabled && (0, _window.hasWindow)()) {
                                     exportLoadPanel.dispose()
                                 }
@@ -24558,6 +24569,7 @@
                     "en-MS": "\xa4#,##0.00;(\xa4#,##0.00)",
                     "en-MT": "\xa4#,##0.00;(\xa4#,##0.00)",
                     "en-MU": "\xa4#,##0.00;(\xa4#,##0.00)",
+                    "en-MV": "\xa4\xa0#,##0.00",
                     "en-MW": "\xa4#,##0.00;(\xa4#,##0.00)",
                     "en-MY": "\xa4#,##0.00;(\xa4#,##0.00)",
                     "en-NA": "\xa4#,##0.00;(\xa4#,##0.00)",
@@ -24728,6 +24740,7 @@
                     haw: "\xa4#,##0.00;(\xa4#,##0.00)",
                     he: "#,##0.00\xa0\xa4",
                     hi: "\xa4#,##,##0.00",
+                    "hi-Latn": "\xa4#,##,##0.00",
                     hr: "#,##0.00\xa0\xa4",
                     "hr-BA": "#,##0.00\xa0\xa4",
                     hsb: "#,##0.00\xa0\xa4",
@@ -24763,8 +24776,9 @@
                     ko: "\xa4#,##0.00;(\xa4#,##0.00)",
                     "ko-KP": "\xa4#,##0.00;(\xa4#,##0.00)",
                     kok: "\xa4#,##0.00;(\xa4#,##0.00)",
-                    ks: "\xa4\xa0#,##,##0.00",
-                    "ks-Arab": "\xa4\xa0#,##,##0.00",
+                    ks: "\xa4#,##0.00",
+                    "ks-Arab": "\xa4#,##0.00",
+                    "ks-Deva": "\xa4\xa0#,##0.00",
                     ksb: "#,##0.00\xa4",
                     ksf: "#,##0.00\xa0\xa4",
                     ksh: "#,##0.00\xa0\xa4",
@@ -25033,6 +25047,7 @@
                     "en-AE": 6,
                     "en-BI": 1,
                     "en-MP": 1,
+                    "en-MV": 5,
                     "en-SD": 6,
                     eo: 1,
                     es: 1,
@@ -25231,6 +25246,7 @@
                     "en-MS": "en-001",
                     "en-MT": "en-001",
                     "en-MU": "en-001",
+                    "en-MV": "en-001",
                     "en-MW": "en-001",
                     "en-MY": "en-001",
                     "en-NA": "en-001",
@@ -25276,6 +25292,7 @@
                     "en-NL": "en-150",
                     "en-SE": "en-150",
                     "en-SI": "en-150",
+                    "hi-Latn": "en-IN",
                     "es-AR": "es-419",
                     "es-BO": "es-419",
                     "es-BR": "es-419",
@@ -25326,7 +25343,6 @@
                     "ff-Adlm": "und",
                     "ff-Arab": "und",
                     "ha-Arab": "und",
-                    "hi-Latn": "und",
                     "iu-Latn": "und",
                     "kk-Arab": "und",
                     "ks-Deva": "und",
@@ -29134,8 +29150,12 @@
                         var integerLength = Math.floor(value).toString().length;
                         var floatPrecision = (0, _math.fitIntoRange)(maxFloatPrecision, 0, 15 - integerLength);
                         var groupSizes = (formatString = floatFormatParts[0], formatString.split(",").slice(1).map((function(str) {
-                            return str.split("").filter((function(char) {
-                                return "#" === char || "0" === char
+                            var singleQuotesLeft = 0;
+                            return str.split("").filter((function(char, index) {
+                                singleQuotesLeft += "'" === char;
+                                var isDigit = "#" === char || "0" === char;
+                                var isInStub = singleQuotesLeft % 2;
+                                return isDigit && !isInStub
                             })).length
                         }))).reverse();
                         var formatString;
@@ -29653,17 +29673,17 @@
                         var digitalRegExp = new RegExp("[0-9" + (0, _common.escapeRegExp)(separators.decimalSeparator + separators.thousandsSeparator) + "]+", "g");
                         var negativeEtalon = this.format(-1, format).replace(digitalRegExp, "1");
                         ["\\", "(", ")", "[", "]", "*", "+", "$", "^", "?", "|", "{", "}"].forEach((function(char) {
-                            negativeEtalon = negativeEtalon.replace(char, "\\".concat(char))
+                            negativeEtalon = negativeEtalon.replaceAll(char, "\\".concat(char))
                         }));
-                        negativeEtalon = negativeEtalon.replace(" ", "\\s");
-                        negativeEtalon = negativeEtalon.replace("1", ".+");
+                        negativeEtalon = negativeEtalon.replaceAll(" ", "\\s");
+                        negativeEtalon = negativeEtalon.replaceAll("1", ".+");
                         return new RegExp(negativeEtalon, "g")
                     },
                     getSign: function(text, format) {
-                        if ("-" === text.replace(/[^0-9-]/g, "").charAt(0)) {
-                            return -1
-                        }
                         if (!format) {
+                            if ("-" === text.replace(/[^0-9-]/g, "").charAt(0)) {
+                                return -1
+                            }
                             return 1
                         }
                         var negativeEtalon = this.getNegativeEtalonRegExp(format);
@@ -30217,6 +30237,20 @@
                             return _extends({}, options, _defineProperty({}, name, null))
                         }), {}))
                     };
+                    _proto._initializeComponent = function() {
+                        var _this$_templateManage, _this3 = this;
+                        _DOMComponent.prototype._initializeComponent.call(this);
+                        null === (_this$_templateManage = this._templateManager) || void 0 === _this$_templateManage ? void 0 : _this$_templateManage.addDefaultTemplates(this.getDefaultTemplates());
+                        this._props = this._optionsWithDefaultTemplates(this.option());
+                        this._propsInfo.templates.forEach((function(template) {
+                            _this3._componentTemplates[template] = _this3._createTemplateComponent(_this3._props[template])
+                        }));
+                        Object.keys(this._getActionConfigsFull()).forEach((function(name) {
+                            return _this3._addAction(name)
+                        }));
+                        this._viewRef = (0, _inferno.createRef)();
+                        this.defaultKeyHandlers = this._createDefaultKeyHandlers()
+                    };
                     _proto._initMarkup = function() {
                         var props = this.getProps();
                         this._renderWrapper(props)
@@ -30259,7 +30293,7 @@
                         return []
                     };
                     _proto._patchOptionValues = function(options) {
-                        var _this3 = this;
+                        var _this4 = this;
                         var _this$_propsInfo = this._propsInfo,
                             allowNull = _this$_propsInfo.allowNull,
                             elements = _this$_propsInfo.elements,
@@ -30300,7 +30334,7 @@
                             if (name in widgetProps) {
                                 var value = widgetProps[name];
                                 if ((0, _type.isRenderer)(value)) {
-                                    widgetProps[name] = _this3._patchElementParam(value)
+                                    widgetProps[name] = _this4._patchElementParam(value)
                                 }
                             }
                         }));
@@ -30319,7 +30353,7 @@
                         return props
                     };
                     _proto.getProps = function() {
-                        var _this$elementAttr$cla, _elementAttr$class, _this4 = this;
+                        var _this$elementAttr$cla, _elementAttr$class, _this5 = this;
                         var _this$option = this.option(),
                             elementAttr = _this$option.elementAttr;
                         var options = this._patchOptionValues(_extends({}, this._props, {
@@ -30328,7 +30362,7 @@
                             aria: this._aria
                         }));
                         this._propsInfo.templates.forEach((function(template) {
-                            options[template] = _this4._componentTemplates[template]
+                            options[template] = _this5._componentTemplates[template]
                         }));
                         return this.prepareStyleProp(_extends({}, options, this.elementAttr, elementAttr, {
                             className: [].concat(_toConsumableArray((null !== (_this$elementAttr$cla = this.elementAttr.class) && void 0 !== _this$elementAttr$cla ? _this$elementAttr$cla : "").split(" ")), _toConsumableArray((null !== (_elementAttr$class = null === elementAttr || void 0 === elementAttr ? void 0 : elementAttr.class) && void 0 !== _elementAttr$class ? _elementAttr$class : "").split(" "))).filter((function(c, i, a) {
@@ -30362,22 +30396,11 @@
                         return _extends({}, options, templateOptions)
                     };
                     _proto._init = function() {
-                        var _this$_templateManage, _this5 = this;
                         _DOMComponent.prototype._init.call(this);
                         this.customKeyHandlers = {};
-                        null === (_this$_templateManage = this._templateManager) || void 0 === _this$_templateManage ? void 0 : _this$_templateManage.addDefaultTemplates(this.getDefaultTemplates());
-                        this._props = this._optionsWithDefaultTemplates(this.option());
                         this._actionsMap = {};
                         this._aria = {};
-                        this._componentTemplates = {};
-                        this._propsInfo.templates.forEach((function(template) {
-                            _this5._componentTemplates[template] = _this5._createTemplateComponent(_this5._props[template])
-                        }));
-                        Object.keys(this._getActionConfigsFull()).forEach((function(name) {
-                            return _this5._addAction(name)
-                        }));
-                        this._viewRef = (0, _inferno.createRef)();
-                        this.defaultKeyHandlers = this._createDefaultKeyHandlers()
+                        this._componentTemplates = {}
                     };
                     _proto._createDefaultKeyHandlers = function() {
                         var _this6 = this;
@@ -30408,9 +30431,10 @@
                     _proto._optionChanged = function(option) {
                         var fullName = option.fullName,
                             name = option.name,
+                            previousValue = option.previousValue,
                             value = option.value;
                         (0, _update_props_immutable.updatePropsImmutable)(this._props, this.option(), name, fullName);
-                        if (this._propsInfo.templates.includes(name)) {
+                        if (this._propsInfo.templates.includes(name) && value !== previousValue) {
                             this._componentTemplates[name] = this._createTemplateComponent(value)
                         }
                         if (name && this._getActionConfigsFull()[name]) {
@@ -32790,7 +32814,7 @@
                         return !!this._scrollSpeed
                     };
                     _proto.isScrollable = function($element) {
-                        return ("auto" === $element.css(this._overFlowAttr) || $element.hasClass("dx-scrollable-container")) && $element.prop(this._scrollSizeProp) > ("width" === this._sizeAttr ? (0, _size.getWidth)($element) : (0, _size.getHeight)($element))
+                        return ("auto" === $element.css(this._overFlowAttr) || $element.hasClass("dx-scrollable-container")) && $element.prop(this._scrollSizeProp) > Math.ceil("width" === this._sizeAttr ? (0, _size.getWidth)($element) : (0, _size.getHeight)($element))
                     };
                     _proto._trySetScrollable = function(element, mousePosition) {
                         var $element = (0, _renderer.default)(element);
@@ -34029,8 +34053,16 @@
                         var resultFilter = [];
                         operation = operation || "and";
                         for (var i = 0; i < filters.length; i++) {
+                            var _filters$i;
                             if (!filters[i]) {
                                 continue
+                            }
+                            if (1 === (null === (_filters$i = filters[i]) || void 0 === _filters$i ? void 0 : _filters$i.length) && "!" === filters[i][0]) {
+                                if ("and" === operation) {
+                                    return ["!"]
+                                } else if ("or" === operation) {
+                                    continue
+                                }
                             }
                             if (resultFilter.length) {
                                 resultFilter.push(operation)
@@ -34285,9 +34317,8 @@
                         var isAppendMode = "infinite" === that.option("scrolling.mode");
                         if (false === that.option("scrolling.legacyMode") && (isVirtualMode || isAppendMode)) {
                             return true
-                        } else {
-                            return "virtual" === rowRenderingMode
                         }
+                        return "virtual" === rowRenderingMode
                     },
                     getPixelRatio: function(window) {
                         return window.devicePixelRatio || 1
@@ -35430,7 +35461,7 @@
                         this._initHideTopOverlayHandler(this.option("hideTopOverlayHandler"));
                         this._parentsScrollSubscriptionInfo = {
                             handler: function(e) {
-                                _this3._targetParentsScrollHandler(e)
+                                _this3._hideOnParentsScrollHandler(e)
                             }
                         };
                         this._updateResizeCallbackSkipCondition();
@@ -35888,7 +35919,7 @@
                     _toggleSubscriptions: function(enabled) {
                         if ((0, _window.hasWindow)()) {
                             this._toggleHideTopOverlayCallback(enabled);
-                            this._toggleParentsScrollSubscription(enabled)
+                            this._toggleHideOnParentsScrollSubscription(enabled)
                         }
                     },
                     _toggleHideTopOverlayCallback: function(subscribe) {
@@ -35901,7 +35932,7 @@
                             _hide_callback.hideCallback.remove(this._hideTopOverlayHandler)
                         }
                     },
-                    _toggleParentsScrollSubscription: function(needSubscribe) {
+                    _toggleHideOnParentsScrollSubscription: function(needSubscribe) {
                         var _this$_parentsScrollS;
                         var scrollEvent = (0, _index.addNamespace)("scroll", this.NAME);
                         var _ref = null !== (_this$_parentsScrollS = this._parentsScrollSubscriptionInfo) && void 0 !== _this$_parentsScrollS ? _this$_parentsScrollS : {},
@@ -35910,7 +35941,7 @@
                         _events_engine.default.off(prevTargets, scrollEvent, handler);
                         var closeOnScroll = this.option("hideOnParentScroll");
                         if (needSubscribe && closeOnScroll) {
-                            var $parents = this._$wrapper.parents();
+                            var $parents = this._hideOnParentScrollTarget().parents();
                             if ("desktop" === _devices.default.real().deviceType) {
                                 $parents = $parents.add(window)
                             }
@@ -35918,7 +35949,7 @@
                             this._parentsScrollSubscriptionInfo.prevTargets = $parents
                         }
                     },
-                    _targetParentsScrollHandler: function(e) {
+                    _hideOnParentsScrollHandler: function(e) {
                         var closeHandled = false;
                         var closeOnScroll = this.option("hideOnParentScroll");
                         if ((0, _type.isFunction)(closeOnScroll)) {
@@ -35927,6 +35958,9 @@
                         if (!closeHandled && !this._showAnimationProcessing) {
                             this.hide()
                         }
+                    },
+                    _hideOnParentScrollTarget: function() {
+                        return this._$wrapper
                     },
                     _render: function() {
                         this.callBase();
@@ -36274,7 +36308,7 @@
                         this._parentsScrollSubscriptionInfo = null;
                         this.callBase();
                         this._toggleSafariScrolling();
-                        zIndexPool.remove(this._zIndex);
+                        this.option("visible") && zIndexPool.remove(this._zIndex);
                         this._$wrapper.remove();
                         this._$content.remove()
                     },
@@ -36358,7 +36392,7 @@
                                 this._toggleHideTopOverlayCallback(this.option("visible"));
                                 break;
                             case "hideOnParentScroll":
-                                this._toggleParentsScrollSubscription(this.option("visible"));
+                                this._toggleHideOnParentsScrollSubscription(this.option("visible"));
                                 break;
                             case "closeOnOutsideClick":
                             case "propagateOutsideClick":
@@ -36498,7 +36532,6 @@
                 var _window = __webpack_require__( /*! ../core/utils/window */ 58201);
                 var _events_engine = _interopRequireDefault(__webpack_require__( /*! ../events/core/events_engine */ 55994));
                 var _drag = __webpack_require__( /*! ../events/drag */ 23174);
-                var _position = __webpack_require__( /*! ../core/utils/position */ 37518);
                 var _index = __webpack_require__( /*! ../events/utils/index */ 39611);
                 var _visibility_change = __webpack_require__( /*! ../events/visibility_change */ 80506);
 
@@ -36506,6 +36539,21 @@
                     return obj && obj.__esModule ? obj : {
                         default: obj
                     }
+                }
+
+                function _extends() {
+                    _extends = Object.assign || function(target) {
+                        for (var i = 1; i < arguments.length; i++) {
+                            var source = arguments[i];
+                            for (var key in source) {
+                                if (Object.prototype.hasOwnProperty.call(source, key)) {
+                                    target[key] = source[key]
+                                }
+                            }
+                        }
+                        return target
+                    };
+                    return _extends.apply(this, arguments)
                 }
                 var DRAGSTART_START_EVENT_NAME = (0, _index.addNamespace)(_drag.start, "dxResizable");
                 var DRAGSTART_EVENT_NAME = (0, _index.addNamespace)(_drag.move, "dxResizable");
@@ -36530,7 +36578,8 @@
                             onResizeStart: null,
                             onResize: null,
                             onResizeEnd: null,
-                            roundStepValue: true
+                            roundStepValue: true,
+                            _keepAspectRatio: false
                         })
                     },
                     _init: function() {
@@ -36594,6 +36643,16 @@
                     _toggleEventHandlers: function(shouldAttachEvents) {
                         shouldAttachEvents ? this._attachEventHandlers() : this._detachEventHandlers()
                     },
+                    _getElementSize: function() {
+                        var $element = this.$element();
+                        return "border-box" === $element.css("boxSizing") ? {
+                            width: (0, _size.getOuterWidth)($element),
+                            height: (0, _size.getOuterHeight)($element)
+                        } : {
+                            width: (0, _size.getWidth)($element),
+                            height: (0, _size.getHeight)($element)
+                        }
+                    },
                     _dragStartHandler: function(e) {
                         var $element = this.$element();
                         if ($element.is(".dx-state-disabled, .dx-state-disabled *")) {
@@ -36603,11 +36662,7 @@
                         this._toggleResizingClass(true);
                         this._movingSides = this._getMovingSides(e);
                         this._elementLocation = (0, _translator.locate)($element);
-                        var elementRect = (0, _position.getBoundingRect)($element.get(0));
-                        this._elementSize = {
-                            width: elementRect.width,
-                            height: elementRect.height
-                        };
+                        this._elementSize = this._getElementSize();
                         this._renderDragOffsets(e);
                         this._resizeStartAction({
                             event: e,
@@ -36631,10 +36686,10 @@
                         var handleOffset = $handle.offset();
                         var areaOffset = area.offset;
                         var scrollOffset = this._getAreaScrollOffset();
-                        e.maxLeftOffset = handleOffset.left - areaOffset.left - scrollOffset.scrollX;
-                        e.maxRightOffset = areaOffset.left + area.width - handleOffset.left - handleWidth + scrollOffset.scrollX;
-                        e.maxTopOffset = handleOffset.top - areaOffset.top - scrollOffset.scrollY;
-                        e.maxBottomOffset = areaOffset.top + area.height - handleOffset.top - handleHeight + scrollOffset.scrollY
+                        e.maxLeftOffset = this._leftMaxOffset = handleOffset.left - areaOffset.left - scrollOffset.scrollX;
+                        e.maxRightOffset = this._rightMaxOffset = areaOffset.left + area.width - handleOffset.left - handleWidth + scrollOffset.scrollX;
+                        e.maxTopOffset = this._topMaxOffset = handleOffset.top - areaOffset.top - scrollOffset.scrollY;
+                        e.maxBottomOffset = this._bottomMaxOffset = areaOffset.top + area.height - handleOffset.top - handleHeight + scrollOffset.scrollY
                     },
                     _getBorderWidth: function($element, direction) {
                         if ((0, _type.isWindow)($element.get(0))) {
@@ -36643,55 +36698,215 @@
                         var borderWidth = $element.css(SIDE_BORDER_WIDTH_STYLES[direction]);
                         return parseInt(borderWidth) || 0
                     },
-                    _dragHandler: function(e) {
-                        var $element = this.$element();
-                        var sides = this._movingSides;
-                        var location = this._elementLocation;
+                    _proportionate: function(direction, value) {
                         var size = this._elementSize;
-                        var offset = this._getOffset(e);
-                        var width = size.width + offset.x * (sides.left ? -1 : 1);
-                        var height = size.height + offset.y * (sides.top ? -1 : 1);
-                        if (offset.x || "strict" === this.option("stepPrecision")) {
-                            this._renderWidth(width)
+                        var factor = "x" === direction ? size.width / size.height : size.height / size.width;
+                        return value * factor
+                    },
+                    _getProportionalDelta: function(_ref) {
+                        var x = _ref.x,
+                            y = _ref.y;
+                        var proportionalY = this._proportionate("y", x);
+                        if (proportionalY >= y) {
+                            return {
+                                x: x,
+                                y: proportionalY
+                            }
                         }
-                        if (offset.y || "strict" === this.option("stepPrecision")) {
-                            this._renderHeight(height)
+                        var proportionalX = this._proportionate("x", y);
+                        if (proportionalX >= x) {
+                            return {
+                                x: proportionalX,
+                                y: y
+                            }
                         }
-                        var elementRect = (0, _position.getBoundingRect)($element.get(0));
-                        var offsetTop = offset.y - ((elementRect.height || height) - height);
-                        var offsetLeft = offset.x - ((elementRect.width || width) - width);
+                        return {
+                            x: 0,
+                            y: 0
+                        }
+                    },
+                    _getDirectionName: function(axis) {
+                        var sides = this._movingSides;
+                        if ("x" === axis) {
+                            return sides.left ? "left" : "right"
+                        } else {
+                            return sides.top ? "top" : "bottom"
+                        }
+                    },
+                    _fitIntoArea: function(axis, value) {
+                        var _this$;
+                        var directionName = this._getDirectionName(axis);
+                        return Math.min(value, null !== (_this$ = this["_".concat(directionName, "MaxOffset")]) && void 0 !== _this$ ? _this$ : 1 / 0)
+                    },
+                    _fitDeltaProportionally: function(delta) {
+                        var _this2 = this;
+                        var fittedDelta = _extends({}, delta);
+                        var size = this._elementSize;
+                        var _this$option = this.option(),
+                            minWidth = _this$option.minWidth,
+                            minHeight = _this$option.minHeight,
+                            maxWidth = _this$option.maxWidth,
+                            maxHeight = _this$option.maxHeight;
+                        var getWidth = function() {
+                            return size.width + fittedDelta.x
+                        };
+                        var getHeight = function() {
+                            return size.height + fittedDelta.y
+                        };
+                        var isInArea = function(axis) {
+                            return fittedDelta[axis] === _this2._fitIntoArea(axis, fittedDelta[axis])
+                        };
+                        var isFittedX = function() {
+                            return (0, _math.inRange)(getWidth(), minWidth, maxWidth) && isInArea("x")
+                        };
+                        var isFittedY = function() {
+                            return (0, _math.inRange)(getHeight(), minHeight, maxHeight) && isInArea("y")
+                        };
+                        if (!isFittedX()) {
+                            var x = this._fitIntoArea("x", (0, _math.fitIntoRange)(getWidth(), minWidth, maxWidth) - size.width);
+                            fittedDelta = {
+                                x: x,
+                                y: this._proportionate("y", x)
+                            }
+                        }
+                        if (!isFittedY()) {
+                            var y = this._fitIntoArea("y", (0, _math.fitIntoRange)(getHeight(), minHeight, maxHeight) - size.height);
+                            fittedDelta = {
+                                x: this._proportionate("x", y),
+                                y: y
+                            }
+                        }
+                        return isFittedX() && isFittedY() ? fittedDelta : {
+                            x: 0,
+                            y: 0
+                        }
+                    },
+                    _fitDelta: function(_ref2) {
+                        var x = _ref2.x,
+                            y = _ref2.y;
+                        var size = this._elementSize;
+                        var _this$option2 = this.option(),
+                            minWidth = _this$option2.minWidth,
+                            minHeight = _this$option2.minHeight,
+                            maxWidth = _this$option2.maxWidth,
+                            maxHeight = _this$option2.maxHeight;
+                        return {
+                            x: (0, _math.fitIntoRange)(size.width + x, minWidth, maxWidth) - size.width,
+                            y: (0, _math.fitIntoRange)(size.height + y, minHeight, maxHeight) - size.height
+                        }
+                    },
+                    _getDeltaByOffset: function(offset) {
+                        var sides = this._movingSides;
+                        var shouldKeepAspectRatio = this._isCornerHandler(sides) && this.option("_keepAspectRatio");
+                        var delta = {
+                            x: offset.x * (sides.left ? -1 : 1),
+                            y: offset.y * (sides.top ? -1 : 1)
+                        };
+                        if (shouldKeepAspectRatio) {
+                            var proportionalDelta = this._getProportionalDelta(delta);
+                            var fittedProportionalDelta = this._fitDeltaProportionally(proportionalDelta);
+                            delta = fittedProportionalDelta
+                        } else {
+                            var fittedDelta = this._fitDelta(delta);
+                            var roundedFittedDelta = this._roundByStep(fittedDelta);
+                            delta = roundedFittedDelta
+                        }
+                        return delta
+                    },
+                    _updatePosition: function(delta, _ref3) {
+                        var width = _ref3.width,
+                            height = _ref3.height;
+                        var location = this._elementLocation;
+                        var sides = this._movingSides;
+                        var $element = this.$element();
+                        var elementRect = this._getElementSize();
+                        var offsetTop = delta.y * (sides.top ? -1 : 1) - ((elementRect.height || height) - height);
+                        var offsetLeft = delta.x * (sides.left ? -1 : 1) - ((elementRect.width || width) - width);
                         (0, _translator.move)($element, {
                             top: location.top + (sides.top ? offsetTop : 0),
                             left: location.left + (sides.left ? offsetLeft : 0)
-                        });
+                        })
+                    },
+                    _dragHandler: function(e) {
+                        var offset = this._getOffset(e);
+                        var delta = this._getDeltaByOffset(offset);
+                        var dimensions = this._updateDimensions(delta);
+                        this._updatePosition(delta, dimensions);
+                        this._triggerResizeAction(e, dimensions)
+                    },
+                    _updateDimensions: function(delta) {
+                        var isAbsoluteSize = function(size) {
+                            return "px" === size.substring(size.length - 2)
+                        };
+                        var isStepPrecisionStrict = "strict" === this.option("stepPrecision");
+                        var size = this._elementSize;
+                        var width = size.width + delta.x;
+                        var height = size.height + delta.y;
+                        var elementStyle = this.$element().get(0).style;
+                        var shouldRenderWidth = delta.x || isStepPrecisionStrict || isAbsoluteSize(elementStyle.width);
+                        var shouldRenderHeight = delta.y || isStepPrecisionStrict || isAbsoluteSize(elementStyle.height);
+                        if (shouldRenderWidth) {
+                            this.option({
+                                width: width
+                            })
+                        }
+                        if (shouldRenderHeight) {
+                            this.option({
+                                height: height
+                            })
+                        }
+                        return {
+                            width: shouldRenderWidth ? width : size.width,
+                            height: shouldRenderHeight ? height : size.height
+                        }
+                    },
+                    _triggerResizeAction: function(e, _ref4) {
+                        var width = _ref4.width,
+                            height = _ref4.height;
                         this._resizeAction({
                             event: e,
                             width: this.option("width") || width,
                             height: this.option("height") || height,
                             handles: this._movingSides
                         });
-                        (0, _visibility_change.triggerResizeEvent)($element)
+                        (0, _visibility_change.triggerResizeEvent)(this.$element())
+                    },
+                    _isCornerHandler: function(sides) {
+                        return 0 === Object.values(sides).reduce((function(xor, value) {
+                            return xor ^ value
+                        }), 0)
                     },
                     _getOffset: function(e) {
                         var offset = e.offset;
-                        var steps = (0, _common.pairToObject)(this.option("step"), !this.option("roundStepValue"));
-                        var sides = this._getMovingSides(e);
-                        var strictPrecision = "strict" === this.option("stepPrecision");
+                        var sides = this._movingSides;
                         if (!sides.left && !sides.right) {
                             offset.x = 0
                         }
                         if (!sides.top && !sides.bottom) {
                             offset.y = 0
                         }
-                        return strictPrecision ? this._getStrictOffset(offset, steps, sides) : this._getSimpleOffset(offset, steps)
+                        return offset
                     },
-                    _getSimpleOffset: function(offset, steps) {
+                    _roundByStep: function(delta) {
+                        return "strict" === this.option("stepPrecision") ? this._roundStrict(delta) : this._roundNotStrict(delta)
+                    },
+                    _getSteps: function() {
+                        return (0, _common.pairToObject)(this.option("step"), !this.option("roundStepValue"))
+                    },
+                    _roundNotStrict: function(delta) {
+                        var steps = this._getSteps();
                         return {
-                            x: offset.x - offset.x % steps.h,
-                            y: offset.y - offset.y % steps.v
+                            x: delta.x - delta.x % steps.h,
+                            y: delta.y - delta.y % steps.v
                         }
                     },
-                    _getStrictOffset: function(offset, steps, sides) {
+                    _roundStrict: function(delta) {
+                        var sides = this._movingSides;
+                        var offset = {
+                            x: delta.x * (sides.left ? -1 : 1),
+                            y: delta.y * (sides.top ? -1 : 1)
+                        };
+                        var steps = this._getSteps();
                         var location = this._elementLocation;
                         var size = this._elementSize;
                         var xPos = sides.left ? location.left : location.left + size.width;
@@ -36719,9 +36934,11 @@
                         if (newYShift > separatorOffset(steps.v, offset.y)) {
                             newOffsetY += steps.v
                         }
+                        var roundedOffset_x = (sides.left || sides.right) && !isSmallOffset(offset.x, steps.h) ? newOffsetX : 0,
+                            roundedOffset_y = (sides.top || sides.bottom) && !isSmallOffset(offset.y, steps.v) ? newOffsetY : 0;
                         return {
-                            x: (sides.left || sides.right) && !isSmallOffset(offset.x, steps.h) ? newOffsetX : 0,
-                            y: (sides.top || sides.bottom) && !isSmallOffset(offset.y, steps.v) ? newOffsetY : 0
+                            x: roundedOffset_x * (sides.left ? -1 : 1),
+                            y: roundedOffset_y * (sides.top ? -1 : 1)
                         }
                     },
                     _getMovingSides: function(e) {
@@ -36841,6 +37058,7 @@
                             case "stepPrecision":
                             case "step":
                             case "roundStepValue":
+                            case "_keepAspectRatio":
                                 break;
                             default:
                                 this.callBase(args)
@@ -40488,10 +40706,22 @@
                     onSelectionChanged: function() {
                         this._selectionStrategy.onSelectionChanged()
                     },
-                    changeItemSelection: function(itemIndex, keys) {
+                    changeItemSelection: function(itemIndex, keys, setFocusOnly) {
+                        var _this$options$allowLo, _this$options, _this = this;
                         var isSelectedItemsChanged;
                         var items = this.options.plainItems();
                         var item = items[itemIndex];
+                        var deferred;
+                        var allowLoadByRange = null === (_this$options$allowLo = (_this$options = this.options).allowLoadByRange) || void 0 === _this$options$allowLo ? void 0 : _this$options$allowLo.call(_this$options);
+                        var indexOffset;
+                        var focusedItemNotInLoadedRange = false;
+                        if (allowLoadByRange) {
+                            indexOffset = item.loadIndex - itemIndex;
+                            itemIndex = item.loadIndex;
+                            focusedItemNotInLoadedRange = this._focusedItemIndex >= 0 && !items.filter((function(it) {
+                                return it.loadIndex === _this._focusedItemIndex
+                            })).length
+                        }
                         if (!this.isSelectable() || !this.isDataItem(item)) {
                             return false
                         }
@@ -40499,17 +40729,26 @@
                         var itemKey = this.options.keyOf(itemData);
                         keys = keys || {};
                         if (keys.shift && "multiple" === this.options.mode && this._focusedItemIndex >= 0) {
-                            isSelectedItemsChanged = this.changeItemSelectionWhenShiftKeyPressed(itemIndex, items)
+                            if (focusedItemNotInLoadedRange) {
+                                isSelectedItemsChanged = itemIndex !== this._shiftFocusedItemIndex || this._focusedItemIndex !== this._shiftFocusedItemIndex;
+                                if (isSelectedItemsChanged) {
+                                    deferred = this.changeItemSelectionWhenShiftKeyInVirtualPaging(itemIndex)
+                                }
+                            } else {
+                                isSelectedItemsChanged = this.changeItemSelectionWhenShiftKeyPressed(itemIndex, items, indexOffset)
+                            }
                         } else if (keys.control) {
                             this._resetItemSelectionWhenShiftKeyPressed();
-                            var isSelected = this._selectionStrategy.isItemDataSelected(itemData);
-                            if ("single" === this.options.mode) {
-                                this.clearSelectedItems()
-                            }
-                            if (isSelected) {
-                                this._removeSelectedItem(itemKey)
-                            } else {
-                                this._addSelectedItem(itemData, itemKey)
+                            if (!setFocusOnly) {
+                                var isSelected = this._selectionStrategy.isItemDataSelected(itemData);
+                                if ("single" === this.options.mode) {
+                                    this.clearSelectedItems()
+                                }
+                                if (isSelected) {
+                                    this._removeSelectedItem(itemKey)
+                                } else {
+                                    this._addSelectedItem(itemData, itemKey)
+                                }
                             }
                             isSelectedItemsChanged = true
                         } else {
@@ -40521,8 +40760,10 @@
                             }
                         }
                         if (isSelectedItemsChanged) {
-                            this._focusedItemIndex = itemIndex;
-                            this.onSelectionChanged();
+                            (0, _deferred.when)(deferred).done((function() {
+                                _this._focusedItemIndex = itemIndex;
+                                !setFocusOnly && _this.onSelectionChanged()
+                            }));
                             return true
                         }
                     },
@@ -40546,12 +40787,24 @@
                     _resetFocusedItemIndex: function() {
                         this._focusedItemIndex = -1
                     },
-                    changeItemSelectionWhenShiftKeyPressed: function(itemIndex, items) {
+                    changeItemSelectionWhenShiftKeyInVirtualPaging: function(loadIndex) {
+                        var _this2 = this;
+                        var loadOptions = this.options.getLoadOptions(loadIndex, this._focusedItemIndex, this._shiftFocusedItemIndex);
+                        var deferred = new _deferred.Deferred;
+                        var indexOffset = loadOptions.skip;
+                        this.options.load(loadOptions).done((function(items) {
+                            _this2.changeItemSelectionWhenShiftKeyPressed(loadIndex, items, indexOffset);
+                            deferred.resolve()
+                        }));
+                        return deferred.promise()
+                    },
+                    changeItemSelectionWhenShiftKeyPressed: function(itemIndex, items, indexOffset) {
                         var isSelectedItemsChanged = false;
                         var itemIndexStep;
-                        var index;
+                        var indexOffsetDefined = (0, _type.isDefined)(indexOffset);
+                        var index = indexOffsetDefined ? this._focusedItemIndex - indexOffset : this._focusedItemIndex;
                         var keyOf = this.options.keyOf;
-                        var focusedItem = items[this._focusedItemIndex];
+                        var focusedItem = items[index];
                         var focusedData = this.options.getItemData(focusedItem);
                         var focusedKey = keyOf(focusedData);
                         var isFocusedItemSelected = focusedItem && this.isItemDataSelected(focusedData);
@@ -40560,10 +40813,14 @@
                         }
                         var data;
                         var itemKey;
+                        var startIndex;
+                        var endIndex;
                         if (this._shiftFocusedItemIndex !== this._focusedItemIndex) {
                             itemIndexStep = this._focusedItemIndex < this._shiftFocusedItemIndex ? 1 : -1;
-                            for (index = this._focusedItemIndex; index !== this._shiftFocusedItemIndex; index += itemIndexStep) {
-                                if (this.isDataItem(items[index])) {
+                            startIndex = indexOffsetDefined ? this._focusedItemIndex - indexOffset : this._focusedItemIndex;
+                            endIndex = indexOffsetDefined ? this._shiftFocusedItemIndex - indexOffset : this._shiftFocusedItemIndex;
+                            for (index = startIndex; index !== endIndex; index += itemIndexStep) {
+                                if (indexOffsetDefined || this.isDataItem(items[index])) {
                                     itemKey = keyOf(this.options.getItemData(items[index]));
                                     this._removeSelectedItem(itemKey);
                                     isSelectedItemsChanged = true
@@ -40572,8 +40829,10 @@
                         }
                         if (itemIndex !== this._shiftFocusedItemIndex) {
                             itemIndexStep = itemIndex < this._shiftFocusedItemIndex ? 1 : -1;
-                            for (index = itemIndex; index !== this._shiftFocusedItemIndex; index += itemIndexStep) {
-                                if (this.isDataItem(items[index])) {
+                            startIndex = indexOffsetDefined ? itemIndex - indexOffset : itemIndex;
+                            endIndex = indexOffsetDefined ? this._shiftFocusedItemIndex - indexOffset : this._shiftFocusedItemIndex;
+                            for (index = startIndex; index !== endIndex; index += itemIndexStep) {
+                                if (indexOffsetDefined || this.isDataItem(items[index])) {
                                     data = this.options.getItemData(items[index]);
                                     itemKey = keyOf(data);
                                     this._addSelectedItem(data, itemKey);
@@ -40581,7 +40840,7 @@
                                 }
                             }
                         }
-                        if (this.isDataItem(focusedItem) && !isFocusedItemSelected) {
+                        if ((indexOffsetDefined || this.isDataItem(focusedItem)) && !isFocusedItemSelected) {
                             this._addSelectedItem(focusedData, focusedKey);
                             isSelectedItemsChanged = true
                         }
@@ -40783,6 +41042,15 @@
                         }
                         return filter
                     },
+                    _isOnlyNegativeFiltersLeft: function(filters) {
+                        return filters.every((function(filterItem, i) {
+                            if (i % 2 === 0) {
+                                return Array.isArray(filterItem) && "!" === filterItem[0]
+                            } else {
+                                return "and" === filterItem
+                            }
+                        }))
+                    },
                     _addSelectionFilter: function(isDeselect, filter, isSelectAll) {
                         var currentFilter = isDeselect ? ["!", filter] : filter;
                         var currentOperation = isDeselect ? "and" : "or";
@@ -40790,8 +41058,12 @@
                         var selectionFilter = this.options.selectionFilter || [];
                         selectionFilter = this._denormalizeFilter(selectionFilter);
                         if (selectionFilter && selectionFilter.length) {
-                            this._removeSameFilter(selectionFilter, filter, isDeselect, isSelectAll);
+                            var removedIndex = this._removeSameFilter(selectionFilter, filter, isDeselect, isSelectAll);
                             var filterIndex = this._removeSameFilter(selectionFilter, filter, !isDeselect);
+                            var shouldCleanFilter = isDeselect && (-1 !== removedIndex || -1 !== filterIndex) && this._isOnlyNegativeFiltersLeft(selectionFilter);
+                            if (shouldCleanFilter) {
+                                selectionFilter = []
+                            }
                             var isKeyOperatorsAfterRemoved = this._isKeyFilter(filter) && this._hasKeyFiltersOnlyStartingFromIndex(selectionFilter, filterIndex);
                             needAddFilter = filter.length && !isKeyOperatorsAfterRemoved;
                             if (needAddFilter) {
@@ -41155,14 +41427,13 @@
                         this._initSelectedItemKeyHash();
                         this.updateSelectedItemKeyHash(this.options.selectedItemKeys)
                     },
-                    _loadSelectedItemsCore: function(keys, isDeselect, isSelectAll) {
+                    _loadSelectedItemsCore: function(keys, isDeselect, isSelectAll, filter) {
                         var deferred = new _deferred.Deferred;
                         var key = this.options.key();
                         if (!keys.length && !isSelectAll) {
                             deferred.resolve([]);
                             return deferred
                         }
-                        var filter = this.options.filter();
                         if (isSelectAll && isDeselect && !filter) {
                             deferred.resolve(this.getSelectedItems());
                             return deferred
@@ -41265,12 +41536,13 @@
                     _loadSelectedItems: function(keys, isDeselect, isSelectAll, updatedKeys) {
                         var that = this;
                         var deferred = new _deferred.Deferred;
+                        var filter = that.options.filter();
                         this._shouldMergeWithLastRequest = this._requestInProgress();
                         this._lastRequestData = this._collectLastRequestData(keys, isDeselect, isSelectAll, updatedKeys);
                         (0, _deferred.when)(that._lastLoadDeferred).always((function() {
                             var currentKeys = that._updateKeysByLastRequestData(keys, isDeselect, isSelectAll);
                             that._shouldMergeWithLastRequest = false;
-                            that._loadSelectedItemsCore(currentKeys, isDeselect, isSelectAll).done(deferred.resolve).fail(deferred.reject)
+                            that._loadSelectedItemsCore(currentKeys, isDeselect, isSelectAll, filter).done(deferred.resolve).fail(deferred.reject)
                         }));
                         that._lastLoadDeferred = deferred;
                         return deferred
@@ -41604,7 +41876,7 @@
                             return getFilterExpressionForDate.apply(column, arguments)
                         } else if ("number" === dataType) {
                             return getFilterExpressionForNumber.apply(column, arguments)
-                        } else if ("object" !== dataType) {
+                        } else {
                             filter = [selector, selectedFilterOperation || "=", filterValue]
                         }
                         return filter
@@ -44558,13 +44830,22 @@
                         var formatObject = this._getLabelFormatObject(value, labelOptions, range);
                         return (0, _type.isFunction)(labelOptions.customizeHint) ? labelOptions.customizeHint.call(formatObject, formatObject) : void 0
                     },
-                    formatRange: function(startValue, endValue, interval) {
-                        return (0, _smart_formatter.formatRange)(startValue, endValue, interval, this.getOptions())
+                    formatRange: function(startValue, endValue, interval, argumentFormat) {
+                        return (0, _smart_formatter.formatRange)({
+                            startValue: startValue,
+                            endValue: endValue,
+                            tickInterval: interval,
+                            argumentFormat: argumentFormat,
+                            axisOptions: this.getOptions()
+                        })
                     },
                     _setTickOffset: function() {
                         var options = this._options;
                         var discreteAxisDivisionMode = options.discreteAxisDivisionMode;
                         this._tickOffset = +("crossLabels" !== discreteAxisDivisionMode || !discreteAxisDivisionMode)
+                    },
+                    aggregatedPointBetweenTicks: function() {
+                        return "crossTicks" === this._options.aggregatedPointsPosition
                     },
                     resetApplyingAnimation: function(isFirstDrawing) {
                         this._resetApplyingAnimation = true;
@@ -47216,10 +47497,15 @@
               !*** ./artifacts/transpiled-renovation-npm/viz/axes/smart_formatter.js ***!
               \*************************************************************************/
             function(__unused_webpack_module, exports, __webpack_require__) {
-                exports.formatRange = function(startValue, endValue, tickInterval, _ref) {
-                    var dataType = _ref.dataType,
-                        type = _ref.type,
-                        logarithmBase = _ref.logarithmBase;
+                exports.formatRange = function(_ref) {
+                    var startValue = _ref.startValue,
+                        endValue = _ref.endValue,
+                        tickInterval = _ref.tickInterval,
+                        argumentFormat = _ref.argumentFormat,
+                        _ref$axisOptions = _ref.axisOptions,
+                        dataType = _ref$axisOptions.dataType,
+                        type = _ref$axisOptions.type,
+                        logarithmBase = _ref$axisOptions.logarithmBase;
                     if ("discrete" === type) {
                         return ""
                     }
@@ -47290,7 +47576,9 @@
                         dataType: dataType,
                         tickInterval: tickInterval,
                         logarithmBase: logarithmBase,
-                        labelOptions: {}
+                        labelOptions: {
+                            format: argumentFormat
+                        }
                     };
                     return "".concat(smartFormatter(startValue, formatOptions), " - ").concat(smartFormatter(endValue, formatOptions))
                 };
@@ -48440,7 +48728,7 @@
                         tick = _ref2[0],
                         insideTick = _ref2[1];
                     if (!(0, _type.isDefined)(tick) || mathAbs(getValue(breakValue) - getValue(tick)) / interval > .25) {
-                        if ((0, _type.isDefined)(insideTick)) {
+                        if ((0, _type.isDefined)(insideTick) && mathAbs(getValue(insideTick) - getValue(tick)) / interval < 2) {
                             tick = insideTick
                         } else if (!(0, _type.isDefined)(tick)) {
                             tick = breakValue
@@ -48462,9 +48750,6 @@
                                 return tick >= b.to
                             }));
                             var to = addCorrection(getBaseTick(b.to, [].concat(breakTicks[0], ticks[ticks.length - breakTicks.length - 1]), interval, getValue), -correction);
-                            if (getValue(to) - getValue(from) < 0) {
-                                to = addCorrection(breakTicks[0], -correction)
-                            }
                             if (getValue(to) - getValue(from) < interval && !b.gapSize) {
                                 return result
                             }
@@ -52548,7 +52833,10 @@
                             name: "pointHoverChanged"
                         },
                         onDone: {
-                            name: "done"
+                            name: "done",
+                            actionSettings: {
+                                excludeValidators: ["disabled"]
+                            }
                         },
                         onZoomStart: {
                             name: "zoomStart"
@@ -53167,7 +53455,7 @@
                         customizeLabel: "REFRESH_SERIES_REINIT",
                         scrollBar: "SCROLL_BAR"
                     },
-                    _optionChangesOrder: ["ROTATED", "PALETTE", "REFRESH_SERIES_REINIT", "AXES_AND_PANES", "INIT", "REINIT", "DATA_SOURCE", "REFRESH_SERIES_DATA_INIT", "DATA_INIT", "FORCE_DATA_INIT", "REFRESH_AXES", "CORRECT_AXIS"],
+                    _optionChangesOrder: ["ROTATED", "PALETTE", "REFRESH_SERIES_REINIT", "USE_SPIDER_WEB", "AXES_AND_PANES", "INIT", "REINIT", "DATA_SOURCE", "REFRESH_SERIES_DATA_INIT", "DATA_INIT", "FORCE_DATA_INIT", "REFRESH_AXES", "CORRECT_AXIS"],
                     _customChangesOrder: ["ANIMATION", "REFRESH_SERIES_FAMILIES", "FORCE_FIRST_DRAWING", "FORCE_DRAWING", "FORCE_RENDER", "VISUAL_RANGE", "SCROLL_BAR", "REINIT", "REFRESH", "FULL_RENDER"],
                     _change_ANIMATION: function() {
                         this._renderer.updateAnimationOptions(this._getAnimationOptions())
@@ -58393,6 +58681,9 @@
                                 class: "".concat(this._rootClassPrefix, "-annotations")
                             }).css(this._getAnnotationStyles()).linkOn(this._renderer.root, "annotations").linkAppend();
                             _events_engine.default.on(getDocument(), POINTER_ACTION, (function(e) {
+                                if (_this2._disposed) {
+                                    return
+                                }
                                 if (!_this2._annotations.tooltip.isCursorOnTooltip(e.pageX, e.pageY)) {
                                     _this2._annotations.hideTooltip()
                                 }
@@ -58663,10 +58954,16 @@
                 }() : _dom_component.default.inherit({
                     _eventsMap: {
                         onIncidentOccurred: {
-                            name: "incidentOccurred"
+                            name: "incidentOccurred",
+                            actionSettings: {
+                                excludeValidators: ["disabled"]
+                            }
                         },
                         onDrawn: {
-                            name: "drawn"
+                            name: "drawn",
+                            actionSettings: {
+                                excludeValidators: ["disabled"]
+                            }
                         }
                     },
                     _getDefaultOptions: function() {
@@ -58937,8 +59234,8 @@
                     },
                     _initEventTrigger: function() {
                         var that = this;
-                        that._eventTrigger = (0, _base_widget.createEventTrigger)(that._eventsMap, (function(name) {
-                            return that._createActionByOption(name)
+                        that._eventTrigger = (0, _base_widget.createEventTrigger)(that._eventsMap, (function(name, actionSettings) {
+                            return that._createActionByOption(name, actionSettings)
                         }))
                     },
                     _calculateCanvas: function() {
@@ -59228,7 +59525,7 @@
 
                     function createEvent(name) {
                         var eventInfo = eventsMap[name];
-                        triggers[eventInfo.name] = callbackGetter(name)
+                        triggers[eventInfo.name] = callbackGetter(name, eventInfo.actionSettings)
                     }
 
                     function triggerEvent(name, arg, complete) {
@@ -59954,9 +60251,15 @@
                         margin: exportOptions.margin,
                         svgToCanvas: exportOptions.svgToCanvas,
                         forceProxy: exportOptions.forceProxy,
-                        exportingAction: widget._createActionByOption("onExporting"),
-                        exportedAction: widget._createActionByOption("onExported"),
-                        fileSavingAction: widget._createActionByOption("onFileSaving")
+                        exportingAction: widget._createActionByOption("onExporting", {
+                            excludeValidators: ["disabled"]
+                        }),
+                        exportedAction: widget._createActionByOption("onExported", {
+                            excludeValidators: ["disabled"]
+                        }),
+                        fileSavingAction: widget._createActionByOption("onFileSaving", {
+                            excludeValidators: ["disabled"]
+                        })
                     }
                 }
                 var plugin = {
@@ -65476,6 +65779,7 @@
                             placeholderSize: null,
                             logarithmBase: 10,
                             discreteAxisDivisionMode: "betweenLabels",
+                            aggregatedPointsPosition: "betweenTicks",
                             width: 1,
                             label: {
                                 visible: true
@@ -67881,6 +68185,7 @@
                 var _size = __webpack_require__( /*! ../../core/utils/size */ 58664);
                 var _dom_adapter = _interopRequireDefault(__webpack_require__( /*! ../../core/dom_adapter */ 73349));
                 var _window = __webpack_require__( /*! ../../core/utils/window */ 58201);
+                var _dom = __webpack_require__( /*! ../../core/utils/dom */ 3532);
                 var _inflector = __webpack_require__( /*! ../../core/utils/inflector */ 78008);
                 var _renderer = _interopRequireDefault(__webpack_require__( /*! ../../core/renderer */ 68374));
                 var _renderer2 = __webpack_require__( /*! ./renderers/renderer */ 56453);
@@ -67906,17 +68211,27 @@
                         left: "-9999px"
                     }).detach()
                 }
+
+                function createTextHtml() {
+                    return (0, _renderer.default)("<div>").css({
+                        position: "relative",
+                        display: "inline-block",
+                        padding: 0,
+                        margin: 0,
+                        border: "0px solid transparent"
+                    })
+                }
                 var Tooltip = function(params) {
-                    var renderer;
                     this._eventTrigger = params.eventTrigger;
                     this._widgetRoot = params.widgetRoot;
                     this._widget = params.widget;
+                    this._textHtmlContainers = [];
                     this._wrapper = (0, _renderer.default)("<div>").css({
                         position: "absolute",
                         overflow: "hidden",
                         pointerEvents: "none"
                     }).addClass(params.cssClass);
-                    this._renderer = renderer = new _renderer2.Renderer({
+                    var renderer = this._renderer = new _renderer2.Renderer({
                         pathModified: params.pathModified,
                         container: this._wrapper[0]
                     });
@@ -67931,13 +68246,7 @@
                         margin: 0,
                         border: "0px solid transparent"
                     }).appendTo(this._wrapper);
-                    this._textHtml = (0, _renderer.default)("<div>").css({
-                        position: "relative",
-                        display: "inline-block",
-                        padding: 0,
-                        margin: 0,
-                        border: "0px solid transparent"
-                    }).appendTo(this._textGroupHtml)
+                    this._textHtml = createTextHtml().appendTo(this._textGroupHtml)
                 };
                 exports.Tooltip = Tooltip;
                 Tooltip.prototype = {
@@ -67970,7 +68279,6 @@
                         });
                         that._customizeTooltip = options.customizeTooltip;
                         var textGroupHtml = that._textGroupHtml;
-                        var textHtml = that._textHtml;
                         if (this.plaque) {
                             this.plaque.clear()
                         }
@@ -68011,12 +68319,22 @@
                                         pointerEvents: pointerEvents
                                     });
                                     if (useTemplate) {
+                                        var htmlContainers = that._textHtmlContainers;
+                                        var containerToTemplateRender = createTextHtml();
+                                        htmlContainers.push(containerToTemplateRender);
                                         template.render({
                                             model: state.formatObject,
-                                            container: textHtml,
+                                            container: containerToTemplateRender,
                                             onRendered: function() {
-                                                state.html = textHtml.html();
-                                                if (0 === (0, _size.getWidth)(textHtml) && 0 === (0, _size.getHeight)(textHtml)) {
+                                                elements = htmlContainers.splice(0, htmlContainers.length - 1), void elements.forEach((function(el) {
+                                                    return el.remove()
+                                                }));
+                                                var elements;
+                                                var containerWithContent = htmlContainers[0];
+                                                (0, _dom.replaceWith)(that._textHtml, containerWithContent);
+                                                that._textHtml = containerWithContent;
+                                                state.html = containerWithContent.html();
+                                                if (0 === (0, _size.getWidth)(containerWithContent) && 0 === (0, _size.getHeight)(containerWithContent)) {
                                                     _this.plaque.clear();
                                                     templateCallback(false);
                                                     return
@@ -68029,7 +68347,8 @@
                                                     stroke: state.borderColor,
                                                     "pointer-events": pointerEvents
                                                 });
-                                                templateCallback(true)
+                                                templateCallback(true);
+                                                that._textHtmlContainers = []
                                             }
                                         });
                                         return
@@ -68037,7 +68356,7 @@
                                         that._text.attr({
                                             text: ""
                                         });
-                                        textHtml.html(state.html)
+                                        that._textHtml.html(state.html)
                                     }
                                 } else {
                                     that._text.css({
@@ -68066,7 +68385,7 @@
                                 var bBox;
                                 var getComputedStyle = window.getComputedStyle;
                                 if (getComputedStyle) {
-                                    bBox = getComputedStyle(textHtml.get(0));
+                                    bBox = getComputedStyle(that._textHtml.get(0));
                                     bBox = {
                                         x: 0,
                                         y: 0,
@@ -68074,7 +68393,7 @@
                                         height: mathCeil(parseFloat(bBox.height))
                                     }
                                 } else {
-                                    bBox = textHtml.get(0).getBoundingClientRect();
+                                    bBox = that._textHtml.get(0).getBoundingClientRect();
                                     bBox = {
                                         x: 0,
                                         y: 0,
@@ -68244,6 +68563,9 @@
                             return result
                         }(this._options, _specialFormat) : this._options;
                         return format(value, options.format)
+                    },
+                    getOptions: function() {
+                        return this._options
                     },
                     getLocation: function() {
                         return (0, _utils.normalizeEnum)(this._options.location)
@@ -75129,7 +75451,11 @@
                         }
                     },
                     _optionChangesMap: {
-                        useSpiderWeb: "AXES_AND_PANES"
+                        useSpiderWeb: "USE_SPIDER_WEB"
+                    },
+                    _change_USE_SPIDER_WEB: function() {
+                        this._disposeAxes();
+                        this._requestChange(["AXES_AND_PANES"])
                     },
                     _getExtraOptions: function() {
                         return {
@@ -76140,7 +76466,7 @@
                     dxRangeSelector.prototype._optionChangesMap[name] = "MOSTLY_TOTAL"
                 }));
 
-                function getShiftDirection() {
+                function getSharpDirection() {
                     return 1
                 }
 
@@ -76184,18 +76510,12 @@
                         getTemplate: function() {}
                     });
                     this._updateSelectedRangeCallback = params.updateSelectedRange;
-                    this._axis.getAxisSharpDirection = this._axis.getSharpDirectionByCoords = getShiftDirection;
+                    this._axis.getAxisSharpDirection = this._axis.getSharpDirectionByCoords = getSharpDirection;
                     this._axis.getTickStartPositionShift = getTickStartPositionShift;
                     this._axis._checkShiftedLabels = checkShiftedLabels
                 }
                 AxisWrapper.prototype = {
                     constructor: AxisWrapper,
-                    dispose: function() {
-                        this._axis.dispose()
-                    },
-                    calculateInterval: function(value, prevValue) {
-                        return this._axis.calculateInterval(value, prevValue)
-                    },
                     update: function(options, isCompactMode, canvas, businessRange, seriesDataSource) {
                         var axis = this._axis;
                         axis.updateOptions(function(scaleOptions, isCompactMode, height, axisPosition) {
@@ -76263,10 +76583,12 @@
                         return this._axis.getOptions() || {}
                     }
                 };
-                ["setMarginOptions", "getFullTicks", "updateCanvas", "updateOptions", "getAggregationInfo", "getTranslator", "getVisualRangeLength", "getVisibleArea", "getMarginOptions", "getVisualRangeCenter"].forEach((function(methodName) {
-                    AxisWrapper.prototype[methodName] = function() {
-                        var axis = this._axis;
-                        return axis[methodName].apply(axis, arguments)
+                (0, _iterator.each)(_base_axis.Axis.prototype, (function(field) {
+                    if ("constructor" !== field && "_" !== field[0] && (0, _type2.isFunction)(_base_axis.Axis.prototype[field]) && !(field in AxisWrapper.prototype)) {
+                        AxisWrapper.prototype[field] = function() {
+                            var axis = this._axis;
+                            return axis[field].apply(axis, arguments)
+                        }
                     }
                 }));
                 (0, _component_registrator.default)("dxRangeSelector", dxRangeSelector);
@@ -79243,7 +79565,8 @@
                     },
                     getValueRangeInitialValue: areaSeries.getValueRangeInitialValue,
                     _patchMarginOptions: function(options) {
-                        options.checkInterval = !this.useAggregation();
+                        var _this$getArgumentAxis;
+                        options.checkInterval = !this.useAggregation() || (null === (_this$getArgumentAxis = this.getArgumentAxis()) || void 0 === _this$getArgumentAxis ? void 0 : _this$getArgumentAxis.aggregatedPointBetweenTicks());
                         return options
                     },
                     _defaultAggregator: "sum",
@@ -80149,23 +80472,33 @@
                             }
                         }
                         var aggregatedData = [];
-                        for (var i = 1; i < ticks.length; i++) {
-                            var intervalEnd = ticks[i];
-                            var intervalStart = ticks[i - 1];
-                            var dataInInterval = [];
-                            while (data[dataIndex] && data[dataIndex].argument < intervalEnd) {
-                                if (data[dataIndex].argument >= intervalStart) {
-                                    dataInInterval.push(data[dataIndex])
-                                }
-                                dataIndex++
-                            }
+                        if (1 === ticks.length) {
                             var aggregationInfo = {
-                                intervalStart: intervalStart,
-                                intervalEnd: intervalEnd,
-                                aggregationInterval: interval,
-                                data: dataInInterval.map(getData)
+                                intervalStart: ticks[0],
+                                intervalEnd: ticks[0],
+                                aggregationInterval: null,
+                                data: data.map(getData)
                             };
                             addAggregatedData(aggregatedData, aggregationMethod(aggregationInfo, that), aggregationInfo)
+                        } else {
+                            for (var i = 1; i < ticks.length; i++) {
+                                var intervalEnd = ticks[i];
+                                var intervalStart = ticks[i - 1];
+                                var dataInInterval = [];
+                                while (data[dataIndex] && data[dataIndex].argument < intervalEnd) {
+                                    if (data[dataIndex].argument >= intervalStart) {
+                                        dataInInterval.push(data[dataIndex])
+                                    }
+                                    dataIndex++
+                                }
+                                var _aggregationInfo = {
+                                    intervalStart: intervalStart,
+                                    intervalEnd: intervalEnd,
+                                    aggregationInterval: interval,
+                                    data: dataInInterval.map(getData)
+                                };
+                                addAggregatedData(aggregatedData, aggregationMethod(_aggregationInfo, that), _aggregationInfo)
+                            }
                         }
                         that._endUpdateData();
                         return aggregatedData
@@ -81052,7 +81385,8 @@
                     getRangeData: function(series) {
                         var points = series.getPoints();
                         var useAggregation = series.useAggregation();
-                        var argumentCalculator = getRangeCalculator(series.argumentAxisType, points.length > 1 && series.getArgumentAxis(), createGetLogFunction(series.argumentAxisType, series.getArgumentAxis()));
+                        var argumentAxis = series.getArgumentAxis();
+                        var argumentCalculator = getRangeCalculator(series.argumentAxisType, points.length > 1 && argumentAxis, createGetLogFunction(series.argumentAxisType, argumentAxis));
                         var valueRangeCalculator = getRangeCalculator(series.valueAxisType, null, createGetLogFunction(series.valueAxisType, series.getValueAxis()));
                         var viewportReducer = getViewportReducer(series);
                         var range = points.reduce((function(range, point, index, points) {
@@ -81067,7 +81401,7 @@
                             }
                             return range
                         }), {
-                            arg: getInitialRange(series.argumentAxisType, series.argumentType, series.getArgumentRangeInitialValue()),
+                            arg: getInitialRange(series.argumentAxisType, series.argumentType, null !== argumentAxis && void 0 !== argumentAxis && argumentAxis.aggregatedPointBetweenTicks() ? void 0 : series.getArgumentRangeInitialValue()),
                             val: getInitialRange(series.valueAxisType, series.valueType, points.length ? series.getValueRangeInitialValue() : void 0),
                             viewport: getInitialRange(series.valueAxisType, series.valueType, points.length ? series.getValueRangeInitialValue() : void 0)
                         });
@@ -81076,7 +81410,7 @@
                             if ("discrete" === series.argumentAxisType) {
                                 range.arg = argumentRange
                             } else {
-                                var viewport = series.getArgumentAxis().getViewport();
+                                var viewport = argumentAxis.getViewport();
                                 if ((0, _type.isDefined)(viewport.startValue) || (0, _type.isDefined)(viewport.length)) {
                                     argumentCalculator(range.arg, argumentRange.min, argumentRange.min)
                                 }
@@ -82749,7 +83083,7 @@
                         var aggregationInfo = this.aggregationInfo;
                         if (aggregationInfo) {
                             var axis = this.series.getArgumentAxis();
-                            var rangeText = axis.formatRange(aggregationInfo.intervalStart, aggregationInfo.intervalEnd, aggregationInfo.aggregationInterval);
+                            var rangeText = axis.formatRange(aggregationInfo.intervalStart, aggregationInfo.intervalEnd, aggregationInfo.aggregationInterval, tooltip.getOptions().argumentFormat);
                             if (rangeText) {
                                 tooltipFormatObject.valueText += "\n".concat(rangeText)
                             }
@@ -85977,7 +86311,11 @@
                     },
                     _getIntervalCenter: function(intervalStart, intervalEnd) {
                         var argAxis = this.getArgumentAxis();
-                        return "discrete" !== argAxis.getOptions().type ? argAxis.getVisualRangeCenter({
+                        var axisOptions = argAxis.getOptions();
+                        if (argAxis.aggregatedPointBetweenTicks()) {
+                            return intervalStart
+                        }
+                        return "discrete" !== axisOptions.type ? argAxis.getVisualRangeCenter({
                             minVisible: intervalStart,
                             maxVisible: intervalEnd
                         }, true) : intervalStart
@@ -86614,6 +86952,9 @@
                         calculateInterval: _common.noop,
                         getMarginOptions: function() {
                             return {}
+                        },
+                        aggregatedPointBetweenTicks: function() {
+                            return false
                         }
                     }
                 }

@@ -15,7 +15,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="63BITS-Libraries-DotNetStandart" Version="1.2.0.1" />
-    <PackageReference Include="DevExtreme.AspNet.Core" Version="21.2.5" />
+    <PackageReference Include="DevExtreme.AspNet.Core" Version="21.2.7" />
     <PackageReference Include="DevExtreme.AspNet.Data" Version="2.8.6" />
     <PackageReference Include="Imageflow.Net" Version="0.7.24" />
     <PackageReference Include="Imageflow.Server" Version="0.5.10" />

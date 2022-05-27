@@ -157,6 +157,10 @@ namespace SixtyThreeBits.Web.Reusables.Core
             .FocusedRowIndex(0)
             .AutoExpandAll(true)
             .RootValue(null)
+            .Toolbar(Options =>
+            {
+                Options.Visible(false);
+            })
             .Scrolling(Options =>
             {
                 Options.Mode(TreeListScrollingMode.Standard);
@@ -223,10 +227,14 @@ namespace SixtyThreeBits.Web.Reusables.Core
     public static class DevExtremeBuilderCustomExtensions
     {
         #region Methods
-        public static DataGridColumnBuilder<T> InitCheckboxColumn<T>(this DataGridColumnBuilder<T> Column)
+        public static DataGridColumnBuilder<T> InitCheckboxColumn<T>(this DataGridColumnBuilder<T> Column, bool AllowNull = false, bool DefaultValue = false)
         {
             Column.TrueText(Resources.TextYes);
             Column.FalseText(Resources.TextNo);
+            if (!AllowNull)
+            {
+                Column.CalculateCellValue($"function(e){{ var DataField = this.dataField;  var Value = e[DataField]; if ($.isEmptyObject(e)) {{ e[DataField] = {DefaultValue.ToString().ToLower()}; }} else if(Value == null){{e[DataField] = false;}}  return e[DataField]; }}");
+            }
             return Column;
         }
 
