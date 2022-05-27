@@ -109,7 +109,7 @@
 }*/
 
 .t63-section[data-background-color="true"]{
-	background-color: #e6e9ed;
+	background-color: #F5F5F5;
 }
 
 .t63-section .bg-img{
@@ -121,6 +121,9 @@
 }
 .t63-section.has-sm-img .bg-img{
 	background-size: contain;
+}
+.t63-section.has-sm-img .img-col figure img{
+	object-fit: contain;
 }
 
 .t63-section .title-container,
@@ -149,10 +152,39 @@
 }
 
 .t63-section .t63-article,
-.t63-section .t63-padding-v{
+.t63-section .t63-padding-v,
+.t63-section[data-spacing-v="md"] .t63-article,
+.t63-section[data-spacing-v="md"] .t63-padding-v{
     padding-top: 40px;
 	padding-bottom: 40px;
 }
+.t63-section[data-spacing-v="xs"] .t63-article,
+.t63-section[data-spacing-v="xs"] .t63-padding-v{
+    padding-top: 10px;
+	padding-bottom: 10px;
+}
+.t63-section[data-spacing-v="sm"] .t63-article,
+.t63-section[data-spacing-v="sm"] .t63-padding-v{
+    padding-top: 20px;
+	padding-bottom: 20px;
+}
+.t63-section[data-spacing-v="lg"] .t63-article,
+.t63-section[data-spacing-v="lg"] .t63-padding-v{
+    padding-top: 60px;
+	padding-bottom: 60px;
+}
+.t63-section[data-spacing-v="xl"] .t63-article,
+.t63-section[data-spacing-v="xl"] .t63-padding-v{
+    padding-top: 80px;
+	padding-bottom: 80px;
+}
+
+.t63-section[data-spacing-v="none"] .t63-article,
+.t63-section[data-spacing-v="none"] .t63-padding-v{
+    padding-top: 0;
+	padding-bottom: 0;
+}
+
 .t63-section .t63-article > .title-container,
 .t63-section-title-container .title-container{
 	text-align: center;
@@ -286,6 +318,11 @@
 		min-height: 100px;
 		padding-top: 45%;
 	}
+	.t63-section .img-col .img-container figure{
+		position: absolute;
+		top: 0;
+		left: 0;
+	}
 	.t63-section.section--img-sm .text-col {
 		padding-bottom: 40px;
 	}
@@ -392,17 +429,18 @@
 .t63-section.img-section[data-is-fullscreen="true"] > .container,
 .t63-section.slider-section[data-is-fullscreen="true"] > .container{
 	max-width: 100% !important;
-	padding: 0 !important;
+	padding-left: 0 !important;
+	padding-right: 0 !important;
 }
 .t63-section.img-section[data-is-fullscreen="false"] .t63-slide-container,
 .t63-section.slider-section[data-is-fullscreen="false"] .t63-slider .slick-list{
 	border-radius: 8px;
 }
-.t63-section.img-section[data-is-fullscreen="false"] > .container,
+/*.t63-section.img-section[data-is-fullscreen="false"] > .container,
 .t63-section.slider-section[data-is-fullscreen="false"] > .container{
 	padding-top: 40px;
     padding-bottom: 40px;
-}
+}*/
 
 .t63-section .slide-content{
 	display: flex;
@@ -1524,18 +1562,38 @@
 	position: relative;
 }
 
-.cards-grid-item .title-container{
+.cards-grid-item .head{
+	display: flex;
+	align-items: flex-start;
 	border-bottom: 1px solid #cfcfcf;
 	padding: 28px 0 16px;
+}
+.cards-grid-item .head:last-child{
+	border: 0;
+	padding: 28px 0;
+}
+
+.cards-grid-item .head .t63-icon-container{
+	flex-shrink: 0;
+}
+.cards-grid-item .head .t63-icon-wrap{
+	display: flex;
+	width: 34px;
+}
+.cards-grid-item .head .t63-icon-wrap i {
+    color: #262626;
+    font-size: 20px;
+}
+.cards-grid-item .head .t63-icon-wrap img {
+    width: 24px;
+}
+
+.cards-grid-item .title-container{
 	margin: 0;
 }
 .t63-cards-grid-section .cards-grid-item .title{
 	font-size: 24px;
 	text-align: center;
-}
-.cards-grid-item .title-container:last-child{
-	border: 0;
-	padding: 28px 0;
 }
 
 .cards-grid-item .text-container{
@@ -2062,6 +2120,36 @@
 	}
 }
 /* ---------- /jwPlayer grid ---------- */
+
+
+/* ---------- article2ColWithVideo ---------- */
+[data-section="article2ColWithVideo"] .video-col{
+	display: flex;
+	flex-direction: column;
+	padding: 0;
+}
+[data-section="article2ColWithVideo"] .video-col > *{
+	margin: auto 0;
+}
+[data-section="article2ColWithVideo"][data-reverse="true"] .container{
+	flex-direction: row-reverse;
+}
+/* ---------- /article2ColWithVideo ---------- */
+
+
+/* ---------- article2ColWithJwPlayer ---------- */
+[data-section="article2ColWithJwPlayer"] .video-col{
+	display: flex;
+	flex-direction: column;
+	padding: 0;
+}
+[data-section="article2ColWithJwPlayer"] .video-col > *{
+	margin: auto 0;
+}
+[data-section="article2ColWithJwPlayer"][data-reverse="true"] .container{
+	flex-direction: row-reverse;
+}
+/* ---------- /article2ColWithJwPlayer ---------- */
 
 
 /* ---------- post cards grid ---------- */
