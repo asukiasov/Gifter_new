@@ -64,6 +64,18 @@
         });        
     },
 
+    Focus: function () {
+        return this.Editor.focus();
+    },
+
+    GetContent: function () {
+        return this.Editor.getContent();
+    },
+
+    SetContent: function (Content) {
+        return this.Editor.setContent(Content);
+    },
+
     RemovePoweredBy: function () {        
         $('[aria-label="Powered by Tiny"]').remove();
     }
