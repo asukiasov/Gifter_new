@@ -101,8 +101,6 @@ namespace SixtyThreeBits.Web.Admin.Controllers
         {
             Model.PluginsClient.Enable63BitsForms(true).EnableFancybox(true).EnableDevextreme(true).EnableTinyMce(true);
             var ViewModel = Model.GetNewsPropertiesViewModel(ViewModel: null);
-            Model.PageTitle.Set(Model.DBItemNews.NewsTitle);
-            Model.Breadcrumbs.RenameLastItem(Model.DBItemNews.NewsTitle);
             return View(ViewNames.Admin.News.NewsItem, ViewModel);
         }
 
@@ -113,9 +111,6 @@ namespace SixtyThreeBits.Web.Admin.Controllers
             var Result = default(IActionResult);
             Model.PluginsClient.Enable63BitsForms(true).EnableFancybox(true).EnableDevextreme(true).EnableTinyMce(true);
             var ViewModel = Model.GetNewsPropertiesViewModel(ViewModel: SubmitModel);
-
-            Model.PageTitle.Set(Model.DBItemNews.NewsTitle);
-            Model.Breadcrumbs.RenameLastItem(Model.DBItemNews.NewsTitle);
 
             await Model.ValidateNewsPropertiesViewModel(ViewModel);
             if (ViewModel.IsValid)

@@ -93,7 +93,8 @@ namespace SixtyThreeBits.Web.Admin.Models
                     .OnInitialized("NewsModel.OnNewsGridInit")
                     .Columns(Columns =>
                     {
-                        Columns.Add().Width(30).Caption(" ").Alignment(HorizontalAlignment.Center).CellTemplate(new JS("NewsModel.GetDetailsButtonColumnCellHtml"));
+                        //Columns.Add().Width(30).Caption(" ").Alignment(HorizontalAlignment.Center).CellTemplate(new JS("NewsModel.GetDetailsButtonColumnCellHtml"));
+                        Columns.Add().Width(30).Caption(" ").Alignment(HorizontalAlignment.Center).InitDetailsUrlCellTemplate(nameof(GridItem.UrlNewsProperties));
                         Columns.AddFor(m => m.NewsTitle).Caption("Title").Width(400).ValidationRules(Options =>
                         {
                             Options.AddRequired();

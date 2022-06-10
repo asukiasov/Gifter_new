@@ -328,6 +328,11 @@ namespace SixtyThreeBits.Web.Reusables.Core
 
             return DateBox;
         }
+        
+        public static DataGridColumnBuilder<T> InitDetailsUrlCellTemplate<T>(this DataGridColumnBuilder<T> Column,string UrlPropertyName)
+        {
+            return Column.CellTemplate($"<a href=\"<%-data.{UrlPropertyName}%>\"><i class=\"fas fa-info-circle\"></i></a>");
+        }
         #endregion
 
         #region Enums
