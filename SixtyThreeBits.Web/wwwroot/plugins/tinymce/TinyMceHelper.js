@@ -6,6 +6,7 @@
     FileManagerPath: null,
     CustomToolbars: '',
     Setup: null,
+    Editor: null,
     PlaceHolders: [],
 
     Display: function () {
@@ -97,6 +98,7 @@ function TinyMCE(Options) {
         }
 
         _this.Setup = function (editor) {
+            _this.Editor = editor;
             if (Options.Setup) {
                 Options.Setup(editor);
             }
