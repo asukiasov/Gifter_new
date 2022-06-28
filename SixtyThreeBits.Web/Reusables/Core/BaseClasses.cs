@@ -126,24 +126,18 @@ namespace SixtyThreeBits.Web.Reusables.Core
         }
 
         public string GetRouteByName(string RouteName, object RouteValues = null, bool GetFullPath = false)
-        {
-            string Protocol = GetFullPath ? (IsHttps ? Constants.Protocols.HTTPS : Constants.Protocols.HTTP) : null;
-            RouteName = string.IsNullOrWhiteSpace(Culture) || Culture == CultureDefault ? RouteName : $"{RouteName}Culture";
-            var UrlResult = Url.RouteUrl(RouteName, RouteValues, Protocol);            
-            return UrlResult;
-
-            /* Multilanguage Option
-             var Result = Url.RouteUrl(RouteName, RouteValues);
-            if(Language != Constants.Languages.GEORGIAN)
+        {            
+            var Result = Url.RouteUrl(RouteName, RouteValues);
+            if (Culture != Constants.Languages.ENGLISH)
             {
-                Result = $"{WebsiteHttpPath}{Language}{Result}";
+                Result = $"{WebsiteHttpPath}{Result.TrimStart('/')}";                
             }
             else
             {
-                Result = $"{WebsiteHttpPath}{Result.TrimStart('/')}";
+                Result = $"{WebsiteHttpPath}{Culture}{Result}";
             }
             return Result;
-             */
+
         }
 
         public async Task SaveUploadedFile(IFormFile PostedFile, string Filename, string FolderPhysicalPath = null)

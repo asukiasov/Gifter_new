@@ -23,7 +23,8 @@ namespace SixtyThreeBits.Web.Filters
             InitStartUp(FilterContext);
             await InitSystemProperties();
             InitClientPlugins();
-            await InitMenu();            
+            await InitMenu();
+            InitLanguageSwitch();
 
             LocalUtilities.SetLayoutViewModel(ViewData: C.ViewData, ViewModel: ViewModel, Key: Constants.ViewData.LayoutViewModel);
             await next();
@@ -104,6 +105,17 @@ namespace SixtyThreeBits.Web.Filters
         async Task InitSystemProperties()
         {
             Model.SystemProperties = await Model.DataAccessFactory.SystemProperties.GetSystemProperties();
+        }
+
+        void InitLanguageSwitch()
+        {
+            ViewModel.ShowUrlKa = Model.Culture != Enums.Languages.GEORGIAN;
+            ViewModel.ShowUrlEn = !ViewModel.ShowUrlKa;
+
+            var Index = Model.UrlCurrentPage.IndexOf('/', 8) + 1;
+
+            ViewModel.UrlEn = Model.UrlCurrentPage.Replace($"/{Model.Culture}", null);
+            ViewModel.UrlKa = Model.UrlCurrentPage.Insert(Index, $"{Enums.Languages.ENGLISH}/").Replace($"/{Model.Culture}", null);
         }
     }
 }

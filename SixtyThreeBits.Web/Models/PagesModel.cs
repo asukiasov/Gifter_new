@@ -9,21 +9,18 @@ namespace SixtyThreeBits.Web.Models
         public async Task<PageViewModel> GetPageViewModel(string PageSlug)
         {
             var ViewModel = default(PageViewModel);
-            var DBItem = await DataAccessFactory.Pages.GetSinglePageBySlugHierarchy(PageSlug: PageSlug?.Trim('/'), IsPublished: true);
-            if (DBItem != null)
+            var DBItem = await DataAccessFactory.Pages.GetSinglePageBySlugHierarchy(PageSlug: PageSlug?.Trim('/'));
+            if (DBItem.PageIsPublished || User?.UserIsAdmin == true)
             {
-                if (DBItem.PageIsPublished || User?.UserIsAdmin == true)
-                {
-                    ViewModel = new PageViewModel();
-                    ViewModel.PageTitle = Utilities.GetValuesByLanguage(Culture, DBItem.PageTitle, DBItem.PageTitleEng, DBItem.PageTitleRus);
-                    ViewModel.PageShortDescription = Utilities.GetValuesByLanguage(Culture, DBItem.PageShortDescription, DBItem.PageShortDescriptionEng, DBItem.PageShortDescriptionRus);
-                    ViewModel.PageText = Utilities.GetValuesByLanguage(Culture, DBItem.PageText, DBItem.PageTextEng, DBItem.PageTextRus);
-                    ViewModel.PageTextHeaderHtml = Utilities.GetValuesByLanguage(Culture, DBItem.PageTextHeaderHtml, DBItem.PageTextHeaderHtmlEng, DBItem.PageTextHeaderHtmlRus);
-                    ViewModel.PageTextFooterHtml = Utilities.GetValuesByLanguage(Culture, DBItem.PageTextFooterHtml, DBItem.PageTextFooterHtmlEng, DBItem.PageTextFooterHtmlRus);
-                    ViewModel.PageImageHttpPath = string.IsNullOrWhiteSpace(DBItem.PageImageFilename)
-                        ? $"{WebsiteDomain}{AppSettings.OgImageDefaultHttpPath}"
-                        : $"{WebsiteDomain}{DataAccessFactory.Pages.GetPageFileHttpPath(DBItem.PageID, DBItem.PageImageFilename)}";
-                }
+                ViewModel = new PageViewModel();
+                ViewModel.PageTitle = Utilities.GetValuesByLanguage(Culture, DBItem.PageTitle, DBItem.PageTitleEng, DBItem.PageTitleRus);
+                ViewModel.PageShortDescription = Utilities.GetValuesByLanguage(Culture, DBItem.PageShortDescription, DBItem.PageShortDescriptionEng, DBItem.PageShortDescriptionRus);
+                ViewModel.PageText = Utilities.GetValuesByLanguage(Culture, DBItem.PageText, DBItem.PageTextEng, DBItem.PageTextRus);
+                ViewModel.PageTextHeaderHtml = Utilities.GetValuesByLanguage(Culture, DBItem.PageTextHeaderHtml, DBItem.PageTextHeaderHtmlEng, DBItem.PageTextHeaderHtmlRus);
+                ViewModel.PageTextFooterHtml = Utilities.GetValuesByLanguage(Culture, DBItem.PageTextFooterHtml, DBItem.PageTextFooterHtmlEng, DBItem.PageTextFooterHtmlRus);
+                ViewModel.PageImageHttpPath = string.IsNullOrWhiteSpace(DBItem.PageImageFilename)
+                    ? $"{WebsiteDomain}{AppSettings.OgImageDefaultHttpPath}"
+                    : $"{WebsiteDomain}{DataAccessFactory.Pages.GetPageFileHttpPath(DBItem.PageID, DBItem.PageImageFilename)}";
             }
             return ViewModel;
         }        
