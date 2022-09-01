@@ -1,7 +1,7 @@
 /*!
 * DevExtreme (dx.messages.pt.js)
-* Version: 21.2.7
-* Build date: Mon Apr 11 2022
+* Version: 22.1.4
+* Build date: Fri Jul 22 2022
 *
 * Copyright (c) 2012 - 2022 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -285,6 +285,13 @@
             "dxHtmlEditor-dialogInsertTableRowsField": "!TODO",
             "dxHtmlEditor-dialogInsertTableColumnsField": "!TODO",
             "dxHtmlEditor-dialogInsertTableCaption": "!TODO",
+            "dxHtmlEditor-dialogUpdateImageCaption": "!TODO",
+            "dxHtmlEditor-dialogImageUpdateButton": "!TODO",
+            "dxHtmlEditor-dialogImageAddButton": "!TODO",
+            "dxHtmlEditor-dialogImageSpecifyUrl": "!TODO",
+            "dxHtmlEditor-dialogImageSelectFile": "!TODO",
+            "dxHtmlEditor-dialogImageKeepAspectRatio": "!TODO",
+            "dxHtmlEditor-dialogImageEncodeToBase64": "!TODO",
             "dxHtmlEditor-heading": "Cabe\xe7alho",
             "dxHtmlEditor-normalText": "Texto normal",
             "dxHtmlEditor-background": "TODO",
@@ -517,6 +524,9 @@
             "dxGantt-dialogCancelOperationMessage": "Cancelar opera\xe7\xe3o",
             "dxGantt-dialogDeleteDependencyMessage": "Excluir a depend\xeancia",
             "dxGantt-dialogMoveTaskAndKeepDependencyMessage": "Mover a tarefa e manter a depend\xeancia",
+            "dxGantt-dialogConstraintViolationSeveralTasksMessage": "TODO",
+            "dxGantt-dialogDeleteDependenciesMessage": "TODO",
+            "dxGantt-dialogMoveTaskAndKeepDependenciesMessage": "TODO",
             "dxGantt-undo": "Desfazer",
             "dxGantt-redo": "Refazer",
             "dxGantt-expandAll": "Expandir tudo",

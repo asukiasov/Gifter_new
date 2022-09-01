@@ -1,7 +1,7 @@
 /*!
 * DevExtreme (dx.messages.de.js)
-* Version: 21.2.7
-* Build date: Mon Apr 11 2022
+* Version: 22.1.4
+* Build date: Fri Jul 22 2022
 *
 * Copyright (c) 2012 - 2022 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -52,7 +52,7 @@
             "validation-email": "Die Email-Adresse ist ung\xfcltig",
             "validation-email-formatted": "{0} ist ung\xfcltig",
             "validation-mask": "Der Wert ist ung\xfcltig",
-            "dxLookup-searchPlaceholder": "Minimale Anzahl Zeichen: {0}",
+            "dxLookup-searchPlaceholder": "Mindestl\xe4nge {0} Zeichen",
             "dxList-pullingDownText": "Zum Aktualisieren nach unten ziehen",
             "dxList-pulledDownText": "Zum Aktualisieren loslassen",
             "dxList-refreshingText": "Aktualisiere...",
@@ -77,9 +77,9 @@
             "dxFileUploader-Gb": "Gb",
             "dxFileUploader-upload": "Hochladen",
             "dxFileUploader-uploaded": "Hochgeladen",
-            "dxFileUploader-readyToUpload": "Bereit zum hochladen",
+            "dxFileUploader-readyToUpload": "Bereit zum Hochladen",
             "dxFileUploader-uploadAbortedMessage": "Upload abgebrochen",
-            "dxFileUploader-uploadFailedMessage": "Fehler beim hochladen",
+            "dxFileUploader-uploadFailedMessage": "Fehler beim Hochladen",
             "dxFileUploader-invalidFileExtension": "Unzul\xe4ssiger Dateityp",
             "dxFileUploader-invalidMaxFileSize": "Datei ist zu gro\xdf",
             "dxFileUploader-invalidMinFileSize": "Datei ist zu klein",
@@ -150,8 +150,8 @@
             "dxDataGrid-exporting": "Exportieren ...",
             "dxDataGrid-excelFormat": "Excel-Datei",
             "dxDataGrid-selectedRows": "Ausgew\xe4hlte Zeilen",
-            "dxDataGrid-exportAll": "Alle Daten exportieren",
-            "dxDataGrid-exportSelectedRows": "Ausgew\xe4hlte Zeilen exportieren",
+            "dxDataGrid-exportAll": "Alle Daten exportieren nach {0}",
+            "dxDataGrid-exportSelectedRows": "Ausgew\xe4hlte Zeilen exportieren nach {0}",
             "dxDataGrid-headerFilterEmptyValue": "(Leerwerte)",
             "dxDataGrid-headerFilterOK": "OK",
             "dxDataGrid-headerFilterCancel": "Abbrechen",
@@ -233,8 +233,8 @@
             "dxScheduler-recurrenceRepeatOnDate": "am Datum",
             "dxScheduler-recurrenceRepeatCount": "Ereignisse",
             "dxScheduler-allDay": "Ganzt\xe4gig",
-            "dxScheduler-confirmRecurrenceEditMessage": "M\xf6chten Sie nur diesen Termin bearbeiten, oder die gesamte Serie?",
-            "dxScheduler-confirmRecurrenceDeleteMessage": "M\xf6chten Sie nur diesen Termin l\xf6schen, oder die gesamte Serie?",
+            "dxScheduler-confirmRecurrenceEditMessage": "M\xf6chten Sie nur diesen Termin bearbeiten oder die gesamte Serie?",
+            "dxScheduler-confirmRecurrenceDeleteMessage": "M\xf6chten Sie nur diesen Termin l\xf6schen oder die gesamte Serie?",
             "dxScheduler-confirmRecurrenceEditSeries": "Serie bearbeiten",
             "dxScheduler-confirmRecurrenceDeleteSeries": "Serie l\xf6schen",
             "dxScheduler-confirmRecurrenceEditOccurrence": "Termin bearbeiten",
@@ -290,6 +290,13 @@
             "dxHtmlEditor-dialogInsertTableRowsField": "Zeilen",
             "dxHtmlEditor-dialogInsertTableColumnsField": "Spalten",
             "dxHtmlEditor-dialogInsertTableCaption": "Tabelle einf\xfcgen",
+            "dxHtmlEditor-dialogUpdateImageCaption": "Bild Aktualisieren",
+            "dxHtmlEditor-dialogImageUpdateButton": "Aktualisieren",
+            "dxHtmlEditor-dialogImageAddButton": "Hinzuf\xfcgen",
+            "dxHtmlEditor-dialogImageSpecifyUrl": "Aus dem Web",
+            "dxHtmlEditor-dialogImageSelectFile": "Von diesem Ger\xe4t",
+            "dxHtmlEditor-dialogImageKeepAspectRatio": "Seitenverh\xe4ltnis beibehalten",
+            "dxHtmlEditor-dialogImageEncodeToBase64": "Als Base64 kodieren",
             "dxHtmlEditor-heading": "\xdcberschrift",
             "dxHtmlEditor-normalText": "Normaler Text",
             "dxHtmlEditor-background": "Hintergrundfarbe",
@@ -427,6 +434,8 @@
             "dxFileManager-editingUploadSingleItemErrorMessage": "Element wurde nicht hochgeladen",
             "dxFileManager-editingUploadMultipleItemsErrorMessage": "{0} Elemente wurden nicht hochgeladen",
             "dxFileManager-editingUploadCanceledMessage": "Abgebrochen",
+            "dxFileManager-editingDownloadSingleItemErrorMessage": "Datei wurde nicht heruntergeladen",
+            "dxFileManager-editingDownloadMultipleItemsErrorMessage": "{0} Dateien wurden nicht heruntergeladen",
             "dxFileManager-listDetailsColumnCaptionName": "Name",
             "dxFileManager-listDetailsColumnCaptionDateModified": "Zuletzt ge\xe4ndert am",
             "dxFileManager-listDetailsColumnCaptionFileSize": "Dateigr\xf6\xdfe",
@@ -591,6 +600,10 @@
             "dxGantt-dialogCancelOperationMessage": "Vorgang abbrechen",
             "dxGantt-dialogDeleteDependencyMessage": "Abh\xe4ngigkeit l\xf6schen",
             "dxGantt-dialogMoveTaskAndKeepDependencyMessage": "Aufgabe verschieben und Abh\xe4ngigkeit beibehalten",
+            "dxGantt-dialogConstraintCriticalViolationSeveralTasksMessage": "Die Aufgabe, die Sie zu verschieben versuchen, ist mit anderen Aufgaben durch Abh\xe4ngigkeitsbeziehungen verbunden. Die \xc4nderung verst\xf6\xdft daher gegen Abh\xe4ngigkeitsregeln. Wie m\xf6chten Sie fortfahren?",
+            "dxGantt-dialogConstraintViolationSeveralTasksMessage": "Die Aufgabe, die Sie zu verschieben versuchen, ist mit anderen Aufgaben durch Abh\xe4ngigkeitsbeziehungen verbunden. Wie m\xf6chten Sie fortfahren?",
+            "dxGantt-dialogDeleteDependenciesMessage": "Abh\xe4ngigkeitsbeziehungen entfernen",
+            "dxGantt-dialogMoveTaskAndKeepDependenciesMessage": "Die Aufgabe verschieben und die Abh\xe4ngigkeitsbeziehungen beibehalten.",
             "dxGantt-undo": "R\xfcckg\xe4ngig",
             "dxGantt-redo": "Wiederherstellen",
             "dxGantt-expandAll": "Alle erweitern",

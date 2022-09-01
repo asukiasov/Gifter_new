@@ -67,6 +67,7 @@ namespace SixtyThreeBits.Web.Reusables.Core
             .ShowRowLines(true)
             .FocusedRowEnabled(true)
             .FocusedRowIndex(0)
+            .SyncLookupFilterValues(false)
             .Toolbar(Options =>
             {
                 Options.Visible(false);
@@ -155,6 +156,7 @@ namespace SixtyThreeBits.Web.Reusables.Core
             .ShowRowLines(true)
             .FocusedRowEnabled(true)
             .FocusedRowIndex(0)
+            .SyncLookupFilterValues(false)
             .AutoExpandAll(true)
             .RootValue(null)
             .Toolbar(Options =>

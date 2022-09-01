@@ -14,13 +14,14 @@
     <None Remove="wwwroot\admin\html\**" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="63BITS-Libraries-DotNetStandart" Version="1.2.0.1" />
-    <PackageReference Include="DevExtreme.AspNet.Core" Version="21.2.7" />
+    <PackageReference Include="63BITS-Libraries-DotNetStandart" Version="1.2.0.8" />
+    <PackageReference Include="DevExtreme.AspNet.Core" Version="22.1.4" />
     <PackageReference Include="DevExtreme.AspNet.Data" Version="2.8.6" />
-    <PackageReference Include="Imageflow.Net" Version="0.7.24" />
-    <PackageReference Include="Imageflow.Server" Version="0.5.10" />
+    <PackageReference Include="Imageflow.Net" Version="0.8.5" />
+    <PackageReference Include="Imageflow.Server" Version="0.7.7" />
     <PackageReference Include="Microsoft.AspNetCore.Session" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="6.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Admin\Views\Brands\Brands.cshtml" />
