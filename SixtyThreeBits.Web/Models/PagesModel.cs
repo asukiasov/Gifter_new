@@ -10,7 +10,7 @@ namespace SixtyThreeBits.Web.Models
         {
             var ViewModel = default(PageViewModel);
             var DBItem = await DataAccessFactory.Pages.GetSinglePageBySlugHierarchy(PageSlug: PageSlug?.Trim('/'));
-            if (DBItem.PageIsPublished || User?.UserIsAdmin == true)
+            if (DBItem !=null && (DBItem.PageIsPublished || User?.UserIsAdmin == true))
             {
                 ViewModel = new PageViewModel();
                 ViewModel.PageTitle = Utilities.GetValuesByLanguage(Culture, DBItem.PageTitle, DBItem.PageTitleEng, DBItem.PageTitleRus);
