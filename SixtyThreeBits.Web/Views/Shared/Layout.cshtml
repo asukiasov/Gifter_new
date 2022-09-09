@@ -56,5 +56,6 @@
     @await Html.PartialAsync(ViewNames.Shared.PluginsClient.Footer, Model.PluginsClient)
     <script src="~/js/Layout.js"></script>
     @RenderSection("FooterSection", false)
+    @Html.Raw(Model.FooterScripts)
 </body>
 </html>

@@ -27,6 +27,7 @@ namespace SixtyThreeBits.Web.Admin.Filters
                 InitClientPlugins();
                 InitMenu();
                 InitBreadCrumbs();
+                InitSystemProperties();
                 InitTabs();
                 InitPageTitle();
                 InitSuccessErrorMessage();
@@ -125,7 +126,12 @@ namespace SixtyThreeBits.Web.Admin.Filters
                 PageHierarchy: PageHierarchy,
                 UrlCurrentPage: Model.UrlCurrentPage
             );
-        }        
+        }
+
+        void InitSystemProperties()
+        {
+            ViewModel.FooterScripts = Model.SystemProperties.FooterScripts;
+        }
 
         void InitTabs()
         {
