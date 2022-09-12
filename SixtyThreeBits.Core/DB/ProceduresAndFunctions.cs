@@ -1573,7 +1573,7 @@ namespace SixtyThreeBits.Core.DB
             await Database.ExecuteSqlRawAsync(PR.SqlQuery, PR.SqlParameters);
         }
 
-        public async Task SystemPropertiesUpdate(string ContactEmail, string ContactPhone, string ContactAddress, string FacebookUrl, string InstagramUrl, string TwitterUrl, string YoutubeUrl, string LinkedInUrl, string GoogleMapsIFrame, string FooterScripts, string SMTPAddress, int? SMTPPort, string SMTPUsername, string SMTPPassword, bool SMTPUseSSL, string SMTPFrom)
+        public async Task SystemPropertiesUpdate(string SystemPropertiesJson)
         {
             var PR = new PrepareQueryExecution(
              DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.STORED_PROCEDURE,
@@ -1581,22 +1581,7 @@ namespace SixtyThreeBits.Core.DB
              ResultItemType: null,
              SqlParameters: new SqlParameter[]
              {
-                 ContactEmail.ToSqlParameter(nameof(ContactEmail),SqlDbType.NVarChar),
-                 ContactPhone.ToSqlParameter(nameof(ContactPhone),SqlDbType.NVarChar),
-                 ContactAddress.ToSqlParameter(nameof(ContactAddress),SqlDbType.NVarChar),
-                 FacebookUrl.ToSqlParameter(nameof(FacebookUrl),SqlDbType.NVarChar),
-                 InstagramUrl.ToSqlParameter(nameof(InstagramUrl),SqlDbType.NVarChar),
-                 TwitterUrl.ToSqlParameter(nameof(TwitterUrl),SqlDbType.NVarChar),
-                 YoutubeUrl.ToSqlParameter(nameof(YoutubeUrl),SqlDbType.NVarChar),
-                 LinkedInUrl.ToSqlParameter(nameof(LinkedInUrl),SqlDbType.NVarChar),
-                 GoogleMapsIFrame.ToSqlParameter(nameof(GoogleMapsIFrame),SqlDbType.NVarChar),
-                 FooterScripts.ToSqlParameter(nameof(FooterScripts),SqlDbType.NVarChar),
-                 SMTPAddress.ToSqlParameter(nameof(SMTPAddress),SqlDbType.NVarChar),
-                 SMTPPort.ToSqlParameter(nameof(SMTPPort),SqlDbType.Int),
-                 SMTPUsername.ToSqlParameter(nameof(SMTPUsername),SqlDbType.NVarChar),
-                 SMTPPassword.ToSqlParameter(nameof(SMTPPassword),SqlDbType.NVarChar),
-                 SMTPUseSSL.ToSqlParameter(nameof(SMTPUseSSL),SqlDbType.Bit),
-                 SMTPFrom.ToSqlParameter(nameof(SMTPFrom),SqlDbType.NVarChar),
+                 SystemPropertiesJson.ToSqlParameter(nameof(SystemPropertiesJson),SqlDbType.NVarChar)                 
              }
            );
             await Database.ExecuteSqlRawAsync(PR.SqlQuery, PR.SqlParameters);

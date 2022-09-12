@@ -33,6 +33,9 @@ namespace SixtyThreeBits.Web.Filters
         void InitStartUp(ActionExecutingContext FilterContext)
         {
             Model.Culture = FilterContext.RouteData.Values["Culture"]?.ToString();
+            ViewModel.ScriptsHeader = Model.SystemProperties.ScriptsHeader;
+            ViewModel.ScriptsBodyStart = Model.SystemProperties.ScriptsBodyStart;
+            ViewModel.ScriptsBodyEnd = Model.SystemProperties.ScriptsBodyEnd;
         }
 
         void InitClientPlugins()

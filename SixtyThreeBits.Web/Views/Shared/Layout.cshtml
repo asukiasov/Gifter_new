@@ -11,8 +11,10 @@
     <link href="/css/style.css" rel="stylesheet" />
     
     @RenderSection("HeaderSection", false)
+    @Html.Raw(Model.ScriptsHeader)
 </head>
 <body>
+    @Html.Raw(Model.ScriptsBodyStart)
     <div class="app">
         <header class="app-header">
             @if (Model.HasMenu)
@@ -56,6 +58,6 @@
     @await Html.PartialAsync(ViewNames.Shared.PluginsClient.Footer, Model.PluginsClient)
     <script src="~/js/Layout.js"></script>
     @RenderSection("FooterSection", false)
-    @Html.Raw(Model.FooterScripts)
+    @Html.Raw(Model.ScriptsBodyEnd)
 </body>
 </html>

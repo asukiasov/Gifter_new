@@ -28,8 +28,7 @@ namespace SixtyThreeBits.Web.Reusables.Core
         public List<ProjectMenuItem> Tabs { get; set; }
         public bool HasTabs => Tabs?.Count > 0;
         public string UrlLogout { get; set; }
-        public PluginsClient PluginsClient { get; set; }
-        public string FooterScripts { get; set; }
+        public PluginsClient PluginsClient { get; set; }        
         public readonly string TextError = Resources.TextError;
         public readonly string TextSuccess = Resources.TextSuccess;
         #endregion
