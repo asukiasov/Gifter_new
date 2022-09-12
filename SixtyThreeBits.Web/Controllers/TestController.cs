@@ -27,7 +27,7 @@ namespace SixtyThreeBits.Web.Controllers
         public async Task<IActionResult> TestUpload(int? ProductID, string ProductName)
         {
             foreach (var File in Request.Form.Files)
-            {
+            {                
                 await Model.SaveUploadedFile(File, File.FileName);
             }
             var Result = new AjaxResponse { IsSuccess = true };

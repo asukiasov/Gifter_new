@@ -179,17 +179,105 @@
     }
 };
 
+var counter = 0;
 var FileUplaoderClass = {
     InputElement: null,
     UrlFileUplaod: null,
     RequestFileKey: 'Files',
     RequestData: null,
+    OnAbort: null,
     OnProgressCallback: null,
-    OnFinishUploadCallback: null,
-    OnCompleteCallback: null,
+    OnFinishUploadCallback: null,    
     OnStartCallback: null,
     IsReportProgressIndividual: false,
+    XhrArray: [],
 
+    Abort: function () {
+        this.XhrArray.forEach(function (xhr, index) {
+            xhr.abort();
+        });
+        
+    },
+
+    InitEvents: function (xhr) {
+        https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/upload
+
+        var _this = this;
+
+        //The upload has begun.
+        xhr.upload.onloadstart = function (e) {
+            if (_this.OnStartCallback) {                
+                _this.OnStartCallback({
+                    Filename: xhr.fileName,
+                    xhr: xhr
+                });
+            }
+        }
+
+        //Periodically delivered to indicate the amount of progress made so far.
+        if (_this.OnProgressCallback) {
+            xhr.upload.onprogress = function (e) {
+                const Percent = Math.ceil(100 * e.loaded / e.total);
+                _this.OnProgressCallback({
+                    Filename: xhr.fileName,
+                    BytesUploaded: e.loaded,
+                    BytesTotal: e.total,
+                    ProgressPercent: Percent,
+                    xhr: xhr
+                });
+            }
+        }
+
+        //The upload operation was aborted.
+        xhr.upload.onabort = function (e) {
+            if (_this.OnAbort) {
+                _this.OnAbort({
+                    Filename: xhr.fileName,
+                    xhr: xhr
+                });
+            }
+        }
+
+        //The upload failed due to an error.
+        xhr.upload.onerror = function (e) {
+            if (_this.OnErrorCallback) {                
+                _this.OnErrorCallback({
+                    Filename: xhr.fileName,
+                    xhr: xhr,
+                    e: e
+                });
+            }
+        }
+
+        //The upload completed successfully.
+        xhr.onload = function (e) {
+            if (_this.OnFinishUploadCallback) {
+                const Result = {};                                    
+                try {
+                    Result.Data = JSON.parse(xhr.response);
+                }
+                catch {
+                    Result.Data = xhr.response;
+                }
+                Result.Status = xhr.status;
+                Result.StatusText = xhr.statusText;
+                Result.Filename = xhr.fileName;
+                Result.xhr = xhr;
+                _this.OnFinishUploadCallback(Result);
+            }            
+        }
+
+        //The upload timed out because a reply did not arrive within the time interval specified by the XMLHttpRequest.timeout. 
+        xhr.upload.ontimeout = function (e) {
+            if (_this.OnErrorCallback) {                
+                _this.OnErrorCallback({
+                    Filename: xhr.fileName,
+                    xhr: xhr, 
+                    e: e
+                });
+            }
+        }
+    },
 
     Upload: function () {        
         const _this = this;
@@ -221,56 +309,12 @@ var FileUplaoderClass = {
                 _this.RequestData.forEach(function (Item, Index) {
                     Data.append(Item.Key, Item.Value);
                 });
+                xhr.fileName = File.name;
             }
 
+            _this.InitEvents(xhr);
             xhr.open('POST', _this.UrlFileUplaod);
-
-            if (_this.OnStartCallback) {
-                xhr.upload.onloadstart = function (e) {
-                    e.Filename = File.name;
-                    _this.OnStartCallback(e);
-                }
-            }
-            if (_this.OnFinishCallback) {
-                xhr.upload.onloadend = function (e) {
-                    e.Filename = File.name;
-                    _this.OnFinishCallback(e);
-                }
-
-            }
-            if (_this.OnProgressCallback) {
-                xhr.upload.onprogress = function (e) {
-                    const Percent = Math.ceil(100 * e.loaded / e.total);
-                    _this.OnProgressCallback({
-                        Filename: File.name,
-                        BytesUploaded: e.loaded,
-                        BytesTotal: e.total,
-                        ProgressPercent: Percent
-                    });
-                }
-            }
-            xhr.onload = function () {
-                let e = this;
-                e.Filename = File.name;
-
-                if (this.response != "OK" || this.status != 200) {
-                    if (_this.OnErrorCallback) {
-                        _this.OnErrorCallback(e);
-                    }
-                } else {
-                    if (_this.OnCompleteCallback) {
-                        _this.OnCompleteCallback(e);
-                    }
-                }
-            };
-            if (_this.OnErrorCallback) {
-                xhr.onerror = function (e) {
-                    e.Filename = File.name;
-                    _this.OnErrorCallback(e);
-                }
-            }
-
-            xhr.send(Data);
+            xhr.send(Data);            
         }
     },
 
@@ -279,10 +323,12 @@ var FileUplaoderClass = {
         const xhr = new XMLHttpRequest();
         const Data = new FormData();
         const Files = _this.InputElement.files;
+        const Filenames = new Array();
         for (let i = 0; i < Files.length; i++) {
             Data.append(_this.RequestFileKey, Files[i]);
+            Filenames.push(Files[i].name);
         }
-        
+        xhr.fileName = Filenames.join('; ');
 
         if (_this.RequestData) {
             _this.RequestData.forEach(function (Item, Index) {
@@ -290,54 +336,9 @@ var FileUplaoderClass = {
             });
         }
 
-        xhr.open('POST', _this.UrlFileUplaod);
-
-        if (_this.OnStartCallback) {
-            xhr.upload.onloadstart = function (e) {
-                e.Filename = File.name;
-                _this.OnStartCallback(e);
-            }
-        }
-        if (_this.OnFinishCallback) {
-            xhr.upload.onloadend = function (e) {
-                e.Filename = File.name;
-                _this.OnFinishCallback(e);
-            }
-
-        }
-        if (_this.OnProgressCallback) {
-            xhr.upload.onprogress = function (e) {
-                const Percent = Math.ceil(100 * e.loaded / e.total);
-                _this.OnProgressCallback({
-                    BytesUploaded: e.loaded,
-                    BytesTotal: e.total,
-                    ProgressPercent: Percent
-                });
-            }
-        }
-        xhr.onload = function () {
-            let e = this;
-            e.Filename = File.name;
-
-            if (this.response != "OK" || this.status != 200) {
-                if (_this.OnErrorCallback) {
-                    _this.OnErrorCallback(e);
-                }
-            } else {
-                if (_this.OnCompleteCallback) {
-                    _this.OnCompleteCallback(e);
-                }
-            }
-        };
-        if (_this.OnErrorCallback) {
-            xhr.onerror = function (e) {
-                e.Filename = File.name;
-                _this.OnErrorCallback(e);
-            }
-        }
-
-        xhr.send(Data);
-
+        _this.InitEvents(xhr);
+        xhr.open('POST', _this.UrlFileUplaod);                
+        xhr.send(Data);        
     }
 }
 
@@ -349,8 +350,8 @@ function FileUplaoder(Options) {
         _this.UrlFileUplaod = Options.UrlFileUplaod ? Options.UrlFileUplaod : null;
         _this.OnStartCallback = Options.OnStartCallback ? Options.OnStartCallback : null;
         _this.OnProgressCallback = Options.OnProgressCallback ? Options.OnProgressCallback : null;
-        _this.OnFinishCallback = Options.OnFinishCallback ? Options.OnFinishCallback : null;
-        _this.OnCompleteCallback = Options.OnFinishCallback ? Options.OnCompleteCallback : null;
+        _this.OnAbort = Options.OnAbort ? Options.OnAbort : null;
+        _this.OnFinishUploadCallback = Options.OnFinishUploadCallback ? Options.OnFinishUploadCallback : null;        
         _this.OnErrorCallback = Options.OnErrorCallback ? Options.OnErrorCallback : null;
         _this.IsReportProgressIndividual = Options.IsReportProgressIndividual ? true : false;
         _this.RequestData = Options.RequestData ? Options.RequestData : null;
