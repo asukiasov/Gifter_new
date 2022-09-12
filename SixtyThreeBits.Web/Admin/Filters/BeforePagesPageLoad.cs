@@ -56,7 +56,7 @@ namespace SixtyThreeBits.Web.Admin.Filters
                 {
                     Caption = Item.PermissionCaption,
                     NavigateUrl = Model.Url.RouteUrl(Item.PermissionCodeName, new { PageID = Model.DBItemPage.PageID }),
-                    IsSelected = Regex.IsMatch(Model.UrlCurrentPage, Item.PermissionPagePath)
+                    IsSelected = Regex.IsMatch(Model.UrlCurrentPageWithDomain, Item.PermissionPagePath)
                 }).ToList();
 
                 if (Tabs?.Count > 0)

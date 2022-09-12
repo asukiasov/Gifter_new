@@ -282,7 +282,7 @@ namespace SixtyThreeBits.Web.Admin.Models
             ViewModel.Language = Language;
             ViewModel.UrlBack = Url.RouteUrl(ControllerActionRouteNames.Admin.Pages.Index);
             ViewModel.UrlPreview = Url.RouteUrl(ControllerActionRouteNames.Website.Pages.Page, new { PageSlugHierarchy = DBItemPage.PageSlugHierarchy });
-            ViewModel.UrlSave = UrlCurrentPage;
+            ViewModel.UrlSave = UrlCurrentPageWithDomain;
             ViewModel.UrlFileManager = GetFileManagerUrl(DataAccessFactory.Pages.GetPageFolderPhysicalPath(DBItemPage.PageID), DataAccessFactory.Pages.GetPageFolderHttpPath(DBItemPage.PageID));
             ViewModel.UrlPdfViewer = Url.RouteUrl(ControllerActionRouteNames.Website.FileViewer.Pdf);
 

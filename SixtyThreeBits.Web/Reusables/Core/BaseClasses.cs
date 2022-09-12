@@ -49,7 +49,8 @@ namespace SixtyThreeBits.Web.Reusables.Core
         public readonly string CultureDefault = Enums.Languages.GEORGIAN;
         public string ControllerName { get; set; }
         public string ActionName { get; set; }
-        public string UrlCurrentPage { get; set; }
+        public string UrlCurrentPageWithDomain { get; set; }
+        public string UrlCurrentPageWithoutDomain { get; set; }
         public string WebsiteDomain { get; set; }
         public string WebsiteHttpPath => $"{WebsiteDomain}/";
         public string IP { get; set; }

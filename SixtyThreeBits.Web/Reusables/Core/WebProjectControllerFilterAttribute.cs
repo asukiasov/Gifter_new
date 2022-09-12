@@ -30,7 +30,8 @@ namespace SixtyThreeBits.Web.Reusables.Core
                 Model.ControllerName = ActionDescriptor.ControllerTypeInfo.Name;
                 
                 Model.WebsiteDomain = LocalUtilities.GetWebsiteDomain(C.Request);
-                Model.UrlCurrentPage = $"{Model.WebsiteDomain}{C.Request.Path}";
+                Model.UrlCurrentPageWithoutDomain = C.Request.Path;
+                Model.UrlCurrentPageWithDomain = $"{Model.WebsiteDomain}{C.Request.Path}";
 
                 Model.IsHttps = C.Request.IsHttps;
                 Model.IP = LocalUtilities.GetClientIP(C.Request);

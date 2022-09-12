@@ -76,7 +76,7 @@ namespace SixtyThreeBits.Web.Filters
                     {
                         ParentItem.NavigateUrl = Model.GetRouteByName(ControllerActionRouteNames.Website.Pages.Page, new { Culture = Model.Culture , PageSlugHierarchy = P1.PageSlugHierarchy }); ;
                     }
-                    ParentItem.IsSelected = ParentItem.NavigateUrl == $"{Model.WebsiteDomain}{Model.UrlCurrentPage}";
+                    ParentItem.IsSelected = ParentItem.NavigateUrl == $"{Model.WebsiteDomain}{Model.UrlCurrentPageWithDomain}";
 
                     var Children = Pages.Where(Item => Item.PageParentID == P1.PageID);
                     ParentItem.Children = new List<ProjectMenuItem>();
@@ -97,7 +97,7 @@ namespace SixtyThreeBits.Web.Filters
                         {
                             ChildItem.NavigateUrl = Model.GetRouteByName(ControllerActionRouteNames.Website.Pages.Page, new { Culture = Model.Culture, PageSlugHierarchy = P2.PageSlugHierarchy });
                         }
-                        ChildItem.IsSelected = ChildItem.NavigateUrl == $"{Model.WebsiteDomain}{Model.UrlCurrentPage}";
+                        ChildItem.IsSelected = ChildItem.NavigateUrl == $"{Model.WebsiteDomain}{Model.UrlCurrentPageWithDomain}";
                         ParentItem.Children.Add(ChildItem);
                     }
                     ViewModel.Menu.Add(ParentItem);
@@ -115,10 +115,10 @@ namespace SixtyThreeBits.Web.Filters
             ViewModel.ShowUrlKa = Model.Culture != Enums.Languages.GEORGIAN;
             ViewModel.ShowUrlEn = !ViewModel.ShowUrlKa;
 
-            var Index = Model.UrlCurrentPage.IndexOf('/', 8) + 1;
+            var Index = Model.UrlCurrentPageWithDomain.IndexOf('/', 8) + 1;
 
-            ViewModel.UrlEn = Model.UrlCurrentPage.Replace($"/{Model.Culture}", null);
-            ViewModel.UrlKa = Model.UrlCurrentPage.Insert(Index, $"{Enums.Languages.ENGLISH}/").Replace($"/{Model.Culture}", null);
+            ViewModel.UrlEn = Model.UrlCurrentPageWithDomain.Replace($"/{Model.Culture}", null);
+            ViewModel.UrlKa = Model.UrlCurrentPageWithDomain.Insert(Index, $"{Enums.Languages.ENGLISH}/").Replace($"/{Model.Culture}", null);
         }
     }
 }
