@@ -22,8 +22,8 @@
                 public const string GridAdd = "AdminBlogGridAdd";
                 public const string GridUpdate = "AdminBlogGridUpdate";
                 public const string GridDelete = "AdminBlogGridDelete";
-                public const string BlogItem = "AdminBlogBlogItem";
-                public const string BlogItemDeleteImage = "AdminBlogBlogItemPropertiesDeleteImage";
+                public const string PostProperties = "AdminBlogPostProperties";
+                public const string PostPropertiesDeleteImage = "AdminBlogPostPropertiesDeleteImage";
                 #endregion
             }
 

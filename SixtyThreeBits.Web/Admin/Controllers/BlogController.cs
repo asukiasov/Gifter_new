@@ -98,9 +98,9 @@ namespace SixtyThreeBits.Web.Admin.Controllers
         }
         #endregion
 
-        #region Blog Properties
+        #region Actions
         [HttpGet]
-        [Route("properties", Name = ControllerActionRouteNames.Admin.Blog.BlogItem)]
+        [Route("properties", Name = ControllerActionRouteNames.Admin.Blog.PostProperties)]
         public IActionResult Properties()
         {
             Model.PluginsClient.Enable63BitsForms(true).EnableFancybox(true).EnableDevextreme(true).EnableTinyMce(true);
@@ -128,7 +128,7 @@ namespace SixtyThreeBits.Web.Admin.Controllers
                 if (ViewModel.IsSaved)
                 {
                     Model.ShowSuccess();
-                    Result = Redirect(Url.RouteUrl(ControllerActionRouteNames.Admin.Blog.BlogItem, new { BlogPostID = Model.DBItemBlog.BlogPostID }));
+                    Result = Redirect(Url.RouteUrl(ControllerActionRouteNames.Admin.Blog.PostProperties, new { BlogPostID = Model.DBItemBlog.BlogPostID }));
                 }
                 else
                 {
@@ -144,7 +144,7 @@ namespace SixtyThreeBits.Web.Admin.Controllers
         }
 
         [HttpPost]
-        [Route("properties/delete-image", Name = ControllerActionRouteNames.Admin.Blog.BlogItemDeleteImage)]
+        [Route("properties/delete-image", Name = ControllerActionRouteNames.Admin.Blog.PostPropertiesDeleteImage)]
         public async Task<IActionResult> BlogItemDeleteImage(int? BlogPostID)
         {
             var Result = await Model.DeleteImage(BlogPostID);

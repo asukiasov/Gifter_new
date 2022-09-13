@@ -20,7 +20,7 @@ namespace SixtyThreeBits.Web.Filters
             Model = LocalUtilities.GetModelFromController<WebProjectModelBase>(FilterContext.Controller);
             var C = FilterContext.Controller as Controller;
 
-            InitStartUp(FilterContext);
+            await InitStartUp(FilterContext);
             await InitSystemProperties();
             InitClientPlugins();
             await InitMenu();
@@ -30,9 +30,10 @@ namespace SixtyThreeBits.Web.Filters
             await next();
         }
 
-        void InitStartUp(ActionExecutingContext FilterContext)
+        async Task InitStartUp(ActionExecutingContext FilterContext)
         {
             Model.Culture = FilterContext.RouteData.Values["Culture"]?.ToString();
+            Model.SystemProperties = await Model.DataAccessFactory.SystemProperties.GetSystemProperties();            
             ViewModel.ScriptsHeader = Model.SystemProperties.ScriptsHeader;
             ViewModel.ScriptsBodyStart = Model.SystemProperties.ScriptsBodyStart;
             ViewModel.ScriptsBodyEnd = Model.SystemProperties.ScriptsBodyEnd;
