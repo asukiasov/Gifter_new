@@ -27,6 +27,7 @@ namespace SixtyThreeBits.Web.Reusables.Core
         public bool HasBreadcrumbs => Breadcrumbs != null;
         public List<ProjectMenuItem> Tabs { get; set; }
         public bool HasTabs => Tabs?.Count > 0;
+        public string TabsLayoutViewName { get; set; } = ViewNames.Admin.Shared.Layout;
         public string UrlLogout { get; set; }
         public PluginsClient PluginsClient { get; set; }        
         public readonly string TextError = Resources.TextError;
