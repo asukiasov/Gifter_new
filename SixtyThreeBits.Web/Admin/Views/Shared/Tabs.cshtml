@@ -1,6 +1,6 @@
-﻿@{ var Model = LocalUtilities.GetLayoutViewModel<AdminLayoutViewModel>(ViewData: ViewData, Key: Constants.ViewData.LayoutViewModel); }
-@{
-    Layout = ViewNames.Admin.Shared.Layout;
+﻿@{ 
+    var Model = LocalUtilities.GetLayoutViewModel<AdminLayoutViewModel>(ViewData: ViewData, Key: Constants.ViewData.LayoutViewModel); 
+    Layout = Model.TabsLayoutViewName;
 }
 
 @section HeaderSection{

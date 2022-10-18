@@ -48,7 +48,7 @@ namespace SixtyThreeBits.Web.Admin.Filters
             {
                 ViewModel.UserFullname = Model.User.UserFullname;
 
-                HasPermission = Model.User.HasPermission(Model.UrlCurrentPage);
+                HasPermission = Model.User.HasPermission(Model.UrlCurrentPageWithDomain);
             }
             
             return HasPermission;
@@ -88,13 +88,13 @@ namespace SixtyThreeBits.Web.Admin.Filters
                     Caption = Item.PermissionCaption,
                     NavigateUrl = string.IsNullOrWhiteSpace(Item.PermissionPagePath) ? Item.PermissionCode : Item.PermissionPagePath,
                     Icon = Item.PermissionMenuIcon,
-                    IsSelected = Item.PermissionPagePath == Model.UrlCurrentPage,
+                    IsSelected = Item.PermissionPagePath == Model.UrlCurrentPageWithoutDomain,
                     Children = Model.User.Permissions.Where(SubItem => SubItem.PermissionIsMenuItem && SubItem.PermissionParentID == Item.PermissionID).Select(SubItem => new ProjectMenuItem
                     {
                         Caption = SubItem.PermissionCaption,
                         NavigateUrl = SubItem.PermissionPagePath,
                         Icon = SubItem.PermissionMenuIcon,
-                        IsSelected = SubItem.PermissionPagePath == Model.UrlCurrentPage
+                        IsSelected = SubItem.PermissionPagePath == Model.UrlCurrentPageWithoutDomain
                     }).ToList()
                 }).ToList();
 
@@ -123,9 +123,9 @@ namespace SixtyThreeBits.Web.Admin.Filters
 
             ViewModel.Breadcrumbs = Model.Breadcrumbs = Breadcrumbs.GetBreadcrumbsByPageUrl(
                 PageHierarchy: PageHierarchy,
-                UrlCurrentPage: Model.UrlCurrentPage
+                UrlCurrentPage: Model.UrlCurrentPageWithDomain
             );
-        }        
+        }   
 
         void InitTabs()
         {
@@ -135,7 +135,7 @@ namespace SixtyThreeBits.Web.Admin.Filters
         void InitPageTitle()
         {
             Model.PageTitle = ViewModel.PageTitle = new PageTitle();
-            var P = Model.User.GetPermission(Model.UrlCurrentPage);
+            var P = Model.User.GetPermission(Model.UrlCurrentPageWithoutDomain);
             if (P != null)
             {
                 Model.PageTitle.Set(P.PermissionCaption);

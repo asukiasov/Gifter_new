@@ -6,6 +6,7 @@
     FileManagerPath: null,
     CustomToolbars: '',
     Setup: null,
+    Editor: null,
     PlaceHolders: [],
 
     Display: function () {
@@ -64,6 +65,18 @@
         });        
     },
 
+    Focus: function () {
+        return this.Editor.focus();
+    },
+
+    GetContent: function () {
+        return this.Editor.getContent();
+    },
+
+    SetContent: function (Content) {
+        return this.Editor.setContent(Content);
+    },
+
     RemovePoweredBy: function () {        
         $('[aria-label="Powered by Tiny"]').remove();
     }
@@ -85,6 +98,7 @@ function TinyMCE(Options) {
         }
 
         _this.Setup = function (editor) {
+            _this.Editor = editor;
             if (Options.Setup) {
                 Options.Setup(editor);
             }

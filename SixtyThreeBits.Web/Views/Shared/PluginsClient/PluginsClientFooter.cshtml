@@ -41,7 +41,7 @@
 }
 @if (Model.Is63BitsComponentsEnabled)
 {
-    <script src="~/plugins/63bits-components/63bits-components.js"></script>
+    <script src="~/plugins/63bits-components/63bits-components.js?v=@Guid.NewGuid()"></script>
 }
 @if (Model.IsFancyboxEnabled)
 {

@@ -25,8 +25,24 @@ namespace SixtyThreeBits.Web.Admin.Filters
             }
             else
             {
+                InitPageTitle(Model);
+                ReinitBreadCrumbs(Model);
                 await next();
             }
+        }
+
+        void InitPageTitle(NewsModelBase Model)
+        {
+            Model.PageTitle.Set(Model.DBItemNews.NewsTitle);
+        }
+
+        void ReinitBreadCrumbs(NewsModelBase Model)
+        {
+            if(Model.Breadcrumbs.ItemsCount > 2)
+            {
+                Model.Breadcrumbs.Items[2].Title = Model.DBItemNews.NewsTitle;
+            }
+            
         }
     }
 }

@@ -11,10 +11,6 @@
     GetDetailsButtonColumnCellHtml: function (Element, CellInfo) {
         Element.append('<a href=\"' + CellInfo.data.UrlTeamMemberProperties + '\"><i class=\"fas fa-info-circle\"></i></a>')
     },
-    OnTeamMembersGridInitNewRow: function (s) {
-        s.data.TeamMemberIsPublished = false;
-    },
-
     OnReorder: function (e) {
         const TeamMembersSortIndexes = Globals.Devexpress.GetGridSortIndexes(e, 'TeamMemberID');
         var SortIndexes = new Array();

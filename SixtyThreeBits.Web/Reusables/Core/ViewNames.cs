@@ -226,17 +226,24 @@
         public class Website
         {
             #region Sub Classes
+            public class FileViewer
+            {
+                #region Properties
+                public const string Pdf = "~/Views/PdfViewer/PdfViewer.cshtml";
+                #endregion
+            }
+
             public class Home
             {
                 #region Properties
                 public const string Page = "~/Views/Home/Index.cshtml";                
                 #endregion
-            } 
+            }             
 
-            public class FileViewer
+            public class Test
             {
                 #region Properties
-                public const string Pdf = "~/Views/PdfViewer/PdfViewer.cshtml"; 
+                public const string Page = "~/Views/Test/Test.cshtml";
                 #endregion
             }
 

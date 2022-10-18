@@ -45,7 +45,7 @@ namespace SixtyThreeBits.Web.Admin.Models
                 BlogPostAuthorName = Item.BlogPostAuthorName,
                 BlogPostDate = Item.BlogPostDate,
                 BlogPostIsPublished = Item.BlogPostIsPublished,
-                UrlBlogPost = Url.RouteUrl(ControllerActionRouteNames.Admin.Blog.BlogItem, new { BlogPostID = Item.BlogPostID })
+                UrlBlogPost = Url.RouteUrl(ControllerActionRouteNames.Admin.Blog.PostProperties, new { BlogPostID = Item.BlogPostID })
             }).ToList();
             return ViewModel;
         }
@@ -156,7 +156,7 @@ namespace SixtyThreeBits.Web.Admin.Models
 
             ViewModel.BlogPostImageFilename = DBItemBlog.BlogPostImageFilename;
             ViewModel.BlogPostImageHttpPath = Utilities.GetUploadedFileHttpPath(DBItemBlog.BlogPostImageFilename);
-            ViewModel.UrlDeleteImage = Url.RouteUrl(ControllerActionRouteNames.Admin.Blog.BlogItemDeleteImage, new { BlogPostID = DBItemBlog.BlogPostID });
+            ViewModel.UrlDeleteImage = Url.RouteUrl(ControllerActionRouteNames.Admin.Blog.PostPropertiesDeleteImage, new { BlogPostID = DBItemBlog.BlogPostID });
 
             return ViewModel;
         }

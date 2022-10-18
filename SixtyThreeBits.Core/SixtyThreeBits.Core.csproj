@@ -11,13 +11,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Services\Mega.cs" />
     <Compile Remove="Services\TinifyService.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="63BITS-Libraries-DotNetStandart" Version="1.2.0.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.2" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.2" />
+    <PackageReference Include="63BITS-Libraries-DotNetStandart" Version="1.2.0.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.8" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
 
   <ItemGroup>

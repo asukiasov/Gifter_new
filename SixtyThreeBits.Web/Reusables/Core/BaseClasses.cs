@@ -27,8 +27,9 @@ namespace SixtyThreeBits.Web.Reusables.Core
         public bool HasBreadcrumbs => Breadcrumbs != null;
         public List<ProjectMenuItem> Tabs { get; set; }
         public bool HasTabs => Tabs?.Count > 0;
+        public string TabsLayoutViewName { get; set; } = ViewNames.Admin.Shared.Layout;
         public string UrlLogout { get; set; }
-        public PluginsClient PluginsClient { get; set; }
+        public PluginsClient PluginsClient { get; set; }        
         public readonly string TextError = Resources.TextError;
         public readonly string TextSuccess = Resources.TextSuccess;
         #endregion
@@ -49,7 +50,8 @@ namespace SixtyThreeBits.Web.Reusables.Core
         public readonly string CultureDefault = Enums.Languages.GEORGIAN;
         public string ControllerName { get; set; }
         public string ActionName { get; set; }
-        public string UrlCurrentPage { get; set; }
+        public string UrlCurrentPageWithDomain { get; set; }
+        public string UrlCurrentPageWithoutDomain { get; set; }
         public string WebsiteDomain { get; set; }
         public string WebsiteHttpPath => $"{WebsiteDomain}/";
         public string IP { get; set; }
@@ -126,24 +128,18 @@ namespace SixtyThreeBits.Web.Reusables.Core
         }
 
         public string GetRouteByName(string RouteName, object RouteValues = null, bool GetFullPath = false)
-        {
-            string Protocol = GetFullPath ? (IsHttps ? Constants.Protocols.HTTPS : Constants.Protocols.HTTP) : null;
-            RouteName = string.IsNullOrWhiteSpace(Culture) || Culture == CultureDefault ? RouteName : $"{RouteName}Culture";
-            var UrlResult = Url.RouteUrl(RouteName, RouteValues, Protocol);            
-            return UrlResult;
-
-            /* Multilanguage Option
-             var Result = Url.RouteUrl(RouteName, RouteValues);
-            if(Language != Constants.Languages.GEORGIAN)
+        {            
+            var Result = Url.RouteUrl(RouteName, RouteValues);
+            if (Culture != Constants.Languages.ENGLISH)
             {
-                Result = $"{WebsiteHttpPath}{Language}{Result}";
+                Result = $"{WebsiteHttpPath}{Result.TrimStart('/')}";                
             }
             else
             {
-                Result = $"{WebsiteHttpPath}{Result.TrimStart('/')}";
+                Result = $"{WebsiteHttpPath}{Culture}{Result}";
             }
             return Result;
-             */
+
         }
 
         public async Task SaveUploadedFile(IFormFile PostedFile, string Filename, string FolderPhysicalPath = null)

@@ -18,6 +18,7 @@ namespace SixtyThreeBits.Web.Areas.Admin.Controllers
         }
         #endregion
 
+        #region Actions
         [Route("", Name = ControllerActionRouteNames.Admin.Pages.Index)]
         public async Task<ActionResult> Pages()
         {
@@ -28,7 +29,7 @@ namespace SixtyThreeBits.Web.Areas.Admin.Controllers
 
         [HttpPost]
         [Route("add", Name = ControllerActionRouteNames.Admin.Pages.AddNew)]
-        public async Task<ActionResult> PagesAdd(int? ParentID,string PageTitle)
+        public async Task<ActionResult> PagesAdd(int? ParentID, string PageTitle)
         {
             var ViewModel = await Model.CreatePage(ParentID, PageTitle);
             return Json(ViewModel);
@@ -36,7 +37,7 @@ namespace SixtyThreeBits.Web.Areas.Admin.Controllers
 
         [HttpPost]
         [Route("update", Name = ControllerActionRouteNames.Admin.Pages.Update)]
-        public async Task<ActionResult> PagesUpdate(int? PageID,string PageTitle = null, bool? PageIsPublished = null, bool? PageIsMenuItem = null, bool? PageIsFooterItem = null)
+        public async Task<ActionResult> PagesUpdate(int? PageID, string PageTitle = null, bool? PageIsPublished = null, bool? PageIsMenuItem = null, bool? PageIsFooterItem = null)
         {
             var ViewModel = await Model.UpdatePage(PageID, PageTitle, PageIsPublished, PageIsMenuItem, PageIsFooterItem);
             return Json(ViewModel);
@@ -54,9 +55,10 @@ namespace SixtyThreeBits.Web.Areas.Admin.Controllers
         [Route("delete", Name = ControllerActionRouteNames.Admin.Pages.Delete)]
         public async Task<ActionResult> PagesDelete(int? PageID)
         {
-            var ViewModel = await Model.DeleteRecursive(PageID);            
+            var ViewModel = await Model.DeleteRecursive(PageID);
             return Json(ViewModel);
-        }
+        } 
+        #endregion
     }
 
     [Route("admin/pages/{PageID:int}")]

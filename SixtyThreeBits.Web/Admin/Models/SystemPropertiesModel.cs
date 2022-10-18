@@ -25,14 +25,16 @@ namespace SixtyThreeBits.Web.Admin.Models
             ViewModel.InstagramUrl = DBItem.InstagramUrl;
             ViewModel.YoutubeUrl = DBItem.YoutubeUrl;            
             ViewModel.LinkedInUrl = DBItem.LinkedInUrl;
-            ViewModel.GoogleMapsIFrame = DBItem.GoogleMapsIFrame;
-            ViewModel.FooterScripts = DBItem.FooterScripts;
+            ViewModel.GoogleMapsIFrame = DBItem.GoogleMapsIFrame;            
             ViewModel.SMTPAddress = DBItem.SMTPAddress;
             ViewModel.SMTPPort = DBItem.SMTPPort;
             ViewModel.SMTPUsername = DBItem.SMTPUsername;
             ViewModel.SMTPPassword = DBItem.SMTPPassword;
             ViewModel.SMTPUseSSL = DBItem.SMTPUseSSL;
             ViewModel.SMTPFrom = DBItem.SMTPFrom;
+            ViewModel.ScriptsHeader = DBItem.ScriptsHeader;
+            ViewModel.ScriptsBodyStart = DBItem.ScriptsBodyStart;
+            ViewModel.ScriptsBodyEnd = DBItem.ScriptsBodyEnd;
             ViewModel.UrlTestSmtp = Url.RouteUrl(ControllerActionRouteNames.Admin.SystemProperties.TestSmtp);
             return ViewModel;
         }
@@ -62,24 +64,26 @@ namespace SixtyThreeBits.Web.Admin.Models
                 SubmitModel.GoogleMapsIFrame = Regex.Replace(SubmitModel.GoogleMapsIFrame, "width=\"\\d+\"", "width=\"100%\"").Trim();
             }
 
-            await DataAccessFactory.SystemProperties.UpdateSystemProperties(
-                ContactEmail: SubmitModel.ContactEmail ?? Constants.NullValueFor.String,
-                ContactPhone: SubmitModel.ContactPhone ?? Constants.NullValueFor.String,
-                ContactAddress: SubmitModel.ContactAddress ?? Constants.NullValueFor.String,
-                FacebookUrl: SubmitModel.FacebookUrl ?? Constants.NullValueFor.String,
-                TwitterUrl: SubmitModel.TwitterUrl ?? Constants.NullValueFor.String,
-                InstagramUrl: SubmitModel.InstagramUrl ?? Constants.NullValueFor.String,
-                YoutubeUrl: SubmitModel.YoutubeUrl ?? Constants.NullValueFor.String,
-                LinkedInUrl: SubmitModel.LinkedInUrl ?? Constants.NullValueFor.String,
-                GoogleMapsIFrame:SubmitModel.GoogleMapsIFrame ?? Constants.NullValueFor.String,
-                FooterScripts: SubmitModel.FooterScripts ?? Constants.NullValueFor.String,
-                SMTPAddress: SubmitModel.SMTPAddress ?? Constants.NullValueFor.String,
-                SMTPPort: SubmitModel.SMTPPort ?? Constants.NullValueFor.Int,
-                SMTPUsername: SubmitModel.SMTPUsername ?? Constants.NullValueFor.String,
-                SMTPPassword: SubmitModel.SMTPPassword ?? Constants.NullValueFor.String,
-                SMTPUseSSL: SubmitModel.SMTPUseSSL,
-                SMTPFrom: SubmitModel.SMTPFrom ?? Constants.NullValueFor.String
-            );
+            var SP = new SystemProperties();
+            SP.ContactEmail = SubmitModel.ContactEmail ?? Constants.NullValueFor.String;
+            SP.ContactPhone = SubmitModel.ContactPhone ?? Constants.NullValueFor.String;
+            SP.ContactAddress = SubmitModel.ContactAddress ?? Constants.NullValueFor.String;
+            SP.FacebookUrl = SubmitModel.FacebookUrl ?? Constants.NullValueFor.String;
+            SP.TwitterUrl = SubmitModel.TwitterUrl ?? Constants.NullValueFor.String;
+            SP.InstagramUrl = SubmitModel.InstagramUrl ?? Constants.NullValueFor.String;
+            SP.YoutubeUrl = SubmitModel.YoutubeUrl ?? Constants.NullValueFor.String;
+            SP.LinkedInUrl = SubmitModel.LinkedInUrl ?? Constants.NullValueFor.String;
+            SP.GoogleMapsIFrame = SubmitModel.GoogleMapsIFrame ?? Constants.NullValueFor.String;
+            SP.SMTPAddress = SubmitModel.SMTPAddress ?? Constants.NullValueFor.String;
+            SP.SMTPPort = SubmitModel.SMTPPort ?? Constants.NullValueFor.Int;
+            SP.SMTPUsername = SubmitModel.SMTPUsername ?? Constants.NullValueFor.String;
+            SP.SMTPPassword = SubmitModel.SMTPPassword ?? Constants.NullValueFor.String;
+            SP.SMTPUseSSL = SubmitModel.SMTPUseSSL;
+            SP.SMTPFrom = SubmitModel.SMTPFrom ?? Constants.NullValueFor.String;
+            SP.ScriptsHeader = SubmitModel.ScriptsHeader ?? Constants.NullValueFor.String;
+            SP.ScriptsBodyStart = SubmitModel.ScriptsBodyStart ?? Constants.NullValueFor.String;
+            SP.ScriptsBodyEnd = SubmitModel.ScriptsBodyEnd ?? Constants.NullValueFor.String;
+            await DataAccessFactory.SystemProperties.UpdateSystemProperties(SP);
             var ViewModel = SubmitModel;
             ViewModel.IsSaved = !DataAccessFactory.SystemProperties.IsError;
             return ViewModel;
@@ -99,13 +103,16 @@ namespace SixtyThreeBits.Web.Admin.Models
             public string YoutubeUrl { get; set; }
             public string LinkedInUrl { get; set; }
             public string GoogleMapsIFrame { get; set; }
-            public string FooterScripts { get; set; }
             public string SMTPAddress { get; set; }
             public int? SMTPPort { get; set; }
             public string SMTPUsername { get; set; }
             public string SMTPPassword { get; set; }
             public bool SMTPUseSSL { get; set; }            
             public string SMTPFrom { get; set; }
+            public string ScriptsHeader { get; set; }
+            public string ScriptsBodyStart { get; set; }
+            public string ScriptsBodyEnd { get; set; }
+
             public string UrlTestSmtp { get; set; }
             public readonly string TextSuccess = Resources.TextSuccess;
             #endregion

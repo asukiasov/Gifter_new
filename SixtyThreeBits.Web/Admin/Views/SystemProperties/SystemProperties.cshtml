@@ -64,8 +64,20 @@
                     </div>
                     <div class="row">
                         <div class="form-group col-lg-12">
-                            <label>Footer Scripts</label>
-                            <textarea class="form-control" rows="5" name="@nameof(Model.FooterScripts)">@Html.Raw(Model.FooterScripts)</textarea>                            
+                            <label>Scripts Header</label>
+                            <textarea class="form-control" rows="5" name="@nameof(Model.ScriptsHeader)">@Html.Raw(Model.ScriptsHeader)</textarea>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-lg-12">
+                            <label>Scripts Body Start</label>
+                            <textarea class="form-control" rows="5" name="@nameof(Model.ScriptsBodyStart)">@Html.Raw(Model.ScriptsBodyStart)</textarea>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-lg-12">
+                            <label>Scripts Body End</label>
+                            <textarea class="form-control" rows="5" name="@nameof(Model.ScriptsBodyEnd)">@Html.Raw(Model.ScriptsBodyEnd)</textarea>
                         </div>
                     </div>
                 </div>

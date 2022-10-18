@@ -111,8 +111,7 @@ namespace SixtyThreeBits.Web.Admin.Models
                         Options.Mode(GridScrollingMode.Standard);
                         Options.ShowScrollbar(ShowScrollbarMode.Always);
                     })
-                    .OnInitialized("UsersModel.OnUsersGridInit")
-                    .OnInitNewRow("UsersModel.OnUsersGridInitNewRow")
+                    .OnInitialized("UsersModel.OnUsersGridInit")                    
                     .Columns(Columns =>
                     {                        
                         Columns.AddFor(m => m.UserFirstname).Caption("სახელი").Width(150).ValidationRules(Options =>
@@ -341,11 +340,7 @@ namespace SixtyThreeBits.Web.Admin.Models
                     Tree
                     .ID("PermissionsTree")
                     .OnInitialized("PermissionsModel.OnPermissionsTreeInit")
-                    .OnInitNewRow("PermissionsModel.OnPermissionsTreeInitNewRow")
-                     .Toolbar(Options =>
-                     {
-                         Options.Visible(false);
-                     })                    
+                    .OnInitNewRow("PermissionsModel.OnPermissionsTreeInitNewRow")                       
                     .RowDragging(Options =>
                     {
                         if (AllowUpdate)

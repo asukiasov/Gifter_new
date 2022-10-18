@@ -1,7 +1,5 @@
 ﻿$(function () {
-    TinyMCE.Init({
-        Selector: '.js-apply-tinymce'
-    }).Display();
+    new TinyMCE({ Selector: '.js-apply-tinymce', Width: '100%', Height: 250 }).DisplaySimplified();
 
     $('.js-slugfy-button').click(function () {
         var Slug = $('.js-blog-post-title-textbox').ToSlug();

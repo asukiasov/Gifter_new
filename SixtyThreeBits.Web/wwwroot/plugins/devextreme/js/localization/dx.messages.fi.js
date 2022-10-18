@@ -1,7 +1,7 @@
 /*!
 * DevExtreme (dx.messages.fi.js)
-* Version: 21.2.5
-* Build date: Mon Jan 17 2022
+* Version: 22.1.4
+* Build date: Fri Jul 22 2022
 *
 * Copyright (c) 2012 - 2022 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -80,9 +80,9 @@
             "dxFileUploader-readyToUpload": "Valmis l\xe4hetett\xe4v\xe4ksi",
             "dxFileUploader-uploadAbortedMessage": "TODO",
             "dxFileUploader-uploadFailedMessage": "L\xe4hetys ep\xe4onnistui",
-            "dxFileUploader-invalidFileExtension": "",
-            "dxFileUploader-invalidMaxFileSize": "",
-            "dxFileUploader-invalidMinFileSize": "",
+            "dxFileUploader-invalidFileExtension": "TODO",
+            "dxFileUploader-invalidMaxFileSize": "TODO",
+            "dxFileUploader-invalidMinFileSize": "TODO",
             "dxRangeSlider-ariaFrom": "Alkaen",
             "dxRangeSlider-ariaTill": "Asti",
             "dxSwitch-switchedOnText": "P\xc4\xc4LLE",
@@ -285,6 +285,13 @@
             "dxHtmlEditor-dialogInsertTableRowsField": "!TODO",
             "dxHtmlEditor-dialogInsertTableColumnsField": "!TODO",
             "dxHtmlEditor-dialogInsertTableCaption": "!TODO",
+            "dxHtmlEditor-dialogUpdateImageCaption": "!TODO",
+            "dxHtmlEditor-dialogImageUpdateButton": "!TODO",
+            "dxHtmlEditor-dialogImageAddButton": "!TODO",
+            "dxHtmlEditor-dialogImageSpecifyUrl": "!TODO",
+            "dxHtmlEditor-dialogImageSelectFile": "!TODO",
+            "dxHtmlEditor-dialogImageKeepAspectRatio": "!TODO",
+            "dxHtmlEditor-dialogImageEncodeToBase64": "!TODO",
             "dxHtmlEditor-heading": "!TODO!",
             "dxHtmlEditor-normalText": "!TODO!",
             "dxHtmlEditor-background": "TODO",
@@ -517,6 +524,10 @@
             "dxGantt-dialogCancelOperationMessage": "TODO",
             "dxGantt-dialogDeleteDependencyMessage": "TODO",
             "dxGantt-dialogMoveTaskAndKeepDependencyMessage": "TODO",
+            "dxGantt-dialogConstraintCriticalViolationSeveralTasksMessage": "TODO",
+            "dxGantt-dialogConstraintViolationSeveralTasksMessage": "TODO",
+            "dxGantt-dialogDeleteDependenciesMessage": "TODO",
+            "dxGantt-dialogMoveTaskAndKeepDependenciesMessage": "TODO",
             "dxGantt-undo": "TODO",
             "dxGantt-redo": "TODO",
             "dxGantt-expandAll": "TODO",

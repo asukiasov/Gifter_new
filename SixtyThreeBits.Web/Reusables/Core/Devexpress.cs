@@ -67,6 +67,7 @@ namespace SixtyThreeBits.Web.Reusables.Core
             .ShowRowLines(true)
             .FocusedRowEnabled(true)
             .FocusedRowIndex(0)
+            .SyncLookupFilterValues(false)
             .Toolbar(Options =>
             {
                 Options.Visible(false);
@@ -155,8 +156,13 @@ namespace SixtyThreeBits.Web.Reusables.Core
             .ShowRowLines(true)
             .FocusedRowEnabled(true)
             .FocusedRowIndex(0)
+            .SyncLookupFilterValues(false)
             .AutoExpandAll(true)
             .RootValue(null)
+            .Toolbar(Options =>
+            {
+                Options.Visible(false);
+            })
             .Scrolling(Options =>
             {
                 Options.Mode(TreeListScrollingMode.Standard);
@@ -223,10 +229,14 @@ namespace SixtyThreeBits.Web.Reusables.Core
     public static class DevExtremeBuilderCustomExtensions
     {
         #region Methods
-        public static DataGridColumnBuilder<T> InitCheckboxColumn<T>(this DataGridColumnBuilder<T> Column)
+        public static DataGridColumnBuilder<T> InitCheckboxColumn<T>(this DataGridColumnBuilder<T> Column, bool AllowNull = false, bool DefaultValue = false)
         {
             Column.TrueText(Resources.TextYes);
             Column.FalseText(Resources.TextNo);
+            if (!AllowNull)
+            {
+                Column.CalculateCellValue($"function(e){{ var DataField = this.dataField;  var Value = e[DataField]; if ($.isEmptyObject(e)) {{ e[DataField] = {DefaultValue.ToString().ToLower()}; }} else if(Value == null){{e[DataField] = false;}}  return e[DataField]; }}");
+            }
             return Column;
         }
 
@@ -319,6 +329,11 @@ namespace SixtyThreeBits.Web.Reusables.Core
             }
 
             return DateBox;
+        }
+        
+        public static DataGridColumnBuilder<T> InitDetailsUrlCellTemplate<T>(this DataGridColumnBuilder<T> Column,string UrlPropertyName)
+        {
+            return Column.CellTemplate($"<a href=\"<%-data.{UrlPropertyName}%>\"><i class=\"fas fa-info-circle\"></i></a>");
         }
         #endregion
 

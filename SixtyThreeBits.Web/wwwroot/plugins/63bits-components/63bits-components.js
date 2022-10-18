@@ -1,4 +1,4 @@
-﻿var Components63Bits = {
+﻿const Components63Bits = {
     Dialog: {
         ButtonColors: {
             Blue: 'btn-blue',
@@ -178,3 +178,206 @@
         }
     }
 };
+
+var counter = 0;
+var FileUplaoderClass = {
+    InputElement: null,
+    UrlFileUplaod: null,
+    RequestFileKey: 'Files',
+    RequestData: null,
+    OnAbort: null,
+    OnProgressCallback: null,
+    OnFinishUploadCallback: null,    
+    OnStartCallback: null,
+    IsReportProgressIndividual: false,
+    XhrArray: [],
+
+    Abort: function () {
+        this.XhrArray.forEach(function (xhr, index) {
+            xhr.abort();
+        });
+        
+    },
+
+    InitEvents: function (xhr) {
+        https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/upload
+
+        var _this = this;
+
+        //The upload has begun.
+        xhr.upload.onloadstart = function (e) {
+            if (_this.OnStartCallback) {                
+                _this.OnStartCallback({
+                    Filename: xhr.fileName,
+                    xhr: xhr
+                });
+            }
+        }
+
+        //Periodically delivered to indicate the amount of progress made so far.
+        if (_this.OnProgressCallback) {
+            xhr.upload.onprogress = function (e) {
+                const Percent = Math.ceil(100 * e.loaded / e.total);
+                _this.OnProgressCallback({
+                    Filename: xhr.fileName,
+                    BytesUploaded: e.loaded,
+                    BytesTotal: e.total,
+                    ProgressPercent: Percent,
+                    xhr: xhr
+                });
+            }
+        }
+
+        //The upload operation was aborted.
+        xhr.upload.onabort = function (e) {
+            if (_this.OnAbort) {
+                _this.OnAbort({
+                    Filename: xhr.fileName,
+                    xhr: xhr
+                });
+            }
+        }
+
+        //The upload failed due to an error.
+        xhr.upload.onerror = function (e) {
+            if (_this.OnErrorCallback) {                
+                _this.OnErrorCallback({
+                    Filename: xhr.fileName,
+                    xhr: xhr,
+                    e: e
+                });
+            }
+        }
+
+        //The upload completed successfully.
+        xhr.onload = function (e) {
+            if (_this.OnFinishUploadCallback) {
+                const Result = {};                                    
+                try {
+                    Result.Data = JSON.parse(xhr.response);
+                }
+                catch {
+                    Result.Data = xhr.response;
+                }
+                Result.Status = xhr.status;
+                Result.StatusText = xhr.statusText;
+                Result.Filename = xhr.fileName;
+                Result.xhr = xhr;
+                _this.OnFinishUploadCallback(Result);
+            }            
+        }
+
+        //The upload timed out because a reply did not arrive within the time interval specified by the XMLHttpRequest.timeout. 
+        xhr.upload.ontimeout = function (e) {
+            if (_this.OnErrorCallback) {                
+                _this.OnErrorCallback({
+                    Filename: xhr.fileName,
+                    xhr: xhr, 
+                    e: e
+                });
+            }
+        }
+    },
+
+    Upload: function () {        
+        const _this = this;
+        if (_this.InputElement.files.length) {
+
+            if (_this.IsReportProgressIndividual) {
+                _this.UploadWithReportProgressIndividual();
+            }
+            else {
+                _this.UploadWithReportProgressGrouped();
+            }
+        }
+        else {
+            throw 'No files to upload';
+        }
+    },
+
+    UploadWithReportProgressIndividual: function () {
+        const _this = this;
+        for (let i = 0; i < _this.InputElement.files.length; i++) {
+
+            const xhr = new XMLHttpRequest();
+            const Data = new FormData();
+            const File = _this.InputElement.files[i];
+
+            Data.append(_this.RequestFileKey, File);
+
+            if (_this.RequestData) {
+                _this.RequestData.forEach(function (Item, Index) {
+                    Data.append(Item.Key, Item.Value);
+                });
+                xhr.fileName = File.name;
+            }
+
+            _this.InitEvents(xhr);
+            xhr.open('POST', _this.UrlFileUplaod);
+            xhr.send(Data);            
+        }
+    },
+
+    UploadWithReportProgressGrouped: function () {
+        const _this = this;
+        const xhr = new XMLHttpRequest();
+        const Data = new FormData();
+        const Files = _this.InputElement.files;
+        const Filenames = new Array();
+        for (let i = 0; i < Files.length; i++) {
+            Data.append(_this.RequestFileKey, Files[i]);
+            Filenames.push(Files[i].name);
+        }
+        xhr.fileName = Filenames.join('; ');
+
+        if (_this.RequestData) {
+            _this.RequestData.forEach(function (Item, Index) {
+                Data.append(Item.Key, Item.Value);
+            });
+        }
+
+        _this.InitEvents(xhr);
+        xhr.open('POST', _this.UrlFileUplaod);                
+        xhr.send(Data);        
+    }
+}
+
+function FileUplaoder(Options) {
+    if (Options) {
+        const _this = this;
+
+        _this.InputElement = Options.InputElement ? Options.InputElement : null;
+        _this.UrlFileUplaod = Options.UrlFileUplaod ? Options.UrlFileUplaod : null;
+        _this.OnStartCallback = Options.OnStartCallback ? Options.OnStartCallback : null;
+        _this.OnProgressCallback = Options.OnProgressCallback ? Options.OnProgressCallback : null;
+        _this.OnAbort = Options.OnAbort ? Options.OnAbort : null;
+        _this.OnFinishUploadCallback = Options.OnFinishUploadCallback ? Options.OnFinishUploadCallback : null;        
+        _this.OnErrorCallback = Options.OnErrorCallback ? Options.OnErrorCallback : null;
+        _this.IsReportProgressIndividual = Options.IsReportProgressIndividual ? true : false;
+        _this.RequestData = Options.RequestData ? Options.RequestData : null;
+
+        if (_this.InputElement == null) {
+            throw new Error('Invalid input type file element is provided');
+        }
+        if (_this.UrlFileUplaod == null) {
+            throw new Error('UrlFileUplaod is not provided');
+        }
+
+        _this.RequestFileKey = _this.InputElement.getAttribute('name') ? _this.InputElement.getAttribute('name') : _this.RequestFileKey;
+
+        if (_this.RequestData != null) {
+            if (Array.isArray(_this.RequestData)) {
+                _this.RequestData.forEach(function (Item, Index) {
+                    if (Item.Key == undefined || Item.Value == undefined) {
+                        throw new Error('RequestData must be an array of Key-Value object [{ Key: "MyKey", Value: "MyValue"}]');
+                    }
+                });
+            }
+            else {
+                throw new Error('RequestData must be an array of Key-Value object [{ Key: "MyKey", Value: "MyValue"}]');
+            }
+        }
+    }
+}
+
+FileUplaoder.prototype = FileUplaoderClass;

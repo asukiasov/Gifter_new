@@ -4,9 +4,6 @@
         UsersModel.UsersGrid = s.component;
         
         Globals.Devexpress.SetGridFullHeight(UsersModel.UsersGrid,s.element[0]);        
-    },
-    OnUsersGridInitNewRow: function (s) {
-        s.data.UserIsActive = false;
     }
 };
 
