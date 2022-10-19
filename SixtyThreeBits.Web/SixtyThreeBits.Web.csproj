@@ -43,6 +43,16 @@
     <None Include="wwwroot\admin\js\Categories\Category\CategoriesItem.js" />
     <None Include="wwwroot\admin\js\Products\Product.js" />
     <None Include="wwwroot\admin\js\Products\Products.js" />
+    <None Include="wwwroot\images\icons\arrow_left_white.svg" />
+    <None Include="wwwroot\images\icons\arrow_right_white.svg" />
+    <None Include="wwwroot\images\icons\chevron_gray.svg" />
+    <None Include="wwwroot\images\icons\chevron_solid_gray.svg" />
+    <None Include="wwwroot\images\icons\chevron_thin.svg" />
+    <None Include="wwwroot\images\icons\dropdown_arrow.svg" />
+    <None Include="wwwroot\images\icons\radio_white.svg" />
+    <None Include="wwwroot\images\icons\spinner.svg" />
+    <None Include="wwwroot\images\icons\spinner_white.svg" />
+    <None Include="wwwroot\images\icons\tick_white.svg" />
     <None Include="wwwroot\plugins\63bits-pageBuilder\images\demo\services_item.svg" />
     <None Include="wwwroot\plugins\63bits-pageBuilder\images\icons\alignment\1_1.svg" />
     <None Include="wwwroot\plugins\63bits-pageBuilder\images\icons\alignment\1_2.svg" />
