@@ -1987,7 +1987,7 @@ html:not(.desktop) .editor-sidebar > div {
 	flex-shrink: 0;
 }
 .t63-section .accordion-item .fontawesome-icon-container .action-buttons{
-	top: auto;
+	top: -2px;
 	bottom: 0;
     left: 100%;
 	margin: 0;
