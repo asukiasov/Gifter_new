@@ -1,7 +1,7 @@
 /*!
 * DevExtreme (dx.messages.ru.js)
-* Version: 22.1.4
-* Build date: Fri Jul 22 2022
+* Version: 22.1.5
+* Build date: Fri Sep 02 2022
 *
 * Copyright (c) 2012 - 2022 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -178,6 +178,9 @@
             "dxPager-infoText": "\u0421\u0442\u0440\u0430\u043d\u0438\u0446\u0430 {0} \u0438\u0437 {1} (\u0412\u0441\u0435\u0433\u043e \u044d\u043b\u0435\u043c\u0435\u043d\u0442\u043e\u0432: {2})",
             "dxPager-pagesCountText": "\u0438\u0437",
             "dxPager-pageSizesAllText": "\u0412\u0441\u0435",
+            "dxPager-page": "\u0421\u0442\u0440\u0430\u043d\u0438\u0446\u0430 {0}",
+            "dxPager-prevPage": "\u041f\u0440\u0435\u0434\u044b\u0434\u0443\u0449\u0430\u044f \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0430",
+            "dxPager-nextPage": "\u0421\u043b\u0435\u0434\u0443\u044e\u0449\u0430\u044f \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0430",
             "dxPivotGrid-grandTotal": "\u0418\u0442\u043e\u0433\u043e",
             "dxPivotGrid-total": "{0} \u0412\u0441\u0435\u0433\u043e",
             "dxPivotGrid-fieldChooserTitle": "\u0412\u044b\u0431\u043e\u0440 \u043f\u043e\u043b\u0435\u0439",
