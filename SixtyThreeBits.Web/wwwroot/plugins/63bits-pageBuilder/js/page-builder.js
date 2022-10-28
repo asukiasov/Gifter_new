@@ -7631,6 +7631,12 @@ var PageBuilderModel = {
         }
     },
 
+    deleteContentDataAndSave: function () {
+        $('.js-page-section').remove();
+        PageBuilderModel.data.fromServer.sections = [];
+        PageBuilderModel.save.promise().then(location.reload());
+    },
+
     Sideabr: {
         Show: function () {
             $('.js-editor-sidebar-toggle-btn').addClass('is-active');
