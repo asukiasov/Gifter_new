@@ -1,7 +1,7 @@
 /*!
  * DevExtreme (dx.viz.debug.js)
- * Version: 22.1.4
- * Build date: Fri Jul 22 2022
+ * Version: 22.1.5
+ * Build date: Fri Sep 02 2022
  *
  * Copyright (c) 2012 - 2022 Developer Express Inc. ALL RIGHTS RESERVED
  * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -10834,7 +10834,7 @@
               \*************************************************************/
             function(__unused_webpack_module, exports) {
                 exports.version = void 0;
-                exports.version = "22.1.4"
+                exports.version = "22.1.5"
             },
         67403:
             /*!********************************************************************!*\
@@ -11318,7 +11318,7 @@
                             value = (0, _data.toComparable)(value);
                             var compare = function(obj, operatorFn) {
                                 obj = (0, _data.toComparable)(getter(obj));
-                                return [value, obj].includes(null) && value !== obj ? false : operatorFn(obj, value)
+                                return (null == value || null == obj) && value !== obj ? false : operatorFn(obj, value)
                             };
                             switch (op.toLowerCase()) {
                                 case "=":
@@ -11794,6 +11794,21 @@
                     return arr2
                 }
 
+                function _extends() {
+                    _extends = Object.assign ? Object.assign.bind() : function(target) {
+                        for (var i = 1; i < arguments.length; i++) {
+                            var source = arguments[i];
+                            for (var key in source) {
+                                if (Object.prototype.hasOwnProperty.call(source, key)) {
+                                    target[key] = source[key]
+                                }
+                            }
+                        }
+                        return target
+                    };
+                    return _extends.apply(this, arguments)
+                }
+
                 function getItems(keyInfo, items, key, groupCount) {
                     if (groupCount) {
                         return function findItems(keyInfo, items, key, groupCount) {
@@ -11823,27 +11838,29 @@
                 }
 
                 function createObjectWithChanges(target, changes) {
-                    var result = function cloneInstance(instance, clonedInstances) {
+                    var result = function cloneInstanceWithChangedPaths(instance, changes, clonedInstances) {
                         clonedInstances = clonedInstances || new WeakMap;
                         var result = instance ? Object.create(Object.getPrototypeOf(instance)) : {};
                         if (instance) {
                             clonedInstances.set(instance, result)
                         }
-                        var instanceWithoutPrototype = (0, _extend.extendFromObject)({}, instance);
+                        var instanceWithoutPrototype = _extends({}, instance);
+                        (0, _object.deepExtendArraySafe)(result, instanceWithoutPrototype, true, true);
                         for (var name in instanceWithoutPrototype) {
-                            var prop = instanceWithoutPrototype[name];
-                            if ((0, _type.isObject)(prop) && !(0, _type.isPlainObject)(prop) && !clonedInstances.has(prop)) {
-                                instanceWithoutPrototype[name] = cloneInstance(prop, clonedInstances)
+                            var value = instanceWithoutPrototype[name];
+                            var change = null === changes || void 0 === changes ? void 0 : changes[name];
+                            if ((0, _type.isObject)(value) && !(0, _type.isPlainObject)(value) && (0, _type.isObject)(change) && !clonedInstances.has(value)) {
+                                result[name] = cloneInstanceWithChangedPaths(value, change, clonedInstances)
                             }
-                        }(0, _object.deepExtendArraySafe)(result, instanceWithoutPrototype, true, true);
+                        }
                         for (var _name in result) {
-                            var _prop = result[_name];
-                            if ((0, _type.isObject)(_prop) && clonedInstances.has(_prop)) {
-                                result[_name] = clonedInstances.get(_prop)
+                            var prop = result[_name];
+                            if ((0, _type.isObject)(prop) && clonedInstances.has(prop)) {
+                                result[_name] = clonedInstances.get(prop)
                             }
                         }
                         return result
-                    }(target);
+                    }(target, changes);
                     return (0, _object.deepExtendArraySafe)(result, changes, true, true)
                 }
 
@@ -34921,6 +34938,9 @@
                         "dxPager-infoText": "Page {0} of {1} ({2} items)",
                         "dxPager-pagesCountText": "of",
                         "dxPager-pageSizesAllText": "All",
+                        "dxPager-page": "Page {0}",
+                        "dxPager-prevPage": "Previous Page",
+                        "dxPager-nextPage": "Next Page",
                         "dxPivotGrid-grandTotal": "Grand Total",
                         "dxPivotGrid-total": "{0} Total",
                         "dxPivotGrid-fieldChooserTitle": "Field Chooser",
@@ -42721,6 +42741,9 @@
                     getWrappedLookupDataSource: function(column, dataSource, filter) {
                         var _this = this;
                         var lookupDataSourceOptions = this.normalizeLookupDataSource(column.lookup);
+                        if (column.calculateCellValue !== column.defaultCalculateCellValue) {
+                            return lookupDataSourceOptions
+                        }
                         var hasLookupOptimization = column.displayField && (0, _type.isString)(column.displayField);
                         var group = function(group) {
                             if (!Array.isArray(group)) {
@@ -42759,8 +42782,10 @@
                                             })
                                         }))
                                     } else {
-                                        var _filter = _this.combineFilters(items.map((function(data) {
-                                            return [column.lookup.valueExpr, data.key]
+                                        var _filter = _this.combineFilters(items.flatMap((function(data) {
+                                            return data.key
+                                        })).map((function(key) {
+                                            return [column.lookup.valueExpr, key]
                                         })), "or");
                                         newDataSource = new _data_source.DataSource(_extends({}, lookupDataSourceOptions, loadOptions, {
                                             filter: _this.combineFilters([_filter, loadOptions.filter], "and")
@@ -42992,7 +43017,8 @@
                             delay: 0,
                             templatesRenderAsynchronously: false,
                             hideTopOverlayHandler: null,
-                            focusStateEnabled: false
+                            focusStateEnabled: false,
+                            propagateOutsideClick: true
                         })
                     },
                     _defaultOptionsRules: function() {
@@ -43815,13 +43841,34 @@
                             this._showingDeferred.resolve()
                         } else {
                             var show = function() {
-                                _this7._renderVisibility(true);
-                                if (_this7._isShowingActionCanceled) {
-                                    delete _this7._isShowingActionCanceled;
-                                    _this7._showingDeferred.resolve();
-                                    return
+                                _this7._stopAnimation();
+                                _this7._toggleVisibility(true);
+                                _this7._$content.css("visibility", "hidden");
+                                _this7._$content.toggleClass("dx-state-invisible", false);
+                                _this7._updateZIndexStackPosition(true);
+                                _this7._positionController.openingHandled();
+                                _this7._renderContent();
+                                var showingArgs = {
+                                    cancel: false
+                                };
+                                _this7._actions.onShowing(showingArgs);
+                                if (showingArgs.cancel) {
+                                    ! function() {
+                                        _this7._toggleVisibility(false);
+                                        _this7._$content.css("visibility", "");
+                                        _this7._$content.toggleClass("dx-state-invisible", true);
+                                        _this7._isShowingActionCanceled = true;
+                                        _this7._moveFromContainer();
+                                        _this7.option("visible", false);
+                                        _this7._showingDeferred.resolve()
+                                    }()
+                                } else {
+                                    ! function() {
+                                        _this7._$content.css("visibility", "");
+                                        _this7._renderVisibility(true);
+                                        _this7._animateShowing()
+                                    }()
                                 }
-                                _this7._animateShowing()
                             };
                             if (this.option("templatesRenderAsynchronously")) {
                                 this._stopShowTimer();
@@ -43873,6 +43920,7 @@
                         }))
                     },
                     _hide: function() {
+                        var _this9 = this;
                         if (!this._currentVisible) {
                             return (new _deferred.Deferred).resolve().promise()
                         }
@@ -43887,15 +43935,19 @@
                             this._actions.onHiding(hidingArgs);
                             this._toggleSafariScrolling();
                             if (hidingArgs.cancel) {
-                                this._isHidingActionCanceled = true;
-                                this.option("visible", true);
-                                this._hidingDeferred.resolve()
+                                ! function() {
+                                    _this9._isHidingActionCanceled = true;
+                                    _this9.option("visible", true);
+                                    _this9._hidingDeferred.resolve()
+                                }()
                             } else {
-                                this._forceFocusLost();
-                                this._toggleShading(false);
-                                this._toggleSubscriptions(false);
-                                this._stopShowTimer();
-                                this._animateHiding()
+                                ! function() {
+                                    _this9._forceFocusLost();
+                                    _this9._toggleShading(false);
+                                    _this9._toggleSubscriptions(false);
+                                    _this9._stopShowTimer();
+                                    _this9._animateHiding()
+                                }()
                             }
                         }
                         return this._hidingDeferred.promise()
@@ -43930,30 +43982,15 @@
                         if (!visible) {
                             (0, _visibility_change.triggerHidingEvent)(this._$content)
                         }
-                        this._toggleVisibility(visible);
-                        this._$content.toggleClass("dx-state-invisible", !visible);
-                        this._updateZIndexStackPosition(visible);
                         if (visible) {
-                            this._positionController.openingHandled();
-                            this._renderContent();
-                            var showingArgs = {
-                                cancel: false
-                            };
-                            this._actions.onShowing(showingArgs);
-                            if (showingArgs.cancel) {
-                                this._toggleVisibility(false);
-                                this._$content.toggleClass("dx-state-invisible", true);
-                                this._updateZIndexStackPosition(false);
-                                this._moveFromContainer();
-                                this._isShowingActionCanceled = true;
-                                this.option("visible", false);
-                                return
-                            }
                             this._moveToContainer();
                             this._renderGeometry();
                             (0, _visibility_change.triggerShownEvent)(this._$content);
                             (0, _visibility_change.triggerResizeEvent)(this._$content)
                         } else {
+                            this._toggleVisibility(visible);
+                            this._$content.toggleClass("dx-state-invisible", !visible);
+                            this._updateZIndexStackPosition(visible);
                             this._moveFromContainer()
                         }
                         this._toggleShading(visible);
@@ -43980,9 +44017,9 @@
                         this._toggleTabTerminator(visible && this.option("shading"))
                     },
                     _initTabTerminatorHandler: function() {
-                        var _this9 = this;
+                        var _this10 = this;
                         this._proxiedTabTerminatorHandler = function() {
-                            _this9._tabKeyHandler.apply(_this9, arguments)
+                            _this10._tabKeyHandler.apply(_this10, arguments)
                         }
                     },
                     _toggleTabTerminator: function(enabled) {
@@ -44123,7 +44160,7 @@
                         return isHidden || !_dom_adapter.default.getBody().contains($parent.get(0))
                     },
                     _renderContentImpl: function() {
-                        var _this10 = this;
+                        var _this11 = this;
                         var whenContentRendered = new _deferred.Deferred;
                         var contentTemplateOption = this.option("contentTemplate");
                         var contentTemplate = this._getTemplate(contentTemplateOption);
@@ -44138,8 +44175,8 @@
                         });
                         this._renderScrollTerminator();
                         whenContentRendered.done((function() {
-                            if (_this10.option("visible")) {
-                                _this10._moveToContainer()
+                            if (_this11.option("visible")) {
+                                _this11._moveToContainer()
                             }
                         }));
                         return whenContentRendered.promise()
@@ -44276,9 +44313,9 @@
                         return this._$content
                     },
                     _attachKeyboardEvents: function() {
-                        var _this11 = this;
+                        var _this12 = this;
                         this._keyboardListenerId = _short.keyboard.on(this._$content, null, (function(opts) {
-                            return _this11._keyboardHandler(opts)
+                            return _this12._keyboardHandler(opts)
                         }))
                     },
                     _keyboardHandler: function(options) {
@@ -44337,7 +44374,7 @@
                         this._$content.toggleClass("dx-rtl", rtl)
                     },
                     _optionChanged: function(args) {
-                        var _this12 = this;
+                        var _this13 = this;
                         var value = args.value;
                         if (this._getActionsList().includes(args.name)) {
                             this._initActions();
@@ -44371,10 +44408,10 @@
                                 break;
                             case "visible":
                                 this._renderVisibilityAnimate(value).done((function() {
-                                    if (!_this12._animateDeferred) {
+                                    if (!_this13._animateDeferred) {
                                         return
                                     }
-                                    _this12._animateDeferred.resolveWith(_this12)
+                                    _this13._animateDeferred.resolveWith(_this13)
                                 }));
                                 break;
                             case "container":
@@ -44426,7 +44463,7 @@
                         }
                     },
                     toggle: function(showing) {
-                        var _this13 = this;
+                        var _this14 = this;
                         showing = void 0 === showing ? !this.option("visible") : showing;
                         var result = new _deferred.Deferred;
                         if (showing === this.option("visible")) {
@@ -44436,8 +44473,8 @@
                         this._animateDeferred = animateDeferred;
                         this.option("visible", showing);
                         animateDeferred.promise().done((function() {
-                            delete _this13._animateDeferred;
-                            result.resolveWith(_this13, [_this13.option("visible")])
+                            delete _this14._animateDeferred;
+                            result.resolveWith(_this14, [_this14.option("visible")])
                         }));
                         return result.promise()
                     },
@@ -48133,6 +48170,10 @@
                     var endDayDate = new Date(new Date(date).setHours(23, 59, 59, 0));
                     return startDayDate.getTimezoneOffset() - endDayDate.getTimezoneOffset() !== 0
                 };
+                var getClientTimezoneOffset = function() {
+                    var date = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : new Date;
+                    return 6e4 * date.getTimezoneOffset()
+                };
                 var hasDSTInLocalTimeZone = function() {
                     var _getExtremeDates = getExtremeDates(),
                         _getExtremeDates2 = _slicedToArray(_getExtremeDates, 2),
@@ -48215,9 +48256,11 @@
                         }
                         return new Date(exception.getTime() + (isBackConversion ? -1 : 1) * timezoneOffset * toMs("hour"))
                     },
-                    getClientTimezoneOffset: function() {
-                        var date = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : new Date;
-                        return 6e4 * date.getTimezoneOffset()
+                    getClientTimezoneOffset: getClientTimezoneOffset,
+                    getDiffBetweenClientTimezoneOffsets: function() {
+                        var firstDate = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : new Date;
+                        var secondDate = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : new Date;
+                        return getClientTimezoneOffset(firstDate) - getClientTimezoneOffset(secondDate)
                     },
                     createUTCDateWithLocalOffset: function(date) {
                         if (!date) {
@@ -48260,12 +48303,10 @@
                         return _utils.default.getDisplayedTimeZones(dateInUTC.getTime())
                     },
                     setOffsetsToDate: function(targetDate, offsetsArray) {
-                        var dateCopy = new Date(targetDate);
-                        var offsetToAdd = offsetsArray.reduce((function(result, offset) {
+                        var newDateMs = offsetsArray.reduce((function(result, offset) {
                             return result + offset
-                        }), 0);
-                        dateCopy.setMilliseconds(dateCopy.getMilliseconds() + offsetToAdd);
-                        return dateCopy
+                        }), targetDate.getTime());
+                        return new Date(newDateMs)
                     }
                 };
                 var _default = utils;
@@ -66998,6 +67039,9 @@
                     _stopCurrentHandling: _common.noop,
                     _dispose: function() {
                         var that = this;
+                        if (this._disposed) {
+                            return
+                        }
                         that.callBase.apply(that, arguments);
                         that._toggleParentsScrollSubscription(false);
                         that._removeResizeHandler();
@@ -95311,7 +95355,8 @@
                             seriesGroup: this._seriesGroup,
                             labelsGroup: this._seriesLabelGroup,
                             argumentAxis: this._argumentAxis,
-                            valueAxis: this._valueAxis
+                            valueAxis: this._valueAxis,
+                            incidentOccurred: this._incidentOccurred
                         }, {
                             widgetType: "chart",
                             type: "line"
@@ -95398,6 +95443,7 @@
                             color: options.lineColor,
                             width: options.lineWidth,
                             widgetType: "chart",
+                            name: "",
                             type: type,
                             opacity: -1 !== type.indexOf("area") ? this._allOptions.areaOpacity : void 0,
                             point: {
@@ -103282,12 +103328,70 @@
             /*!************************************************************************!*\
               !*** ./node_modules/@devextreme/runtime/cjs/inferno/create_context.js ***!
               \************************************************************************/
-            function(__unused_webpack_module, exports) {
+            function(__unused_webpack_module, exports, __webpack_require__) {
+                var __extends = this && this.__extends || (extendStatics = function(d, b) {
+                    extendStatics = Object.setPrototypeOf || {
+                        __proto__: []
+                    }
+                    instanceof Array && function(d, b) {
+                        d.__proto__ = b
+                    } || function(d, b) {
+                        for (var p in b) {
+                            if (b.hasOwnProperty(p)) {
+                                d[p] = b[p]
+                            }
+                        }
+                    };
+                    return extendStatics(d, b)
+                }, function(d, b) {
+                    extendStatics(d, b);
+
+                    function __() {
+                        this.constructor = d
+                    }
+                    d.prototype = null === b ? Object.create(b) : (__.prototype = b.prototype, new __)
+                });
+                var extendStatics;
+                var __assign = this && this.__assign || function() {
+                    __assign = Object.assign || function(t) {
+                        for (var s, i = 1, n = arguments.length; i < n; i++) {
+                            s = arguments[i];
+                            for (var p in s) {
+                                if (Object.prototype.hasOwnProperty.call(s, p)) {
+                                    t[p] = s[p]
+                                }
+                            }
+                        }
+                        return t
+                    };
+                    return __assign.apply(this, arguments)
+                };
                 Object.defineProperty(exports, "__esModule", {
                     value: true
                 });
+                var inferno_1 = __webpack_require__( /*! inferno */ 55285);
+                var contextId = 0;
                 exports.createContext = function(defaultValue) {
-                    return defaultValue
+                    var id = contextId++;
+                    return {
+                        id: id,
+                        defaultValue: defaultValue,
+                        Provider: function(_super) {
+                            __extends(class_1, _super);
+
+                            function class_1() {
+                                return null !== _super && _super.apply(this, arguments) || this
+                            }
+                            class_1.prototype.getChildContext = function() {
+                                var _a;
+                                return __assign(__assign({}, this.context), (_a = {}, _a[id] = this.props.value || defaultValue, _a))
+                            };
+                            class_1.prototype.render = function() {
+                                return this.props.children
+                            };
+                            return class_1
+                        }(inferno_1.Component)
+                    }
                 }
             },
         37221:
@@ -103300,8 +103404,8 @@
                 });
                 var InfernoEffect = function() {
                     function InfernoEffect(effect, dependency) {
-                        this.effect = effect;
                         this.dependency = dependency;
+                        this.effect = effect;
                         this.destroy = effect()
                     }
                     InfernoEffect.prototype.update = function(dependency) {

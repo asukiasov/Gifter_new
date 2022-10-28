@@ -1,7 +1,7 @@
 /*!
  * DevExtreme (dx.all.debug.js)
- * Version: 22.1.4
- * Build date: Fri Jul 22 2022
+ * Version: 22.1.5
+ * Build date: Fri Sep 02 2022
  *
  * Copyright (c) 2012 - 2022 Developer Express Inc. ALL RIGHTS RESERVED
  * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -11081,7 +11081,7 @@
               \*************************************************************/
             function(__unused_webpack_module, exports) {
                 exports.version = void 0;
-                exports.version = "22.1.4"
+                exports.version = "22.1.5"
             },
         67403:
             /*!********************************************************************!*\
@@ -11565,7 +11565,7 @@
                             value = (0, _data.toComparable)(value);
                             var compare = function(obj, operatorFn) {
                                 obj = (0, _data.toComparable)(getter(obj));
-                                return [value, obj].includes(null) && value !== obj ? false : operatorFn(obj, value)
+                                return (null == value || null == obj) && value !== obj ? false : operatorFn(obj, value)
                             };
                             switch (op.toLowerCase()) {
                                 case "=":
@@ -12041,6 +12041,21 @@
                     return arr2
                 }
 
+                function _extends() {
+                    _extends = Object.assign ? Object.assign.bind() : function(target) {
+                        for (var i = 1; i < arguments.length; i++) {
+                            var source = arguments[i];
+                            for (var key in source) {
+                                if (Object.prototype.hasOwnProperty.call(source, key)) {
+                                    target[key] = source[key]
+                                }
+                            }
+                        }
+                        return target
+                    };
+                    return _extends.apply(this, arguments)
+                }
+
                 function getItems(keyInfo, items, key, groupCount) {
                     if (groupCount) {
                         return function findItems(keyInfo, items, key, groupCount) {
@@ -12070,27 +12085,29 @@
                 }
 
                 function createObjectWithChanges(target, changes) {
-                    var result = function cloneInstance(instance, clonedInstances) {
+                    var result = function cloneInstanceWithChangedPaths(instance, changes, clonedInstances) {
                         clonedInstances = clonedInstances || new WeakMap;
                         var result = instance ? Object.create(Object.getPrototypeOf(instance)) : {};
                         if (instance) {
                             clonedInstances.set(instance, result)
                         }
-                        var instanceWithoutPrototype = (0, _extend.extendFromObject)({}, instance);
+                        var instanceWithoutPrototype = _extends({}, instance);
+                        (0, _object.deepExtendArraySafe)(result, instanceWithoutPrototype, true, true);
                         for (var name in instanceWithoutPrototype) {
-                            var prop = instanceWithoutPrototype[name];
-                            if ((0, _type.isObject)(prop) && !(0, _type.isPlainObject)(prop) && !clonedInstances.has(prop)) {
-                                instanceWithoutPrototype[name] = cloneInstance(prop, clonedInstances)
+                            var value = instanceWithoutPrototype[name];
+                            var change = null === changes || void 0 === changes ? void 0 : changes[name];
+                            if ((0, _type.isObject)(value) && !(0, _type.isPlainObject)(value) && (0, _type.isObject)(change) && !clonedInstances.has(value)) {
+                                result[name] = cloneInstanceWithChangedPaths(value, change, clonedInstances)
                             }
-                        }(0, _object.deepExtendArraySafe)(result, instanceWithoutPrototype, true, true);
+                        }
                         for (var _name in result) {
-                            var _prop = result[_name];
-                            if ((0, _type.isObject)(_prop) && clonedInstances.has(_prop)) {
-                                result[_name] = clonedInstances.get(_prop)
+                            var prop = result[_name];
+                            if ((0, _type.isObject)(prop) && clonedInstances.has(prop)) {
+                                result[_name] = clonedInstances.get(prop)
                             }
                         }
                         return result
-                    }(target);
+                    }(target, changes);
                     return (0, _object.deepExtendArraySafe)(result, changes, true, true)
                 }
 
@@ -36745,6 +36762,9 @@
                         "dxPager-infoText": "Page {0} of {1} ({2} items)",
                         "dxPager-pagesCountText": "of",
                         "dxPager-pageSizesAllText": "All",
+                        "dxPager-page": "Page {0}",
+                        "dxPager-prevPage": "Previous Page",
+                        "dxPager-nextPage": "Next Page",
                         "dxPivotGrid-grandTotal": "Grand Total",
                         "dxPivotGrid-total": "{0} Total",
                         "dxPivotGrid-fieldChooserTitle": "Field Chooser",
@@ -50947,7 +50967,7 @@
                 var _inferno2 = __webpack_require__( /*! @devextreme/runtime/inferno */ 44105);
                 var _subscribe_to_event = __webpack_require__( /*! ../../../utils/subscribe_to_event */ 19828);
                 var _keyboard_action_context = __webpack_require__( /*! ./keyboard_action_context */ 44133);
-                var _excluded = ["children", "className", "label", "onClick"];
+                var _excluded = ["children", "className", "label", "onClick", "tabIndex"];
 
                 function _objectWithoutProperties(source, excluded) {
                     if (null == source) {
@@ -51032,9 +51052,10 @@
                         children = _ref$props.children,
                         className = _ref$props.className,
                         label = _ref$props.label,
+                        tabIndex = _ref$props.tabIndex,
                         widgetRef = _ref.widgetRef;
                     return (0, _inferno.createVNode)(1, "div", className, children, 0, {
-                        tabIndex: 0,
+                        tabIndex: tabIndex,
                         role: "button",
                         "aria-label": label
                     }, null, widgetRef)
@@ -51042,7 +51063,8 @@
                 exports.viewFunction = viewFunction;
                 var LightButtonProps = {
                     className: "",
-                    label: ""
+                    label: "",
+                    tabIndex: 0
                 };
                 exports.LightButtonProps = LightButtonProps;
                 var LightButton = function(_InfernoComponent) {
@@ -51108,7 +51130,7 @@
                         key: "restAttributes",
                         get: function() {
                             var _this$props = this.props,
-                                restProps = (_this$props.children, _this$props.className, _this$props.label, _this$props.onClick, _objectWithoutProperties(_this$props, _excluded));
+                                restProps = (_this$props.children, _this$props.className, _this$props.label, _this$props.onClick, _this$props.tabIndex, _objectWithoutProperties(_this$props, _excluded));
                             return restProps
                         }
                     }]);
@@ -53006,6 +53028,11 @@
                 var _light_button = __webpack_require__( /*! ../common/light_button */ 93961);
                 var _consts = __webpack_require__( /*! ../common/consts */ 39853);
                 var _combine_classes = __webpack_require__( /*! ../../../utils/combine_classes */ 86237);
+                var _message = (obj = __webpack_require__( /*! ../../../../localization/message */ 28109), obj && obj.__esModule ? obj : {
+                    default: obj
+                });
+                var obj;
+                var _string = __webpack_require__( /*! ../../../../core/utils/string */ 68752);
                 var _excluded = ["className", "index", "onClick", "selected"];
 
                 function _objectWithoutProperties(source, excluded) {
@@ -53150,7 +53177,7 @@
                     }(Page, [{
                         key: "label",
                         get: function() {
-                            return "Page ".concat(this.value)
+                            return (0, _string.format)(_message.default.getFormatter("dxPager-page"), this.value)
                         }
                     }, {
                         key: "value",
@@ -53190,6 +53217,10 @@
                 var _small = __webpack_require__( /*! ./small */ 50570);
                 var _pager_props = __webpack_require__( /*! ../common/pager_props */ 96529);
                 var _config_context = __webpack_require__( /*! ../../../common/config_context */ 49697);
+                var _message = (obj = __webpack_require__( /*! ../../../../localization/message */ 28109), obj && obj.__esModule ? obj : {
+                    default: obj
+                });
+                var obj;
                 var _excluded = ["hasKnownLastPage", "isLargeDisplayMode", "maxPagesCount", "pageCount", "pageIndex", "pageIndexChange", "pagesCountText", "showNavigationButtons", "totalCount"];
 
                 function _objectWithoutProperties(source, excluded) {
@@ -53271,16 +53302,20 @@
                     return _setPrototypeOf(o, p)
                 }
                 exports.PAGER_BUTTON_DISABLE_CLASS = "dx-button-disable";
-                var nextButtonClassName = "".concat("dx-navigate-button", " ").concat("dx-next-button");
-                var prevButtonClassName = "".concat("dx-navigate-button", " ").concat("dx-prev-button");
-                var nextButtonDisabledClassName = "".concat("dx-button-disable", " ").concat("dx-navigate-button", " ").concat("dx-next-button");
-                var prevButtonDisabledClassName = "".concat("dx-button-disable", " ").concat("dx-navigate-button", " ").concat("dx-prev-button");
+                var classNames = {
+                    nextEnabledClass: "".concat("dx-navigate-button", " ").concat("dx-next-button"),
+                    prevEnabledClass: "".concat("dx-navigate-button", " ").concat("dx-prev-button"),
+                    nextDisabledClass: "".concat("dx-button-disable", " ").concat("dx-navigate-button", " ").concat("dx-next-button"),
+                    prevDisabledClass: "".concat("dx-button-disable", " ").concat("dx-navigate-button", " ").concat("dx-prev-button")
+                };
+                var reverseDirections = {
+                    next: "prev",
+                    prev: "next"
+                };
                 var viewFunction = function(_ref) {
-                    var navigateToNextPage = _ref.navigateToNextPage,
-                        navigateToPrevPage = _ref.navigateToPrevPage,
-                        nextClassName = _ref.nextClassName,
+                    var nextButtonProps = _ref.nextButtonProps,
                         pageIndexChange = _ref.pageIndexChange,
-                        prevClassName = _ref.prevClassName,
+                        prevButtonProps = _ref.prevButtonProps,
                         _ref$props = _ref.props,
                         isLargeDisplayMode = _ref$props.isLargeDisplayMode,
                         maxPagesCount = _ref$props.maxPagesCount,
@@ -53290,9 +53325,10 @@
                         renderNextButton = _ref.renderNextButton,
                         renderPrevButton = _ref.renderPrevButton;
                     return (0, _inferno.createFragment)([renderPrevButton && (0, _inferno.createComponentVNode)(2, _light_button.LightButton, {
-                        className: prevClassName,
-                        label: "Previous page",
-                        onClick: navigateToPrevPage
+                        label: _message.default.getFormatter("dxPager-prevPage")(),
+                        className: prevButtonProps.className,
+                        tabIndex: prevButtonProps.tabIndex,
+                        onClick: prevButtonProps.navigate
                     }), isLargeDisplayMode && (0, _inferno.createComponentVNode)(2, _large.PagesLarge, {
                         maxPagesCount: maxPagesCount,
                         pageCount: pageCount,
@@ -53304,9 +53340,10 @@
                         pageIndexChange: pageIndexChange,
                         pagesCountText: pagesCountText
                     }), renderNextButton && (0, _inferno.createComponentVNode)(2, _light_button.LightButton, {
-                        className: nextClassName,
-                        label: "Next page",
-                        onClick: navigateToNextPage
+                        label: _message.default.getFormatter("dxPager-nextPage")(),
+                        className: nextButtonProps.className,
+                        tabIndex: nextButtonProps.tabIndex,
+                        onClick: nextButtonProps.navigate
                     })], 0)
                 };
                 exports.viewFunction = viewFunction;
@@ -53376,11 +53413,9 @@
                         var _this;
                         _this = _BaseInfernoComponent.call(this, props) || this;
                         _this.state = {};
+                        _this.__getterCache = {};
                         _this.pageIndexChange = _this.pageIndexChange.bind(_assertThisInitialized(_this));
-                        _this.navigateToNextPage = _this.navigateToNextPage.bind(_assertThisInitialized(_this));
-                        _this.navigateToPrevPage = _this.navigateToPrevPage.bind(_assertThisInitialized(_this));
-                        _this.getNextDirection = _this.getNextDirection.bind(_assertThisInitialized(_this));
-                        _this.getPrevDirection = _this.getPrevDirection.bind(_assertThisInitialized(_this));
+                        _this.getButtonProps = _this.getButtonProps.bind(_assertThisInitialized(_this));
                         _this.canNavigateToPage = _this.canNavigateToPage.bind(_assertThisInitialized(_this));
                         _this.getNextPageIndex = _this.getNextPageIndex.bind(_assertThisInitialized(_this));
                         _this.canNavigateTo = _this.canNavigateTo.bind(_assertThisInitialized(_this));
@@ -53393,19 +53428,18 @@
                             this.props.pageIndexChange(pageIndex)
                         }
                     };
-                    _proto.navigateToNextPage = function() {
-                        this.navigateToPage(this.getNextDirection())
-                    };
-                    _proto.navigateToPrevPage = function() {
-                        this.navigateToPage(this.getPrevDirection())
-                    };
-                    _proto.getNextDirection = function() {
-                        var _this$config;
-                        return !(null !== (_this$config = this.config) && void 0 !== _this$config && _this$config.rtlEnabled) ? "next" : "prev"
-                    };
-                    _proto.getPrevDirection = function() {
-                        var _this$config2;
-                        return !(null !== (_this$config2 = this.config) && void 0 !== _this$config2 && _this$config2.rtlEnabled) ? "prev" : "next"
+                    _proto.getButtonProps = function(direction) {
+                        var _this$config, _this2 = this;
+                        var rtlAwareDirection = null !== (_this$config = this.config) && void 0 !== _this$config && _this$config.rtlEnabled ? reverseDirections[direction] : direction;
+                        var canNavigate = this.canNavigateTo(rtlAwareDirection);
+                        var className = classNames["".concat(direction).concat(canNavigate ? "Enabled" : "Disabled", "Class")];
+                        return {
+                            className: className,
+                            tabIndex: canNavigate ? 0 : -1,
+                            navigate: function() {
+                                return _this2.navigateToPage(rtlAwareDirection)
+                            }
+                        }
                     };
                     _proto.canNavigateToPage = function(pageIndex) {
                         if (!this.props.hasKnownLastPage) {
@@ -53424,18 +53458,24 @@
                     _proto.navigateToPage = function(direction) {
                         this.pageIndexChange(this.getNextPageIndex(direction))
                     };
+                    _proto.componentWillUpdate = function(nextProps, nextState, context) {
+                        if (this.context.ConfigContext !== context.ConfigContext || this.props.hasKnownLastPage !== nextProps.hasKnownLastPage || this.props.pageCount !== nextProps.pageCount || this.props.pageIndex !== nextProps.pageIndex || this.props.pageIndexChange !== nextProps.pageIndexChange) {
+                            this.__getterCache.prevButtonProps = void 0
+                        }
+                        if (this.context.ConfigContext !== context.ConfigContext || this.props.hasKnownLastPage !== nextProps.hasKnownLastPage || this.props.pageCount !== nextProps.pageCount || this.props.pageIndex !== nextProps.pageIndex || this.props.pageIndexChange !== nextProps.pageIndexChange) {
+                            this.__getterCache.nextButtonProps = void 0
+                        }
+                    };
                     _proto.render = function() {
                         var props = this.props;
                         return viewFunction({
                             props: _extends({}, props),
                             config: this.config,
                             pageIndexChange: this.pageIndexChange,
-                            navigateToNextPage: this.navigateToNextPage,
-                            navigateToPrevPage: this.navigateToPrevPage,
                             renderPrevButton: this.renderPrevButton,
                             renderNextButton: this.renderNextButton,
-                            nextClassName: this.nextClassName,
-                            prevClassName: this.prevClassName,
+                            prevButtonProps: this.prevButtonProps,
+                            nextButtonProps: this.nextButtonProps,
                             restAttributes: this.restAttributes
                         })
                     };
@@ -53472,18 +53512,22 @@
                             return this.renderPrevButton || !this.props.hasKnownLastPage
                         }
                     }, {
-                        key: "nextClassName",
+                        key: "prevButtonProps",
                         get: function() {
-                            var direction = this.getNextDirection();
-                            var canNavigate = this.canNavigateTo(direction);
-                            return canNavigate ? nextButtonClassName : nextButtonDisabledClassName
+                            var _this3 = this;
+                            if (void 0 !== this.__getterCache.prevButtonProps) {
+                                return this.__getterCache.prevButtonProps
+                            }
+                            return this.__getterCache.prevButtonProps = _this3.getButtonProps("prev")
                         }
                     }, {
-                        key: "prevClassName",
+                        key: "nextButtonProps",
                         get: function() {
-                            var direction = this.getPrevDirection();
-                            var canNavigate = this.canNavigateTo(direction);
-                            return canNavigate ? prevButtonClassName : prevButtonDisabledClassName
+                            var _this4 = this;
+                            if (void 0 !== this.__getterCache.nextButtonProps) {
+                                return this.__getterCache.nextButtonProps
+                            }
+                            return this.__getterCache.nextButtonProps = _this4.getButtonProps("next")
                         }
                     }, {
                         key: "restAttributes",
@@ -56420,15 +56464,24 @@
                         return new Date(resultDate)
                     };
                     _proto.getOriginStartDateOffsetInMs = function(date, timezone, isUTCDate) {
-                        if (!timezone) {
-                            return 0
-                        }
+                        var offsetInHours = this.getOffsetInHours(date, timezone, isUTCDate);
+                        return 36e5 * offsetInHours
+                    };
+                    _proto.getOffsetInHours = function(date, timezone, isUTCDate) {
                         var _this$getOffsets = this.getOffsets(date, timezone),
                             appointment = _this$getOffsets.appointment,
                             client = _this$getOffsets.client,
                             common = _this$getOffsets.common;
-                        var offsetInHours = isUTCDate ? appointment - client : appointment - common;
-                        return 36e5 * offsetInHours
+                        if (!!timezone && isUTCDate) {
+                            return appointment - client
+                        }
+                        if (!!timezone && !isUTCDate) {
+                            return appointment - common
+                        }
+                        if (!timezone && isUTCDate) {
+                            return common - client
+                        }
+                        return 0
                     };
                     _proto.getClientOffset = function(date) {
                         return this.options.getClientOffset(date)
@@ -82358,6 +82411,7 @@
                         this._renderGroupPanelItems($groupPanel, groupColumns);
                         if (groupPanelOptions.allowColumnDragging && !groupColumns.length) {
                             (0, _renderer.default)("<div>").addClass("dx-group-panel-message").text(groupPanelOptions.emptyPanelText).appendTo($groupPanel);
+                            $groupPanel.closest(".dx-toolbar-item").addClass("dx-toolbar-label");
                             $groupPanel.closest(".dx-toolbar-label").css("maxWidth", "none");
                             this.updateToolbarDimensions()
                         }
@@ -96506,7 +96560,6 @@
                                 my: horizontalAlignment + " top",
                                 at: horizontalAlignment + " bottom"
                             },
-                            visualContainer: this.$element(),
                             wrapperAttr: {
                                 class: "dx-dropdowneditor-overlay"
                             }
@@ -97417,7 +97470,6 @@
                             position: (0, _extend.extend)(this.option("popupPosition"), {
                                 of: this.$element()
                             }),
-                            visualContainer: this.$element(),
                             showTitle: this.option("dropDownOptions.showTitle"),
                             _ignoreFunctionValueDeprecation: true,
                             width: function() {
@@ -97477,7 +97529,22 @@
                         }
                     },
                     _popupPositionedHandler: function(e) {
-                        e.position && this._popup.$overlayContent().toggleClass("dx-dropdowneditor-overlay-flipped", e.position.v.flip)
+                        var _e$position, _e$position$v;
+                        var _this$option = this.option(),
+                            labelMode = _this$option.labelMode,
+                            stylingMode = _this$option.stylingMode;
+                        var $popupOverlayContent = this._popup.$overlayContent();
+                        var isOverlayFlipped = null === (_e$position = e.position) || void 0 === _e$position ? void 0 : null === (_e$position$v = _e$position.v) || void 0 === _e$position$v ? void 0 : _e$position$v.flip;
+                        var shouldIndentForLabel = "hidden" !== labelMode && "outlined" === stylingMode;
+                        if (e.position) {
+                            $popupOverlayContent.toggleClass("dx-dropdowneditor-overlay-flipped", isOverlayFlipped)
+                        }
+                        if (isOverlayFlipped && shouldIndentForLabel && this._label.isVisible()) {
+                            var $label = this._label.$element();
+                            (0, _translator.move)($popupOverlayContent, {
+                                top: (0, _translator.locate)($popupOverlayContent).top - parseInt($label.css("fontSize"))
+                            })
+                        }
                     },
                     _popupShowingHandler: _common.noop,
                     _popupHidingHandler: function() {
@@ -97486,14 +97553,6 @@
                     _popupShownHandler: function() {
                         var _this$_validationMess;
                         this._openAction();
-                        var $popupOverlayContent = this._popup.$overlayContent();
-                        var position = (0, _translator.locate)($popupOverlayContent);
-                        if (this._label.isVisible() && $popupOverlayContent.hasClass("dx-dropdowneditor-overlay-flipped")) {
-                            var $label = this._label.$element();
-                            (0, _translator.move)($popupOverlayContent, {
-                                top: position.top - parseInt($label.css("fontSize"))
-                            })
-                        }
                         null === (_this$_validationMess = this._validationMessage) || void 0 === _this$_validationMess ? void 0 : _this$_validationMess.option("positionRequest", this._getValidationMessagePositionRequest())
                     },
                     _popupHiddenHandler: function() {
@@ -98765,7 +98824,6 @@
                             onInitialized: function(args) {
                                 args.component.$wrapper().addClass("dx-dropdownmenu-popup-wrapper").toggleClass("dx-dropdownmenu-popup", usePopup)
                             },
-                            visible: this.option("opened"),
                             deferRendering: false,
                             contentTemplate: function(contentElement) {
                                 this._renderList(contentElement)
@@ -103618,6 +103676,9 @@
                             sorting: {
                                 mode: "single",
                                 showSortIndexes: false
+                            },
+                            loadPanel: {
+                                shading: true
                             },
                             showColumnLines: false,
                             showRowLines: false,
@@ -117260,6 +117321,7 @@
                                 var keyGetter = (0, _data.compileGetter)(_this4.option("".concat(optionName, ".keyExpr")));
                                 var insertedId = keyGetter(response);
                                 callback(insertedId);
+                                _this4._ganttTreeList.saveExpandedKeys();
                                 dataOption._reloadDataSource().done((function(data) {
                                     if (isTaskInsert) {
                                         _this4._ganttTreeList.onTaskInserted(insertedId, record.parentId)
@@ -117280,6 +117342,7 @@
                                 this._customFieldsManager.addCustomFieldsDataFromCache(key, data)
                             }
                             dataOption.update(key, data, (function() {
+                                _this5._ganttTreeList.saveExpandedKeys();
                                 dataOption._reloadDataSource();
                                 _this5._actionsManager.raiseUpdatedAction(optionName, data, key)
                             }))
@@ -117290,6 +117353,7 @@
                         var dataOption = this["_".concat(optionName, "Option")];
                         if (dataOption) {
                             dataOption.remove(key, (function() {
+                                _this6._ganttTreeList.saveExpandedKeys();
                                 dataOption._reloadDataSource();
                                 _this6._actionsManager.raiseDeletedAction(optionName, key, _this6._mappingHelper.convertCoreToMappedData(optionName, data))
                             }))
@@ -118349,6 +118413,9 @@
                             },
                             onRowDblClick: function(e) {
                                 _this.onRowDblClick(e)
+                            },
+                            onNodesInitialized: function(e) {
+                                _this._onNodesInitialized(e)
                             }
                         });
                         return this._treeList
@@ -118465,14 +118532,12 @@
                     _proto.updateDataSource = function(data) {
                         var forceUpdate = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : false;
                         var forceCustomData = arguments.length > 2 && void 0 !== arguments[2] ? arguments[2] : false;
-                        var expandedRowKeys = this.getOption("expandedRowKeys");
                         if (!this._skipUpdateTreeListDataSource() || forceUpdate) {
                             this.setDataSource(data)
                         } else if (forceCustomData) {
                             var _data = this._treeList.option("dataSource");
                             this._gantt._onParentTasksRecalculated(_data)
                         }
-                        this.setOption("expandedRowKeys", expandedRowKeys)
                     };
                     _proto.setDataSource = function(data) {
                         this.setOption("dataSource", this.createDataSource(data))
@@ -118488,6 +118553,15 @@
                     _proto.onRowDblClick = function(e) {
                         if (this._gantt._actionsManager.raiseTaskDblClickAction(e.key, e.event)) {
                             this._gantt._ganttView._ganttViewCore.showTaskEditDialog()
+                        }
+                    };
+                    _proto.saveExpandedKeys = function() {
+                        this._savedExpandedKeys = this.getOption("expandedRowKeys")
+                    };
+                    _proto._onNodesInitialized = function(e) {
+                        if (this._savedExpandedKeys) {
+                            this.setOption("expandedRowKeys", this._savedExpandedKeys);
+                            delete this._savedExpandedKeys
                         }
                     };
                     _proto.getOffsetHeight = function() {
@@ -121599,7 +121673,7 @@
                         if (e.scrollOffset.top < 0) {
                             elasticScrollTop = -e.scrollOffset.top
                         } else if (e.reachedBottom) {
-                            var $scrollableContent = (0, _renderer.default)(this._findContentElement());
+                            var $scrollableContent = (0, _renderer.default)(e.component.content());
                             var $scrollableContainer = (0, _renderer.default)(e.component.container());
                             var maxScrollTop = Math.max($scrollableContent.get(0).clientHeight - $scrollableContainer.get(0).clientHeight, 0);
                             elasticScrollTop = maxScrollTop - e.scrollOffset.top
@@ -122702,11 +122776,10 @@
                                 }(that, column);
                                 resetBandColumnsCache(that);
                                 ! function(that, currentColumn) {
-                                    var key;
                                     var column;
-                                    var bandColumns = {};
                                     var result = [];
                                     var bandColumnsCache = that.getBandColumnsCache();
+                                    var bandedColumns = [];
                                     var columns = that._columns.filter((function(column) {
                                         return !column.command
                                     }));
@@ -122714,16 +122787,12 @@
                                         column = columns[i];
                                         var parentBandColumns = getParentBandColumns(i, bandColumnsCache.columnParentByIndex);
                                         if (parentBandColumns.length) {
-                                            var bandColumnIndex = parentBandColumns[parentBandColumns.length - 1].index;
-                                            bandColumns[bandColumnIndex] = bandColumns[bandColumnIndex] || [];
-                                            bandColumns[bandColumnIndex].push(column)
+                                            bandedColumns.push(column)
                                         } else {
                                             result.push(column)
                                         }
-                                    }
-                                    for (key in bandColumns) {
-                                        (0, _array.normalizeIndexes)(bandColumns[key], "visibleIndex", currentColumn)
-                                    }(0, _array.normalizeIndexes)(result, "visibleIndex", currentColumn)
+                                    }(0, _array.normalizeIndexes)(bandedColumns, "visibleIndex", currentColumn);
+                                    (0, _array.normalizeIndexes)(result, "visibleIndex", currentColumn)
                                 }(that, column)
                             };
                             var resetColumnsCache = function(that) {
@@ -126896,8 +126965,10 @@
                                     return true
                                 },
                                 optionChanged: function(args) {
+                                    var _this2 = this;
                                     var that = this;
                                     var dataSource;
+                                    var changedPagingOptions;
 
                                     function handled() {
                                         args.handled = true
@@ -126922,11 +126993,16 @@
                                             break;
                                         case "paging":
                                             dataSource = that.dataSource();
-                                            if (dataSource && that._setPagingOptions(dataSource)) {
-                                                var pageIndex = dataSource.pageIndex();
-                                                dataSource.load().done((function() {
-                                                    return that.pageChanged.fire(pageIndex)
-                                                }))
+                                            if (dataSource) {
+                                                changedPagingOptions = that._setPagingOptions(dataSource);
+                                                if (changedPagingOptions) {
+                                                    var pageIndex = dataSource.pageIndex();
+                                                    this._isPaging = changedPagingOptions.isPageIndexChanged;
+                                                    dataSource.load().done((function() {
+                                                        _this2._isPaging = false;
+                                                        that.pageChanged.fire(pageIndex)
+                                                    }))
+                                                }
                                             }
                                             handled();
                                             break;
@@ -127121,21 +127197,30 @@
                                     var appendMode = "infinite" === scrollingMode;
                                     var virtualMode = "virtual" === scrollingMode;
                                     var paginate = pagingEnabled || virtualMode || appendMode;
-                                    var isChanged = false;
+                                    var isPaginateChanged = false;
+                                    var isPageSizeChanged = false;
+                                    var isPageIndexChanged = false;
                                     dataSource.requireTotalCount(!appendMode);
                                     if (void 0 !== pagingEnabled && dataSource.paginate() !== paginate) {
                                         dataSource.paginate(paginate);
-                                        isChanged = true
+                                        isPaginateChanged = true
                                     }
                                     if (void 0 !== pageSize && dataSource.pageSize() !== pageSize) {
                                         dataSource.pageSize(pageSize);
-                                        isChanged = true
+                                        isPageSizeChanged = true
                                     }
                                     if (void 0 !== pageIndex && dataSource.pageIndex() !== pageIndex) {
                                         dataSource.pageIndex(pageIndex);
-                                        isChanged = true
+                                        isPageIndexChanged = true
                                     }
-                                    return isChanged
+                                    if (isPaginateChanged || isPageSizeChanged || isPageIndexChanged) {
+                                        return {
+                                            isPaginateChanged: isPaginateChanged,
+                                            isPageSizeChanged: isPageSizeChanged,
+                                            isPageIndexChanged: isPageIndexChanged
+                                        }
+                                    }
+                                    return false
                                 },
                                 _getSpecificDataSourceOption: function() {
                                     var dataSource = this.option("dataSource");
@@ -127158,18 +127243,23 @@
                                     this._useSortingGroupingFromColumns = true;
                                     this._cachedProcessedItems = null;
                                     if (dataSource) {
-                                        this._setPagingOptions(dataSource);
+                                        var changedPagingOptions = this._setPagingOptions(dataSource);
+                                        this._isPaging = null === changedPagingOptions || void 0 === changedPagingOptions ? void 0 : changedPagingOptions.isPageIndexChanged;
                                         this.setDataSource(dataSource)
                                     } else if (oldDataSource) {
                                         this.updateItems()
                                     }
                                 },
                                 _loadDataSource: function() {
-                                    var dataSource = this._dataSource;
+                                    var that = this;
+                                    var dataSource = that._dataSource;
                                     var result = new _deferred.Deferred;
                                     (0, _deferred.when)(this._columnsController.refresh(true)).always((function() {
                                         if (dataSource) {
-                                            dataSource.load().done(result.resolve).fail(result.reject)
+                                            dataSource.load().done((function() {
+                                                that._isPaging = false;
+                                                result.resolve.apply(result, arguments)
+                                            })).fail(result.reject)
                                         } else {
                                             result.resolve()
                                         }
@@ -127415,7 +127505,7 @@
                                     return true
                                 },
                                 _applyChangesOnly: function(change) {
-                                    var _change$isLiveUpdate, _this2 = this;
+                                    var _change$isLiveUpdate, _this3 = this;
                                     var rowIndices = [];
                                     var columnIndices = [];
                                     var changeTypes = [];
@@ -127436,7 +127526,7 @@
                                         item.rowIndex = index
                                     }));
                                     var result = (0, _array_compare.findChanges)(oldItems, change.items, getRowKey, (function(item1, item2) {
-                                        if (!_this2._isItemEquals(item1, item2)) {
+                                        if (!_this3._isItemEquals(item1, item2)) {
                                             return false
                                         }
                                         if (item1.cells) {
@@ -127459,7 +127549,7 @@
                                                 var index = change.index;
                                                 var newItem = change.data;
                                                 var oldItem = change.oldItem;
-                                                var changedColumnIndices = _this2._partialUpdateRow(oldItem, newItem, index, isLiveUpdate);
+                                                var changedColumnIndices = _this3._partialUpdateRow(oldItem, newItem, index, isLiveUpdate);
                                                 rowIndices.push(index);
                                                 changeTypes.push("update");
                                                 items.push(newItem);
@@ -127491,8 +127581,8 @@
                                         change.isLiveUpdate = true
                                     }
                                     this._correctRowIndices((function(rowIndex) {
-                                        var oldRowIndexOffset = _this2._rowIndexOffset || 0;
-                                        var rowIndexOffset = _this2.getRowIndexOffset();
+                                        var oldRowIndexOffset = _this3._rowIndexOffset || 0;
+                                        var rowIndexOffset = _this3.getRowIndexOffset();
                                         var oldItem = oldItems[rowIndex - oldRowIndexOffset];
                                         var key = getRowKey(oldItem);
                                         var newVisibleRowIndex = newIndexByKey[key];
@@ -127587,12 +127677,12 @@
                                     return dataSource && dataSource.loadingOperationTypes() || {}
                                 },
                                 _fireChanged: function(change) {
-                                    var _this3 = this;
+                                    var _this4 = this;
                                     if (this._currentOperationTypes) {
                                         change.operationTypes = this._currentOperationTypes;
                                         this._currentOperationTypes = null
                                     }(0, _common.deferRender)((function() {
-                                        _this3.changed.fire(change)
+                                        _this4.changed.fire(change)
                                     }))
                                 },
                                 isLoading: function() {
@@ -127605,14 +127695,14 @@
                                     return null
                                 },
                                 _applyFilter: function() {
-                                    var _this4 = this;
+                                    var _this5 = this;
                                     var dataSource = this._dataSource;
                                     if (dataSource) {
                                         dataSource.pageIndex(0);
                                         this._isFilterApplying = true;
                                         return this.reload().done((function() {
-                                            if (_this4._isFilterApplying) {
-                                                _this4.pageChanged.fire()
+                                            if (_this5._isFilterApplying) {
+                                                _this5.pageChanged.fire()
                                             }
                                         }))
                                     }
@@ -133925,7 +134015,7 @@
                                 return
                             }
                             columns.forEach((function(column, index) {
-                                if (!column.lookup) {
+                                if (!column.lookup || column.calculateCellValue !== column.defaultCalculateCellValue) {
                                     return
                                 }
                                 var $cell = _this2._getCellElement(rowIndex, index);
@@ -135141,9 +135231,20 @@
                                                 }
                                             } else {
                                                 var filterOperation = sortInfo.desc ? ">" : "<";
-                                                var sortFilter = [selector, filterOperation, value];
-                                                if (!sortInfo.desc) {
-                                                    sortFilter = [sortFilter, "or", [selector, "=", null]]
+                                                var sortFilter;
+                                                if (sortInfo.compare) {
+                                                    sortFilter = function(data) {
+                                                        if ("<" === filterOperation) {
+                                                            return sortInfo.compare(value, getter(data)) >= 1
+                                                        } else {
+                                                            return sortInfo.compare(value, getter(data)) <= -1
+                                                        }
+                                                    }
+                                                } else {
+                                                    sortFilter = [selector, filterOperation, value];
+                                                    if (!sortInfo.desc) {
+                                                        sortFilter = [sortFilter, "or", [selector, "=", null]]
+                                                    }
                                                 }
                                                 filter = [sortFilter, "or", filter]
                                             }
@@ -136865,6 +136966,7 @@
                         var $indicator = options.indicator;
                         if ("headerFilter" === options.name) {
                             var rtlEnabled = this.option("rtlEnabled");
+                            $indicator.attr("role", "button");
                             if ($container.children().length && (!rtlEnabled && "right" === options.columnAlignment || rtlEnabled && "left" === options.columnAlignment)) {
                                 $container.prepend($indicator);
                                 return
@@ -137909,7 +138011,7 @@
                             if ($parent.hasClass("dx-freespace-row")) {
                                 this._updateFocusedCellPosition($target);
                                 this._applyTabIndexToElement(this._focusedView.element());
-                                this._focusedView.focus()
+                                this._focusedView.focus(true)
                             } else if (!this._isMasterDetailCell($target)) {
                                 this._clickTargetCellHandler(event, $target)
                             } else {
@@ -137942,6 +138044,7 @@
                                 this._isNeedFocus = false;
                                 this._isHiddenFocus = false
                             } else {
+                                $cell = this._getFocusedCell();
                                 var $target = event && (0, _renderer.default)(event.target).closest(NON_FOCUSABLE_ELEMENTS_SELECTOR + ", td");
                                 var skipFocusEvent = $target && $target.not($cell).is(NON_FOCUSABLE_ELEMENTS_SELECTOR);
                                 var isEditor = !!column && !column.command && $cell.hasClass("dx-editor-cell");
@@ -138850,16 +138953,17 @@
                                 _rowClick: function(e) {
                                     var editRowIndex = this.getController("editing").getEditRowIndex();
                                     var keyboardController = this.getController("keyboardNavigation");
+                                    var isKeyboardEnabled = keyboardController.isKeyboardEnabled();
                                     if (editRowIndex === e.rowIndex) {
                                         keyboardController.setCellFocusType()
                                     }
-                                    var needTriggerPointerEventHandler = isMobile() && this.option("focusedRowEnabled");
+                                    var needTriggerPointerEventHandler = (isMobile() || !isKeyboardEnabled) && this.option("focusedRowEnabled");
                                     if (needTriggerPointerEventHandler) {
-                                        this._triggerPointerDownEventHandler(e)
+                                        this._triggerPointerDownEventHandler(e, !isKeyboardEnabled)
                                     }
                                     this.callBase.apply(this, arguments)
                                 },
-                                _triggerPointerDownEventHandler: function(e) {
+                                _triggerPointerDownEventHandler: function(e, force) {
                                     var originalEvent = e.event.originalEvent;
                                     if (originalEvent) {
                                         var keyboardController = this.getController("keyboardNavigation");
@@ -138867,7 +138971,7 @@
                                         var columnIndex = this.getCellIndex($cell);
                                         var column = this.getController("columns").getVisibleColumns()[columnIndex];
                                         var row = this.getController("data").items()[e.rowIndex];
-                                        if (keyboardController._isAllowEditing(row, column)) {
+                                        if (keyboardController._isAllowEditing(row, column) || force) {
                                             var eventArgs = (0, _index.createEvent)(originalEvent, {
                                                 currentTarget: originalEvent.target
                                             });
@@ -139310,33 +139414,54 @@
                                     var masterRowOptions = (0, _renderer.default)($masterDetailRow).data("options");
                                     var masterDataGrid = (0, _renderer.default)($masterDetailRow).closest("." + this.getWidgetContainerClass()).parent().data("dxDataGrid");
                                     if (masterRowOptions && masterDataGrid) {
-                                        if (masterDataGrid.getView("rowsView").isFixedColumns()) {
-                                            return this._updateFixedMasterDetailGrids(masterDataGrid, masterRowOptions.rowIndex, $detailElement)
+                                        return this._updateMasterDataGridCore(masterDataGrid, masterRowOptions)
+                                    }
+                                },
+                                _updateMasterDataGridCore: function(masterDataGrid, masterRowOptions) {
+                                    var d = (0, _deferred.Deferred)();
+                                    if (masterDataGrid.getView("rowsView").isFixedColumns()) {
+                                        this._updateFixedMasterDetailGrids(masterDataGrid, masterRowOptions.rowIndex, (0, _renderer.default)(masterRowOptions.rowElement)).done(d.resolve)
+                                    } else {
+                                        if (true === masterDataGrid.option("scrolling.useNative")) {
+                                            masterDataGrid.updateDimensions().done((function() {
+                                                return d.resolve(true)
+                                            }));
+                                            return
+                                        }
+                                        var scrollable = masterDataGrid.getScrollable();
+                                        if (scrollable) {
+                                            null === scrollable || void 0 === scrollable ? void 0 : scrollable.update().done((function() {
+                                                return d.resolve()
+                                            }))
                                         } else {
-                                            if (true === masterDataGrid.option("scrolling.useNative")) {
-                                                return masterDataGrid.updateDimensions()
-                                            }
-                                            var scrollable = masterDataGrid.getScrollable();
-                                            return null === scrollable || void 0 === scrollable ? void 0 : scrollable.update()
+                                            d.resolve()
                                         }
                                     }
+                                    return d.promise()
                                 },
                                 _updateFixedMasterDetailGrids: function(masterDataGrid, masterRowIndex, $detailElement) {
                                     var _this2 = this;
+                                    var d = (0, _deferred.Deferred)();
                                     var $rows = (0, _renderer.default)(masterDataGrid.getRowElement(masterRowIndex));
                                     var $tables = (0, _renderer.default)(masterDataGrid.getView("rowsView").getTableElements());
                                     var rowsNotEqual = 2 === (null === $rows || void 0 === $rows ? void 0 : $rows.length) && (0, _size.getHeight)($rows.eq(0)) !== (0, _size.getHeight)($rows.eq(1));
                                     var tablesNotEqual = 2 === (null === $tables || void 0 === $tables ? void 0 : $tables.length) && (0, _size.getHeight)($tables.eq(0)) !== (0, _size.getHeight)($tables.eq(1));
                                     if (rowsNotEqual || tablesNotEqual) {
                                         var detailElementWidth = (0, _size.getWidth)($detailElement);
-                                        return masterDataGrid.updateDimensions().done((function() {
+                                        masterDataGrid.updateDimensions().done((function() {
                                             var isDetailHorizontalScrollCanBeShown = _this2.option("columnAutoWidth") && true === masterDataGrid.option("scrolling.useNative");
                                             var isDetailGridWidthChanged = isDetailHorizontalScrollCanBeShown && detailElementWidth !== (0, _size.getWidth)($detailElement);
                                             if (isDetailHorizontalScrollCanBeShown && isDetailGridWidthChanged) {
-                                                _this2.updateDimensions()
+                                                _this2.updateDimensions().done((function() {
+                                                    return d.resolve(true)
+                                                }))
+                                            } else {
+                                                d.resolve(true)
                                             }
-                                        }))
+                                        }));
+                                        return d.promise()
                                     }
+                                    return (0, _deferred.Deferred)().resolve()
                                 },
                                 _toggleBestFitMode: function(isBestFit) {
                                     this.callBase.apply(this, arguments);
@@ -139416,7 +139541,6 @@
             function(module, exports, __webpack_require__) {
                 exports.default = void 0;
                 var _renderer = _interopRequireDefault(__webpack_require__( /*! ../../core/renderer */ 68374));
-                var _events_engine = _interopRequireDefault(__webpack_require__( /*! ../../events/core/events_engine */ 55994));
                 var _class = _interopRequireDefault(__webpack_require__( /*! ../../core/class */ 38377));
                 var _callbacks = _interopRequireDefault(__webpack_require__( /*! ../../core/utils/callbacks */ 44504));
                 var _common = __webpack_require__( /*! ../../core/utils/common */ 20576);
@@ -139638,8 +139762,10 @@
                         this.resizeCompleted.fire();
                         this.isResizing = false
                     },
-                    focus: function() {
-                        _events_engine.default.trigger(this.element(), "focus")
+                    focus: function(preventScroll) {
+                        this.element().get(0).focus({
+                            preventScroll: preventScroll
+                        })
                     }
                 });
                 var _default = {
@@ -140562,6 +140688,7 @@
                                 return itemsCount > 0 && !this._rowHeight
                             },
                             _getRowsHeight: function($tableElement) {
+                                $tableElement = $tableElement || this._tableElement;
                                 var $rowElements = $tableElement.children("tbody").children().not(".dx-virtual-row").not(".dx-freespace-row");
                                 return $rowElements.toArray().reduce((function(sum, row) {
                                     return sum + (0, _position.getBoundingRect)(row).height
@@ -142071,7 +142198,7 @@
                                 },
                                 _handleDataChanged: function(e) {
                                     this.callBase(e);
-                                    if (!e || "refresh" === e.changeType) {
+                                    if (!e || "refresh" === e.changeType || e.repaintChangesOnly && "update" === e.changeType) {
                                         this._updateSelectAllValue()
                                     }
                                 },
@@ -142080,7 +142207,7 @@
                                     var selectionController = that.getController("selection");
                                     var isEmptyData = that.getController("data").isEmpty();
                                     var groupElement = (0, _renderer.default)("<div>").appendTo($container).addClass("dx-select-checkbox");
-                                    that.setAria("label", _message.default.format("dxDataGrid-ariaSelectAll"), $container);
+                                    that.setAria("label", _message.default.format("dxDataGrid-ariaSelectAll"), groupElement);
                                     that.getController("editorFactory").createEditor(groupElement, (0, _extend.extend)({}, column, {
                                         parentType: "headerRow",
                                         dataType: "boolean",
@@ -142120,7 +142247,6 @@
                                     if ("data" === options.rowType && !options.row.isNewRow) {
                                         $container.addClass("dx-editor-cell");
                                         this._attachCheckBoxClickEvent($container);
-                                        this.setAria("label", _message.default.format("dxDataGrid-ariaSelectRow"), $container);
                                         this._renderSelectCheckBox($container, options)
                                     } else {
                                         _uiGrid_core.default.setEmptyText($container)
@@ -142128,6 +142254,7 @@
                                 },
                                 _renderSelectCheckBox: function(container, options) {
                                     var groupElement = (0, _renderer.default)("<div>").addClass("dx-select-checkbox").appendTo(container);
+                                    this.setAria("label", _message.default.format("dxDataGrid-ariaSelectRow"), groupElement);
                                     this.getController("editorFactory").createEditor(groupElement, (0, _extend.extend)({}, options.column, {
                                         parentType: "dataRow",
                                         dataType: "boolean",
@@ -142213,7 +142340,10 @@
                                         if (isSelected) {
                                             $row.addClass("dx-selection")
                                         }
-                                        this.setAria("selected", isSelected, $row)
+                                        var selectionMode = this.option("selection.mode");
+                                        if ("none" !== selectionMode) {
+                                            this.setAria("selected", isSelected, $row)
+                                        }
                                     }
                                     return $row
                                 },
@@ -143383,6 +143513,9 @@
                     getWrappedLookupDataSource: function(column, dataSource, filter) {
                         var _this = this;
                         var lookupDataSourceOptions = this.normalizeLookupDataSource(column.lookup);
+                        if (column.calculateCellValue !== column.defaultCalculateCellValue) {
+                            return lookupDataSourceOptions
+                        }
                         var hasLookupOptimization = column.displayField && (0, _type.isString)(column.displayField);
                         var group = function(group) {
                             if (!Array.isArray(group)) {
@@ -143421,8 +143554,10 @@
                                             })
                                         }))
                                     } else {
-                                        var _filter = _this.combineFilters(items.map((function(data) {
-                                            return [column.lookup.valueExpr, data.key]
+                                        var _filter = _this.combineFilters(items.flatMap((function(data) {
+                                            return data.key
+                                        })).map((function(key) {
+                                            return [column.lookup.valueExpr, key]
                                         })), "or");
                                         newDataSource = new _data_source.DataSource(_extends({}, lookupDataSourceOptions, loadOptions, {
                                             filter: _this.combineFilters([_filter, loadOptions.filter], "and")
@@ -145509,6 +145644,17 @@
                         $virtualRow = this._wrapRowIfNeed($table, $virtualRow);
                         this._appendEmptyRow($table, $virtualRow, location)
                     },
+                    _updateContentItemSizes: function() {
+                        var rowHeights = this._getRowHeights();
+                        var correctedRowHeights = this._correctRowHeights(rowHeights);
+                        this._dataController.setContentItemSizes(correctedRowHeights)
+                    },
+                    _updateViewportSize: function(viewportHeight, scrollTop) {
+                        if (!(0, _type.isDefined)(viewportHeight)) {
+                            viewportHeight = this._hasHeight ? (0, _size.getOuterHeight)(this.element()) : (0, _size.getOuterHeight)((0, _window.getWindow)())
+                        }
+                        this._dataController.viewportHeight(viewportHeight, scrollTop)
+                    },
                     _getRowHeights: function() {
                         var _this$getController, _this$getController$i;
                         var isPopupEditMode = null === (_this$getController = this.getController("editing")) || void 0 === _this$getController ? void 0 : null === (_this$getController$i = _this$getController.isPopupEditMode) || void 0 === _this$getController$i ? void 0 : _this$getController$i.call(_this$getController);
@@ -145561,9 +145707,7 @@
                         dataController.viewportItemSize(rowHeight);
                         if (isVirtualMode(this) || _uiGrid_core2.default.isVirtualRowRendering(this)) {
                             if (!isRender) {
-                                var rowHeights = this._getRowHeights();
-                                var correctedRowHeights = this._correctRowHeights(rowHeights);
-                                dataController.setContentItemSizes(correctedRowHeights)
+                                this._updateContentItemSizes()
                             }
                             var top = dataController.getContentOffset("begin");
                             var bottom = dataController.getContentOffset("end");
@@ -145630,6 +145774,10 @@
                         var zeroTopPosition = 0 === e.scrollOffset.top;
                         if ((this._hasHeight || !legacyScrollingMode && zeroTopPosition) && this._rowHeight) {
                             this._scrollTop = e.scrollOffset.top;
+                            if (isVirtualMode(this) && false === this.option(LEGACY_SCROLLING_MODE)) {
+                                this._updateContentItemSizes();
+                                this._updateViewportSize(null, this._scrollTop)
+                            }
                             this._dataController.setViewportPosition(e.scrollOffset.top)
                         }
                         this.callBase.apply(this, arguments)
@@ -145644,7 +145792,7 @@
                             var viewportHeight = this._hasHeight ? (0, _size.getOuterHeight)(this.element()) : (0, _size.getOuterHeight)((0, _window.getWindow)());
                             var dataController = this._dataController;
                             if (false === this.option(LEGACY_SCROLLING_MODE)) {
-                                dataController.viewportHeight(viewportHeight);
+                                this._updateViewportSize(viewportHeight);
                                 dataController.updateViewport()
                             } else {
                                 dataController.viewportSize(Math.ceil(viewportHeight / this._rowHeight))
@@ -146126,9 +146274,9 @@
                                         }
                                         return null === dataSource || void 0 === dataSource ? void 0 : dataSource.viewportSize.apply(dataSource, arguments)
                                     },
-                                    viewportHeight: function(height) {
+                                    viewportHeight: function(height, scrollTop) {
                                         var _this$_rowsScrollCont;
-                                        null === (_this$_rowsScrollCont = this._rowsScrollController) || void 0 === _this$_rowsScrollCont ? void 0 : _this$_rowsScrollCont.viewportHeight(height)
+                                        null === (_this$_rowsScrollCont = this._rowsScrollController) || void 0 === _this$_rowsScrollCont ? void 0 : _this$_rowsScrollCont.viewportHeight(height, scrollTop)
                                     },
                                     viewportItemSize: function() {
                                         var rowsScrollController = this._rowsScrollController;
@@ -146420,6 +146568,17 @@
                                 return members
                             }(),
                             resizing: {
+                                _updateMasterDataGridCore: function(masterDataGrid) {
+                                    return (0, _deferred.when)(this.callBase.apply(this, arguments)).done((function(masterDataGridUpdated) {
+                                        var isNewVirtualMode = isVirtualMode(masterDataGrid) && false === masterDataGrid.option(LEGACY_SCROLLING_MODE);
+                                        if (!masterDataGridUpdated && isNewVirtualMode) {
+                                            var scrollable = masterDataGrid.getScrollable();
+                                            if (scrollable) {
+                                                masterDataGrid.updateDimensions()
+                                            }
+                                        }
+                                    }))
+                                },
                                 resize: function() {
                                     var that = this;
                                     var callBase = that.callBase;
@@ -146637,7 +146796,7 @@
                         getViewportPosition: function() {
                             return this._position
                         },
-                        getItemIndexByPosition: function(position) {
+                        getItemIndexByPosition: function(position, viewportItemIndex, height) {
                             var _position;
                             position = null !== (_position = position) && void 0 !== _position ? _position : this._position;
                             var defaultItemSize = this.getItemSize();
@@ -146649,6 +146808,9 @@
                                 var itemOffsetDiff = (position - offset) / defaultItemSize;
                                 if (itemOffsetWithSize < 0 || itemOffset + itemOffsetDiff < itemOffsetWithSize) {
                                     itemOffset += itemOffsetDiff;
+                                    if (this._sizeRatio < 1 && (0, _type.isDefined)(viewportItemIndex)) {
+                                        itemOffset = viewportItemIndex + height / this._viewportItemSize
+                                    }
                                     break
                                 } else {
                                     itemOffsetDiff = itemOffsetWithSize - itemOffset;
@@ -146751,12 +146913,13 @@
                             }
                             return this._viewportSize
                         },
-                        viewportHeight: function(height) {
-                            var begin = this.getItemIndexByPosition();
-                            var end = this.getItemIndexByPosition(this._position + height);
+                        viewportHeight: function(height, scrollTop) {
+                            var position = null !== scrollTop && void 0 !== scrollTop ? scrollTop : this._position;
+                            var begin = this.getItemIndexByPosition(position);
+                            var end = this.getItemIndexByPosition(position + height, begin, height);
                             this.viewportSize(Math.ceil(end - begin));
-                            if (this._viewportItemIndex !== begin) {
-                                this._setViewportPositionCore(this._position)
+                            if (!(0, _type.isDefined)(scrollTop) && this._viewportItemIndex !== begin) {
+                                this._setViewportPositionCore(position)
                             }
                         },
                         reset: function(isRefresh) {
@@ -153164,7 +153327,7 @@
                     var backgroundColorEditorInstance;
                     var $table = $element;
                     var editorInstance = module.editorInstance;
-                    var startTableWidth = (0, _type.isDefined)(formats.tableWidth) ? parseInt(formats.tableWidth) : (0, _size.getOuterWidth)($table);
+                    var startTableWidth = parseInt(formats.tableWidth) || (0, _size.getOuterWidth)($table);
                     var tableStyles = window.getComputedStyle($table.get(0));
                     var startTextAlign = "start" === tableStyles.textAlign ? "left" : tableStyles.textAlign;
                     var formOptions = {
@@ -156717,7 +156880,8 @@
                             delay: 0,
                             templatesRenderAsynchronously: false,
                             hideTopOverlayHandler: null,
-                            focusStateEnabled: false
+                            focusStateEnabled: false,
+                            propagateOutsideClick: true
                         })
                     },
                     _defaultOptionsRules: function() {
@@ -156928,7 +157092,6 @@
                                 shading: true,
                                 hideOnOutsideClick: false,
                                 position: void 0,
-                                visualContainer: void 0,
                                 animation: {},
                                 title: "",
                                 titleTemplate: "title",
@@ -157292,7 +157455,6 @@
                             showEvent: null,
                             hideEvent: null,
                             target: this.$element(),
-                            visualContainer: this.$element(),
                             fullScreen: false,
                             shading: false,
                             hideOnParentScroll: true,
@@ -157342,7 +157504,6 @@
                         });
                         delete result.animation;
                         delete result.position;
-                        delete result.visualContainer;
                         if (this.option("_scrollToSelectedItemEnabled")) {
                             result.position = this.option("dropDownCentered") ? {
                                 my: "left top",
@@ -157353,9 +157514,8 @@
                                 at: "left bottom",
                                 of: this.element()
                             };
-                            result.visualContainer = this.$element();
                             result.hideOnParentScroll = true
-                        }(0, _iterator.each)(["position", "animation", "width", "height", "visualContainer"], (function(_, optionName) {
+                        }(0, _iterator.each)(["position", "animation", "width", "height"], (function(_, optionName) {
                             var popupOptionValue = _this3.option("dropDownOptions.".concat(optionName));
                             if (void 0 !== popupOptionValue) {
                                 result[optionName] = popupOptionValue
@@ -161663,7 +161823,9 @@
                         var format = this.option("format");
                         var isCustomParser = (0, _type.isFunction)(null === format || void 0 === format ? void 0 : format.parser);
                         var isLDMLPattern = (0, _type.isString)(format) && (format.indexOf("0") >= 0 || format.indexOf("#") >= 0);
-                        this._currentFormat = isCustomParser || isLDMLPattern ? format : (0, _number2.getFormat)((function(value) {
+                        var isExponentialFormat = "exponential" === format || "exponential" === (null === format || void 0 === format ? void 0 : format.type);
+                        var shouldUseFormatAsIs = isCustomParser || isLDMLPattern || isExponentialFormat;
+                        this._currentFormat = shouldUseFormatAsIs ? format : (0, _number2.getFormat)((function(value) {
                             var text = _this._format(value, format);
                             return _number.default.convertDigits(text, true)
                         }))
@@ -162998,13 +163160,34 @@
                             this._showingDeferred.resolve()
                         } else {
                             var show = function() {
-                                _this7._renderVisibility(true);
-                                if (_this7._isShowingActionCanceled) {
-                                    delete _this7._isShowingActionCanceled;
-                                    _this7._showingDeferred.resolve();
-                                    return
+                                _this7._stopAnimation();
+                                _this7._toggleVisibility(true);
+                                _this7._$content.css("visibility", "hidden");
+                                _this7._$content.toggleClass("dx-state-invisible", false);
+                                _this7._updateZIndexStackPosition(true);
+                                _this7._positionController.openingHandled();
+                                _this7._renderContent();
+                                var showingArgs = {
+                                    cancel: false
+                                };
+                                _this7._actions.onShowing(showingArgs);
+                                if (showingArgs.cancel) {
+                                    ! function() {
+                                        _this7._toggleVisibility(false);
+                                        _this7._$content.css("visibility", "");
+                                        _this7._$content.toggleClass("dx-state-invisible", true);
+                                        _this7._isShowingActionCanceled = true;
+                                        _this7._moveFromContainer();
+                                        _this7.option("visible", false);
+                                        _this7._showingDeferred.resolve()
+                                    }()
+                                } else {
+                                    ! function() {
+                                        _this7._$content.css("visibility", "");
+                                        _this7._renderVisibility(true);
+                                        _this7._animateShowing()
+                                    }()
                                 }
-                                _this7._animateShowing()
                             };
                             if (this.option("templatesRenderAsynchronously")) {
                                 this._stopShowTimer();
@@ -163056,6 +163239,7 @@
                         }))
                     },
                     _hide: function() {
+                        var _this9 = this;
                         if (!this._currentVisible) {
                             return (new _deferred.Deferred).resolve().promise()
                         }
@@ -163070,15 +163254,19 @@
                             this._actions.onHiding(hidingArgs);
                             this._toggleSafariScrolling();
                             if (hidingArgs.cancel) {
-                                this._isHidingActionCanceled = true;
-                                this.option("visible", true);
-                                this._hidingDeferred.resolve()
+                                ! function() {
+                                    _this9._isHidingActionCanceled = true;
+                                    _this9.option("visible", true);
+                                    _this9._hidingDeferred.resolve()
+                                }()
                             } else {
-                                this._forceFocusLost();
-                                this._toggleShading(false);
-                                this._toggleSubscriptions(false);
-                                this._stopShowTimer();
-                                this._animateHiding()
+                                ! function() {
+                                    _this9._forceFocusLost();
+                                    _this9._toggleShading(false);
+                                    _this9._toggleSubscriptions(false);
+                                    _this9._stopShowTimer();
+                                    _this9._animateHiding()
+                                }()
                             }
                         }
                         return this._hidingDeferred.promise()
@@ -163113,30 +163301,15 @@
                         if (!visible) {
                             (0, _visibility_change.triggerHidingEvent)(this._$content)
                         }
-                        this._toggleVisibility(visible);
-                        this._$content.toggleClass("dx-state-invisible", !visible);
-                        this._updateZIndexStackPosition(visible);
                         if (visible) {
-                            this._positionController.openingHandled();
-                            this._renderContent();
-                            var showingArgs = {
-                                cancel: false
-                            };
-                            this._actions.onShowing(showingArgs);
-                            if (showingArgs.cancel) {
-                                this._toggleVisibility(false);
-                                this._$content.toggleClass("dx-state-invisible", true);
-                                this._updateZIndexStackPosition(false);
-                                this._moveFromContainer();
-                                this._isShowingActionCanceled = true;
-                                this.option("visible", false);
-                                return
-                            }
                             this._moveToContainer();
                             this._renderGeometry();
                             (0, _visibility_change.triggerShownEvent)(this._$content);
                             (0, _visibility_change.triggerResizeEvent)(this._$content)
                         } else {
+                            this._toggleVisibility(visible);
+                            this._$content.toggleClass("dx-state-invisible", !visible);
+                            this._updateZIndexStackPosition(visible);
                             this._moveFromContainer()
                         }
                         this._toggleShading(visible);
@@ -163163,9 +163336,9 @@
                         this._toggleTabTerminator(visible && this.option("shading"))
                     },
                     _initTabTerminatorHandler: function() {
-                        var _this9 = this;
+                        var _this10 = this;
                         this._proxiedTabTerminatorHandler = function() {
-                            _this9._tabKeyHandler.apply(_this9, arguments)
+                            _this10._tabKeyHandler.apply(_this10, arguments)
                         }
                     },
                     _toggleTabTerminator: function(enabled) {
@@ -163306,7 +163479,7 @@
                         return isHidden || !_dom_adapter.default.getBody().contains($parent.get(0))
                     },
                     _renderContentImpl: function() {
-                        var _this10 = this;
+                        var _this11 = this;
                         var whenContentRendered = new _deferred.Deferred;
                         var contentTemplateOption = this.option("contentTemplate");
                         var contentTemplate = this._getTemplate(contentTemplateOption);
@@ -163321,8 +163494,8 @@
                         });
                         this._renderScrollTerminator();
                         whenContentRendered.done((function() {
-                            if (_this10.option("visible")) {
-                                _this10._moveToContainer()
+                            if (_this11.option("visible")) {
+                                _this11._moveToContainer()
                             }
                         }));
                         return whenContentRendered.promise()
@@ -163459,9 +163632,9 @@
                         return this._$content
                     },
                     _attachKeyboardEvents: function() {
-                        var _this11 = this;
+                        var _this12 = this;
                         this._keyboardListenerId = _short.keyboard.on(this._$content, null, (function(opts) {
-                            return _this11._keyboardHandler(opts)
+                            return _this12._keyboardHandler(opts)
                         }))
                     },
                     _keyboardHandler: function(options) {
@@ -163520,7 +163693,7 @@
                         this._$content.toggleClass("dx-rtl", rtl)
                     },
                     _optionChanged: function(args) {
-                        var _this12 = this;
+                        var _this13 = this;
                         var value = args.value;
                         if (this._getActionsList().includes(args.name)) {
                             this._initActions();
@@ -163554,10 +163727,10 @@
                                 break;
                             case "visible":
                                 this._renderVisibilityAnimate(value).done((function() {
-                                    if (!_this12._animateDeferred) {
+                                    if (!_this13._animateDeferred) {
                                         return
                                     }
-                                    _this12._animateDeferred.resolveWith(_this12)
+                                    _this13._animateDeferred.resolveWith(_this13)
                                 }));
                                 break;
                             case "container":
@@ -163609,7 +163782,7 @@
                         }
                     },
                     toggle: function(showing) {
-                        var _this13 = this;
+                        var _this14 = this;
                         showing = void 0 === showing ? !this.option("visible") : showing;
                         var result = new _deferred.Deferred;
                         if (showing === this.option("visible")) {
@@ -163619,8 +163792,8 @@
                         this._animateDeferred = animateDeferred;
                         this.option("visible", showing);
                         animateDeferred.promise().done((function() {
-                            delete _this13._animateDeferred;
-                            result.resolveWith(_this13, [_this13.option("visible")])
+                            delete _this14._animateDeferred;
+                            result.resolveWith(_this14, [_this14.option("visible")])
                         }));
                         return result.promise()
                     },
@@ -173120,6 +173293,7 @@
                                 },
                                 hide: {
                                     type: "fade",
+                                    from: 1,
                                     to: 0
                                 }
                             },
@@ -175865,12 +176039,12 @@
                         }
                     },
                     _fitIntoArea: function(axis, value) {
-                        var _this$;
+                        var _this2;
                         var directionName = this._getDirectionName(axis);
-                        return Math.min(value, null !== (_this$ = this["_".concat(directionName, "MaxOffset")]) && void 0 !== _this$ ? _this$ : 1 / 0)
+                        return Math.min(value, null !== (_this2 = this["_".concat(directionName, "MaxOffset")]) && void 0 !== _this2 ? _this2 : 1 / 0)
                     },
                     _fitDeltaProportionally: function(delta) {
-                        var _this2 = this;
+                        var _this3 = this;
                         var fittedDelta = _extends({}, delta);
                         var size = this._elementSize;
                         var _this$option = this.option(),
@@ -175885,7 +176059,7 @@
                             return size.height + fittedDelta.y
                         };
                         var isInArea = function(axis) {
-                            return fittedDelta[axis] === _this2._fitIntoArea(axis, fittedDelta[axis])
+                            return fittedDelta[axis] === _this3._fitIntoArea(axis, fittedDelta[axis])
                         };
                         var isFittedX = function() {
                             return (0, _math.inRange)(getWidth(), minWidth, maxWidth) && isInArea("x")
@@ -177788,9 +177962,11 @@
                                 return
                             }
                             var adapter = _this4._createAppointmentAdapter(_this4.form.formData);
-                            var appointment = adapter.clone({
+                            var clonedAdapter = adapter.clone({
                                 pathTimeZone: "fromAppointment"
-                            }).source();
+                            });
+                            _this4._addMissingDSTTime(adapter, clonedAdapter);
+                            var appointment = clonedAdapter.source();
                             delete appointment.repeat;
                             switch (_this4.state.action) {
                                 case ACTION_TO_APPOINTMENT.CREATE:
@@ -177859,6 +178035,20 @@
                     };
                     _proto._unlockSaveChanges = function() {
                         this.state.saveChangesLocker = false
+                    };
+                    _proto._addMissingDSTTime = function(formAppointmentAdapter, clonedAppointmentAdapter) {
+                        var timeZoneCalculator = this.scheduler.getTimeZoneCalculator();
+                        clonedAppointmentAdapter.startDate = this._addMissingDSTShiftToDate(timeZoneCalculator, formAppointmentAdapter.startDate, clonedAppointmentAdapter.startDate);
+                        if (clonedAppointmentAdapter.endDate) {
+                            clonedAppointmentAdapter.endDate = this._addMissingDSTShiftToDate(timeZoneCalculator, formAppointmentAdapter.endDate, clonedAppointmentAdapter.endDate)
+                        }
+                    };
+                    _proto._addMissingDSTShiftToDate = function(timeZoneCalculator, originFormDate, clonedDate) {
+                        var _timeZoneCalculator$g, _timeZoneCalculator$g2;
+                        var originTimezoneShift = null === (_timeZoneCalculator$g = timeZoneCalculator.getOffsets(originFormDate)) || void 0 === _timeZoneCalculator$g ? void 0 : _timeZoneCalculator$g.common;
+                        var clonedTimezoneShift = null === (_timeZoneCalculator$g2 = timeZoneCalculator.getOffsets(clonedDate)) || void 0 === _timeZoneCalculator$g2 ? void 0 : _timeZoneCalculator$g2.common;
+                        var shiftDifference = originTimezoneShift - clonedTimezoneShift;
+                        return shiftDifference ? new Date(clonedDate.getTime() + shiftDifference * toMs("hour")) : clonedDate
                     };
                     ! function(Constructor, protoProps, staticProps) {
                         if (protoProps) {
@@ -185776,26 +185966,54 @@
                     }
                     var _proto = RecurrenceProcessor.prototype;
                     _proto.generateDates = function(options) {
+                        var _this = this;
                         var recurrenceRule = this.evalRecurrenceRule(options.rule);
                         var rule = recurrenceRule.rule;
                         if (!recurrenceRule.isValid || !rule.freq) {
                             return []
                         }
-                        var clientOffsets_startDate = _utils.default.getClientTimezoneOffset(options.start),
-                            clientOffsets_minViewDate = _utils.default.getClientTimezoneOffset(options.min),
-                            clientOffsets_maxViewDate = _utils.default.getClientTimezoneOffset(options.max);
-                        var appointmentOffset = options.appointmentTimezoneOffset;
-                        var duration = options.end ? options.end.getTime() - options.start.getTime() : 0;
-                        var startDate = _utils.default.setOffsetsToDate(options.start, [-clientOffsets_startDate, appointmentOffset]);
-                        var minViewTime = options.min.getTime() - clientOffsets_minViewDate + appointmentOffset;
-                        var minViewDate = new Date(minViewTime - duration);
-                        var maxViewDate = _utils.default.setOffsetsToDate(options.max, [-clientOffsets_maxViewDate, appointmentOffset]);
-                        this._initializeRRule(options, startDate, rule.until);
-                        return this.rRuleSet.between(minViewDate, maxViewDate, true).filter((function(date) {
-                            return date.getTime() + duration >= minViewTime
+                        var rruleIntervalParams = this._createRruleIntervalParams(options);
+                        this._initializeRRule(options, rruleIntervalParams.startIntervalDate, rule.until);
+                        return this.rRuleSet.between(rruleIntervalParams.minViewDate, rruleIntervalParams.maxViewDate, true).filter((function(date) {
+                            return date.getTime() + rruleIntervalParams.appointmentDuration >= rruleIntervalParams.minViewTime
                         })).map((function(date) {
-                            return _utils.default.setOffsetsToDate(date, [_utils.default.getClientTimezoneOffset(date), -appointmentOffset])
+                            return _this._convertRruleResult(rruleIntervalParams, options, date)
                         }))
+                    };
+                    _proto._createRruleIntervalParams = function(options) {
+                        var start = options.start,
+                            min = options.min,
+                            max = options.max,
+                            appointmentTimezoneOffset = options.appointmentTimezoneOffset;
+                        var clientOffsets_startDate = _utils.default.getClientTimezoneOffset(start),
+                            clientOffsets_minViewDate = _utils.default.getClientTimezoneOffset(min),
+                            clientOffsets_maxViewDate = _utils.default.getClientTimezoneOffset(max);
+                        var duration = options.end ? options.end.getTime() - options.start.getTime() : 0;
+                        var startIntervalDate = _utils.default.setOffsetsToDate(options.start, [-clientOffsets_startDate, appointmentTimezoneOffset]);
+                        var minViewTime = options.min.getTime() - clientOffsets_minViewDate + appointmentTimezoneOffset;
+                        var minViewDate = new Date(minViewTime - duration);
+                        var maxViewDate = _utils.default.setOffsetsToDate(options.max, [-clientOffsets_maxViewDate, appointmentTimezoneOffset]);
+                        var startDateDSTDifferenceMs = _utils.default.getDiffBetweenClientTimezoneOffsets(options.start, startIntervalDate);
+                        var switchToSummerTime = startDateDSTDifferenceMs < 0;
+                        return {
+                            startIntervalDate: startIntervalDate,
+                            minViewTime: minViewTime,
+                            minViewDate: minViewDate,
+                            maxViewDate: maxViewDate,
+                            startIntervalDateDSTShift: switchToSummerTime ? 0 : startDateDSTDifferenceMs,
+                            appointmentDuration: duration
+                        }
+                    };
+                    _proto._convertRruleResult = function(rruleIntervalParams, options, rruleDate) {
+                        var convertedBackDate = _utils.default.setOffsetsToDate(rruleDate, [_utils.default.getClientTimezoneOffset(rruleDate), -options.appointmentTimezoneOffset, rruleIntervalParams.startIntervalDateDSTShift]);
+                        var convertedDateDSTShift = _utils.default.getDiffBetweenClientTimezoneOffsets(convertedBackDate, rruleDate);
+                        var switchToSummerTime = convertedDateDSTShift < 0;
+                        var resultDate = _utils.default.setOffsetsToDate(convertedBackDate, [convertedDateDSTShift]);
+                        var resultDateDSTShift = _utils.default.getDiffBetweenClientTimezoneOffsets(resultDate, convertedBackDate);
+                        if (resultDateDSTShift && switchToSummerTime) {
+                            return new Date(resultDate.getTime() + resultDateDSTShift)
+                        }
+                        return resultDate
                     };
                     _proto.hasRecurrence = function(options) {
                         return !!this.generateDates(options).length
@@ -185892,7 +186110,7 @@
                         return (new Date).getTimezoneOffset()
                     };
                     _proto._initializeRRule = function(options, startDateUtc, until) {
-                        var _this = this;
+                        var _this2 = this;
                         var ruleOptions = _rrule.RRule.parseString(options.rule);
                         var firstDayOfWeek = options.firstDayOfWeek;
                         ruleOptions.dtstart = startDateUtc;
@@ -185906,19 +186124,14 @@
                         if (options.exception) {
                             var exceptionStrings = options.exception;
                             var exceptionDates = exceptionStrings.split(",").map((function(rule) {
-                                return _this.getDateByAsciiString(rule)
+                                return _this2.getDateByAsciiString(rule)
                             }));
                             exceptionDates.forEach((function(date) {
                                 if (options.getPostProcessedException) {
                                     date = options.getPostProcessedException(date)
                                 }
                                 var utcDate = _utils.default.setOffsetsToDate(date, [-_utils.default.getClientTimezoneOffset(date), options.appointmentTimezoneOffset]);
-                                var originClientOffset = date.getTimezoneOffset();
-                                var utcDateClientOffset = utcDate.getTimezoneOffset();
-                                if (utcDateClientOffset !== originClientOffset) {
-                                    utcDate.setMilliseconds(utcDate.getMilliseconds() - 6e4 * (utcDateClientOffset - originClientOffset))
-                                }
-                                _this.rRuleSet.exdate(utcDate)
+                                _this2.rRuleSet.exdate(utcDate)
                             }))
                         }
                     };
@@ -192348,6 +192561,7 @@
                                     _this2._filterAppointmentsByDate();
                                     _this2._appointments.option("allowAllDayResize", "day" !== value)
                                 }));
+                                this.postponedOperations.callPostponedOperations();
                                 break;
                             case "appointmentTemplate":
                                 this._appointments.option("itemTemplate", value);
@@ -192366,7 +192580,7 @@
                                 break;
                             case "resources":
                                 this._dataAccessors.resources = (0, _utils3.createExpressions)(this.option("resources"));
-                                this.agendaResourceProcessor.initializeState(value);
+                                this.agendaResourceProcessor.initializeState(this.option("resources"));
                                 this.updateInstances();
                                 this._postponeResourceLoading().done((function(resources) {
                                     _this2._appointments.option("items", []);
@@ -192666,6 +192880,11 @@
                             paginate: false
                         }
                     };
+                    _proto._initAllDayPanel = function() {
+                        if ("hidden" === this.option("allDayPanelMode")) {
+                            this.option("showAllDayPanel", false)
+                        }
+                    };
                     _proto._init = function() {
                         this._initExpressions({
                             startDate: this.option("startDateExpr"),
@@ -192680,6 +192899,7 @@
                             disabled: this.option("disabledExpr")
                         });
                         _Widget.prototype._init.call(this);
+                        this._initAllDayPanel();
                         this._initDataSource();
                         this.$element().addClass("dx-scheduler");
                         this._initEditing();
@@ -194237,6 +194457,10 @@
                     var endDayDate = new Date(new Date(date).setHours(23, 59, 59, 0));
                     return startDayDate.getTimezoneOffset() - endDayDate.getTimezoneOffset() !== 0
                 };
+                var getClientTimezoneOffset = function() {
+                    var date = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : new Date;
+                    return 6e4 * date.getTimezoneOffset()
+                };
                 var hasDSTInLocalTimeZone = function() {
                     var _getExtremeDates = getExtremeDates(),
                         _getExtremeDates2 = _slicedToArray(_getExtremeDates, 2),
@@ -194319,9 +194543,11 @@
                         }
                         return new Date(exception.getTime() + (isBackConversion ? -1 : 1) * timezoneOffset * toMs("hour"))
                     },
-                    getClientTimezoneOffset: function() {
-                        var date = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : new Date;
-                        return 6e4 * date.getTimezoneOffset()
+                    getClientTimezoneOffset: getClientTimezoneOffset,
+                    getDiffBetweenClientTimezoneOffsets: function() {
+                        var firstDate = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : new Date;
+                        var secondDate = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : new Date;
+                        return getClientTimezoneOffset(firstDate) - getClientTimezoneOffset(secondDate)
                     },
                     createUTCDateWithLocalOffset: function(date) {
                         if (!date) {
@@ -194364,12 +194590,10 @@
                         return _utils.default.getDisplayedTimeZones(dateInUTC.getTime())
                     },
                     setOffsetsToDate: function(targetDate, offsetsArray) {
-                        var dateCopy = new Date(targetDate);
-                        var offsetToAdd = offsetsArray.reduce((function(result, offset) {
+                        var newDateMs = offsetsArray.reduce((function(result, offset) {
                             return result + offset
-                        }), 0);
-                        dateCopy.setMilliseconds(dateCopy.getMilliseconds() + offsetToAdd);
-                        return dateCopy
+                        }), targetDate.getTime());
+                        return new Date(newDateMs)
                     }
                 };
                 var _default = utils;
@@ -197354,6 +197578,74 @@
                 var _cache = __webpack_require__( /*! ./cache */ 56012);
                 var _classes = __webpack_require__( /*! ../classes */ 62060);
                 var _base = __webpack_require__( /*! ../../../renovation/ui/scheduler/view_model/to_test/views/utils/base */ 45985);
+
+                function _slicedToArray(arr, i) {
+                    return function(arr) {
+                        if (Array.isArray(arr)) {
+                            return arr
+                        }
+                    }(arr) || function(arr, i) {
+                        var _i = null == arr ? null : "undefined" !== typeof Symbol && arr[Symbol.iterator] || arr["@@iterator"];
+                        if (null == _i) {
+                            return
+                        }
+                        var _arr = [];
+                        var _n = true;
+                        var _d = false;
+                        var _s, _e;
+                        try {
+                            for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) {
+                                _arr.push(_s.value);
+                                if (i && _arr.length === i) {
+                                    break
+                                }
+                            }
+                        } catch (err) {
+                            _d = true;
+                            _e = err
+                        } finally {
+                            try {
+                                if (!_n && null != _i.return) {
+                                    _i.return()
+                                }
+                            } finally {
+                                if (_d) {
+                                    throw _e
+                                }
+                            }
+                        }
+                        return _arr
+                    }(arr, i) || function(o, minLen) {
+                        if (!o) {
+                            return
+                        }
+                        if ("string" === typeof o) {
+                            return _arrayLikeToArray(o, minLen)
+                        }
+                        var n = Object.prototype.toString.call(o).slice(8, -1);
+                        if ("Object" === n && o.constructor) {
+                            n = o.constructor.name
+                        }
+                        if ("Map" === n || "Set" === n) {
+                            return Array.from(o)
+                        }
+                        if ("Arguments" === n || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) {
+                            return _arrayLikeToArray(o, minLen)
+                        }
+                    }(arr, i) || function() {
+                        throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.")
+                    }()
+                }
+
+                function _arrayLikeToArray(arr, len) {
+                    if (null == len || len > arr.length) {
+                        len = arr.length
+                    }
+                    for (var i = 0, arr2 = new Array(len); i < len; i++) {
+                        arr2[i] = arr[i]
+                    }
+                    return arr2
+                }
                 var VerticalGroupedStrategy = function() {
                     function VerticalGroupedStrategy(workSpace) {
                         this._workSpace = workSpace;
@@ -197408,12 +197700,12 @@
                     _proto.getLeftOffset = function() {
                         return this._workSpace.getTimePanelWidth() + this._workSpace.getGroupTableWidth()
                     };
-                    _proto.getGroupBoundsOffset = function(cellCount, $cells, cellWidth, coordinates) {
+                    _proto.getGroupBoundsOffset = function(groupIndex, _ref) {
                         var _this = this;
-                        var groupIndex = coordinates.groupIndex;
+                        var _ref2 = _slicedToArray(_ref, 2),
+                            $firstCell = _ref2[0],
+                            $lastCell = _ref2[1];
                         return this.cache.get("groupBoundsOffset".concat(groupIndex), (function() {
-                            var startOffset = $cells.eq(0).offset().left;
-                            var endOffset = $cells.eq(cellCount - 1).offset().left + cellWidth;
                             var startDayHour = _this._workSpace.option("startDayHour");
                             var endDayHour = _this._workSpace.option("endDayHour");
                             var hoursInterval = _this._workSpace.option("hoursInterval");
@@ -197424,9 +197716,13 @@
                                 topOffset += _this._workSpace.getCellHeight() * (groupIndex + 1)
                             }
                             var bottomOffset = topOffset + dayHeight;
+                            var _$firstCell$getBoundi = $firstCell.getBoundingClientRect(),
+                                left = _$firstCell$getBoundi.left;
+                            var _$lastCell$getBoundin = $lastCell.getBoundingClientRect(),
+                                right = _$lastCell$getBoundin.right;
                             return _this._groupBoundsOffset = {
-                                left: startOffset,
-                                right: endOffset,
+                                left: left,
+                                right: right,
                                 top: topOffset,
                                 bottom: bottomOffset
                             }
@@ -198716,6 +199012,11 @@
                             return this.$element().find("." + cellClass)
                         }
                     };
+                    _proto._getFirstAndLastDataTableCell = function() {
+                        var selector = this.isVirtualScrolling() ? ".".concat(DATE_TABLE_CELL_CLASS, ", .").concat(_classes.VIRTUAL_CELL_CLASS) : ".".concat(DATE_TABLE_CELL_CLASS);
+                        var $cells = this.$element().find(selector);
+                        return [$cells[0], $cells[$cells.length - 1]]
+                    };
                     _proto._getAllCells = function(allDay) {
                         if (this._isVerticalGroupedWorkSpace()) {
                             return this._$dateTable.find("td:not(.".concat(_classes.VIRTUAL_CELL_CLASS, ")"))
@@ -198926,17 +199227,26 @@
                         return this.viewDataProvider.getVisibleDayDuration(startDayHour, endDayHour, hoursInterval)
                     };
                     _proto.getGroupBounds = function(coordinates) {
+                        var groupBounds = this._groupedStrategy instanceof _uiSchedulerWork_spaceGroupedStrategy2.default ? this.getGroupBoundsVertical(coordinates.groupIndex) : this.getGroupBoundsHorizontal(coordinates);
+                        return this._isRTL() ? this.getGroupBoundsRtlCorrection(groupBounds) : groupBounds
+                    };
+                    _proto.getGroupBoundsVertical = function(groupIndex) {
+                        var $firstAndLastCells = this._getFirstAndLastDataTableCell();
+                        return this._groupedStrategy.getGroupBoundsOffset(groupIndex, $firstAndLastCells)
+                    };
+                    _proto.getGroupBoundsHorizontal = function(coordinates) {
                         var cellCount = this._getCellCount();
                         var $cells = this._getCells();
                         var cellWidth = this.getCellWidth();
                         var groupedDataMap = this.viewDataProvider.groupedDataMap;
-                        var result = this._groupedStrategy.getGroupBoundsOffset(cellCount, $cells, cellWidth, coordinates, groupedDataMap);
-                        if (this._isRTL()) {
-                            var startOffset = result.left;
-                            result.left = result.right - 2 * cellWidth;
-                            result.right = startOffset + 2 * cellWidth
-                        }
-                        return result
+                        return this._groupedStrategy.getGroupBoundsOffset(cellCount, $cells, cellWidth, coordinates, groupedDataMap)
+                    };
+                    _proto.getGroupBoundsRtlCorrection = function(groupBounds) {
+                        var cellWidth = this.getCellWidth();
+                        return _extends({}, groupBounds, {
+                            left: groupBounds.right - 2 * cellWidth,
+                            right: groupBounds.left + 2 * cellWidth
+                        })
                     };
                     _proto.needRecalculateResizableArea = function() {
                         return this._isVerticalGroupedWorkSpace() && 0 !== this.getScrollable().scrollTop()
@@ -212896,7 +213206,7 @@
                         var eventName = (0, _index.addNamespace)("mousedown", "dxTagBox");
                         _events_engine.default.off(this._inputWrapper(), eventName);
                         _events_engine.default.on(this._inputWrapper(), eventName, (function(e) {
-                            if (e.target !== _this3._input()[0]) {
+                            if (e.target !== _this3._input()[0] && _this3._isFocused()) {
                                 e.preventDefault()
                             }
                         }))
@@ -216671,7 +216981,9 @@
                     var $container = (0, _renderer.default)(container);
                     var scrollTopPos = shiftKey ? $container.scrollLeft() : $container.scrollTop();
                     var prop = shiftKey ? "Width" : "Height";
-                    var scrollBottomPos = $container.prop("scroll".concat(prop)) - $container.prop("client".concat(prop)) - scrollTopPos;
+                    var scrollSize = $container.prop("scroll".concat(prop));
+                    var clientSize = $container.prop("client".concat(prop));
+                    var scrollBottomPos = scrollSize - clientSize - scrollTopPos | 0;
                     if (0 === scrollTopPos && 0 === scrollBottomPos) {
                         return false
                     }
@@ -217674,6 +217986,7 @@
                                 hide: {
                                     type: "fade",
                                     duration: 400,
+                                    from: 1,
                                     to: 0
                                 }
                             },
@@ -240832,6 +241145,9 @@
                     _stopCurrentHandling: _common.noop,
                     _dispose: function() {
                         var that = this;
+                        if (this._disposed) {
+                            return
+                        }
                         that.callBase.apply(that, arguments);
                         that._toggleParentsScrollSubscription(false);
                         that._removeResizeHandler();
@@ -269145,7 +269461,8 @@
                             seriesGroup: this._seriesGroup,
                             labelsGroup: this._seriesLabelGroup,
                             argumentAxis: this._argumentAxis,
-                            valueAxis: this._valueAxis
+                            valueAxis: this._valueAxis,
+                            incidentOccurred: this._incidentOccurred
                         }, {
                             widgetType: "chart",
                             type: "line"
@@ -269232,6 +269549,7 @@
                             color: options.lineColor,
                             width: options.lineWidth,
                             widgetType: "chart",
+                            name: "",
                             type: type,
                             opacity: -1 !== type.indexOf("area") ? this._allOptions.areaOpacity : void 0,
                             point: {
@@ -277116,12 +277434,70 @@
             /*!************************************************************************!*\
               !*** ./node_modules/@devextreme/runtime/cjs/inferno/create_context.js ***!
               \************************************************************************/
-            function(__unused_webpack_module, exports) {
+            function(__unused_webpack_module, exports, __webpack_require__) {
+                var __extends = this && this.__extends || (extendStatics = function(d, b) {
+                    extendStatics = Object.setPrototypeOf || {
+                        __proto__: []
+                    }
+                    instanceof Array && function(d, b) {
+                        d.__proto__ = b
+                    } || function(d, b) {
+                        for (var p in b) {
+                            if (b.hasOwnProperty(p)) {
+                                d[p] = b[p]
+                            }
+                        }
+                    };
+                    return extendStatics(d, b)
+                }, function(d, b) {
+                    extendStatics(d, b);
+
+                    function __() {
+                        this.constructor = d
+                    }
+                    d.prototype = null === b ? Object.create(b) : (__.prototype = b.prototype, new __)
+                });
+                var extendStatics;
+                var __assign = this && this.__assign || function() {
+                    __assign = Object.assign || function(t) {
+                        for (var s, i = 1, n = arguments.length; i < n; i++) {
+                            s = arguments[i];
+                            for (var p in s) {
+                                if (Object.prototype.hasOwnProperty.call(s, p)) {
+                                    t[p] = s[p]
+                                }
+                            }
+                        }
+                        return t
+                    };
+                    return __assign.apply(this, arguments)
+                };
                 Object.defineProperty(exports, "__esModule", {
                     value: true
                 });
+                var inferno_1 = __webpack_require__( /*! inferno */ 55285);
+                var contextId = 0;
                 exports.createContext = function(defaultValue) {
-                    return defaultValue
+                    var id = contextId++;
+                    return {
+                        id: id,
+                        defaultValue: defaultValue,
+                        Provider: function(_super) {
+                            __extends(class_1, _super);
+
+                            function class_1() {
+                                return null !== _super && _super.apply(this, arguments) || this
+                            }
+                            class_1.prototype.getChildContext = function() {
+                                var _a;
+                                return __assign(__assign({}, this.context), (_a = {}, _a[id] = this.props.value || defaultValue, _a))
+                            };
+                            class_1.prototype.render = function() {
+                                return this.props.children
+                            };
+                            return class_1
+                        }(inferno_1.Component)
+                    }
                 }
             },
         37221:
@@ -277134,8 +277510,8 @@
                 });
                 var InfernoEffect = function() {
                     function InfernoEffect(effect, dependency) {
-                        this.effect = effect;
                         this.dependency = dependency;
+                        this.effect = effect;
                         this.destroy = effect()
                     }
                     InfernoEffect.prototype.update = function(dependency) {
