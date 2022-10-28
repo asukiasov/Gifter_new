@@ -2188,7 +2188,7 @@ var PageBuilderModel = {
 
                     model.items = [];
 
-                    section.find('.js-accordion-item').each(function () {
+                    section.find('.js-t63-accordion-item').each(function () {
                         var gridItem = $(this);
                         var item = {
                             components: {
@@ -3597,7 +3597,7 @@ var PageBuilderModel = {
                         <div class="t63-section-text-container js-section-text-container">{{> "textPartial"}}</div>
                         <div class="content-wrap">
                             <div class="accordion-container">
-                                <div class="js-accordion-items-row">
+                                <div class="js-t63-accordion-items-row">
 					                {{> "accordionItemsPartial"}}
 						        </div>
 					            <div class="btn-row add-accordion-item-btn-wrap js-additional-action-buttons">
@@ -3618,14 +3618,14 @@ var PageBuilderModel = {
             items: {
                 partial:
                     `{{#each items}}
-					<article class="accordion-item js-section--container js-accordion-item{{#if ../animations}} t63-invisible js-animate{{/if}}" data-container="accordionItem" data-animation="{{../animations}}" data-children-animation="false">
+					<article class="accordion-item js-section--container js-t63-accordion-item{{#if ../animations}} t63-invisible js-animate{{/if}}" data-container="accordionItem" data-animation="{{../animations}}" data-children-animation="false">
                         <i class="handle js-additional-action-buttons"><img src="/plugins/63bits-pageBuilder/images/icons/drug.svg" alt="drag icon"></i>
-						<div class="accordion-item-head js-accordion-item-head">
+						<div class="accordion-item-head js-t63-accordion-item-head">
                             {{fontAwesomeIconHepler components.fontAwesomeIcon ../actionButtons.fontAwesomeIcon}}
                             {{titleHepler components.title}}
                         </div>
 
-						<div class="accordion-item-body js-accordion-item-body">
+						<div class="accordion-item-body js-t63-accordion-item-body">
 						    {{textHepler components.text}}
 						</div>
                         {{actionButtonsHepler ../actionButtons.accordionItem}}
@@ -3640,8 +3640,8 @@ var PageBuilderModel = {
             },
 
             sortable: function (container) {
-                if (container || $('.js-accordion-items-row').length > 0) {
-                    container = container || '.js-accordion-items-row';
+                if (container || $('.js-t63-accordion-items-row').length > 0) {
+                    container = container || '.js-t63-accordion-items-row';
 
                     $(container).sortable({
                         handle: '.handle',
@@ -5152,13 +5152,13 @@ var PageBuilderModel = {
                     if (imgWrap.find('img').length > 0) {
                         imgWrap.find('img').attr('src', urlDownload);
                     } else {
-                        imgWrap.css({ 'background-image': 'url(' + urlDownload + ')' });
+                        imgWrap.css({ 'background-image': 'url(\'' + urlDownload + '\')' });
                     }
 
                     var slider = PageBuilderModel.editors.image.container.closest('.js-t63-slider-container');
 
                     if ($(slider).length > 0) {
-                        $(slider).closest('.js-page-section').find('.js-slider-settings-container li.active .js-go-to-slide-btn').css({ 'background-image': 'url(' + urlDownload + ')' });
+                        $(slider).closest('.js-page-section').find('.js-slider-settings-container li.active .js-go-to-slide-btn').css({ 'background-image': 'url(\'' + urlDownload + '\')' });
                     }
                 }
                 PageBuilderModel.plugins.fileManager.hide();
@@ -5397,7 +5397,7 @@ var PageBuilderModel = {
                     //var slider = PageBuilderModel.editors.image.container.closest('.js-t63-slider-container');
 
                     //if ($(slider).length > 0) {
-                    //    $(slider).closest('.js-page-section').find('.js-slider-settings-container li.active .js-go-to-slide-btn').css({ 'background-image': 'url(' + urlDownload + ')' });
+                    //    $(slider).closest('.js-page-section').find('.js-slider-settings-container li.active .js-go-to-slide-btn').css({ 'background-image': 'url(\'' + urlDownload + '\')' });
                     //}
                 }
                 PageBuilderModel.plugins.fileManager.hide();
@@ -5873,7 +5873,7 @@ var PageBuilderModel = {
         accordionItem: {
             add: function (_this) {
                 var section = _this.closest('.js-page-section');
-                var itemsRow = section.find('.js-accordion-items-row');
+                var itemsRow = section.find('.js-t63-accordion-items-row');
 
                 var model = {
                     items: [
