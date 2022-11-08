@@ -6,6 +6,13 @@
             Green: 'btn-success',
             Orange: 'btn-warning'
         },
+        Sizes: {
+            XSmall: 'xsmall',
+            Small: 'small',
+            Medium: 'medium',
+            Large: 'large',
+            XLarge: 'xlarge'
+        },
         Alert: function (Options) {
             var Title = Options.Title ? Options.Title : '';
             var TextAlert = Options.TextAlert ? Options.TextAlert : '';
@@ -84,7 +91,37 @@
                     },
                 }                
             });
-        }
+        },
+        Success: function (Options) {
+
+            const SuccessTitle = Options ? Options.SuccessTitle : null;
+            const SuccessMessage = Options ? Options.SuccessMessage : null;
+            const Size = Options ? (Options.Size ? Options.Size : Components63Bits.Dialog.Sizes.Small) : Components63Bits.Dialog.Sizes.Small;
+
+            $.alert({
+                title: SuccessTitle,
+                content: SuccessMessage ? SuccessMessage : Globals.TextSuccess,
+                icon: 'fal fa-shield-check fa-lg',
+                closeIcon: true,
+                type: 'green',
+                animation: 'scale',
+                closeAnimation: 'scale',
+                columnClass: Size,
+                animateFromElement: false
+            });
+        },
+        Warning: function (WarningMessage) {
+            $.alert({
+                title: 'Warning',
+                content: WarningMessage,
+                icon: 'fas fa-exclamation-triangle fa-lg',
+                closeIcon: true,
+                type: 'orange',
+                animation: 'scale',
+                closeAnimation: 'scale',
+                animateFromElement: false
+            });
+        },
     },
     Select2: {
         InitSimple: function (Selector, Searchable) {
@@ -179,7 +216,6 @@
     }
 };
 
-var counter = 0;
 var FileUplaoderClass = {
     InputElement: null,
     UrlFileUplaod: null,
@@ -187,7 +223,7 @@ var FileUplaoderClass = {
     RequestData: null,
     OnAbort: null,
     OnProgressCallback: null,
-    OnFinishUploadCallback: null,    
+    OnFinishUploadCallback: null,
     OnStartCallback: null,
     IsReportProgressIndividual: false,
     XhrArray: [],
@@ -196,7 +232,7 @@ var FileUplaoderClass = {
         this.XhrArray.forEach(function (xhr, index) {
             xhr.abort();
         });
-        
+
     },
 
     InitEvents: function (xhr) {
@@ -206,7 +242,7 @@ var FileUplaoderClass = {
 
         //The upload has begun.
         xhr.upload.onloadstart = function (e) {
-            if (_this.OnStartCallback) {                
+            if (_this.OnStartCallback) {
                 _this.OnStartCallback({
                     Filename: xhr.fileName,
                     xhr: xhr
@@ -240,7 +276,7 @@ var FileUplaoderClass = {
 
         //The upload failed due to an error.
         xhr.upload.onerror = function (e) {
-            if (_this.OnErrorCallback) {                
+            if (_this.OnErrorCallback) {
                 _this.OnErrorCallback({
                     Filename: xhr.fileName,
                     xhr: xhr,
@@ -252,34 +288,34 @@ var FileUplaoderClass = {
         //The upload completed successfully.
         xhr.onload = function (e) {
             if (_this.OnFinishUploadCallback) {
-                const Result = {};                                    
+                let Result = {};
                 try {
-                    Result.Data = JSON.parse(xhr.response);
+                    Result = JSON.parse(xhr.response);
                 }
                 catch {
-                    Result.Data = xhr.response;
+                    Result.ResponseContent = xhr.response;
                 }
                 Result.Status = xhr.status;
                 Result.StatusText = xhr.statusText;
                 Result.Filename = xhr.fileName;
                 Result.xhr = xhr;
                 _this.OnFinishUploadCallback(Result);
-            }            
+            }
         }
 
         //The upload timed out because a reply did not arrive within the time interval specified by the XMLHttpRequest.timeout. 
         xhr.upload.ontimeout = function (e) {
-            if (_this.OnErrorCallback) {                
+            if (_this.OnErrorCallback) {
                 _this.OnErrorCallback({
                     Filename: xhr.fileName,
-                    xhr: xhr, 
+                    xhr: xhr,
                     e: e
                 });
             }
         }
     },
 
-    Upload: function () {        
+    Upload: function () {
         const _this = this;
         if (_this.InputElement.files.length) {
 
@@ -314,7 +350,7 @@ var FileUplaoderClass = {
 
             _this.InitEvents(xhr);
             xhr.open('POST', _this.UrlFileUplaod);
-            xhr.send(Data);            
+            xhr.send(Data);
         }
     },
 
@@ -337,8 +373,8 @@ var FileUplaoderClass = {
         }
 
         _this.InitEvents(xhr);
-        xhr.open('POST', _this.UrlFileUplaod);                
-        xhr.send(Data);        
+        xhr.open('POST', _this.UrlFileUplaod);
+        xhr.send(Data);
     }
 }
 
@@ -351,7 +387,7 @@ function FileUplaoder(Options) {
         _this.OnStartCallback = Options.OnStartCallback ? Options.OnStartCallback : null;
         _this.OnProgressCallback = Options.OnProgressCallback ? Options.OnProgressCallback : null;
         _this.OnAbort = Options.OnAbort ? Options.OnAbort : null;
-        _this.OnFinishUploadCallback = Options.OnFinishUploadCallback ? Options.OnFinishUploadCallback : null;        
+        _this.OnFinishUploadCallback = Options.OnFinishUploadCallback ? Options.OnFinishUploadCallback : null;
         _this.OnErrorCallback = Options.OnErrorCallback ? Options.OnErrorCallback : null;
         _this.IsReportProgressIndividual = Options.IsReportProgressIndividual ? true : false;
         _this.RequestData = Options.RequestData ? Options.RequestData : null;
