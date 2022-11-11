@@ -54,7 +54,7 @@
             plugins: 'link textcolor code paste image lists',
             paste_word_valid_elements: 'b,strong,i,em,ul,li,ol,p,br,sub,sup',
             forced_root_block: false,
-            force_p_newlines: false,
+            force_p_newlines: true,
             remove_linebreaks: false,
             force_br_newlines: true,
             remove_trailing_nbsp: false,

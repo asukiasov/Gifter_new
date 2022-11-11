@@ -12,6 +12,16 @@ namespace SixtyThreeBits.Core.Services
     public class Validation
     {
         #region Methods
+        public static bool IsEmailFormatValid(string Email)
+        {
+            var IsValid = false;
+            if (!string.IsNullOrWhiteSpace(Email))
+            {
+                IsValid = Regex.IsMatch(Email, Constants.RegularExpressions.Email);
+            }
+            return IsValid;
+        }
+
         public static SimpleKeyValue<string, string> GetError(string ErrorKey, string ErrorMessage)
         {
             return new SimpleKeyValue<string, string> { Key = ErrorKey, Value = ErrorMessage };

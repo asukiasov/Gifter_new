@@ -332,6 +332,68 @@ namespace SixtyThreeBits.Core.DB
         }
         #endregion
 
+        #region EmailsLayout
+        internal virtual DbSet<ScalarFunctionResult<string>> Emails_LayoutResult { get; set; }
+        public async Task<string> EmailsLayout(string WebsiteHttpPath, string BodyText, string UrlUnsubscribe)
+        {
+            var PR = new PrepareQueryExecution(
+                DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
+                DatabaseObjectName: nameof(EmailsLayout),
+                ResultItemType: typeof(ScalarFunctionResult<string>),
+                SqlParameters: new SqlParameter[]
+                {
+                    WebsiteHttpPath.ToSqlParameter(nameof(WebsiteHttpPath), SqlDbType.NVarChar),
+                    BodyText.ToSqlParameter(nameof(BodyText), SqlDbType.NVarChar),
+                    UrlUnsubscribe.ToSqlParameter(nameof(UrlUnsubscribe), SqlDbType.NVarChar)
+                }
+            );
+            var DBResult = Emails_LayoutResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
+            var DBFunctionResult = await DBResult.FirstOrDefaultAsync();
+            return DBFunctionResult?.Value;
+        }
+        #endregion
+
+        #region EmailTemplatesList
+        public class EmailTemplatesListResultItem
+        {
+            #region Properties
+            public int? EmailTemplateID { get; set; }
+            public string EmailTemplateName { get; set; }
+            public string EmailTemplateBody { get; set; }
+            #endregion
+        }
+        internal virtual DbSet<EmailTemplatesListResultItem> EmailTemplatesListResult { get; set; }
+        public IQueryable<EmailTemplatesListResultItem> EmailTemplatesList()
+        {
+            var PR = new PrepareQueryExecution(
+              DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
+              DatabaseObjectName: nameof(EmailTemplatesList),
+              ResultItemType: typeof(EmailTemplatesListResultItem)
+            );
+            var DBResult = EmailTemplatesListResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
+            return DBResult;
+        }
+        #endregion
+
+        #region EmailTemplatesGetSingleByID
+        internal virtual DbSet<ScalarFunctionResult<string>> EmailTemplatesGetSingleByIDResult { get; set; }
+        public async Task<string> EmailTemplatesGetSingleByID(int? EmailTemplatesID)
+        {
+            var PR = new PrepareQueryExecution(
+                DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
+                DatabaseObjectName: nameof(EmailTemplatesGetSingleByID),
+                ResultItemType: typeof(ScalarFunctionResult<string>),
+                SqlParameters: new SqlParameter[]
+                {
+                    EmailTemplatesID.ToSqlParameter(nameof(EmailTemplatesID), SqlDbType.Int)
+                }
+            );
+            var DBResult = EmailTemplatesGetSingleByIDResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
+            var DBFunctionResult = await DBResult.FirstOrDefaultAsync();
+            return DBFunctionResult?.Value;
+        }
+        #endregion
+
         #region NewsList
         public class NewsListResultItem
         {
@@ -1211,6 +1273,29 @@ namespace SixtyThreeBits.Core.DB
             return DictionaryID;
         }
 
+        public async Task<int?> EmailTemplatesIUD(Enums.DatabaseActions iud, int? EmailTemplateID, string EmailTemplateName, string EmailTemplateSubject, string EmailTemplateSubjectEng, string EmailTemplateBody, string EmailTemplateBodyEng)
+        {
+            var PR = new PrepareQueryExecution(
+                DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.STORED_PROCEDURE,
+                DatabaseObjectName: nameof(EmailTemplatesIUD),
+                ResultItemType: null,
+                SqlParameters: new SqlParameter[]
+                {
+                    iud.ToSqlParameter(nameof(iud),SqlDbType.TinyInt),
+                    EmailTemplateID.ToSqlParameter(nameof(EmailTemplateID),SqlDbType.Int, true),
+                    EmailTemplateName.ToSqlParameter(nameof(EmailTemplateName),SqlDbType.NVarChar),
+                    EmailTemplateSubject.ToSqlParameter(nameof(EmailTemplateSubject),SqlDbType.NVarChar),
+                    EmailTemplateSubjectEng.ToSqlParameter(nameof(EmailTemplateSubjectEng),SqlDbType.NVarChar),
+                    EmailTemplateBody.ToSqlParameter(nameof(EmailTemplateBody),SqlDbType.NVarChar),
+                    EmailTemplateBodyEng.ToSqlParameter(nameof(EmailTemplateBodyEng),SqlDbType.NVarChar)
+                }
+           );
+
+            var DBResult = await Database.ExecuteSqlRawAsync(PR.SqlQuery, PR.SqlParameters);
+            EmailTemplateID = PR.SqlParameters[1].Value?.ToString().ToInt();
+            return EmailTemplateID;
+        }
+
         public async Task<int?> NewsIUD(Enums.DatabaseActions iud, int? NewsID, string NewsSlug, string NewsTitle, string NewsTitleEng, string NewsTitleRus, string NewsText, string NewsTextEng, string NewsTextRus, string NewsShortDescription, string NewsShortDescriptionEng, string NewsShortDescriptionRus, string NewsImageFilename, DateTime? NewsDatePublished, bool NewsIsPublished, DateTime? NewsDateCreated)
         {
             var PR = new PrepareQueryExecution(
@@ -1665,6 +1750,7 @@ namespace SixtyThreeBits.Core.DB
             ModelBuilder.Entity<CategoriesListForDeleteRecursiveResultItem>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<CountriesListResultItem>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<DictionariesListResultItem>(Entity => { Entity.HasNoKey(); });
+            ModelBuilder.Entity<EmailTemplatesListResultItem>(Entity => { Entity.HasNoKey(); });            
             ModelBuilder.Entity<NewsListResultItem>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<ScalarFunctionResult<string>>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<ScalarFunctionResult<bool>>(Entity => { Entity.HasNoKey(); });

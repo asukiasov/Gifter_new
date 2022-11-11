@@ -102,6 +102,23 @@
                 #endregion
             }
 
+            public class EmailTemplates
+            {
+                #region Properties
+                public const string Page = "AdminEmailTemplates";
+                public const string Grid = "AdminEmailTemplatesGrid";
+                #endregion
+
+                #region Sub Classes
+                public class EmailTemplate
+                {
+                    #region Properties
+                    public const string Properties = "AdminEmailTemplatesEmailTemplateProperties";
+                    #endregion
+                }
+                #endregion
+            }
+
             public class FacebookGalleries
             {
                 #region Properties

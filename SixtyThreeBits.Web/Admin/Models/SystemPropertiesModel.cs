@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SixtyThreeBits.Core.Modules;
 using SixtyThreeBits.Core.Properties;
+using SixtyThreeBits.Core.Services;
 using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries;
-using SixtyThreeBits.Services;
 using SixtyThreeBits.Web.Reusables.Core;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -39,19 +39,20 @@ namespace SixtyThreeBits.Web.Admin.Models
             return ViewModel;
         }
 
-        public AjaxResponse TestSmtp(SmtpTestModel SubmitModel)
+        public async Task<AjaxResponse> TestSmtp(SmtpTestModel SubmitModel)
         {
             var AR = new AjaxResponse();
 
-            var M = new Email(
+            var M = new SMTP(
                 SMTPAddress: SubmitModel.SMTPAddress,
                 SMTPPort: SubmitModel.SMTPPort,
                 SMTPUsername: SubmitModel.SMTPUsername,
                 SMTPPassword: SubmitModel.SMTPPassword,
                 SMTPUseSSL: SubmitModel.SMTPUseSSL,
-                SMTPFrom: SubmitModel.SMTPFrom
+                SMTPFromName: SubmitModel.SMTPFrom
             );
-            AR.IsSuccess = M.Send(To: SubmitModel.EmailTo, Subject: "TEST", Body: "Test email text");
+            var Result = await M.Send(To: SubmitModel.EmailTo, Subject: "TEST", Body: "Test email text");
+            AR.IsSuccess = Result.IsSent;
             AR.Data = M.ErrorMessage;
 
             return AR;

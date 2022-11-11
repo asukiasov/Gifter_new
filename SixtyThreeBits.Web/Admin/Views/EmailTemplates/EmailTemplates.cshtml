@@ -1,0 +1,11 @@
+﻿@model EmailTemplatesModel.PageViewModel
+<div class="actions-row">
+</div>
+<div class="row">
+    <div class="col">        
+        @Model.Grid.Render(Html)        
+    </div>
+</div>
+@section FooterSection{
+    <script src="~/admin/js/EmailTemplates/EmailTemplates.js"></script>
+}

@@ -123,6 +123,18 @@ namespace SixtyThreeBits.Core.Utilities
             #endregion
         }
 
+        public class EmailTemplates
+        {
+            #region Properties
+            public const int SignUpVerification = 1;
+            public const int SignUpWelcome = 2;
+            public const int PasswordReset = 3;
+            public const int EmailChange = 4;
+            public const int OrderToUser = 10;
+            public const int OrderToAdmins = 11;
+            #endregion
+        }
+
         public class Languages
         {
             #region Properties

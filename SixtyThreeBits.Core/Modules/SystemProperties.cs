@@ -62,6 +62,13 @@ namespace SixtyThreeBits.Core.Modules
         public string ScriptsHeader { get; set; }
         public string ScriptsBodyStart { get; set; }
         public string ScriptsBodyEnd { get; set; }
+
+        public bool? IsMailgunEnabled { get; set; }
+        public string MailgunBaseUrl { get; set; }
+        public string MailgunApiKey { get; set; }
+        public string MailgunDomain { get; set; }
+        public string MailgunFrom { get; set; }
+        public string MailgunWebhookWebhookSigningKey { get; set; }
         #endregion
     }
 }

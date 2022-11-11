@@ -10,7 +10,9 @@ namespace SixtyThreeBits.Core.Modules
         public BrandsDataAccess Brands { get; set; }
         public CategoriesDataAccess Categories { get; set; }
         public DictionariesDataAccess Dictionaries { get; set; }
+        public EmailTemplatesDataAccess EmailTemplates { get; set; }
         public NewsDataAccess News { get; set; }
+        public NotificationManagerDataAccess NotificationManager { get; set; }
         public PagesDataAccess Pages { get; set; }
         public PartnersDataAccess Partners { get; set; }
         public PermissionsDataAccess Permissions { get; set; }
@@ -30,7 +32,9 @@ namespace SixtyThreeBits.Core.Modules
             Brands = new BrandsDataAccess(ConnectionFactory);
             Categories = new CategoriesDataAccess(ConnectionFactory, Utilities);
             Dictionaries = new DictionariesDataAccess(ConnectionFactory);
+            EmailTemplates = new EmailTemplatesDataAccess(ConnectionFactory);
             News = new NewsDataAccess(ConnectionFactory);
+            NotificationManager = new NotificationManagerDataAccess(ConnectionFactory);
             Pages = new PagesDataAccess(ConnectionFactory, AppSettings);
             Partners = new PartnersDataAccess(ConnectionFactory);
             Products = new ProductsDataAccess(ConnectionFactory);

@@ -61,6 +61,29 @@
                 #endregion
             }
 
+            public class DiscountCoupons
+            {
+                #region Properties
+                public const string Page = "~/Admin/Views/DiscountCoupons/DiscountCoupons.cshtml";
+                #endregion
+            }
+
+            public class EmailTemplates
+            {
+                #region Properties
+                public const string Page = "~/Admin/Views/EmailTemplates/EmailTemplates.cshtml";
+                #endregion
+
+                #region Sub Classes
+                public class EmailTemplate
+                {
+                    #region Properties
+                    public const string Properties = "~/Admin/Views/EmailTemplates/EmailTemplateProperties.cshtml";
+                    #endregion
+                }
+                #endregion
+            }
+
             public class FacebookGalleries
             {
                 #region Properties

@@ -1,4 +1,4 @@
-﻿using SixtyThreeBits.Core.Utilities;
+﻿using SixtyThreeBits.Core.Abstractions;
 using SixtyThreeBits.Libraries;
 using System;
 using System.Collections.Generic;
@@ -7,10 +7,11 @@ using System.Linq;
 using System.Net;
 using System.Net.Mail;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace SixtyThreeBits.Services
+namespace SixtyThreeBits.Core.Services
 {
-    public class Email : SixtyThreeBitsDataObject
+    public class SMTP : SixtyThreeBitsDataObject, IEmail
     {
         #region Properties
         readonly string SMTPUsername;
@@ -18,29 +19,29 @@ namespace SixtyThreeBits.Services
         readonly string SMTPAddress;
         readonly int SMTPPort;
         readonly bool SMTPUseSSL;
-        readonly string SMTPFrom;
+        readonly string SMTPFromName;
         #endregion Properties
 
         #region Constructors
-        public Email(string SMTPAddress, int? SMTPPort , string SMTPUsername,string SMTPPassword, bool SMTPUseSSL, string SMTPFrom)
+        public SMTP(string SMTPAddress, int? SMTPPort, string SMTPUsername, string SMTPPassword, bool? SMTPUseSSL, string SMTPFromName)
         {
             this.SMTPAddress = SMTPAddress;
-            this.SMTPPort = SMTPPort ?? 0;
+            this.SMTPPort = SMTPPort ?? 587;
             this.SMTPUsername = SMTPUsername;
-            this.SMTPPassword = SMTPPassword;            
-            this.SMTPUseSSL = SMTPUseSSL;
-            this.SMTPFrom = SMTPFrom;
+            this.SMTPPassword = SMTPPassword;
+            this.SMTPUseSSL = SMTPUseSSL == true;
+            this.SMTPFromName = SMTPFromName;
         }
         #endregion
 
         #region Methods                
-        public bool Send(string To, string Subject, string Body, string ReplyTo = null, IEnumerable<EmailAttachment> Attachments = null, IEnumerable<string> CCs = null, IEnumerable<string> BCCs = null)
+        public async Task<EmailSendResult> Send(string To, string Subject, string Body, string ReplyTo = null, IEnumerable<EmailAttachment> Attachments = null, IEnumerable<string> CCs = null, IEnumerable<string> BCCs = null)
         {
-            return TryToReturn($"{nameof(Send)}({nameof(To)} = {To}, {nameof(Subject)} = {Subject}, {nameof(Body)} = {Body}, {nameof(ReplyTo)} = {ReplyTo}, {nameof(Attachments)} = {Attachments?.ToJson()})", () =>
+            return await TryToReturnAsyncTask($"{nameof(Send)}({nameof(To)} = {To}, {nameof(Subject)} = {Subject}, {nameof(Body)} = {Body}, {nameof(ReplyTo)} = {ReplyTo})", async () =>
             {
                 using (var Message = new MailMessage())
                 {
-                    Message.From = new MailAddress(SMTPUsername, SMTPFrom);
+                    Message.From = new MailAddress(SMTPUsername, SMTPFromName);
                     Message.To.Add(To);
                     Message.Subject = Subject;
                     Message.Body = Body;
@@ -55,7 +56,7 @@ namespace SixtyThreeBits.Services
 
                     if (CCs != null)
                     {
-                        foreach(var Item in CCs)
+                        foreach (var Item in CCs)
                         {
                             Message.CC.Add(Item);
                         }
@@ -78,52 +79,26 @@ namespace SixtyThreeBits.Services
                                 name: Item.Filename
                             ));
                         }
-                    }                                        
+                    }
 
                     using (var Client = new SmtpClient(SMTPAddress, SMTPPort))
                     {
                         Client.EnableSsl = SMTPUseSSL;
                         Client.Credentials = new NetworkCredential(SMTPUsername, SMTPPassword);
-                        Client.Send(Message);
+                        await Client.SendMailAsync(Message);
                         Client.SendCompleted += (object sender, System.ComponentModel.AsyncCompletedEventArgs e) =>
-                        {                            
+                        {
                             Attachments?.OfType<IDisposable>().ToList().ForEach(Item =>
                             {
                                 Item.Dispose();
-                            });                            
+                            });
                         };
                     }
                 }
 
-                return true;
+                return new EmailSendResult { IsSent = true };
             });
         }
-
-        public Attachment CreateCalendarEventFileAsMailAttachment(DateTime? StartTime, DateTime? EndTime, string Subject, string Description)
-        {
-            string Contents =
-           "BEGIN:VCALENDAR\n" +
-           "PRODID:-//RA Media Inc.//Streaming Tutors//EN\n" +
-           "BEGIN:VEVENT\n" +
-           "DTSTART:" + StartTime.Value.ToUniversalTime().ToString("yyyyMMdd\\THHmmss\\Z") + "\n" +
-           "DTEND:" + EndTime.Value.ToUniversalTime().ToString("yyyyMMdd\\THHmmss\\Z") + "\n" +
-           "LOCATION: Streaming Tutors\n" +
-           "DESCRIPTION;ENCODING=QUOTED-PRINTABLE:" + Description + "\n" +
-           "SUMMARY:" + Subject + "PRIORITY:3\n" +
-           "END:VEVENT" + "END:VCALENDAR\n";
-
-            return new Attachment(Contents.ToStream(), $"{Subject} {string.Format(Constants.Formats.DateTimeEval,Subject)}.ics",  "text/calendar");
-        }
-        #endregion Methods
-
-        #region Sub Classes
-        public class EmailAttachment
-        {
-            #region Properties
-            public string Filename { get; set; }
-            public byte[] FileBytes { get; set; }
-            #endregion
-        }
-        #endregion
+        #endregion Methods        
     }
 }
