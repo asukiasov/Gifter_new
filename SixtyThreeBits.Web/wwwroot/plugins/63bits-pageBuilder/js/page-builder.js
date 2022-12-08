@@ -7308,6 +7308,7 @@ var PageBuilderModel = {
                     image_advtab: options.image_advtab,
                     file_picker_types: options.file_picker_types,
                     file_picker_callback: options.file_picker_callback,
+                    media_live_embeds: false,
 
                     force_br_newlines: false,
                     force_p_newlines: true,
@@ -7346,7 +7347,7 @@ var PageBuilderModel = {
                     autoresize_bottom_margin: 0,
                     autoresize_min_height: 50,
 
-                    formats: {
+                    /*formats: {
                         noTooltip: { inline: 'dfn', attributes: { title: 'Tooltip disabled' }, classes: 'no-tooltip' }
                     },
                     setup: function (editor) {
@@ -7362,7 +7363,7 @@ var PageBuilderModel = {
                                 });
                             }
                         });
-                    },
+                    },*/
                 });
             },
         },
