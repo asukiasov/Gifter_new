@@ -31,11 +31,40 @@
     },
     HideErrors: function () {
         $('.has-error').removeClass('has-error');
+    },
+    Templates: {
+        Compile: function () {
+            Validation.Templates.ErrorsListTemplate = Template7.compile(Validation.Templates.ErrorsListTemplate);
+        },
+        ErrorsListTemplate: `<ul class="list-group js-errors-list">
+{{#each this}}
+<li class="list-group-item js-validation-error-item">
+    <label class="d-flex justify-content-start align-middle">
+        <input type="checkbox"class="mr-2 js-validation-error-checkbox" />
+        <span>{{this}}</div>
+    </div>
+</li>
+{{/each}}
+</ul>
+`
     }
 };
 
 
 $(function () {
+    //https://idangero.us/template7/
+    if (window.Template7) {
+        Validation.Templates.Compile();
+        $(document).on('click', '.js-validation-error-checkbox', function (e) {
+            if ($(this).is(':checked')) {
+                $(this).next().addClass('strike');
+            }
+            else {
+                $(this).next().removeClass('strike');
+            }
+        });
+    }
+
     $('.js-custom-file-upload input').change(function () {
         var Container = $(this).closest('.js-custom-file-upload');
         var CurrentAttachment = Container.find('.js-attachment');
