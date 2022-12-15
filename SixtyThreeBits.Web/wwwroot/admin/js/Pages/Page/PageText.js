@@ -95,6 +95,7 @@
                     image_advtab: options.image_advtab,
                     file_picker_types: options.file_picker_types,
                     file_picker_callback: options.file_picker_callback,
+                    media_live_embeds: false,
 
                     force_br_newlines: true,
                     force_p_newlines: false,
