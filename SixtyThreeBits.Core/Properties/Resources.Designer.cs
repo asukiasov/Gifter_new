@@ -178,11 +178,29 @@ namespace SixtyThreeBits.Core.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Prev.
+        /// </summary>
+        public static string TextNext {
+            get {
+                return ResourceManager.GetString("TextNext", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No.
         /// </summary>
         public static string TextNo {
             get {
                 return ResourceManager.GetString("TextNo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Next.
+        /// </summary>
+        public static string TextPrev {
+            get {
+                return ResourceManager.GetString("TextPrev", resourceCulture);
             }
         }
         

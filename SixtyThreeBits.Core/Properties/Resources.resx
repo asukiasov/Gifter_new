@@ -156,8 +156,14 @@
   <data name="TextMenu" xml:space="preserve">
     <value>Menu</value>
   </data>
+  <data name="TextNext" xml:space="preserve">
+    <value>Prev</value>
+  </data>
   <data name="TextNo" xml:space="preserve">
     <value>No</value>
+  </data>
+  <data name="TextPrev" xml:space="preserve">
+    <value>Next</value>
   </data>
   <data name="TextPublished" xml:space="preserve">
     <value>Published</value>

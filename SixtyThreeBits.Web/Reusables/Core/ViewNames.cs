@@ -280,7 +280,8 @@
             public class Shared
             {
                 #region Properties
-                public const string Layout = "~/Views/Shared/Layout.cshtml"; 
+                public const string Layout = "~/Views/Shared/Layout.cshtml";
+                public const string Pager = "~/Views/Shared/Pager.cshtml";
                 #endregion
             }
             #endregion

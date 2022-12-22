@@ -1,0 +1,19 @@
+﻿@model Pager
+@if (Model.HasItems)
+{
+<ul class="pagination">
+    @foreach (var Item in Model.Items)
+    {
+        <li class="page-item">
+            @if (Item.HasUrl && !Item.IsActive)
+            {
+                <a class="page-link" href="@Html.Raw(Item.Url)">@Html.Raw(Item.Text)</a>
+            }
+            else
+            {
+                <a class="page-link @(Item.IsActive ? Html.Raw("active") : null)">@Html.Raw(Item.Text)</a>
+            }
+        </li>
+    }
+</ul>
+}

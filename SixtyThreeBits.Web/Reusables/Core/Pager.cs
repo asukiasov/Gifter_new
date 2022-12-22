@@ -1,7 +1,7 @@
-﻿using System;
+﻿using SixtyThreeBits.Core.Properties;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace SixtyThreeBits.Web.Reusables.Core
 {
@@ -13,9 +13,14 @@ namespace SixtyThreeBits.Web.Reusables.Core
         int? ItemsPerPage;
         string CurrentPageHttpPath;
         bool UseQueryStringStyle;
+
+        public List<Item> Items { get; set; }
+        public bool HasItems => Items?.Any() == true;
         #endregion
 
         #region Constructors
+        public Pager() { }
+
         public Pager(string CurrentPageHttpPath, int? ItemsPerPage, int? ItemsCountTotal, int? CurrentPageNumber = 1, bool UseQueryStringStyle = false)
         {
             this.ItemsCountTotal = ItemsCountTotal;
@@ -23,11 +28,13 @@ namespace SixtyThreeBits.Web.Reusables.Core
             this.ItemsPerPage = ItemsPerPage;
             this.CurrentPageHttpPath = CurrentPageHttpPath;
             this.UseQueryStringStyle = UseQueryStringStyle;
+
+            this.InitItems();
         }
         #endregion
 
         #region Methods
-        public List<Item> GetPager()
+        public void InitItems()
         {
             CurrentPageNumber = CurrentPageNumber.HasValue ? CurrentPageNumber : 1;
 
@@ -53,16 +60,16 @@ namespace SixtyThreeBits.Web.Reusables.Core
 
             if (ItemsCountTotal.HasValue && ItemsPerPage.HasValue)
             {
-                List<Item> Pager = new List<Item>();
+                Items = new List<Item>();
 
                 var PageCount = Convert.ToInt32(Math.Ceiling((decimal)(ItemsCountTotal.Value) / (ItemsPerPage.Value)));
                 if (PageCount < 2)
                 {
-                    return null;
+                    return;
                 }
                 else if (PageCount < 11)
                 {
-                    Pager = Enumerable.Range(1, PageCount).Select(PageNumber => new Item
+                    Items = Enumerable.Range(1, PageCount).Select(PageNumber => new Item
                     {
                         Text = PageNumber.ToString(),
                         Url = GetPagerItemUrl(CurrentPageHttpPath, RootUrl, UseQueryStringStyle, QueryString, QueryStringSeparator, PageNumber),
@@ -76,47 +83,41 @@ namespace SixtyThreeBits.Web.Reusables.Core
                     for (var i = 1; (i <= PagesOffset && CurrentPageNumber - i > 0); i++)
                     {
                         var PageNumber = CurrentPageNumber - i;
-                        Pager.Insert(0, new Item { Text = PageNumber.ToString(), Url = GetPagerItemUrl(CurrentPageHttpPath, RootUrl, UseQueryStringStyle, QueryString, QueryStringSeparator, PageNumber) });
+                        Items.Insert(0, new Item { Text = PageNumber.ToString(), Url = GetPagerItemUrl(CurrentPageHttpPath, RootUrl, UseQueryStringStyle, QueryString, QueryStringSeparator, PageNumber) });
                     }
 
                     if (CurrentPageNumber - PagesOffset > 1)
                     {
-                        Pager.Insert(0, new Item { Text = "..." });
-                        Pager.Insert(0, new Item { Text = "1", Url = CurrentPageHttpPath });
+                        Items.Insert(0, new Item { Text = "..." });
+                        Items.Insert(0, new Item { Text = "1", Url = CurrentPageHttpPath });
                     }
 
-                    Pager.Add(new Item { Text = CurrentPageNumber.ToString(), IsActive = true });
+                    Items.Add(new Item { Text = CurrentPageNumber.ToString(), IsActive = true });
 
                     for (var i = 1; (i <= PagesOffset && CurrentPageNumber + i <= PageCount); i++)
                     {
                         var PageNumber = CurrentPageNumber + i;
-                        Pager.Add(new Item { Text = PageNumber.ToString(), Url = GetPagerItemUrl(CurrentPageHttpPath, RootUrl, UseQueryStringStyle, QueryString, QueryStringSeparator, PageNumber) });
+                        Items.Add(new Item { Text = PageNumber.ToString(), Url = GetPagerItemUrl(CurrentPageHttpPath, RootUrl, UseQueryStringStyle, QueryString, QueryStringSeparator, PageNumber) });
                     }
 
                     if (CurrentPageNumber + PagesOffset < PageCount)
                     {
-                        Pager.Add(new Item { Text = "..." });
-                        Pager.Add(new Item { Text = PageCount.ToString(), Url = GetPagerItemUrl(CurrentPageHttpPath, RootUrl, UseQueryStringStyle, QueryString, QueryStringSeparator, PageCount) });
+                        Items.Add(new Item { Text = "..." });
+                        Items.Add(new Item { Text = PageCount.ToString(), Url = GetPagerItemUrl(CurrentPageHttpPath, RootUrl, UseQueryStringStyle, QueryString, QueryStringSeparator, PageCount) });
                     }
                 }
 
 
                 if (CurrentPageNumber > 1)
                 {
-                    Pager.Insert(0, new Item { Text = "&lt; Prev ", Url = GetPagerItemUrl(CurrentPageHttpPath, RootUrl, UseQueryStringStyle, QueryString, QueryStringSeparator, CurrentPageNumber - 1) });
+                    Items.Insert(0, new Item { Text = $"&lt; {Resources.TextPrev} ", Url = GetPagerItemUrl(CurrentPageHttpPath, RootUrl, UseQueryStringStyle, QueryString, QueryStringSeparator, CurrentPageNumber - 1) });
                 }
 
                 if (CurrentPageNumber < PageCount)
                 {
-                    Pager.Add(new Item { Text = "Next &gt;", Url = GetPagerItemUrl(CurrentPageHttpPath, RootUrl, UseQueryStringStyle, QueryString, QueryStringSeparator, CurrentPageNumber + 1) });
-                }
-
-                return Pager;
-            }
-            else
-            {
-                return null;
-            }
+                    Items.Add(new Item { Text = $"{Resources.TextNext} &gt;", Url = GetPagerItemUrl(CurrentPageHttpPath, RootUrl, UseQueryStringStyle, QueryString, QueryStringSeparator, CurrentPageNumber + 1) });
+                }                
+            }            
         }
 
         string GetPagerItemUrl(string CurrentPageHttpPath, string RootUrl, bool UseQueryStringStyle, string QueryString, string QueryStringSeparator, int? PageNumber)

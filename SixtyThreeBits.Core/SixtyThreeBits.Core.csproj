@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Services\Email\AegisImplicitMail.cs" />
     <Compile Remove="Services\Mega.cs" />
     <Compile Remove="Services\TinifyService.cs" />
   </ItemGroup>

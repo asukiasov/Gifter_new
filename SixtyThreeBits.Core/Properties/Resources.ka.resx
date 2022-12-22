@@ -156,8 +156,14 @@
   <data name="TextMenu" xml:space="preserve">
     <value>მენიუ</value>
   </data>
+  <data name="TextNext" xml:space="preserve">
+    <value>წინა</value>
+  </data>
   <data name="TextNo" xml:space="preserve">
     <value>არა</value>
+  </data>
+  <data name="TextPrev" xml:space="preserve">
+    <value>შემდეგი</value>
   </data>
   <data name="TextPublished" xml:space="preserve">
     <value>გამოქვეყნებული</value>
