@@ -15,13 +15,13 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="63BITS-Libraries-DotNetStandart" Version="1.2.10" />
-    <PackageReference Include="DevExtreme.AspNet.Core" Version="22.1.5" />
-    <PackageReference Include="DevExtreme.AspNet.Data" Version="2.8.6" />
+    <PackageReference Include="DevExtreme.AspNet.Core" Version="22.2.3" />
+    <PackageReference Include="DevExtreme.AspNet.Data" Version="2.9.0" />
     <PackageReference Include="Imageflow.Net" Version="0.9.0" />
     <PackageReference Include="Imageflow.Server" Version="0.7.7" />
     <PackageReference Include="Microsoft.AspNetCore.Session" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="7.0.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Admin\Views\Brands\Brands.cshtml" />

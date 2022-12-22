@@ -1,7 +1,7 @@
 /*!
 * DevExtreme (dx.messages.de.js)
-* Version: 22.1.5
-* Build date: Fri Sep 02 2022
+* Version: 22.2.3
+* Build date: Mon Dec 05 2022
 *
 * Copyright (c) 2012 - 2022 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -24,6 +24,7 @@
             Yes: "Ja",
             No: "Nein",
             Cancel: "Abbrechen",
+            Close: "Schlie\xdfen",
             Clear: "L\xf6schen",
             Done: "Fertig",
             Loading: "Laden...",
@@ -52,7 +53,7 @@
             "validation-email": "Die Email-Adresse ist ung\xfcltig",
             "validation-email-formatted": "{0} ist ung\xfcltig",
             "validation-mask": "Der Wert ist ung\xfcltig",
-            "dxLookup-searchPlaceholder": "Mindestl\xe4nge {0} Zeichen",
+            "dxLookup-searchPlaceholder": "Minimale Anzahl Zeichen: {0}",
             "dxList-pullingDownText": "Zum Aktualisieren nach unten ziehen",
             "dxList-pulledDownText": "Zum Aktualisieren loslassen",
             "dxList-refreshingText": "Aktualisiere...",
@@ -77,9 +78,9 @@
             "dxFileUploader-Gb": "Gb",
             "dxFileUploader-upload": "Hochladen",
             "dxFileUploader-uploaded": "Hochgeladen",
-            "dxFileUploader-readyToUpload": "Bereit zum Hochladen",
+            "dxFileUploader-readyToUpload": "Bereit zum hochladen",
             "dxFileUploader-uploadAbortedMessage": "Upload abgebrochen",
-            "dxFileUploader-uploadFailedMessage": "Fehler beim Hochladen",
+            "dxFileUploader-uploadFailedMessage": "Fehler beim hochladen",
             "dxFileUploader-invalidFileExtension": "Unzul\xe4ssiger Dateityp",
             "dxFileUploader-invalidMaxFileSize": "Datei ist zu gro\xdf",
             "dxFileUploader-invalidMinFileSize": "Datei ist zu klein",
@@ -150,8 +151,10 @@
             "dxDataGrid-exporting": "Exportieren ...",
             "dxDataGrid-excelFormat": "Excel-Datei",
             "dxDataGrid-selectedRows": "Ausgew\xe4hlte Zeilen",
-            "dxDataGrid-exportAll": "Alle Daten exportieren nach {0}",
             "dxDataGrid-exportSelectedRows": "Ausgew\xe4hlte Zeilen exportieren nach {0}",
+            "dxDataGrid-exportAll": "Alle Daten exportieren nach {0}",
+            "dxDataGrid-headerFilterLabel": "Filteroptionen",
+            "dxDataGrid-headerFilterIndicatorLabel": "Filteroptionen f\xfcr Spalte '{0}' anzeigen",
             "dxDataGrid-headerFilterEmptyValue": "(Leerwerte)",
             "dxDataGrid-headerFilterOK": "OK",
             "dxDataGrid-headerFilterCancel": "Abbrechen",
@@ -177,10 +180,12 @@
             "dxTreeList-editingAddRowToNode": "Hinzuf\xfcgen",
             "dxPager-infoText": "Seite {0} von {1} ({2} Elemente)",
             "dxPager-pagesCountText": "von",
+            "dxPager-pageSize": "Elemente pro Seite: {0}",
             "dxPager-pageSizesAllText": "Alle",
             "dxPager-page": "Seite {0}",
             "dxPager-prevPage": "Vorherige Seite",
             "dxPager-nextPage": "N\xe4chste Seite",
+            "dxPager-ariaLabel": "Seitennavigation",
             "dxPivotGrid-grandTotal": "Gesamt",
             "dxPivotGrid-total": "{0} Gesamt",
             "dxPivotGrid-fieldChooserTitle": "Feldauswahl",
@@ -228,16 +233,16 @@
             "dxScheduler-switcherWeek": "Woche",
             "dxScheduler-switcherWorkWeek": "Arbeitswoche",
             "dxScheduler-switcherMonth": "Monat",
+            "dxScheduler-switcherAgenda": "Agenda",
             "dxScheduler-switcherTimelineDay": "Zeitstrahl Tag",
             "dxScheduler-switcherTimelineWeek": "Zeitstrahl Woche",
             "dxScheduler-switcherTimelineWorkWeek": "Zeitstrahl Arbeitswoche",
             "dxScheduler-switcherTimelineMonth": "Zeitstrahl Monat",
-            "dxScheduler-switcherAgenda": "Agenda",
             "dxScheduler-recurrenceRepeatOnDate": "am Datum",
             "dxScheduler-recurrenceRepeatCount": "Ereignisse",
             "dxScheduler-allDay": "Ganzt\xe4gig",
-            "dxScheduler-confirmRecurrenceEditMessage": "M\xf6chten Sie nur diesen Termin bearbeiten oder die gesamte Serie?",
-            "dxScheduler-confirmRecurrenceDeleteMessage": "M\xf6chten Sie nur diesen Termin l\xf6schen oder die gesamte Serie?",
+            "dxScheduler-confirmRecurrenceEditMessage": "M\xf6chten Sie nur diesen Termin bearbeiten, oder die gesamte Serie?",
+            "dxScheduler-confirmRecurrenceDeleteMessage": "M\xf6chten Sie nur diesen Termin l\xf6schen, oder die gesamte Serie?",
             "dxScheduler-confirmRecurrenceEditSeries": "Serie bearbeiten",
             "dxScheduler-confirmRecurrenceDeleteSeries": "Serie l\xf6schen",
             "dxScheduler-confirmRecurrenceEditOccurrence": "Termin bearbeiten",
