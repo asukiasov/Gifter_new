@@ -20,19 +20,27 @@ namespace SixtyThreeBits.Web.Admin.Filters
             Model = LocalUtilities.GetModelFromController<WebProjectModelBase>(FilterContext.Controller);
             var C = FilterContext.Controller as Controller;
 
-            var IsAuthorized = Authorize();            
-            if (IsAuthorized)
+            var IsAuhenticated = IsUserAuhenticated();            
+            if (IsAuhenticated)
             {
-                InitStartUp();
-                InitClientPlugins();
-                InitMenu();
-                InitBreadCrumbs();
-                InitTabs();
-                InitPageTitle();
-                InitSuccessErrorMessage();
-                InitSidebar();                
-                LocalUtilities.SetLayoutViewModel(ViewData: C.ViewData, ViewModel: ViewModel, Key: Constants.ViewData.LayoutViewModel);
-                await next();
+                var HasPermission = HasUserPermission();
+                if (HasPermission)
+                {
+                    InitStartUp();
+                    InitClientPlugins();
+                    InitMenu();
+                    InitBreadCrumbs();
+                    InitTabs();
+                    InitPageTitle();
+                    InitSuccessErrorMessage();
+                    InitSidebar();
+                    LocalUtilities.SetLayoutViewModel(ViewData: C.ViewData, ViewModel: ViewModel, Key: Constants.ViewData.LayoutViewModel);
+                    await next();
+                }
+                else
+                {
+                    FilterContext.Result = new ViewResult { ViewName = ViewNames.Admin.Shared.NotFound };
+                }
             }
             else
             {
@@ -41,23 +49,21 @@ namespace SixtyThreeBits.Web.Admin.Filters
             }            
         }
 
-        bool Authorize() 
+        bool IsUserAuhenticated()
         {
-            var HasPermission = false;
-            if (Model.User != null)
-            {
-                ViewModel.UserFullname = Model.User.UserFullname;
+            return Model.User != null;
+        }
 
-                HasPermission = Model.User.HasPermission(Model.UrlCurrentPageWithDomain);
-            }
-            
+        bool HasUserPermission() 
+        {
+            var HasPermission = Model.User.HasPermission(Model.UrlCurrentPageWithDomain);
             return HasPermission;
         }
 
         void InitStartUp()
         {
             Model.Culture = Constants.Languages.ENGLISH;
-            
+            ViewModel.UserFullname = Model.User.UserFullname;
         }
 
         void InitClientPlugins()

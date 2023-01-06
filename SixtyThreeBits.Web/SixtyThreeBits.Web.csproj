@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <UserSecretsId>920b1ae2-b527-45b0-b2d9-ed8ff53e6aae</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
@@ -14,7 +14,7 @@
     <None Remove="wwwroot\admin\html\**" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="63BITS-Libraries-DotNetStandart" Version="1.2.10" />
+    <PackageReference Include="63BITS-Libraries-DotNetStandart" Version="1.2.12" />
     <PackageReference Include="DevExtreme.AspNet.Core" Version="22.2.3" />
     <PackageReference Include="DevExtreme.AspNet.Data" Version="2.9.0" />
     <PackageReference Include="Imageflow.Net" Version="0.9.0" />

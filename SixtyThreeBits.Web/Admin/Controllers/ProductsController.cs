@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using SixtyThreeBits.Core.Properties;
+﻿using Microsoft.AspNetCore.Mvc;
 using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries;
 using SixtyThreeBits.Web.Admin.Filters;
