@@ -194,6 +194,18 @@
                 $(Selector).val(null).trigger('change');
             }
         },
+        ShowDropDown: function (Options) {
+            var Selector = Options.Selector;
+            if (Selector) {
+                $(Selector).select2('open');
+            }
+        },
+        HideDropDown: function (Options) {
+            var Selector = Options.Selector;
+            if (Selector) {
+                $(Selector).select2('close');
+            }
+        },
         SetSelectedValue: function (Options) {
             var Selector = Options.Selector;
             var SelectedValue = Options.SelectedValue;
@@ -344,9 +356,9 @@ var FileUplaoderClass = {
             if (_this.RequestData) {
                 _this.RequestData.forEach(function (Item, Index) {
                     Data.append(Item.Key, Item.Value);
-                });
-                xhr.fileName = File.name;
+                });                
             }
+            //xhr.fileName = File.name;
 
             _this.InitEvents(xhr);
             xhr.open('POST', _this.UrlFileUplaod);

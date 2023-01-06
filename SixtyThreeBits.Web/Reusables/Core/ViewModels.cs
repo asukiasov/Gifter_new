@@ -8,8 +8,18 @@ namespace SixtyThreeBits.Web.Reusables.Core
         #region Properties
         public string UrlAddNew { get; set; }
         public bool HasUrlAddNew => !string.IsNullOrWhiteSpace(UrlAddNew);
-        public string CssClass { get; set; } = "js-add-new-button";
+        public string CssClass { get; set; }
+        public string JsSelector { get; set; } = "js-add-new-button";
         public string ButtonText { get; set; } = Resources.TextAdd;
+        #endregion
+    }
+
+    public class ButtonDeleteViewModel
+    {
+        #region Properties
+        public string CssClass { get; set; }
+        public string JsSelector { get; set; } = "js-delete-button";
+        public string ButtonText { get; set; } = Resources.TextDelete;
         #endregion
     }
 
@@ -18,9 +28,10 @@ namespace SixtyThreeBits.Web.Reusables.Core
         #region Properties
         public string FormID { get; set; }
         public bool HasFormID => !string.IsNullOrWhiteSpace(FormID);
-        public string CssClass { get; set; } = "js-save-button";
+        public string JsSelector { get; set; } = "js-save-button";
+        public string CssClass { get; set; }
         public string ButtonText { get; set; } = Resources.TextSave;
         #endregion
-    } 
+    }
     #endregion
 }

@@ -1,4 +1,4 @@
 ﻿@model ButtonSaveViewModel
-<button class="btn btn-oval btn-primary @Html.Raw(Model.CssClass)" @(Model.HasFormID ? Html.Raw($"form=\"{Model.FormID}\"") : null)>
+<button class="btn btn-oval btn-primary @Html.Raw(Model.CssClass) @Html.Raw(Model.JsSelector)" @(Model.HasFormID ? Html.Raw($"form=\"{Model.FormID}\"") : null)>
     <i class="fas fa-save"></i> @Html.Raw(Model.ButtonText)
 </button>
