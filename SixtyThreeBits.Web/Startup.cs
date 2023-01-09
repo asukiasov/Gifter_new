@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,6 +15,7 @@ using SixtyThreeBits.Web.Filters;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SixtyThreeBits.Web
@@ -78,6 +80,22 @@ namespace SixtyThreeBits.Web
             
             Services.Configure<RouteOptions>(routeOptions => {
                 routeOptions.AppendTrailingSlash = true;
+            });
+
+            Services.AddResponseCompression(Options =>
+            {
+                Options.EnableForHttps = true;
+                Options.Providers.Add<BrotliCompressionProvider>();
+                Options.Providers.Add<GzipCompressionProvider>();
+                Options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[] { "image/svg+xml" });
+            });
+            Services.Configure<BrotliCompressionProviderOptions>(Options =>
+            {
+                Options.Level = System.IO.Compression.CompressionLevel.Optimal;
+            });
+            Services.Configure<GzipCompressionProviderOptions>(Options =>
+            {
+                Options.Level = System.IO.Compression.CompressionLevel.Optimal;
             });
         }
 
