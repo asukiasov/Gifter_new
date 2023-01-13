@@ -122,7 +122,7 @@ namespace SixtyThreeBits.Web.Admin.Models
                         Columns.AddFor(m => m.UserEmail).Caption("ელ-ფოსტა").Width(200).ValidationRules(Options =>
                         {
                             Options.AddRequired();
-                            Options.AddEmail();
+                            //Options.AddEmail();
                         });
                         Columns.AddFor(m => m.UserPassword).Caption("პაროლი").Width(150);
                         Columns.AddFor(m => m.UserRoleID).Caption("როლი").Width(150).InitLookupColumn(Data: Roles);

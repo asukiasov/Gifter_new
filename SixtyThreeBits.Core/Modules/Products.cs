@@ -20,7 +20,7 @@ namespace SixtyThreeBits.Core.Modules
 
         #region Methods
         public async Task<ProductFilters> GetFilters(string Language, int? CategoryID)
-        {
+        {            
             return await TryToReturnAsyncTask($"{nameof(GetFilters)}({nameof(Language)} = {Language}, {nameof(CategoryID)} = {CategoryID})", async () =>
             {
                 using(var db = ConnectionFactory.GetDBCoreDataContext())
