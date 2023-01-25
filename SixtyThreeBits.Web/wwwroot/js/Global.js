@@ -68,7 +68,7 @@ const Globals = {
                 });
             });
 
-            if (e.event != undefined) {
+            if (e && e.event != undefined) {
                 const FromIndex = e.fromIndex;
                 const ToIndex = e.toIndex;
                 const IsMovingUp = FromIndex > ToIndex;
