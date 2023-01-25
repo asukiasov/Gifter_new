@@ -12,8 +12,11 @@
         Element.append('<a href=\"' + CellInfo.data.UrlTeamMemberProperties + '\"><i class=\"fas fa-info-circle\"></i></a>')
     },
     OnReorder: function (e) {
-        const TeamMembersSortIndexes = Globals.Devexpress.GetGridSortIndexes(e, 'TeamMemberID');
-        var SortIndexes = new Array();
+        TeamMembersModel.SyncTeamMemberSortIndexes(e);
+    },
+    SyncTeamMemberSortIndexes: function (e) {
+        const TeamMembersSortIndexes = Globals.Devexpress.GetGridSortIndexes('TeamMemberID', TeamMembersModel.TeamMembersGrid, e);
+        
         $.ajax({
             type: 'POST',
             url: TeamMembersModel.UrlSync,
@@ -24,6 +27,7 @@
             },
             success: function (res) {
                 if (res.IsSuccess) {
+                    TeamMembersModel.TeamMembersGrid.refresh()
                 }
                 else {
                     Components63Bits.Dialog.Error();
@@ -36,8 +40,7 @@
                 preloader.hide();
             }
         });
-        e.component.refresh()
-    },
+    }
 }
 
 $(function () {

@@ -111,6 +111,34 @@ namespace SixtyThreeBits.Core.Utilities
             }
         }
 
+        public string FormatFileSizeBytes(long? FileSizeBytes)
+        {
+            if (FileSizeBytes.HasValue)
+            {
+                var FileSizeBytesDouble = Convert.ToDouble(FileSizeBytes);
+                if (FileSizeBytesDouble > 1073741823) // 1GB
+                {
+                    return $"{Math.Round(FileSizeBytesDouble / 1073741824, 1)}GB";
+                }
+                else if (FileSizeBytesDouble > 1048576) // 1MB
+                {
+                    return $"{Math.Round(FileSizeBytesDouble / 1048576, 1)}MB";
+                }
+                else if (FileSizeBytesDouble > 1023) // 1KB
+                {
+                    return $"{Math.Round(FileSizeBytesDouble / 1024, 0)}KB";
+                }
+                else
+                {
+                    return $"{FileSizeBytes} Bytes";
+                }
+            }
+            else
+            {
+                return null;
+            }
+        }
+
         public string FormatPrice(object Value, bool WithCurrencySign, string CurrencySign = "₾")
         {
             if (WithCurrencySign)

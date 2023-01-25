@@ -56,8 +56,7 @@ const Globals = {
             
         },
 
-        GetGridSortIndexes: function (e, KeyFieldName) {
-            const Grid = e.component;
+        GetGridSortIndexes: function (KeyFieldName, Grid, e) {            
             const Rows = Grid.getVisibleRows();
 
             var SortIndexes = new Array();

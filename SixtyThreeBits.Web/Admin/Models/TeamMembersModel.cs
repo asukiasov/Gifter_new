@@ -118,6 +118,7 @@ namespace SixtyThreeBits.Web.Admin.Models
                    .RowDragging(rd => rd
                         .AllowReordering(true)
                         .OnReorder("TeamMembersModel.OnReorder")
+                        .DropFeedbackMode(DropFeedbackMode.Push)
                         .ShowDragIcons(true)
                     )
                    .Paging(Options =>

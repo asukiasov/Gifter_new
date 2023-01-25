@@ -60,6 +60,7 @@
             remove_trailing_nbsp: false,
             verify_html: false,
             apply_source_formatting: true,
+            convert_urls: false,
 
             setup: this.Setup
         });        
