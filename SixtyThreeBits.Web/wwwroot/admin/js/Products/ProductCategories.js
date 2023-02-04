@@ -1,26 +1,26 @@
-﻿const CategoriesModel = {
+﻿const ProductCategoriesModel = {
     UrlAddNew: null,
     UrlUpdate: null,
     UrlDelete: null,
-    UrlSync: null,
+    UrlSort: null,
 
     TextConfirmDeleteRecord: null,
     TextConfirmDeleteRecursive: null,    
 
     StartCreateNewCategoryProcess: function () {
-        const CategoryName = $('.js-category-name-textbox').val();
-        let CategoryParentID = $('.js-category-parent-id-hf').val();
-        CategoryParentID = CategoryParentID > 0 ? CategoryParentID : null;
+        const ProductCategoryName = $('.js-category-name-textbox').val();
+        let ProductCategoryParentID = $('.js-category-parent-id-hf').val();
+        ProductCategoryParentID = ProductCategoryParentID > 0 ? ProductCategoryParentID : null;
         
-        if (CategoryName) {
-            CategoriesModel.CreateNewCategoryPromise(CategoryName, CategoryParentID).then(function (Item) {
+        if (ProductCategoryName) {
+            ProductCategoriesModel.CreateNewCategoryPromise(ProductCategoryName, ProductCategoryParentID).then(function (Item) {
                 $('.js-create-new-category-modal').modal('hide');
                 const ParentUL = Item.ParentID > 0 ? $('.js-file-tree-editor-item[data-id="' + Item.ParentID + '"] > ul') : $('.js-file-tree-editor');
-                const Html = CategoriesModel.Templates.TreeItem({ Children: [Item] });
+                const Html = ProductCategoriesModel.Templates.TreeItem({ Children: [Item] });
 
                 ParentUL.prepend(Html);
-                CategoriesModel.InitTree();
-                CategoriesModel.SyncParentsAndSortIndexes();
+                ProductCategoriesModel.InitTree();
+                ProductCategoriesModel.SyncParentsAndSortIndexes();
             });
         }
         else {
@@ -28,16 +28,16 @@
         }
     },
 
-    CreateNewCategoryPromise: function (CategoryName, CategoryParentID) {
+    CreateNewCategoryPromise: function (ProductCategoryName, ProductCategoryParentID) {
         return new Promise(function (Resolve, Reject) {
-            CategoryParentID = CategoryParentID === undefined ? null : CategoryParentID;
+            ProductCategoryParentID = ProductCategoryParentID === undefined ? null : ProductCategoryParentID;
 
             $.ajax({
                 type: 'POST',
-                url: CategoriesModel.UrlAddNew,
+                url: ProductCategoriesModel.UrlAddNew,
                 data: {
-                    CategoryParentID: CategoryParentID,
-                    CategoryName: CategoryName
+                    ProductCategoryParentID: ProductCategoryParentID,
+                    ProductCategoryName: ProductCategoryName
                 },
                 dataType: 'json',
                 beforeSend: function () {
@@ -67,9 +67,9 @@
             });
         });
     },
-    DeleteCategory: function (CategoryID) {
+    DeleteCategory: function (ProductCategoryID) {
 
-        const TextConfirm = $('.js-file-tree-editor-item[data-id="' + CategoryID + '"]').find('.js-file-tree-editor-item').length > 0 ? CategoriesModel.TextConfirmDeleteRecursive : CategoriesModel.TextConfirmDeleteRecord;
+        const TextConfirm = $('.js-file-tree-editor-item[data-id="' + ProductCategoryID + '"]').find('.js-file-tree-editor-item').length > 0 ? ProductCategoriesModel.TextConfirmDeleteRecursive : ProductCategoriesModel.TextConfirmDeleteRecord;
 
         Components63Bits.Dialog.Confirm({
             TextConfirm: TextConfirm,
@@ -77,12 +77,12 @@
             Resolve: function () {
                 $.ajax({
                     type: 'POST',
-                    url: CategoriesModel.UrlDelete,
-                    data: { CategoryID: CategoryID },
+                    url: ProductCategoriesModel.UrlDelete,
+                    data: { ProductCategoryID: ProductCategoryID },
                     dataType: 'json',
                     success: function (res) {
                         if (res.IsSuccess) {
-                            $('.js-file-tree-editor-item[data-id="' + CategoryID + '"]').slideUp(200, function () {
+                            $('.js-file-tree-editor-item[data-id="' + ProductCategoryID + '"]').slideUp(200, function () {
                                 $(this).remove();
                             });
 
@@ -121,7 +121,7 @@
             sort: function (event, ui) {
             },
             update: function (event, ui) {
-                CategoriesModel.SyncParentsAndSortIndexes();
+                ProductCategoriesModel.SyncParentsAndSortIndexes();
             }
         });
     },
@@ -140,7 +140,7 @@
 
         $.ajax({
             type: 'POST',
-            url: CategoriesModel.UrlSync,
+            url: ProductCategoriesModel.UrlSort,
             data: { SortIndexes: SortIndexes },
             dataType: 'json',
             success: function (res) {
@@ -158,14 +158,14 @@
     Templates: {
         Compile: function () {
             Template7.registerPartial('Children', $('#file-tree-editor-partial-template').html())
-            CategoriesModel.Templates.TreeItem = Template7.compile(CategoriesModel.Templates.TreeItem);
+            ProductCategoriesModel.Templates.TreeItem = Template7.compile(ProductCategoriesModel.Templates.TreeItem);
         },
         TreeItem: '{{> "Children"}}'
     }
 }
 
 $(function () {
-    CategoriesModel.Templates.Compile();
+    ProductCategoriesModel.Templates.Compile();
 
     $('.js-show-add-new-modal-button').click(function () {
         $('.js-category-name-textbox').val('');
@@ -177,10 +177,10 @@ $(function () {
     });
 
     $('.js-save-new-category-button').click(function () {
-        CategoriesModel.StartCreateNewCategoryProcess();
+        ProductCategoriesModel.StartCreateNewCategoryProcess();
     });
 
-    CategoriesModel.InitTree();
+    ProductCategoriesModel.InitTree();
 
     $('.js-file-tree-editor').on('click', '.js-file-tree-editor-item-add-new-button', function (e) {
         e.preventDefault();
@@ -195,8 +195,8 @@ $(function () {
 
     $('.js-file-tree-editor').on('click', '.js-file-tree-editor-item-delete-button', function (e) {
         e.preventDefault();
-        const CategoryID = $(this).closest('.js-file-tree-editor-item').attr('data-id');
-        CategoriesModel.DeleteCategory(CategoryID);
+        const ProductCategoryID = $(this).closest('.js-file-tree-editor-item').attr('data-id');
+        ProductCategoriesModel.DeleteCategory(ProductCategoryID);
 
     });
 });

@@ -38,8 +38,8 @@ namespace SixtyThreeBits.Core.DB
         internal virtual DbSet<BlogPostListResultItem> BlogPostListResult { get; set; }
         public IQueryable<BlogPostListResultItem> BlogPostList()
         {
-            var PR = new PrepareQueryExecution(
-              DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
+            var PR = new SqlQueryBuilder(
+              DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
               DatabaseObjectName: nameof(BlogPostList),
               ResultItemType: typeof(BlogPostListResultItem)
             );
@@ -52,8 +52,8 @@ namespace SixtyThreeBits.Core.DB
         internal virtual DbSet<ScalarFunctionResult<string>> BlogPostGetSingleByIDResult { get; set; }
         public async Task<string> BlogPostGetSingleByID(int? BlogPostID)
         {
-            var PR = new PrepareQueryExecution(
-                DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
+            var PR = new SqlQueryBuilder(
+                DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
                 DatabaseObjectName: nameof(BlogPostGetSingleByID),
                 ResultItemType: typeof(ScalarFunctionResult<string>),
                 SqlParameters: new SqlParameter[]
@@ -71,8 +71,8 @@ namespace SixtyThreeBits.Core.DB
         internal virtual DbSet<ScalarFunctionResult<bool>> BlogPostIsSlugUniqResult { get; set; }
         public async Task<bool> BlogPostIsSlugUniq(string BlogPostSlug, int? BlogPostID)
         {
-            var PR = new PrepareQueryExecution(
-                DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
+            var PR = new SqlQueryBuilder(
+                DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
                 DatabaseObjectName: nameof(BlogPostIsSlugUniq),
                 ResultItemType: typeof(ScalarFunctionResult<string>),
                 SqlParameters: new SqlParameter[]
@@ -91,8 +91,8 @@ namespace SixtyThreeBits.Core.DB
         internal virtual DbSet<ScalarFunctionResult<string>> BrandsGetSingleByIDResult { get; set; }
         public async Task<string> BrandsGetSingleByID(int? BrandID)
         {
-            var PR = new PrepareQueryExecution(
-                 DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
+            var PR = new SqlQueryBuilder(
+                 DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
                  DatabaseObjectName: nameof(BrandsGetSingleByID),
                  ResultItemType: typeof(ScalarFunctionResult<string>),
                  SqlParameters: new SqlParameter[]
@@ -121,8 +121,8 @@ namespace SixtyThreeBits.Core.DB
         internal virtual DbSet<BrandsListResultItem> BrandsListResult { get; set; }
         public IQueryable<BrandsListResultItem> BrandsList()
         {
-            var PR = new PrepareQueryExecution(
-              DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
+            var PR = new SqlQueryBuilder(
+              DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
               DatabaseObjectName: nameof(BrandsList),
               ResultItemType: typeof(BrandsListResultItem)
             );
@@ -156,8 +156,8 @@ namespace SixtyThreeBits.Core.DB
         internal virtual DbSet<CarouselListResultItem> CarouselListResult { get; set; }
         public IQueryable<CarouselListResultItem> CarouselList(bool? CarouselIsPublished)
         {
-            var PR = new PrepareQueryExecution(
-               DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
+            var PR = new SqlQueryBuilder(
+               DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
                DatabaseObjectName: nameof(CarouselList),
                ResultItemType: typeof(CarouselListResultItem),
                SqlParameters: new SqlParameter[]
@@ -169,103 +169,7 @@ namespace SixtyThreeBits.Core.DB
             return DBResult;
         }
         #endregion
-
-        #region CategoriesGetSingleByID
-        internal virtual DbSet<ScalarFunctionResult<string>> CategoriesGetSingleByIDResult { get; set; }
-        public async Task<string> CategoriesGetSingleByID(int? CategoryID)
-        {
-            var PR = new PrepareQueryExecution(
-                 DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
-                 DatabaseObjectName: nameof(CategoriesGetSingleByID),
-                 ResultItemType: typeof(ScalarFunctionResult<string>),
-                 SqlParameters: new SqlParameter[]
-                 {
-                    CategoryID.ToSqlParameter(nameof(CategoryID), SqlDbType.Int)
-                 }
-             );
-            var DBResult = CategoriesGetSingleByIDResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
-            var DBFunctionResult = await DBResult.FirstOrDefaultAsync();
-            return DBFunctionResult?.Value;
-        }
-        #endregion
-
-        #region CategoriesGetSingleBySlug
-        internal virtual DbSet<ScalarFunctionResult<string>> CategoriesGetSingleBySlugResult { get; set; }
-        public async Task<string> CategoriesGetSingleBySlug(string CategorySlug)
-        {
-            var PR = new PrepareQueryExecution(
-                 DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
-                 DatabaseObjectName: nameof(CategoriesGetSingleBySlug),
-                 ResultItemType: typeof(ScalarFunctionResult<string>),
-                 SqlParameters: new SqlParameter[]
-                 {
-                    CategorySlug.ToSqlParameter(nameof(CategorySlug), SqlDbType.NVarChar)
-                 }
-             );
-            var DBResult = CategoriesGetSingleBySlugResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
-            var DBFunctionResult = await DBResult.FirstOrDefaultAsync();
-            return DBFunctionResult?.Value;
-        }
-        #endregion
-
-        #region CategoriesList
-        public class CategoriesListResultItem
-        {
-            #region Properties
-            public int? CategoryID { get; set; }
-            public int? CategoryParentID { get; set; }
-            public string CategorySlug { get; set; }
-            public string CategoryName { get; set; }
-            public string CategoryNameEng { get; set; }
-            public string CategoryNameRus { get; set; }
-            public int? CategorySortIndex { get; set; }
-            public string CategoryImageFilename { get; set; }
-            public DateTime? CategoryDateCreated { get; set; }
-            #endregion
-        }
-        internal virtual DbSet<CategoriesListResultItem> CategoriesListResult { get; set; }
-        public IQueryable<CategoriesListResultItem> CategoriesList(int? CategoryParentID)
-        {
-            var PR = new PrepareQueryExecution(
-              DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
-              DatabaseObjectName: nameof(CategoriesList),
-              ResultItemType: typeof(CategoriesListResultItem),
-                SqlParameters: new SqlParameter[]
-                {
-                    CategoryParentID.ToSqlParameter(nameof(CategoryParentID), SqlDbType.Int),
-                }
-            );
-            var DBResult = CategoriesListResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
-            return DBResult;
-        }
-
-        #endregion
-
-        #region CategoriesListForDeleteRecursive
-        public class CategoriesListForDeleteRecursiveResultItem
-        {
-            #region Properties
-            public int? CategoryID { get; set; }
-            public string CategoryImageFilename { get; set; }
-            #endregion
-        }
-        internal virtual DbSet<CategoriesListForDeleteRecursiveResultItem> CategoriesListForDeleteRecursiveResult { get; set; }
-        public IQueryable<CategoriesListForDeleteRecursiveResultItem> CategoriesListForDeleteRecursive(int? CategoryID)
-        {
-            var PR = new PrepareQueryExecution(
-              DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
-              DatabaseObjectName: nameof(CategoriesListForDeleteRecursive),
-              ResultItemType: typeof(CategoriesListForDeleteRecursiveResultItem),
-              SqlParameters: new SqlParameter[]
-              {
-                  CategoryID.ToSqlParameter(nameof(CategoryID), SqlDbType.Int),
-              }
-            );
-            var DBResult = CategoriesListForDeleteRecursiveResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
-            return DBResult;
-        }
-        #endregion
-
+        
         #region CountriesList
         public class CountriesListResultItem
         {
@@ -282,8 +186,8 @@ namespace SixtyThreeBits.Core.DB
         internal virtual DbSet<CountriesListResultItem> CountriesListResult { get; set; }
         public IQueryable<CountriesListResultItem> CountriesList()
         {
-            var PR = new PrepareQueryExecution(
-              DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
+            var PR = new SqlQueryBuilder(
+              DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
               DatabaseObjectName: nameof(CountriesList),
               ResultItemType: typeof(CountriesListResultItem)
             );
@@ -316,8 +220,8 @@ namespace SixtyThreeBits.Core.DB
         internal virtual DbSet<DictionariesListResultItem> DictionariesListResult { get; set; }
         public IQueryable<DictionariesListResultItem> DictionariesList(int? DictionaryLevel, int? DictionaryCode, bool? DictionaryIsVisible)
         {
-            var PR = new PrepareQueryExecution(
-                DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
+            var PR = new SqlQueryBuilder(
+                DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
                 DatabaseObjectName: nameof(DictionariesList),
                 ResultItemType: typeof(DictionariesListResultItem),
                 SqlParameters: new SqlParameter[]
@@ -336,8 +240,8 @@ namespace SixtyThreeBits.Core.DB
         internal virtual DbSet<ScalarFunctionResult<string>> Emails_LayoutResult { get; set; }
         public async Task<string> EmailsLayout(string WebsiteHttpPath, string BodyText, string UrlUnsubscribe)
         {
-            var PR = new PrepareQueryExecution(
-                DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
+            var PR = new SqlQueryBuilder(
+                DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
                 DatabaseObjectName: nameof(EmailsLayout),
                 ResultItemType: typeof(ScalarFunctionResult<string>),
                 SqlParameters: new SqlParameter[]
@@ -365,8 +269,8 @@ namespace SixtyThreeBits.Core.DB
         internal virtual DbSet<EmailTemplatesListResultItem> EmailTemplatesListResult { get; set; }
         public IQueryable<EmailTemplatesListResultItem> EmailTemplatesList()
         {
-            var PR = new PrepareQueryExecution(
-              DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
+            var PR = new SqlQueryBuilder(
+              DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
               DatabaseObjectName: nameof(EmailTemplatesList),
               ResultItemType: typeof(EmailTemplatesListResultItem)
             );
@@ -379,8 +283,8 @@ namespace SixtyThreeBits.Core.DB
         internal virtual DbSet<ScalarFunctionResult<string>> EmailTemplatesGetSingleByIDResult { get; set; }
         public async Task<string> EmailTemplatesGetSingleByID(int? EmailTemplatesID)
         {
-            var PR = new PrepareQueryExecution(
-                DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
+            var PR = new SqlQueryBuilder(
+                DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
                 DatabaseObjectName: nameof(EmailTemplatesGetSingleByID),
                 ResultItemType: typeof(ScalarFunctionResult<string>),
                 SqlParameters: new SqlParameter[]
@@ -418,8 +322,8 @@ namespace SixtyThreeBits.Core.DB
         internal virtual DbSet<NewsListResultItem> NewsListResult { get; set; }
         public IQueryable<NewsListResultItem> NewsList()
         {
-            var PR = new PrepareQueryExecution(
-              DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
+            var PR = new SqlQueryBuilder(
+              DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
               DatabaseObjectName: nameof(NewsList),
               ResultItemType: typeof(NewsListResultItem)
             );
@@ -432,8 +336,8 @@ namespace SixtyThreeBits.Core.DB
         internal virtual DbSet<ScalarFunctionResult<string>> NewsGetSingleByIDResult { get; set; }
         public async Task<string> NewsGetSingleByID(int? NewsID)
         {
-            var PR = new PrepareQueryExecution(
-                DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
+            var PR = new SqlQueryBuilder(
+                DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
                 DatabaseObjectName: nameof(NewsGetSingleByID),
                 ResultItemType: typeof(ScalarFunctionResult<string>),
                 SqlParameters: new SqlParameter[]
@@ -451,8 +355,8 @@ namespace SixtyThreeBits.Core.DB
         internal virtual DbSet<ScalarFunctionResult<bool>> NewsIsSlugUniqResult { get; set; }
         public async Task<bool> NewsIsSlugUniq(string NewsSlug, int? NewsID)
         {
-            var PR = new PrepareQueryExecution(
-                DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
+            var PR = new SqlQueryBuilder(
+                DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
                 DatabaseObjectName: nameof(NewsIsSlugUniq),
                 ResultItemType: typeof(ScalarFunctionResult<string>),
                 SqlParameters: new SqlParameter[]
@@ -471,8 +375,8 @@ namespace SixtyThreeBits.Core.DB
         internal virtual DbSet<ScalarFunctionResult<string>> PagesGetSingleByIDResult { get; set; }
         public async Task<string> PagesGetSingleByID(int? PageID, bool? PageIsPublished)
         {
-            var PR = new PrepareQueryExecution(
-                DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
+            var PR = new SqlQueryBuilder(
+                DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
                 DatabaseObjectName: nameof(PagesGetSingleByID),
                 ResultItemType: typeof(ScalarFunctionResult<string>),
                 SqlParameters: new SqlParameter[]
@@ -491,8 +395,8 @@ namespace SixtyThreeBits.Core.DB
         internal virtual DbSet<ScalarFunctionResult<string>> PagesGetSingleBySlugHierarchyResult { get; set; }
         public async Task<string> PagesGetSingleBySlugHierarchy(string PageSlug, bool? PageIsPublished)
         {
-            var PR = new PrepareQueryExecution(
-                DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
+            var PR = new SqlQueryBuilder(
+                DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
                 DatabaseObjectName: nameof(PagesGetSingleBySlugHierarchy),
                 ResultItemType: typeof(ScalarFunctionResult<string>),
                 SqlParameters: new SqlParameter[]
@@ -534,8 +438,8 @@ namespace SixtyThreeBits.Core.DB
         internal virtual DbSet<PagesListResultItem> PagesListResult { get; set; }
         public IQueryable<PagesListResultItem> PagesList(bool? PageIsPublished, bool? PageIsMenuItem)
         {
-            var PR = new PrepareQueryExecution(
-              DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
+            var PR = new SqlQueryBuilder(
+              DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
               DatabaseObjectName: nameof(PagesList),
               ResultItemType: typeof(PagesListResultItem),
               SqlParameters: new SqlParameter[]
@@ -561,8 +465,8 @@ namespace SixtyThreeBits.Core.DB
         internal virtual DbSet<PagesListForDeleteRecursiveResultItem> PagesListForDeleteRecursiveResult { get; set; }
         public IQueryable<PagesListForDeleteRecursiveResultItem> PagesListForDeleteRecursive(int? PageID)
         {
-            var PR = new PrepareQueryExecution(
-              DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
+            var PR = new SqlQueryBuilder(
+              DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
               DatabaseObjectName: nameof(PagesListForDeleteRecursive),
               ResultItemType: typeof(PagesListForDeleteRecursiveResultItem),
               SqlParameters: new SqlParameter[]
@@ -579,8 +483,8 @@ namespace SixtyThreeBits.Core.DB
         internal virtual DbSet<ScalarFunctionResult<string>> PartnersGetSingleByIDResult { get; set; }
         public async Task<string> PartnersGetSingleByID(int? PartnerID)
         {
-            var PR = new PrepareQueryExecution(
-                DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
+            var PR = new SqlQueryBuilder(
+                DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
                 DatabaseObjectName: nameof(PartnersGetSingleByID),
                 ResultItemType: typeof(ScalarFunctionResult<string>),
                 SqlParameters: new SqlParameter[]
@@ -616,8 +520,8 @@ namespace SixtyThreeBits.Core.DB
         internal virtual DbSet<PartnersListResultItem> PartnersListResult { get; set; }
         public IQueryable<PartnersListResultItem> PartnersList()
         {
-            var PR = new PrepareQueryExecution(
-                DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
+            var PR = new SqlQueryBuilder(
+                DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
                 DatabaseObjectName: nameof(PartnersList),
                 ResultItemType: typeof(PartnersListResultItem)
             );
@@ -645,8 +549,8 @@ namespace SixtyThreeBits.Core.DB
         internal virtual DbSet<PermissionsListResultItem> PermissionsListResult { get; set; }
         public IQueryable<PermissionsListResultItem> PermissionsList()
         {
-            var PR = new PrepareQueryExecution(
-              DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
+            var PR = new SqlQueryBuilder(
+              DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
               DatabaseObjectName: nameof(PermissionsList),
               ResultItemType: typeof(PermissionsListResultItem)
             );
@@ -655,12 +559,108 @@ namespace SixtyThreeBits.Core.DB
         }
         #endregion
 
+        #region ProductCategoriesGetSingleByID
+        internal virtual DbSet<ScalarFunctionResult<string>> ProductCategoriesGetSingleByIDResult { get; set; }
+        public async Task<string> ProductCategoriesGetSingleByID(int? ProductCategoryID)
+        {
+            var PR = new SqlQueryBuilder(
+                 DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
+                 DatabaseObjectName: nameof(ProductCategoriesGetSingleByID),
+                 ResultItemType: typeof(ScalarFunctionResult<string>),
+                 SqlParameters: new SqlParameter[]
+                 {
+                    ProductCategoryID.ToSqlParameter(nameof(ProductCategoryID), SqlDbType.Int)
+                 }
+             );
+            var DBResult = ProductCategoriesGetSingleByIDResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
+            var DBFunctionResult = await DBResult.FirstOrDefaultAsync();
+            return DBFunctionResult?.Value;
+        }
+        #endregion
+
+        #region ProductCategoriesGetSingleBySlug
+        internal virtual DbSet<ScalarFunctionResult<string>> ProductCategoriesGetSingleBySlugResult { get; set; }
+        public async Task<string> ProductCategoriesGetSingleBySlug(string ProductCategorySlug)
+        {
+            var PR = new SqlQueryBuilder(
+                 DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
+                 DatabaseObjectName: nameof(ProductCategoriesGetSingleBySlug),
+                 ResultItemType: typeof(ScalarFunctionResult<string>),
+                 SqlParameters: new SqlParameter[]
+                 {
+                    ProductCategorySlug.ToSqlParameter(nameof(ProductCategorySlug), SqlDbType.NVarChar)
+                 }
+             );
+            var DBResult = ProductCategoriesGetSingleBySlugResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
+            var DBFunctionResult = await DBResult.FirstOrDefaultAsync();
+            return DBFunctionResult?.Value;
+        }
+        #endregion
+
+        #region ProductCategoriesList
+        public class ProductCategoriesListResultItem
+        {
+            #region Properties
+            public int? ProductCategoryID { get; set; }
+            public int? ProductCategoryParentID { get; set; }
+            public string ProductCategorySlug { get; set; }
+            public string ProductCategoryName { get; set; }
+            public string ProductCategoryNameEng { get; set; }
+            public string ProductCategoryNameRus { get; set; }
+            public int? ProductCategorySortIndex { get; set; }
+            public string ProductCategoryImageFilename { get; set; }
+            public DateTime? ProductCategoryDateCreated { get; set; }
+            #endregion
+        }
+        internal virtual DbSet<ProductCategoriesListResultItem> ProductCategoriesListResult { get; set; }
+        public IQueryable<ProductCategoriesListResultItem> ProductCategoriesList(int? ProductCategoryParentID)
+        {
+            var PR = new SqlQueryBuilder(
+              DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
+              DatabaseObjectName: nameof(ProductCategoriesList),
+              ResultItemType: typeof(ProductCategoriesListResultItem),
+                SqlParameters: new SqlParameter[]
+                {
+                    ProductCategoryParentID.ToSqlParameter(nameof(ProductCategoryParentID), SqlDbType.Int),
+                }
+            );
+            var DBResult = ProductCategoriesListResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
+            return DBResult;
+        }
+
+        #endregion
+
+        #region ProductCategoriesListForDeleteRecursive
+        public class ProductCategoriesListForDeleteRecursiveResultItem
+        {
+            #region Properties
+            public int? ProductCategoryID { get; set; }
+            public string ProductCategoryImageFilename { get; set; }
+            #endregion
+        }
+        internal virtual DbSet<ProductCategoriesListForDeleteRecursiveResultItem> ProductCategoriesListForDeleteRecursiveResult { get; set; }
+        public IQueryable<ProductCategoriesListForDeleteRecursiveResultItem> ProductCategoriesListForDeleteRecursive(int? CategoryID)
+        {
+            var PR = new SqlQueryBuilder(
+              DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
+              DatabaseObjectName: nameof(ProductCategoriesListForDeleteRecursive),
+              ResultItemType: typeof(ProductCategoriesListForDeleteRecursiveResultItem),
+              SqlParameters: new SqlParameter[]
+              {
+                  CategoryID.ToSqlParameter(nameof(CategoryID), SqlDbType.Int),
+              }
+            );
+            var DBResult = ProductCategoriesListForDeleteRecursiveResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
+            return DBResult;
+        }
+        #endregion
+
         #region ProductsGetSingleByID
         internal virtual DbSet<ScalarFunctionResult<string>> ProductsGetSingleByIDResult { get; set; }
         public async Task<string> ProductsGetSingleByID(int? ProductID)
         {
-            var PR = new PrepareQueryExecution(
-                 DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
+            var PR = new SqlQueryBuilder(
+                 DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
                  DatabaseObjectName: nameof(ProductsGetSingleByID),
                  ResultItemType: typeof(ScalarFunctionResult<string>),
                  SqlParameters: new SqlParameter[]
@@ -678,8 +678,8 @@ namespace SixtyThreeBits.Core.DB
         internal virtual DbSet<ScalarFunctionResult<string>> ProductsGetsingleBySlugResult { get; set; }
         public async Task<string> ProductsGetsingleBySlug(string ProductSlug)
         {
-            var PR = new PrepareQueryExecution(
-                DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
+            var PR = new SqlQueryBuilder(
+                DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
                 DatabaseObjectName: nameof(ProductsGetsingleBySlug),
                 ResultItemType: typeof(ScalarFunctionResult<string>),
                 SqlParameters: new SqlParameter[]
@@ -697,8 +697,8 @@ namespace SixtyThreeBits.Core.DB
         internal virtual DbSet<ScalarFunctionResult<string>> ProductsFiltersGetResult { get; set; }
         public async Task<string> ProductsFiltersGet(string Language, int? CategoryID)
         {
-            var PR = new PrepareQueryExecution(
-                DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
+            var PR = new SqlQueryBuilder(
+                DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
                 DatabaseObjectName: nameof(ProductsFiltersGet),
                 ResultItemType: typeof(ScalarFunctionResult<string>),
                 SqlParameters: new SqlParameter[]
@@ -727,8 +727,8 @@ namespace SixtyThreeBits.Core.DB
         internal virtual DbSet<ProductsImagesListResultItem> ProductsImagesListResult { get; set; }
         public IQueryable<ProductsImagesListResultItem> ProductsImagesList(int? ProductID)
         {
-            var PR = new PrepareQueryExecution(
-                DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
+            var PR = new SqlQueryBuilder(
+                DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
                 DatabaseObjectName: nameof(ProductsImagesList),
                 ResultItemType: typeof(ProductsImagesListResultItem),
                 SqlParameters: new SqlParameter[]
@@ -745,8 +745,8 @@ namespace SixtyThreeBits.Core.DB
         internal virtual DbSet<ScalarFunctionResult<bool>> ProductsIsSlugUniqResult { get; set; }
         public async Task<bool> ProductsIsSlugUniq(string ProductSlug, int? ProductID)
         {
-            var PR = new PrepareQueryExecution(
-                DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
+            var PR = new SqlQueryBuilder(
+                DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
                 DatabaseObjectName: nameof(ProductsIsSlugUniq),
                 ResultItemType: typeof(ScalarFunctionResult<string>),
                 SqlParameters: new SqlParameter[]
@@ -790,8 +790,8 @@ namespace SixtyThreeBits.Core.DB
         internal virtual DbSet<ProductsListResultItem> ProductsListResult { get; set; }
         public IQueryable<ProductsListResultItem> ProductsList(bool? ProductIsPublished, bool? ProductIsFeatured)
         {
-            var PR = new PrepareQueryExecution(
-                DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
+            var PR = new SqlQueryBuilder(
+                DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
                 DatabaseObjectName: nameof(ProductsList),
                 ResultItemType: typeof(ProductsListResultItem),
                 SqlParameters: new SqlParameter[]
@@ -825,8 +825,8 @@ namespace SixtyThreeBits.Core.DB
         internal virtual DbSet<ProductsListPagerResultItem> ProductsListPagerResult { get; set; }
         public IQueryable<ProductsListPagerResultItem> ProductsListPager(string Language, int? PageNumber, int? ItemsPerPage, int? SortType, string SearchPhrase, decimal? ProductPriceMin, decimal? ProductPriceMax, bool? IsInStock, bool? HasDiscount, string CategoriesXml, string BrandsXml, string ProducerCountryCodesXml)
         {
-            var PR = new PrepareQueryExecution(
-                DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
+            var PR = new SqlQueryBuilder(
+                DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
                 DatabaseObjectName: nameof(ProductsListPager),
                 ResultItemType: typeof(ProductsListPagerResultItem),
                 SqlParameters: new SqlParameter[]
@@ -855,8 +855,8 @@ namespace SixtyThreeBits.Core.DB
         internal virtual DbSet<ScalarFunctionResult<string>> ProjectsGetSingleByIDResult { get; set; }
         public async Task<string> ProjectsGetSingleByID(int? ProjectID)
         {
-            var PR = new PrepareQueryExecution(
-                DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
+            var PR = new SqlQueryBuilder(
+                DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
                 DatabaseObjectName: nameof(ProjectsGetSingleByID),
                 ResultItemType: typeof(ScalarFunctionResult<string>),
                 SqlParameters: new SqlParameter[]
@@ -874,8 +874,8 @@ namespace SixtyThreeBits.Core.DB
         internal virtual DbSet<ScalarFunctionResult<bool>> ProjectsIsSlugUniqResult { get; set; }
         public async Task<bool> ProjectsIsSlugUniq(string ProjectSlug, int? ProjectID)
         {
-            var PR = new PrepareQueryExecution(
-                DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
+            var PR = new SqlQueryBuilder(
+                DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
                 DatabaseObjectName: nameof(ProjectsIsSlugUniq),
                 ResultItemType: typeof(ScalarFunctionResult<string>),
                 SqlParameters: new SqlParameter[]
@@ -915,8 +915,8 @@ namespace SixtyThreeBits.Core.DB
         internal virtual DbSet<ProjectsListResultItem> ProjectsListResult { get; set; }
         public IQueryable<ProjectsListResultItem> ProjectsList()
         {
-            var PR = new PrepareQueryExecution(
-                DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
+            var PR = new SqlQueryBuilder(
+                DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
                 DatabaseObjectName: nameof(ProjectsList),
                 ResultItemType: typeof(ProjectsListResultItem)
             );
@@ -938,8 +938,8 @@ namespace SixtyThreeBits.Core.DB
         internal virtual DbSet<RolesListResultItem> RolesListResult { get; set; }
         public IQueryable<RolesListResultItem> RolesList()
         {
-            var PR = new PrepareQueryExecution(
-              DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
+            var PR = new SqlQueryBuilder(
+              DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
               DatabaseObjectName: nameof(RolesList),
               ResultItemType: typeof(RolesListResultItem)
             );
@@ -958,8 +958,8 @@ namespace SixtyThreeBits.Core.DB
         internal virtual DbSet<RolePermissionsListResultItem> RolePermissionsListResult { get; set; }
         public IQueryable<RolePermissionsListResultItem> RolePermissionsList(int? RoleID)
         {
-            var PR = new PrepareQueryExecution(
-                DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
+            var PR = new SqlQueryBuilder(
+                DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
                 DatabaseObjectName: nameof(RolePermissionsList),
                 ResultItemType: typeof(RolePermissionsListResultItem),
                 SqlParameters: new SqlParameter[]
@@ -976,8 +976,8 @@ namespace SixtyThreeBits.Core.DB
         internal virtual DbSet<ScalarFunctionResult<string>> SystemPropertiesGetResult { get; set; }
         public Task<ScalarFunctionResult<string>> SystemPropertiesGet()
         {
-            var PR = new PrepareQueryExecution(
-                DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
+            var PR = new SqlQueryBuilder(
+                DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
                 DatabaseObjectName: nameof(SystemPropertiesGet),
                 ResultItemType: typeof(ScalarFunctionResult<string>)
             );
@@ -990,8 +990,8 @@ namespace SixtyThreeBits.Core.DB
         internal virtual DbSet<ScalarFunctionResult<string>> TeamMembersGetSingleByIDResult { get; set; }
         public async Task<string> TeamMembersGetSingleByID(int? TeamMemberID)
         {
-            var PR = new PrepareQueryExecution(
-                DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
+            var PR = new SqlQueryBuilder(
+                DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
                 DatabaseObjectName: nameof(TeamMembersGetSingleByID),
                 ResultItemType: typeof(ScalarFunctionResult<string>),
                 SqlParameters: new SqlParameter[]{
@@ -1023,8 +1023,8 @@ namespace SixtyThreeBits.Core.DB
         internal virtual DbSet<TeamMembersListResultItem> TeamMembersListResult { get; set; }
         public IQueryable<TeamMembersListResultItem> TeamMembersList()
         {
-            var PR = new PrepareQueryExecution(
-                DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
+            var PR = new SqlQueryBuilder(
+                DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
                 DatabaseObjectName: nameof(TeamMembersList),
                 ResultItemType: typeof(TeamMembersListResultItem)
             );
@@ -1037,8 +1037,8 @@ namespace SixtyThreeBits.Core.DB
         internal virtual DbSet<ScalarFunctionResult<string>> UsersGetSingleUserByIDResult { get; set; }
         public async Task<string> UsersGetSingleUserByUserID(int? UserID)
         {
-            var PR = new PrepareQueryExecution(
-                DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
+            var PR = new SqlQueryBuilder(
+                DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
                 DatabaseObjectName: nameof(UsersGetSingleUserByUserID),
                 ResultItemType: typeof(ScalarFunctionResult<string>),
                 SqlParameters: new SqlParameter[]
@@ -1056,8 +1056,8 @@ namespace SixtyThreeBits.Core.DB
         internal virtual DbSet<ScalarFunctionResult<string>> UsersGetSingleUserByEmailAndPasswordResult { get; set; }
         public async Task<string> UsersGetSingleUserByEmailAndPassword(string Email, string Password)
         {
-            var PR = new PrepareQueryExecution(
-                DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
+            var PR = new SqlQueryBuilder(
+                DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
                 DatabaseObjectName: nameof(UsersGetSingleUserByEmailAndPassword),
                 ResultItemType: typeof(ScalarFunctionResult<string>),
                 SqlParameters: new SqlParameter[]
@@ -1094,8 +1094,8 @@ namespace SixtyThreeBits.Core.DB
         internal virtual DbSet<UsersListResultItem> UsersListResult { get; set; }
         public IQueryable<UsersListResultItem> UsersList()
         {
-            var PR = new PrepareQueryExecution(
-              DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
+            var PR = new SqlQueryBuilder(
+              DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
               DatabaseObjectName: nameof(UsersList),
               ResultItemType: typeof(UsersListResultItem)
             );
@@ -1108,8 +1108,8 @@ namespace SixtyThreeBits.Core.DB
         internal virtual DbSet<ScalarFunctionResult<bool>> UsersIsEmailUniqueResult { get; set; }
         public async Task<bool> UsersIsEmailUnique(string Email, int? UserID)
         {
-            var PR = new PrepareQueryExecution(
-                DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
+            var PR = new SqlQueryBuilder(
+                DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
                 DatabaseObjectName: nameof(UsersIsEmailUnique),
                 ResultItemType: typeof(ScalarFunctionResult<bool>),
                 SqlParameters: new SqlParameter[]
@@ -1128,8 +1128,8 @@ namespace SixtyThreeBits.Core.DB
         #region Stored Procedures          
         public async Task<int?> BlogIUD(Enums.DatabaseActions iud, int? BlogPostID, string BlogPostlug, string BlogPostTitle, string BlogPostShortText, string BlogPostText, string BlogPostAuthorName, string BlogPostImageFilename, DateTime? BlogPostDate, bool? BlogPostIsPublished)
         {
-            var PR = new PrepareQueryExecution(
-             DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.STORED_PROCEDURE,
+            var PR = new SqlQueryBuilder(
+             DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.STORED_PROCEDURE,
              DatabaseObjectName: nameof(BlogIUD),
              ResultItemType: null,
              SqlParameters: new SqlParameter[]
@@ -1153,8 +1153,8 @@ namespace SixtyThreeBits.Core.DB
 
         public async Task<int?> BrandsIUD(Enums.DatabaseActions iud, int? BrandID, string BrandName, string BrandNameEng, string BrandNameRus, string BrandImageFilename)
         {
-            var PR = new PrepareQueryExecution(
-             DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.STORED_PROCEDURE,
+            var PR = new SqlQueryBuilder(
+             DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.STORED_PROCEDURE,
              DatabaseObjectName: nameof(BrandsIUD),
              ResultItemType: null,
              SqlParameters: new SqlParameter[]
@@ -1172,67 +1172,11 @@ namespace SixtyThreeBits.Core.DB
             BrandID = PR.SqlParameters[1].Value?.ToString().ToInt();
             return BrandID;
         }
-
-        public async Task CategoriesDeleteRecursive(int? CategoryID)
-        {
-            var PR = new PrepareQueryExecution(
-             DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.STORED_PROCEDURE,
-             DatabaseObjectName: nameof(CategoriesDeleteRecursive),
-             ResultItemType: null,
-             SqlParameters: new SqlParameter[]
-             {
-                 CategoryID.ToSqlParameter(nameof(CategoryID),SqlDbType.Int)
-             }
-           );
-
-            var DBResult = await Database.ExecuteSqlRawAsync(PR.SqlQuery, PR.SqlParameters);
-        }
-
-        public async Task<int?> CategoriesIUD(Enums.DatabaseActions iud, int? CategoryID, int? CategoryParentID, string CategoryName, string CategoryNameEng, string CategoryNameRus, string CategoryImageFilename, string CategoryDescriptionShort, string CategoryDescriptionShortEng, string CategoryDescriptionShortRus)
-        {
-            var PR = new PrepareQueryExecution(
-              DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.STORED_PROCEDURE,
-              DatabaseObjectName: nameof(CategoriesIUD),
-              ResultItemType: null,
-              SqlParameters: new SqlParameter[]
-              {
-                  iud.ToSqlParameter(nameof(iud),SqlDbType.TinyInt),
-                  CategoryID.ToSqlParameter(nameof(CategoryID),SqlDbType.Int, true),
-                  CategoryParentID.ToSqlParameter(nameof(CategoryParentID),SqlDbType.Int),
-                  CategoryName.ToSqlParameter(nameof(CategoryName),SqlDbType.NVarChar),
-                  CategoryNameEng.ToSqlParameter(nameof(CategoryNameEng),SqlDbType.NVarChar),
-                  CategoryNameRus.ToSqlParameter(nameof(CategoryNameRus),SqlDbType.NVarChar),
-                  CategoryImageFilename.ToSqlParameter(nameof(CategoryImageFilename),SqlDbType.NVarChar),
-                  CategoryDescriptionShort.ToSqlParameter(nameof(CategoryDescriptionShort),SqlDbType.NVarChar),
-                  CategoryDescriptionShortEng.ToSqlParameter(nameof(CategoryDescriptionShortEng),SqlDbType.NVarChar),
-                  CategoryDescriptionShortRus.ToSqlParameter(nameof(CategoryDescriptionShortRus),SqlDbType.NVarChar),
-              }
-              );
-
-            var DBResult = await Database.ExecuteSqlRawAsync(PR.SqlQuery, PR.SqlParameters);
-            CategoryID = PR.SqlParameters[1].Value?.ToString().ToInt();
-            return CategoryID;
-        }
-
-        public async Task CategoriesSyncParentsAndSortIndexes(string ParentsAndSortIndexesXml)
-        {
-            var PR = new PrepareQueryExecution(
-             DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.STORED_PROCEDURE,
-             DatabaseObjectName: nameof(CategoriesSyncParentsAndSortIndexes),
-             ResultItemType: null,
-             SqlParameters: new SqlParameter[]
-             {
-                 ParentsAndSortIndexesXml.ToSqlParameter(nameof(ParentsAndSortIndexesXml),SqlDbType.Xml)
-             }
-           );
-
-            var DBResult = await Database.ExecuteSqlRawAsync(PR.SqlQuery, PR.SqlParameters);
-        }
-
+        
         public async Task DictionariesDeleteRecursive(int? DictionaryID)
         {
-            var PR = new PrepareQueryExecution(
-             DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.STORED_PROCEDURE,
+            var PR = new SqlQueryBuilder(
+             DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.STORED_PROCEDURE,
              DatabaseObjectName: nameof(DictionariesDeleteRecursive),
              ResultItemType: null,
              SqlParameters: new SqlParameter[]
@@ -1246,8 +1190,8 @@ namespace SixtyThreeBits.Core.DB
 
         public async Task<int?> DictionariesIUD(Enums.DatabaseActions iud, int? DictionaryID, string DictionaryCaption, string DictionaryCaptionEng, string DictionaryCaptionRus, int? DictionaryParentID, string DictionaryStringCode, int? DictionaryIntCode, decimal? DictionaryDecimalValue, int? DictionaryCode, bool? DictionaryIsDefault, bool? DictionaryIsVisible, int? DictionarySortIndex)
         {
-            var PR = new PrepareQueryExecution(
-             DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.STORED_PROCEDURE,
+            var PR = new SqlQueryBuilder(
+             DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.STORED_PROCEDURE,
              DatabaseObjectName: nameof(DictionariesIUD),
              ResultItemType: null,
              SqlParameters: new SqlParameter[]
@@ -1275,8 +1219,8 @@ namespace SixtyThreeBits.Core.DB
 
         public async Task<int?> EmailTemplatesIUD(Enums.DatabaseActions iud, int? EmailTemplateID, string EmailTemplateName, string EmailTemplateSubject, string EmailTemplateSubjectEng, string EmailTemplateBody, string EmailTemplateBodyEng)
         {
-            var PR = new PrepareQueryExecution(
-                DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.STORED_PROCEDURE,
+            var PR = new SqlQueryBuilder(
+                DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.STORED_PROCEDURE,
                 DatabaseObjectName: nameof(EmailTemplatesIUD),
                 ResultItemType: null,
                 SqlParameters: new SqlParameter[]
@@ -1298,8 +1242,8 @@ namespace SixtyThreeBits.Core.DB
 
         public async Task<int?> NewsIUD(Enums.DatabaseActions iud, int? NewsID, string NewsSlug, string NewsTitle, string NewsTitleEng, string NewsTitleRus, string NewsText, string NewsTextEng, string NewsTextRus, string NewsShortDescription, string NewsShortDescriptionEng, string NewsShortDescriptionRus, string NewsImageFilename, DateTime? NewsDatePublished, bool NewsIsPublished, DateTime? NewsDateCreated)
         {
-            var PR = new PrepareQueryExecution(
-             DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.STORED_PROCEDURE,
+            var PR = new SqlQueryBuilder(
+             DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.STORED_PROCEDURE,
              DatabaseObjectName: nameof(NewsIUD),
              ResultItemType: null,
              SqlParameters: new SqlParameter[]
@@ -1329,8 +1273,8 @@ namespace SixtyThreeBits.Core.DB
 
         public async Task PagesDeleteRecursive(int? PageID)
         {
-            var PR = new PrepareQueryExecution(
-             DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.STORED_PROCEDURE,
+            var PR = new SqlQueryBuilder(
+             DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.STORED_PROCEDURE,
              DatabaseObjectName: nameof(PagesDeleteRecursive),
              ResultItemType: null,
              SqlParameters: new SqlParameter[]
@@ -1344,8 +1288,8 @@ namespace SixtyThreeBits.Core.DB
 
         public async Task<int?> PagesIUD(Enums.DatabaseActions iud, int? PageID, int? PageParentID, string PageSlug, string PageTitle, string PageTitleEng, string PageTitleRus, string PageText, string PageTextEng, string PageTextRus, string PageTextHeaderHtml, string PageTextHeaderHtmlEng, string PageTextHeaderHtmlRus, string PageTextFooterHtml, string PageTextFooterHtmlEng, string PageTextFooterHtmlRus, string PageData, string PageDataEng, string PageDataRus, string PageShortDescription, string PageShortDescriptionEng, string PageShortDescriptionRus, string PageImageFilename, int? PageCode, bool? PageIsPublished, int? PageSortIndex, bool? PageIsMenuItem, bool? PageIsFooterItem, bool? PageIsExternalUrl, string PageExternalUrl)
         {
-            var PR = new PrepareQueryExecution(
-                DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.STORED_PROCEDURE,
+            var PR = new SqlQueryBuilder(
+                DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.STORED_PROCEDURE,
                 DatabaseObjectName: nameof(PagesIUD),
                 ResultItemType: null,
                 SqlParameters: new SqlParameter[]
@@ -1391,8 +1335,8 @@ namespace SixtyThreeBits.Core.DB
 
         public async Task PagesSyncParentsAndSortIndexes(string ParentsAndSortIndexesXml)
         {
-            var PR = new PrepareQueryExecution(
-             DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.STORED_PROCEDURE,
+            var PR = new SqlQueryBuilder(
+             DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.STORED_PROCEDURE,
              DatabaseObjectName: nameof(PagesSyncParentsAndSortIndexes),
              ResultItemType: null,
              SqlParameters: new SqlParameter[]
@@ -1406,8 +1350,8 @@ namespace SixtyThreeBits.Core.DB
 
         public async Task<int?> PartnersIUD(Enums.DatabaseActions iud, int? PartnerID, string PartnerName, string PartnerNameEng, string PartnerNameRus, string PartnerShortDescription, string PartnerShortDescriptionEng, string PartnerShortDescriptionRus, string PartnerFullDescription, string PartnerFullDescriptionEng, string PartnerFullDescriptionRus, string PartnerWebSite, string PartnerImageFilename)
         {
-            var PR = new PrepareQueryExecution(
-                DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.STORED_PROCEDURE,
+            var PR = new SqlQueryBuilder(
+                DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.STORED_PROCEDURE,
                 DatabaseObjectName: nameof(PartnersIUD),
                 ResultItemType: null,
                 SqlParameters: new SqlParameter[]
@@ -1434,8 +1378,8 @@ namespace SixtyThreeBits.Core.DB
 
         public async Task PermissionsDeleteRecursive(int? PermissionID)
         {
-            var PR = new PrepareQueryExecution(
-             DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.STORED_PROCEDURE,
+            var PR = new SqlQueryBuilder(
+             DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.STORED_PROCEDURE,
              DatabaseObjectName: nameof(PermissionsDeleteRecursive),
              ResultItemType: null,
              SqlParameters: new SqlParameter[]
@@ -1449,8 +1393,8 @@ namespace SixtyThreeBits.Core.DB
 
         public async Task<int?> PermissionsIUD(Enums.DatabaseActions iud, int? PermissionID, int? PermissionParentID, string PermissionCaption, string PermissionPagePath, string PermissionCodeName, string PermissionCode, bool? PermissionIsMenuItem, string PermissionMenuIcon, int? PermissionSortIndex)
         {
-            var PR = new PrepareQueryExecution(
-             DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.STORED_PROCEDURE,
+            var PR = new SqlQueryBuilder(
+             DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.STORED_PROCEDURE,
              DatabaseObjectName: nameof(PermissionsIUD),
              ResultItemType: null,
              SqlParameters: new SqlParameter[]
@@ -1473,25 +1417,66 @@ namespace SixtyThreeBits.Core.DB
             return PermissionID;
         }
 
-        public async Task ProductsSync(string ProductSyncItemsXml)
+        public async Task ProductCategoriesDeleteRecursive(int? ProductCategoryID)
         {
-            var PR = new PrepareQueryExecution(
-             DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.STORED_PROCEDURE,
-             DatabaseObjectName: nameof(ProductsSync),
+            var PR = new SqlQueryBuilder(
+             DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.STORED_PROCEDURE,
+             DatabaseObjectName: nameof(ProductCategoriesDeleteRecursive),
              ResultItemType: null,
              SqlParameters: new SqlParameter[]
              {
-                 ProductSyncItemsXml.ToSqlParameter(nameof(ProductSyncItemsXml),SqlDbType.Xml)
+                 ProductCategoryID.ToSqlParameter(nameof(ProductCategoryID),SqlDbType.Int)
              }
-         );
+           );
 
             var DBResult = await Database.ExecuteSqlRawAsync(PR.SqlQuery, PR.SqlParameters);
         }
 
+        public async Task<int?> ProductCategoriesIUD(Enums.DatabaseActions iud, int? ProductCategoryID, int? ProductCategoryParentID, string ProductCategoryName, string ProductCategoryNameEng, string ProductCategoryNameRus, string ProductCategoryImageFilename, string ProductCategoryDescriptionShort, string ProductCategoryDescriptionShortEng, string ProductCategoryDescriptionShortRus)
+        {
+            var PR = new SqlQueryBuilder(
+              DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.STORED_PROCEDURE,
+              DatabaseObjectName: nameof(ProductCategoriesIUD),
+              ResultItemType: null,
+              SqlParameters: new SqlParameter[]
+              {
+                  iud.ToSqlParameter(nameof(iud),SqlDbType.TinyInt),
+                  ProductCategoryID.ToSqlParameter(nameof(ProductCategoryID),SqlDbType.Int, true),
+                  ProductCategoryParentID.ToSqlParameter(nameof(ProductCategoryParentID),SqlDbType.Int),
+                  ProductCategoryName.ToSqlParameter(nameof(ProductCategoryName),SqlDbType.NVarChar),
+                  ProductCategoryNameEng.ToSqlParameter(nameof(ProductCategoryNameEng),SqlDbType.NVarChar),
+                  ProductCategoryNameRus.ToSqlParameter(nameof(ProductCategoryNameRus),SqlDbType.NVarChar),
+                  ProductCategoryImageFilename.ToSqlParameter(nameof(ProductCategoryImageFilename),SqlDbType.NVarChar),
+                  ProductCategoryDescriptionShort.ToSqlParameter(nameof(ProductCategoryDescriptionShort),SqlDbType.NVarChar),
+                  ProductCategoryDescriptionShortEng.ToSqlParameter(nameof(ProductCategoryDescriptionShortEng),SqlDbType.NVarChar),
+                  ProductCategoryDescriptionShortRus.ToSqlParameter(nameof(ProductCategoryDescriptionShortRus),SqlDbType.NVarChar),
+              }
+              );
+
+            var DBResult = await Database.ExecuteSqlRawAsync(PR.SqlQuery, PR.SqlParameters);
+            ProductCategoryID = PR.SqlParameters[1].Value?.ToString().ToInt();
+            return ProductCategoryID;
+        }
+
+        public async Task ProductCategoriesSyncParentsAndSortIndexes(string ParentsAndSortIndexesJson)
+        {
+            var PR = new SqlQueryBuilder(
+             DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.STORED_PROCEDURE,
+             DatabaseObjectName: nameof(ProductCategoriesSyncParentsAndSortIndexes),
+             ResultItemType: null,
+             SqlParameters: new SqlParameter[]
+             {
+                 ParentsAndSortIndexesJson.ToSqlParameter(nameof(ParentsAndSortIndexesJson),SqlDbType.NVarChar)
+             }
+           );
+
+            var DBResult = await Database.ExecuteSqlRawAsync(PR.SqlQuery, PR.SqlParameters);
+        }        
+
         public async Task<int?> ProductsIUD(Enums.DatabaseActions iud, int? ProductID, int? BrandID, int? CategoryID, string ProductCode, string ProductName, string ProductNameEng, string ProductNameRus, decimal? ProductPrice, decimal? ProductPriceOld, decimal? ProductRemainder, string ProductImageFilename, bool? ProductIsPublished, string ProductDescriptionShort, string ProductDescriptionShortEng, string ProductDescriptionShortRus, string ProductDescription, string ProductDescriptionEng, string ProductDescriptionRus, bool? ProductIsFeatured, string ProductSKU, int? ProductProducerCountryID)
         {
-            var PR = new PrepareQueryExecution(
-              DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.STORED_PROCEDURE,
+            var PR = new SqlQueryBuilder(
+              DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.STORED_PROCEDURE,
               DatabaseObjectName: nameof(ProductsIUD),
               ResultItemType: null,
               SqlParameters: new SqlParameter[]
@@ -1528,8 +1513,8 @@ namespace SixtyThreeBits.Core.DB
 
         public async Task<int?> ProductsImagesIUD(Enums.DatabaseActions iud, int? ProductImageID, int? ProductID, string ProductImageFilename, int? ProductImageSortIndex)
         {
-            var PR = new PrepareQueryExecution(
-              DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.STORED_PROCEDURE,
+            var PR = new SqlQueryBuilder(
+              DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.STORED_PROCEDURE,
               DatabaseObjectName: nameof(ProductsImagesIUD),
               ResultItemType: null,
               SqlParameters: new SqlParameter[]
@@ -1549,8 +1534,8 @@ namespace SixtyThreeBits.Core.DB
 
         public async Task ProductsImagesInsert(int? ProductID, string ProductImagesXml)
         {
-            var PR = new PrepareQueryExecution(
-                DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.STORED_PROCEDURE,
+            var PR = new SqlQueryBuilder(
+                DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.STORED_PROCEDURE,
                 DatabaseObjectName: nameof(ProductsImagesInsert),
                 ResultItemType: null,
                 SqlParameters: new SqlParameter[]
@@ -1565,8 +1550,8 @@ namespace SixtyThreeBits.Core.DB
 
         public async Task ProductsImagesSyncSortIndex(string SortIndexXml)
         {
-            var PR = new PrepareQueryExecution(
-             DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.STORED_PROCEDURE,
+            var PR = new SqlQueryBuilder(
+             DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.STORED_PROCEDURE,
              DatabaseObjectName: nameof(ProductsImagesSyncSortIndex),
              ResultItemType: null,
              SqlParameters: new SqlParameter[]
@@ -1578,10 +1563,25 @@ namespace SixtyThreeBits.Core.DB
             var DBResult = await Database.ExecuteSqlRawAsync(PR.SqlQuery, PR.SqlParameters);
         }
 
+        public async Task ProductsSync(string ProductSyncItemsXml)
+        {
+            var PR = new SqlQueryBuilder(
+             DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.STORED_PROCEDURE,
+             DatabaseObjectName: nameof(ProductsSync),
+             ResultItemType: null,
+             SqlParameters: new SqlParameter[]
+             {
+                 ProductSyncItemsXml.ToSqlParameter(nameof(ProductSyncItemsXml),SqlDbType.Xml)
+             }
+         );
+
+            var DBResult = await Database.ExecuteSqlRawAsync(PR.SqlQuery, PR.SqlParameters);
+        }
+
         public async Task<int?> ProjectsIUD(Enums.DatabaseActions iud, int? ProjectID, string ProjectSlug, string ProjectCaption, string ProjectCaptionEng, string ProjectCaptionRus, string ProjectShortDescription, string ProjectShortDescriptionEng, string ProjectShortDescriptionRus, string ProjectDescription, string ProjectDescriptionEng, string ProjectDescriptionRus, string ProjectCoverImageFilename, string ProjectVideoUrl, bool? ProjectIsPublished)
         {
-            var PR = new PrepareQueryExecution(
-                DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.STORED_PROCEDURE,
+            var PR = new SqlQueryBuilder(
+                DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.STORED_PROCEDURE,
                 DatabaseObjectName: nameof(ProjectsIUD),
                 ResultItemType: null,
                 SqlParameters: new SqlParameter[]
@@ -1610,8 +1610,8 @@ namespace SixtyThreeBits.Core.DB
 
         public async Task ProjectsSyncSortIndexes(string ProjectsSyncSortIndexesJson)
         {
-            var PR = new PrepareQueryExecution(
-                DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.STORED_PROCEDURE,
+            var PR = new SqlQueryBuilder(
+                DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.STORED_PROCEDURE,
                 DatabaseObjectName: nameof(ProjectsSyncSortIndexes),
                 ResultItemType: null,
                 SqlParameters: new SqlParameter[]
@@ -1625,8 +1625,8 @@ namespace SixtyThreeBits.Core.DB
 
         public async Task<int?> RolesIUD(Enums.DatabaseActions iud, int? RoleID, string RoleName, int? RoleCode)
         {
-            var PR = new PrepareQueryExecution(
-             DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.STORED_PROCEDURE,
+            var PR = new SqlQueryBuilder(
+             DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.STORED_PROCEDURE,
              DatabaseObjectName: nameof(RolesIUD),
              ResultItemType: null,
              SqlParameters: new SqlParameter[]
@@ -1645,8 +1645,8 @@ namespace SixtyThreeBits.Core.DB
 
         public async Task RolePermissionsUpdate(int? RoleID, string PermissionsXml)
         {
-            var PR = new PrepareQueryExecution(
-             DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.STORED_PROCEDURE,
+            var PR = new SqlQueryBuilder(
+             DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.STORED_PROCEDURE,
              DatabaseObjectName: nameof(RolePermissionsUpdate),
              ResultItemType: null,
              SqlParameters: new SqlParameter[]
@@ -1660,8 +1660,8 @@ namespace SixtyThreeBits.Core.DB
 
         public async Task SystemPropertiesUpdate(string SystemPropertiesJson)
         {
-            var PR = new PrepareQueryExecution(
-             DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.STORED_PROCEDURE,
+            var PR = new SqlQueryBuilder(
+             DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.STORED_PROCEDURE,
              DatabaseObjectName: nameof(SystemPropertiesUpdate),
              ResultItemType: null,
              SqlParameters: new SqlParameter[]
@@ -1674,8 +1674,8 @@ namespace SixtyThreeBits.Core.DB
 
         public async Task<int?> TeamMembersIUD(Enums.DatabaseActions iud, int? TeamMemberID, string TeamMemberFirstName, string TeamMemberLastName, string TeamMemberPosition, string TeamMemberShortDescription, string TeamMemberLongDescription, string TeamMemberImageFilename, bool? TeamMemberIsPublished, int? TeamMemberCategoryID)
         {
-            var PR = new PrepareQueryExecution(
-                DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.STORED_PROCEDURE,
+            var PR = new SqlQueryBuilder(
+                DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.STORED_PROCEDURE,
                 DatabaseObjectName: nameof(TeamMembersIUD),
                 ResultItemType: null,
                 SqlParameters: new SqlParameter[]
@@ -1699,8 +1699,8 @@ namespace SixtyThreeBits.Core.DB
 
         public async Task TeamMembersSyncSortIndexes(string TeamMembersSyncSortIndexesJson)
         {
-            var PR = new PrepareQueryExecution(
-                DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.STORED_PROCEDURE,
+            var PR = new SqlQueryBuilder(
+                DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.STORED_PROCEDURE,
                 DatabaseObjectName: nameof(TeamMembersSyncSortIndexes),
                 ResultItemType: null,
                 SqlParameters: new SqlParameter[]
@@ -1714,8 +1714,8 @@ namespace SixtyThreeBits.Core.DB
 
         public async Task<int?> UsersIUD(Enums.DatabaseActions iud, int? UserID, string UserEmail, string UserPassword, string UserFirstname, string UserLastname, int? UserRoleID, DateTime? UserBirthdate, string UserPhoneNumberMobile, string UserPersonalNumber, string UserAvatarFilename, bool? UserIsActive)
         {
-            var PR = new PrepareQueryExecution(
-             DatabaseObjectType: PrepareQueryExecution.DatabaseObjectTypes.STORED_PROCEDURE,
+            var PR = new SqlQueryBuilder(
+             DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.STORED_PROCEDURE,
              DatabaseObjectName: nameof(UsersIUD),
              ResultItemType: null,
              SqlParameters: new SqlParameter[]
@@ -1745,9 +1745,7 @@ namespace SixtyThreeBits.Core.DB
         {
             ModelBuilder.Entity<BlogPostListResultItem>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<BrandsListResultItem>(Entity => { Entity.HasNoKey(); });
-            ModelBuilder.Entity<CarouselListResultItem>(Entity => { Entity.HasNoKey(); });
-            ModelBuilder.Entity<CategoriesListResultItem>(Entity => { Entity.HasNoKey(); });
-            ModelBuilder.Entity<CategoriesListForDeleteRecursiveResultItem>(Entity => { Entity.HasNoKey(); });
+            ModelBuilder.Entity<CarouselListResultItem>(Entity => { Entity.HasNoKey(); });            
             ModelBuilder.Entity<CountriesListResultItem>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<DictionariesListResultItem>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<EmailTemplatesListResultItem>(Entity => { Entity.HasNoKey(); });            
@@ -1758,6 +1756,8 @@ namespace SixtyThreeBits.Core.DB
             ModelBuilder.Entity<PagesListResultItem>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<PartnersListResultItem>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<PermissionsListResultItem>(Entity => { Entity.HasNoKey(); });
+            ModelBuilder.Entity<ProductCategoriesListResultItem>(Entity => { Entity.HasNoKey(); });
+            ModelBuilder.Entity<ProductCategoriesListForDeleteRecursiveResultItem>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<ProductsImagesListResultItem>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<ProductsListResultItem>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<ProductsListPagerResultItem>(Entity => { Entity.HasNoKey(); });
@@ -1768,8 +1768,8 @@ namespace SixtyThreeBits.Core.DB
             ModelBuilder.Entity<UsersListResultItem>(Entity => { Entity.HasNoKey(); });
         }
 
-        #region Query Preparation
-        class PrepareQueryExecution
+        #region Sql Query Builder
+        class SqlQueryBuilder
         {
             #region Properties
             public string SqlQuery { get; set; }
@@ -1783,7 +1783,7 @@ namespace SixtyThreeBits.Core.DB
             #endregion
 
             #region Constructors
-            public PrepareQueryExecution(DatabaseObjectTypes DatabaseObjectType, string DatabaseObjectName, Type ResultItemType, params SqlParameter[] SqlParameters)
+            public SqlQueryBuilder(DatabaseObjectTypes DatabaseObjectType, string DatabaseObjectName, Type ResultItemType, params SqlParameter[] SqlParameters)
             {
                 this.DatabaseObjectType = DatabaseObjectType;
                 this.DatabaseObjectName = DatabaseObjectName;

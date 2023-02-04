@@ -2,7 +2,6 @@
 <li data-id="@Model.NodeID" class="tree-item file js-file-tree-editor-item is-open @(Model.IsNoNestingEnabled ? Html.Raw("js-no-nesting") : null)">
     <div class="handle @(Model.IsDisabled?Html.Raw("disabled"):null)">
         <div class="left-col">
-            <button class="tree-item-toggle-btn js-tree-item-toggle-btn @(Model.HasChildren ? null : Html.Raw("hidden"))"><i class="fas fa-chevron-down"></i></button>
             <span class="drag"><i class="fas fa-arrows-alt"></i></span>
             @if (Model.IsFolder)
             {

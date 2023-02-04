@@ -1,4 +1,4 @@
-﻿@model CategoriesModel.PageViewModel
+﻿@model ProductCategoriesModel.PageViewModel
 
 @section HeaderSection{
     <link href="~/admin/css/SortableTree.css" rel="stylesheet" />
@@ -12,7 +12,7 @@
 }
 <div class="row">
     <div class="col-12">
-        @await Html.PartialAsync(ViewNames.Admin.Shared.FileTreeEditor.Editor, Model.Categories)
+        @await Html.PartialAsync(ViewNames.Admin.Shared.FileTreeEditor.Editor, Model.ProductCategories)
     </div>
 </div>
 
@@ -40,12 +40,12 @@
             </div>
         </div>
     </div>
-    <script src="~/admin/js/Categories/Categories.js"></script>
+    <script src="~/admin/js/Products/ProductCategories.js"></script>
     <script>
-        CategoriesModel.UrlAddNew = '@Model.UrlAddNew';    
-        CategoriesModel.UrlDelete = '@Model.UrlDelete';
-        CategoriesModel.UrlSync = '@Model.UrlSync';
-        CategoriesModel.TextConfirmDeleteRecord = '@Html.Raw(Model.TextConfirmDeleteRecord)';
-        CategoriesModel.TextConfirmDeleteRecursive = '@Html.Raw(Model.TextConfirmDeleteRecursive)';        
+        ProductCategoriesModel.UrlAddNew = '@Model.UrlAddNew';    
+        ProductCategoriesModel.UrlDelete = '@Model.UrlDelete';
+        ProductCategoriesModel.UrlSort = '@Model.UrlSort';
+        ProductCategoriesModel.TextConfirmDeleteRecord = '@Html.Raw(Model.TextConfirmDeleteRecord)';
+        ProductCategoriesModel.TextConfirmDeleteRecursive = '@Html.Raw(Model.TextConfirmDeleteRecursive)';        
     </script>
 }

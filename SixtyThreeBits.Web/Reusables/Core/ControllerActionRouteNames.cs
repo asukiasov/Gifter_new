@@ -71,21 +71,22 @@
                 #endregion
             }
 
-            public class Categories
+            public class ProductCategories
             {
                 #region Properties
-                public const string Index = "AdminCategories";
-                public const string Add = "AdminCategoriesAdd";
-                public const string Delete = "AdminCategoriesDelete";
-                public const string Sync = "AdminCategoriesSync";
+                public const string Index = "AdminProductCategories";
+                public const string Add = "AdminProductCategoriesAdd";
+                public const string Delete = "AdminProductCategoriesDelete";
+                public const string Sort = "AdminProductCategoriesSort";
                 #endregion
 
                 #region Sub Classes
-                public class Category
+                public class ProductCategory
                 {
                     #region Properties                    
-                    public const string Properties = "AdminCategoriesCategoryProperties";
-                    public const string DeleteImage = "AdminCategoriesCategoryPropertiesDeleteImage";
+                    public const string Root = "AdminProductCategoriesProductCategoryRoot";
+                    public const string Properties = "AdminProductCategoriesProductCategoryProperties";
+                    public const string ImageDelete = "AdminProductCategoriesProductCategoryPropertiesImageDelete";
                     #endregion
                 }
                 #endregion

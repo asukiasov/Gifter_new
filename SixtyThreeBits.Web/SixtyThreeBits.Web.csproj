@@ -6,12 +6,16 @@
   <ItemGroup>
     <Compile Remove="App_Data\**" />
     <Compile Remove="wwwroot\admin\html\**" />
+    <Compile Remove="wwwroot\upload\**" />
     <Content Remove="App_Data\**" />
     <Content Remove="wwwroot\admin\html\**" />
+    <Content Remove="wwwroot\upload\**" />
     <EmbeddedResource Remove="App_Data\**" />
     <EmbeddedResource Remove="wwwroot\admin\html\**" />
+    <EmbeddedResource Remove="wwwroot\upload\**" />
     <None Remove="App_Data\**" />
     <None Remove="wwwroot\admin\html\**" />
+    <None Remove="wwwroot\upload\**" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="63BITS-Libraries-DotNetStandart" Version="1.2.12" />
@@ -26,8 +30,8 @@
   <ItemGroup>
     <None Include="Admin\Views\Brands\Brands.cshtml" />
     <None Include="Admin\Views\Brands\Brand\BrandProperties.cshtml" />
-    <None Include="Admin\Views\Categories\Category.cshtml" />
-    <None Include="Admin\Views\Categories\CategoryProperties.cshtml" />
+    <None Include="Admin\Views\Products\ProductCategories.cshtml" />
+    <None Include="Admin\Views\Products\ProductCategoryProperties.cshtml" />
     <None Include="Admin\Views\EmailTemplates\EmailTemplateProperties.cshtml" />
     <None Include="Admin\Views\EmailTemplates\EmailTemplates.cshtml" />
     <None Include="Admin\Views\Home\Index.cshtml" />
@@ -42,7 +46,7 @@
     <None Include="Views\Shared\FileTree\FileTreeFolder.cshtml" />
     <None Include="wwwroot\admin\js\Brands\BrandItem.js" />
     <None Include="wwwroot\admin\js\Brands\Brands.js" />
-    <None Include="wwwroot\admin\js\Categories\Category\CategoriesItem.js" />
+    <None Include="wwwroot\admin\js\Products\ProductCategoryProperties.js" />
     <None Include="wwwroot\admin\js\EmailTemplates\EmailTemplate.js" />
     <None Include="wwwroot\admin\js\EmailTemplates\EmailTemplates.js" />
     <None Include="wwwroot\admin\js\Products\Product.js" />
@@ -530,6 +534,7 @@
     <ProjectReference Include="..\SixtyThreeBits.Core\SixtyThreeBits.Core.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="wwwroot\download\" />
     <Folder Include="wwwroot\plugins\jquery-ui\" />
   </ItemGroup>
   <ProjectExtensions>

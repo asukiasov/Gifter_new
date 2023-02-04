@@ -56,7 +56,7 @@ namespace SixtyThreeBits.Web.Admin.Filters
 
         bool HasUserPermission() 
         {
-            var HasPermission = Model.User.HasPermission(Model.UrlCurrentPageWithDomain);
+            var HasPermission = Model.User.HasPermission(Model.UrlCurrentPageWithoutDomain);
             return HasPermission;
         }
 

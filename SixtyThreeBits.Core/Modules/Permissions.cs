@@ -73,7 +73,14 @@ namespace SixtyThreeBits.Core.Modules
         public bool PermissionIsMenuItem { get; set; }
         public string PermissionMenuIcon { get; set; }
         public int? PermissionSortIndex { get; set; }
-        public bool PermissionIsSelected { get; set; }        
+        public bool PermissionIsSelected { get; set; }
         #endregion
-    }    
+
+        #region Methods
+        public override string ToString()
+        {
+            return $"{PermissionCaption} {PermissionPagePath}";
+        }
+        #endregion
+    }
 }

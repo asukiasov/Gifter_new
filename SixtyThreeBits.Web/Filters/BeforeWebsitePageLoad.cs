@@ -32,7 +32,7 @@ namespace SixtyThreeBits.Web.Filters
 
         async Task InitStartUp(ActionExecutingContext FilterContext)
         {
-            Model.Culture = FilterContext.RouteData.Values["Culture"]?.ToString();
+            Model.Culture = FilterContext.RouteData.Values["Culture"]?.ToString() ?? Enums.Languages.GEORGIAN;
             Model.SystemProperties = await Model.DataAccessFactory.SystemProperties.GetSystemProperties();            
             ViewModel.ScriptsHeader = Model.SystemProperties.ScriptsHeader;
             ViewModel.ScriptsBodyStart = Model.SystemProperties.ScriptsBodyStart;

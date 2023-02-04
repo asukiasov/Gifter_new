@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
+using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries;
 using SixtyThreeBits.Web.Admin.Models;
 using SixtyThreeBits.Web.Reusables.Core;
@@ -6,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace SixtyThreeBits.Web.Admin.Filters
 {
-    public class BeforeCategoryPageLoad: IAsyncActionFilter
+    public class BeforeProductCategoryPageLoad: IAsyncActionFilter
     {
-        public BeforeCategoryPageLoad()
+        public BeforeProductCategoryPageLoad()
         {
 
         }
@@ -16,10 +17,10 @@ namespace SixtyThreeBits.Web.Admin.Filters
         public async Task OnActionExecutionAsync(ActionExecutingContext FilterContext, ActionExecutionDelegate next)
         {
             var Model = LocalUtilities.GetModelFromController<CategoriesModelBase>(FilterContext.Controller);
-            var CategoryID = FilterContext.RouteData.Values["CategoryID"].ToString().ToInt();
+            var ProductCategoryID = FilterContext.RouteData.Values[Constants.RouteValues.ProductCategoryID].ToString().ToInt();
 
-            Model.DBItemCategories = await Model.DataAccessFactory.Categories.GetSingleCategoryByID(CategoryID);
-            if (Model.DBItemCategories == null)
+            Model.DBItem = await Model.DataAccessFactory.Products.ProductCategoriesGetSingleByID(ProductCategoryID);
+            if (Model.DBItem == null)
             {
                 FilterContext.Result = Model.GetNotFoundAdminViewResult();
             }
@@ -33,13 +34,13 @@ namespace SixtyThreeBits.Web.Admin.Filters
 
         void InitPageTitle(CategoriesModelBase Model)
         {
-            Model.PageTitle.Set(Model.DBItemCategories.CategoryName);
+            Model.PageTitle.Set(Model.DBItem.ProductCategoryName);
         }
 
         void ReinitBreadCrumbs(CategoriesModelBase Model)
         {
             Model.Breadcrumbs.DeleteLastItem();
-            Model.Breadcrumbs.RenameLastItem(Model.DBItemCategories.CategoryName);
+            Model.Breadcrumbs.RenameLastItem(Model.DBItem.ProductCategoryName);
         }
         
     }

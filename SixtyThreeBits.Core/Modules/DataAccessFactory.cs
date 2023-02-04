@@ -8,7 +8,6 @@ namespace SixtyThreeBits.Core.Modules
         #region Properties        
         public BlogDataAccess Blog { get; set; }
         public BrandsDataAccess Brands { get; set; }
-        public CategoriesDataAccess Categories { get; set; }
         public DictionariesDataAccess Dictionaries { get; set; }
         public EmailTemplatesDataAccess EmailTemplates { get; set; }
         public NewsDataAccess News { get; set; }
@@ -30,14 +29,13 @@ namespace SixtyThreeBits.Core.Modules
             var ConnectionFactory = new ConnectionFactory(AppSettings.DBConnectionStrings.DBConnectionString);
             Blog = new BlogDataAccess(ConnectionFactory);
             Brands = new BrandsDataAccess(ConnectionFactory);
-            Categories = new CategoriesDataAccess(ConnectionFactory, Utilities);
             Dictionaries = new DictionariesDataAccess(ConnectionFactory);
             EmailTemplates = new EmailTemplatesDataAccess(ConnectionFactory);
             News = new NewsDataAccess(ConnectionFactory);
             NotificationManager = new NotificationManagerDataAccess(ConnectionFactory);
             Pages = new PagesDataAccess(ConnectionFactory, AppSettings);
             Partners = new PartnersDataAccess(ConnectionFactory);
-            Products = new ProductsDataAccess(ConnectionFactory);
+            Products = new ProductsDataAccess(ConnectionFactory, Utilities);
             Permissions = new PermissionsDataAccess(ConnectionFactory);
             Projects = new ProjectsDataAccess(ConnectionFactory, Utilities);
             Roles = new RolesDataAccess(ConnectionFactory);

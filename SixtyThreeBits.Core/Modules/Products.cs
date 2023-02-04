@@ -11,14 +11,140 @@ namespace SixtyThreeBits.Core.Modules
 {
     public class ProductsDataAccess : DataAccessBase
     {
-        #region Constructors
-        public ProductsDataAccess(ConnectionFactory ConnectionFactory) : base(ConnectionFactory)
-        {
+        #region Properties
+        readonly UtilityCollection Utilities;
+        #endregion
 
+        #region Constructors
+        public ProductsDataAccess(ConnectionFactory ConnectionFactory, UtilityCollection Utilities) : base(ConnectionFactory)
+        {
+            this.Utilities = Utilities;
         }
         #endregion
 
         #region Methods
+        public async Task ProductCategoriesDeleteRecursive(int? ProductCategoryID)
+        {
+            await TryExecuteAsyncTask($"{nameof(ProductCategoriesDeleteRecursive)}({nameof(ProductCategoryID)} = {ProductCategoryID})", async () =>
+            {
+                using (var db = ConnectionFactory.GetDBCoreDataContext())
+                {
+                    var DBItems = db.ProductCategoriesListForDeleteRecursive(ProductCategoryID).ToList();
+                    foreach (var Item in DBItems)
+                    {
+                        Utilities.DeleteUploadedFile(Item.ProductCategoryImageFilename);
+                    }
+                    await db.ProductCategoriesDeleteRecursive(ProductCategoryID);
+                }
+            });
+        }
+
+        public async Task<ProductCategory> ProductCategoriesGetSingleByID(int? ProductCategoryID)
+        {
+            return await TryToReturnAsyncTask($"{nameof(ProductCategoriesGetSingleByID)}({nameof(ProductCategoryID)} = {ProductCategoryID})", async () =>
+            {
+                using (var db = ConnectionFactory.GetDBCoreDataContext())
+                {
+                    var Result = await db.ProductCategoriesGetSingleByID(ProductCategoryID);
+                    return Result?.DeserializeJsonTo<ProductCategory>();
+                }
+            });
+        }
+
+        public async Task<ProductCategory> ProductCategoriesGetSingleBySlug(string ProductCategorySlug)
+        {
+            return await TryToReturnAsyncTask($"{nameof(ProductCategoriesGetSingleBySlug)}({nameof(ProductCategorySlug)} = {ProductCategorySlug})", async () =>
+            {
+                using (var db = ConnectionFactory.GetDBCoreDataContext())
+                {
+                    var Result = await db.ProductCategoriesGetSingleBySlug(ProductCategorySlug);
+                    return Result?.DeserializeJsonTo<ProductCategory>();
+                }
+            });
+        }
+
+        public async Task<int?> ProductCategoriesIUD(Enums.DatabaseActions DatabaseAction, int? ProductCategoryID = null, int? ProductCategoryParentID = null, string ProductCategoryName = null, string ProductCategoryNameEng = null, string ProductCategorynameRus = null, string ProductCategoryImageFilename = null, string ProductCategoryDescriptionShort = null, string ProductCategoryDescriptionShortEng = null, string ProductCategoryDescriptionShortRus = null)
+        {
+            return await TryToReturnAsyncTask($"{nameof(ProductCategoriesIUD)}({nameof(DatabaseAction)} = {DatabaseAction}, {nameof(ProductCategoryID)} = {ProductCategoryID}, {nameof(ProductCategoryParentID)} = {ProductCategoryParentID}, {nameof(ProductCategoryName)} = {ProductCategoryName}, {nameof(ProductCategoryNameEng)} = {ProductCategoryNameEng}, {nameof(ProductCategorynameRus)} = {ProductCategorynameRus}, {nameof(ProductCategoryImageFilename)} = {ProductCategoryImageFilename}, {nameof(ProductCategoryDescriptionShort)} = {ProductCategoryDescriptionShort}, {nameof(ProductCategoryDescriptionShortEng)} = {ProductCategoryDescriptionShortEng}, {nameof(ProductCategoryDescriptionShortRus)} = {ProductCategoryDescriptionShortRus} )", async () =>
+            {
+                using (var db = ConnectionFactory.GetDBCoreDataContext())
+                {
+                    ProductCategoryID = await db.ProductCategoriesIUD(DatabaseAction, ProductCategoryID, ProductCategoryParentID, ProductCategoryName, ProductCategoryNameEng, ProductCategorynameRus, ProductCategoryImageFilename, ProductCategoryDescriptionShort, ProductCategoryDescriptionShortEng, ProductCategoryDescriptionShortRus);
+                    return ProductCategoryID;
+                }
+            });
+        }
+
+        public async Task<List<ProductCategory>> ProductCategoriesList(int? ProductCategoryParentID = null)
+        {
+            return await TryToReturnAsyncTask($"{nameof(ProductCategoriesList)}({nameof(ProductCategoryParentID)} = {ProductCategoryParentID})", async () =>
+            {
+                using (var db = ConnectionFactory.GetDBCoreDataContext())
+                {
+                    return (await db.ProductCategoriesList(ProductCategoryParentID).OrderBy(Item => Item.ProductCategorySortIndex).ToListAsync())?.Select(Item => new ProductCategory
+                    {
+                        ProductCategoryID = Item.ProductCategoryID,
+                        ProductCategoryParentID = Item.ProductCategoryParentID,
+                        ProductCategorySlug = Item.ProductCategorySlug,
+                        ProductCategoryName = Item.ProductCategoryName,
+                        ProductCategoryNameEng = Item.ProductCategoryNameEng,
+                        ProductCategoryNameRus = Item.ProductCategoryNameRus,
+                        ProductCategorySortIndex = Item.ProductCategorySortIndex,
+                        ProductCategoryImageFilename = Item.ProductCategoryImageFilename
+                    }).ToList();
+                }
+            });
+        }
+
+        public async Task<List<ProductCategory>> ProductCategoriesListWithTitlePaddindHierarchy(char PadChar = ' ')
+        {
+            var Result = new List<ProductCategory>();
+
+            Action<ProductCategory, int, List<ProductCategory>> InitCategoryNameByHierarchy = null;
+            InitCategoryNameByHierarchy = (ProductCategory Parent, int PadCount, List<ProductCategory> CategorysList) =>
+            {
+                if (PadCount > 0)
+                {
+                    Parent.ProductCategoryName = Parent.ProductCategoryName.PadLeft(Parent.ProductCategoryName.Length + PadCount, PadChar);
+                    Result.Add(Parent);
+                }
+                else
+                {
+                    Result.Add(Parent);
+                }
+
+                var Children = CategorysList.Where(Item => Item.ProductCategoryParentID == Parent.ProductCategoryID).ToList();
+                foreach (var Category in Children)
+                {
+                    InitCategoryNameByHierarchy(Category, PadCount + 4, CategorysList);
+                }
+            };
+
+            var Categories = await ProductCategoriesList();
+            if (Categories?.Count > 0)
+            {
+                var Parents = Categories.Where(Item => Item.ProductCategoryParentID == null).OrderBy(Item => Item.ProductCategorySortIndex).ToList();
+                foreach (var Item in Parents)
+                {
+                    InitCategoryNameByHierarchy(Item, 0, Categories);
+                }
+            }
+
+            return Result;
+        }
+
+        public async Task ProductCategoriesSyncParentsAndSortIndexes(List<SyncSortIndexesItem> SortIndexes)
+        {
+            var SortIndexesJson = SortIndexes.ToJson();
+            await TryExecuteAsyncTask($"{nameof(ProductCategoriesSyncParentsAndSortIndexes)}({nameof(SortIndexes)} = {SortIndexesJson})", async () =>
+            {
+                using (var db = ConnectionFactory.GetDBCoreDataContext())
+                {
+                    await db.ProductCategoriesSyncParentsAndSortIndexes(SortIndexesJson);
+                }
+            });
+        }
+
         public async Task<ProductFilters> GetFilters(string Language, int? CategoryID)
         {            
             return await TryToReturnAsyncTask($"{nameof(GetFilters)}({nameof(Language)} = {Language}, {nameof(CategoryID)} = {CategoryID})", async () =>
@@ -53,29 +179,6 @@ namespace SixtyThreeBits.Core.Modules
                     return Result?.DeserializeJsonTo<Product>();
                 }
             });
-        }
-
-        public async Task InitListWithBrandIDAndCategoryID(List<Product.ProductSyncItem> ProductSyncItems, DataAccessFactory DataAccessFactory)
-        {
-            var CategoriesList = await DataAccessFactory.Categories.ListCategories();
-            var BrandsList = await DataAccessFactory.Brands.ListBrands();
-            var ProductsList = await ListProducts();
-
-            foreach (var Item in ProductSyncItems)
-            {
-                Item.CategoryID = CategoriesList.FirstOrDefault(CategoryItem => CategoryItem.CategoryName == Item.ProductCategory)?.CategoryID;
-            }
-
-            foreach (var Item in ProductSyncItems)
-            {
-                Item.BrandID = BrandsList.FirstOrDefault(CategoryItem => CategoryItem.BrandName == Item.ProductBrand)?.BrandID;
-            }
-
-            foreach (var Item in ProductSyncItems)
-            {
-                Item.ProductID = ProductsList.FirstOrDefault(ProductItem => ProductItem.ProductName == Item.ProductName)?.ProductID;
-            }
-
         }
 
         public async Task<bool> IsProductSlugUniq(string ProductSlug, int? ProductID = null)
@@ -218,6 +321,31 @@ namespace SixtyThreeBits.Core.Modules
                     }
                 }
             });
+        }        
+        #endregion
+    }
+
+    public class ProductCategory
+    {
+        #region Properties
+        public int? ProductCategoryID { get; set; }
+        public int? ProductCategoryParentID { get; set; }
+        public string ProductCategorySlug { get; set; }
+        public string ProductCategoryName { get; set; }
+        public string ProductCategoryNameEng { get; set; }
+        public string ProductCategoryNameRus { get; set; }
+        public string ProductCategoryImageFilename { get; set; }
+        public int? ProductCategorySortIndex { get; set; }
+        public string ProductCategoryDescriptionShort { get; set; }
+        public string ProductCategoryDescriptionShortEng { get; set; }
+        public string ProductCategoryDescriptionShortRus { get; set; }
+        public DateTime? ProductCategoryDateCreated { get; set; }
+        #endregion
+
+        #region Methods
+        public override string ToString()
+        {
+            return $"{ProductCategoryID} - {ProductCategoryName}";
         }
         #endregion
     }

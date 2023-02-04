@@ -98,6 +98,13 @@ namespace SixtyThreeBits.Core.Utilities
             #endregion
         }
 
+        public class RouteValues
+        {
+            #region Properties
+            public const string ProductCategoryID = "ProductCategoryID";
+            #endregion
+        }
+
         public class Session
         {
             #region Properties

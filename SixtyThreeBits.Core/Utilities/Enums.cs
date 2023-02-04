@@ -153,7 +153,7 @@ namespace SixtyThreeBits.Core.Utilities
             public const int FINISHED = 3;
             #endregion
         }
-
+        
         public class UfcTransactionTypes
         {
             #region Properties

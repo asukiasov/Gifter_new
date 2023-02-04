@@ -359,7 +359,7 @@ namespace SixtyThreeBits.Web.Admin.Models
                     .Paging(Options=>
                     {
                         Options.Enabled(false);
-                    })
+                    })      
                     .Columns(Columns =>
                     {
                         Columns.AddFor(m => m.PermissionCaption).Caption("დასახელება").Width(400).ValidationRules(Options =>

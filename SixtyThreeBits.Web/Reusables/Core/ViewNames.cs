@@ -45,12 +45,11 @@
                 #endregion               
             }
 
-            public class Categories
+            public class ProductCategories
             {
                 #region Properties
-                public const string Tree = "~/Admin/Views/Categories/CategoriesTree.cshtml";
-                public const string Category = "~/Admin/Views/Categories/Category.cshtml";
-                public const string CategoryProperties = "~/Admin/Views/Categories/CategoryProperties.cshtml";
+                public const string Page = "~/Admin/Views/Products/ProductCategories.cshtml";                
+                public const string ProductCategoryProperties = "~/Admin/Views/Products/ProductCategoryProperties.cshtml";
                 #endregion                
             }
 

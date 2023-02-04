@@ -9,9 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
-using SixtyThreeBits.Core.Modules;
 using SixtyThreeBits.Core.Utilities;
-using SixtyThreeBits.Web.Filters;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -134,7 +132,7 @@ namespace SixtyThreeBits.Web
             RequestLocalizationOptions.RequestCultureProviders.Add(new CustomCultureProvider(Utilities));
             RequestLocalizationOptions.SupportedCultures = new List<CultureInfo> { new CultureInfo(Enums.Languages.GEORGIAN) { NumberFormat = new NumberFormatInfo { CurrencyDecimalSeparator = "." } }, new CultureInfo(Enums.Languages.ENGLISH) };
             RequestLocalizationOptions.SupportedUICultures = new List<CultureInfo> { new CultureInfo(Enums.Languages.GEORGIAN) { NumberFormat = new NumberFormatInfo { CurrencyDecimalSeparator = "." } }, new CultureInfo(Enums.Languages.ENGLISH) };
-            //App.UseRequestLocalization(RequestLocalizationOptions);
+            App.UseRequestLocalization(RequestLocalizationOptions);
 
             App.UseEndpoints(Endpoints =>
             {
