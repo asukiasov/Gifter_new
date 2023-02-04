@@ -872,3 +872,120 @@ table.form-control input{
 .aside-collapsed .footer-container > a {
     display:block;
 }
+
+/* ---------- file uploader ---------- */
+.file-uploader-card {
+    padding: 16px;
+}
+
+.file-uploader-card .row > div {
+    margin-bottom: 20px;
+}
+
+.file-uploader-card .row:last-child {
+    margin-bottom: -20px;
+}
+
+.file-uploader-card .uploader-progress-wrap,
+.file-uploader-card .uploader-container {
+    background-color: #EAEAEA;
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+}
+
+.file-uploader-card .uploader-progress-wrap .wrap,
+.file-uploader-card .uploader-container .wrap {
+    width: 100%;
+    padding: 10px;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    color: #707070;
+    text-align: center;
+}
+
+.file-uploader-card .uploader-progress-wrap {
+    font-size: 12px;
+}
+
+.file-uploader-card .uploader-progress-wrap .progress {
+    max-width: 340px;
+    height: 4px;
+    background-color: #fff;
+    margin: 8px auto;
+}
+
+.file-uploader-card .uploader-progress-wrap .progress-bar {
+    background-color: #D0845D;
+}
+
+.file-uploader-card .uploader-container {
+    display: block;
+    margin: 0;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.file-uploader-card .uploader-container i {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    background-color: #fff;
+    border-radius: 50%;
+    margin: 0 auto 8px;
+    color: #BCBCBC;
+    font-size: 17px;
+}
+
+.file-uploader-card .uploader-container input {
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    right: 100%;
+}
+
+.file-uploader-card .img-wrap::before,
+.file-uploader-card .uploader-progress-wrap::before,
+.file-uploader-card .uploader-container::before {
+    content: "";
+    display: block;
+    padding-top: 66%;
+}
+
+.file-uploader-card .img-wrap {
+    border-radius: 8px;
+    position: relative;
+}
+
+.file-uploader-card .img-wrap .remove-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    background-color: #fff;
+    border: 0;
+    border-radius: 50%;
+    padding: 0;
+    opacity: 0.8;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    font-size: 10px;
+}
+
+.file-uploader-card .img-wrap .remove-btn:hover {
+    opacity: 1;
+}
+
+.caver-img-uploader-card .img-wrap::before,
+.caver-img-uploader-card .uploader-progress-wrap::before,
+.caver-img-uploader-card .uploader-container::before {
+    padding-top: 50%;
+}
+/* ---------- /file uploader ---------- */

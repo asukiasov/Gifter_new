@@ -245,10 +245,11 @@
                 {
                     #region Properties
                     public const string Parent = "AdminProductsProduct";
-                    public const string Properties = "AdminProductsProduct";
-                    public const string PropertiesImagesUpload = "AdminProductsProductImagesUpload";
-                    public const string PropertiesImagesSort = "AdminProductsProductImagesSort";
-                    public const string PropertiesImagesDelete = "AdminProductsProductImagesDelete";
+                    public const string Properties = "AdminProductsProductProperties";
+                    public const string PropertiesImageDelete = "AdminProductsProductPropertiesImageDelete";
+                    public const string PropertiesImagesUpload = "AdminProductsProductPropertiesImagesUpload";
+                    public const string PropertiesImagesSort = "AdminProductsProductPropertiesImagesSort";
+                    public const string PropertiesImagesDelete = "AdminProductsProductPropertiesImagesDelete";
                     #endregion                    
                 }
                 #endregion

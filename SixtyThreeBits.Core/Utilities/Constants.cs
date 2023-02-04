@@ -102,6 +102,7 @@ namespace SixtyThreeBits.Core.Utilities
         {
             #region Properties
             public const string ProductCategoryID = "ProductCategoryID";
+            public const string ProductID = "ProductID";
             #endregion
         }
 

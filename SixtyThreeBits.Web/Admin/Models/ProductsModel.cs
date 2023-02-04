@@ -254,17 +254,16 @@ namespace SixtyThreeBits.Web.Admin.Models
 
         public async Task<List<PageViewModel.GridModel.GridItem>> GetGridViewModel()
         {
-            var Products = (await DataAccessFactory.Products.ListProducts())?.Select(Item => new PageViewModel.GridModel.GridItem
+            var Products = (await DataAccessFactory.Products.ProductsList())?.Select(Item => new PageViewModel.GridModel.GridItem
             {
                 ProductID = Item.ProductID,
                 ProductName = Item.ProductName,
-                ProductCode = Item.ProductCode,
                 ProductIsPublished = Item.ProductIsPublished,
                 ProductPrice = Item.ProductPrice,
                 ProductPriceOld = Item.ProductPriceOld,
                 ProductRemainder = Item.ProductRemainder,
                 ProductIsFeatured = Item.ProductIsFeatured,
-                CategoryID = Item.CategoryID,
+                ProductCategoryID = Item.ProductCategoryID,
                 UrlProductsProperties = Url.RouteUrl(ControllerActionRouteNames.Admin.Products.Product.Properties, new { ProductID = Item.ProductID })
             }).ToList();
             return Products;
@@ -274,7 +273,7 @@ namespace SixtyThreeBits.Web.Admin.Models
         {
             if(DatabaseAction == Enums.DatabaseActions.DELETE)
             {
-                var DBItem = await DataAccessFactory.Products.GetSingleProductByID(ProductID);
+                var DBItem = await DataAccessFactory.Products.ProductsGetSingleByID(ProductID);
                 if(DBItem?.ProductImages?.Any() == true)
                 {
                     foreach(var Item in DBItem.ProductImages)
@@ -287,9 +286,8 @@ namespace SixtyThreeBits.Web.Admin.Models
             await DataAccessFactory.Products.ProductsIUD(
                 DatabaseAction: DatabaseAction,
                 ProductID: ProductID,
-                CategoryID: SubmitModel.CategoryID,
+                ProductCategoryID: SubmitModel.ProductCategoryID,
                 ProductName: SubmitModel.ProductName,
-                ProductCode: SubmitModel.ProductCode,
                 ProductIsPublished: SubmitModel.ProductIsPublished,
                 ProductPrice: SubmitModel.ProductPrice,
                 ProductPriceOld: SubmitModel.ProductPriceOld,
@@ -334,10 +332,10 @@ namespace SixtyThreeBits.Web.Admin.Models
         //    return ProductSyncItemList;
         //}
 
-        public async Task<bool> InsertOrUpdateProducts(List<Product.ProductSyncItem> ProductSyncItems)
+        public async Task<bool> InsertOrUpdateProducts(List<Product> Products)
         {
 
-            await DataAccessFactory.Products.ProductsSync(ProductSyncItems);
+            await DataAccessFactory.Products.ProductsSync(Products);
 
             var IsSuccess = !DataAccessFactory.Products.IsError;
 
@@ -440,8 +438,7 @@ namespace SixtyThreeBits.Web.Admin.Models
                        {
                            Options.AddRequired();
                        });
-                       Columns.AddFor(m => m.CategoryID).Caption("კატეგორია").Width(250).InitLookupColumn(Data: Categories, IsRequired: true);
-                       Columns.AddFor(m => m.ProductCode).Caption("კოდი").Width(150);
+                       Columns.AddFor(m => m.ProductCategoryID).Caption("კატეგორია").Width(250).InitLookupColumn(Data: Categories, IsRequired: true);
                        Columns.AddFor(m => m.ProductPrice).Caption("ფასი").Width(100).Alignment(HorizontalAlignment.Right).DataType(GridColumnDataType.Number);
                        Columns.AddFor(m => m.ProductPriceOld).Caption("ძველი ფასი").Width(100).Alignment(HorizontalAlignment.Right).DataType(GridColumnDataType.Number);
                        Columns.AddFor(m => m.ProductRemainder).Caption("ნაშთი").Width(100).Alignment(HorizontalAlignment.Right).DataType(GridColumnDataType.Number);
@@ -461,13 +458,12 @@ namespace SixtyThreeBits.Web.Admin.Models
                     #region Properties
                     public int? ProductID { get; set; }
                     public string ProductName { get; set; }
-                    public string ProductCode { get; set; }
                     public bool? ProductIsPublished { get; set; }
                     public decimal? ProductPrice { get; set; }
                     public decimal? ProductPriceOld { get; set; }
                     public decimal? ProductRemainder { get; set; }
                     public bool ProductIsFeatured { get; set; }
-                    public int? CategoryID { get; set; }
+                    public int? ProductCategoryID { get; set; }
                     public string UrlProductsProperties { get; set; }
                     #endregion
                 }
@@ -496,14 +492,13 @@ namespace SixtyThreeBits.Web.Admin.Models
                 ViewModel.ProductIsPublished = DBItemProduct.ProductIsPublished;
                 ViewModel.ProductIsFeatured = DBItemProduct.ProductIsFeatured;
                 ViewModel.BrandID = DBItemProduct.BrandID;
-                ViewModel.CategoryID = DBItemProduct.CategoryID;
+                ViewModel.ProductCategoryID = DBItemProduct.ProductCategoryID;
                 ViewModel.ProductName = DBItemProduct.ProductName;
-                ViewModel.ProductCode = DBItemProduct.ProductCode;
                 ViewModel.ProductNameEng = DBItemProduct.ProductNameEng;
                 ViewModel.ProductNameRus = DBItemProduct.ProductNameRus;
-                ViewModel.ProductPriceString = string.Format(Constants.Formats.DecimalNoTrailingZerosEval, DBItemProduct.ProductPrice);
-                ViewModel.ProductPriceOldString = string.Format(Constants.Formats.DecimalNoTrailingZerosEval, DBItemProduct.ProductPriceOld);
-                ViewModel.ProductRemainderString = string.Format(Constants.Formats.DecimalNoTrailingZerosEval, DBItemProduct.ProductRemainder);
+                ViewModel.ProductPrice = Utilities.FormatPriceValue(DBItemProduct.ProductPrice);
+                ViewModel.ProductPriceOld = Utilities.FormatPriceValue(DBItemProduct.ProductPriceOld);
+                ViewModel.ProductRemainder = Utilities.FormatQuantityValue(DBItemProduct.ProductRemainder);
                 ViewModel.ProductSKU = DBItemProduct.ProductSKU;
                 ViewModel.ProductDescriptionShort = DBItemProduct.ProductDescriptionShort;
                 ViewModel.ProductDescriptionShortEng = DBItemProduct.ProductDescriptionShortEng;
@@ -515,24 +510,20 @@ namespace SixtyThreeBits.Web.Admin.Models
             ViewModel.ProductImageFilename = DBItemProduct.ProductImageFilename;
             ViewModel.ProductImageHttpPath = Utilities.GetUploadedFileHttpPath(DBItemProduct.ProductImageFilename);            
 
-            ViewModel.Brands = (await DataAccessFactory.Brands.ListBrands()).Select(Item => new SimpleKeyValue<int?, string> { Key = Item.BrandID, Value = Item.BrandName }).ToList();
+            ViewModel.Brands = (await DataAccessFactory.Brands.ListBrands()).Select(Item => new SimpleKeyValue<int?, string> 
+            { 
+                Key = Item.BrandID, 
+                Value = Item.BrandName, 
+                IsSelected = Item.BrandID == ViewModel.BrandID
+            }).ToList();
             ViewModel.Categories = (await DataAccessFactory.Products.ProductCategoriesListWithTitlePaddindHierarchy('-')).Select(Item => new SimpleKeyValue<int?, string>
             {
                 Key = Item.ProductCategoryID,
-                Value = Item.ProductCategoryName
+                Value = Item.ProductCategoryName,
+                IsSelected = Item.ProductCategoryID == ViewModel.ProductCategoryID
             }).ToList();
-            foreach (var Item in ViewModel.Brands)
-            {
-                Item.IsSelected = ViewModel.BrandID == Item.Key;
-            }
-
-            foreach (var Item in ViewModel.Categories)
-            {
-                Item.IsSelected = ViewModel.CategoryID == Item.Key;
-            }
-
-
-            ViewModel.ProductProducerCountries = (await DataAccessFactory.Dictionaries.ListCountriesAsSimpleKeyValue(SelectedCountryID: DBItemProduct.ProductProducerCountryID));
+      
+            ViewModel.ProductProducerCountries = (await DataAccessFactory.Dictionaries.CountriesListAsSimpleKeyValue(SelectedCountryID: DBItemProduct.CountryIDProducer));
 
             ViewModel.ProductImages = DBItemProduct.ProductImages?.Select(Item => new ProductsPropertiesViewModel.ProductImage
             {
@@ -570,8 +561,7 @@ namespace SixtyThreeBits.Web.Admin.Models
         {
             ViewModel.Errors = new List<SimpleKeyValue<string, string>>
             {
-                //Validation.ValidateRequired(ErrorKey:$"[name=\"{nameof(ViewModel.ProductSlug)}\"]", ValueToValidate:ViewModel.ProductSlug),
-                Validation.ValidateRequired(ErrorKey:$"[name=\"{nameof(ViewModel.ProductName)}\"]", ValueToValidate:ViewModel.ProductName)                
+                Validation.ValidateRequired(ErrorKey: Validation.GetJQueryNameSelectorFor(nameof(ViewModel.ProductName)), ValueToValidate:ViewModel.ProductName)                
             };
             ViewModel.Errors.RemoveAll(Item => Item == null);
         }
@@ -581,13 +571,13 @@ namespace SixtyThreeBits.Web.Admin.Models
             await DataAccessFactory.Products.ProductsIUD(
                 DatabaseAction: Enums.DatabaseActions.UPDATE,
                 ProductID: ProductID,
-                BrandID: ViewModel.BrandID ?? Constants.NullValueFor.Int,
-                CategoryID: ViewModel.CategoryID ?? Constants.NullValueFor.Int,
+                ProductCategoryID: ViewModel.ProductCategoryID ?? Constants.NullValueFor.Int,
+                CountryIDProducer: ViewModel.CountryIDProducer ?? Constants.NullValueFor.Int,
+                BrandID: ViewModel.BrandID ?? Constants.NullValueFor.Int,                                
                 ProductName: ViewModel.ProductName,
-                ProductCode: ViewModel.ProductCode ?? Constants.NullValueFor.String,
-                ProductPrice: ViewModel.ProductPrice,
-                ProductPriceOld: ViewModel.ProductPriceOld,
-                ProductRemainder: ViewModel.ProductRemainder,
+                ProductPrice: ViewModel.ProductPrice.ToDecimal() ?? Constants.NullValueFor.Int,
+                ProductPriceOld: ViewModel.ProductPriceOld.ToDecimal() ?? Constants.NullValueFor.Int,
+                ProductRemainder: ViewModel.ProductRemainder.ToDecimal() ?? Constants.NullValueFor.Int,
                 ProductNameEng: ViewModel.ProductNameEng ?? Constants.NullValueFor.String,
                 ProductNameRus: ViewModel.ProductNameRus ?? Constants.NullValueFor.String,
                 ProductDescriptionShort: ViewModel.ProductDescriptionShort ?? Constants.NullValueFor.String,
@@ -598,8 +588,7 @@ namespace SixtyThreeBits.Web.Admin.Models
                 ProductDescriptionRus: ViewModel.ProductDescriptionRus ?? Constants.NullValueFor.String,
                 ProductIsPublished: ViewModel.ProductIsPublished,
                 ProductIsFeatured: ViewModel.ProductIsFeatured,
-                ProductSKU: ViewModel.ProductSKU,
-                ProductProducerCountryID: ViewModel.ProductProducerCountryID
+                ProductSKU: ViewModel.ProductSKU ?? Constants.NullValueFor.String
             );
             ViewModel.IsSaved = !DataAccessFactory.Products.IsError;            
         }
@@ -656,16 +645,12 @@ namespace SixtyThreeBits.Web.Admin.Models
         {
             #region Properties
             public int? BrandID { get; set; }
-            public int? CategoryID { get; set; }            
+            public int? ProductCategoryID { get; set; }            
             public string ProductName { get; set; }
-            public string ProductCode { get; set; }
-            public string ProductNameEng { get; set; }
-            public decimal? ProductPrice { get; set; }
-            public string ProductPriceString { get; set; }
-            public decimal? ProductPriceOld { get; set; }
-            public string ProductPriceOldString { get; set; }
-            public decimal? ProductRemainder { get; set; }
-            public string ProductRemainderString { get; set; }
+            public string ProductNameEng { get; set; }            
+            public string ProductPrice { get; set; }
+            public string ProductPriceOld { get; set; }            
+            public string ProductRemainder { get; set; }
             public string ProductNameRus { get; set; }
             public bool ProductIsPublished { get; set; }
             public bool ProductIsFeatured { get; set; }
@@ -680,7 +665,7 @@ namespace SixtyThreeBits.Web.Admin.Models
             public bool HasProductImage => !string.IsNullOrWhiteSpace(ProductImageFilename);
 
             public string ProductSKU { get; set; }
-            public int? ProductProducerCountryID { get; set; }
+            public int? CountryIDProducer { get; set; }
             
             public List<ProductImage> ProductImages { get; set; }
             public bool HasProductImages => ProductImages?.Any() == true;

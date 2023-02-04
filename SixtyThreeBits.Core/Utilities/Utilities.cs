@@ -139,21 +139,31 @@ namespace SixtyThreeBits.Core.Utilities
             }
         }
 
-        public string FormatPrice(object Value, bool WithCurrencySign, string CurrencySign = "₾")
+        public string FormatPrice(object Price, bool WithCurrencySign, string CurrencySign = "₾")
         {
             if (WithCurrencySign)
             {
-                return string.Format("{0:#,#.#}{1}", Value, CurrencySign);
+                return string.Format("{0:#,#.#}{1}", Price, CurrencySign);
             }
             else
             {
-                return string.Format("{0:#,#.#}", Value);
+                return string.Format("{0:#,#.#}", Price);
             }
+        }
+
+        public string FormatPriceValue(object Price)
+        {
+            return string.Format("{0:#.##}", Price);
         }
 
         public string FormatQuantity(object Value)
         {
             return string.Format("{0:#,#.#}", Value);
+        }
+
+        public string FormatQuantityValue(object Value)
+        {
+            return string.Format("{0:#.#}", Value);
         }
 
         public string GetDatabaseErrorMessage(SixtyThreeBitsDataObject DALItem)

@@ -180,7 +180,6 @@ namespace SixtyThreeBits.Core.DB
             public string CountryNameRus { get; set; }
             public string CountryCode2 { get; set; }
             public string CountryCode3 { get; set; }
-            public int? CountryNumericCode { get; set; }
             #endregion
         }
         internal virtual DbSet<CountriesListResultItem> CountriesListResult { get; set; }
@@ -766,24 +765,29 @@ namespace SixtyThreeBits.Core.DB
         {
             #region Properties
             public int? ProductID { get; set; }
+            public int? ProductCategoryID { get; set; }
+            public int? CountryIDProducer { get; set; }
             public int? BrandID { get; set; }
-            public int? CategoryID { get; set; }
-            public string CategorySlug { get; set; }
-            public string CategorySlugParent { get; set; }
-            public string ProductSlug { get; set; }
             public string ProductName { get; set; }
-            public string ProductCode { get; set; }
             public string ProductNameEng { get; set; }
             public string ProductNameRus { get; set; }
+            public string ProductSlug { get; set; }
+            public string ProductSlugEng { get; set; }
+            public string ProductSlugRus { get; set; }
             public decimal? ProductPrice { get; set; }
             public decimal? ProductPriceOld { get; set; }
             public decimal? ProductRemainder { get; set; }
             public string ProductImageFilename { get; set; }
-            public bool ProductIsPublished { get; set; }
             public string ProductDescriptionShort { get; set; }
             public string ProductDescriptionShortEng { get; set; }
             public string ProductDescriptionShortRus { get; set; }
+            public string ProductDescription { get; set; }
+            public string ProductDescriptionEng { get; set; }
+            public string ProductDescriptionRus { get; set; }
+            public bool ProductIsPublished { get; set; }
             public bool ProductIsFeatured { get; set; }
+            public string ProductSKU { get; set; }
+            public string ProductIDExternal { get; set; }
             public DateTime? ProductDateCreated { get; set; }
             #endregion
         }
@@ -803,53 +807,7 @@ namespace SixtyThreeBits.Core.DB
             var DBResult = ProductsListResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
             return DBResult;
         }
-        #endregion
-
-        #region ProductsListPager
-        public class ProductsListPagerResultItem
-        {
-            #region Properties
-            public int? ProductID { get; set; }
-            public string ProductSlug { get; set; }
-            public string ProductName { get; set; }
-            public string ProductNameEng { get; set; }
-            public string ProductNameRus { get; set; }
-            public decimal? ProductPrice { get; set; }
-            public decimal? ProductPriceOld { get; set; }
-            public decimal? ProductRemainder { get; set; }
-            public string ProductImageFilename { get; set; }
-            public string CategorySlug { get; set; }
-            public string CategorySlugParent { get; set; }
-            #endregion
-        }
-        internal virtual DbSet<ProductsListPagerResultItem> ProductsListPagerResult { get; set; }
-        public IQueryable<ProductsListPagerResultItem> ProductsListPager(string Language, int? PageNumber, int? ItemsPerPage, int? SortType, string SearchPhrase, decimal? ProductPriceMin, decimal? ProductPriceMax, bool? IsInStock, bool? HasDiscount, string CategoriesXml, string BrandsXml, string ProducerCountryCodesXml)
-        {
-            var PR = new SqlQueryBuilder(
-                DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
-                DatabaseObjectName: nameof(ProductsListPager),
-                ResultItemType: typeof(ProductsListPagerResultItem),
-                SqlParameters: new SqlParameter[]
-                {
-                    Language.ToSqlParameter(nameof(Language), SqlDbType.VarChar),
-                    PageNumber.ToSqlParameter(nameof(PageNumber), SqlDbType.Int),
-                    ItemsPerPage.ToSqlParameter(nameof(ItemsPerPage), SqlDbType.Int),
-                    SortType.ToSqlParameter(nameof(SortType), SqlDbType.Int),
-                    SearchPhrase.ToSqlParameter(nameof(SearchPhrase), SqlDbType.NVarChar),
-                    ProductPriceMin.ToSqlParameter(nameof(ProductPriceMin), SqlDbType.Money),
-                    ProductPriceMax.ToSqlParameter(nameof(ProductPriceMax), SqlDbType.Money),
-                    IsInStock.ToSqlParameter(nameof(IsInStock), SqlDbType.Bit),
-                    HasDiscount.ToSqlParameter(nameof(HasDiscount), SqlDbType.Bit),
-                    CategoriesXml.ToSqlParameter(nameof(CategoriesXml), SqlDbType.Xml),
-                    BrandsXml.ToSqlParameter(nameof(BrandsXml), SqlDbType.Xml),
-                    ProducerCountryCodesXml.ToSqlParameter(nameof(ProducerCountryCodesXml), SqlDbType.Xml)
-                }
-            );
-            var DBResult = ProductsListPagerResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
-            return DBResult;
-        }
-
-        #endregion
+        #endregion        
 
         #region ProjectsGetSingleByID
         internal virtual DbSet<ScalarFunctionResult<string>> ProjectsGetSingleByIDResult { get; set; }
@@ -1471,9 +1429,9 @@ namespace SixtyThreeBits.Core.DB
            );
 
             var DBResult = await Database.ExecuteSqlRawAsync(PR.SqlQuery, PR.SqlParameters);
-        }        
+        }
 
-        public async Task<int?> ProductsIUD(Enums.DatabaseActions iud, int? ProductID, int? BrandID, int? CategoryID, string ProductCode, string ProductName, string ProductNameEng, string ProductNameRus, decimal? ProductPrice, decimal? ProductPriceOld, decimal? ProductRemainder, string ProductImageFilename, bool? ProductIsPublished, string ProductDescriptionShort, string ProductDescriptionShortEng, string ProductDescriptionShortRus, string ProductDescription, string ProductDescriptionEng, string ProductDescriptionRus, bool? ProductIsFeatured, string ProductSKU, int? ProductProducerCountryID)
+        public async Task<int?> ProductsIUD(Enums.DatabaseActions iud, int? ProductID, int? ProductCategoryID, int? CountryIDProducer, int? BrandID, string ProductName, string ProductNameEng, string ProductNameRus, string ProductSlug, string ProductSlugEng, string ProductSlugRus, decimal? ProductPrice, decimal? ProductPriceOld, decimal? ProductRemainder, string ProductImageFilename, string ProductDescriptionShort, string ProductDescriptionShortEng, string ProductDescriptionShortRus, string ProductDescription, string ProductDescriptionEng, string ProductDescriptionRus, bool? ProductIsPublished, bool? ProductIsFeatured, string ProductSKU, string ProductIDExternal)
         {
             var PR = new SqlQueryBuilder(
               DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.STORED_PROCEDURE,
@@ -1481,30 +1439,29 @@ namespace SixtyThreeBits.Core.DB
               ResultItemType: null,
               SqlParameters: new SqlParameter[]
               {
-                  iud.ToSqlParameter(nameof(iud),SqlDbType.TinyInt),
-                  ProductID.ToSqlParameter(nameof(ProductID),SqlDbType.Int, true),
-                  BrandID.ToSqlParameter(nameof(BrandID),SqlDbType.Int),
-                  CategoryID.ToSqlParameter(nameof(CategoryID),SqlDbType.Int),
-                  ProductCode.ToSqlParameter(nameof(ProductCode),SqlDbType.NVarChar),
-                  ProductName.ToSqlParameter(nameof(ProductName),SqlDbType.NVarChar),
-                  ProductNameEng.ToSqlParameter(nameof(ProductNameEng),SqlDbType.NVarChar),
-                  ProductNameRus.ToSqlParameter(nameof(ProductNameRus),SqlDbType.NVarChar),
-                  ProductPrice.ToSqlParameter(nameof(ProductPrice),SqlDbType.Money),
-                  ProductPriceOld.ToSqlParameter(nameof(ProductPriceOld),SqlDbType.Money),
-                  ProductRemainder.ToSqlParameter(nameof(ProductRemainder),SqlDbType.Decimal),
-                  ProductImageFilename.ToSqlParameter(nameof(ProductImageFilename),SqlDbType.NVarChar),
-                  ProductIsPublished.ToSqlParameter(nameof(ProductIsPublished),SqlDbType.Bit),
-                  ProductDescriptionShort.ToSqlParameter(nameof(ProductDescriptionShort),SqlDbType.NVarChar),
-                  ProductDescriptionShortEng.ToSqlParameter(nameof(ProductDescriptionShortEng),SqlDbType.NVarChar),
-                  ProductDescriptionShortRus.ToSqlParameter(nameof(ProductDescriptionShortRus),SqlDbType.NVarChar),
-                  ProductDescription.ToSqlParameter(nameof(ProductDescription),SqlDbType.NVarChar),
-                  ProductDescriptionEng.ToSqlParameter(nameof(ProductDescriptionEng),SqlDbType.NVarChar),
-                  ProductDescriptionRus.ToSqlParameter(nameof(ProductDescriptionRus),SqlDbType.NVarChar),
-                  ProductIsFeatured.ToSqlParameter(nameof(ProductIsFeatured),SqlDbType.Bit),
-                  ProductSKU.ToSqlParameter(nameof(ProductSKU),SqlDbType.NVarChar),
-                  ProductProducerCountryID.ToSqlParameter(nameof(ProductProducerCountryID),SqlDbType.Int)
-              }
-              );
+                    iud.ToSqlParameter(nameof(iud),SqlDbType.TinyInt),
+                    ProductID.ToSqlParameter(nameof(ProductID),SqlDbType.Int, true),
+                    ProductCategoryID.ToSqlParameter(nameof(ProductCategoryID),SqlDbType.Int),
+                    CountryIDProducer.ToSqlParameter(nameof(CountryIDProducer),SqlDbType.Int),
+                    BrandID.ToSqlParameter(nameof(BrandID),SqlDbType.Int),
+                    ProductName.ToSqlParameter(nameof(ProductName),SqlDbType.NVarChar),
+                    ProductNameEng.ToSqlParameter(nameof(ProductNameEng),SqlDbType.NVarChar),
+                    ProductNameRus.ToSqlParameter(nameof(ProductNameRus),SqlDbType.NVarChar),
+                    ProductPrice.ToSqlParameter(nameof(ProductPrice),SqlDbType.Money),
+                    ProductPriceOld.ToSqlParameter(nameof(ProductPriceOld),SqlDbType.Money),
+                    ProductRemainder.ToSqlParameter(nameof(ProductRemainder),SqlDbType.Decimal),
+                    ProductImageFilename.ToSqlParameter(nameof(ProductImageFilename),SqlDbType.NVarChar),
+                    ProductDescriptionShort.ToSqlParameter(nameof(ProductDescriptionShort),SqlDbType.NVarChar),
+                    ProductDescriptionShortEng.ToSqlParameter(nameof(ProductDescriptionShortEng),SqlDbType.NVarChar),
+                    ProductDescriptionShortRus.ToSqlParameter(nameof(ProductDescriptionShortRus),SqlDbType.NVarChar),
+                    ProductDescription.ToSqlParameter(nameof(ProductDescription),SqlDbType.NVarChar),
+                    ProductDescriptionEng.ToSqlParameter(nameof(ProductDescriptionEng),SqlDbType.NVarChar),
+                    ProductDescriptionRus.ToSqlParameter(nameof(ProductDescriptionRus),SqlDbType.NVarChar),
+                    ProductIsPublished.ToSqlParameter(nameof(ProductIsPublished),SqlDbType.Bit),
+                    ProductIsFeatured.ToSqlParameter(nameof(ProductIsFeatured),SqlDbType.Bit),
+                    ProductSKU.ToSqlParameter(nameof(ProductSKU),SqlDbType.NVarChar),
+                    ProductIDExternal.ToSqlParameter(nameof(ProductIDExternal),SqlDbType.NVarChar)
+              });
 
             var DBResult = await Database.ExecuteSqlRawAsync(PR.SqlQuery, PR.SqlParameters);
             ProductID = PR.SqlParameters[1].Value?.ToString().ToInt();
@@ -1760,7 +1717,6 @@ namespace SixtyThreeBits.Core.DB
             ModelBuilder.Entity<ProductCategoriesListForDeleteRecursiveResultItem>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<ProductsImagesListResultItem>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<ProductsListResultItem>(Entity => { Entity.HasNoKey(); });
-            ModelBuilder.Entity<ProductsListPagerResultItem>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<ProjectsListResultItem>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<RolesListResultItem>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<RolePermissionsListResultItem>(Entity => { Entity.HasNoKey(); });

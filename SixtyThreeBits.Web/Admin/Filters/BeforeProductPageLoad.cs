@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
+using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries;
 using SixtyThreeBits.Web.Admin.Models;
 using SixtyThreeBits.Web.Reusables.Core;
@@ -16,9 +17,9 @@ namespace SixtyThreeBits.Web.Admin.Filters
         public async Task OnActionExecutionAsync(ActionExecutingContext FilterContext, ActionExecutionDelegate next)
         {
             var Model = LocalUtilities.GetModelFromController<ProductsModelBase>(FilterContext.Controller);
-            var ProductID = FilterContext.RouteData.Values["ProductID"].ToString().ToInt();
+            var ProductID = FilterContext.RouteData.Values[Constants.RouteValues.ProductID].ToString().ToInt();
 
-            Model.DBItemProduct = await Model.DataAccessFactory.Products.GetSingleProductByID(ProductID);
+            Model.DBItemProduct = await Model.DataAccessFactory.Products.ProductsGetSingleByID(ProductID);
             if (Model.DBItemProduct == null)
             {
                 FilterContext.Result = Model.GetNotFoundAdminViewResult();

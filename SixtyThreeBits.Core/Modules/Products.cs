@@ -145,21 +145,10 @@ namespace SixtyThreeBits.Core.Modules
             });
         }
 
-        public async Task<ProductFilters> GetFilters(string Language, int? CategoryID)
-        {            
-            return await TryToReturnAsyncTask($"{nameof(GetFilters)}({nameof(Language)} = {Language}, {nameof(CategoryID)} = {CategoryID})", async () =>
-            {
-                using(var db = ConnectionFactory.GetDBCoreDataContext())
-                {
-                    var Result = await db.ProductsFiltersGet(Language, CategoryID);
-                    return Result?.DeserializeJsonTo<ProductFilters>();
-                }
-            });
-        }
 
-        public async Task<Product> GetSingleProductByID(int? ProductID)
+        public async Task<Product> ProductsGetSingleByID(int? ProductID)
         {
-            return await TryToReturnAsyncTask($"{nameof(GetSingleProductByID)}({nameof(ProductID)} = {ProductID})", async () =>
+            return await TryToReturnAsyncTask($"{nameof(ProductsGetSingleByID)}({nameof(ProductID)} = {ProductID})", async () =>
             {
                 using (var db = ConnectionFactory.GetDBCoreDataContext())
                 {
@@ -181,6 +170,46 @@ namespace SixtyThreeBits.Core.Modules
             });
         }
 
+        public async Task<int?> ProductsIUD(Enums.DatabaseActions DatabaseAction, int? ProductID = null, int? ProductCategoryID = null, int? CountryIDProducer = null, int? BrandID = null, string ProductName = null, string ProductNameEng = null, string ProductNameRus = null, string ProductSlug = null, string ProductSlugEng = null, string ProductSlugRus = null, decimal? ProductPrice = null, decimal? ProductPriceOld = null, decimal? ProductRemainder = null, string ProductImageFilename = null, string ProductDescriptionShort = null, string ProductDescriptionShortEng = null, string ProductDescriptionShortRus = null, string ProductDescription = null, string ProductDescriptionEng = null, string ProductDescriptionRus = null, bool? ProductIsPublished = null, bool? ProductIsFeatured = null, string ProductSKU = null, string ProductIDExternal = null)
+        {
+            return await TryToReturnAsyncTask($"{nameof(ProductsIUD)}({nameof(DatabaseAction)} = {DatabaseAction}, {nameof(ProductID)} = {ProductID}, {nameof(ProductCategoryID)} = {ProductCategoryID}, {nameof(CountryIDProducer)} = {CountryIDProducer}, {nameof(BrandID)} = {BrandID}, {nameof(ProductName)} = {ProductName}, {nameof(ProductNameEng)} = {ProductNameEng}, {nameof(ProductNameRus)} = {ProductNameRus}, {nameof(ProductSlug)} = {ProductSlug}, {nameof(ProductSlugEng)} = {ProductSlugEng}, {nameof(ProductSlugRus)} = {ProductSlugRus}, {nameof(ProductPrice)} = {ProductPrice}, {nameof(ProductPriceOld)} = {ProductPriceOld}, {nameof(ProductRemainder)} = {ProductRemainder}, {nameof(ProductImageFilename)} = {ProductImageFilename}, {nameof(ProductDescriptionShort)} = {ProductDescriptionShort}, {nameof(ProductDescriptionShortEng)} = {ProductDescriptionShortEng}, {nameof(ProductDescriptionShortRus)} = {ProductDescriptionShortRus}, {nameof(ProductDescription)} = {ProductDescription}, {nameof(ProductDescriptionEng)} = {ProductDescriptionEng}, {nameof(ProductDescriptionRus)} = {ProductDescriptionRus}, {nameof(ProductIsPublished)} = {ProductIsPublished}, {nameof(ProductIsFeatured)} = {ProductIsFeatured}, {nameof(ProductSKU)} = {ProductSKU}, {nameof(ProductIDExternal)} = {ProductIDExternal})", async () =>
+            {
+                using (var db = ConnectionFactory.GetDBCoreDataContext())
+                {
+                    ProductID = await db.ProductsIUD(DatabaseAction, ProductID, ProductCategoryID, CountryIDProducer, BrandID, ProductName, ProductNameEng, ProductNameRus, ProductSlug, ProductSlugEng, ProductSlugRus, ProductPrice, ProductPriceOld, ProductRemainder, ProductImageFilename, ProductDescriptionShort, ProductDescriptionShortEng, ProductDescriptionShortRus, ProductDescription, ProductDescriptionEng, ProductDescriptionRus, ProductIsPublished, ProductIsFeatured, ProductSKU, ProductIDExternal);
+                    return ProductID;
+                }
+            });
+        }
+
+        public async Task<List<DBCoreDataContext.ProductsListResultItem>> ProductsList(bool? ProductIsPubliShed = null, bool? ProductIsFeatured = null)
+        {
+            return await TryToReturnAsyncTask($"{nameof(ProductsList)}({nameof(ProductIsPubliShed)} = {ProductIsPubliShed}, {nameof(ProductIsFeatured)} = {ProductIsFeatured})", async () =>
+            {
+                using (var db = ConnectionFactory.GetDBCoreDataContext())
+                {
+                    return await db.ProductsList(ProductIsPubliShed, ProductIsFeatured).OrderByDescending(Item => Item.ProductDateCreated).ToListAsync();
+                }
+            });
+        }
+
+
+
+
+        public async Task<ProductFilters> GetFilters(string Language, int? CategoryID)
+        {            
+            return await TryToReturnAsyncTask($"{nameof(GetFilters)}({nameof(Language)} = {Language}, {nameof(CategoryID)} = {CategoryID})", async () =>
+            {
+                using(var db = ConnectionFactory.GetDBCoreDataContext())
+                {
+                    var Result = await db.ProductsFiltersGet(Language, CategoryID);
+                    return Result?.DeserializeJsonTo<ProductFilters>();
+                }
+            });
+        }
+
+                
+
         public async Task<bool> IsProductSlugUniq(string ProductSlug, int? ProductID = null)
         {
             return await TryToReturnAsyncTask($"{nameof(IsProductSlugUniq)}({nameof(ProductSlug)} = {ProductSlug}, {nameof(ProductID)} = {ProductID})", async () =>
@@ -192,65 +221,8 @@ namespace SixtyThreeBits.Core.Modules
             });
         }
 
-        public async Task<List<Product>> ListProducts(bool? ProductIsPubliShed = null, bool? ProductIsFeatured = null)
-        {
-            return await TryToReturnAsyncTask($"{nameof(ListProducts)}({nameof(ProductIsPubliShed)} = {ProductIsPubliShed}, {nameof(ProductIsFeatured)} = {ProductIsFeatured})", async () =>
-            {
-                using (var db = ConnectionFactory.GetDBCoreDataContext())
-                {
-                    return (await db.ProductsList(ProductIsPubliShed, ProductIsFeatured).OrderByDescending(Item => Item.ProductDateCreated).ToListAsync())
-                    ?.Select(Item => new Product
-                    {
-                        ProductID = Item.ProductID,
-                        BrandID = Item.BrandID,
-                        CategoryID = Item.CategoryID,
-                        CategorySlug = Item.CategorySlug,
-                        CategorySlugParent = Item.CategorySlugParent,
-                        ProductSlug = Item.ProductSlug,
-                        ProductName = Item.ProductName,
-                        ProductCode = Item.ProductCode,
-                        ProductNameEng = Item.ProductNameEng,
-                        ProductNameRus = Item.ProductNameRus,
-                        ProductPrice = Item.ProductPrice,
-                        ProductPriceOld = Item.ProductPriceOld,
-                        ProductRemainder = Item.ProductRemainder,
-                        ProductImageFilename = Item.ProductImageFilename,
-                        ProductIsPublished = Item.ProductIsPublished,
-                        ProductDescriptionShort = Item.ProductDescriptionShort,
-                        ProductDescriptionShortEng = Item.ProductDescriptionShortEng,
-                        ProductDescriptionShortRus = Item.ProductDescriptionShortRus,
-                        ProductIsFeatured = Item.ProductIsFeatured,
-                        ProductDateCreated = Item.ProductDateCreated
-                    }).ToList();
-                }
-            });
-        }
+        
 
-        public async Task<List<Product>> ListProductsPager(string Language, int? PageNumber, int? ItemsPerPage, int? SortType, string SearchPhrase, decimal? ProductPriceMin, decimal? ProductPriceMax, bool? IsInStock, bool? HasDiscount, List<string> CategorySlugs, List<string> BrandSlugs, List<string> ProducerCountryCodes)
-        {
-            return await TryToReturnAsyncTask($"{nameof(ListProductsPager)}({nameof(Language)} = {Language}, {nameof(PageNumber)} = {PageNumber}, {nameof(ItemsPerPage)} = {ItemsPerPage}, {nameof(SortType)} = {SortType}, {nameof(SearchPhrase)} = {SearchPhrase}, {nameof(ProductPriceMin)} = {ProductPriceMin}, {nameof(ProductPriceMax)} = {ProductPriceMax}, {nameof(IsInStock)} = {IsInStock}, {nameof(HasDiscount)} = {HasDiscount}, {nameof(CategorySlugs)} = {CategorySlugs.ToXml()}, {nameof(BrandSlugs)} = {BrandSlugs.ToXml()}, {nameof(ProducerCountryCodes)} = {ProducerCountryCodes.ToXml()})", async () =>
-            {
-                using (var db = ConnectionFactory.GetDBCoreDataContext())
-                {
-                    return (await db.ProductsListPager(Language, PageNumber, ItemsPerPage, SortType, SearchPhrase, ProductPriceMin, ProductPriceMax, IsInStock, HasDiscount, CategorySlugs.ToXml(), BrandSlugs.ToXml(), ProducerCountryCodes.ToXml())
-                    .ToListAsync())
-                    ?.Select(Item => new Product
-                    {
-                        ProductID = Item.ProductID,
-                        ProductSlug = Item.ProductSlug,
-                        ProductName = Item.ProductName,
-                        ProductNameEng = Item.ProductNameEng,
-                        ProductNameRus = Item.ProductNameRus,
-                        ProductPrice = Item.ProductPrice,
-                        ProductPriceOld = Item.ProductPriceOld,
-                        ProductRemainder = Item.ProductRemainder,
-                        ProductImageFilename = Item.ProductImageFilename,
-                        CategorySlug = Item.CategorySlug,
-                        CategorySlugParent = Item.CategorySlugParent,
-                    }).ToList();
-                }
-            });
-        }
 
         public async Task<List<DBCoreDataContext.ProductsImagesListResultItem>> ListProductsImages(int? ProductID)
         {
@@ -263,13 +235,14 @@ namespace SixtyThreeBits.Core.Modules
             });
         }
 
-        public async Task ProductsSync(List<Product.ProductSyncItem> ProductSyncItems)
+        public async Task ProductsSync(List<Product> Products)
         {
-            await TryExecuteAsyncTask($"{nameof(ProductsSync)}({nameof(ProductSyncItems)} = {ProductSyncItems.ToXml()})", async () =>
+            var ProductsJson = Products.ToJson();
+            await TryExecuteAsyncTask($"{nameof(ProductsSync)}({nameof(Products)} = {ProductsJson})", async () =>
             {
                 using (var db = ConnectionFactory.GetDBCoreDataContext())
                 {
-                    await db.ProductsSync(ProductSyncItems.ToXml());
+                    await db.ProductsSync(ProductsJson);
                 }
             });
         }
@@ -282,18 +255,6 @@ namespace SixtyThreeBits.Core.Modules
                 {
                     ProductImageID = await db.ProductsImagesIUD(DatabaseAction, ProductImageID, ProductID, ProductImageFilename, ProductImageSyncSortIndex);
                     return ProductImageID;
-                }
-            });
-        }
-
-        public async Task<int?> ProductsIUD(Enums.DatabaseActions DatabaseAction, int? ProductID = null, int? BrandID = null, int? CategoryID = null, string ProductSlug = null, string ProductCode = null, string ProductName = null, string ProductNameEng = null, string ProductNameRus = null, decimal? ProductPrice = null, decimal? ProductPriceOld = null, decimal? ProductRemainder = null, string ProductImageFilename = null, bool? ProductIsPublished = null, string ProductDescriptionShort = null, string ProductDescriptionShortEng = null, string ProductDescriptionShortRus = null, string ProductDescription = null, string ProductDescriptionEng = null, string ProductDescriptionRus = null, bool? ProductIsFeatured = null, string ProductSKU = null, int? ProductProducerCountryID = null)
-        {
-            return await TryToReturnAsyncTask($"{nameof(ProductsIUD)}({nameof(DatabaseAction)} = {DatabaseAction}, {nameof(ProductID)} = {ProductID}, {nameof(BrandID)} = {BrandID}, {nameof(CategoryID)} = {CategoryID}, {nameof(ProductSlug)} = {ProductSlug}, {nameof(ProductCode)} = {ProductCode}, {nameof(ProductName)} = {ProductName}, {nameof(ProductNameEng)} = {ProductNameEng}, {nameof(ProductNameRus)} = {ProductNameRus}, {nameof(ProductPrice)} = {ProductPrice}, {nameof(ProductPriceOld)} = {ProductPriceOld}, {nameof(ProductRemainder)} = {ProductRemainder}, {nameof(ProductImageFilename)} = {ProductImageFilename}, {nameof(ProductIsPublished)} = {ProductIsPublished}, {nameof(ProductDescriptionShort)} = {ProductDescriptionShort}, {nameof(ProductDescriptionShortEng)} = {ProductDescriptionShortEng}, {nameof(ProductDescriptionShortRus)} = {ProductDescriptionShortRus}, {nameof(ProductDescription)} = {ProductDescription}, {nameof(ProductDescriptionEng)} = {ProductDescriptionEng}, {nameof(ProductDescriptionRus)} = {ProductDescriptionRus}, {nameof(ProductIsFeatured)} = {ProductIsFeatured}, {nameof(ProductSKU)} = {ProductSKU}, {nameof(ProductProducerCountryID)} = {ProductProducerCountryID})", async () =>
-            {
-                using (var db = ConnectionFactory.GetDBCoreDataContext())
-                {
-                    ProductID = await db.ProductsIUD(DatabaseAction, ProductID, BrandID, CategoryID, ProductCode, ProductName, ProductNameEng, ProductNameRus, ProductPrice, ProductPriceOld, ProductRemainder, ProductImageFilename, ProductIsPublished, ProductDescriptionShort, ProductDescriptionShortEng, ProductDescriptionShortRus, ProductDescription, ProductDescriptionEng, ProductDescriptionRus, ProductIsFeatured, ProductSKU, ProductProducerCountryID);
-                    return ProductID;
                 }
             });
         }
@@ -354,43 +315,31 @@ namespace SixtyThreeBits.Core.Modules
     {
         #region Properties
         public int? ProductID { get; set; }
+        public int? ProductCategoryID { get; set; }
+        public int? CountryIDProducer { get; set; }
         public int? BrandID { get; set; }
-        public string BrandName { get; set; }
-        public string BrandNameEng { get; set; }
-        public string BrandNameRus { get; set; }
-        public string BrandImageFilename { get; set; }
-        public int? CategoryID { get; set; }
-        public string CategorySlug { get; set; }
-        public string CategorySlugParent { get; set; }
-        public string CategoryName { get; set; }
-        public string CategoryNameEng { get; set; }
-        public string CategoryNameRus { get; set; }
-        public string ProductSlug { get; set; }
-        public string ProductCode { get; set; }
         public string ProductName { get; set; }
         public string ProductNameEng { get; set; }
         public string ProductNameRus { get; set; }
+        public string ProductSlug { get; set; }
+        public string ProductSlugEng { get; set; }
+        public string ProductSlugRus { get; set; }
         public decimal? ProductPrice { get; set; }
         public decimal? ProductPriceOld { get; set; }
-        public decimal? ProductRemainder { get; set; }        
-        public bool ProductIsOutOfStock => !(ProductRemainder > 0);
-        public decimal? ProductQuantityBasket { get; set; }
+        public decimal? ProductRemainder { get; set; }
         public string ProductImageFilename { get; set; }
-        public bool ProductIsPublished { get; set; }
         public string ProductDescriptionShort { get; set; }
         public string ProductDescriptionShortEng { get; set; }
         public string ProductDescriptionShortRus { get; set; }
         public string ProductDescription { get; set; }
         public string ProductDescriptionEng { get; set; }
         public string ProductDescriptionRus { get; set; }
+        public bool ProductIsPublished { get; set; }
         public bool ProductIsFeatured { get; set; }
         public string ProductSKU { get; set; }
-        public int? ProductProducerCountryID { get; set; }
-        public string ProductProducerCountry { get; set; }
-        public string ProductProducerCountryEng { get; set; }
-        public string ProductProducerCountryRus { get; set; }
-        public int? ProductWeightKG { get; set; }
+        public string ProductIDExternal { get; set; }
         public DateTime? ProductDateCreated { get; set; }
+
         public List<ProductImage> ProductImages { get; set; }
         #endregion
 
@@ -399,51 +348,11 @@ namespace SixtyThreeBits.Core.Modules
         {
             #region Properties
             public int? ProductImageID { get; set; }
-            public int? ProductID { get; set; }
             public string ProductImageFilename { get; set; }
-            public int? ProductImageSortIndex { get; set; }            
-            #endregion
-
-            #region Serialization
-            public bool ShouldSerializeProductImageID() { return ProductImageID != null; }
-            public bool ShouldSerializeProductID() { return ProductID != null; }
-            public bool ShouldSerializeProductImageFilename() { return !string.IsNullOrWhiteSpace(ProductImageFilename); }
-            public bool ShouldSerializeProductImageSortIndex() { return ProductImageSortIndex != null; }            
-            #endregion
-        }
-
-        public class ProductSyncItem
-        {
-            #region Properties
-            public string ProductName { get; set; }
-            public string ProductNameEng { get; set; }
-            public string ProductNameRus { get; set; }
-            public int? ProductID { get; set; }
-            public string ProductCode { get; set; }
-            public string ProductCategory { get; set; }
-            public int? CategoryID { get; set; }
-            public string ProductBrand { get; set; }
-            public int? BrandID { get; set; }
-            public decimal? ProductPrice { get; set; }
-            public decimal? ProductRemainder { get; set; }            
-            #endregion
-
-            #region Serialization
-            public bool ShouldSerializeProductName() { return !string.IsNullOrWhiteSpace(ProductName); }
-            public bool ShouldSerializeProductNameEng() { return !string.IsNullOrWhiteSpace(ProductNameEng); }
-            public bool ShouldSerializeProductNameRus() { return !string.IsNullOrWhiteSpace(ProductNameRus); }
-            public bool ShouldSerializeProductID() { return ProductID != null; }
-            public bool ShouldSerializeProductCode() { return !string.IsNullOrWhiteSpace(ProductCode); }
-            public bool ShouldSerializeProductCategory() { return !string.IsNullOrWhiteSpace(ProductCategory); }
-            public bool ShouldSerializeCategoryID() { return CategoryID != null; }
-            public bool ShouldSerializeProductBrand() { return !string.IsNullOrWhiteSpace(ProductBrand); }
-            public bool ShouldSerializeBrandID() { return BrandID != null; }
-            public bool ShouldSerializeProductPrice() { return ProductPrice != null; }
-            public bool ShouldSerializeProductRemainder() { return ProductRemainder != null; }
             #endregion
         }
         #endregion
-    }    
+    }
 
     public class ProductFilters
     {

@@ -40,9 +40,9 @@ namespace SixtyThreeBits.Core.Modules
             });
         }
 
-        public async Task<List<SimpleKeyValue<int?, string>>> ListCountriesAsSimpleKeyValue(int? SelectedCountryID = null)
+        public async Task<List<SimpleKeyValue<int?, string>>> CountriesListAsSimpleKeyValue(int? SelectedCountryID = null)
         {
-            return await TryToReturnAsyncTask($"{nameof(ListCountriesAsSimpleKeyValue)}({nameof(SelectedCountryID)} = {SelectedCountryID})", async () =>
+            return await TryToReturnAsyncTask($"{nameof(CountriesListAsSimpleKeyValue)}({nameof(SelectedCountryID)} = {SelectedCountryID})", async () =>
             {
                 using (var db = ConnectionFactory.GetDBCoreDataContext())
                 {

@@ -22,7 +22,7 @@
                 </div>
                 <div class="col-lg-4 form-group">
                     <label>კატეგორია</label>
-                    <select class="form-control" name="@nameof(Model.CategoryID)">
+                    <select class="form-control" name="@nameof(Model.ProductCategoryID)">
                         <option></option>
                         @foreach (var Item in Model.Categories)
                         {
@@ -31,7 +31,33 @@
                     </select>
                     <p class="help-block"></p>
                 </div>
-                <div class="col-lg-2 form-group">
+                <div class="form-group col-lg-4">
+                    <label>SKU</label>
+                    <input name="@nameof(Model.ProductSKU)" class="form-control" value="@Html.Raw(Model.ProductSKU)" />
+                    <p class="help-block">
+                        <span class="error-text"></span>
+                    </p>
+                </div>                
+            </div>
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <label>ფასი</label>
+                            <input name="@nameof(Model.ProductPrice)" class="form-control js-numeric-input" value="@Model.ProductPrice" />
+                        </div>
+                        <div class="col-lg-4">
+                            <label>ძველი ფასი</label>
+                            <input name="@nameof(Model.ProductPriceOld)" class="form-control js-numeric-input" value="@Model.ProductPriceOld" />
+                        </div>
+                        <div class="col-lg-4">
+                            <label>ნაშთი</label>
+                            <input name="@nameof(Model.ProductRemainder)" class="form-control js-numeric-input" value="@Model.ProductRemainder" />
+                        </div>
+                    </div>
+                </div>
+     
+                <div class="col-lg-4 form-group">
                     <label>ბრენდი</label>
                     <select class="form-control" name="@nameof(Model.BrandID)">
                         <option></option>
@@ -42,9 +68,9 @@
                     </select>
                     <p class="help-block"></p>
                 </div>
-                <div class="col-lg-2 form-group">
+                <div class="col-lg-4 form-group">
                     <label>მწარმოებელი ქვეყანა</label>
-                    <select name="@nameof(Model.ProductProducerCountryID)" class="form-control">
+                    <select name="@nameof(Model.CountryIDProducer)" class="form-control">
                         <option></option>
                         @if (Model.HasProductProducerCountries)
                         {
@@ -55,31 +81,7 @@
                         }
                     </select>
                 </div>
-            </div>
-            <div class="row">
-                <div class="form-group col-lg-2">
-                    <label>კოდი</label>
-                    <input type="text" name="@nameof(Model.ProductCode)" class="form-control" value="@Model.ProductCode" />
-                </div>
-                <div class="form-group col-lg-2">
-                    <label>SKU</label>
-                    <input name="@nameof(Model.ProductSKU)" class="form-control" value="@Html.Raw(Model.ProductSKU)" />
-                    <p class="help-block">
-                        <span class="error-text"></span>
-                    </p>
-                </div>
-                <div class="form-group col-lg-2">
-                    <label>ფასი</label>
-                    <input name="@nameof(Model.ProductPrice)" class="form-control js-numeric-input" value="@Model.ProductPriceString" />
-                </div>
-                <div class="form-group col-lg-2">
-                    <label>ძველი ფასი</label>
-                    <input name="@nameof(Model.ProductPriceOld)" class="form-control js-numeric-input" value="@Model.ProductPriceOldString" />
-                </div>
-                <div class="form-group col-lg-4">
-                    <label>ნაშთი</label>
-                    <input name="@nameof(Model.ProductRemainder)" class="form-control js-numeric-input" value="@Model.ProductRemainderString" />
-                </div>
+        
             </div>
             <div class="row">
                 <div class="form-group col-lg-4">
@@ -128,7 +130,64 @@
             </div>
         </form>
 
-        <div class="card mt-5">
+        <div class="card file-uploader-card">
+            <div class="card-header">
+                <h4>გალერეა</h4>
+            </div>
+            <div class="row row-px-sm">
+                <div class="col-4">
+                    <figure class="embed-responsive img-wrap">
+                        <img class="embed-responsive-item" src="images/0/venues/1.jpg" alt="">
+                        <button class="remove-btn">
+                            <i class="fas fa-trash text-danger"></i>
+                        </button>
+                    </figure>
+                </div>
+
+                <div class="col-4">
+                    <figure class="embed-responsive img-wrap">
+                        <img class="embed-responsive-item" src="images/0/venues/1.jpg" alt="">
+                        <a class="remove-btn" href="#">
+                            <i class="fas fa-trash text-danger"></i>
+                        </a>
+                    </figure>
+                </div><div class="col-4">
+                    <div class="uploader-progress-wrap">
+                        <div class="wrap">
+                            <span class="d-block text-truncate">image.jpg</span>
+
+                            <div class="progress">
+                                <div class="progress-bar" style="width: 60%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-4">
+                    <div class="uploader-progress-wrap">
+                        <div class="wrap">
+                            <span class="d-block text-truncate">image.jpg</span>
+
+                            <div class="progress">
+                                <div class="progress-bar" style="width: 60%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-4">
+                    <label class="uploader-container">
+                        <span class="wrap">
+                            <i class="far fa-plus"></i>
+                            <span>Upload Photo</span>
+                        </span>
+                        <input type="file">
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="card file-uploader-card mt-5">
             <div class="card-header d-flex justify-content-between">
                 <h4>გალერეა</h4>
                 <button class="btn btn-oval btn-primary js-show-upload-popup-button"><i class="fas fa-upload"></i> სურათების ატვირთვა</button>
@@ -154,6 +213,15 @@
                         </div>
                     }
                 }
+                <div class="col-4 js-gallery-uploader-start-wrap">
+                    <label class="uploader-container">
+                        <span class="wrap">
+                            <i class="far fa-plus"></i>
+                            <span>Upload Photo</span>
+                        </span>
+                        <input class="js-gallery-uploader-file-input" type="file" multiple="" accept="image/*">
+                    </label>
+                </div>
             </div>
             <div class="row mb-5"></div>
             <div class="row mb-5"></div>
