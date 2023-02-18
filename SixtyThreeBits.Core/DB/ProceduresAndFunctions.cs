@@ -692,74 +692,6 @@ namespace SixtyThreeBits.Core.DB
         }
         #endregion
 
-        #region ProductsFiltersGet
-        internal virtual DbSet<ScalarFunctionResult<string>> ProductsFiltersGetResult { get; set; }
-        public async Task<string> ProductsFiltersGet(string Language, int? CategoryID)
-        {
-            var PR = new SqlQueryBuilder(
-                DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
-                DatabaseObjectName: nameof(ProductsFiltersGet),
-                ResultItemType: typeof(ScalarFunctionResult<string>),
-                SqlParameters: new SqlParameter[]
-                {
-                    Language.ToSqlParameter(nameof(Language), SqlDbType.VarChar),
-                    CategoryID.ToSqlParameter(nameof(CategoryID), SqlDbType.Int),
-                }
-            );
-            var DBResult = ProductsFiltersGetResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
-            var DBFunctionResult = await DBResult.FirstOrDefaultAsync();
-            return DBFunctionResult?.Value;
-        }
-        #endregion
-
-        #region ProductsImagesList
-        public class ProductsImagesListResultItem
-        {
-            #region Properties
-            public int? ProductImageID { get; set; }
-            public int? ProductID { get; set; }
-            public string ProductImageFilename { get; set; }
-            public int? ProductImageSortIndex { get; set; }
-            public DateTime? ProductImageDateCreated { get; set; }
-            #endregion
-        }
-        internal virtual DbSet<ProductsImagesListResultItem> ProductsImagesListResult { get; set; }
-        public IQueryable<ProductsImagesListResultItem> ProductsImagesList(int? ProductID)
-        {
-            var PR = new SqlQueryBuilder(
-                DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
-                DatabaseObjectName: nameof(ProductsImagesList),
-                ResultItemType: typeof(ProductsImagesListResultItem),
-                SqlParameters: new SqlParameter[]
-                {
-                    ProductID.ToSqlParameter(nameof(ProductID), SqlDbType.Int)
-                }
-            );
-            var DBResult = ProductsImagesListResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
-            return DBResult;
-        }
-        #endregion
-
-        #region ProductsIsSlugUniq
-        internal virtual DbSet<ScalarFunctionResult<bool>> ProductsIsSlugUniqResult { get; set; }
-        public async Task<bool> ProductsIsSlugUniq(string ProductSlug, int? ProductID)
-        {
-            var PR = new SqlQueryBuilder(
-                DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
-                DatabaseObjectName: nameof(ProductsIsSlugUniq),
-                ResultItemType: typeof(ScalarFunctionResult<string>),
-                SqlParameters: new SqlParameter[]
-                {
-                    ProductSlug.ToSqlParameter(nameof(ProductSlug), SqlDbType.NVarChar),
-                    ProductID.ToSqlParameter(nameof(ProductID), SqlDbType.Int)
-                }
-            );
-            var DBResult = ProductsIsSlugUniqResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
-            var DBFunctionResult = await DBResult.FirstOrDefaultAsync();
-            return DBFunctionResult?.Value == true;
-        }
-        #endregion        
-
         #region ProductsList
         public class ProductsListResultItem
         {
@@ -1489,23 +1421,7 @@ namespace SixtyThreeBits.Core.DB
             return ProductImageID;
         }
 
-        public async Task ProductsImagesInsert(int? ProductID, string ProductImagesXml)
-        {
-            var PR = new SqlQueryBuilder(
-                DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.STORED_PROCEDURE,
-                DatabaseObjectName: nameof(ProductsImagesInsert),
-                ResultItemType: null,
-                SqlParameters: new SqlParameter[]
-                {
-                    ProductID.ToSqlParameter(nameof(ProductID),SqlDbType.Int),
-                    ProductImagesXml.ToSqlParameter(nameof(ProductImagesXml),SqlDbType.Xml)
-                }
-             );
-
-            var DBResult = await Database.ExecuteSqlRawAsync(PR.SqlQuery, PR.SqlParameters);
-        }
-
-        public async Task ProductsImagesSyncSortIndex(string SortIndexXml)
+        public async Task ProductsImagesSyncSortIndex(int? ProductID, string SortIndexesJson)
         {
             var PR = new SqlQueryBuilder(
              DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.STORED_PROCEDURE,
@@ -1513,7 +1429,8 @@ namespace SixtyThreeBits.Core.DB
              ResultItemType: null,
              SqlParameters: new SqlParameter[]
              {
-                 SortIndexXml.ToSqlParameter(nameof(SortIndexXml),SqlDbType.Xml)
+                 ProductID.ToSqlParameter(nameof(ProductID), SqlDbType.Int),
+                 SortIndexesJson.ToSqlParameter(nameof(SortIndexesJson),SqlDbType.NVarChar)
              }
            );
 
@@ -1714,8 +1631,7 @@ namespace SixtyThreeBits.Core.DB
             ModelBuilder.Entity<PartnersListResultItem>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<PermissionsListResultItem>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<ProductCategoriesListResultItem>(Entity => { Entity.HasNoKey(); });
-            ModelBuilder.Entity<ProductCategoriesListForDeleteRecursiveResultItem>(Entity => { Entity.HasNoKey(); });
-            ModelBuilder.Entity<ProductsImagesListResultItem>(Entity => { Entity.HasNoKey(); });
+            ModelBuilder.Entity<ProductCategoriesListForDeleteRecursiveResultItem>(Entity => { Entity.HasNoKey(); });            
             ModelBuilder.Entity<ProductsListResultItem>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<ProjectsListResultItem>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<RolesListResultItem>(Entity => { Entity.HasNoKey(); });

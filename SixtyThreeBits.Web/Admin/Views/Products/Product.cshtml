@@ -134,120 +134,60 @@
             <div class="card-header">
                 <h4>გალერეა</h4>
             </div>
-            <div class="row row-px-sm">
-                <div class="col-4">
-                    <figure class="embed-responsive img-wrap">
-                        <img class="embed-responsive-item" src="images/0/venues/1.jpg" alt="">
-                        <button class="remove-btn">
-                            <i class="fas fa-trash text-danger"></i>
-                        </button>
-                    </figure>
-                </div>
-
-                <div class="col-4">
-                    <figure class="embed-responsive img-wrap">
-                        <img class="embed-responsive-item" src="images/0/venues/1.jpg" alt="">
-                        <a class="remove-btn" href="#">
-                            <i class="fas fa-trash text-danger"></i>
-                        </a>
-                    </figure>
-                </div><div class="col-4">
-                    <div class="uploader-progress-wrap">
-                        <div class="wrap">
-                            <span class="d-block text-truncate">image.jpg</span>
-
-                            <div class="progress">
-                                <div class="progress-bar" style="width: 60%;"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-4">
-                    <div class="uploader-progress-wrap">
-                        <div class="wrap">
-                            <span class="d-block text-truncate">image.jpg</span>
-
-                            <div class="progress">
-                                <div class="progress-bar" style="width: 60%;"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-4">
-                    <label class="uploader-container">
-                        <span class="wrap">
-                            <i class="far fa-plus"></i>
-                            <span>Upload Photo</span>
-                        </span>
-                        <input type="file">
-                    </label>
-                </div>
-            </div>
-        </div>
-
-        <div class="card file-uploader-card mt-5">
-            <div class="card-header d-flex justify-content-between">
-                <h4>გალერეა</h4>
-                <button class="btn btn-oval btn-primary js-show-upload-popup-button"><i class="fas fa-upload"></i> სურათების ატვირთვა</button>
-            </div>
-            <div class="row js-sortable">
-                @if (Model.HasProductImages)
-                {
-                    foreach (var Item in Model.ProductImages)
+            <div class="card-body px-0">
+                <div class="row row-px-sm js-product-images-container">
+                    @if(Model.HasProductImages)
                     {
-                        <div class="col-lg-2 js-drag-me js-image-item">
-                            <div class="card border">
-                                <div class="card-body js-body" data-url="@Html.Raw(Item.ProductImageHttpPath)" data-image-id="@Html.Raw(Item.ProductImageID)" style="height:150px; background:url('@Html.Raw(Item.ProductImageHttpPath)') no-repeat center; background-size:contain; ">
-                                </div>
-                                <div class="card-footer clearfix">
-                                    <div class="pull-left js-note">
-
-                                    </div>
-                                    <div class="text-right">
-                                        <a href="#" class="js-delete-image-button" data-filename="@Html.Raw(Item.ProductImageFilename)" data-id="@Item.ProductImageID"><i class="fas fa-trash-alt"></i> </a>
-                                    </div>
-                                </div>
+                        foreach(var Item in Model.ProductImages)
+                        {
+                            <div class="col-md-4 col-xl-2 js-product-image-item" data-id="@Html.Raw(Item.ProductImageID)">
+                                <figure class="embed-responsive img-wrap">
+                                    <img class="embed-responsive-item js-product-image" src="@Html.Raw(Item.ProductImageFileHttpPath)" />
+                                    <a class="remove-btn js-product-image-delete-button" href="#">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </a>
+                                </figure>
                             </div>
-                        </div>
+                        }
                     }
-                }
-                <div class="col-4 js-gallery-uploader-start-wrap">
-                    <label class="uploader-container">
-                        <span class="wrap">
-                            <i class="far fa-plus"></i>
-                            <span>Upload Photo</span>
-                        </span>
-                        <input class="js-gallery-uploader-file-input" type="file" multiple="" accept="image/*">
-                    </label>
+                    <div class="col-md-4 col-xl-2 js-product-images-uploader-container">
+                        <label class="uploader-container">
+                            <span class="wrap">
+                                <i class="far fa-plus"></i>
+                                <span>სურათის ატვირთვა</span>
+                            </span>
+                            <input type="file" class="js-product-images-uploader" accept="image/*" multiple />
+                        </label>
+                    </div>
                 </div>
             </div>
-            <div class="row mb-5"></div>
-            <div class="row mb-5"></div>
-        </div>
+        </div>        
     </div>
 </div>
 @section FooterSection{
-
-    <div class="modal fade js-upload-popup">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">სურათბის ატვირთვა</h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div id="dropzone-container" class="dropzone js-dropzone">
-                        <div class="dz-default dz-message">@Html.Raw(Model.TextDropzone)</div>
+    
+    <script id="ProductImageProgressTemplate" type="text/template7">
+        <div class="col-md-4 col-xl-2 js-product-image-item" data-filename="{{ProductImageFilename}}">
+            <div class="uploader-progress-wrap">
+                <div class="wrap">
+                    <span class="d-block text-truncate">{{ProductImageFilename}}</span>
+                    <div class="progress">
+                        <div class="progress-bar js-progress-bar" style="width: {{ProductImageFileUploadProgressPercent}}%;"></div>
                     </div>
                 </div>
             </div>
-
         </div>
-    </div>
+    </script>
+    <script id="ProductImageTemplate" type="text/template7">
+        <div class="col-md-4 col-xl-2 js-product-image-item" data-id="{{ProductImageID}}">
+            <figure class="embed-responsive img-wrap">
+                <img class="embed-responsive-item js-product-image" src="{{ProductImageFileHttpPath}}" />
+                <a class="remove-btn js-product-image-delete-button" href="#">
+                    <i class="fas fa-trash-alt"></i>
+                </a>
+            </figure>
+        </div>
+    </script>
 
     <script src="~/admin/js/Products/Product.js"></script>
     <script>

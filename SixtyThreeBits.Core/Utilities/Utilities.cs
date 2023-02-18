@@ -206,7 +206,7 @@ namespace SixtyThreeBits.Core.Utilities
         /// <returns></returns>
         public string GetUploadedFileHttpPath(string Filename, string SubFolders = null)
         {
-            return string.IsNullOrWhiteSpace(Filename) ? null : $"{AppSettings.UploadFolderVirtualPath}{SubFolders}{Filename}";
+            return string.IsNullOrWhiteSpace(Filename) ? null : $"{AppSettings.UploadFolderHttpPath}{SubFolders}{Filename}";
         }
         
         /// <summary>

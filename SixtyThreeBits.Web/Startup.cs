@@ -114,13 +114,13 @@ namespace SixtyThreeBits.Web
             }
             App.UseImageflow(new ImageflowMiddlewareOptions()
                 .SetMapWebRoot(false)                
-                .MapPath(AppSettings.UploadFolderVirtualPath, AppSettings.UploadFolderPhysicalPath));
+                .MapPath(AppSettings.UploadFolderHttpPath, AppSettings.UploadFolderPhysicalPath));
 
             App.UseFileServer();
             App.UseStaticFiles(new StaticFileOptions
             {
                 FileProvider = new PhysicalFileProvider(AppSettings.UploadFolderPhysicalPath),
-                RequestPath = $"/{AppSettings.UploadFolderVirtualName}"
+                RequestPath = AppSettings.UploadFolderHttpPath.TrimEnd('/')
             });
             App.UseRouting();
             App.UseSession();
@@ -142,13 +142,18 @@ namespace SixtyThreeBits.Web
 
         public class CustomCultureProvider : RequestCultureProvider
         {
+            #region Properties
             UtilityCollection Utilities;
+            #endregion
 
+            #region Constructors
             public CustomCultureProvider(UtilityCollection Utilities)
             {
                 this.Utilities = Utilities;
             }
+            #endregion
 
+            #region Methods
             public override async Task<ProviderCultureResult> DetermineProviderCultureResult(HttpContext Context)
             {
                 string Culture = null;
@@ -159,12 +164,13 @@ namespace SixtyThreeBits.Web
                 }
                 else
                 {
-                    Culture = Context.Request.RouteValues["Culture"]?.ToString() ?? Enums.Languages.GEORGIAN;
+                    Culture = Context.Request.RouteValues[Constants.RouteValues.Culture]?.ToString() ?? Enums.Languages.GEORGIAN;
                 }
 
                 await Task.Yield();
                 return new ProviderCultureResult(Culture);
-            }
+            } 
+            #endregion
         }
     }
 }

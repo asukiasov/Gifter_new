@@ -157,7 +157,6 @@
     <None Include="wwwroot\plugins\bootstrap\js\bootstrap.js.map" />
     <None Include="wwwroot\plugins\bootstrap\js\bootstrap.min.js" />
     <None Include="wwwroot\plugins\bootstrap\js\bootstrap.min.js.map" />
-    <None Include="wwwroot\plugins\dropzone\dropzone.min.js" />
     <None Include="wwwroot\plugins\jquery-appear\jquery.appear.js" />
     <None Include="wwwroot\plugins\jquery-confirm\jquery-confirm.min.js" />
     <None Include="wwwroot\plugins\jquery-masked-input\jquery.maskedinput.min.js" />

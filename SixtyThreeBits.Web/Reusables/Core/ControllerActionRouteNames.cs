@@ -232,16 +232,17 @@
             public class Products
             {
                 #region Properties
-                public const string Index = "AdminProducts";
-                public const string ProductsRemainderSync = "ProductsRemainderSync";
-                public const string ProductsGrid = "AdminProductsGrid";
-                public const string ProductsGridAdd = "AdminProductsGridAdd";
-                public const string ProductsGridUpdate = "AdminProductsGridUpdate";
-                public const string ProductsGridDelete = "AdminProductsGridDelete";
-                #endregion
+                public const string Index = "AdminProducts";                
+                public const string Grid = "AdminProductsGrid";
+                public const string GridAdd = "AdminProductsGridAdd";
+                public const string GridUpdate = "AdminProductsGridUpdate";
+                public const string GridDelete = "AdminProductsGridDelete";
+                public const string ExcelDownload = "AdminProductsExcelDownload";
+                public const string ExcelUpload = "AdminProductsExcelUpload";
+				#endregion
 
-                #region Sub Classes
-                public class Product
+				#region Sub Classes
+				public class Product
                 {
                     #region Properties
                     public const string Parent = "AdminProductsProduct";

@@ -192,6 +192,9 @@
   <data name="ValidationEmailFormatInvalid" xml:space="preserve">
     <value>Email format is invalid</value>
   </data>
+  <data name="ValidationExcelDuplicateItemFound" xml:space="preserve">
+    <value>Duplicate item found. Row {0}</value>
+  </data>
   <data name="ValidationPasswordLength" xml:space="preserve">
     <value>Password length must be more then 8 symbols</value>
   </data>
@@ -203,6 +206,21 @@
   </data>
   <data name="ValidationPasswordStrength" xml:space="preserve">
     <value>Password must contain at least one letter and one digit</value>
+  </data>
+  <data name="ValidationProductNameRequired" xml:space="preserve">
+    <value>Product name is required</value>
+  </data>
+  <data name="ValidationProductPriceFormatInvalid" xml:space="preserve">
+    <value>Invalid price format. Only positive decimal numbers are allowed (for example - 63.5)</value>
+  </data>
+  <data name="ValidationProductPriceRequired" xml:space="preserve">
+    <value>Product price is required</value>
+  </data>
+  <data name="ValidationProductRemainderFormatInvalid" xml:space="preserve">
+    <value>Invalid remainder format. Only positive whole numbers are allowed (for example - 63)</value>
+  </data>
+  <data name="ValidationProductRemainderRequired" xml:space="preserve">
+    <value>Product remainder is required</value>
   </data>
   <data name="ValidationRequired" xml:space="preserve">
     <value>Field is required</value>

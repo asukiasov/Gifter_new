@@ -237,14 +237,16 @@ var FileUplaoderClass = {
     OnProgressCallback: null,
     OnFinishUploadCallback: null,
     OnStartCallback: null,
+    OnComplete: null,
     IsReportProgressIndividual: false,
+    UploadProcessStartedCount: 0,
+    UploadProcessFinishedCount: 0,
     XhrArray: [],
 
     Abort: function () {
         this.XhrArray.forEach(function (xhr, index) {
             xhr.abort();
         });
-
     },
 
     InitEvents: function (xhr) {
@@ -254,6 +256,8 @@ var FileUplaoderClass = {
 
         //The upload has begun.
         xhr.upload.onloadstart = function (e) {
+            _this.UploadProcessStartedCount++;
+
             if (_this.OnStartCallback) {
                 _this.OnStartCallback({
                     Filename: xhr.fileName,
@@ -296,10 +300,23 @@ var FileUplaoderClass = {
                 });
             }
         }
+                
+        //The upload timed out because a reply did not arrive within the time interval specified by the XMLHttpRequest.timeout. 
+        xhr.upload.ontimeout = function (e) {
+            if (_this.OnErrorCallback) {
+                _this.OnErrorCallback({
+                    Filename: xhr.fileName,
+                    xhr: xhr,
+                    e: e
+                });
+            }
+        },
 
         //The upload completed successfully.
-        xhr.onload = function (e) {
-            if (_this.OnFinishUploadCallback) {
+        xhr.onloadend = function (e) {
+            _this.UploadProcessFinishedCount++;
+
+            if (_this.OnFinishUploadCallback) {                
                 let Result = {};
                 try {
                     Result = JSON.parse(xhr.response);
@@ -311,24 +328,20 @@ var FileUplaoderClass = {
                 Result.StatusText = xhr.statusText;
                 Result.Filename = xhr.fileName;
                 Result.xhr = xhr;
-                _this.OnFinishUploadCallback(Result);
-            }
-        }
 
-        //The upload timed out because a reply did not arrive within the time interval specified by the XMLHttpRequest.timeout. 
-        xhr.upload.ontimeout = function (e) {
-            if (_this.OnErrorCallback) {
-                _this.OnErrorCallback({
-                    Filename: xhr.fileName,
-                    xhr: xhr,
-                    e: e
-                });
+                _this.OnFinishUploadCallback(Result)
             }
+
+            _this.CheckUploadProcessComplete();
         }
     },
 
     Upload: function () {
         const _this = this;
+
+        _this.UploadProcessStartedCount = 0;
+        _this.UploadProcessFinishedCount = 0;
+
         if (_this.InputElement.files.length) {
 
             if (_this.IsReportProgressIndividual) {
@@ -358,7 +371,7 @@ var FileUplaoderClass = {
                     Data.append(Item.Key, Item.Value);
                 });                
             }
-            //xhr.fileName = File.name;
+            xhr.fileName = File.name;
 
             _this.InitEvents(xhr);
             xhr.open('POST', _this.UrlFileUplaod);
@@ -387,6 +400,16 @@ var FileUplaoderClass = {
         _this.InitEvents(xhr);
         xhr.open('POST', _this.UrlFileUplaod);
         xhr.send(Data);
+    },
+
+    CheckUploadProcessComplete: function () {
+        const _this = this;
+
+        if (_this.UploadProcessStartedCount == _this.UploadProcessFinishedCount) {
+            if (_this.OnComplete) {
+                _this.OnComplete();
+            }
+        }
     }
 }
 
@@ -401,6 +424,7 @@ function FileUplaoder(Options) {
         _this.OnAbort = Options.OnAbort ? Options.OnAbort : null;
         _this.OnFinishUploadCallback = Options.OnFinishUploadCallback ? Options.OnFinishUploadCallback : null;
         _this.OnErrorCallback = Options.OnErrorCallback ? Options.OnErrorCallback : null;
+        _this.OnComplete = Options.OnComplete ? Options.OnComplete : null;
         _this.IsReportProgressIndividual = Options.IsReportProgressIndividual ? true : false;
         _this.RequestData = Options.RequestData ? Options.RequestData : null;
 

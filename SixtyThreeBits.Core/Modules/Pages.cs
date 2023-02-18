@@ -51,7 +51,7 @@ namespace SixtyThreeBits.Core.Modules
 
         public string GetPageFolderHttpPath(int? PageID)
         {
-            return $"{AppSettings.UploadFolderVirtualPath}{FolderName}/{PageID}/";
+            return $"{AppSettings.UploadFolderHttpPath}{FolderName}/{PageID}/";
         }
 
         public string GetPageFileHttpPath(int? PageID, string Filename)

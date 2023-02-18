@@ -1,9 +1,9 @@
 ﻿using DevExtreme.AspNet.Mvc;
 using DevExtreme.AspNet.Mvc.Builders;
-//using ExcelDataReader;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using SixtyThreeBits.Core.BusinessLogics;
 using SixtyThreeBits.Core.Modules;
 using SixtyThreeBits.Core.Properties;
 using SixtyThreeBits.Core.Services;
@@ -231,17 +231,19 @@ namespace SixtyThreeBits.Web.Admin.Models
         public async Task<PageViewModel> GetPageViewModel()
         {
             var ViewModel = new PageViewModel();
-            ViewModel.UploadExcelFileUrl = Url.RouteUrl(ControllerActionRouteNames.Admin.Products.ProductsRemainderSync);
-            ViewModel.ShowAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.Products.ProductsGridAdd);
+            ViewModel.ShowAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.Products.GridAdd);
+            ViewModel.ShowExcelUploadButton = User.HasPermission(ControllerActionRouteNames.Admin.Products.ExcelUpload) && User.HasPermission(ControllerActionRouteNames.Admin.Products.ExcelDownload);
+            ViewModel.UrlExcelUpload = Url.RouteUrl(ControllerActionRouteNames.Admin.Products.ExcelUpload);
+            ViewModel.UrlExcelDownload = Url.RouteUrl(ControllerActionRouteNames.Admin.Products.ExcelDownload);            
 
             ViewModel.Grid = new PageViewModel.GridModel();
-            ViewModel.Grid.UrlLoad = Url.RouteUrl(ControllerActionRouteNames.Admin.Products.ProductsGrid);
-            ViewModel.Grid.UrlAddNew = Url.RouteUrl(ControllerActionRouteNames.Admin.Products.ProductsGridAdd);
-            ViewModel.Grid.UrlUpdate = Url.RouteUrl(ControllerActionRouteNames.Admin.Products.ProductsGridUpdate);
-            ViewModel.Grid.UrlDelete = Url.RouteUrl(ControllerActionRouteNames.Admin.Products.ProductsGridDelete);
-            ViewModel.Grid.AllowAdd = User.HasPermission(ControllerActionRouteNames.Admin.Products.ProductsGridAdd);
-            ViewModel.Grid.AllowUpdate = User.HasPermission(ControllerActionRouteNames.Admin.Products.ProductsGridUpdate);
-            ViewModel.Grid.AllowDelete = User.HasPermission(ControllerActionRouteNames.Admin.Products.ProductsGridDelete);
+            ViewModel.Grid.UrlLoad = Url.RouteUrl(ControllerActionRouteNames.Admin.Products.Grid);
+            ViewModel.Grid.UrlAddNew = Url.RouteUrl(ControllerActionRouteNames.Admin.Products.GridAdd);
+            ViewModel.Grid.UrlUpdate = Url.RouteUrl(ControllerActionRouteNames.Admin.Products.GridUpdate);
+            ViewModel.Grid.UrlDelete = Url.RouteUrl(ControllerActionRouteNames.Admin.Products.GridDelete);
+            ViewModel.Grid.AllowAdd = User.HasPermission(ControllerActionRouteNames.Admin.Products.GridAdd);
+            ViewModel.Grid.AllowUpdate = User.HasPermission(ControllerActionRouteNames.Admin.Products.GridUpdate);
+            ViewModel.Grid.AllowDelete = User.HasPermission(ControllerActionRouteNames.Admin.Products.GridDelete);
 
             ViewModel.Grid.Categories = (await DataAccessFactory.Products.ProductCategoriesListWithTitlePaddindHierarchy(PadChar:'-')).Select(Item => new SimpleKeyValue<int?, string>
             {
@@ -299,116 +301,62 @@ namespace SixtyThreeBits.Web.Admin.Models
             {
                 Form.AddError(Resources.TextError);
             }
-        }
+        }        
 
-        //public List<Product.ProductSyncItem> GetListFromExcelFile(IFormFile PostedFile)
-        //{
-        //    var IsXlsx = PostedFile.FileName.EndsWith(".xlsx");
-        //    var ProductSyncItemList = new List<Product.ProductSyncItem>();
-
-        //    using (var InputStream = PostedFile.OpenReadStream())
-        //    {
-        //        using (var ExcelReader = IsXlsx ? ExcelReaderFactory.CreateOpenXmlReader(InputStream) : ExcelReaderFactory.CreateBinaryReader(InputStream))
-        //        {
-        //            ExcelReader.Read();
-
-        //            while (ExcelReader.Read())
-        //            {
-        //                var Item = new Product.ProductSyncItem();
-        //                Item.ProductName = ExcelReader.GetValue(0)?.ToString();
-        //                Item.ProductNameEng = ExcelReader.GetValue(1)?.ToString();
-        //                Item.ProductNameRus = ExcelReader.GetValue(2)?.ToString();
-        //                Item.ProductCode = ExcelReader.GetValue(3)?.ToString();
-        //                Item.ProductCategory = ExcelReader.GetValue(4)?.ToString();
-        //                Item.ProductBrand = ExcelReader.GetValue(5)?.ToString();
-        //                Item.ProductPrice = ExcelReader.GetValue(6)?.ToString().ToDecimal();
-        //                Item.ProductRemainder = ExcelReader.GetValue(7)?.ToString().ToDecimal();
-
-        //                ProductSyncItemList.Add(Item);
-        //            }
-        //        }
-        //    }
-
-        //    return ProductSyncItemList;
-        //}
-
-        public async Task<bool> InsertOrUpdateProducts(List<Product> Products)
+        public async Task<byte[]> GetProductsSyncExcelFileBytes()
         {
-
-            await DataAccessFactory.Products.ProductsSync(Products);
-
-            var IsSuccess = !DataAccessFactory.Products.IsError;
-
-            return IsSuccess;
-
+            var BL = new ProductsBusinessLogic.GetProductsPricesAndRemaindersExcelFile(
+                DataAccessFactory: DataAccessFactory,
+                AppSettings: AppSettings
+            );
+            var Result = await BL.Execute();
+            return Result.ExcelFileBytes;
         }
 
-        //public async Task<List<SimpleKeyValue<string, string>>> ValidateProductSyncItems(List<Product.ProductSyncItem> ProductSyncItems)
-        //{
-        //    var ErrorList = new List<SimpleKeyValue<string, string>>();
-        //    var Index = 0;
-        //    var BrandsList = await DataAccessFactory.Brands.ListBrands();
-        //    var CategoriesList = await DataAccessFactory.Categories.ListCategories();
+        public async Task<AjaxResponse> SyncExcel(byte[] ExcelFileBytes, string ExcelFilename)
+        {
+            var AR = new AjaxResponse();
+            var BL = new ProductsBusinessLogic.SyncProductPricesAndRemainders(
+                ExcelFileBytes: ExcelFileBytes,
+                IsXslx: ExcelFilename?.EndsWith(".xlsx") == true,
+                DataAccessFactory: DataAccessFactory
+            );
+            var Result = await BL.Execute();
+            if (Result.IsError)
+            {
+                if (Result.HasExcelErrors)
+                {
+					AR.Data = new
+					{
+						HasExcelErrors = Result.HasExcelErrors,
+						ExcelErrors = Result.ExcelErrors				
+					};
+				}
+                else
+                {
+                    AR.Data = Result.ErrorMessage;
+                }
+                
+            }
+            else
+            {
+                AR.IsSuccess = true;
+            }
 
-        //    Regex objNotIntPattern = new Regex("[^0-9-]");
+            return AR;
 
-        //    foreach (var Product in ProductSyncItems)
-        //    {
-        //        var PreviousProducts = ProductSyncItems.GetRange(0, Index);
-        //        var CategoryExists = CategoriesList.Any(CategoryItem => CategoryItem.CategoryName == Product.ProductCategory);
-        //        var BrandExists = BrandsList.Any(BrandItem => BrandItem.BrandName == Product.ProductBrand);
-
-        //        if (!CategoryExists)
-        //        {
-        //            ErrorList.Add(new SimpleKeyValue<string, string> { Key = $"{"ხაზი"} {(Index + 2)} {","}", Value = $"{Product.ProductCategory} {Resources.TextCategoryDoesNotExists}" });
-        //        }
-
-        //        if (!BrandExists)
-        //        {
-        //            ErrorList.Add(new SimpleKeyValue<string, string> { Key = $"{"ხაზი"} {(Index + 2)} {","}", Value = $"{Product.ProductBrand} {Resources.TextBrandDoesNotExists}" });
-        //        }
-               
-        //        if (Product.ProductPrice == null)
-        //        {
-        //            ErrorList.Add(new SimpleKeyValue<string, string> { Key = $"{"ხაზი"} {(Index + 2)} {","}", Value = Resources.ValidationPriceMustBeNumeric });
-        //        }
-        //        if (Product.ProductRemainder == null)
-        //        {
-        //            ErrorList.Add(new SimpleKeyValue<string, string> { Key = $"{"ხაზი"} {(Index + 2)} {","}", Value = Resources.ValidationRemainderMustBeInt });
-        //        }
-        //        if (objNotIntPattern.IsMatch(Product.ProductRemainder.ToString()))
-        //        {
-        //            ErrorList.Add(new SimpleKeyValue<string, string> { Key = $"{"ხაზი"} {(Index + 2)} {","}", Value = Resources.ValidationRemainderMustBeInt });
-        //        }
-        //        if (string.IsNullOrEmpty(Product.ProductName))
-        //        {
-        //            ErrorList.Add(new SimpleKeyValue<string, string> { Key = $"{"ხაზი"} {(Index + 2)} {","}", Value = Resources.ValidationNameIsRequired });
-        //        }
-        //        else
-        //        {
-        //            var HasDuplicate = PreviousProducts.Any(Item => Item.ProductName == Product.ProductName);
-
-        //            if (HasDuplicate)
-        //            {
-        //                ErrorList.Add(new SimpleKeyValue<string, string> { Key = $"{"ხაზი"} {(Index + 2)} {","}", Value = $"{Product.ProductName} {Resources.TextDublicateItemError}" });
-        //            }
-        //        }
-        //        Index++;
-
-        //    }           
-
-        //    return ErrorList;
-        //}
+		}
         #endregion
 
         #region Sub Classes
-        public class PageViewModel : FormViewModelBase
+        public class PageViewModel
         {
             #region Properties
             public bool ShowAddNewButton { get; set; }
-            public string UploadExcelFileUrl { get; set; }
+            public bool ShowExcelUploadButton { get; set; }
+            public string UrlExcelDownload { get; set; }
+            public string UrlExcelUpload { get; set; }
             public GridModel Grid { get; set; }
-            public string IsError => (HasErrors).ToString().ToLower();            
             #endregion
 
             #region Sub Classes
@@ -529,7 +477,7 @@ namespace SixtyThreeBits.Web.Admin.Models
             {
                 ProductImageID = Item.ProductImageID,
                 ProductImageFilename = Item.ProductImageFilename,
-                ProductImageHttpPath = Utilities.GetUploadedFileHttpPath(Item.ProductImageFilename)
+                ProductImageFileHttpPath = Utilities.GetUploadedFileHttpPath(Item.ProductImageFilename)
             }).ToList();
 
             ViewModel.UrlImageUpload = Url.RouteUrl(ControllerActionRouteNames.Admin.Products.Product.PropertiesImagesUpload, new { ProductID = ProductID });
@@ -596,45 +544,53 @@ namespace SixtyThreeBits.Web.Admin.Models
         public async Task<AjaxResponse> UploadImages(int? ProductID)
         {
             var AR = new AjaxResponse();
-            var Images = new List<SimpleKeyValue<string, IFormFile>>();
-            var ImagesDBItems = new List<Product.ProductImage>();
+            var Images = new List<ProductsPropertiesViewModel.ProductImage>();
 
-            foreach (var PostedFile in Request.Form.Files)
+            var PostedFile = Request.Form.Files[0];
+            var ProductImageFilenameOriginal = PostedFile.FileName;
+            var ProductImageFilename = GetFilenameFromUploadedFile(PostedFile);
+                
+            var ProductImageID = await DataAccessFactory.Products.ProductsImagesIUD(
+                DatabaseAction: Enums.DatabaseActions.CREATE,
+                ProductID: ProductID,
+                ProductImageFilename: ProductImageFilename
+            );
+            if (ProductImageID > 0)
             {
-                var Filename = GetFilenameFromUploadedFile(PostedFile);
-                ImagesDBItems.Add(new Product.ProductImage { ProductImageFilename = Filename });
-                Images.Add(new SimpleKeyValue<string, IFormFile> { Key = Filename, Value = PostedFile });
-            }
+                await SaveUploadedFile(PostedFile: PostedFile, Filename: ProductImageFilename);
 
-            await DataAccessFactory.Products.ProductsImagesInsert(ProductID, ImagesDBItems);
-
-            if (!DataAccessFactory.Products.IsError)
-            {
-                foreach (var Item in Images)
+                AR.Data = new ProductsPropertiesViewModel.ProductImage
                 {
-                    await SaveUploadedFile(PostedFile: Item.Value, Filename: Item.Key);                    
+                    ProductImageID = ProductImageID,
+                    ProductImageFilename = ProductImageFilenameOriginal,
+                    ProductImageFileHttpPath = Utilities.GetUploadedFileHttpPath(ProductImageFilename)
                 };
                 AR.IsSuccess = true;
             }
+
             return AR;
         }
 
-        public async Task<AjaxResponse> DeleteImage(int? ProductID, int? ProductImageID, string ProductImageFilename)
+        public async Task<AjaxResponse> DeleteImage(int? ProductID, int? ProductImageID)
         {
             var AR = new AjaxResponse();
-            Utilities.DeleteUploadedFile(ProductImageFilename);            
-            await DataAccessFactory.Products.ProductsImagesIUD(
-                DatabaseAction: Enums.DatabaseActions.DELETE,
-                ProductImageID: ProductImageID
-            );
-            AR.IsSuccess = !DataAccessFactory.Products.IsError;
+            var ProductImage = DBItemProduct.ProductImages?.FirstOrDefault(Item => Item.ProductImageID == ProductImageID);       
+            if (ProductImage != null)
+            {
+                Utilities.DeleteUploadedFile(ProductImage.ProductImageFilename);
+                await DataAccessFactory.Products.ProductsImagesIUD(
+                    DatabaseAction: Enums.DatabaseActions.DELETE,
+                    ProductImageID: ProductImageID
+                );
+                AR.IsSuccess = !DataAccessFactory.Products.IsError;
+            }
             return AR;
         }
 
-        public async Task<AjaxResponse> SortImage(int? ProductID, SyncSortIndexesModel SubmitModel)
+        public async Task<AjaxResponse> SortImages(int? ProductID, SyncSortIndexesModel SubmitModel)
         {
             var AR = new AjaxResponse();
-            await DataAccessFactory.Products.ProductsImagesSyncSortIndex(SubmitModel.SortIndexes);
+            await DataAccessFactory.Products.ProductsImagesSyncSortIndex(ProductID, SubmitModel.SortIndexes);
             AR.IsSuccess = !DataAccessFactory.Products.IsError;
             return AR;
         }
@@ -694,7 +650,7 @@ namespace SixtyThreeBits.Web.Admin.Models
                 #region Properties
                 public int? ProductImageID { get; set; }
                 public string ProductImageFilename { get; set; }
-                public string ProductImageHttpPath { get; set; }
+                public string ProductImageFileHttpPath { get; set; }
                 #endregion
             }
             #endregion

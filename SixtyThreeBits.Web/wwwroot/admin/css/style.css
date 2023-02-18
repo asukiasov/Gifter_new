@@ -874,10 +874,6 @@ table.form-control input{
 }
 
 /* ---------- file uploader ---------- */
-.file-uploader-card {
-    padding: 16px;
-}
-
 .file-uploader-card .row > div {
     margin-bottom: 20px;
 }
@@ -960,14 +956,19 @@ table.form-control input{
 .file-uploader-card .img-wrap {
     border-radius: 8px;
     position: relative;
+    background-color: #EAEAEA;
+}
+
+.file-uploader-card .img-wrap img{
+    object-fit:cover;
 }
 
 .file-uploader-card .img-wrap .remove-btn {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 20px;
-    height: 20px;
+    width: 32px;
+    height: 32px;
     background-color: #fff;
     border: 0;
     border-radius: 50%;
@@ -981,11 +982,5 @@ table.form-control input{
 
 .file-uploader-card .img-wrap .remove-btn:hover {
     opacity: 1;
-}
-
-.caver-img-uploader-card .img-wrap::before,
-.caver-img-uploader-card .uploader-progress-wrap::before,
-.caver-img-uploader-card .uploader-container::before {
-    padding-top: 50%;
 }
 /* ---------- /file uploader ---------- */

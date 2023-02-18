@@ -101,6 +101,7 @@ namespace SixtyThreeBits.Core.Utilities
         public class RouteValues
         {
             #region Properties
+            public const string Culture = "Culture";
             public const string ProductCategoryID = "ProductCategoryID";
             public const string ProductID = "ProductID";
             #endregion

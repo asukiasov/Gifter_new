@@ -9,7 +9,6 @@
         public bool IsAngleEnabled { get; private set; }
         public bool IsBootstrapEnabled { get; private set; }
         public bool IsDevextremeEnabled { get; private set; }
-        public bool IsDropzoneEnabled { get; private set; }
         public bool IsGoogleFontsEnabled { get; private set; }
         public bool IsFancyboxEnabled { get; private set; }
         public bool IsFontAwesomeEnabled { get; private set; }
@@ -70,12 +69,6 @@
         public PluginsClient EnableDevextreme(bool Value)
         {
             IsDevextremeEnabled = Value;
-            return this;
-        }
-
-        public PluginsClient EnableDropzone(bool Value)
-        {
-            IsDropzoneEnabled = Value;
             return this;
         }
 

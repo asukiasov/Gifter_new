@@ -1,4 +1,4 @@
-﻿var Validation = {
+﻿const Validation = {
     ErrorsJson: null,
     Init: function (Options) {
         if (typeof (Options.ErrorsJson) == 'object') {

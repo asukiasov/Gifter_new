@@ -192,6 +192,9 @@
   <data name="ValidationEmailFormatInvalid" xml:space="preserve">
     <value>ელ-ფოსტის ფორმატი არასწორია</value>
   </data>
+  <data name="ValidationExcelDuplicateItemFound" xml:space="preserve">
+    <value>ჩანაწერი დუბლირებულია. ხაზი {0}</value>
+  </data>
   <data name="ValidationPasswordLength" xml:space="preserve">
     <value>პაროლი უნდა შეიცავდეს მინიმუმ 8 სიმბოლოს</value>
   </data>
@@ -203,6 +206,21 @@
   </data>
   <data name="ValidationPasswordStrength" xml:space="preserve">
     <value>პაროლი უნდა შეიცავდეს მინიმუმ ერთ სიმბოლოსა და ერთ ციფრს</value>
+  </data>
+  <data name="ValidationProductNameRequired" xml:space="preserve">
+    <value>პროდუქტის სახელის შეყვანა აუცილებელია</value>
+  </data>
+  <data name="ValidationProductPriceFormatInvalid" xml:space="preserve">
+    <value>ფასი არასწორ ფორმატშია მოწოდებული. დასაშვებია მხოლოდ დადებითი ათწილადი რიცხვები (მაგ 63.5)</value>
+  </data>
+  <data name="ValidationProductPriceRequired" xml:space="preserve">
+    <value>პროდუქტის ფასის შეყვანა აუცილებელია</value>
+  </data>
+  <data name="ValidationProductRemainderFormatInvalid" xml:space="preserve">
+    <value>ნაშთი არასწორ ფორმატშია მოწოდებული. დასაშვებია მხოლოდ დადებითი მთელი რიცხვები (მაგ 63)</value>
+  </data>
+  <data name="ValidationProductRemainderRequired" xml:space="preserve">
+    <value>პროდუქტის ნაშთის შეყვანა აუცილებელია</value>
   </data>
   <data name="ValidationRequired" xml:space="preserve">
     <value>ველის შეყვანა აუცილებელია</value>

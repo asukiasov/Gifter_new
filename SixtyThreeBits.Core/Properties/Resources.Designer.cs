@@ -286,6 +286,15 @@ namespace SixtyThreeBits.Core.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Duplicate item found. Row {0}.
+        /// </summary>
+        public static string ValidationExcelDuplicateItemFound {
+            get {
+                return ResourceManager.GetString("ValidationExcelDuplicateItemFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Password length must be more then 8 symbols.
         /// </summary>
         public static string ValidationPasswordLength {
@@ -318,6 +327,51 @@ namespace SixtyThreeBits.Core.Properties {
         public static string ValidationPasswordStrength {
             get {
                 return ResourceManager.GetString("ValidationPasswordStrength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Product name is required.
+        /// </summary>
+        public static string ValidationProductNameRequired {
+            get {
+                return ResourceManager.GetString("ValidationProductNameRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid price format. Only positive decimal numbers are allowed (for example - 63.5).
+        /// </summary>
+        public static string ValidationProductPriceFormatInvalid {
+            get {
+                return ResourceManager.GetString("ValidationProductPriceFormatInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Product price is required.
+        /// </summary>
+        public static string ValidationProductPriceRequired {
+            get {
+                return ResourceManager.GetString("ValidationProductPriceRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid remainder format. Only positive whole numbers are allowed (for example - 63).
+        /// </summary>
+        public static string ValidationProductRemainderFormatInvalid {
+            get {
+                return ResourceManager.GetString("ValidationProductRemainderFormatInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Product remainder is required.
+        /// </summary>
+        public static string ValidationProductRemainderRequired {
+            get {
+                return ResourceManager.GetString("ValidationProductRemainderRequired", resourceCulture);
             }
         }
         

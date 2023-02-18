@@ -145,7 +145,6 @@ namespace SixtyThreeBits.Core.Modules
             });
         }
 
-
         public async Task<Product> ProductsGetSingleByID(int? ProductID)
         {
             return await TryToReturnAsyncTask($"{nameof(ProductsGetSingleByID)}({nameof(ProductID)} = {ProductID})", async () =>
@@ -158,9 +157,9 @@ namespace SixtyThreeBits.Core.Modules
             });
         }
 
-        public async Task<Product> GetSingleProductBySlug(string ProductSlug)
+        public async Task<Product> ProductsGetsingleBySlug(string ProductSlug)
         {
-            return await TryToReturnAsyncTask($"{nameof(GetSingleProductBySlug)}({nameof(ProductSlug)} = {ProductSlug})", async () =>
+            return await TryToReturnAsyncTask($"{nameof(ProductsGetsingleBySlug)}({nameof(ProductSlug)} = {ProductSlug})", async () =>
             {
                 using (var db = ConnectionFactory.GetDBCoreDataContext())
                 {
@@ -192,61 +191,7 @@ namespace SixtyThreeBits.Core.Modules
                 }
             });
         }
-
-
-
-
-        public async Task<ProductFilters> GetFilters(string Language, int? CategoryID)
-        {            
-            return await TryToReturnAsyncTask($"{nameof(GetFilters)}({nameof(Language)} = {Language}, {nameof(CategoryID)} = {CategoryID})", async () =>
-            {
-                using(var db = ConnectionFactory.GetDBCoreDataContext())
-                {
-                    var Result = await db.ProductsFiltersGet(Language, CategoryID);
-                    return Result?.DeserializeJsonTo<ProductFilters>();
-                }
-            });
-        }
-
-                
-
-        public async Task<bool> IsProductSlugUniq(string ProductSlug, int? ProductID = null)
-        {
-            return await TryToReturnAsyncTask($"{nameof(IsProductSlugUniq)}({nameof(ProductSlug)} = {ProductSlug}, {nameof(ProductID)} = {ProductID})", async () =>
-            {
-                using (var db = ConnectionFactory.GetDBCoreDataContext())
-                {
-                    return await db.ProductsIsSlugUniq(ProductSlug, ProductID);
-                }
-            });
-        }
-
         
-
-
-        public async Task<List<DBCoreDataContext.ProductsImagesListResultItem>> ListProductsImages(int? ProductID)
-        {
-            return await TryToReturnAsyncTask($"{nameof(ListProductsImages)}({nameof(ProductID)} = {ProductID})", async () =>
-            {
-                using (var db = ConnectionFactory.GetDBCoreDataContext())
-                {
-                    return await db.ProductsImagesList(ProductID).OrderBy(Item => Item.ProductImageSortIndex).ToListAsync();
-                }
-            });
-        }
-
-        public async Task ProductsSync(List<Product> Products)
-        {
-            var ProductsJson = Products.ToJson();
-            await TryExecuteAsyncTask($"{nameof(ProductsSync)}({nameof(Products)} = {ProductsJson})", async () =>
-            {
-                using (var db = ConnectionFactory.GetDBCoreDataContext())
-                {
-                    await db.ProductsSync(ProductsJson);
-                }
-            });
-        }
-
         public async Task<int?> ProductsImagesIUD(Enums.DatabaseActions DatabaseAction, int? ProductImageID = null, int? ProductID = null, string ProductImageFilename = null, int? ProductImageSyncSortIndex = null)
         {
             return await TryToReturnAsyncTask($"{nameof(ProductsImagesIUD)}({nameof(DatabaseAction)} = {DatabaseAction}, {nameof(ProductImageID)} = {ProductImageID}, {nameof(ProductID)} = {ProductID}, {nameof(ProductImageFilename)} = {ProductImageFilename}, {nameof(ProductImageSyncSortIndex)} = {ProductImageSyncSortIndex})", async () =>
@@ -259,30 +204,29 @@ namespace SixtyThreeBits.Core.Modules
             });
         }
 
-        public async Task ProductsImagesInsert(int? ProductID, List<Product.ProductImage> ProductImages)
+        public async Task ProductsImagesSyncSortIndex(int? ProductID, List<SyncSortIndexesItem> SortIndexes)
         {
-            await TryExecuteAsyncTask($"{nameof(ProductsImagesInsert)}({nameof(ProductID)} = {ProductID}, {nameof(ProductImages)} = {ProductImages.ToXml()})", async () =>
+            var SortIndexesJson = SortIndexes.ToJson();
+            await TryExecuteAsyncTask($"{nameof(ProductsImagesSyncSortIndex)}({nameof(ProductID)} = {ProductID}, {nameof(SortIndexes)} = {SortIndexesJson})", async () =>
             {
                 using (var db = ConnectionFactory.GetDBCoreDataContext())
                 {
-                    await db.ProductsImagesInsert(ProductID, ProductImages.ToXml());
+                    await db.ProductsImagesSyncSortIndex(ProductID, SortIndexesJson);
                 }
             });
         }
 
-        public async Task ProductsImagesSyncSortIndex(List<SyncSortIndexesItem> SortIndexXml)
+        public async Task ProductsSyncPricesAndRemainders(List<Product> Products)
         {
-            await TryExecuteAsyncTask($"{nameof(ProductsImagesSyncSortIndex)}({nameof(SortIndexXml)} = {SortIndexXml.ToXml()})", async () =>
+            var ProductsJson = Products.ToJson();
+            await TryExecuteAsyncTask($"{nameof(ProductsSyncPricesAndRemainders)}({nameof(Products)} = {ProductsJson})", async () =>
             {
-                if (SortIndexXml?.Count > 0)
+                using (var db = ConnectionFactory.GetDBCoreDataContext())
                 {
-                    using (var db = ConnectionFactory.GetDBCoreDataContext())
-                    {
-                        await db.ProductsImagesSyncSortIndex(SortIndexXml.ToXml());
-                    }
+                    await db.ProductsSync(ProductsJson);
                 }
             });
-        }        
+        }
         #endregion
     }
 

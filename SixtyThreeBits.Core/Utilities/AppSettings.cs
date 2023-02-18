@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Configuration;
-using SixtyThreeBits.Libraries;
 using System.Runtime.CompilerServices;
 
 namespace SixtyThreeBits.Core.Utilities
@@ -12,9 +11,9 @@ namespace SixtyThreeBits.Core.Utilities
 
         public readonly string OgImageDefaultHttpPath = "/img/og_image_default.jpg";
 
-        public string UploadFolderPhysicalPath => GetConfigValue();
-        public readonly string UploadFolderVirtualName = "upload";
-        public string UploadFolderVirtualPath => $"/{UploadFolderVirtualName}/";
+        public string DownloadFolderPhysicalPath => GetConfigValue();
+        public string UploadFolderPhysicalPath => GetConfigValue();        
+        public string UploadFolderHttpPath => GetConfigValue();
         public bool IsDevelopment { get; set; }
 
         #endregion
