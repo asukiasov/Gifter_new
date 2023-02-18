@@ -4,15 +4,6 @@ namespace SixtyThreeBits.Core.Utilities
 {
     public class Enums
     {
-        public class AreaNames
-        {
-            #region Properties
-            public const string Key = "AreaNamesKey";
-            public const string Admin = "Admin";
-            public const string Api = "Api";
-            #endregion
-        }
-
         public class Cultures
         {
             #region Properties        
@@ -21,11 +12,11 @@ namespace SixtyThreeBits.Core.Utilities
             public static System.Globalization.CultureInfo CultureRU => new System.Globalization.CultureInfo("ru-ru");
 
             public static Dictionary<string, System.Globalization.CultureInfo> Culture = new Dictionary<string, System.Globalization.CultureInfo>
-        {
-            {Languages.GEORGIAN,CultureKA },
-            {Languages.ENGLISH,CultureEN},
-            {Languages.RUSSIAN,CultureRU},
-        };
+            {
+                { Languages.GEORGIAN, CultureKA },
+                { Languages.ENGLISH, CultureEN },
+                { Languages.RUSSIAN, CultureRU },
+            };
             #endregion
         }
 
@@ -49,19 +40,19 @@ namespace SixtyThreeBits.Core.Utilities
         public class Dictionaries
         {
             #region Sub Classes
+            public class Banks
+            {
+                #region Properties
+                public const int TBC = 1;
+                public const int BOG = 2;
+                #endregion
+            }
+
             public class DiscountTypes
             {
                 #region Properties
                 public const int Percent = 1;
                 public const int FixedAmount = 2;
-                #endregion
-            }
-
-            public class OrderDeliveryTypes
-            {
-                #region Properties
-                public const int DeliverToAddress = 1;
-                public const int Takeaway = 2;
                 #endregion
             }
 
@@ -75,12 +66,14 @@ namespace SixtyThreeBits.Core.Utilities
                 #endregion
             }
 
-            public class OrderPaymentTypes
+            public class PaymentOptions
             {
                 #region Properties
-                public const int CreditCard = 1;
-                public const int Cash = 2;
-                public const int Invoice = 3;
+                public const int Consignation = 0;
+                public const int TbcCard = 1;
+                public const int TbcErtguli = 2;
+                public const int BogCard = 10;
+                public const int BogInstallment = 11;
                 #endregion
             }
 
@@ -100,6 +93,18 @@ namespace SixtyThreeBits.Core.Utilities
                 public const int UFC_TRANSACTION_REVERSAL = 203;
                 public const int UFC_TRANSACTION_REFUND = 204;
                 public const int UFC_END_OF_BUSINESS_DAY = 299;
+
+                public const int IPAY_TRANSACTION_REGISTRATION = 300;
+                public const int IPAY_RETURN_TO_WEBSITE = 301;
+                public const int IPAY_TRANSACTION_STATUS_CHECK = 302;
+                public const int IPAY_TRANSACTION_REFUND = 303;
+                public const int IPAY_CALLBACK = 304;
+
+                public const int IPAY_INSTALLMENT_CALCULATE = 400;
+                public const int IPAY_INSTALLMENT_CHECKOUT = 401;
+                public const int IPAY_INSTALLMENT_CHECKOUT_CALLBACK = 402;
+                public const int IPAY_INSTALLMENT_STATUS_CHECK = 403;
+                public const int IPAY_INSTALLMENT_REVERSE_CALLBACK = 404;
                 #endregion
             }
             #endregion
@@ -108,18 +113,10 @@ namespace SixtyThreeBits.Core.Utilities
         public class DictionaryCodes
         {
             #region Properties
-            public const int OrderStatuses = 1;
-            public const int DiscountCouponTypes = 2;
-            public const int OrderPaymentTypes = 3;
-            public const int Services = 4;
-            public const int ServiceOperations = 5;
-            public const int ProductSortOptions = 6;
-            public const int EnergyRatings = 7;
-            public const int ProductMaterials = 8;
-            public const int OrderDeliveryTypes = 9;
-            public const int OrderDeliveryCities = 10;
-            public const int PaymentTypes = 11;
-            public const int TeamMemberCategories = 12;
+            public const int TimeUnits = 1;
+            public const int Services = 2;
+            public const int ServiceOperations = 3;
+            public const int TeamMemberCategories = 10;                   
             #endregion
         }
 
@@ -152,18 +149,7 @@ namespace SixtyThreeBits.Core.Utilities
             public const int PARTIALY_FINISHED = 2;
             public const int FINISHED = 3;
             #endregion
-        }
-        
-        public class UfcTransactionTypes
-        {
-            #region Properties
-            public const int TRANSACTION_REGISTRATION = 0;
-            public const int UFC_POST_BACK = 1;
-            public const int CHECK_TRANSACTION_STATUS = 2;
-            public const int REVERSE = 3;
-            public const int END_OF_BUSINESS_DAY = 10;
-            #endregion
-        }
+        }       
 
         public enum TimeUnitCodes : byte
         {
