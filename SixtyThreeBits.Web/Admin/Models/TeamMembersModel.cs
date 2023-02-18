@@ -133,7 +133,7 @@ namespace SixtyThreeBits.Web.Admin.Models
                    .OnInitialized("TeamMembersModel.OnGridInit")                   
                    .Columns(Columns =>
                    {
-                       Columns.Add().Width(30).Caption(" ").Alignment(HorizontalAlignment.Center).CellTemplate(new JS("TeamMembersModel.GetDetailsButtonColumnCellHtml"));
+                       Columns.Add().Width(30).Caption(" ").InitDetailsUrlCellTemplate(nameof(GridItem.UrlTeamMemberProperties));
                        Columns.AddFor(m => m.TeamMemberFirstname).Caption("სახელი").Width(150).ValidationRules(Options =>
                        {
                            Options.AddRequired();
@@ -144,7 +144,7 @@ namespace SixtyThreeBits.Web.Admin.Models
                        });
                        Columns.AddFor(m => m.TeamMemberPosition).Caption("პოზიცია").Width(150);
                        Columns.AddFor(m => m.TeamMemberCategoryID).Caption("კატეგორია").Width(150).InitLookupColumn(Data: TeamMemberCategories, AllowNull: true);
-                       Columns.AddFor(m => m.TeamMemberIsPublished).Caption("გამოქვეყნებულია?").DataType(GridColumnDataType.Boolean).Width(150).InitCheckboxColumn();
+                       Columns.AddFor(m => m.TeamMemberIsPublished).Caption("გამოქვეყნებული").DataType(GridColumnDataType.Boolean).Width(130).InitCheckboxColumn();
                        Columns.Add();
                    });
 

@@ -372,16 +372,11 @@ namespace SixtyThreeBits.Web.Admin.Models
                     var Grid = GetGridWithStartupValues<GridItem>(Html: Html, KeyFieldName: nameof(GridItem.ProductID));
 
                     Grid
-                   .ID("ProductsGrid")
-                   .Scrolling(Options =>
-                   {
-                       Options.Mode(GridScrollingMode.Standard);
-                       Options.ShowScrollbar(ShowScrollbarMode.Always);
-                   })
+                   .ID("ProductsGrid")                   
                    .OnInitialized("ProductsModel.OnGridInit")
                    .Columns(Columns =>
                    {
-                       Columns.Add().Width(30).Caption(" ").CellTemplate(new JS("ProductsModel.GetDetailsButtonColumnCellHtml"));
+                       Columns.Add().Width(30).Caption(" ").InitDetailsUrlCellTemplate(nameof(GridItem.UrlProductsProperties));
                        Columns.AddFor(m => m.ProductName).Caption("დასახელება").Width(350).ValidationRules(Options =>
                        {
                            Options.AddRequired();

@@ -95,14 +95,14 @@ namespace SixtyThreeBits.Web.Admin.Models
                     .OnInitialized("BlogModel.OnGridInit")  
                     .Columns(Columns =>
                     {
-                        Columns.Add().Width(30).Caption(" ").Alignment(HorizontalAlignment.Center).CellTemplate(new JS("BlogModel.GetDetailsButtonColumnCellHtml"));
-                        Columns.AddFor(m => m.BlogPostTitle).Caption("Title").Width(400).ValidationRules(Options =>
+                        Columns.Add().Width(30).Caption(" ").InitDetailsUrlCellTemplate(nameof(GridItem.UrlBlogPost));
+                        Columns.AddFor(m => m.BlogPostTitle).Caption("სათაური").Width(400).ValidationRules(Options =>
                         {
                             Options.AddRequired();
                         });
-                        Columns.AddFor(m => m.BlogPostAuthorName).Caption("Author").Width(150);
-                        Columns.AddFor(m => m.BlogPostDate).Caption("Date").DataType(GridColumnDataType.Date).Width(150).InitDateColumn();
-                        Columns.AddFor(m => m.BlogPostIsPublished).Caption("Published?").DataType(GridColumnDataType.Boolean).Width(100).InitCheckboxColumn();
+                        Columns.AddFor(m => m.BlogPostAuthorName).Caption("ავტორი").Width(150);
+                        Columns.AddFor(m => m.BlogPostDate).Caption("თარიღი").DataType(GridColumnDataType.Date).Width(150).InitDateColumn();
+                        Columns.AddFor(m => m.BlogPostIsPublished).Caption("გამოქვეყნებული").DataType(GridColumnDataType.Boolean).Width(130).InitCheckboxColumn();
                         Columns.Add();
                     });
 

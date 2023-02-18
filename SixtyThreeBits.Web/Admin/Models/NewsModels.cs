@@ -93,13 +93,13 @@ namespace SixtyThreeBits.Web.Admin.Models
                     .OnInitialized("NewsModel.OnGridInit")
                     .Columns(Columns =>
                     {
-                        Columns.Add().Width(30).Caption(" ").Alignment(HorizontalAlignment.Center).InitDetailsUrlCellTemplate(nameof(GridItem.UrlNewsProperties));
-                        Columns.AddFor(m => m.NewsTitle).Caption("Title").Width(400).ValidationRules(Options =>
+                        Columns.Add().Width(30).Caption(" ").InitDetailsUrlCellTemplate(nameof(GridItem.UrlNewsProperties));
+                        Columns.AddFor(m => m.NewsTitle).Caption("სათაური").Width(400).ValidationRules(Options =>
                         {
                             Options.AddRequired();
                         });
-                        Columns.AddFor(m => m.NewsDatePublished).Caption("Publish Date").DataType(GridColumnDataType.Date).Width(150).InitDateColumn();
-                        Columns.AddFor(m => m.NewsIsPublished).Caption("Published?").DataType(GridColumnDataType.Boolean).Width(100).InitCheckboxColumn();
+                        Columns.AddFor(m => m.NewsDatePublished).Caption("თარიღი").DataType(GridColumnDataType.Date).Width(150).InitDateColumn();
+                        Columns.AddFor(m => m.NewsIsPublished).Caption("გამოქვეყნებული").DataType(GridColumnDataType.Boolean).Width(130).InitCheckboxColumn();
                         Columns.Add();
                     });
 

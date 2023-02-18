@@ -333,7 +333,7 @@ namespace SixtyThreeBits.Web.Reusables.Core
         
         public static DataGridColumnBuilder<T> InitDetailsUrlCellTemplate<T>(this DataGridColumnBuilder<T> Column,string UrlPropertyName)
         {
-            return Column.CellTemplate($"<a href=\"<%-data.{UrlPropertyName}%>\"><i class=\"fas fa-info-circle\"></i></a>");
+            return Column.Alignment(HorizontalAlignment.Center).CellTemplate($"<a href=\"<%-data.{UrlPropertyName}%>\"><i class=\"fas fa-info-circle\"></i></a>");
         }
         #endregion
 

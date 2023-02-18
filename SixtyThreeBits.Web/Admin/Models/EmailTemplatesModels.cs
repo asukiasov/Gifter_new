@@ -55,7 +55,7 @@ namespace SixtyThreeBits.Web.Admin.Models
                     .OnInitialized("EmailTemplatesModel.OnGridInit")
                     .Columns(Columns =>
                     {
-                        Columns.Add().Width(30).Caption(" ").CellTemplate(new JS("EmailTemplatesModel.GetDetailsButtonColumnCellHtml"));
+                        Columns.Add().Width(30).Caption(" ").InitDetailsUrlCellTemplate(nameof(GridItem.UrlEmailTemplate));
                         Columns.AddFor(m => m.EmailTemplateName).Caption("Templates").Width(300);
                         Columns.Add();
                     });

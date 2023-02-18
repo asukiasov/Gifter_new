@@ -10,9 +10,6 @@
     },
     OnGridReorder: function (e) {
         TeamMembersModel.SyncTeamMemberSortIndexes(e);
-    },
-    GetDetailsButtonColumnCellHtml: function (Element, CellInfo) {
-        Element.append('<a href=\"' + CellInfo.data.UrlTeamMemberProperties + '\"><i class=\"fas fa-info-circle\"></i></a>')
     },    
     SyncTeamMemberSortIndexes: function (e) {
         const TeamMembersSortIndexes = Globals.Devexpress.GetGridSortIndexes('TeamMemberID', TeamMembersModel.Grid, e);

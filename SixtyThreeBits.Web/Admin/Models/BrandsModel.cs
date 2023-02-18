@@ -89,16 +89,11 @@ namespace SixtyThreeBits.Web.Admin.Models
                     var Grid = GetGridWithStartupValues<GridItem>(Html: Html, KeyFieldName: nameof(GridItem.BrandID));
 
                     Grid
-                      .ID("BrandsGrid")
-                      .Scrolling(Options =>
-                      {
-                          Options.Mode(GridScrollingMode.Standard);
-                          Options.ShowScrollbar(ShowScrollbarMode.Always);
-                      })
+                      .ID("BrandsGrid")                      
                       .OnInitialized("BrandsModel.OnGridInit")
                       .Columns(Columns =>
                       {
-                          Columns.Add().Width(30).Caption(" ").CellTemplate(new JS("BrandsModel.GetDetailsButtonColumnCellHtml"));
+                          Columns.Add().Width(30).Caption(" ").InitDetailsUrlCellTemplate(nameof(GridItem.UrlBrandProperties));
                           Columns.AddFor(m => m.BrandName).Caption("დასახელება").Width(350).ValidationRules(Options =>
                           {
                               Options.AddRequired();

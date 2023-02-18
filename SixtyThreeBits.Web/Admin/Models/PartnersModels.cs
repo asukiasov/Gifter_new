@@ -85,16 +85,11 @@ namespace SixtyThreeBits.Web.Admin.Models
                 {
                     var Grid = GetGridWithStartupValues<GridItem>(Html: Html, KeyFieldName: nameof(GridItem.PartnerID));
                     Grid
-                    .ID("PartnerGridID")
-                    .Scrolling(Options =>
-                    {
-                        Options.Mode(GridScrollingMode.Standard);
-                        Options.ShowScrollbar(ShowScrollbarMode.Always);
-                    })
+                    .ID("PartnerGridID")                    
                     .OnInitialized("PartnersModel.OnPartnersGridInitialized")
                     .Columns(Columns =>
                     {
-                        Columns.Add().Width(30).Caption(" ").CellTemplate(new JS("PartnersModel.GetDetailsButtonColumnCellHtml"));
+                        Columns.Add().Width(30).Caption(" ").InitDetailsUrlCellTemplate(nameof(GridItem.UrlPartnerProperties));
                         Columns.AddFor(m => m.PartnerName).Caption("დასახელება").Width(350).ValidationRules(Options =>
                         {
                             Options.AddRequired();

@@ -112,7 +112,7 @@ namespace SixtyThreeBits.Web.Admin.Models
                     .OnInitialized("ProjectsModel.OnProjectsGridInit")
                     .Columns(Columns =>
                     {
-                        Columns.Add().Width(30).Caption(" ").CellTemplate(new JS("ProjectsModel.GetDetailsButtonColumnCellHtml"));
+                        Columns.Add().Width(30).Caption(" ").InitDetailsUrlCellTemplate(nameof(GridItem.UrlProjectsProperties));
                         Columns.AddFor(m => m.ProjectCaption).Caption("Caption").Width(400).ValidationRules(Options =>
                         {
                             Options.AddRequired();

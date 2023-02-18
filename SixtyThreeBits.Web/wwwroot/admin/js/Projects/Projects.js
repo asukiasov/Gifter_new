@@ -7,10 +7,7 @@
     OnProjectsGridInit: function (s) {
         ProjectsModel.ProjectsGrid = s.component;
         Globals.Devexpress.SetGridFullHeight(ProjectsModel.ProjectsGrid, s.element[0]);
-    },
-    GetDetailsButtonColumnCellHtml: function (Element, CellInfo) {
-        Element.append('<a href=\"' + CellInfo.data.UrlProjectsProperties + '\"><i class=\"fas fa-info-circle\"></i></a>')
-    },
+    }    
 
     OnReorder: function (e) {
         const ProjectsSortIndexes = Globals.Devexpress.GetGridSortIndexes(e, 'ProjectID');
