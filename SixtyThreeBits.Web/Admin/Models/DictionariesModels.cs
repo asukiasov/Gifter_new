@@ -101,18 +101,7 @@ namespace SixtyThreeBits.Web.Admin.Models
 
                     Tree                        
                     .ID("DictionariesTree")
-                    //.OnToolbarPreparing("DictionariesModel.OnDictionariesTreeToolbarPreparing")
-                    .OnInitialized("DictionariesModel.OnDictionariesTreeInit")
-                    .RowDragging(Options =>
-                    {
-                        if (AllowUpdate)
-                        {
-                            Options.AllowDropInsideItem(true);
-                            Options.AllowReordering(false);
-                            Options.ShowDragIcons(true);
-                            Options.OnReorder("DictionariesModel.OnDictionariesTreeReorder");
-                        }
-                    })
+                    .OnInitialized("DictionariesModel.OnTreeInit")
                     .AutoExpandAll(false)
                     .Pager(Options =>
                     {

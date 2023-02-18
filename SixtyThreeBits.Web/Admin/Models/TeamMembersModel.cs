@@ -117,7 +117,7 @@ namespace SixtyThreeBits.Web.Admin.Models
                    })
                    .RowDragging(rd => rd
                         .AllowReordering(true)
-                        .OnReorder("TeamMembersModel.OnReorder")
+                        .OnReorder("TeamMembersModel.OnGridReorder")
                         .DropFeedbackMode(DropFeedbackMode.Push)
                         .ShowDragIcons(true)
                     )
@@ -126,16 +126,11 @@ namespace SixtyThreeBits.Web.Admin.Models
                        Options.Enabled(false);
                    })
                    .ID("TeamMembersGrid")
-                   .Scrolling(Options =>
-                   {
-                       Options.Mode(GridScrollingMode.Standard);
-                       Options.ShowScrollbar(ShowScrollbarMode.Always);
-                   })
                    .FilterRow(Options =>
                    {
                        Options.Visible(false);
                    })
-                   .OnInitialized("TeamMembersModel.OnTeamMembersGridInit")                   
+                   .OnInitialized("TeamMembersModel.OnGridInit")                   
                    .Columns(Columns =>
                    {
                        Columns.Add().Width(30).Caption(" ").Alignment(HorizontalAlignment.Center).CellTemplate(new JS("TeamMembersModel.GetDetailsButtonColumnCellHtml"));

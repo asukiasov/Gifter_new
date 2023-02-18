@@ -378,7 +378,7 @@ namespace SixtyThreeBits.Web.Admin.Models
                        Options.Mode(GridScrollingMode.Standard);
                        Options.ShowScrollbar(ShowScrollbarMode.Always);
                    })
-                   .OnInitialized("ProductsModel.OnProductsGridInit")
+                   .OnInitialized("ProductsModel.OnGridInit")
                    .Columns(Columns =>
                    {
                        Columns.Add().Width(30).Caption(" ").CellTemplate(new JS("ProductsModel.GetDetailsButtonColumnCellHtml"));

@@ -1,9 +1,9 @@
 ﻿const ProductsModel = {
-    ProductsGrid: null,
+    Grid: null,
     UrlExcelUpload: null,
-    OnProductsGridInit: function (s) {
-        ProductsModel.ProductsGrid = s.component;
-        Globals.Devexpress.SetGridFullHeight(ProductsModel.ProductsGrid, s.element[0]);
+    OnGridInit: function (s) {
+        ProductsModel.Grid = s.component;
+        Globals.Devexpress.SetGridFullHeight(ProductsModel.Grid, s.element[0]);
     },
     GetDetailsButtonColumnCellHtml: function (Element, CellInfo) {
         Element.append('<a href=\'' + CellInfo.data.UrlProductsProperties + '\'><i class=\'fas fa-info-circle\'></i></a>')
@@ -12,7 +12,7 @@
 
 $(function () {
     $('.js-add-new-button').click(function () {
-        ProductsModel.ProductsGrid.addRow();
+        ProductsModel.Grid.addRow();
     });
 
     $('.js-upload-excel-button').click(function () {
@@ -37,7 +37,7 @@ $(function () {
                     },
                     success: function (res) {                        
                         if (res.IsSuccess) {
-                            ProductsModel.ProductsGrid.refresh();
+                            ProductsModel.Grid.refresh();
                             $('.js-upload-excel-file-modal').modal('hide');
                         }
                         else {

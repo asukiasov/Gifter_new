@@ -1,16 +1,13 @@
 ﻿const NewsModel = {
-    NewsGrid: null,
-    OnNewsGridInit: function (s) {
-        NewsModel.NewsGrid = s.component;
-        Globals.Devexpress.SetGridFullHeight(NewsModel.NewsGrid, s.element[0]);
-    },
-    GetDetailsButtonColumnCellHtml: function (Element, CellInfo) {
-        Element.append('<a href=\"' + CellInfo.data.UrlNewsProperties + '\"><i class=\"fas fa-info-circle\"></i></a>')
+    Grid: null,
+    OnGridInit: function (s) {
+        NewsModel.Grid = s.component;
+        Globals.Devexpress.SetGridFullHeight(NewsModel.Grid, s.element[0]);
     }
 };
 
 $(function () {
     $('.js-add-new-button').click(function () {
-        NewsModel.NewsGrid.addRow();
+        NewsModel.Grid.addRow();
     });
 });

@@ -1,8 +1,8 @@
 ﻿const BrandsModel = {
-    BrandsGrid: null,
-    OnBrandsGridInit: function (s) {
-        BrandsModel.BrandsGrid = s.component;
-        Globals.Devexpress.SetGridFullHeight(BrandsModel.BrandsGrid, s.element[0]);
+    Grid: null,
+    OnGridInit: function (s) {
+        BrandsModel.Grid = s.component;
+        Globals.Devexpress.SetGridFullHeight(BrandsModel.Grid, s.element[0]);
     },
 
     GetDetailsButtonColumnCellHtml: function (Element, CellInfo) {
@@ -12,6 +12,6 @@
 
 $(function () {
     $('.js-add-new-button').click(function () {
-        BrandsModel.BrandsGrid.addRow();
+        BrandsModel.Grid.addRow();
     });
 });

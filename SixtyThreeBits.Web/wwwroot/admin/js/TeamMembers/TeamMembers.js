@@ -3,19 +3,19 @@
     TeamMemberID: null,
     UrlSync: null,
 
-    TeamMembersGrid: null,
-    OnTeamMembersGridInit: function (s) {
-        TeamMembersModel.TeamMembersGrid = s.component;
-        Globals.Devexpress.SetGridFullHeight(TeamMembersModel.TeamMembersGrid, s.element[0]);
+    Grid: null,
+    OnGridInit: function (s) {
+        TeamMembersModel.Grid = s.component;
+        Globals.Devexpress.SetGridFullHeight(TeamMembersModel.Grid, s.element[0]);
+    },
+    OnGridReorder: function (e) {
+        TeamMembersModel.SyncTeamMemberSortIndexes(e);
     },
     GetDetailsButtonColumnCellHtml: function (Element, CellInfo) {
         Element.append('<a href=\"' + CellInfo.data.UrlTeamMemberProperties + '\"><i class=\"fas fa-info-circle\"></i></a>')
-    },
-    OnReorder: function (e) {
-        TeamMembersModel.SyncTeamMemberSortIndexes(e);
-    },
+    },    
     SyncTeamMemberSortIndexes: function (e) {
-        const TeamMembersSortIndexes = Globals.Devexpress.GetGridSortIndexes('TeamMemberID', TeamMembersModel.TeamMembersGrid, e);
+        const TeamMembersSortIndexes = Globals.Devexpress.GetGridSortIndexes('TeamMemberID', TeamMembersModel.Grid, e);
         
         $.ajax({
             type: 'POST',
@@ -27,7 +27,7 @@
             },
             success: function (res) {
                 if (res.IsSuccess) {
-                    TeamMembersModel.TeamMembersGrid.refresh()
+                    TeamMembersModel.Grid.refresh()
                 }
                 else {
                     Components63Bits.Dialog.Error();
@@ -45,6 +45,6 @@
 
 $(function () {
     $('.js-add-new-button').click(function () {
-        TeamMembersModel.TeamMembersGrid.addRow();
+        TeamMembersModel.Grid.addRow();
     });
 });

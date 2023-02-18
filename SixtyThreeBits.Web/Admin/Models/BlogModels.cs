@@ -92,7 +92,7 @@ namespace SixtyThreeBits.Web.Admin.Models
 
                     Grid
                     .ID("BlogGrid")
-                    .OnInitialized("BlogModel.OnBlogGridInit")
+                    .OnInitialized("BlogModel.OnGridInit")  
                     .Columns(Columns =>
                     {
                         Columns.Add().Width(30).Caption(" ").Alignment(HorizontalAlignment.Center).CellTemplate(new JS("BlogModel.GetDetailsButtonColumnCellHtml"));

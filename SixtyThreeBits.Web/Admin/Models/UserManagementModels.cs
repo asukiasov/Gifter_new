@@ -106,11 +106,6 @@ namespace SixtyThreeBits.Web.Admin.Models
 
                     Grid
                     .ID("UsersGrid")                    
-                    .Scrolling(Options =>
-                    {
-                        Options.Mode(GridScrollingMode.Standard);
-                        Options.ShowScrollbar(ShowScrollbarMode.Always);
-                    })
                     .OnInitialized("UsersModel.OnUsersGridInit")                    
                     .Columns(Columns =>
                     {                        
