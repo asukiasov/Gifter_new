@@ -132,7 +132,7 @@
                         @*<small>Standard and custom elements for any form</small>*@
                     </div>
                 </div>
-                @if (Model.HasBreadcrumbs && Model.Breadcrumbs.ItemsCount > 2)
+                @if (Model.ShowBreadCrumbs)
                 {
                     <ol class="breadcrumb">
                         @foreach (var Item in Model.Breadcrumbs.Items)

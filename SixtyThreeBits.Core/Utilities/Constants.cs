@@ -102,6 +102,7 @@ namespace SixtyThreeBits.Core.Utilities
         {
             #region Properties
             public const string Culture = "Culture";
+            public const string NewsID = "NewsID";
             public const string ProductCategoryID = "ProductCategoryID";
             public const string ProductID = "ProductID";
             #endregion

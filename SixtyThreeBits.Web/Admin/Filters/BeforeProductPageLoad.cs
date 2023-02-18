@@ -38,7 +38,8 @@ namespace SixtyThreeBits.Web.Admin.Filters
         }
 
         void ReinitBreadCrumbs(ProductsModelBase Model)
-        {            
+        {
+            Model.Breadcrumbs.RemoveAt(2);
             Model.Breadcrumbs.RenameLastItem(Model.DBItemProduct.ProductName);
         }
     }

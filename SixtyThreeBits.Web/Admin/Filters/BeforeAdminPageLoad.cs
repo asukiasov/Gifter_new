@@ -127,10 +127,12 @@ namespace SixtyThreeBits.Web.Admin.Filters
                 PageTitle = Item.PermissionCaption
             }).ToList();
 
-            ViewModel.Breadcrumbs = Model.Breadcrumbs = Breadcrumbs.GetBreadcrumbsByPageUrl(
+            ViewModel.Breadcrumbs = Model.Breadcrumbs = new Breadcrumbs();
+            ViewModel.Breadcrumbs.InitBreadcrumbsByPageUrl(
                 PageHierarchy: PageHierarchy,
                 UrlCurrentPage: Model.UrlCurrentPageWithDomain
             );
+            ViewModel.ShowBreadCrumbs = ViewModel.Breadcrumbs.ItemsCount > 2;
         }   
 
         void InitTabs()

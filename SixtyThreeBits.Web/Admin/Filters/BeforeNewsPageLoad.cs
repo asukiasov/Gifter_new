@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
+using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries;
 using SixtyThreeBits.Web.Admin.Models;
 using SixtyThreeBits.Web.Reusables.Core;
@@ -16,7 +17,7 @@ namespace SixtyThreeBits.Web.Admin.Filters
         public async Task OnActionExecutionAsync(ActionExecutingContext FilterContext, ActionExecutionDelegate next)
         {
             var Model = LocalUtilities.GetModelFromController<NewsModelBase>(FilterContext.Controller);
-            var NewsID = FilterContext.RouteData.Values["NewsID"].ToString().ToInt();
+            var NewsID = FilterContext.RouteData.Values[Constants.RouteValues.NewsID].ToString().ToInt();
 
             Model.DBItemNews = await Model.DataAccessFactory.News.GetSingleNewsByID(NewsID);
             if (Model.DBItemNews == null)
@@ -38,11 +39,7 @@ namespace SixtyThreeBits.Web.Admin.Filters
 
         void ReinitBreadCrumbs(NewsModelBase Model)
         {
-            if(Model.Breadcrumbs.ItemsCount > 2)
-            {
-                Model.Breadcrumbs.Items[2].Title = Model.DBItemNews.NewsTitle;
-            }
-            
+            Model.Breadcrumbs.RenameAt(2, Model.DBItemNews.NewsTitle);
         }
     }
 }

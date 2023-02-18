@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -6,56 +7,56 @@ namespace SixtyThreeBits.Web.Reusables.Core
 {
     public class Breadcrumbs
     {
-        #region Properties
-        public int ItemsCount => Items?.Count ?? 0;
-        public List<BreadCrumbItem> Items { get; set; } = new List<BreadCrumbItem>();
+        #region Properties        
+        readonly List<BreadCrumbItem> BreadCrumbItems = new List<BreadCrumbItem>();
+
+        public ReadOnlyCollection<BreadCrumbItem> Items => new ReadOnlyCollection<BreadCrumbItem>(BreadCrumbItems);
         public bool HasItems => ItemsCount > 0;
+        public int ItemsCount => BreadCrumbItems?.Count ?? 0;
         #endregion Properties
 
         #region Constructors
         public Breadcrumbs() { }
         public Breadcrumbs(IEnumerable<BreadCrumbItem> Items)
         {
-            this.Items = Items.ToList();
+            this.BreadCrumbItems = Items.ToList();
         }
         #endregion Constructors        
 
         #region Methods                
         public void AddItem(BreadCrumbItem NewItem)
         {
-            if (Items != null && NewItem != null)
+            if (BreadCrumbItems != null && NewItem != null)
             {
-                foreach (var Item in Items)
+                foreach (var Item in BreadCrumbItems)
                 {
                     Item.IsLastItem = false;
                 }
                 NewItem.IsLastItem = true;
-                Items.Add(NewItem);
+                BreadCrumbItems.Add(NewItem);
             }
         }
 
         public void DeleteItem(int Index)
         {
-            if (Items?.Count > Index && Index >= 0)
+            if (BreadCrumbItems?.Count > Index && Index >= 0)
             {
-                Items[Index - 1].IsLastItem = Index == Items.Count - 1;
+                BreadCrumbItems[Index - 1].IsLastItem = Index == BreadCrumbItems.Count - 1;
 
-                Items.RemoveAt(Index);
+                BreadCrumbItems.RemoveAt(Index);
             }
         }
 
         public void DeleteLastItem()
         {
-            if (Items?.Count > 0)
+            if (BreadCrumbItems?.Count > 0)
             {
-                Items.RemoveAt(Items.Count - 1);
+                BreadCrumbItems.RemoveAt(BreadCrumbItems.Count - 1);
             }
         }
 
-        public static Breadcrumbs GetBreadcrumbsByPageUrl<T>(List<HierarchyItem<T>> PageHierarchy, string UrlCurrentPage)
+        public void InitBreadcrumbsByPageUrl<T>(List<HierarchyItem<T>> PageHierarchy, string UrlCurrentPage)
         {
-            var Items = new List<BreadCrumbItem>();
-
             if (PageHierarchy?.Any() == true)
             {
                 var Page = default(HierarchyItem<T>);
@@ -70,7 +71,7 @@ namespace SixtyThreeBits.Web.Reusables.Core
 
                 if (Page != null)
                 {
-                    Items.Add(new BreadCrumbItem { Title = Page.PageTitle, IsLastItem = true });
+                    BreadCrumbItems.Add(new BreadCrumbItem { Title = Page.PageTitle, IsLastItem = true });
                 }
 
                 while (Page != null)
@@ -78,32 +79,47 @@ namespace SixtyThreeBits.Web.Reusables.Core
                     Page = PageHierarchy.Where(p => p.ID.Equals(Page.ParentID)).FirstOrDefault();
                     if (Page != null)
                     {
-                        Items.Add(new BreadCrumbItem { Title = Page.PageTitle, NavigateUrl = Page.PageHttpPath });
+                        BreadCrumbItems.Add(new BreadCrumbItem { Title = Page.PageTitle, NavigateUrl = Page.PageHttpPath });
                     }
                 }
             }
 
-            Items.Reverse();
-            return new Breadcrumbs(Items);
+            BreadCrumbItems.Reverse();
+        }
+
+        public void RemoveAt(int Index)
+        {
+            if (Index < ItemsCount)
+            {
+                BreadCrumbItems.RemoveAt(Index);
+            }
+        }
+
+        public void RenameAt(int Index, string Title)
+        {
+            if (Index < ItemsCount)
+            {
+                BreadCrumbItems[Index].Title = Title;
+            }
         }
 
         public void RenameLastItem(string ItemCaption)
         {
-            if (Items?.Count > 0)
+            if (BreadCrumbItems?.Count > 0)
             {
-                Items[Items.Count - 1].Title = ItemCaption;
+                BreadCrumbItems[BreadCrumbItems.Count - 1].Title = ItemCaption;
             }
         }
 
-        public void UpdateItem(BreadCrumbItem NewItem, int Index)
+        public void UpdateItem(int Index, BreadCrumbItem NewItem)
         {
-            if (Items != null && NewItem != null && Index < Items.Count)
+            if (BreadCrumbItems != null && NewItem != null && Index < BreadCrumbItems.Count)
             {
-                if (Index == Items.Count - 1)
+                if (Index == BreadCrumbItems.Count - 1)
                 {
                     NewItem.IsLastItem = true;
                 }
-                Items[Index] = NewItem;
+                BreadCrumbItems[Index] = NewItem;
             }
         }
         #endregion Methods
