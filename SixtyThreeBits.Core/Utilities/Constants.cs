@@ -101,10 +101,15 @@ namespace SixtyThreeBits.Core.Utilities
         public class RouteValues
         {
             #region Properties
-            public const string Culture = "Culture";
+            public const string BlogPostID = "BlogPostID";
+            public const string BrandID = "BrandID";
+            public const string Culture = "Culture";            
             public const string NewsID = "NewsID";
+            public const string PageID = "PageID";
             public const string ProductCategoryID = "ProductCategoryID";
             public const string ProductID = "ProductID";
+            public const string PartnersID = "PartnersID";
+            public const string TeamMemberID = "TeamMemberID";
             #endregion
         }
 
