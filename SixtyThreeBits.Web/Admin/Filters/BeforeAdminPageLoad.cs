@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using SixtyThreeBits.Core.Modules;
 using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Web.Admin.Models;
 using SixtyThreeBits.Web.Reusables.Core;
