@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
+using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries;
 using SixtyThreeBits.Web.Admin.Models;
 using SixtyThreeBits.Web.Reusables.Core;
@@ -18,7 +19,7 @@ namespace SixtyThreeBits.Web.Admin.Filters
         public async Task OnActionExecutionAsync(ActionExecutingContext FilterContext, ActionExecutionDelegate next)
         {
             var Model = LocalUtilities.GetModelFromController<BrandsModelBase>(FilterContext.Controller);
-            var BrandID = FilterContext.RouteData.Values["BrandID"].ToString().ToInt();
+            var BrandID = FilterContext.RouteData.Values[Constants.RouteValues.BrandID].ToString().ToInt();
 
             Model.DBItemBrands = await Model.DataAccessFactory.Brands.GetSingleBrandByID(BrandID);
             if (Model.DBItemBrands == null)

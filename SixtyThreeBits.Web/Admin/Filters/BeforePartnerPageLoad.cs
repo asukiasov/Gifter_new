@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
+using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries;
 using SixtyThreeBits.Web.Admin.Models;
 using SixtyThreeBits.Web.Reusables.Core;
@@ -15,7 +16,7 @@ namespace SixtyThreeBits.Web.Admin.Filters
         public async Task OnActionExecutionAsync(ActionExecutingContext FilterContext, ActionExecutionDelegate next)
         {
             var Model = LocalUtilities.GetModelFromController<PartnersModelBase>(FilterContext.Controller);
-            var PartnerID = FilterContext.RouteData.Values["PartnersID"].ToString().ToInt();
+            var PartnerID = FilterContext.RouteData.Values[Constants.RouteValues.PartnersID].ToString().ToInt();
 
             Model.DBItemPartner = await Model.DataAccessFactory.Partners.GetSinglePartnerByID(PartnerID);
             if (Model.DBItemPartner == null)

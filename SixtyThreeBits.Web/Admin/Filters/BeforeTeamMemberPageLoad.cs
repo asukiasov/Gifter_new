@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
+using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries;
 using SixtyThreeBits.Web.Admin.Models;
 using SixtyThreeBits.Web.Reusables.Core;
@@ -17,7 +18,7 @@ namespace SixtyThreeBits.Web.Admin.Filters
         public async Task OnActionExecutionAsync(ActionExecutingContext FilterContext, ActionExecutionDelegate next)
         {
             var Model = LocalUtilities.GetModelFromController<TeamMembersModelBase>(FilterContext.Controller);
-            var TeamMemberID = FilterContext.RouteData.Values["TeamMemberID"].ToString().ToInt();
+            var TeamMemberID = FilterContext.RouteData.Values[Constants.RouteValues.TeamMemberID].ToString().ToInt();
 
             Model.DBItemTeamMember = await Model.DataAccessFactory.TeamMembers.GetSingleTeamMemberID(TeamMemberID);
             if (Model.DBItemTeamMember == null)

@@ -23,7 +23,7 @@ namespace SixtyThreeBits.Web.Admin.Filters
         public async Task OnActionExecutionAsync(ActionExecutingContext FilterContext, ActionExecutionDelegate next)
         {
             var Model = LocalUtilities.GetModelFromController<PageModelBase>(FilterContext.Controller);
-            var PageID = FilterContext.RouteData.Values["PageID"].ToString().ToInt();
+            var PageID = FilterContext.RouteData.Values[Constants.RouteValues.PageID].ToString().ToInt();
 
             Model.DBItemPage = await Model.DataAccessFactory.Pages.GetSinglePageByID(PageID);
             if (Model.DBItemPage == null)
