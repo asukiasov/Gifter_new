@@ -158,6 +158,10 @@ namespace SixtyThreeBits.Web.Admin.Models
             ViewModel.NewsImageFilename = DBItemNews.NewsImageFilename;
             ViewModel.NewsImageHttpPath = Utilities.GetUploadedFileHttpPath(DBItemNews.NewsImageFilename);
             ViewModel.UrlDeleteImage = Url.RouteUrl(ControllerActionRouteNames.Admin.News.NewsItemDeleteImage, new { NewsID = DBItemNews.NewsID });
+            ViewModel.UrlFileManager = GetFileManagerUrl(
+                FolderPhysicalPath: DataAccessFactory.News.GetFolderPhysicalPath(),
+                FolderVirtualPath: DataAccessFactory.News.GetFolderVirtualPath()
+            );
 
             return ViewModel;
         }
@@ -257,6 +261,7 @@ namespace SixtyThreeBits.Web.Admin.Models
             public bool HasNewsImage => !string.IsNullOrWhiteSpace(NewsImageFilename);
             public IFormFile PostedFile { get; set; }
             public string UrlDeleteImage { get; set; }
+            public string UrlFileManager { get; set; }
             public readonly string TextConfirmDelete = Resources.TextConfirmDelete;
             #endregion
         }

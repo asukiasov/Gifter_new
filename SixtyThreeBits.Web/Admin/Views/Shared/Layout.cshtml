@@ -170,8 +170,8 @@
     <script src="~/js/Global.js"></script>
     <script src="~/admin/js/Layout.js"></script>
     <script>
-        Globals.TextError = '@Model.TextError';
-        Globals.TextSuccess = '@Model.TextSuccess';
+        Globals.TextError = '@Html.Raw(Model.TextError)';
+        Globals.TextSuccess = '@Html.Raw(Model.TextSuccess)';
         LayoutModel.SidebarStatusCookieKey = '@Constants.Cookies.IsAdminSideBarCollapsed';
     </script>
     @RenderSection(Constants.ViewSections.FooterSection, false)
