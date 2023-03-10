@@ -86,7 +86,7 @@ namespace SixtyThreeBits.Web.Reusables.Core
             SB.Append(Url.RouteUrl(ControllerActionRouteNames.Admin.FileManager.Index, new { FolderVirtualPathHash = FolderVirtualPath.AESEncryptString(), FolderPhysicalPathHash = FolderPhysicalPath.AESEncryptString() }));
             if (AllowSelectMultiple || RestrictToImagesOnly || !string.IsNullOrWhiteSpace(OnSelectedFilesChooseClientCallback))
             {
-                SB.Append("?");
+                SB.Append("&");
                 if (AllowSelectMultiple)
                 {
                     SB.Append($"{nameof(AllowSelectMultiple)}=true&");
