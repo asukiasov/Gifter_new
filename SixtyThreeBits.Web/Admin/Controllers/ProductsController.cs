@@ -271,8 +271,7 @@ namespace SixtyThreeBits.Web.Admin.Controllers
         [HttpPost]
         [Route("images/upload", Name = ControllerActionRouteNames.Admin.Products.Product.PropertiesImagesUpload)]
         public async Task<IActionResult> PropertiesImagesUpload(int? ProductID)
-        {
-            await Task.Delay(2000);
+        {            
             var ViewModel = await Model.UploadImages(ProductID);
             return Json(ViewModel);
         }

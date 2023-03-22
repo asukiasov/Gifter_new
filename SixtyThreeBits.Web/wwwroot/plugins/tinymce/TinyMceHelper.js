@@ -1,4 +1,15 @@
-﻿var TinyMCEClass = {
+﻿var TinyMCEHelper = {
+    FilePickerCallback:null,
+    OnSelectedImageChoose: function (files) {
+        if (files) {
+            var urlDownload = files[0].urlDownload;            
+            TinyMCEHelper.FilePickerCallback(urlDownload, { alt: '' });
+        }
+        FancyBox.ClosePopup();
+    }
+}
+
+var TinyMCEClass = {
     Selector: 'textarea',
     Width: '100%',
     Height: 250,
@@ -45,13 +56,15 @@
     },
 
     DisplaySimplified: function () {                
+        var FileManagerPath = this.FileManagerPath;
+
         $(this.Selector).tinymce({
             width: this.Width,
             height: this.Height,
             menubar: false,
             toolbar_items_size: 'small',
-            toolbar: 'bold italic underline strikethrough | alignleft aligncenter alignjustify alignright sub sup | link | bullist numlist | code ' + this.CustomToolbars,
-            plugins: 'link textcolor code paste image lists',
+            toolbar: 'bold italic underline strikethrough | alignleft aligncenter alignjustify alignright sub sup | link | image media | | bullist numlist ' + (this.FileManagerPath == null ? '' : ', | filemanager') +' | code ' + this.CustomToolbars,
+            plugins: 'link textcolor code paste image media lists' + ((this.FileManagerPath == null ? '' : ', filemanager') + (this.AutoSize ? ', autoresize' : '')),
             paste_word_valid_elements: 'b,strong,i,em,ul,li,ol,p,br,sub,sup',
             forced_root_block: false,
             force_p_newlines: true,
@@ -61,6 +74,20 @@
             verify_html: false,
             apply_source_formatting: true,
             convert_urls: false,
+
+            image_advtab: true,
+            file_picker_types: 'image media',
+            file_picker_callback: this.FileManagerPath == null ? null : function (callback, value, meta) {                
+                TinyMCEHelper.FilePickerCallback = callback;
+                FancyBox.Init({
+                    slideClass: 'fileManager-iframe',
+                    src: FileManagerPath + '&AllowSelectMultiple=false&OnSelectedFilesChooseClientCallback=TinyMCEHelper.OnSelectedImageChoose',
+                    smallBtn: true
+                }).ShowIframePopup();
+            },
+
+            filemanager_path: this.FileManagerPath,
+            filemanager_title: 'My Files',
 
             setup: this.Setup
         });        

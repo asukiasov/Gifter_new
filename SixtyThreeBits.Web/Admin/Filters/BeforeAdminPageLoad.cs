@@ -19,7 +19,7 @@ namespace SixtyThreeBits.Web.Admin.Filters
             Model = LocalUtilities.GetModelFromController<WebProjectModelBase>(FilterContext.Controller);
             var C = FilterContext.Controller as Controller;
 
-            var IsAuhenticated = IsUserAuhenticated();            
+            var IsAuhenticated = IsUserAuhenticated();
             if (IsAuhenticated)
             {
                 var HasPermission = HasUserPermission();

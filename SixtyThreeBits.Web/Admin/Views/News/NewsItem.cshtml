@@ -114,6 +114,9 @@
 </div>
 @section FooterSection{
     <script src="~/admin/js/News/NewsItem.js"></script>
+    <script>
+        NewsItemModel.UrlFileManager = '@Html.Raw(Model.UrlFileManager)';
+    </script>
     @if (Model.HasErrors)
     {
         <script>

@@ -10,11 +10,16 @@ using System.Threading.Tasks;
 namespace SixtyThreeBits.Core.Modules
 {
     public class NewsDataAccess : DataAccessBase
-    {        
-        #region Constructors
-        public NewsDataAccess(ConnectionFactory ConnectionFactory) : base(ConnectionFactory)
+    {
+		#region Properties		
+		public const string FolderName = "news";
+        readonly AppSettingsCollection AppSettings;
+		#endregion
+
+		#region Constructors
+		public NewsDataAccess(ConnectionFactory ConnectionFactory, AppSettingsCollection AppSettings) : base(ConnectionFactory)
         {
-            
+            this.AppSettings = AppSettings;
         }
         #endregion
 
@@ -31,7 +36,17 @@ namespace SixtyThreeBits.Core.Modules
             });
         }
 
-        public async Task<bool> IsSlugUniq(string NewsSlug, int? NewsID = null)
+		public string GetFolderPhysicalPath()
+		{
+			return $"{AppSettings.UploadFolderPhysicalPath}{FolderName}\\";
+		}
+
+		public string GetFolderVirtualPath()
+		{
+			return $"{AppSettings.UploadFolderHttpPath}{FolderName}/";
+		}
+
+		public async Task<bool> IsSlugUniq(string NewsSlug, int? NewsID = null)
         {
             return await TryToReturnAsyncTask($"{nameof(IsSlugUniq)}({nameof(NewsSlug)} = {NewsSlug}, {nameof(NewsID)} = {NewsID})", async () =>
             {

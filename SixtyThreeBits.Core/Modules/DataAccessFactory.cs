@@ -31,7 +31,7 @@ namespace SixtyThreeBits.Core.Modules
             Brands = new BrandsDataAccess(ConnectionFactory);
             Dictionaries = new DictionariesDataAccess(ConnectionFactory);
             EmailTemplates = new EmailTemplatesDataAccess(ConnectionFactory);
-            News = new NewsDataAccess(ConnectionFactory);
+            News = new NewsDataAccess(ConnectionFactory, AppSettings);
             NotificationManager = new NotificationManagerDataAccess(ConnectionFactory);
             Pages = new PagesDataAccess(ConnectionFactory, AppSettings);
             Partners = new PartnersDataAccess(ConnectionFactory);
