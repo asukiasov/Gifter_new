@@ -1476,6 +1476,15 @@ html:not(.desktop) .editor-sidebar > div {
 	background-color: #b2b2b2;
 }
 
+.t63-img-section[data-img-original-size] .content-alignment-wrap label:nth-child(1),
+.t63-img-section[data-img-original-size] .content-alignment-wrap label:nth-child(2),
+.t63-img-section[data-img-original-size] .content-alignment-wrap label:nth-child(3),
+.t63-img-section[data-img-original-size] .content-alignment-wrap label:nth-child(7),
+.t63-img-section[data-img-original-size] .content-alignment-wrap label:nth-child(8),
+.t63-img-section[data-img-original-size] .content-alignment-wrap label:nth-child(9){
+	display: none;
+}
+
 
 /* article2ColWithImg */
 .t63-section[data-section="article2ColWithImg"] .img-container .action-buttons{

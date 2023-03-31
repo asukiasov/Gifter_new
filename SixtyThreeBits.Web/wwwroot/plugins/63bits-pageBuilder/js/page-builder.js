@@ -268,8 +268,6 @@ var PageBuilderModel = {
             isFullScreen: false,
             isFullHeight: false,
 
-            objectFit: false,
-
             verticalSpacing: function (args = {}) {
                 var none = {
                     name: '0',
@@ -301,10 +299,43 @@ var PageBuilderModel = {
                     exists: args['xl'] ? args['xl'].exists : true,
                     value: 'xl'
                 };
-
+                
                 return [none, xs, sm, md, lg, xl];
             },
             verticalSpacingSelected: 'md',
+
+            ratio: function (args = {}) {
+                var ratio_auto = {
+                    name: 'auto',
+                    exists: args['auto'] ? args['auto'].exists : true,
+                    value: 'auto'
+                };
+                var ratio_1by1 = {
+                    name: '1x1',
+                    exists: args['1by1'] ? args['1by1'].exists : true,
+                    value: '1by1'
+                };
+                var ratio_4by3 = {
+                    name: '4x3',
+                    exists: args['4by3'] ? args['4by3'].exists : true,
+                    value: '4by3'
+                };
+                var ratio_16by9 = {
+                    name: '16x9',
+                    exists: args['16by9'] ? args['16by9'].exists : true,
+                    value: '16by9'
+                };
+                var ratio_21by9 = {
+                    name: '21x9',
+                    exists: args['21by9'] ? args['21by9'].exists : true,
+                    value: '21by9'
+                };
+
+                return [ratio_auto, ratio_1by1, ratio_4by3, ratio_16by9, ratio_21by9];
+            },
+            ratioSelected: 'auto',
+
+            isImgOriginalSize: false,
 
             cssClassNames: '',
 
@@ -792,7 +823,7 @@ var PageBuilderModel = {
                     name: 'slide',
                     contentSizes: PageBuilderModel.settings.defaults.contentSizes(),
 
-                    contentAlignment: 'centerLeft', //topLeft,topCenter,topRight  centerLeft,center,centerRight  bottomLeft,bottomCenter,bottomRight
+                    contentAlignment: 'centerLeft', //centerLeft,center,centerRight
 
                     hasFullScreenToggler: true,
                     isFullScreen: false,
@@ -1979,7 +2010,7 @@ var PageBuilderModel = {
                     type: section.attr('data-type'),
                     backgroundColor: +section.find('.js-background-color-toggler input:checked').length > 0,
                     additionalClassNames: section.attr('data-additional-classes') || null,
-                    contentSizes: PageBuilderModel.settings.sections[sectionName]().contentSizes,
+                    //contentSizes: PageBuilderModel.settings.sections[sectionName]().contentSizes,
                     contentSizeSelected: section.attr('data-content-size') || null,
                     animations: section.find('.js-section-animation-combo').val() == 'false' ? false : section.find('.js-section-animation-combo').val(),
 
@@ -1991,15 +2022,17 @@ var PageBuilderModel = {
                     isFullScreen: section.attr('data-is-fullscreen') === 'true',
                     isFullHeight: section.attr('data-is-fullheight') === 'true',
 
-                    objectFit: section.attr('data-object-fit'),
-
                     verticalSpacingSelected: section.attr('data-spacing-v') || 'md',
+
+                    //ratio: PageBuilderModel.settings.sections[sectionName]().ratio,
+                    ratioSelected: section.attr('data-ratio') || 'auto',
+
+                    isImgOriginalSize: section.attr('data-img-original-size') == 'true',
 
                     cssClassNames: section.attr('data-css-classes') || '',
                 };
 
                 if (sectionName == PageBuilderModel.settings.sections.slide().name) {
-
                     model.contentAlignment = section.find('[data-align-content]').attr('data-align-content');
 
                     model.components = {
@@ -3053,8 +3086,8 @@ var PageBuilderModel = {
         //-- sections
         slide: {
             template:
-                `<section class="t63-section t63-img-section js-page-section{{#if isFullHeight}} t63-invisible{{/if}} {{cssClassNames}}" data-section="slide" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-object-fit="{{objectFit}}" data-animation="false" data-children-animation="false" data-is-fullscreen="{{isFullScreen}}" data-is-fullheight="{{isFullHeight}}" data-css-classes="{{cssClassNames}}">
-					<div class="container t63-padding-v">
+                `<section class="t63-section t63-img-section js-page-section{{#if isFullHeight}} t63-invisible{{/if}} {{cssClassNames}}" data-section="slide" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-animation="false" data-children-animation="false" data-is-fullscreen="{{isFullScreen}}" data-is-fullheight="{{isFullHeight}}" data-css-classes="{{cssClassNames}}" data-ratio="{{ratioSelected}}" data-img-original-size="{{isImgOriginalSize}}">
+					<div class="container t63-padding-v" data-align-content="{{contentAlignment}}">
                         {{> "imagePartial"}}
                     </div>
 					{{> "sectionEditorContainerPartial"}}
@@ -3200,7 +3233,7 @@ var PageBuilderModel = {
 
         article2ColWithImg: {
             template:
-                `<section class="t63-section js-page-section {{additionalClassNames}} {{cssClassNames}}" data-section="article2ColWithImg" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-additional-classes="{{additionalClassNames}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-reverse="{{isReversed}}" data-object-fit="{{objectFit}}" data-css-classes="{{cssClassNames}}">
+                `<section class="t63-section js-page-section {{additionalClassNames}} {{cssClassNames}}" data-section="article2ColWithImg" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-additional-classes="{{additionalClassNames}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-reverse="{{isReversed}}" data-css-classes="{{cssClassNames}}" data-ratio="{{ratioSelected}}">
                     <div class="container d-lg-flex align-items-stretch t63-padding-v {{additionalClassNames}}">
 					    <div class="col-lg-6 d-lg-flex align-items-center justify-content-end text-col{{#if animations}} t63-invisible js-animate{{/if}}" data-animation="{{animations}}">
 						    <div class="t63-article">
@@ -4366,6 +4399,14 @@ var PageBuilderModel = {
                                 item.verticalSpacingSelected = PageBuilderModel.settings.defaults.verticalSpacingSelected;
                             }
                         }
+                        if (item.name != 'slide' || item.name != 'article2ColWithImg') {
+                            if (!item.ratio) {
+                                item.ratio = PageBuilderModel.settings.defaults.ratio();
+                            }
+                            if (!item.ratioSelected) {
+                                item.ratioSelected = PageBuilderModel.settings.defaults.ratioSelected;
+                            }
+                        }
                         sectionHtml = PageBuilderModel.sections[item.name].getHtml(item).replace(/&quot;/g, '"').replace(/&lt;/g, '<').replace(/&gt;/g, '>');
                         $(PageBuilderModel.currentViewSelector).append(sectionHtml);
                     });
@@ -4591,7 +4632,7 @@ var PageBuilderModel = {
                     `<div class="section-row section-editor-container js-section--container" data-container="section">
 						{{actionButtonsHepler actionButtons.section}}
 						<div class="controls popover js-section-controls hidden">
-							{{#js_if "this.name === 'slideWithText' || this.name === 'slider' || this.name === 'packagesGrid' || this.name === 'flipCardsGrid' || this.name === 'postCardsGrid' || this.name === 'booksGrid' || this.name === 'cardsGrid'"}}
+							{{#js_if "this.name === 'slide' || this.name === 'slideWithText' || this.name === 'slider' || this.name === 'packagesGrid' || this.name === 'flipCardsGrid' || this.name === 'postCardsGrid' || this.name === 'booksGrid' || this.name === 'cardsGrid'"}}
 								{{> "alignmentWrapPartial"}}
 							{{/js_if}}
 							<div class="d-flex align-items-center justify-content-between">
@@ -4671,10 +4712,25 @@ var PageBuilderModel = {
 							</div>
 							{{/js_if}}
                             {{#js_if "this.name === 'slide' || this.name === 'article2ColWithImg'"}}
+                            <div class="form-group js-ratio-controls-wrap">
+                                <label class="form-label">Ratio</label>
+                                <div class="custom-input-group">
+                                    {{#each ratio}}
+                                        {{#if exists}}
+                                            <label>
+                                                <input class="js-ratio-input" type="radio" name="ratio-{{../../id}}" value="{{value}}" {{#js_if "this.value === ../../ratioSelected"}}checked{{/js_if}}>
+                                                <span>{{name}}</span>
+                                            </label>
+                                        {{/if}}
+                                    {{/each}}
+                                </div>
+                            </div>
+							{{/js_if}}
+                            {{#js_if "this.name === 'slide'"}}
                             <div class="form-group">
-								<label class="form-label">Fit image to container</label>
-								<label class="toggler toggler-sm js-object-fit-toggler">
-									<input type="checkbox" {{#js_if "this.objectFit === 'cover'"}}checked{{/js_if}}>
+								<label class="form-label">Image original size</label>
+								<label class="toggler toggler-sm js-img-original-size-toggler">
+									<input type="checkbox" {{#if isImgOriginalSize}}checked{{/if}}>
 									<i></i>
 								</label>
 							</div>
@@ -4776,9 +4832,10 @@ var PageBuilderModel = {
                 var backgoundColor = container.find('.js-background-color-toggler input:checked').length > 0;
                 var isCard = container.find('.js-card-toggler input:checked').length > 0;
                 var isReversed = container.find('.js-content-reverse-toggler input:checked').length > 0;
-                var objectFit = container.find('.js-object-fit-toggler input:checked').length > 0 ? 'cover' : '';
                 var isFullScreen = container.find('.js-fullscreen-toggler input:checked').length > 0;
                 var isFullHeight = isFullScreen && container.find('.js-fullheight-toggler input:checked').length > 0;
+                var ratio = container.find('.js-ratio-input:checked').val();
+                var isImgOriginalSize = container.find('.js-img-original-size-toggler input:checked').length > 0;
                 var cssClassNames = $.trim(container.find('.js-css-classes-input').val().replace(/  +/g, ' ')) || '';
                 var cssClassNamesOld = section.attr('data-css-classes');
 
@@ -4800,11 +4857,13 @@ var PageBuilderModel = {
 
                 section.attr('data-reverse', isReversed);
 
-                section.attr('data-object-fit', objectFit);
-
                 section.attr('data-is-fullscreen', isFullScreen);
 
                 section.attr('data-is-fullheight', isFullHeight);
+
+                section.attr('data-ratio', ratio);
+
+                section.attr('data-img-original-size', isImgOriginalSize);
 
                 cssClassNames = new Set(cssClassNames.split(' '));
                 cssClassNames = Array.from(cssClassNames).join(' ');
@@ -4829,6 +4888,15 @@ var PageBuilderModel = {
             edit: function (container) {
                 PageBuilderModel.editors.actionButtons.toggleVisibility(container);
                 PageBuilderModel.editors.show(container);
+
+                var section = container.closest('.js-page-section');
+                if (section.attr('data-section') === 'slide') {
+                    if (section.attr('data-img-original-size') == 'true') {
+                        container.find('.js-ratio-controls-wrap').addClass('disabled');
+                    } else {
+                        container.find('.content-alignment-wrap').addClass('d-none');
+                    }
+                }
             },
             done: function (container) {
                 PageBuilderModel.editors.actionButtons.toggleVisibility(container);
@@ -7092,6 +7160,18 @@ var PageBuilderModel = {
             //--- prevent outer click (popover)
             $(PageBuilderModel.currentViewSelector).on('click', '.js-section-controls', function (e) {
                 e.stopPropagation();
+            });
+
+            //--- 
+            $(PageBuilderModel.currentViewSelector).on('change', '.js-img-original-size-toggler input', function () {
+                var section = $(this).closest('.js-page-section');
+                if ($(this).is(':checked')) {
+                    section.find('.content-alignment-wrap').removeClass('d-none');
+                    container.find('.js-ratio-controls-wrap').removeClass('disabled');
+                } else {
+                    section.find('.content-alignment-wrap').addClass('d-none');
+                    container.find('.js-ratio-controls-wrap').addClass('disabled');
+                }
             });
         }
     },
