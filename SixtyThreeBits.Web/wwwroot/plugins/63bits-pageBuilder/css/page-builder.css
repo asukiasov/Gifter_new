@@ -1930,19 +1930,19 @@ html:not(.desktop) .editor-sidebar > div {
 }
 
 /*  page head */
-.t63-page-head > .action-buttons{
+.t63-card2col-with-img-section > .action-buttons{
 	top: 50px;
     right: 10px;
 }
-.t63-page-head .img-container .action-buttons{
+.t63-card2col-with-img-section .img-container .action-buttons{
 	bottom: 10px;
 	right: 10px;
 }
-.t63-page-head .btn-container .popover{
+.t63-card2col-with-img-section .btn-container .popover{
 	margin-left: 0;
 	left: 0;
 }
-.t63-page-head .btn-container .popover::before {
+.t63-card2col-with-img-section .btn-container .popover::before {
     margin-left: 0;
     left: 63px;
 }
@@ -2802,11 +2802,11 @@ div.mce-edit-area,
 /* ----------- /services ----------- */
 
 
-/* ----------- page head ----------- */
-.t63-page-head .img-container:hover .embed-responsive-item{
+/* ----------- card2col with img ----------- */
+.t63-card2col-with-img-section .img-container:hover .embed-responsive-item{
 	border: 1px dotted #3ad4f0;
 }
-/* ----------- /page head ----------- */
+/* ----------- /card2col with img ----------- */
 
 
 /* ----------- page scripts ----------- */

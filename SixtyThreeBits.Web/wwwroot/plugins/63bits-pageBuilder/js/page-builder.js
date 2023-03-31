@@ -935,6 +935,8 @@ var PageBuilderModel = {
                     name: 'article2ColWithImg',
                     contentSizes: PageBuilderModel.settings.defaults.contentSizes(),
 
+                    hasReverseToggler: true,
+
                     components: {
                         title: {
                             ...PageBuilderModel.settings.components.title,
@@ -953,6 +955,8 @@ var PageBuilderModel = {
                     name: 'article2ColWithVideo',
                     contentSizes: PageBuilderModel.settings.defaults.contentSizes(),
 
+                    hasReverseToggler: true,
+
                     components: {
                         title: {
                             ...PageBuilderModel.settings.components.title,
@@ -970,6 +974,8 @@ var PageBuilderModel = {
                     ...PageBuilderModel.settings.defaults,
                     name: 'article2ColWithJwPlayer',
                     contentSizes: PageBuilderModel.settings.defaults.contentSizes(),
+
+                    hasReverseToggler: true,
 
                     components: {
                         title: {
@@ -1274,11 +1280,34 @@ var PageBuilderModel = {
                 };
             },
 
-            pageHead: function () {
+            card2Col: function () {
                 return {
                     ...PageBuilderModel.settings.defaults,
-                    name: 'pageHead',
+                    name: 'card2Col',
                     contentSizes: PageBuilderModel.settings.defaults.contentSizes(),
+
+                    hasReverseToggler: true,
+
+                    components: {
+                        title: {
+                            ...PageBuilderModel.settings.components.title,
+                            isFullfeatured: true
+                        },
+                        text: PageBuilderModel.settings.components.text
+                    },
+                }
+            },
+
+            card2ColWithImg: function () {
+                return {
+                    ...PageBuilderModel.settings.defaults,
+                    name: 'card2ColWithImg',
+                    contentSizes: PageBuilderModel.settings.defaults.contentSizes(),
+
+                    hasCardToggler: true,
+                    hasReverseToggler: true,
+
+                    isCard: true,
 
                     components: {
                         title: PageBuilderModel.settings.components.title,
@@ -1348,22 +1377,6 @@ var PageBuilderModel = {
                         }
                     ]
                 };
-            },
-
-            card2Col: function () {
-                return {
-                    ...PageBuilderModel.settings.defaults,
-                    name: 'card2Col',
-                    contentSizes: PageBuilderModel.settings.defaults.contentSizes(),
-
-                    components: {
-                        title: {
-                            ...PageBuilderModel.settings.components.title,
-                            isFullfeatured: true
-                        },
-                        text: PageBuilderModel.settings.components.text
-                    },
-                }
             },
 
             flipCardsGrid: function () {
@@ -1796,7 +1809,7 @@ var PageBuilderModel = {
                     ...sections.services()
                 },
                 {
-                    ...sections.pageHead()
+                    ...sections.card2ColWithImg()
                 },
                 {
                     ...sections.mediaObject()
@@ -2333,7 +2346,7 @@ var PageBuilderModel = {
                     });
                 }
 
-                if (sectionName == PageBuilderModel.settings.sections.pageHead().name) {
+                if (sectionName == PageBuilderModel.settings.sections.card2ColWithImg().name) {
                     model.components = {
                         title: components.title(section),
                         text: components.text(section),
@@ -3876,10 +3889,29 @@ var PageBuilderModel = {
             }
         },
 
-        pageHead: {
+        card2Col: {
             template:
-                `<div class="t63-section t63-page-head js-page-section {{cssClassNames}}" data-section="pageHead" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-css-classes="{{cssClassNames}}">
-                    <div class="container">
+                `<section class="t63-section t63-card2col-section js-page-section {{additionalClassNames}} {{cssClassNames}}" data-section="card2Col" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-additional-classes="{{additionalClassNames}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-reverse="{{isReversed}}" data-css-classes="{{cssClassNames}}">
+                    <article class="container t63-padding-v">
+					    <div class="card-col{{#if animations}} t63-invisible js-animate{{/if}}" data-animation="{{animations}}">
+						    {{> "titlePartial"}}
+					    </div>
+					    <div class="card-col{{#if animations}} t63-invisible js-animate{{/if}}" data-animation="{{animations}}">
+						    {{> "textPartial"}}
+					    </div>
+                    </article>
+					{{> "sectionEditorContainerPartial"}}
+				</section>`,
+
+            getHtml: function (model) {
+                return PageBuilderModel.sections.card2Col.template(model);
+            }
+        },
+
+        card2ColWithImg: {
+            template:
+                `<div class="t63-section t63-card2col-with-img-section js-page-section {{cssClassNames}}" data-section="card2ColWithImg" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-is-card="{{isCard}}" data-reverse="{{isReversed}}" data-css-classes="{{cssClassNames}}">
+                    <div class="container t63-padding-v">
                         <div class="content">
                             <div class="info-wrap">
                                 {{> "titlePartial"}}
@@ -3893,7 +3925,7 @@ var PageBuilderModel = {
 				</div>`,
 
             getHtml: function (model) {
-                return PageBuilderModel.sections.pageHead.template(model);
+                return PageBuilderModel.sections.card2ColWithImg.template(model);
             }
         },
 
@@ -3962,25 +3994,6 @@ var PageBuilderModel = {
                 getHtml: function (model) {
                     return PageBuilderModel.sections.mediaObjectsGrid.items.template(model);
                 }
-            }
-        },
-
-        card2Col: {
-            template:
-                `<section class="t63-section t63-card2col-section js-page-section {{additionalClassNames}} {{cssClassNames}}" data-section="card2Col" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-additional-classes="{{additionalClassNames}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-reverse="{{isReversed}}" data-css-classes="{{cssClassNames}}">
-                    <article class="container">
-					    <div class="card-col{{#if animations}} t63-invisible js-animate{{/if}}" data-animation="{{animations}}">
-						    {{> "titlePartial"}}
-					    </div>
-					    <div class="card-col{{#if animations}} t63-invisible js-animate{{/if}}" data-animation="{{animations}}">
-						    {{> "textPartial"}}
-					    </div>
-                    </article>
-					{{> "sectionEditorContainerPartial"}}
-				</section>`,
-
-            getHtml: function (model) {
-                return PageBuilderModel.sections.card2Col.template(model);
             }
         },
 
@@ -4648,7 +4661,7 @@ var PageBuilderModel = {
 								</label>
 							</div>
 							{{/if}}
-                            {{#js_if "this.name === 'article2ColWithImg' || this.name === 'article2ColWithVideo' || this.name === 'article2ColWithJwPlayer' || this.name === 'card2Col'"}}
+                            {{#js_if "this.name === 'article2ColWithImg' || this.name === 'article2ColWithVideo' || this.name === 'article2ColWithJwPlayer' || this.name === 'card2Col' || this.name === 'card2ColWithImg'"}}
                             <div class="form-group">
 								<label class="form-label">Reverse content</label>
 								<label class="toggler toggler-sm js-content-reverse-toggler">
@@ -7314,7 +7327,7 @@ var PageBuilderModel = {
         PageBuilderModel.sections.html.template = Template7.compile(PageBuilderModel.sections.html.template);
         PageBuilderModel.sections.testimonials.template = Template7.compile(PageBuilderModel.sections.testimonials.template);
         PageBuilderModel.sections.services.template = Template7.compile(PageBuilderModel.sections.services.template);
-        PageBuilderModel.sections.pageHead.template = Template7.compile(PageBuilderModel.sections.pageHead.template);
+        PageBuilderModel.sections.card2ColWithImg.template = Template7.compile(PageBuilderModel.sections.card2ColWithImg.template);
         PageBuilderModel.sections.mediaObject.template = Template7.compile(PageBuilderModel.sections.mediaObject.template);
         PageBuilderModel.sections.mediaObjectsGrid.template = Template7.compile(PageBuilderModel.sections.mediaObjectsGrid.template);
         PageBuilderModel.sections.card2Col.template = Template7.compile(PageBuilderModel.sections.card2Col.template);
