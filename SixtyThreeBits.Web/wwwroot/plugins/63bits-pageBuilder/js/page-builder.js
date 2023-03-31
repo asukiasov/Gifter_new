@@ -4591,7 +4591,7 @@ var PageBuilderModel = {
                     `<div class="section-row section-editor-container js-section--container" data-container="section">
 						{{actionButtonsHepler actionButtons.section}}
 						<div class="controls popover js-section-controls hidden">
-							{{#js_if "this.name === 'slideWithText' || this.name === 'slide' || this.name === 'slider' || this.name === 'packagesGrid' || this.name === 'flipCardsGrid' || this.name === 'postCardsGrid' || this.name === 'booksGrid' || this.name === 'cardsGrid'"}}
+							{{#js_if "this.name === 'slideWithText' || this.name === 'slider' || this.name === 'packagesGrid' || this.name === 'flipCardsGrid' || this.name === 'postCardsGrid' || this.name === 'booksGrid' || this.name === 'cardsGrid'"}}
 								{{> "alignmentWrapPartial"}}
 							{{/js_if}}
 							<div class="d-flex align-items-center justify-content-between">
@@ -4829,13 +4829,6 @@ var PageBuilderModel = {
             edit: function (container) {
                 PageBuilderModel.editors.actionButtons.toggleVisibility(container);
                 PageBuilderModel.editors.show(container);
-
-                var section = container.closest('.js-page-section');
-                if (section.attr('data-section') === 'slide' && section.attr('data-object-fit') != 'cover') {
-                    container.find('.content-alignment-wrap').addClass('disabled');
-                } else {
-                    container.find('.content-alignment-wrap').removeClass('disabled');
-                }
             },
             done: function (container) {
                 PageBuilderModel.editors.actionButtons.toggleVisibility(container);
