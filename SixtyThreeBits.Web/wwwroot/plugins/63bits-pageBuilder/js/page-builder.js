@@ -268,6 +268,8 @@ var PageBuilderModel = {
             isFullScreen: false,
             isFullHeight: false,
 
+            objectFit: false,
+
             verticalSpacing: function (args = {}) {
                 var none = {
                     name: '0',
@@ -1684,7 +1686,7 @@ var PageBuilderModel = {
                         },
                     },
                 },
-                {
+                /*{
                     ...sections.article2ColWithImg(),
                     type: 2,
                     additionalClassNames: 'has-sm-img',
@@ -1698,7 +1700,7 @@ var PageBuilderModel = {
                         },
                     },
                 },
-                /*
+                
                 {
                     ...sections.article2ColWithImg(),
                     type: 3,
@@ -1954,6 +1956,8 @@ var PageBuilderModel = {
                     isReversed: section.attr('data-reverse') === 'true',
                     isFullScreen: section.attr('data-is-fullscreen') === 'true',
                     isFullHeight: section.attr('data-is-fullheight') === 'true',
+
+                    objectFit: section.attr('data-object-fit'),
 
                     verticalSpacingSelected: section.attr('data-spacing-v') || 'md',
 
@@ -3138,7 +3142,7 @@ var PageBuilderModel = {
 
         article2ColWithImg: {
             template:
-                `<section class="t63-section js-page-section {{additionalClassNames}} {{cssClassNames}}" data-section="article2ColWithImg" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-additional-classes="{{additionalClassNames}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-reverse="{{isReversed}}" data-css-classes="{{cssClassNames}}">
+                `<section class="t63-section js-page-section {{additionalClassNames}} {{cssClassNames}}" data-section="article2ColWithImg" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-additional-classes="{{additionalClassNames}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-reverse="{{isReversed}}" data-object-fit="{{objectFit}}" data-css-classes="{{cssClassNames}}">
                     <div class="container d-lg-flex align-items-stretch {{additionalClassNames}}">
 					    <div class="col-lg-6 d-lg-flex align-items-center justify-content-end text-col{{#if animations}} t63-invisible js-animate{{/if}}" data-animation="{{animations}}">
 						    <div class="t63-article">
@@ -4608,6 +4612,15 @@ var PageBuilderModel = {
 								</label>
 							</div>
 							{{/js_if}}
+                            {{#js_if "this.name === 'article2ColWithImg'"}}
+                            <div class="form-group">
+								<label class="form-label">Fit image to container (4x3)</label>
+								<label class="toggler toggler-sm js-object-fit-toggler">
+									<input type="checkbox" {{#js_if "this.objectFit === 'cover'"}}checked{{/js_if}}>
+									<i></i>
+								</label>
+							</div>
+							{{/js_if}}
                             {{#js_if "this.name !== 'slide' && this.name !== 'slider'"}}
                             <div class="form-group">
 								<label class="form-label">Backgroun color</label>
@@ -4712,6 +4725,7 @@ var PageBuilderModel = {
                 var backgoundColor = container.find('.js-background-color-toggler input:checked').length > 0;
                 var isCard = container.find('.js-card-toggler input:checked').length > 0;
                 var isReversed = container.find('.js-content-reverse-toggler input:checked').length > 0;
+                var objectFit = container.find('.js-object-fit-toggler input:checked').length > 0 ? 'cover' : '';
                 var isFullScreen = container.find('.js-fullscreen-toggler input:checked').length > 0;
                 var isFullHeight = isFullScreen && container.find('.js-fullheight-toggler input:checked').length > 0;
                 var cssClassNames = $.trim(container.find('.js-css-classes-input').val().replace(/  +/g, ' ')) || '';
@@ -4734,6 +4748,8 @@ var PageBuilderModel = {
                 section.attr('data-is-card', isCard);
 
                 section.attr('data-reverse', isReversed);
+
+                section.attr('data-object-fit', objectFit);
 
                 section.attr('data-is-fullscreen', isFullScreen);
 
