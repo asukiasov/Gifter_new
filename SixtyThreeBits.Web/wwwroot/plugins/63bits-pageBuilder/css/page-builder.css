@@ -1381,6 +1381,7 @@ html:not(.desktop) .editor-sidebar > div {
 
 /* slide */
 .t63-section[data-section="slide"] .img-container .action-buttons,
+.t63-section[data-section="slideWithText"] .img-container .action-buttons,
 .t63-section[data-section="slider"] .img-container .action-buttonss,
 .t63-section[data-section="slider"] .t63-multimedia-container .action-buttons{
 	bottom: 10px;
@@ -2474,14 +2475,14 @@ div.mce-edit-area,
 
 
 /* ----------- img & slider sections ----------- */
-/*.t63-section.img-section,
-.t63-section.slider-section,
+/*.t63-img-section,
+.t63-slider-section,
 .t63-section .slide-content{
     height: calc(100vh - 44px) !important;
 }*/
-.t63-section.img-section,
-.t63-section.img-section .slide-content,
-.slider-section[data-is-fullscreen="false"] .t63-slider{
+.t63-img-section,
+.t63-img-section .slide-content,
+.t63-slider-section[data-is-fullscreen="false"] .t63-slider{
 	overflow: visible;
 }
 .t63-slider > div{
@@ -2496,10 +2497,10 @@ div.mce-edit-area,
 .t63-slider .slide-content[data-align-content="bottomRight"]{
     padding-bottom: 144px;
 }*/
-.slider-section[data-is-fullscreen="false"] > .container{
+.t63-slider-section[data-is-fullscreen="false"] > .container{
 	padding-bottom: 0;
 }
-.slider-section .t63-slider-settings-container{
+.t63-slider-section .t63-slider-settings-container{
 	padding-top: 20px;
 }
 

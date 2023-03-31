@@ -792,6 +792,24 @@ var PageBuilderModel = {
                     name: 'slide',
                     contentSizes: PageBuilderModel.settings.defaults.contentSizes(),
 
+                    contentAlignment: 'centerLeft', //topLeft,topCenter,topRight  centerLeft,center,centerRight  bottomLeft,bottomCenter,bottomRight
+
+                    hasFullScreenToggler: true,
+                    isFullScreen: false,
+                    isFullHeight: false,
+
+                    components: {
+                        image: PageBuilderModel.settings.components.image
+                    },
+                }
+            },
+
+            slideWithText: function () {
+                return {
+                    ...PageBuilderModel.settings.defaults,
+                    name: 'slideWithText',
+                    contentSizes: PageBuilderModel.settings.defaults.contentSizes(),
+
                     contentAlignment: 'center', //topLeft,topCenter,topRight  centerLeft,center,centerRight  bottomLeft,bottomCenter,bottomRight
 
                     hasFullScreenToggler: true,
@@ -1663,6 +1681,9 @@ var PageBuilderModel = {
                     ...sections.slide()
                 },
                 {
+                    ...sections.slideWithText()
+                },
+                {
                     ...sections.slider()
                 },
                 {
@@ -1965,6 +1986,16 @@ var PageBuilderModel = {
                 };
 
                 if (sectionName == PageBuilderModel.settings.sections.slide().name) {
+
+                    model.contentAlignment = section.find('[data-align-content]').attr('data-align-content');
+
+                    model.components = {
+                        image: components.image(section)
+                    }
+
+                }
+
+                if (sectionName == PageBuilderModel.settings.sections.slideWithText().name) {
                     model.contentAlignment = section.find('[data-align-content]').attr('data-align-content');
 
                     model.components = {
@@ -3009,7 +3040,21 @@ var PageBuilderModel = {
         //-- sections
         slide: {
             template:
-                `<div class="t63-section img-section js-page-section{{#if isFullHeight}} t63-invisible{{/if}} {{cssClassNames}}" data-section="slide" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-animation="false" data-children-animation="false" data-is-fullscreen="{{isFullScreen}}" data-is-fullheight="{{isFullHeight}}" data-css-classes="{{cssClassNames}}">
+                `<section class="t63-section t63-img-section js-page-section{{#if isFullHeight}} t63-invisible{{/if}} {{cssClassNames}}" data-section="slide" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-object-fit="{{objectFit}}" data-animation="false" data-children-animation="false" data-is-fullscreen="{{isFullScreen}}" data-is-fullheight="{{isFullHeight}}" data-css-classes="{{cssClassNames}}">
+					<div class="container t63-padding-v">
+                        {{> "imagePartial"}}
+                    </div>
+					{{> "sectionEditorContainerPartial"}}
+				</section>`,
+
+            getHtml: function (model) {
+                return PageBuilderModel.sections.slide.template(model);
+            },
+        },
+
+        slideWithText: {
+            template:
+                `<div class="t63-section t63-img-section js-page-section{{#if isFullHeight}} t63-invisible{{/if}} {{cssClassNames}}" data-section="slideWithText" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-animation="false" data-children-animation="false" data-is-fullscreen="{{isFullScreen}}" data-is-fullheight="{{isFullHeight}}" data-css-classes="{{cssClassNames}}">
                     <div class="container t63-padding-v">
                         <div class="t63-slide-container">
 					        {{> "bgImagePartial"}}
@@ -3026,13 +3071,13 @@ var PageBuilderModel = {
 				</div>`,
 
             getHtml: function (model) {
-                return PageBuilderModel.sections.slide.template(model);
+                return PageBuilderModel.sections.slideWithText.template(model);
             }
         },
 
         slider: {
             template:
-                `<div class="t63-section slider-section js-page-section{{#if isFullHeight}} t63-invisible{{/if}} {{cssClassNames}}" data-section="slider" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-animation="false" data-children-animation="false" data-is-fullscreen="{{isFullScreen}}" data-is-fullheight="{{isFullHeight}}" data-css-classes="{{cssClassNames}}">
+                `<div class="t63-section t63-slider-section js-page-section{{#if isFullHeight}} t63-invisible{{/if}} {{cssClassNames}}" data-section="slider" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-animation="false" data-children-animation="false" data-is-fullscreen="{{isFullScreen}}" data-is-fullheight="{{isFullHeight}}" data-css-classes="{{cssClassNames}}">
                     <div class="container t63-padding-v">
                         <div class="t63-slider js-t63-slider js-t63-slider-container" data-slider-autoplay="{{slider?.autoplay}}" data-slider-autoplay-speed="{{slider?.autoplaySpeed}}">
                             {{> "sliderItemsPartial"}}
@@ -4533,7 +4578,7 @@ var PageBuilderModel = {
                     `<div class="section-row section-editor-container js-section--container" data-container="section">
 						{{actionButtonsHepler actionButtons.section}}
 						<div class="controls popover js-section-controls hidden">
-							{{#js_if "this.name === 'slide' || this.name === 'slider' || this.name === 'packagesGrid' || this.name === 'flipCardsGrid' || this.name === 'postCardsGrid' || this.name === 'booksGrid' || this.name === 'cardsGrid'"}}
+							{{#js_if "this.name === 'slideWithText' || this.name === 'slide' || this.name === 'slider' || this.name === 'packagesGrid' || this.name === 'flipCardsGrid' || this.name === 'postCardsGrid' || this.name === 'booksGrid' || this.name === 'cardsGrid'"}}
 								{{> "alignmentWrapPartial"}}
 							{{/js_if}}
 							<div class="d-flex align-items-center justify-content-between">
@@ -4612,9 +4657,9 @@ var PageBuilderModel = {
 								</label>
 							</div>
 							{{/js_if}}
-                            {{#js_if "this.name === 'article2ColWithImg'"}}
+                            {{#js_if "this.name === 'slide' || this.name === 'article2ColWithImg'"}}
                             <div class="form-group">
-								<label class="form-label">Fit image to container (4x3)</label>
+								<label class="form-label">Fit image to container</label>
 								<label class="toggler toggler-sm js-object-fit-toggler">
 									<input type="checkbox" {{#js_if "this.objectFit === 'cover'"}}checked{{/js_if}}>
 									<i></i>
@@ -4712,6 +4757,13 @@ var PageBuilderModel = {
             edit: function (container) {
                 PageBuilderModel.editors.actionButtons.toggleVisibility(container);
                 PageBuilderModel.editors.show(container);
+
+                var section = container.closest('.js-page-section');
+                if (section.attr('data-section') === 'slide' && section.attr('data-object-fit') != 'cover') {
+                    container.find('.content-alignment-wrap').addClass('disabled');
+                } else {
+                    container.find('.content-alignment-wrap').removeClass('disabled');
+                }
             },
             done: function (container) {
                 PageBuilderModel.editors.actionButtons.toggleVisibility(container);
@@ -7242,6 +7294,7 @@ var PageBuilderModel = {
         //--- sections templates
         PageBuilderModel.sections.slide.template = Template7.compile(PageBuilderModel.sections.slide.template);
         PageBuilderModel.sections.slider.template = Template7.compile(PageBuilderModel.sections.slider.template);
+        PageBuilderModel.sections.slideWithText.template = Template7.compile(PageBuilderModel.sections.slideWithText.template);
         PageBuilderModel.sections.article.template = Template7.compile(PageBuilderModel.sections.article.template);
         PageBuilderModel.sections.article2Col.template = Template7.compile(PageBuilderModel.sections.article2Col.template);
         PageBuilderModel.sections.articleText2Col.template = Template7.compile(PageBuilderModel.sections.articleText2Col.template);
