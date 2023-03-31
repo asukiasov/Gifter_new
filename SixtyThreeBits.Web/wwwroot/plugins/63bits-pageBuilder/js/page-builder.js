@@ -3201,7 +3201,7 @@ var PageBuilderModel = {
         article2ColWithImg: {
             template:
                 `<section class="t63-section js-page-section {{additionalClassNames}} {{cssClassNames}}" data-section="article2ColWithImg" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-additional-classes="{{additionalClassNames}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-reverse="{{isReversed}}" data-object-fit="{{objectFit}}" data-css-classes="{{cssClassNames}}">
-                    <div class="container d-lg-flex align-items-stretch {{additionalClassNames}}">
+                    <div class="container d-lg-flex align-items-stretch t63-padding-v {{additionalClassNames}}">
 					    <div class="col-lg-6 d-lg-flex align-items-center justify-content-end text-col{{#if animations}} t63-invisible js-animate{{/if}}" data-animation="{{animations}}">
 						    <div class="t63-article">
 							    {{> "titlePartial"}}
@@ -3931,7 +3931,7 @@ var PageBuilderModel = {
 
         mediaObject: {
             template:
-                `<section class="t63-section t63-media-object-section js-page-section {{cssClassNames}}" data-section="mediaObject" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-additional-classes="{{additionalClassNames}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-is-card="{{isCard}}" data-css-classes="{{cssClassNames}}">
+                `<section class="t63-section t63-media-object-section js-page-section {{cssClassNames}}" data-section="mediaObject" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-additional-classes="{{additionalClassNames}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-is-card="{{isCard}}" data-css-classes="{{cssClassNames}}">
                     <div class="container t63-padding-v">
 					    <article class="has-circled-icon{{#if animations}} t63-invisible js-animate{{/if}}" data-animation="{{animations}}">
                             {{> "iconPartial"}}
@@ -4767,21 +4767,7 @@ var PageBuilderModel = {
 					</div>`,
             },
 
-            edit: function (container) {
-                PageBuilderModel.editors.actionButtons.toggleVisibility(container);
-                PageBuilderModel.editors.show(container);
-
-                var section = container.closest('.js-page-section');
-                if (section.attr('data-section') === 'slide' && section.attr('data-object-fit') != 'cover') {
-                    container.find('.content-alignment-wrap').addClass('disabled');
-                } else {
-                    container.find('.content-alignment-wrap').removeClass('disabled');
-                }
-            },
-            done: function (container) {
-                PageBuilderModel.editors.actionButtons.toggleVisibility(container);
-
-                //
+            applyChanges: function (container) {
                 var section = container.closest(PageBuilderModel.sections.selector);
                 var displayName = $.trim(container.find('.js-display-name-input').val()) || 'Nav Item';
                 var isScrollToNavItem = container.find('.js-toggler input:checked').length > 0;
@@ -4838,6 +4824,24 @@ var PageBuilderModel = {
 
                 //animations
                 PageBuilderModel.editors.section.initAnimations(section);
+            },
+
+            edit: function (container) {
+                PageBuilderModel.editors.actionButtons.toggleVisibility(container);
+                PageBuilderModel.editors.show(container);
+
+                var section = container.closest('.js-page-section');
+                if (section.attr('data-section') === 'slide' && section.attr('data-object-fit') != 'cover') {
+                    container.find('.content-alignment-wrap').addClass('disabled');
+                } else {
+                    container.find('.content-alignment-wrap').removeClass('disabled');
+                }
+            },
+            done: function (container) {
+                PageBuilderModel.editors.actionButtons.toggleVisibility(container);
+
+                //apply changes
+                PageBuilderModel.editors.section.applyChanges(container);
 
                 //
                 PageBuilderModel.editors.hide(container);
@@ -5663,14 +5667,7 @@ var PageBuilderModel = {
                         </div>
                 </div>`,
 
-            edit: function (container) {
-                PageBuilderModel.editors.actionButtons.toggleVisibility(container);
-                PageBuilderModel.editors.show(container);
-            },
-            done: function (container) {
-                PageBuilderModel.editors.actionButtons.toggleVisibility(container);
-
-                //
+            applyChanges: function (container) {
                 var itemSize = +container.find('.js-size-input:checked').val();
 
                 var url = container.find('.js-url-input').val();
@@ -5728,6 +5725,17 @@ var PageBuilderModel = {
 
                 container.attr('data-size', itemSize);
                 container.parent().removeAttr('class').addClass(PageBuilderModel.settings.components.imgGridItem.columnClassesNames[itemSize - 1]);
+            },
+
+            edit: function (container) {
+                PageBuilderModel.editors.actionButtons.toggleVisibility(container);
+                PageBuilderModel.editors.show(container);
+            },
+            done: function (container) {
+                PageBuilderModel.editors.actionButtons.toggleVisibility(container);
+
+                //
+                PageBuilderModel.editors.imgGridItem.applyChanges(container);
 
                 //
                 PageBuilderModel.editors.hide(container);
@@ -6153,6 +6161,13 @@ var PageBuilderModel = {
                     </div>
                 </div>`,
 
+            applyChanges: function (container) {
+                var itemSize = +container.find('.js-size-input:checked').val();
+
+                container.attr('data-size', itemSize);
+                container.parent().removeAttr('class').addClass(PageBuilderModel.settings.components.mediaObjectsGridItem().columnClassesNames[itemSize - 1]);
+            },
+
             edit: function (container) {
                 PageBuilderModel.editors.actionButtons.toggleVisibility(container);
                 PageBuilderModel.editors.show(container);
@@ -6161,10 +6176,7 @@ var PageBuilderModel = {
                 PageBuilderModel.editors.actionButtons.toggleVisibility(container);
 
                 //
-                var itemSize = +container.find('.js-size-input:checked').val();
-
-                container.attr('data-size', itemSize);
-                container.parent().removeAttr('class').addClass(PageBuilderModel.settings.components.mediaObjectsGridItem().columnClassesNames[itemSize - 1]);
+                PageBuilderModel.editors.mediaObjectsGridItem.applyChanges(container);
 
                 //
                 PageBuilderModel.editors.hide(container);
@@ -6223,6 +6235,13 @@ var PageBuilderModel = {
                     </div>
                 </div>`,
 
+            applyChanges: function (container) {
+                var itemSize = +container.find('.js-size-input:checked').val();
+
+                container.attr('data-size', itemSize);
+                container.parent().removeAttr('class').addClass(PageBuilderModel.settings.components.packagesGridItem().columnClassesNames[itemSize - 1]);
+            },
+
             edit: function (container) {
                 PageBuilderModel.editors.actionButtons.toggleVisibility(container);
                 PageBuilderModel.editors.show(container);
@@ -6231,10 +6250,7 @@ var PageBuilderModel = {
                 PageBuilderModel.editors.actionButtons.toggleVisibility(container);
 
                 //
-                var itemSize = +container.find('.js-size-input:checked').val();
-
-                container.attr('data-size', itemSize);
-                container.parent().removeAttr('class').addClass(PageBuilderModel.settings.components.packagesGridItem().columnClassesNames[itemSize - 1]);
+                PageBuilderModel.editors.packagesGridItem.applyChanges(container);
 
                 //
                 PageBuilderModel.editors.hide(container);
@@ -6320,14 +6336,7 @@ var PageBuilderModel = {
                 </div>
                 <button class="editor-btn-rounded js-flip-card-item-rotate-btn js-additional-action-buttons"><img src="/plugins/63bits-pageBuilder/images/icons/rotate.svg" alt="settings"></button>`,
 
-            edit: function (container) {
-                PageBuilderModel.editors.actionButtons.toggleVisibility(container);
-                PageBuilderModel.editors.show(container);
-            },
-            done: function (container) {
-                PageBuilderModel.editors.actionButtons.toggleVisibility(container);
-
-                //
+            applyChanges: function (container) {
                 var itemSize = +container.find('.js-size-input:checked').val();
                 container.attr('data-size', itemSize);
                 container.parent().removeAttr('class').addClass(PageBuilderModel.settings.components.flipCardsGridItem().columnClassesNames[itemSize - 1]);
@@ -6343,6 +6352,17 @@ var PageBuilderModel = {
 
                 var isClickable = container.find('.js-flip-card-item-rotate-event-input:checked').val();
                 container.attr('data-clickable', isClickable);
+            },
+
+            edit: function (container) {
+                PageBuilderModel.editors.actionButtons.toggleVisibility(container);
+                PageBuilderModel.editors.show(container);
+            },
+            done: function (container) {
+                PageBuilderModel.editors.actionButtons.toggleVisibility(container);
+
+                //
+                PageBuilderModel.editors.flipCardsGridItem.applyChanges(container);
 
                 //
                 PageBuilderModel.editors.hide(container);
@@ -6476,6 +6496,13 @@ var PageBuilderModel = {
                     </div>
                 </div>`,
 
+            applyChanges: function (container) {
+                var itemSize = +container.find('.js-size-input:checked').val();
+
+                container.attr('data-size', itemSize);
+                container.parent().removeAttr('class').addClass(PageBuilderModel.settings.components.videoGridItem().columnClassesNames[itemSize - 1]);
+            },
+
             edit: function (container) {
                 PageBuilderModel.editors.actionButtons.toggleVisibility(container);
                 PageBuilderModel.editors.show(container);
@@ -6484,11 +6511,7 @@ var PageBuilderModel = {
                 PageBuilderModel.editors.actionButtons.toggleVisibility(container);
 
                 //
-                var itemSize = +container.find('.js-size-input:checked').val();
-
-
-                container.attr('data-size', itemSize);
-                container.parent().removeAttr('class').addClass(PageBuilderModel.settings.components.videoGridItem().columnClassesNames[itemSize - 1]);
+                PageBuilderModel.editors.videoGridItem.applyChanges(container);
 
                 //
                 PageBuilderModel.editors.hide(container);
@@ -6546,6 +6569,13 @@ var PageBuilderModel = {
                     </div>
                 </div>`,
 
+            applyChanges: function (container) {
+                var itemSize = +container.find('.js-size-input:checked').val();
+
+                container.attr('data-size', itemSize);
+                container.parent().removeAttr('class').addClass(PageBuilderModel.settings.components.jwPlayerGridItem().columnClassesNames[itemSize - 1]);
+            },
+
             edit: function (container) {
                 PageBuilderModel.editors.actionButtons.toggleVisibility(container);
                 PageBuilderModel.editors.show(container);
@@ -6554,11 +6584,7 @@ var PageBuilderModel = {
                 PageBuilderModel.editors.actionButtons.toggleVisibility(container);
 
                 //
-                var itemSize = +container.find('.js-size-input:checked').val();
-
-
-                container.attr('data-size', itemSize);
-                container.parent().removeAttr('class').addClass(PageBuilderModel.settings.components.jwPlayerGridItem().columnClassesNames[itemSize - 1]);
+                PageBuilderModel.editors.jwPlayerGridItem.applyChanges(container);
 
                 //
                 PageBuilderModel.editors.hide(container);
@@ -6626,6 +6652,13 @@ var PageBuilderModel = {
                     </div>
                 </div>`,
 
+            applyChanges: function (container) {
+                var itemSize = +container.find('.js-size-input:checked').val();
+
+                container.attr('data-size', itemSize);
+                container.parent().removeAttr('class').addClass(PageBuilderModel.settings.components.postCardsGridItem().columnClassesNames[itemSize - 1]);
+            },
+
             edit: function (container) {
                 PageBuilderModel.editors.actionButtons.toggleVisibility(container);
                 PageBuilderModel.editors.show(container);
@@ -6634,10 +6667,7 @@ var PageBuilderModel = {
                 PageBuilderModel.editors.actionButtons.toggleVisibility(container);
 
                 //
-                var itemSize = +container.find('.js-size-input:checked').val();
-
-                container.attr('data-size', itemSize);
-                container.parent().removeAttr('class').addClass(PageBuilderModel.settings.components.postCardsGridItem().columnClassesNames[itemSize - 1]);
+                PageBuilderModel.editors.postCardsGridItem.applyChanges(container);
 
                 //
                 PageBuilderModel.editors.hide(container);
@@ -6696,6 +6726,13 @@ var PageBuilderModel = {
                     </div>
                 </div>`,
 
+            applyChanges: function (container) {
+                var itemSize = +container.find('.js-size-input:checked').val();
+
+                container.attr('data-size', itemSize);
+                container.parent().removeAttr('class').addClass(PageBuilderModel.settings.components.booksGridItem().columnClassesNames[itemSize - 1]);
+            },
+
             edit: function (container) {
                 PageBuilderModel.editors.actionButtons.toggleVisibility(container);
                 PageBuilderModel.editors.show(container);
@@ -6704,10 +6741,7 @@ var PageBuilderModel = {
                 PageBuilderModel.editors.actionButtons.toggleVisibility(container);
 
                 //
-                var itemSize = +container.find('.js-size-input:checked').val();
-
-                container.attr('data-size', itemSize);
-                container.parent().removeAttr('class').addClass(PageBuilderModel.settings.components.booksGridItem().columnClassesNames[itemSize - 1]);
+                PageBuilderModel.editors.booksGridItem.applyChanges(container);
 
                 //
                 PageBuilderModel.editors.hide(container);
@@ -6766,6 +6800,13 @@ var PageBuilderModel = {
                     </div>
                 </div>`,
 
+            applyChanges: function (container) {
+                var itemSize = +container.find('.js-size-input:checked').val();
+
+                container.attr('data-size', itemSize);
+                container.parent().removeAttr('class').addClass(PageBuilderModel.settings.components.peopleGridItem().columnClassesNames[itemSize - 1]);
+            },
+
             edit: function (container) {
                 PageBuilderModel.editors.actionButtons.toggleVisibility(container);
                 PageBuilderModel.editors.show(container);
@@ -6774,10 +6815,7 @@ var PageBuilderModel = {
                 PageBuilderModel.editors.actionButtons.toggleVisibility(container);
 
                 //
-                var itemSize = +container.find('.js-size-input:checked').val();
-
-                container.attr('data-size', itemSize);
-                container.parent().removeAttr('class').addClass(PageBuilderModel.settings.components.peopleGridItem().columnClassesNames[itemSize - 1]);
+                PageBuilderModel.editors.peopleGridItem.applyChanges(container);
 
                 //
                 PageBuilderModel.editors.hide(container);
@@ -6836,6 +6874,13 @@ var PageBuilderModel = {
                     </div>
                 </div>`,
 
+            applyChanges: function (container) {
+                var itemSize = +container.find('.js-size-input:checked').val();
+
+                container.attr('data-size', itemSize);
+                container.parent().removeAttr('class').addClass(PageBuilderModel.settings.components.cardsGridItem().columnClassesNames[itemSize - 1]);
+            },
+
             edit: function (container) {
                 PageBuilderModel.editors.actionButtons.toggleVisibility(container);
                 PageBuilderModel.editors.show(container);
@@ -6844,10 +6889,7 @@ var PageBuilderModel = {
                 PageBuilderModel.editors.actionButtons.toggleVisibility(container);
 
                 //
-                var itemSize = +container.find('.js-size-input:checked').val();
-
-                container.attr('data-size', itemSize);
-                container.parent().removeAttr('class').addClass(PageBuilderModel.settings.components.cardsGridItem().columnClassesNames[itemSize - 1]);
+                PageBuilderModel.editors.cardsGridItem.applyChanges(container);
 
                 //
                 PageBuilderModel.editors.hide(container);
@@ -7041,6 +7083,22 @@ var PageBuilderModel = {
                 } else {
                     section.find('.js-fullheight-toggler').addClass('disabled').find('input').prop('checked', false);
                 }
+            });
+
+
+            //--- apply changes
+            $(PageBuilderModel.currentViewSelector).on('change', '.js-section-controls input[type="checkbox"],.js-section-controls input[type="radio"],.js-section-controls select', function () {
+                var container = $(this).closest('.js-section--container');
+                var containerName = container.attr('data-container');
+
+                if (PageBuilderModel.editors[containerName].applyChanges) {
+                    PageBuilderModel.editors[containerName].applyChanges(container);
+                }
+            });
+
+            //--- prevent outer click (popover)
+            $(PageBuilderModel.currentViewSelector).on('click', '.js-section-controls', function (e) {
+                e.stopPropagation();
             });
         }
     },

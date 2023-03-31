@@ -1386,6 +1386,9 @@
 	border-radius: 8px;
 	padding: 26px;
 }
+.t63-media-object-section[data-is-card="true"][data-background-color="false"] article{
+	background-color: #f9f9f9;
+}
 
 .t63-media-object-section .t63-icon-container,
 .t63-media-object-section .fontawesome-icon-container{
@@ -1579,6 +1582,9 @@
 }
 .t63-card2col-section .card-col:last-child{
 	background-color: #fff;
+}
+.t63-card2col-section[data-background-color="false"] .card-col:last-child{
+	background-color: #f9f9f9;
 }
 
 .t63-card2col-section .card-col > *{
@@ -1774,6 +1780,9 @@
 	-webkit-filter: blur(0px);
 	transform: rotateY(0deg);
 	transform-style: preserve-3d;
+}
+.t63-flip-cards-section[data-background-color="false"] .flip-card-item .flip-front{
+	background-color: #f9f9f9;
 }
 
 .t63-flip-cards-section .flip-card-item .flip-back {
