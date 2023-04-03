@@ -2462,16 +2462,16 @@
 	position: relative;
 }
 
-.t63-section[data-ratio="1by1"] .img-container figure::before{
+.t63-section[data-ratio="1by1"] .embed-responsive::before{
 	padding-top: 100%;
 }
-.t63-section[data-ratio="4by3"] .img-container figure::before{
+.t63-section[data-ratio="4by3"] .embed-responsive::before{
 	padding-top: 75%;
 }
-.t63-section[data-ratio="16by9"] .img-container figure::before{
+.t63-section[data-ratio="16by9"] .embed-responsive::before{
 	padding-top: 56.25%;
 }
-.t63-section[data-ratio="21by9"] .img-container figure::before{
+.t63-section[data-ratio="21by9"] .embed-responsive::before{
 	padding-top: 42.857143%;
 }
 /* ----------- /ratio ----------- */

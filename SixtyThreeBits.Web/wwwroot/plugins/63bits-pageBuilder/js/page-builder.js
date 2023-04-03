@@ -299,27 +299,27 @@ var PageBuilderModel = {
             ratio: function (args = {}) {
                 var ratio_auto = {
                     name: 'auto',
-                    exists: args['auto'] ? args['auto'].exists : true,
+                    exists: args['ratio_auto'] ? args['ratio_auto'].exists : true,
                     value: 'auto'
                 };
                 var ratio_1by1 = {
                     name: '1x1',
-                    exists: args['1by1'] ? args['1by1'].exists : true,
+                    exists: args['ratio_1by1'] ? args['ratio_1by1'].exists : true,
                     value: '1by1'
                 };
                 var ratio_4by3 = {
                     name: '4x3',
-                    exists: args['4by3'] ? args['4by3'].exists : true,
+                    exists: args['ratio_4by3'] ? args['ratio_4by3'].exists : true,
                     value: '4by3'
                 };
                 var ratio_16by9 = {
                     name: '16x9',
-                    exists: args['16by9'] ? args['16by9'].exists : true,
+                    exists: args['ratio_16by9'] ? args['ratio_16by9'].exists : true,
                     value: '16by9'
                 };
                 var ratio_21by9 = {
                     name: '21x9',
-                    exists: args['21by9'] ? args['21by9'].exists : true,
+                    exists: args['ratio_21by9'] ? args['ratio_21by9'].exists : true,
                     value: '21by9'
                 };
 
@@ -981,6 +981,12 @@ var PageBuilderModel = {
 
                     hasReverseToggler: true,
 
+                    hasRatioToggler: true,
+                    ratio: PageBuilderModel.settings.defaults.ratio({
+                        ratio_auto: { exists: false }
+                    }),
+                    ratioSelected: '16by9',
+
                     components: {
                         title: {
                             ...PageBuilderModel.settings.components.title,
@@ -1036,6 +1042,12 @@ var PageBuilderModel = {
                     ...PageBuilderModel.settings.defaults,
                     name: 'articleWithVideo',
 
+                    hasRatioToggler: true,
+                    ratio: PageBuilderModel.settings.defaults.ratio({
+                        ratio_auto: { exists: false }
+                    }),
+                    ratioSelected: '16by9',
+
                     components: {
                         title: {
                             ...PageBuilderModel.settings.components.title,
@@ -1054,6 +1066,12 @@ var PageBuilderModel = {
                 return {
                     ...PageBuilderModel.settings.defaults,
                     name: 'video',
+
+                    hasRatioToggler: true,
+                    ratio: PageBuilderModel.settings.defaults.ratio({
+                        ratio_auto: { exists: false }
+                    }),
+                    ratioSelected: '16by9',
 
                     components: {
                         video: PageBuilderModel.settings.components.video,
@@ -1534,6 +1552,12 @@ var PageBuilderModel = {
                     }),
 
                     contentAlignment: 'centerLeft', //centerLeft,center,centerRight
+
+                    hasRatioToggler: true,
+                    ratio: PageBuilderModel.settings.defaults.ratio({
+                        ratio_auto: { exists: false }
+                    }),
+                    ratioSelected: '16by9',
 
                     items: [
                         {
@@ -2932,7 +2956,7 @@ var PageBuilderModel = {
             video: {
                 partial:
                     `<div class="section-row video-container js-section--container{{#if animations}} t63-invisible js-animate{{/if}}" data-container="video" data-animation="{{animations}}">
-                        <div class="embed-responsive embed-responsive-16by9 js-iframe-container">
+                        <div class="embed-responsive js-iframe-container">
                             <iframe class="embed-responsive-item" src="{{components.video.url}}" frameborder="0" allow="encrypted-media" allowfullscreen=""></iframe>
                         </div>
                         {{actionButtonsHepler actionButtons.video }}
@@ -2941,7 +2965,7 @@ var PageBuilderModel = {
 
                 template:
                     `<div class="section-row video-container js-section--container{{#if animations}} t63-invisible js-animate{{/if}}" data-container="video" data-animation="{{animations}}">
-                        <div class="embed-responsive embed-responsive-16by9 js-iframe-container">
+                        <div class="embed-responsive js-iframe-container">
                             <iframe class="embed-responsive-item" src="{{video.url}}" frameborder="0" allow="encrypted-media" allowfullscreen=""></iframe>
                         </div>
                         {{actionButtonsHepler actionButtons }}
@@ -3247,7 +3271,7 @@ var PageBuilderModel = {
 
         article2ColWithVideo: {
             template:
-                `<section class="t63-section js-page-section {{additionalClassNames}} {{cssClassNames}}" data-section="article2ColWithVideo" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-additional-classes="{{additionalClassNames}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-reverse="{{isReversed}}" data-css-classes="{{cssClassNames}}">
+                `<section class="t63-section js-page-section {{additionalClassNames}} {{cssClassNames}}" data-section="article2ColWithVideo" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-additional-classes="{{additionalClassNames}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-reverse="{{isReversed}}" data-css-classes="{{cssClassNames}}" data-ratio="{{ratioSelected}}">
                     <div class="container d-lg-flex align-items-stretch {{additionalClassNames}}">
 					    <div class="col-lg-6 d-lg-flex align-items-center justify-content-end text-col{{#if animations}} t63-invisible js-animate{{/if}}" data-animation="{{animations}}">
 						    <div class="t63-article">
@@ -3320,7 +3344,7 @@ var PageBuilderModel = {
 
         articleWithVideo: {
             template:
-                `<section class="t63-section js-page-section {{cssClassNames}}" data-section="articleWithVideo" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-css-classes="{{cssClassNames}}">
+                `<section class="t63-section js-page-section {{cssClassNames}}" data-section="articleWithVideo" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-css-classes="{{cssClassNames}}" data-ratio="{{ratioSelected}}">
 					<article class="container t63-article">
 						{{> "titlePartial"}}
 						{{> "videoPartial"}}
@@ -3336,7 +3360,7 @@ var PageBuilderModel = {
 
         video: {
             template:
-                `<section class="t63-section js-page-section {{cssClassNames}}" data-section="video" data-type="{{type}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-css-classes="{{cssClassNames}}">
+                `<section class="t63-section js-page-section {{cssClassNames}}" data-section="video" data-type="{{type}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-css-classes="{{cssClassNames}}" data-ratio="{{ratioSelected}}">
 					<div class="container">
                         {{> "videoPartial"}}
                     </div>
@@ -3350,7 +3374,7 @@ var PageBuilderModel = {
 
         videoGrid: {
             template:
-                `<section class="t63-section t63-video-grid-section js-page-section {{cssClassNames}}" data-section="videoGrid" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-css-classes="{{cssClassNames}}">
+                `<section class="t63-section t63-video-grid-section js-page-section {{cssClassNames}}" data-section="videoGrid" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-css-classes="{{cssClassNames}}" data-ratio="{{ratioSelected}}">
 					<div class="container t63-padding-v">
 						<div class="row js-video-grid-row" data-align-content="{{contentAlignment}}">
                             {{> "videoGridItemsPartial"}}
@@ -4408,7 +4432,11 @@ var PageBuilderModel = {
                         }
                         if (item.hasRatioToggler) {
                             if (!item.ratio) {
-                                item.ratio = PageBuilderModel.settings.defaults.ratio();
+                                let ratio = PageBuilderModel.settings.sections[item.name]().ratio
+                                if (typeof ratio === 'function') {
+                                    ratio = PageBuilderModel.settings.defaults.ratio()
+                                }
+                                item.ratio = ratio;
                             }
                             /*if (!item.ratioSelected) {
                                 item.ratioSelected = PageBuilderModel.settings.defaults.ratioSelected;
