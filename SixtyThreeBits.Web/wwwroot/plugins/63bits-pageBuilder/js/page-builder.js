@@ -3094,7 +3094,7 @@ var PageBuilderModel = {
                 `<div class="t63-section t63-img-section js-page-section{{#if isFullHeight}} t63-invisible{{/if}} {{cssClassNames}}" data-section="slideWithText" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-animation="false" data-children-animation="false" data-is-fullscreen="{{isFullScreen}}" data-is-fullheight="{{isFullHeight}}" data-css-classes="{{cssClassNames}}">
                     <div class="container t63-padding-v">
                         <div class="t63-slide-container">
-					        {{> "bgImagePartial"}}
+					        {{> "imagePartial"}}
 					        <div class="container slide-content js-slide-content" data-align-content="{{contentAlignment}}">
 						        <section>
 							        {{> "titlePartial"}}
@@ -7643,7 +7643,7 @@ var PageBuilderModel = {
             },
             getMultimediaFilesUrl: function () {
                 if (PageBuilderModel.plugins.fileManager.url) {
-                    return PageBuilderModel.plugins.fileManager.url + '&AllowedExtensions=.jpg,.jpeg,.png,.gif.mp4&AllowSelectMultiple=false&OnSelectedFilesChooseClientCallback=PageBuilderModel.editors.multimedia.fileManager.onSelectedFilesChooseClientCallback';
+                    return PageBuilderModel.plugins.fileManager.url + '&AllowedExtensions=.jpg,.jpeg,.png,.gif,.mp4&AllowSelectMultiple=false&OnSelectedFilesChooseClientCallback=PageBuilderModel.editors.multimedia.fileManager.onSelectedFilesChooseClientCallback';
                 }
             },
             file: {
