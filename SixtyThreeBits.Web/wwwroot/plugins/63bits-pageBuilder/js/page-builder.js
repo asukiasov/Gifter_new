@@ -1140,6 +1140,9 @@ var PageBuilderModel = {
 
                     contentAlignment: 'centerLeft', //centerLeft,center,centerRight
 
+                    hasRatioToggler: true,
+                    ratioSelected: '16by9',
+
                     components: {
                         title: {
                             ...PageBuilderModel.settings.components.title,
@@ -1165,9 +1168,9 @@ var PageBuilderModel = {
                 return {
                     ...PageBuilderModel.settings.defaults,
                     name: 'articlesList',
-                    contentSizes: PageBuilderModel.settings.defaults.contentSizes({
-                        xs: { exists: false }
-                    }),
+
+                    hasRatioToggler: true,
+                    ratioSelected: '16by9',
 
                     components: {
                         title: {
@@ -3539,7 +3542,7 @@ var PageBuilderModel = {
 
         articlesGrid: {
             template:
-                `<section class="t63-section t63-articles-grid-section js-page-section {{cssClassNames}}" data-section="articlesGrid" data-type="{{type}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-css-classes="{{cssClassNames}}">
+                `<section class="t63-section t63-articles-grid-section js-page-section {{cssClassNames}}" data-section="articlesGrid" data-type="{{type}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-css-classes="{{cssClassNames}}" data-ratio="{{ratioSelected}}">
 					<div class="container t63-padding-v">
                         <div class="t63-section-title-container js-section-title-container">{{> "titlePartial"}}</div>
                         <div class="t63-section-text-container js-section-text-container">{{> "textPartial"}}</div>
@@ -3564,7 +3567,7 @@ var PageBuilderModel = {
                     `{{#each items}}
 					<div class="col-sm-6 col-lg-4">
                         <div class="grid-item js-articles-grid-item js-section--container{{#if ../animations}} t63-invisible js-animate{{/if}}" data-container="articlesGridItem" data-animation="{{../animations}}" data-children-animation="false">
-                            {{bgImageHepler components.image ../actionButtons.image}}
+                            {{imageHepler components.image ../actionButtons.image}}
                             <div class="content">
                                 {{titleHepler components.title}}
 								{{textHepler components.text}}
@@ -3585,7 +3588,7 @@ var PageBuilderModel = {
 
         articlesList: {
             template:
-                `<section class="t63-section t63-articles-list-section js-page-section {{cssClassNames}}" data-section="articlesList" data-type="{{type}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-css-classes="{{cssClassNames}}">
+                `<section class="t63-section t63-articles-list-section js-page-section {{cssClassNames}}" data-section="articlesList" data-type="{{type}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-css-classes="{{cssClassNames}}" data-ratio="{{ratioSelected}}">
 					<div class="container t63-padding-v">
                         <div class="t63-section-title-container js-section-title-container">{{> "titlePartial"}}</div>
                         <div class="t63-section-text-container js-section-text-container">{{> "textPartial"}}</div>
@@ -3609,7 +3612,7 @@ var PageBuilderModel = {
                 partial:
                     `{{#each items}}
                     <div class="list-item js-articles-list-item js-section--container{{#if ../animations}} t63-invisible js-animate{{/if}}" data-container="articlesListItem" data-animation="{{../animations}}" data-children-animation="false">
-                        {{bgImageHepler components.image ../actionButtons.image}}
+                        {{imageHepler components.image ../actionButtons.image}}
                         <div class="content">
                             {{titleHepler components.title}}
 							{{textHepler components.text}}
