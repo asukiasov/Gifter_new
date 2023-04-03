@@ -193,20 +193,20 @@ body,input,textarea,button{
 
 
 /* ----------- row ----------- */
-.row-xs{
+.row-px-xs{
 	margin-left: -5px;
 	margin-right: -5px;
 }
-.row-xs > div{
+.row-px-xs > div{
 	padding-left: 5px;
 	padding-right: 5px;
 }
 
-.row-sm{
+.row-px-sm{
 	margin-left: -10px;
 	margin-right: -10px;
 }
-.row-sm > div{
+.row-px-sm > div{
 	padding-left: 10px;
 	padding-right: 10px;
 }
