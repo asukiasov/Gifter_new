@@ -216,8 +216,14 @@ var PageBuilderModel = {
             id: null,
             index: null,
             type: 1,
+
+            displayName: '',
+            isScrollToNavItem: false,
+
+            animations: null,
             backgroundColor: false,
-            additionalClassNames: null,
+            contentAlignment: null,
+
             contentSizes: function (args = {}) {
                 var xxs = {
                     name: 'xxs',
@@ -253,20 +259,6 @@ var PageBuilderModel = {
                 return [xxs, xs, sm, md, lg, fluid];
             },
             contentSizeSelected: 'md',
-            contentAlignment: null,
-            animations: null,
-
-            displayName: '',
-            isScrollToNavItem: false,
-
-            hasCardToggler: false,
-            hasReverseToggler: false,
-            hasFullScreenToggler: false,
-
-            isCard: false,
-            isReversed: false,
-            isFullScreen: false,
-            isFullHeight: false,
 
             verticalSpacing: function (args = {}) {
                 var none = {
@@ -335,9 +327,21 @@ var PageBuilderModel = {
             },
             ratioSelected: 'auto',
 
+            isCard: false,
+            isReversed: false,
+            isFullScreen: false,
+            isFullHeight: false,
             isImgOriginalSize: false,
 
             cssClassNames: '',
+            additionalClassNames: null,
+
+            hasContentSizesToggler: true,
+            hasVerticalSpacingToggler: true,
+            hasCardToggler: false,
+            hasReverseToggler: false,
+            hasFullScreenToggler: false,
+            hasRatioToggler: false,
 
             components: null
         },
@@ -821,13 +825,11 @@ var PageBuilderModel = {
                 return {
                     ...PageBuilderModel.settings.defaults,
                     name: 'slide',
-                    contentSizes: PageBuilderModel.settings.defaults.contentSizes(),
 
                     contentAlignment: 'centerLeft', //centerLeft,center,centerRight
 
                     hasFullScreenToggler: true,
-                    isFullScreen: false,
-                    isFullHeight: false,
+                    hasRatioToggler: true,
 
                     components: {
                         image: PageBuilderModel.settings.components.image
@@ -839,13 +841,10 @@ var PageBuilderModel = {
                 return {
                     ...PageBuilderModel.settings.defaults,
                     name: 'slideWithText',
-                    contentSizes: PageBuilderModel.settings.defaults.contentSizes(),
 
                     contentAlignment: 'center', //topLeft,topCenter,topRight  centerLeft,center,centerRight  bottomLeft,bottomCenter,bottomRight
 
                     hasFullScreenToggler: true,
-                    isFullScreen: false,
-                    isFullHeight: false,
 
                     components: {
                         title: {
@@ -867,13 +866,10 @@ var PageBuilderModel = {
                 return {
                     ...PageBuilderModel.settings.defaults,
                     name: 'slider',
-                    contentSizes: PageBuilderModel.settings.defaults.contentSizes(),
 
                     contentAlignment: 'center', //topLeft,topCenter,topRight  centerLeft,center,centerRight  bottomLeft,bottomCenter,bottomRight
 
                     hasFullScreenToggler: true,
-                    isFullScreen: false,
-                    isFullHeight: false,
 
                     slider: {
                         autoplay: false,
@@ -899,7 +895,7 @@ var PageBuilderModel = {
                 return {
                     ...PageBuilderModel.settings.defaults,
                     name: 'article',
-                    contentSizes: PageBuilderModel.settings.defaults.contentSizes(),
+
                     hasCardToggler: true,
 
                     components: {
@@ -919,7 +915,6 @@ var PageBuilderModel = {
                 return {
                     ...PageBuilderModel.settings.defaults,
                     name: 'article2Col',
-                    contentSizes: PageBuilderModel.settings.defaults.contentSizes(),
 
                     components: {
                         title: {
@@ -943,7 +938,6 @@ var PageBuilderModel = {
                 return {
                     ...PageBuilderModel.settings.defaults,
                     name: 'articleText2Col',
-                    contentSizes: PageBuilderModel.settings.defaults.contentSizes(),
 
                     components: {
                         title: {
@@ -964,9 +958,9 @@ var PageBuilderModel = {
                 return {
                     ...PageBuilderModel.settings.defaults,
                     name: 'article2ColWithImg',
-                    contentSizes: PageBuilderModel.settings.defaults.contentSizes(),
 
                     hasReverseToggler: true,
+                    hasRatioToggler: true,
 
                     components: {
                         title: {
@@ -984,7 +978,6 @@ var PageBuilderModel = {
                 return {
                     ...PageBuilderModel.settings.defaults,
                     name: 'article2ColWithVideo',
-                    contentSizes: PageBuilderModel.settings.defaults.contentSizes(),
 
                     hasReverseToggler: true,
 
@@ -1004,7 +997,6 @@ var PageBuilderModel = {
                 return {
                     ...PageBuilderModel.settings.defaults,
                     name: 'article2ColWithJwPlayer',
-                    contentSizes: PageBuilderModel.settings.defaults.contentSizes(),
 
                     hasReverseToggler: true,
 
@@ -1024,7 +1016,6 @@ var PageBuilderModel = {
                 return {
                     ...PageBuilderModel.settings.defaults,
                     name: 'articleWithFiles',
-                    contentSizes: PageBuilderModel.settings.defaults.contentSizes(),
 
                     components: {
                         title: {
@@ -1044,7 +1035,6 @@ var PageBuilderModel = {
                 return {
                     ...PageBuilderModel.settings.defaults,
                     name: 'articleWithVideo',
-                    contentSizes: PageBuilderModel.settings.defaults.contentSizes(),
 
                     components: {
                         title: {
@@ -1064,7 +1054,6 @@ var PageBuilderModel = {
                 return {
                     ...PageBuilderModel.settings.defaults,
                     name: 'video',
-                    contentSizes: PageBuilderModel.settings.defaults.contentSizes(),
 
                     components: {
                         video: PageBuilderModel.settings.components.video,
@@ -1076,7 +1065,6 @@ var PageBuilderModel = {
                 return {
                     ...PageBuilderModel.settings.defaults,
                     name: 'jwPlayer',
-                    contentSizes: PageBuilderModel.settings.defaults.contentSizes(),
 
                     components: {
                         jwPlayer: PageBuilderModel.settings.components.jwPlayer,
@@ -1088,7 +1076,6 @@ var PageBuilderModel = {
                 return {
                     ...PageBuilderModel.settings.defaults,
                     name: 'iframe',
-                    contentSizes: PageBuilderModel.settings.defaults.contentSizes(),
 
                     components: {
                         title: {
@@ -1104,7 +1091,6 @@ var PageBuilderModel = {
                 return {
                     ...PageBuilderModel.settings.defaults,
                     name: 'html',
-                    contentSizes: PageBuilderModel.settings.defaults.contentSizes(),
 
                     components: {
                         text: {
@@ -1123,6 +1109,8 @@ var PageBuilderModel = {
                     contentSizes: PageBuilderModel.settings.defaults.contentSizes({
                         xs: { exists: false }
                     }),
+
+                    contentAlignment: 'centerLeft', //centerLeft,center,centerRight
 
                     components: {
                         title: {
@@ -1149,6 +1137,8 @@ var PageBuilderModel = {
                     contentSizes: PageBuilderModel.settings.defaults.contentSizes({
                         xs: { exists: false }
                     }),
+
+                    contentAlignment: 'centerLeft', //centerLeft,center,centerRight
 
                     components: {
                         title: {
@@ -1204,7 +1194,6 @@ var PageBuilderModel = {
                 return {
                     ...PageBuilderModel.settings.defaults,
                     name: 'accordion',
-                    contentSizes: PageBuilderModel.settings.defaults.contentSizes(),
 
                     components: {
                         title: {
@@ -1231,7 +1220,6 @@ var PageBuilderModel = {
                 return {
                     ...PageBuilderModel.settings.defaults,
                     name: 'tabs',
-                    contentSizes: PageBuilderModel.settings.defaults.contentSizes(),
 
                     components: {
                         title: {
@@ -1265,7 +1253,6 @@ var PageBuilderModel = {
                 return {
                     ...PageBuilderModel.settings.defaults,
                     name: 'testimonials',
-                    contentSizes: PageBuilderModel.settings.defaults.contentSizes(),
                     contentSizeSelected: 'sm',
 
                     components: {
@@ -1287,8 +1274,8 @@ var PageBuilderModel = {
                 return {
                     ...PageBuilderModel.settings.defaults,
                     name: 'services',
-                    contentSizes: PageBuilderModel.settings.defaults.contentSizes(),
-                    contentSizeSelected: 'md',
+
+                    contentAlignment: 'centerLeft', //centerLeft,center,centerRight
 
                     components: {
                         title: {
@@ -1315,7 +1302,6 @@ var PageBuilderModel = {
                 return {
                     ...PageBuilderModel.settings.defaults,
                     name: 'card2Col',
-                    contentSizes: PageBuilderModel.settings.defaults.contentSizes(),
 
                     hasReverseToggler: true,
 
@@ -1333,9 +1319,7 @@ var PageBuilderModel = {
                 return {
                     ...PageBuilderModel.settings.defaults,
                     name: 'card2ColWithImg',
-                    contentSizes: PageBuilderModel.settings.defaults.contentSizes(),
 
-                    hasCardToggler: true,
                     hasReverseToggler: true,
 
                     isCard: true,
@@ -1484,7 +1468,6 @@ var PageBuilderModel = {
                 return {
                     ...PageBuilderModel.settings.defaults,
                     name: 'quote',
-                    contentSizes: PageBuilderModel.settings.defaults.contentSizes(),
 
                     components: {
                         text: {
@@ -1509,7 +1492,6 @@ var PageBuilderModel = {
                 return {
                     ...PageBuilderModel.settings.defaults,
                     name: 'article2colWithBgImgAndImg',
-                    contentSizes: PageBuilderModel.settings.defaults.contentSizes(),
 
                     components: {
                         title: {
@@ -1533,7 +1515,6 @@ var PageBuilderModel = {
                 return {
                     ...PageBuilderModel.settings.defaults,
                     name: 'pdfViewer',
-                    contentSizes: PageBuilderModel.settings.defaults.contentSizes(),
 
                     components: {
                         pdfViewerIframe: PageBuilderModel.settings.components.pdfViewerIframe
@@ -1548,6 +1529,8 @@ var PageBuilderModel = {
                     contentSizes: PageBuilderModel.settings.defaults.contentSizes({
                         xs: { exists: false }
                     }),
+
+                    contentAlignment: 'centerLeft', //centerLeft,center,centerRight
 
                     items: [
                         {
@@ -1567,6 +1550,8 @@ var PageBuilderModel = {
                         xs: { exists: false }
                     }),
 
+                    contentAlignment: 'centerLeft', //centerLeft,center,centerRight
+
                     items: [
                         {
                             ...PageBuilderModel.settings.components.jwPlayerGridItem(),
@@ -1585,6 +1570,8 @@ var PageBuilderModel = {
                         xs: { exists: false }
                     }),
 
+                    contentAlignment: 'centerLeft', //centerLeft,center,centerRight
+
                     components: {
                         title: {
                             ...PageBuilderModel.settings.components.title,
@@ -1599,8 +1586,6 @@ var PageBuilderModel = {
                             html: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.'
                         }
                     },
-
-                    contentAlignment: 'centerLeft', //centerLeft,center,centerRight
 
                     items: [
                         {
@@ -1619,6 +1604,8 @@ var PageBuilderModel = {
                     contentSizes: PageBuilderModel.settings.defaults.contentSizes({
                         xs: { exists: false }
                     }),
+
+                    contentAlignment: 'centerLeft', //centerLeft,center,centerRight
 
                     components: {
                         title: {
@@ -1653,6 +1640,8 @@ var PageBuilderModel = {
                         xs: { exists: false }
                     }),
 
+                    contentAlignment: 'centerLeft', //centerLeft,center,centerRight
+
                     components: {
                         title: {
                             ...PageBuilderModel.settings.components.title,
@@ -1667,8 +1656,6 @@ var PageBuilderModel = {
                             html: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.'
                         }
                     },
-
-                    contentAlignment: 'centerLeft', //centerLeft,center,centerRight
 
                     items: [
                         {
@@ -2010,6 +1997,7 @@ var PageBuilderModel = {
                     type: section.attr('data-type'),
                     backgroundColor: +section.find('.js-background-color-toggler input:checked').length > 0,
                     additionalClassNames: section.attr('data-additional-classes') || null,
+                    contentAlignment: section.find('[data-align-content]').attr('data-align-content') || null,
                     //contentSizes: PageBuilderModel.settings.sections[sectionName]().contentSizes,
                     contentSizeSelected: section.attr('data-content-size') || null,
                     animations: section.find('.js-section-animation-combo').val() == 'false' ? false : section.find('.js-section-animation-combo').val(),
@@ -2678,7 +2666,7 @@ var PageBuilderModel = {
                 }
                 data.pageScripts.footerSection.push(model);
             });
-
+            console.log(data)
             return JSON.stringify(data);
         }
     },
@@ -3361,7 +3349,7 @@ var PageBuilderModel = {
             template:
                 `<section class="t63-section t63-video-grid-section js-page-section {{cssClassNames}}" data-section="videoGrid" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-css-classes="{{cssClassNames}}">
 					<div class="container t63-padding-v">
-						<div class="row js-video-grid-row">
+						<div class="row js-video-grid-row" data-align-content="{{contentAlignment}}">
                             {{> "videoGridItemsPartial"}}
                         </div>
 						<div class="btn-row grid-add-cols-btn-wrap js-additional-action-buttons">
@@ -3431,7 +3419,7 @@ var PageBuilderModel = {
             template:
                 `<section class="t63-section t63-jwp-grid-section js-page-section {{cssClassNames}}" data-section="jwPlayerGrid" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-css-classes="{{cssClassNames}}">
 					<div class="container t63-padding-v">
-						<div class="row js-jwp-grid-row">
+						<div class="row js-jwp-grid-row" data-align-content="{{contentAlignment}}">
                             {{> "jwPlayerGridItemsPartial"}}
                         </div>
 						<div class="btn-row grid-add-cols-btn-wrap js-additional-action-buttons">
@@ -3488,7 +3476,7 @@ var PageBuilderModel = {
                 `<section class="t63-section t63-img-grid-section js-page-section {{cssClassNames}}" data-section="imgGrid" data-id="{{id}}" data-type="{{type}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-css-classes="{{cssClassNames}}">
 					<div class="container t63-padding-v">
 						{{> "titlePartial"}}
-						<div class="row js-img-grid-row">
+						<div class="row js-img-grid-row" data-align-content="{{contentAlignment}}">
                             {{> "imgGridItemsPartial"}}
                         </div>
                         {{> "buttonPartial"}}
@@ -3558,7 +3546,7 @@ var PageBuilderModel = {
 					<div class="container t63-padding-v">
                         <div class="t63-section-title-container js-section-title-container">{{> "titlePartial"}}</div>
                         <div class="t63-section-text-container js-section-text-container">{{> "textPartial"}}</div>
-						<div class="row js-articles-grid-row">
+						<div class="row js-articles-grid-row" data-align-content="{{contentAlignment}}">
 							{{> "articlesGridItemsPartial"}}
 						</div>
 						<div class="btn-row add-new-grid-item-btn-wrap js-additional-action-buttons">
@@ -3881,7 +3869,7 @@ var PageBuilderModel = {
 					<div class="container t63-padding-v">
                         <div class="t63-section-title-container js-section-title-container">{{> "titlePartial"}}</div>
                         <div class="t63-section-text-container js-section-text-container">{{> "textPartial"}}</div>
-						<div class="row js-t63-services-grid-row">
+						<div class="row js-t63-services-grid-row" data-align-content="{{contentAlignment}}">
 							{{> "servicesGridItemsPartial"}}
 						</div>
 						<div class="btn-row add-new-grid-item-btn-wrap js-additional-action-buttons">
@@ -4214,7 +4202,7 @@ var PageBuilderModel = {
 					<div class="container t63-padding-v">
                         <div class="t63-section-title-container js-section-title-container">{{> "titlePartial"}}</div>
                         <div class="t63-section-text-container js-section-text-container">{{> "textPartial"}}</div>
-						<div class="row js-books-grid-row">
+						<div class="row js-books-grid-row" data-align-content="{{contentAlignment}}">
 							{{> "booksGridItemsPartial"}}
 						</div>
 						<div class="btn-row add-new-grid-item-btn-wrap js-additional-action-buttons">
@@ -4385,27 +4373,43 @@ var PageBuilderModel = {
                     //console.log(PageBuilderModel.data.fromServer.sections)
                     PageBuilderModel.data.fromServer.sections.forEach(function (item) {
                         item.actionButtons = PageBuilderModel.editors.actionButtons.settings;
+                        item.hasContentSizesToggler = PageBuilderModel.settings.sections[item.name]().hasContentSizesToggler;
+                        item.hasVerticalSpacingToggler = PageBuilderModel.settings.sections[item.name]().hasVerticalSpacingToggler;
                         item.hasCardToggler = PageBuilderModel.settings.sections[item.name]().hasCardToggler;
                         item.hasReverseToggler = PageBuilderModel.settings.sections[item.name]().hasReverseToggler;
                         item.hasFullScreenToggler = PageBuilderModel.settings.sections[item.name]().hasFullScreenToggler;
+                        item.hasRatioToggler = PageBuilderModel.settings.sections[item.name]().hasRatioToggler;
                         if (item.components && item.components.title) {
                             item.components.title.isFullfeatured = PageBuilderModel.settings.sections[item.name]().components.title.isFullfeatured;
                         }
-                        if (item.name != 'slide' || item.name != 'slider') {
+                        
+                        if (item.hasContentSizesToggler) {
+                            if (!item.contentSizes) {
+                                let contentSizes = PageBuilderModel.settings.sections[item.name]().contentSizes
+                                if (typeof contentSizes === 'function') {
+                                    contentSizes = PageBuilderModel.settings.defaults.contentSizes()
+                                }
+                                item.contentSizes = contentSizes;
+                            }
+                            /*if (!item.ratioSelected) {
+                                item.ratioSelected = PageBuilderModel.settings.defaults.ratioSelected;
+                            }*/
+                        }
+                        if (item.hasVerticalSpacingToggler) {
                             if (!item.verticalSpacing) {
                                 item.verticalSpacing = PageBuilderModel.settings.defaults.verticalSpacing();
                             }
-                            if (!item.verticalSpacingSelected) {
+                            /*if (!item.verticalSpacingSelected) {
                                 item.verticalSpacingSelected = PageBuilderModel.settings.defaults.verticalSpacingSelected;
-                            }
+                            }*/
                         }
-                        if (item.name != 'slide' || item.name != 'article2ColWithImg') {
+                        if (item.hasRatioToggler) {
                             if (!item.ratio) {
                                 item.ratio = PageBuilderModel.settings.defaults.ratio();
                             }
-                            if (!item.ratioSelected) {
+                            /*if (!item.ratioSelected) {
                                 item.ratioSelected = PageBuilderModel.settings.defaults.ratioSelected;
-                            }
+                            }*/
                         }
                         sectionHtml = PageBuilderModel.sections[item.name].getHtml(item).replace(/&quot;/g, '"').replace(/&lt;/g, '<').replace(/&gt;/g, '>');
                         $(PageBuilderModel.currentViewSelector).append(sectionHtml);
@@ -4632,9 +4636,9 @@ var PageBuilderModel = {
                     `<div class="section-row section-editor-container js-section--container" data-container="section">
 						{{actionButtonsHepler actionButtons.section}}
 						<div class="controls popover js-section-controls hidden">
-							{{#js_if "this.name === 'slide' || this.name === 'slideWithText' || this.name === 'slider' || this.name === 'packagesGrid' || this.name === 'flipCardsGrid' || this.name === 'postCardsGrid' || this.name === 'booksGrid' || this.name === 'cardsGrid'"}}
+							{{#if contentAlignment}}
 								{{> "alignmentWrapPartial"}}
-							{{/js_if}}
+							{{/if}}
 							<div class="d-flex align-items-center justify-content-between">
 								<label class="form-label">Section name</label>
 								<label class="toggler toggler-sm js-toggler">
@@ -4646,7 +4650,7 @@ var PageBuilderModel = {
 							<div class="form-group">
 								<input type="text" class="form-control js-display-name-input" value="{{displayName}}">
 							</div>
-                            {{#if contentSizes}}
+                            {{#if hasContentSizesToggler}}
                             <div class="form-group">
                                 <label class="form-label">Content size</label>
                                 <div class="custom-input-group">
@@ -4711,7 +4715,7 @@ var PageBuilderModel = {
 								</label>
 							</div>
 							{{/js_if}}
-                            {{#js_if "this.name === 'slide' || this.name === 'article2ColWithImg'"}}
+                            {{#if hasRatioToggler}}
                             <div class="form-group js-ratio-controls-wrap">
                                 <label class="form-label">Ratio</label>
                                 <div class="custom-input-group">
@@ -4725,7 +4729,7 @@ var PageBuilderModel = {
                                     {{/each}}
                                 </div>
                             </div>
-							{{/js_if}}
+							{{/if}}
                             {{#js_if "this.name === 'slide'"}}
                             <div class="form-group">
 								<label class="form-label">Image original size</label>
@@ -4871,8 +4875,6 @@ var PageBuilderModel = {
                 section.removeClass(cssClassNamesOld);
                 section.addClass(cssClassNames);
                 section.attr('data-css-classes', cssClassNames);
-
-                console.log(cssClassNames);
 
                 //slider options
                 var sliderAutoplay = container.find('.js-slider-autoplay-toggler input:checked').length > 0;
