@@ -7164,13 +7164,13 @@ var PageBuilderModel = {
 
             //--- 
             $(PageBuilderModel.currentViewSelector).on('change', '.js-img-original-size-toggler input', function () {
-                var section = $(this).closest('.js-page-section');
+                var container = $(this).closest('.js-section--container');
                 if ($(this).is(':checked')) {
-                    section.find('.content-alignment-wrap').removeClass('d-none');
-                    container.find('.js-ratio-controls-wrap').removeClass('disabled');
-                } else {
-                    section.find('.content-alignment-wrap').addClass('d-none');
+                    container.find('.content-alignment-wrap').removeClass('d-none');
                     container.find('.js-ratio-controls-wrap').addClass('disabled');
+                } else {
+                    container.find('.content-alignment-wrap').addClass('d-none');
+                    container.find('.js-ratio-controls-wrap').removeClass('disabled');
                 }
             });
         }
