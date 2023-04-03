@@ -1995,29 +1995,26 @@ var PageBuilderModel = {
                     id: section.attr('data-id'),
                     index: section.attr('data-index'),
                     type: section.attr('data-type'),
-                    backgroundColor: +section.find('.js-background-color-toggler input:checked').length > 0,
-                    additionalClassNames: section.attr('data-additional-classes') || null,
-                    contentAlignment: section.find('[data-align-content]').attr('data-align-content') || null,
-                    //contentSizes: PageBuilderModel.settings.sections[sectionName]().contentSizes,
-                    contentSizeSelected: section.attr('data-content-size') || null,
-                    animations: section.find('.js-section-animation-combo').val() == 'false' ? false : section.find('.js-section-animation-combo').val(),
 
                     displayName: section.attr('data-display-name'),
                     isScrollToNavItem: section.attr('data-isScrollToNavItem') === 'true',
+
+                    animations: section.find('.js-section-animation-combo').val() == 'false' ? false : section.find('.js-section-animation-combo').val(),
+                    backgroundColor: +section.find('.js-background-color-toggler input:checked').length > 0,
+                    contentAlignment: section.find('[data-align-content]').attr('data-align-content') || null,
+
+                    contentSizeSelected: section.attr('data-content-size') || null,
+                    verticalSpacingSelected: section.attr('data-spacing-v') || 'md',
+                    ratioSelected: section.attr('data-ratio') || 'auto',
 
                     isCard: section.attr('data-is-card') === 'true',
                     isReversed: section.attr('data-reverse') === 'true',
                     isFullScreen: section.attr('data-is-fullscreen') === 'true',
                     isFullHeight: section.attr('data-is-fullheight') === 'true',
-
-                    verticalSpacingSelected: section.attr('data-spacing-v') || 'md',
-
-                    //ratio: PageBuilderModel.settings.sections[sectionName]().ratio,
-                    ratioSelected: section.attr('data-ratio') || 'auto',
-
                     isImgOriginalSize: section.attr('data-img-original-size') == 'true',
 
                     cssClassNames: section.attr('data-css-classes') || '',
+                    additionalClassNames: section.attr('data-additional-classes') || null,
                 };
 
                 if (sectionName == PageBuilderModel.settings.sections.slide().name) {
@@ -2666,7 +2663,7 @@ var PageBuilderModel = {
                 }
                 data.pageScripts.footerSection.push(model);
             });
-            console.log(data)
+            
             return JSON.stringify(data);
         }
     },
