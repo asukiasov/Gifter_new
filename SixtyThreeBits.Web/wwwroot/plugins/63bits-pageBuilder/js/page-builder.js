@@ -299,27 +299,27 @@ var PageBuilderModel = {
             ratio: function (args = {}) {
                 var ratio_auto = {
                     name: 'auto',
-                    exists: args['ratio_auto'] ? args['ratio_auto'].exists : true,
+                    exists: args['auto'] ? args['auto'].exists : true,
                     value: 'auto'
                 };
                 var ratio_1by1 = {
                     name: '1x1',
-                    exists: args['ratio_1by1'] ? args['ratio_1by1'].exists : true,
+                    exists: args['1by1'] ? args['1by1'].exists : true,
                     value: '1by1'
                 };
                 var ratio_4by3 = {
                     name: '4x3',
-                    exists: args['ratio_4by3'] ? args['ratio_4by3'].exists : true,
+                    exists: args['4by3'] ? args['4by3'].exists : true,
                     value: '4by3'
                 };
                 var ratio_16by9 = {
                     name: '16x9',
-                    exists: args['ratio_16by9'] ? args['ratio_16by9'].exists : true,
+                    exists: args['16by9'] ? args['16by9'].exists : true,
                     value: '16by9'
                 };
                 var ratio_21by9 = {
                     name: '21x9',
-                    exists: args['ratio_21by9'] ? args['ratio_21by9'].exists : true,
+                    exists: args['21by9'] ? args['21by9'].exists : true,
                     value: '21by9'
                 };
 
@@ -983,7 +983,7 @@ var PageBuilderModel = {
 
                     hasRatioToggler: true,
                     ratio: PageBuilderModel.settings.defaults.ratio({
-                        ratio_auto: { exists: false }
+                        auto: { exists: false }
                     }),
                     ratioSelected: '16by9',
 
@@ -1044,7 +1044,7 @@ var PageBuilderModel = {
 
                     hasRatioToggler: true,
                     ratio: PageBuilderModel.settings.defaults.ratio({
-                        ratio_auto: { exists: false }
+                        auto: { exists: false }
                     }),
                     ratioSelected: '16by9',
 
@@ -1069,7 +1069,7 @@ var PageBuilderModel = {
 
                     hasRatioToggler: true,
                     ratio: PageBuilderModel.settings.defaults.ratio({
-                        ratio_auto: { exists: false }
+                        auto: { exists: false }
                     }),
                     ratioSelected: '16by9',
 
@@ -1555,7 +1555,7 @@ var PageBuilderModel = {
 
                     hasRatioToggler: true,
                     ratio: PageBuilderModel.settings.defaults.ratio({
-                        ratio_auto: { exists: false }
+                        auto: { exists: false }
                     }),
                     ratioSelected: '16by9',
 
