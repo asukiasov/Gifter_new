@@ -1575,6 +1575,9 @@ var PageBuilderModel = {
 
                     contentAlignment: 'centerLeft', //centerLeft,center,centerRight
 
+                    hasRatioToggler: true,
+                    ratioSelected: '16by9',
+
                     components: {
                         title: {
                             ...PageBuilderModel.settings.components.title,
@@ -4150,7 +4153,7 @@ var PageBuilderModel = {
 
         postCardsGrid: {
             template:
-                `<section class="t63-section t63-post-cards-grid-section js-page-section {{cssClassNames}}" data-section="postCardsGrid" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-css-classes="{{cssClassNames}}">
+                `<section class="t63-section t63-post-cards-grid-section js-page-section {{cssClassNames}}" data-section="postCardsGrid" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-css-classes="{{cssClassNames}}" data-ratio="{{ratioSelected}}">
 					<div class="container t63-padding-v">
                         <div class="t63-section-title-container js-section-title-container">{{> "titlePartial"}}</div>
                         <div class="t63-section-text-container js-section-text-container">{{> "textPartial"}}</div>

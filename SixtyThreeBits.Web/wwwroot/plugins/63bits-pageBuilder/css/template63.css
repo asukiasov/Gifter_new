@@ -2237,9 +2237,9 @@
 .t63-post-cards-grid-item .embed-responsive{
 	border-radius: 15px;
 }
-.t63-post-cards-grid-item .embed-responsive::before{
+/*.t63-post-cards-grid-item .embed-responsive::before{
 	padding-top: 66.7%;
-}
+}*/
 .t63-post-cards-grid-item .embed-responsive a:hover img{
 	transition: 1s;
     filter: saturate(0%);
