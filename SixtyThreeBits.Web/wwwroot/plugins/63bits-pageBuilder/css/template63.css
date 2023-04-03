@@ -1,7 +1,7 @@
 .t63-section {
-	--bg-dark: #F5F5F5;
 
-	--card-bg-dark: #f9f9f9;
+	--bg-section-striped: #F5F5F5;
+	--bg-card-in-section-striped: #f9f9f9;
 
 	--border-radius: 12px;
 }
@@ -118,7 +118,7 @@
 }*/
 
 .t63-section[data-background-color="true"]{
-	background-color: var(--bg-dark);
+	background-color: var(--bg-section-striped);
 }
 
 .t63-section .bg-img{
@@ -833,7 +833,7 @@
 		padding: 26px;
 }
 [data-section="article"][data-is-card="true"][data-background-color="false"] .t63-article{
-	background-color: var(--card-bg-dark);
+	background-color: var(--bg-card-in-section-striped);
 }
 
 [data-section="article"][data-is-card="true"] .t63-article *:first-child{
@@ -1405,7 +1405,7 @@
 	padding: 26px;
 }
 .t63-media-object-section[data-is-card="true"][data-background-color="false"] article{
-	background-color: var(--card-bg-dark);
+	background-color: var(--bg-card-in-section-striped);
 }
 
 .t63-media-object-section .t63-icon-container,
@@ -1602,7 +1602,7 @@
 	background-color: #fff;
 }
 .t63-card2col-section[data-background-color="false"] .card-col:last-child{
-	background-color: var(--card-bg-dark);
+	background-color: var(--bg-card-in-section-striped);
 }
 
 .t63-card2col-section .card-col > *{
@@ -1672,7 +1672,7 @@
 	position: relative;
 }
 .t63-card2col-with-img-section[data-is-card="true"][data-background-color="false"] .content{
-	background-color: var(--card-bg-dark);
+	background-color: var(--bg-card-in-section-striped);
 }
 .t63-card2col-with-img-section[data-reverse="true"] .content{
 	flex-direction: row-reverse;
@@ -1800,7 +1800,7 @@
 	transform-style: preserve-3d;
 }
 .t63-flip-cards-section[data-background-color="false"] .flip-card-item .flip-front{
-	background-color: var(--card-bg-dark);
+	background-color: var(--bg-card-in-section-striped);
 }
 
 .t63-flip-cards-section .flip-card-item .flip-back {
@@ -1975,7 +1975,7 @@
     text-align: center;
 }
 .t63-packages-grid-section[data-background-color="false"] .packages-grid-item {
-    background-color: var(--card-bg-dark);
+    background-color: var(--bg-card-in-section-striped);
 }
 .t63-packages-grid-section .packages-grid-item .title-container,
 .t63-packages-grid-section .packages-grid-item .text-container{
