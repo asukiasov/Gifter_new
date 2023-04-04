@@ -3272,7 +3272,7 @@ var PageBuilderModel = {
         article2ColWithVideo: {
             template:
                 `<section class="t63-section js-page-section {{additionalClassNames}} {{cssClassNames}}" data-section="article2ColWithVideo" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-additional-classes="{{additionalClassNames}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-reverse="{{isReversed}}" data-css-classes="{{cssClassNames}}" data-ratio="{{ratioSelected}}">
-                    <div class="container d-lg-flex align-items-stretch {{additionalClassNames}}">
+                    <div class="container d-lg-flex align-items-stretch t63-padding-v {{additionalClassNames}}">
 					    <div class="col-lg-6 d-lg-flex align-items-center justify-content-end text-col{{#if animations}} t63-invisible js-animate{{/if}}" data-animation="{{animations}}">
 						    <div class="t63-article">
 							    {{> "titlePartial"}}
@@ -3298,7 +3298,7 @@ var PageBuilderModel = {
         article2ColWithJwPlayer: {
             template:
                 `<section class="t63-section js-page-section {{additionalClassNames}} {{cssClassNames}}" data-section="article2ColWithJwPlayer" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-additional-classes="{{additionalClassNames}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-reverse="{{isReversed}}" data-css-classes="{{cssClassNames}}">
-                    <div class="container d-lg-flex align-items-stretch {{additionalClassNames}}">
+                    <div class="container d-lg-flex align-items-stretch t63-padding-v {{additionalClassNames}}">
 					    <div class="col-lg-6 d-lg-flex align-items-center justify-content-end text-col{{#if animations}} t63-invisible js-animate{{/if}}" data-animation="{{animations}}">
 						    <div class="t63-article">
 							    {{> "titlePartial"}}
@@ -3361,7 +3361,7 @@ var PageBuilderModel = {
         video: {
             template:
                 `<section class="t63-section js-page-section {{cssClassNames}}" data-section="video" data-type="{{type}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-css-classes="{{cssClassNames}}" data-ratio="{{ratioSelected}}">
-					<div class="container">
+					<div class="container t63-padding-v">
                         {{> "videoPartial"}}
                     </div>
 					{{> "sectionEditorContainerPartial"}}
