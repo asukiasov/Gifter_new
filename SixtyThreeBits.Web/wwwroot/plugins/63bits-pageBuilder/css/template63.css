@@ -42,7 +42,7 @@
     margin: 0 auto;
 }
 .has-circled-icon .t63-icon-wrap{
-	background: var(--icon-wrap-color);
+	background: var(--icon-wrap-bg);
 	border: 4px solid var(--icon-wrap-border-color);
 	border-radius: 50%;
 }
