@@ -33,8 +33,9 @@ namespace SixtyThreeBits.Core.Services
 
             var Result = new EmailSendResult();
             var Client = new RestClient(BaseUrl);
-            Client.Authenticator = new HttpBasicAuthenticator("api", MailgunApiKey);
+            
             var Request = new RestRequest();
+            Request.Authenticator = new HttpBasicAuthenticator("api", MailgunApiKey);
             Request.AddParameter("o:dkim", "true");
             Request.AddParameter("domain", MailgunDomain, ParameterType.UrlSegment);
             Request.Resource = $"{MailgunDomain}/messages";

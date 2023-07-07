@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.AspNetCore.Rewrite;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -111,6 +112,7 @@ namespace SixtyThreeBits.Web
                     App.UseExceptionHandler("/error/404/");
                 });
                 App.UseHsts();
+                App.UseRewriter(new RewriteOptions().AddRedirectToNonWwwPermanent().AddRedirectToHttpsPermanent());
             }
             App.UseImageflow(new ImageflowMiddlewareOptions()
                 .SetMapWebRoot(false)                
