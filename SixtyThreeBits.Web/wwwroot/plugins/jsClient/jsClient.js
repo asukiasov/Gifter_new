@@ -189,7 +189,7 @@ var jsClient = {
 
 		switch (os) {
 			case 'Mac OS X':
-				osVersion = /Mac OS X (1[0-9][\.\_\d]+)/.exec(nAgt)[1];
+				osVersion = /Mac OS X ([0-9][\.\_\d]+)/.exec(nAgt)[1];
 				break;
 
 			case 'Android':
@@ -237,7 +237,7 @@ var jsClient = {
 		os: {
 			name: os.toLowerCase().replace(/[\. ,_-]+/g, "-"),
 			version: osVersion.replace(/[\. ,_-]+/g, "-"),
-			fullName: os.toLowerCase().slice(0, os.indexOf(' ')) + '-' + osVersion.replace(/[\. ,_-]+/g, "-")
+			fullName: os.toLowerCase().slice(0, (os.indexOf(' ') > 0 ? os.indexOf(' ') : os.length)) + '-' + osVersion.replace(/[\. ,_-]+/g, "-")
 		},
 		cookies: cookieEnabled,
 		flashVersion: flashVersion,

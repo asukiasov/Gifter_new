@@ -88,16 +88,16 @@ namespace SixtyThreeBits.Core.BusinessLogics
 			#region Properties
 			readonly byte[] ExcelFileBytes;
 			readonly bool IsXlsx;
-			readonly DataAccessFactory DataAccessFactory;
-			readonly SyncProductPricesAndRemaindersResult Result = new SyncProductPricesAndRemaindersResult();
+			readonly DataAccessFactory DataAccessFactory;			
 
 			Dictionary<string, int?> ProductsDictionary;
 			List<ProductExcelItem> ExcelItems;
 
-			#endregion
+            readonly SyncProductPricesAndRemaindersResult Result = new SyncProductPricesAndRemaindersResult();
+            #endregion
 
-			#region Constructors
-			public SyncProductPricesAndRemainders(byte[] ExcelFileBytes, bool IsXslx, DataAccessFactory DataAccessFactory)
+            #region Constructors
+            public SyncProductPricesAndRemainders(byte[] ExcelFileBytes, bool IsXslx, DataAccessFactory DataAccessFactory)
 			{
 				this.ExcelFileBytes = ExcelFileBytes;
 				this.IsXlsx = IsXslx;
