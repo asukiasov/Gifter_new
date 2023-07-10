@@ -73,7 +73,7 @@ namespace SixtyThreeBits.Core.BusinessLogics
             }
             #endregion
 
-            #region Sub Classes
+            #region Nested Classes
 			public class GetProductsPricesAndRemaindersExcelFileResult : BusinessLogicResultBase
 			{
 				#region Properties
@@ -264,7 +264,7 @@ namespace SixtyThreeBits.Core.BusinessLogics
 			}
 			#endregion
 
-			#region Sub Classes
+			#region Nested Classes
 			class ProductExcelItem
 			{
 				#region Properties

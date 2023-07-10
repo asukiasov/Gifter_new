@@ -33,7 +33,7 @@
     });
 });
 
-var LayoutModel = {
+const LayoutModel = {
     SidebarStatusCookieKey: null,
     Navigation: {
         ToggleMenuItem: function ($listItem) {

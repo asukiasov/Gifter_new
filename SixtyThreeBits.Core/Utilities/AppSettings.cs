@@ -32,7 +32,7 @@ namespace SixtyThreeBits.Core.Utilities
             return Configuration[Key];
         }        
 
-        #region Sub Classes
+        #region Nested Classes
         public class DBConnectionStringsModel
         {
             #region Properties

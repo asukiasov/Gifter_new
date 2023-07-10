@@ -394,7 +394,7 @@ namespace SixtyThreeBits.Core.Services
         }
         #endregion
 
-        #region Sub Classes
+        #region Nested Classes
         class AccessTokenResponse
         {
             #region Properties
@@ -420,7 +420,7 @@ namespace SixtyThreeBits.Core.Services
             public List<Link> Links { get; set; }
             #endregion
 
-            #region Sub Classes
+            #region Nested Classes
             public class Link
             {
                 #region Properties
@@ -511,7 +511,7 @@ namespace SixtyThreeBits.Core.Services
             public List<InstallmentItem> InstallmentItems { get; set; }
             #endregion
 
-            #region Sub Classes
+            #region Nested Classes
             public class InstallmentItem
             {
                 #region Properties
@@ -538,7 +538,7 @@ namespace SixtyThreeBits.Core.Services
             }
             #endregion
 
-            #region Sub Classes
+            #region Nested Classes
             public class InstallmentItem
             {
                 #region Properties
@@ -560,7 +560,7 @@ namespace SixtyThreeBits.Core.Services
             public List<Link> Links { get; set; }
             #endregion
 
-            #region Sub Classes
+            #region Nested Classes
             public class Link
             {
                 #region Properties

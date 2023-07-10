@@ -89,7 +89,7 @@ namespace SixtyThreeBits.Web.Admin.Models
 
         #endregion
 
-        #region Sub Classes
+        #region Nested Classes
         public class PageViewModel
         {
             #region Properties
@@ -97,7 +97,7 @@ namespace SixtyThreeBits.Web.Admin.Models
             public string UrlSync { get; set; }
             #endregion
 
-            #region Sub Classes
+            #region Nested Classes
             public class GridModel : DevExtremeGridViewModelBase, IDevExtremeGridModel<GridModel.GridItem>
             {
                 #region Properties
@@ -153,7 +153,7 @@ namespace SixtyThreeBits.Web.Admin.Models
                 }
                 #endregion
 
-                #region Sub Classes
+                #region Nested Classes
                 public class GridItem
                 {
                     #region Properties
@@ -265,7 +265,7 @@ namespace SixtyThreeBits.Web.Admin.Models
 
         #endregion
 
-        #region Sub Classes
+        #region Nested Classes
         public class TeamMembersPropertiesViewModel : FormViewModelBase
         {
             #region Properties             

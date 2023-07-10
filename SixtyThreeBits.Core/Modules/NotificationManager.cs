@@ -254,7 +254,7 @@ namespace SixtyThreeBits.Core.Modules
         }        
         #endregion
 
-        #region Sub Classes
+        #region Nested Classes
         public enum NotificationPlaceHolders
         {
             Firstname,

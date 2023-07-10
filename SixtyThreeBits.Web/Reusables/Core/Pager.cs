@@ -128,7 +128,7 @@ namespace SixtyThreeBits.Web.Reusables.Core
         }
         #endregion
 
-        #region Sub Classes
+        #region Nested Classes
         public class Item
         {
             #region Properties

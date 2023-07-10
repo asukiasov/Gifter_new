@@ -4,7 +4,7 @@
     {
         public class Admin
         {
-            #region Sub Classes
+            #region Nested Classes
             public class Auth
             {
                 #region Properties
@@ -37,7 +37,7 @@
                 public const string BrandsGridDelete = "AdminBrandsGridDelete";
                 #endregion
 
-                #region Sub Classes
+                #region Nested Classes
                 public class Brand
                 {
                     #region Properties
@@ -60,7 +60,7 @@
                 public const string GridSyncSortIndexes = "AdminCarouselGridSyncSortIndexes";
                 #endregion
 
-                #region Sub Classes
+                #region Nested Classes
                 public class CarouselItem
                 {
                     #region Properties
@@ -80,7 +80,7 @@
                 public const string Sort = "AdminProductCategoriesSort";
                 #endregion
 
-                #region Sub Classes
+                #region Nested Classes
                 public class ProductCategory
                 {
                     #region Properties                    
@@ -110,7 +110,7 @@
                 public const string Grid = "AdminEmailTemplatesGrid";
                 #endregion
 
-                #region Sub Classes
+                #region Nested Classes
                 public class EmailTemplate
                 {
                     #region Properties
@@ -118,40 +118,7 @@
                     #endregion
                 }
                 #endregion
-            }
-
-            public class FacebookGalleries
-            {
-                #region Properties
-                public const string Page = "AdminGalleries";
-                public const string GalleriesGrid = "AdminGalleriesGrid";
-                public const string GalleriesGridAdd = "AdminGalleriesGridAdd";
-                public const string GalleriesGridUpdate = "AdminGalleriesGridUpdate";
-                public const string GalleriesGridDelete = "AdminGalleriesGridDelete";
-                public const string GalleriesGridSyncSortIndexes = "AdminGalleriesGridSyncSortIndexes";
-                #endregion
-
-                #region Sub Classes
-                public class Gallery
-                {
-                    #region Properties
-                    public const string Properties = "AdminGalleryItem";
-                    public const string PropertiesGetImages = "AdminGalleryItemGetImages";
-                    #endregion
-                }
-                #endregion
-            }
-
-            public class Faq
-            {
-                #region Properties
-                public const string Page = "AdminFaq";
-                public const string FaqCreate = "AdminFaqCreate";
-                public const string FaqUpdate = "AdminFaqUpdate";
-                public const string FaqDelete = "AdminFaqDelete";
-                public const string FaqSyncSortIndexes = "AdminFaqSyncSortIndexes";
-                #endregion
-            }
+            }            
 
             public class FileManager
             {
@@ -192,7 +159,7 @@
                 public const string SyncParentsAndSortIndexes = "AdminPagesSyncParentsAndSortIndexes";
                 #endregion
 
-                #region Sub Classes
+                #region Nested Classes
                 public class Page
                 {
                     #region Properties
@@ -221,7 +188,7 @@
                 public const string PartnersPartnerPropertiesDeleteImage = "AdminPartnersPartnerDeleteImage";
                 #endregion
 
-                #region Sub Classes
+                #region Nested Classes
                 public class Partner
                 {
                     public const string Properties = "AdminPartnersPartner";
@@ -241,7 +208,7 @@
                 public const string ExcelUpload = "AdminProductsExcelUpload";
 				#endregion
 
-				#region Sub Classes
+				#region Nested Classes
 				public class Product
                 {
                     #region Properties
@@ -268,7 +235,7 @@
                 public const string ProjectsGridSyncSortIndexes = "AdminProjectsGridSyncSortIndexes";
                 #endregion
 
-                #region Sub Classes
+                #region Nested Classes
                 public class Project
                 {
                     #region Properties
@@ -285,6 +252,17 @@
                     #endregion
                 }
                 #endregion
+            }
+
+            public class Redirects
+            {
+                #region Properties
+                public const string Index = "AdminRedirects";
+                public const string Grid = "AdminRedirectsGrid";
+                public const string GridAdd = "AdminRedirectsGridAdd";
+                public const string GridUpdate = "AdminRedirectsGridUpdate";
+                public const string GridDelete = "AdminRedirectsGridDelete";                
+                #endregion                
             }
 
             public class ServiceLogs
@@ -314,7 +292,7 @@
                 public const string TeamMembersSyncSortIndexes = "AdminTeamMembersSortIndexes";
                 #endregion
 
-                #region Sub Classes
+                #region Nested Classes
                 public class TeamMember
                 {
                     #region Properties
@@ -367,7 +345,7 @@
 
         public class Website
         {
-            #region Sub Classes
+            #region Nested Classes
             public class Checkout
             {
                 #region Properties

@@ -8,7 +8,7 @@ namespace SixtyThreeBits.Core.Utilities
         public const string ProjectName = "63BITS Project Starter"; 
         #endregion
 
-        #region Sub Classes
+        #region Nested Classes
         public class Cache
         {
             
@@ -119,7 +119,7 @@ namespace SixtyThreeBits.Core.Utilities
             public const string User = "User";            
             #endregion
 
-            #region Sub Classes
+            #region Nested Classes
             public class SuccessErrorMessage
             {
                 #region Properties

@@ -1,0 +1,15 @@
+﻿@model RedirectsModel.PageViewModel
+@if (Model.ShowAddNewButton)
+{
+    <div class="actions-row">
+        @await Html.PartialAsync(ViewNames.Admin.Shared.ButtonAddNew, new ButtonAddNewViewModel())
+    </div>
+}
+<div class="row">
+    <div class="col">
+        @Model.Grid.Render(Html)
+    </div>
+</div>
+@section FooterSection{
+    <script src="~/admin/js/Redirects/Redirects.js"></script>
+}

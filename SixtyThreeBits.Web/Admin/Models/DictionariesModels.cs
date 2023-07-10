@@ -82,7 +82,7 @@ namespace SixtyThreeBits.Web.Admin.Models
         }
         #endregion
 
-        #region Sub Classes
+        #region Nested Classes
         public class PageViewModel
         {
             #region Properties
@@ -91,7 +91,7 @@ namespace SixtyThreeBits.Web.Admin.Models
             public string UrlUpdate { get; set; }
             #endregion
 
-            #region Sub Classes
+            #region Nested Classes
             public class TreeModel : DevExtremeGridViewModelBase, IDevExtremeTreeModel<TreeModel.TreeItem>
             {
                 #region Methods
@@ -138,7 +138,7 @@ namespace SixtyThreeBits.Web.Admin.Models
                 }
                 #endregion
 
-                #region Sub CLasses
+                #region Nested Classes
                 public class TreeItem
                 {
                     #region Properties

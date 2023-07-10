@@ -39,7 +39,7 @@ namespace SixtyThreeBits.Core.Utilities
 
         public class Dictionaries
         {
-            #region Sub Classes
+            #region Nested Classes
             public class Banks
             {
                 #region Properties

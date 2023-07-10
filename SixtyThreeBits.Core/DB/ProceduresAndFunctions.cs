@@ -12,7 +12,7 @@ namespace SixtyThreeBits.Core.DB
 {
     public partial class DBCoreDataContext
     {
-        #region Sub Classes        
+        #region Nested Classes        
         public class ScalarFunctionResult<T>
         {
             #region Properties
@@ -815,6 +815,29 @@ namespace SixtyThreeBits.Core.DB
         }
         #endregion
 
+        #region RedirectsList
+        public class RedirectsListResultItem
+        {
+            #region Properties
+            public int? RedirectID { get; set; }
+            public string RedirectFrom { get; set; }
+            public string RedirectTo { get; set; }
+            public DateTime? RedirectDateCreated { get; set; }
+            #endregion
+        }
+        internal virtual DbSet<RedirectsListResultItem> RedirectsListResult { get; set; }
+        public IQueryable<RedirectsListResultItem> RedirectsList()
+        {
+            var PR = new SqlQueryBuilder(
+              DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
+              DatabaseObjectName: nameof(RedirectsList),
+              ResultItemType: typeof(RedirectsListResultItem)
+            );
+            var DBResult = RedirectsListResult.FromSqlRaw(PR.SqlQuery, PR.SqlParameters).AsNoTracking();
+            return DBResult;
+        }
+        #endregion
+
         #region RolesList
         public class RolesListResultItem
         {
@@ -1497,6 +1520,26 @@ namespace SixtyThreeBits.Core.DB
             var DBResult = await Database.ExecuteSqlRawAsync(PR.SqlQuery, PR.SqlParameters);
         }
 
+        public async Task<int?> RedirectsIUD(Enums.DatabaseActions iud, int? RedirectID, string RedirectFrom, string RedirectTo)
+        {
+            var PR = new SqlQueryBuilder(
+             DatabaseObjectType: SqlQueryBuilder.DatabaseObjectTypes.STORED_PROCEDURE,
+             DatabaseObjectName: nameof(RedirectsIUD),
+             ResultItemType: null,
+             SqlParameters: new SqlParameter[]
+             {
+                 iud.ToSqlParameter(nameof(iud),SqlDbType.TinyInt),
+                 RedirectID.ToSqlParameter(nameof(RedirectID),SqlDbType.Int,true),
+                 RedirectFrom.ToSqlParameter(nameof(RedirectFrom),SqlDbType.NVarChar),
+                 RedirectTo.ToSqlParameter(nameof(RedirectTo),SqlDbType.NVarChar),
+             }
+             );
+
+            var DBResult = await Database.ExecuteSqlRawAsync(PR.SqlQuery, PR.SqlParameters);
+            RedirectID = PR.SqlParameters[1].Value?.ToString().ToInt();
+            return RedirectID;
+        }
+
         public async Task<int?> RolesIUD(Enums.DatabaseActions iud, int? RoleID, string RoleName, int? RoleCode)
         {
             var PR = new SqlQueryBuilder(
@@ -1634,6 +1677,7 @@ namespace SixtyThreeBits.Core.DB
             ModelBuilder.Entity<ProductCategoriesListForDeleteRecursiveResultItem>(Entity => { Entity.HasNoKey(); });            
             ModelBuilder.Entity<ProductsListResultItem>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<ProjectsListResultItem>(Entity => { Entity.HasNoKey(); });
+            ModelBuilder.Entity<RedirectsListResultItem>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<RolesListResultItem>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<RolePermissionsListResultItem>(Entity => { Entity.HasNoKey(); });
             ModelBuilder.Entity<TeamMembersListResultItem>(Entity => { Entity.HasNoKey(); });

@@ -68,7 +68,7 @@ namespace SixtyThreeBits.Web.Admin.Models
         }
         #endregion
 
-        #region Sub Classes
+        #region Nested Classes
         public class LoginPageViewModel
         {
             #region Properties         

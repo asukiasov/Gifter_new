@@ -75,7 +75,7 @@ namespace SixtyThreeBits.Core.Services
         }
         #endregion
 
-        #region Sub Classes
+        #region Nested Classes
         public class ApiResultBase
         {
             #region Constructors

@@ -6,34 +6,46 @@ using SixtyThreeBits.Web.Reusables.Core;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace SixtyThreeBits.Web.Filters
 {
     public class BeforeWebsitePageLoad : IAsyncActionFilter
     {
+        #region Properties
         WebProjectModelBase Model;
         WebsiteLayoutViewModel ViewModel;
+        #endregion
 
+        #region Methods
         public async Task OnActionExecutionAsync(ActionExecutingContext FilterContext, ActionExecutionDelegate next)
         {
             ViewModel = new WebsiteLayoutViewModel();
             Model = LocalUtilities.GetModelFromController<WebProjectModelBase>(FilterContext.Controller);
             var C = FilterContext.Controller as Controller;
 
-            await InitStartUp(FilterContext);
-            await InitSystemProperties();
-            InitClientPlugins();
-            await InitMenu();
-            InitLanguageSwitch();
+            var RedirectResult = await CheckRedirect();
+            if (RedirectResult.IsRedirect)
+            {
+                FilterContext.Result = new RedirectResult(RedirectResult.RedirectUrl, permanent: true);
+            }
+            else
+            {
+                await InitStartUp(FilterContext);
+                await InitSystemProperties();
+                InitClientPlugins();
+                await InitMenu();
+                InitLanguageSwitch();
 
-            LocalUtilities.SetLayoutViewModel(ViewData: C.ViewData, ViewModel: ViewModel, Key: Constants.ViewData.LayoutViewModel);
-            await next();
+                LocalUtilities.SetLayoutViewModel(ViewData: C.ViewData, ViewModel: ViewModel, Key: Constants.ViewData.LayoutViewModel);
+                await next();
+            }
         }
 
         async Task InitStartUp(ActionExecutingContext FilterContext)
         {
             Model.Culture = FilterContext.RouteData.Values[Constants.RouteValues.Culture]?.ToString() ?? Enums.Languages.GEORGIAN;
-            Model.SystemProperties = await Model.DataAccessFactory.SystemProperties.GetSystemProperties();            
+            Model.SystemProperties = await Model.DataAccessFactory.SystemProperties.GetSystemProperties();
             ViewModel.ScriptsHeader = Model.SystemProperties.ScriptsHeader;
             ViewModel.ScriptsBodyStart = Model.SystemProperties.ScriptsBodyStart;
             ViewModel.ScriptsBodyEnd = Model.SystemProperties.ScriptsBodyEnd;
@@ -75,7 +87,7 @@ namespace SixtyThreeBits.Web.Filters
                     }
                     else
                     {
-                        ParentItem.NavigateUrl = Model.GetRouteByName(ControllerActionRouteNames.Website.Pages.Page, new { Culture = Model.Culture , PageSlugHierarchy = P1.PageSlugHierarchy }); ;
+                        ParentItem.NavigateUrl = Model.GetRouteByName(ControllerActionRouteNames.Website.Pages.Page, new { Culture = Model.Culture, PageSlugHierarchy = P1.PageSlugHierarchy }); ;
                     }
                     ParentItem.IsSelected = ParentItem.NavigateUrl == $"{Model.WebsiteDomain}{Model.UrlCurrentPageWithDomain}";
 
@@ -121,5 +133,34 @@ namespace SixtyThreeBits.Web.Filters
             ViewModel.UrlEn = Model.UrlCurrentPageWithDomain.Replace($"/{Model.Culture}", null);
             ViewModel.UrlKa = Model.UrlCurrentPageWithDomain.Insert(Index, $"{Enums.Languages.ENGLISH}/").Replace($"/{Model.Culture}", null);
         }
+
+        async Task<CustomRedirectResult> CheckRedirect()
+        {
+            var Result = new CustomRedirectResult();
+            var Redirects = await Model.DataAccessFactory.Redirects.RedirectsList();
+            if (Redirects?.Any() == true)
+            {
+                var PathToCompare = HttpUtility.UrlDecode(Model.UrlCurrentPageWithoutDomain.Trim('/'));
+                var Found = Redirects.FirstOrDefault(Item => Item.RedirectFrom == PathToCompare);
+                if (Found != null)
+                {
+                    var RedirectUrl = string.IsNullOrWhiteSpace(Found.RedirectTo) || Found.RedirectTo == "/" ? Model.WebsiteDomain : Found.RedirectTo;
+                    Result.IsRedirect = true;
+                    Result.RedirectUrl = RedirectUrl;
+                }
+            }
+            return Result;
+        }
+        #endregion
+
+        #region Nested Classes
+        public class CustomRedirectResult
+        {
+            #region Properties
+            public bool IsRedirect { get; set; }
+            public string RedirectUrl { get; set; }
+            #endregion
+        } 
+        #endregion
     }
 }

@@ -124,7 +124,7 @@ namespace SixtyThreeBits.Web.Reusables.Core
         }
         #endregion Methods
 
-        #region Sub Classes
+        #region Nested Classes
         public class BreadCrumbItem
         {
             #region Properties

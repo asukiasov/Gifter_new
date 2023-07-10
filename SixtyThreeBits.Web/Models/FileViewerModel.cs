@@ -17,7 +17,7 @@ namespace SixtyThreeBits.Web.Models
         }
         #endregion
 
-        #region Sub Classes
+        #region Nested Classes
         public class PdfPageViewModel
         {
             #region Properties

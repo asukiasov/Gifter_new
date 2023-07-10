@@ -102,5 +102,9 @@ const Globals = {
             FancyBox.ClosePopup();
             Grid.Refresh();
         }
-    }
+    },
+    Selectors: {
+        ButtonAddNew: '.js-add-new-button',
+        ButtonSave: '.js-save-button'
+    },
 };

@@ -91,7 +91,7 @@ namespace SixtyThreeBits.Web.Admin.Models
         }
         #endregion
 
-        #region Sub Classes
+        #region Nested Classes
         public class PageViewModel : FormViewModelBase
         {
             #region Properties

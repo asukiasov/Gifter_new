@@ -2,7 +2,7 @@
 
 namespace SixtyThreeBits.Web.Reusables.Core
 {
-    #region Sub Classes
+    #region Nested Classes
     public class ButtonAddNewViewModel
     {
         #region Properties

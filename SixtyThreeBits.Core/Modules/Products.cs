@@ -287,7 +287,7 @@ namespace SixtyThreeBits.Core.Modules
         public List<ProductImage> ProductImages { get; set; }
         #endregion
 
-        #region Sub Classes
+        #region Nested Classes
         public class ProductImage
         {
             #region Properties
@@ -310,7 +310,7 @@ namespace SixtyThreeBits.Core.Modules
         public decimal? PriceMax { get; set; }
         #endregion
 
-        #region Sub Classes
+        #region Nested Classes
         public class Filter
         {
             #region Properties

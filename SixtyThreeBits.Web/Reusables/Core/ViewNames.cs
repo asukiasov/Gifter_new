@@ -2,10 +2,10 @@
 {
     public class ViewNames
     {
-        #region Sub Classes
+        #region Nested Classes
         public class Admin
         {
-            #region Sub Classes
+            #region Nested Classes
             public class Auth
             {
                 #region Properties
@@ -27,7 +27,7 @@
                 public const string Page = "~/Admin/Views/Brands/Brands.cshtml";
                 #endregion
 
-                #region Sub Classes
+                #region Nested Classes
                 public class Brand
                 {
                     #region Properties
@@ -73,36 +73,13 @@
                 public const string Page = "~/Admin/Views/EmailTemplates/EmailTemplates.cshtml";
                 #endregion
 
-                #region Sub Classes
+                #region Nested Classes
                 public class EmailTemplate
                 {
                     #region Properties
                     public const string Properties = "~/Admin/Views/EmailTemplates/EmailTemplateProperties.cshtml";
                     #endregion
                 }
-                #endregion
-            }
-
-            public class FacebookGalleries
-            {
-                #region Properties
-                public const string Page = "~/Admin/Views/FacebookGalleries/FacebookGalleries.cshtml";
-                #endregion
-
-                #region Sub Classes
-                public class Gallery
-                {
-                    #region Properties
-                    public const string Properties = "~/Admin/Views/FacebookGalleries/FacebookGallery/FacebookGalleryProperties.cshtml";
-                    #endregion
-                }
-                #endregion
-            }
-
-            public class Faq
-            {
-                #region Properties
-                public const string Page = "~/Admin/Views/Faq/Faq.cshtml";
                 #endregion
             }
 
@@ -134,7 +111,7 @@
                 public const string Tree = "~/Admin/Views/Pages/PagesTree.cshtml";                
                 #endregion
 
-                #region Sub Classes
+                #region Nested Classes
                 public class Page
                 {
                     #region Properties
@@ -168,7 +145,7 @@
                 public const string Page = "~/Admin/Views/Projects/Projects.cshtml";
                 #endregion
 
-                #region Sub Classes
+                #region Nested Classes
                 public class Project
                 {
                     #region Properties
@@ -177,6 +154,13 @@
                     #endregion
                 }
                 #endregion
+            }
+
+            public class Redirects
+            {
+                #region Properties
+                public const string Page = "~/Admin/Views/Redirects/Redirects.cshtml";
+                #endregion               
             }
 
             public class ServiceLogs
@@ -199,7 +183,7 @@
                 public const string ButtonSave = "~/Admin/Views/Shared/ButtonSave.cshtml";
                 #endregion
 
-                #region Sub Classes
+                #region Nested Classes
                 public class FileTreeEditor
                 {
                     #region Properties
@@ -247,7 +231,7 @@
 
         public class Website
         {
-            #region Sub Classes
+            #region Nested Classes
             public class FileViewer
             {
                 #region Properties
@@ -292,7 +276,7 @@
             public const string NotFound = "~/Views/Shared/NotFound.cshtml";
             #endregion
 
-            #region Sub Classes            
+            #region Nested Classes            
             public class FileTree
             {
                 #region Properties

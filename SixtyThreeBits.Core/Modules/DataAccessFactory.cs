@@ -6,21 +6,22 @@ namespace SixtyThreeBits.Core.Modules
     public class DataAccessFactory
     {
         #region Properties        
-        public BlogDataAccess Blog { get; set; }
-        public BrandsDataAccess Brands { get; set; }
-        public DictionariesDataAccess Dictionaries { get; set; }
-        public EmailTemplatesDataAccess EmailTemplates { get; set; }
+        public BlogDataAccess Blog { get; private set; }
+        public BrandsDataAccess Brands { get; private set; }
+        public DictionariesDataAccess Dictionaries { get; private set; }
+        public EmailTemplatesDataAccess EmailTemplates { get; private set; }
         public NewsDataAccess News { get; set; }
-        public NotificationManagerDataAccess NotificationManager { get; set; }
-        public PagesDataAccess Pages { get; set; }
-        public PartnersDataAccess Partners { get; set; }
-        public PermissionsDataAccess Permissions { get; set; }
-        public ProductsDataAccess Products { get; set; }
-        public ProjectsDataAccess Projects { get; set; }
-        public RolesDataAccess Roles { get; set; }
-        public SystemPropertiesAccess SystemProperties { get; set; }
-        public TeamMembersDataAccess TeamMembers { get; set; }
-        public UsersDataAccess Users { get; set; }
+        public NotificationManagerDataAccess NotificationManager { get; private set; }
+        public PagesDataAccess Pages { get; private set; }
+        public PartnersDataAccess Partners { get; private set; }
+        public PermissionsDataAccess Permissions { get; private set; }
+        public ProductsDataAccess Products { get; private set; }
+        public ProjectsDataAccess Projects { get; private set; }
+        public RedirectsDataAccess Redirects { get; private set; }
+        public RolesDataAccess Roles { get; private set; }
+        public SystemPropertiesAccess SystemProperties { get; private set; }
+        public TeamMembersDataAccess TeamMembers { get; private set; }
+        public UsersDataAccess Users { get; private set; }
         #endregion
 
         #region Constructors
@@ -38,6 +39,7 @@ namespace SixtyThreeBits.Core.Modules
             Products = new ProductsDataAccess(ConnectionFactory, Utilities);
             Permissions = new PermissionsDataAccess(ConnectionFactory);
             Projects = new ProjectsDataAccess(ConnectionFactory, Utilities);
+            Redirects = new RedirectsDataAccess(ConnectionFactory);
             Roles = new RolesDataAccess(ConnectionFactory);
             TeamMembers = new TeamMembersDataAccess(ConnectionFactory);
             SystemProperties = new SystemPropertiesAccess(ConnectionFactory);

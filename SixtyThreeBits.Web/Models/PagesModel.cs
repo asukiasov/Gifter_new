@@ -26,7 +26,7 @@ namespace SixtyThreeBits.Web.Models
         }        
         #endregion
 
-        #region Sub Classes
+        #region Nested Classes
         public class PageViewModel
         {
             #region Properties

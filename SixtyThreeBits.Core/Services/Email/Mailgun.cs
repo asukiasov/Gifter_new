@@ -87,7 +87,7 @@ namespace SixtyThreeBits.Core.Services
         }
         #endregion
 
-        #region Sub Classes     
+        #region Nested Classes     
         class MailgunResponse
         {
             #region Properties
@@ -139,7 +139,7 @@ namespace SixtyThreeBits.Core.Services
         public EventDataItem EventData { get; set; }
         #endregion
 
-        #region Sub Classes
+        #region Nested Classes
         public class SignatureItem
         {
             #region Properties
@@ -171,7 +171,7 @@ namespace SixtyThreeBits.Core.Services
             public ClientInfoItem ClientInfo { get; set; }
             #endregion
 
-            #region Sub Classes
+            #region Nested Classes
             public class MessageItem
             {
                 #region Properties
@@ -179,7 +179,7 @@ namespace SixtyThreeBits.Core.Services
                 public HeadersItem Headers { get; set; }
                 #endregion
 
-                #region Sub Classes
+                #region Nested Classes
                 public class HeadersItem
                 {
                     #region Properties

@@ -35,14 +35,14 @@ namespace SixtyThreeBits.Web.Admin.Models
         }        
         #endregion
 
-        #region Sub Classes
+        #region Nested Classes
         public class PageViewModel
         {
             #region Properties            
             public GridModel Grid { get; set; }
             #endregion
 
-            #region Sub Classes
+            #region Nested Classes
             public class GridModel : DevExtremeGridViewModelBase, IDevExtremeGridModel<GridModel.GridItem>
             {
                 #region Methods
@@ -65,7 +65,7 @@ namespace SixtyThreeBits.Web.Admin.Models
                 }
                 #endregion
 
-                #region Sub CLasses
+                #region Nested Classes
                 public class GridItem
                 {
                     #region Properties
@@ -143,7 +143,7 @@ namespace SixtyThreeBits.Web.Admin.Models
         }
         #endregion
 
-        #region Sub Classes
+        #region Nested Classes
         public class PageViewModel : FormViewModelBase
         {
             #region Properties
