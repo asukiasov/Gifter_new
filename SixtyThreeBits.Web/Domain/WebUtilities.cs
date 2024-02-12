@@ -1,20 +1,14 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using SixtyThreeBits.Core.Infrastructure.Utilities;
-using SixtyThreeBits.Libraries;
 using SixtyThreeBits.Web.Domain.Libraries;
-using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace SixtyThreeBits.Web.Domain
 {
-    public class LocalUtilities
+    public class WebUtilities
     {
         #region Methods
         public static bool IsAjaxRequest(HttpRequest request)

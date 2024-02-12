@@ -16,7 +16,7 @@ namespace SixtyThreeBits.Web.Admin.Filters
         #region Methods
         public async Task OnActionExecutionAsync(ActionExecutingContext filterContext, ActionExecutionDelegate next)
         {
-            _model = LocalUtilities.GetModelFromController<NewsModelBase>(filterContext.Controller);
+            _model = WebUtilities.GetModelFromController<NewsModelBase>(filterContext.Controller);
             var newsID = filterContext.RouteData.Values[Constants.RouteValues.NewsID]?.ToString().ToInt();
 
             var repository = _model.RepositoriesFactory.GetNewsRepository();

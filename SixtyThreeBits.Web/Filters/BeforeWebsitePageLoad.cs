@@ -23,7 +23,7 @@ namespace SixtyThreeBits.Web.Filters
         public async Task OnActionExecutionAsync(ActionExecutingContext filterContext, ActionExecutionDelegate next)
         {
             _viewModel = new WebsiteLayoutViewModel();
-            _model = LocalUtilities.GetModelFromController<WebProjectModelBase>(filterContext.Controller);
+            _model = WebUtilities.GetModelFromController<WebProjectModelBase>(filterContext.Controller);
             var c = filterContext.Controller as Controller;
 
             var redirectResult = await checkRedirect();
@@ -39,7 +39,7 @@ namespace SixtyThreeBits.Web.Filters
                 await initMenu();
                 initLanguageSwitch();
 
-                LocalUtilities.SetLayoutViewModel(viewData: c.ViewData, viewModel: _viewModel, key: Constants.ViewData.LayoutViewModel);
+                WebUtilities.SetLayoutViewModel(viewData: c.ViewData, viewModel: _viewModel, key: Constants.ViewData.LayoutViewModel);
                 await next();
             }
         }

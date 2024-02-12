@@ -24,7 +24,7 @@ namespace SixtyThreeBits.Web.Admin.Filters
 
         public async Task OnActionExecutionAsync(ActionExecutingContext filterContext, ActionExecutionDelegate next)
         {
-            _model = LocalUtilities.GetModelFromController<PageModelBase>(filterContext.Controller);
+            _model = WebUtilities.GetModelFromController<PageModelBase>(filterContext.Controller);
             var pageID = filterContext.RouteData.Values[Constants.RouteValues.PageID]?.ToString().ToInt();
 
             var repository = _model.RepositoriesFactory.GetPagesRepository();

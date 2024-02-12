@@ -16,7 +16,7 @@ namespace SixtyThreeBits.Web.Admin.Filters
         #region Methods
         public async Task OnActionExecutionAsync(ActionExecutingContext filterContext, ActionExecutionDelegate next)
         {
-            _model = LocalUtilities.GetModelFromController<ProductsCategoriesModelBase>(filterContext.Controller);
+            _model = WebUtilities.GetModelFromController<ProductsCategoriesModelBase>(filterContext.Controller);
             var productCategoryID = filterContext.RouteData.Values[Constants.RouteValues.ProductCategoryID]?.ToString().ToInt();
 
             var repository = _model.RepositoriesFactory.GetProductsRepository();

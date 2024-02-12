@@ -85,7 +85,7 @@ namespace SixtyThreeBits.Core.BusinessLogics
 			readonly RepositoryFactory _repositoryFactory;
 
             Dictionary<string, int?> _productsDictionary;
-			List<ProductExcelItem> _excelItems;
+			List<productExcelItem> _excelItems;
 
             readonly SyncProductPricesAndRemaindersResult _result = new();
             #endregion
@@ -102,19 +102,19 @@ namespace SixtyThreeBits.Core.BusinessLogics
 			#region Methods
 			public async Task<SyncProductPricesAndRemaindersResult> Execute()
 			{
-				await InitBusinessLogicProperties();
+				await initBusinessLogicProperties();
 				if (!_result.IsError)
 				{
-					ParseExcel();
+					parseExcel();
 					if (!_result.IsError)
 					{
-						ValidateExcel();
+						validateExcel();
 						if (!_result.IsError)
 						{
-							await InitProductIDs();
+							await initProductIDs();
 							if (!_result.IsError)
 							{
-								await SyncPricesAndRemainders();
+								await syncPricesAndRemainders();
 							}
 						}
 					}
@@ -122,7 +122,7 @@ namespace SixtyThreeBits.Core.BusinessLogics
 				return _result;
 			}
 
-			async Task InitBusinessLogicProperties()
+			async Task initBusinessLogicProperties()
 			{
 				var repository = _repositoryFactory.GetProductsRepository();
 				var products = await repository.ProductsList();
@@ -137,7 +137,7 @@ namespace SixtyThreeBits.Core.BusinessLogics
 				}
 			}
 
-			void ParseExcel()
+			void parseExcel()
 			{
 				try
 				{
@@ -147,11 +147,11 @@ namespace SixtyThreeBits.Core.BusinessLogics
 						{
 							excelReader.Read();
 
-							_excelItems = new List<ProductExcelItem>(excelReader.ResultsCount);
+							_excelItems = new List<productExcelItem>(excelReader.ResultsCount);
 							var rowNumber = 1;
 							while (excelReader.Read())
 							{
-								var item = new ProductExcelItem();
+								var item = new productExcelItem();
 								item.RowNumber = ++rowNumber;
 								item.ProductName = excelReader.GetValue(0)?.ToString().Trim();
 
@@ -173,7 +173,7 @@ namespace SixtyThreeBits.Core.BusinessLogics
 				}
 			}
 
-			void ValidateExcel()
+			void validateExcel()
 			{
 				var errorStringTemplateLineColumn = "Line {0} - Column {1} - {2}";
 				_result.ExcelErrors = [];
@@ -214,7 +214,7 @@ namespace SixtyThreeBits.Core.BusinessLogics
 				_result.IsError = _result.HasExcelErrors;
 			}
 
-			async Task InitProductIDs()
+			async Task initProductIDs()
 			{
 				var repository = _repositoryFactory.GetProductsRepository();
 
@@ -241,7 +241,7 @@ namespace SixtyThreeBits.Core.BusinessLogics
 				}
 			}
 
-			async Task SyncPricesAndRemainders()
+			async Task syncPricesAndRemainders()
 			{
                 var command = _repositoryFactory.GetProductsRepository();
 
@@ -264,7 +264,7 @@ namespace SixtyThreeBits.Core.BusinessLogics
 			#endregion
 
 			#region Nested Classes
-			class ProductExcelItem
+			class productExcelItem
 			{
 				#region Properties
 				public int RowNumber { get; set; }

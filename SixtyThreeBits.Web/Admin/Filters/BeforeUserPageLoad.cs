@@ -26,7 +26,7 @@ namespace SixtyThreeBits.Web.Admin.Filters
 
         public async Task OnActionExecutionAsync(ActionExecutingContext filterContext, ActionExecutionDelegate next)
         {
-            _model = LocalUtilities.GetModelFromController<UserModelBase>(filterContext.Controller);
+            _model = WebUtilities.GetModelFromController<UserModelBase>(filterContext.Controller);
             var c = filterContext.Controller as Controller;
             var userID = filterContext.RouteData.Values[Constants.RouteValues.UserID]?.ToString().ToInt();
 
@@ -42,7 +42,7 @@ namespace SixtyThreeBits.Web.Admin.Filters
                 InitPageTitle();
                 ReinitBreadCrumbs();
                 InitTabs();
-                LocalUtilities.SetLayoutViewModel(viewData: c.ViewData, viewModel: _viewModel, key: Constants.ViewData.UserLayoutViewModel);
+                WebUtilities.SetLayoutViewModel(viewData: c.ViewData, viewModel: _viewModel, key: Constants.ViewData.UserLayoutViewModel);
                 await next();
             }
         }

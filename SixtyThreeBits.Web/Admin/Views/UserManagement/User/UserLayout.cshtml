@@ -1,6 +1,6 @@
 ﻿@{
     Layout = ViewNames.Admin.Shared.Layout;
-    var Model = LocalUtilities.GetLayoutViewModel<UserLayoutViewModel>(viewData: ViewData, key: SixtyThreeBits.Core.Infrastructure.Utilities.Constants.ViewData.UserLayoutViewModel);
+    var Model = WebUtilities.GetLayoutViewModel<UserLayoutViewModel>(viewData: ViewData, key: SixtyThreeBits.Core.Infrastructure.Utilities.Constants.ViewData.UserLayoutViewModel);
 }
 @section HeaderSection{
     @RenderSection(Model.HeaderSectionName, false)

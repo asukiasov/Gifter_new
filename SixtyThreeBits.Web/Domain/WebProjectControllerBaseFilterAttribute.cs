@@ -29,7 +29,7 @@ namespace SixtyThreeBits.Web.Domain
         public async Task OnActionExecutionAsync(ActionExecutingContext filterContext, ActionExecutionDelegate next)
         {
             var c = filterContext.Controller as Controller;
-            _model = LocalUtilities.GetModelFromController<WebProjectModelBase>(c);
+            _model = WebUtilities.GetModelFromController<WebProjectModelBase>(c);
             if (_model != null)
             {
                 _model.AppSettings = _appSettings;
@@ -41,12 +41,12 @@ namespace SixtyThreeBits.Web.Domain
                 _model.ActionName = ActionDescriptor.ActionName;
                 _model.ControllerName = ActionDescriptor.ControllerTypeInfo.Name;
 
-                _model.WebsiteDomain = LocalUtilities.GetWebsiteDomain(c.Request);
+                _model.WebsiteDomain = WebUtilities.GetWebsiteDomain(c.Request);
                 _model.UrlCurrentPageWithoutDomain = c.Request.Path;
                 _model.UrlCurrentPageWithDomain = $"{_model.WebsiteDomain}{c.Request.Path}";
 
                 _model.IsHttps = c.Request.IsHttps;
-                _model.IP = LocalUtilities.GetClientIP(c.Request);
+                _model.IP = WebUtilities.GetClientIP(c.Request);
 
                 _model.SessionAssistance = new SessionAssistance(c.HttpContext.Session);
                 _model.CookieAssistance = new CookieAssistance(c.Request, c.Response);
