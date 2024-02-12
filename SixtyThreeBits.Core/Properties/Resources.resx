@@ -117,23 +117,59 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="TextActive" xml:space="preserve">
+    <value>Active</value>
+  </data>
   <data name="TextAdd" xml:space="preserve">
     <value>Add</value>
+  </data>
+  <data name="TextAdminWelcomeSubTitle" xml:space="preserve">
+    <value>Please sign in to continue for administration</value>
+  </data>
+  <data name="TextAdminWelcomeTitle" xml:space="preserve">
+    <value>Welcome to Admin</value>
   </data>
   <data name="TextAllDevexpressGridFilterRaw" xml:space="preserve">
     <value>(All)</value>
   </data>
+  <data name="TextAuthor" xml:space="preserve">
+    <value>Author</value>
+  </data>
+  <data name="TextBackToPreviousPage" xml:space="preserve">
+    <value>Back to Previous Page</value>
+  </data>
   <data name="TextBackToWebsite" xml:space="preserve">
     <value>Back to Website</value>
+  </data>
+  <data name="TextBirthDate" xml:space="preserve">
+    <value>Date of birth</value>
+  </data>
+  <data name="TextBrand" xml:space="preserve">
+    <value>Brand</value>
   </data>
   <data name="TextCancel" xml:space="preserve">
     <value>Cancel</value>
   </data>
+  <data name="TextCaption" xml:space="preserve">
+    <value>Caption</value>
+  </data>
+  <data name="TextCaptionEng" xml:space="preserve">
+    <value>Caption Eng</value>
+  </data>
+  <data name="TextCategory" xml:space="preserve">
+    <value>Category</value>
+  </data>
+  <data name="TextCloudProperties" xml:space="preserve">
+    <value>Cloud Properties</value>
+  </data>
+  <data name="TextCode" xml:space="preserve">
+    <value>Code</value>
+  </data>
+  <data name="TextCodename" xml:space="preserve">
+    <value>Codename</value>
+  </data>
   <data name="TextConfirmDelete" xml:space="preserve">
     <value>Do you really want to delete this item?</value>
-  </data>
-  <data name="TextConfirmDeleteAttachment" xml:space="preserve">
-    <value>Do you really want to delete this attachment?</value>
   </data>
   <data name="TextConfirmDeleteImage" xml:space="preserve">
     <value>Do you really want to delete this image?</value>
@@ -141,20 +177,107 @@
   <data name="TextConfirmDeleteRecursive" xml:space="preserve">
     <value>Deleting this item will also delete all child items. Do you really want to continue?</value>
   </data>
+  <data name="TextContactAddress" xml:space="preserve">
+    <value>Contact Address</value>
+  </data>
+  <data name="TextContactEmail" xml:space="preserve">
+    <value>Contact Email</value>
+  </data>
+  <data name="TextContactPhone" xml:space="preserve">
+    <value>Contact Phone</value>
+  </data>
+  <data name="TextDate" xml:space="preserve">
+    <value>Date</value>
+  </data>
+  <data name="TextDateCreated" xml:space="preserve">
+    <value>Date Created</value>
+  </data>
   <data name="TextDelete" xml:space="preserve">
     <value>Delete</value>
   </data>
-  <data name="TextDropzone" xml:space="preserve">
-    <value>Drag Images Here &lt;br /&gt; OR &lt;br /&gt; Click to Upload</value>
+  <data name="TextDescription" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="TextDescriptionEng" xml:space="preserve">
+    <value>Description Eng</value>
+  </data>
+  <data name="TextDescriptionShort" xml:space="preserve">
+    <value>Short Description</value>
+  </data>
+  <data name="TextDescriptionShortEng" xml:space="preserve">
+    <value>Short Description Eng</value>
+  </data>
+  <data name="TextDictionaryCode" xml:space="preserve">
+    <value>Dictionary Code</value>
+  </data>
+  <data name="TextEmail" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="TextEmailProperties" xml:space="preserve">
+    <value>Email Properties</value>
   </data>
   <data name="TextError" xml:space="preserve">
     <value>Sorry something went wrong</value>
   </data>
+  <data name="TextExcelDownloadTemplate" xml:space="preserve">
+    <value>Download Excel Template</value>
+  </data>
+  <data name="TextExcelUpload" xml:space="preserve">
+    <value>Upload Excel</value>
+  </data>
+  <data name="TextExternalPage" xml:space="preserve">
+    <value>External Page</value>
+  </data>
+  <data name="TextFeatured" xml:space="preserve">
+    <value>Featured</value>
+  </data>
+  <data name="TextFileUpload" xml:space="preserve">
+    <value>Uplaod File</value>
+  </data>
+  <data name="TextFirstname" xml:space="preserve">
+    <value>Firstname</value>
+  </data>
   <data name="TextFooter" xml:space="preserve">
     <value>Footer</value>
   </data>
+  <data name="TextGeneralProperties" xml:space="preserve">
+    <value>General Properties</value>
+  </data>
+  <data name="TextGenerateFromTitle" xml:space="preserve">
+    <value>generate from title</value>
+  </data>
+  <data name="TextGetMeOuttaHere" xml:space="preserve">
+    <value>Get me outta here</value>
+  </data>
+  <data name="TextIntCode" xml:space="preserve">
+    <value>Int Code</value>
+  </data>
+  <data name="TextLastname" xml:space="preserve">
+    <value>Lastname</value>
+  </data>
+  <data name="TextLogin" xml:space="preserve">
+    <value>Login</value>
+  </data>
+  <data name="TextLogout" xml:space="preserve">
+    <value>Logout</value>
+  </data>
   <data name="TextMenu" xml:space="preserve">
     <value>Menu</value>
+  </data>
+  <data name="TextMenuIcon" xml:space="preserve">
+    <value>Menu Icon</value>
+  </data>
+  <data name="TextMenuTitle" xml:space="preserve">
+    <value>Menu Title</value>
+  </data>
+  <data name="TextMenuTitleEng" xml:space="preserve">
+    <value>Menu Title Eng</value>
+  </data>
+  <data name="TextName" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="TextNameEng" xml:space="preserve">
+    <value>Name Eng</value>
   </data>
   <data name="TextNext" xml:space="preserve">
     <value>Prev</value>
@@ -162,29 +285,119 @@
   <data name="TextNo" xml:space="preserve">
     <value>No</value>
   </data>
+  <data name="TextPageNotFound" xml:space="preserve">
+    <value>404 - Page Not Found</value>
+  </data>
+  <data name="TextPageNotFoundMessage1" xml:space="preserve">
+    <value>Sorry, page not found</value>
+  </data>
+  <data name="TextPageNotFoundMessage2" xml:space="preserve">
+    <value>The resource you were looking for is not found</value>
+  </data>
+  <data name="TextPageUrl" xml:space="preserve">
+    <value>Page Url</value>
+  </data>
+  <data name="TextPassword" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="TextPermission" xml:space="preserve">
+    <value>Permission</value>
+  </data>
+  <data name="TextPermissions" xml:space="preserve">
+    <value>Permissions</value>
+  </data>
+  <data name="TextPhoneCell" xml:space="preserve">
+    <value>Cell number</value>
+  </data>
+  <data name="TextPhotos" xml:space="preserve">
+    <value>Photos</value>
+  </data>
+  <data name="TextPosition" xml:space="preserve">
+    <value>Position</value>
+  </data>
   <data name="TextPrev" xml:space="preserve">
     <value>Next</value>
+  </data>
+  <data name="TextPrice" xml:space="preserve">
+    <value>Price</value>
+  </data>
+  <data name="TextPriceOld" xml:space="preserve">
+    <value>Price Old</value>
+  </data>
+  <data name="TextProducerCountry" xml:space="preserve">
+    <value>Producer Country</value>
+  </data>
+  <data name="TextProjectName" xml:space="preserve">
+    <value>Project Name</value>
   </data>
   <data name="TextPublished" xml:space="preserve">
     <value>Published</value>
   </data>
+  <data name="TextRedirectFrom" xml:space="preserve">
+    <value>Redirect From</value>
+  </data>
+  <data name="TextRedirectTo" xml:space="preserve">
+    <value>Redirect To</value>
+  </data>
   <data name="TextRelogin" xml:space="preserve">
     <value>Relogin</value>
+  </data>
+  <data name="TextRemainder" xml:space="preserve">
+    <value>Remainder</value>
+  </data>
+  <data name="TextRemainderUpload" xml:space="preserve">
+    <value>Upload Remainders</value>
+  </data>
+  <data name="TextRememberMe" xml:space="preserve">
+    <value>Remember Me</value>
+  </data>
+  <data name="TextRole" xml:space="preserve">
+    <value>Role</value>
+  </data>
+  <data name="TextRoles" xml:space="preserve">
+    <value>Roles</value>
   </data>
   <data name="TextSave" xml:space="preserve">
     <value>Save</value>
   </data>
-  <data name="TextSignIn" xml:space="preserve">
-    <value>Sign In</value>
+  <data name="TextSlug" xml:space="preserve">
+    <value>Slug</value>
   </data>
-  <data name="TextSignOut" xml:space="preserve">
-    <value>Sign Out</value>
+  <data name="TextSortIndex" xml:space="preserve">
+    <value>Sort Index</value>
+  </data>
+  <data name="TextStringCode" xml:space="preserve">
+    <value>String Code</value>
   </data>
   <data name="TextSuccess" xml:space="preserve">
     <value>Operation has been finished successfully</value>
   </data>
+  <data name="TextTemplate" xml:space="preserve">
+    <value>Template</value>
+  </data>
+  <data name="TextTestButton" xml:space="preserve">
+    <value>Test</value>
+  </data>
+  <data name="TextTitle" xml:space="preserve">
+    <value>Title</value>
+  </data>
+  <data name="TextTitleEng" xml:space="preserve">
+    <value>Title Eng</value>
+  </data>
   <data name="TextUpdate" xml:space="preserve">
     <value>Update</value>
+  </data>
+  <data name="TextUpload" xml:space="preserve">
+    <value>Upload</value>
+  </data>
+  <data name="TextUploadImage" xml:space="preserve">
+    <value>Upload Image</value>
+  </data>
+  <data name="TextUsername" xml:space="preserve">
+    <value>Username</value>
+  </data>
+  <data name="TextVideoUrl" xml:space="preserve">
+    <value>Video Url</value>
   </data>
   <data name="TextYes" xml:space="preserve">
     <value>Yes</value>

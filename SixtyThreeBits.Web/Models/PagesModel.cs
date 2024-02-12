@@ -1,4 +1,4 @@
-﻿using SixtyThreeBits.Web.Reusables.Core;
+﻿using SixtyThreeBits.Web.Domain;
 using System.Threading.Tasks;
 
 namespace SixtyThreeBits.Web.Models
@@ -8,21 +8,20 @@ namespace SixtyThreeBits.Web.Models
         #region Methods
         public async Task<PageViewModel> GetPageViewModel(string PageSlug)
         {
-            var ViewModel = default(PageViewModel);
-            var DBItem = await DataAccessFactory.Pages.GetSinglePageBySlugHierarchy(PageSlug: PageSlug?.Trim('/'));
-            if (DBItem !=null && (DBItem.PageIsPublished || User?.UserIsAdmin == true))
+            var viewModel = default(PageViewModel);
+            var repository = RepositoriesFactory.GetPagesRepository(); ;            
+            var dbItem = await repository.PagesGetSingleBySlugHierarchy(pageSlug: PageSlug?.Trim('/'));
+            if (dbItem !=null && (dbItem.PageIsPublished || User?.UserIsSuperAdmin == true))
             {
-                ViewModel = new PageViewModel();
-                ViewModel.PageTitle = Utilities.GetValuesByLanguage(Culture, DBItem.PageTitle, DBItem.PageTitleEng, DBItem.PageTitleRus);
-                ViewModel.PageShortDescription = Utilities.GetValuesByLanguage(Culture, DBItem.PageShortDescription, DBItem.PageShortDescriptionEng, DBItem.PageShortDescriptionRus);
-                ViewModel.PageText = Utilities.GetValuesByLanguage(Culture, DBItem.PageText, DBItem.PageTextEng, DBItem.PageTextRus);
-                ViewModel.PageTextHeaderHtml = Utilities.GetValuesByLanguage(Culture, DBItem.PageTextHeaderHtml, DBItem.PageTextHeaderHtmlEng, DBItem.PageTextHeaderHtmlRus);
-                ViewModel.PageTextFooterHtml = Utilities.GetValuesByLanguage(Culture, DBItem.PageTextFooterHtml, DBItem.PageTextFooterHtmlEng, DBItem.PageTextFooterHtmlRus);
-                ViewModel.PageImageHttpPath = string.IsNullOrWhiteSpace(DBItem.PageImageFilename)
-                    ? $"{WebsiteDomain}{AppSettings.OgImageDefaultHttpPath}"
-                    : $"{WebsiteDomain}{DataAccessFactory.Pages.GetPageFileHttpPath(DBItem.PageID, DBItem.PageImageFilename)}";
+                viewModel = new PageViewModel();
+                viewModel.PageTitle = Utilities.GetValuesByLanguage(LanguageCultureCode, dbItem.PageTitle, dbItem.PageTitleEng);
+                viewModel.PageShortDescription = Utilities.GetValuesByLanguage(LanguageCultureCode, dbItem.PageShortDescription, dbItem.PageShortDescriptionEng);
+                viewModel.PageText = Utilities.GetValuesByLanguage(LanguageCultureCode, dbItem.PageText, dbItem.PageTextEng);
+                viewModel.PageTextHeaderHtml = Utilities.GetValuesByLanguage(LanguageCultureCode, dbItem.PageTextHeaderHtml, dbItem.PageTextHeaderHtmlEng);
+                viewModel.PageTextFooterHtml = Utilities.GetValuesByLanguage(LanguageCultureCode, dbItem.PageTextFooterHtml, dbItem.PageTextFooterHtmlEng);
+                viewModel.PageImageHttpPath = FileStorage.GetUploadedFileHttpPathOrDefault(dbItem.PageImageFilename);                
             }
-            return ViewModel;
+            return viewModel;
         }        
         #endregion
 

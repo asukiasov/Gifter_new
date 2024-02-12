@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using SixtyThreeBits.Web.Admin.Models;
-using SixtyThreeBits.Web.Reusables.Core;
+using SixtyThreeBits.Web.Domain;
 
 namespace SixtyThreeBits.Web.Admin.Controllers
 {
@@ -17,8 +17,8 @@ namespace SixtyThreeBits.Web.Admin.Controllers
         [HttpGet]        
         [Route("", Name = ControllerActionRouteNames.Admin.Home.Page)]
         public IActionResult Index()
-        {            
+        {
             return View(ViewNames.Admin.Home.Index);
         }        
-    }
+    }    
 }

@@ -1,7 +1,7 @@
-﻿using DevExtreme.AspNet.Mvc.FileManagement;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using SixtyThreeBits.Web.Admin.Models;
-using SixtyThreeBits.Web.Reusables.Core;
+using SixtyThreeBits.Web.Domain;
+using System.Threading.Tasks;
 
 namespace SixtyThreeBits.Web.Admin.Controllers
 {
@@ -17,21 +17,36 @@ namespace SixtyThreeBits.Web.Admin.Controllers
 
         #region Methods
         [HttpGet]
-        [Route("", Name = ControllerActionRouteNames.Admin.FileManager.Index)]
-        public IActionResult FileManager(string FolderVirtualPathHash, string FolderPhysicalPathHash, bool AllowSelectMultiple = false, string AllowedExtensions = null, string OnSelectedFilesChooseClientCallback = null)
+        [Route("{moduleName}", Name = ControllerActionRouteNames.Admin.FileManager.Page)]
+        public IActionResult FileManager(string moduleName)
         {            
-            var ViewModel = Model.GetPageViewModel(FolderVirtualPathHash, FolderPhysicalPathHash, AllowSelectMultiple, AllowedExtensions, OnSelectedFilesChooseClientCallback, Request.Query["opener"]);
-            return View(ViewNames.Admin.FileManager.Page, ViewModel);
+            var viewModel = Model.GetPageViewModel(moduleName);
+            viewModel.PluginClient.EnableJQuery(true).EnableDevextreme(true).EnableFontAwesome(true).EnableFancybox(true).EnablePreloader(true).Enable63BitsComponents(true).EnableJQueryConfirm(true);
+            return View(ViewNames.Admin.FileManager.Page, viewModel);
         }
 
-        [Route("files", Name = ControllerActionRouteNames.Admin.FileManager.Files)]
-        public object FileSystem(FileSystemCommand command, string arguments, string FolderVirtualPathHash, string FolderPhysicalPathHash, string AllowedExtensions, bool AllowSelectMultiple = false)
+        [Route("{moduleName}/files", Name = ControllerActionRouteNames.Admin.FileManager.Files)]
+        public async Task<IActionResult> FileManagerGetFile(string moduleName)
         {
-            var Result = Model.GetFileManagerResult(Request, command, arguments, FolderVirtualPathHash, FolderPhysicalPathHash, AllowedExtensions, AllowSelectMultiple);
-            return Result;
+            var viewModel = await Model.GetFiles(moduleName);
+            return Json(viewModel);
         }
 
-        
+        [HttpPost]
+        [Route("{moduleName}/upload", Name = ControllerActionRouteNames.Admin.FileManager.Upload)]
+        public async Task<IActionResult> FileManagerUpload(string moduleName)
+        {            
+            var viewModel = await Model.UploadFile(moduleName);
+            return Json(viewModel);
+        }
+
+        [HttpPost]
+        [Route("{moduleName}/delete", Name = ControllerActionRouteNames.Admin.FileManager.Delete)]
+        public async Task<IActionResult> FileManagerDelete(string moduleName, string filename)
+        {
+            var viewModel = await Model.DeleteFile(moduleName, filename);
+            return Json(viewModel);
+        }
         #endregion
     }
 }

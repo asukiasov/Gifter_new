@@ -3,13 +3,15 @@ using DevExtreme.AspNet.Mvc.Builders;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using SixtyThreeBits.Core.Modules;
+using SixtyThreeBits.Core.Infrastructure.DTO;
+using SixtyThreeBits.Core.Infrastructure.Libraries;
+using SixtyThreeBits.Core.Infrastructure.Repositories;
+using SixtyThreeBits.Core.Infrastructure.Utilities;
 using SixtyThreeBits.Core.Properties;
-using SixtyThreeBits.Core.Services;
-using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries;
-using SixtyThreeBits.Web.Reusables.Core;
-using System;
+using SixtyThreeBits.Web.Domain;
+using SixtyThreeBits.Web.Domain.Libraries;
+using SixtyThreeBits.Web.Domain.SharedViewModels;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -21,48 +23,51 @@ namespace SixtyThreeBits.Web.Admin.Models
         #region Methods
         public PageViewModel GetPageViewModel()
         {
-            var ViewModel = new PageViewModel();
-            ViewModel.ShowAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.Partners.PartnersGridAdd);
-            ViewModel.Grid = new PageViewModel.GridModel();
-            ViewModel.Grid.UrlLoad = Url.RouteUrl(ControllerActionRouteNames.Admin.Partners.PartnersGrid);
-            ViewModel.Grid.UrlAddNew = Url.RouteUrl(ControllerActionRouteNames.Admin.Partners.PartnersGridAdd);
-            ViewModel.Grid.UrlUpdate = Url.RouteUrl(ControllerActionRouteNames.Admin.Partners.PartnersGridUpdate);
-            ViewModel.Grid.UrlDelete = Url.RouteUrl(ControllerActionRouteNames.Admin.Partners.PartnersGridDelete);
-            ViewModel.Grid.AllowAdd = User.HasPermission(ControllerActionRouteNames.Admin.Partners.PartnersGridAdd);
-            ViewModel.Grid.AllowUpdate = User.HasPermission(ControllerActionRouteNames.Admin.Partners.PartnersGridUpdate);
-            ViewModel.Grid.AllowDelete = User.HasPermission(ControllerActionRouteNames.Admin.Partners.PartnersGridDelete);
-            return ViewModel;
+            var viewModel = new PageViewModel();
+            viewModel.ShowAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.Partners.PartnersGridAdd);
+            viewModel.Grid = new PageViewModel.GridModel();
+            viewModel.Grid.UrlLoad = Url.RouteUrl(ControllerActionRouteNames.Admin.Partners.PartnersGrid);
+            viewModel.Grid.UrlAddNew = Url.RouteUrl(ControllerActionRouteNames.Admin.Partners.PartnersGridAdd);
+            viewModel.Grid.UrlUpdate = Url.RouteUrl(ControllerActionRouteNames.Admin.Partners.PartnersGridUpdate);
+            viewModel.Grid.UrlDelete = Url.RouteUrl(ControllerActionRouteNames.Admin.Partners.PartnersGridDelete);
+            viewModel.Grid.AllowAdd = User.HasPermission(ControllerActionRouteNames.Admin.Partners.PartnersGridAdd);
+            viewModel.Grid.AllowUpdate = User.HasPermission(ControllerActionRouteNames.Admin.Partners.PartnersGridUpdate);
+            viewModel.Grid.AllowDelete = User.HasPermission(ControllerActionRouteNames.Admin.Partners.PartnersGridDelete);
+            return viewModel;
         }
 
         public async Task<List<PageViewModel.GridModel.GridItem>> GetGridViewModel()
         {
-            var Partners = (await DataAccessFactory.Partners.ListPartners())?.Select(Item => new PageViewModel.GridModel.GridItem
+            var repository = RepositoriesFactory.GetPartnersRepository();
+            var viewModel = (await repository.PartnersList())?.Select(item => new PageViewModel.GridModel.GridItem
             {
-                PartnerID = Item.PartnerID,
-                PartnerName = Item.PartnerName,
-                PartnerWebSite = Item.PartnerWebSite,
-                UrlPartnerProperties = Url.RouteUrl(ControllerActionRouteNames.Admin.Partners.Partner.Properties, new { PartnersID = Item.PartnerID })
+                PartnerID = item.PartnerID,
+                PartnerName = item.PartnerName,
+                PartnerWebSite = item.PartnerWebSite,
+                PartnerIsPublished = item.PartnerIsPublished,
+                UrlPartnerProperties = Url.RouteUrl(ControllerActionRouteNames.Admin.Partners.Partner.Properties, new { partnerID = item.PartnerID })
             }).ToList();
-            return Partners;
+            return viewModel;
         }
 
-        public async Task CRUD(Enums.DatabaseActions DatabaseAction, int? PartnerID, PageViewModel.GridModel.GridItem SubmitModel)
+        public async Task CRUD(Enums.DatabaseActions databaseAction, int? partnerID, PageViewModel.GridModel.GridItem submitModel)
         {
-            if(DatabaseAction == Enums.DatabaseActions.DELETE)
-            {
-            var DBItem = await DataAccessFactory.Partners.GetSinglePartnerByID(PartnerID);
-                if(DBItem != null)
-                {
-                    Utilities.DeleteUploadedFile(DBItem.PartnerImageFilename);
-                }
+            var repository = RepositoriesFactory.GetPartnersRepository();
+
+            if (databaseAction == Enums.DatabaseActions.DELETE)
+            {                
+                var dbItem = await repository.PartnersGetSingleByID(partnerID);
+                await DeleteUploadedFile(dbItem.PartnerImageFilename, folderPath: null);
             }
-            await DataAccessFactory.Partners.PartnersIUD(
-                DatabaseAction: DatabaseAction,
-                PartnerID: PartnerID,
-                PartnerName: SubmitModel.PartnerName,
-                PartnerWebSite: SubmitModel.PartnerWebSite
+            
+            await repository.PartnersIUD(
+                databaseAction: databaseAction,
+                partnerID: partnerID,
+                partnerName: submitModel.PartnerName,
+                partnerWebSite: submitModel.PartnerWebSite,
+                partnerIsPublished: submitModel.PartnerIsPublished
             );
-            if (DataAccessFactory.Partners.IsError)
+            if (repository.IsError)
             {
                 Form.AddError(Resources.TextError);
             }
@@ -81,25 +86,26 @@ namespace SixtyThreeBits.Web.Admin.Models
             public class GridModel : DevExtremeGridViewModelBase, IDevExtremeGridModel<GridModel.GridItem>
             {
                 #region Methods
-                public DataGridBuilder<GridItem> Render(IHtmlHelper Html)
+                public DataGridBuilder<GridItem> Render(IHtmlHelper html)
                 {
-                    var Grid = GetGridWithStartupValues<GridItem>(Html: Html, KeyFieldName: nameof(GridItem.PartnerID));
-                    Grid
+                    var grid = GetGridWithStartupValues<GridItem>(html: html, keyFieldName: nameof(GridItem.PartnerID));
+                    grid
                     .ID("PartnerGridID")                    
-                    .OnInitialized("PartnersModel.OnPartnersGridInitialized")
-                    .Columns(Columns =>
+                    .OnInitialized("partnersModel.onGridInit")
+                    .Columns(columns =>
                     {
-                        Columns.Add().Width(30).Caption(" ").InitDetailsUrlCellTemplate(nameof(GridItem.UrlPartnerProperties));
-                        Columns.AddFor(m => m.PartnerName).Caption("დასახელება").Width(350).ValidationRules(Options =>
+                        columns.Add().Width(30).Caption(" ").InitDetailsUrlCellTemplate(nameof(GridItem.UrlPartnerProperties));
+                        columns.AddFor(m => m.PartnerName).Caption(Resources.TextName).Width(350).ValidationRules(Options =>
                         {
                             Options.AddRequired();
                         });
-                        Columns.AddFor(m => m.PartnerWebSite).Caption("ვებ გვერდის URL").Width(350);
-                        Columns.Add();
+                        columns.AddFor(m => m.PartnerWebSite).Caption(Resources.TextPageUrl).Width(350);
+                        columns.AddFor(m => m.PartnerIsPublished).Caption(Resources.TextPublished).Width(150).InitCheckboxColumn();
+                        columns.Add();
                     });
 
 
-                    return Grid;
+                    return grid;
 
                 }
                 #endregion
@@ -111,6 +117,7 @@ namespace SixtyThreeBits.Web.Admin.Models
                     public int? PartnerID { get; set; }
                     public string PartnerName { get; set; }
                     public string PartnerWebSite { get; set; }
+                    public bool PartnerIsPublished { get; set; }
                     public string UrlPartnerProperties { get; set; }
                     #endregion
                 }
@@ -124,114 +131,116 @@ namespace SixtyThreeBits.Web.Admin.Models
     public class PartnersModelBase : WebProjectModelBase
     {
         #region Properties
-        public Partner DBItemPartner { get; set; }
+        public PartnerDTO DBItem { get; set; }
         #endregion
     }
 
     public class PartnerPropertiesModel : PartnersModelBase
     {
         #region Methods
-        public PartnerPropertiesViewModel GetPartnerPropertiesViewModel(PartnerPropertiesViewModel ViewModel)
+        public PageViewModel GetPageViewModel(PageViewModel viewModel)
         {
-            if (ViewModel == null)
+            if (viewModel == null)
             {
-                ViewModel = new PartnerPropertiesViewModel();
-                ViewModel.PartnerName = DBItemPartner.PartnerName;
-                ViewModel.PartnerNameEng = DBItemPartner.PartnerNameEng;
-                ViewModel.PartnernameRus = DBItemPartner.PartnerNameRus;
-                ViewModel.PartnerShortDescription = DBItemPartner.PartnerShortDescription;
-                ViewModel.PartnerShortDescriptionEng = DBItemPartner.PartnerShortDescriptionEng;
-                ViewModel.PartnerShortDescriptionRus = DBItemPartner.PartnerShortDescriptionRus;
-                ViewModel.PartnerFullDescription = DBItemPartner.PartnerFullDescription;
-                ViewModel.PartnerFullDescriptionEng = DBItemPartner.PartnerFullDescriptionEng;
-                ViewModel.PartnerFullDescriptionRus = DBItemPartner.PartnerFullDescriptionRus;
-                ViewModel.PartnerWebSite = DBItemPartner.PartnerWebSite;
+                viewModel = new PageViewModel();
+                viewModel.PartnerName = DBItem.PartnerName;
+                viewModel.PartnerNameEng = DBItem.PartnerNameEng;                
+                viewModel.PartnerShortDescription = DBItem.PartnerShortDescription;
+                viewModel.PartnerShortDescriptionEng = DBItem.PartnerShortDescriptionEng;                
+                viewModel.PartnerFullDescription = DBItem.PartnerFullDescription;
+                viewModel.PartnerFullDescriptionEng = DBItem.PartnerFullDescriptionEng;                
+                viewModel.PartnerWebSite = DBItem.PartnerWebSite;
+                viewModel.PartnerIsPublished = DBItem.PartnerIsPublished;
             }
-            ViewModel.PartnerImageFilename = DBItemPartner.PartnerImageFilename;
-            ViewModel.PartnerImageHttpPath = Utilities.GetUploadedFileHttpPath(ViewModel.PartnerImageFilename);
-            ViewModel.UrlDeleteImage = Url.RouteUrl(ControllerActionRouteNames.Admin.Partners.PartnersPartnerPropertiesDeleteImage, new { PartnersID = DBItemPartner.PartnerID });
-            ViewModel.ShowPartnerImageDeleteButton = !string.IsNullOrWhiteSpace(ViewModel.PartnerImageFilename);
-            return ViewModel;
+            viewModel.PartnerImageFilename = DBItem.PartnerImageFilename;
+            viewModel.PartnerImageHttpPath = FileStorage.GetUploadedFileHttpPath(viewModel.PartnerImageFilename);
+            viewModel.UrlDeleteImage = Url.RouteUrl(ControllerActionRouteNames.Admin.Partners.Partner.PropertiesDeleteImage, new { PartnerID = DBItem.PartnerID });
+            viewModel.ShowPartnerImageDeleteButton = !string.IsNullOrWhiteSpace(viewModel.PartnerImageFilename);
+            return viewModel;
         }
-        public async Task<bool> SavePartnerProperties(PartnerPropertiesViewModel ViewModel)
-        {
-            var HasPartnerImage = ViewModel.PostedFile?.Length > 0;
-            var PartnerImageFilename = HasPartnerImage ? GetFilenameFromUploadedFile(ViewModel.PostedFile) : null;
-            if (HasPartnerImage)
-            {
-                Utilities.DeleteUploadedFile(DBItemPartner.PartnerImageFilename);
-            }
-            await DataAccessFactory.Partners.PartnersIUD(
-                DatabaseAction: Enums.DatabaseActions.UPDATE,
-                PartnerID: DBItemPartner.PartnerID,
-                PartnerName: ViewModel.PartnerName,
-                PartnerNameEng: ViewModel.PartnerNameEng,
-                PartnerNameRus: ViewModel.PartnernameRus,
-                PartnerShortDescription: ViewModel.PartnerShortDescription,
-                PartnerShortDescriptionEng: ViewModel.PartnerShortDescriptionEng,
-                PartnerShortDescriptionRus: ViewModel.PartnerShortDescriptionRus,
-                PartnerFullDescription: ViewModel.PartnerFullDescription,
-                PartnerFullDescriptionEng: ViewModel.PartnerFullDescriptionEng,
-                PartnerFullDescriptionRus: ViewModel.PartnerFullDescriptionRus,
-                PartnerWebSite: ViewModel.PartnerWebSite,
-                PartnerImageFilename: PartnerImageFilename
-            );
-            if (!DataAccessFactory.Partners.IsError)
-            {
-                ViewModel.IsSaved = true;
-                if (HasPartnerImage)
-                {
-                    await SaveUploadedFile(ViewModel.PostedFile, PartnerImageFilename);
-                }
-            }
-            return ViewModel.IsSaved;
-        }
-        public async Task<AjaxResponse> DeleteImage(int? PartnerID)
-        {
-            var Partner = await DataAccessFactory.Partners.GetSinglePartnerByID(PartnerID);
-            Utilities.DeleteUploadedFile(Partner.PartnerImageFilename);
-            var AR = new AjaxResponse();
-            await DataAccessFactory.Partners.PartnersIUD(
-                DatabaseAction: Enums.DatabaseActions.UPDATE,
-                PartnerID: PartnerID,
-                PartnerImageFilename: Constants.NullValueFor.String
-            );
-            AR.IsSuccess = !DataAccessFactory.Partners.IsError;
-            return AR;
-        }
-        public void ValidatePartnerPropertiesViewModel(PartnerPropertiesViewModel ViewModel)
-        {
-            ViewModel.Errors = new List<SimpleKeyValue<string, string>>()
-            {
-                Validation.ValidateRequired(ErrorKey : Validation.GetJQueryNameSelectorFor(nameof(ViewModel.PartnerName)),ViewModel.PartnerName),
-            };
-            ViewModel.Errors.RemoveAll(Item => Item == null);
 
+        public void ValidatePageViewModel(PageViewModel viewModel)
+        {
+            viewModel.AddError(Validation.ValidateRequired(errorKey: Validation.GetJQueryNameSelectorFor(nameof(viewModel.PartnerName)), viewModel.PartnerName));            
         }
+
+        public async Task Save(PageViewModel viewModel)
+        {            
+            var hasPartnerImage = viewModel.PartnerImageFile?.Length > 0;
+            var partnerImageFilename = hasPartnerImage ? GetFilenameFromUploadedFile(viewModel.PartnerImageFile) : null;
+            if (hasPartnerImage)
+            {
+                await DeleteUploadedFile(DBItem.PartnerImageFilename, folderPath: null);                
+            }
+
+            var repository = RepositoriesFactory.GetPartnersRepository();
+            await repository.PartnersIUD(
+                databaseAction: Enums.DatabaseActions.UPDATE,
+                partnerID: DBItem.PartnerID,
+                partnerName: viewModel.PartnerName,
+                partnerNameEng: viewModel.PartnerNameEng,                
+                partnerShortDescription: viewModel.PartnerShortDescription,
+                partnerShortDescriptionEng: viewModel.PartnerShortDescriptionEng,                
+                partnerFullDescription: viewModel.PartnerFullDescription,
+                partnerFullDescriptionEng: viewModel.PartnerFullDescriptionEng,                
+                partnerWebSite: viewModel.PartnerWebSite,
+                partnerImageFilename: partnerImageFilename,
+                partnerIsPublished: viewModel.PartnerIsPublished
+            );
+
+            if (!repository.IsError)
+            {
+                viewModel.IsSaved = true;
+                if (hasPartnerImage)
+                {
+                    await SaveUploadedFile(viewModel.PartnerImageFile, partnerImageFilename, folderPath: null);
+                }
+            }            
+        }
+        
+        public async Task<AjaxResponse> DeleteImage()
+        {
+            var viewModel = new AjaxResponse();            
+            await DeleteUploadedFile(DBItem.PartnerImageFilename, folderPath: null);
+            var repository = RepositoriesFactory.GetPartnersRepository();
+            await repository.PartnersIUD(
+                databaseAction: Enums.DatabaseActions.UPDATE,
+                partnerID: DBItem.PartnerID,
+                partnerImageFilename: Constants.NullValueFor.String
+            );
+            viewModel.IsSuccess = !repository.IsError;
+            return viewModel;
+        }        
         #endregion
 
         #region SubClasses
-        public class PartnerPropertiesViewModel : FormViewModelBase
+        public class PageViewModel : FormViewModelBase
         {
-            #region Properties
-            public int PartnerID { get; set; }
+            #region Properties            
+            public bool PartnerIsPublished { get; set; }
             public string PartnerName { get; set; }
-            public string PartnerNameEng { get; set; }
-            public string PartnernameRus { get; set; }
+            public string PartnerNameEng { get; set; }            
             public string PartnerShortDescription { get; set; }
-            public string PartnerShortDescriptionEng { get; set; }
-            public string PartnerShortDescriptionRus { get; set; }
+            public string PartnerShortDescriptionEng { get; set; }            
             public string PartnerFullDescription { get; set; }
-            public string PartnerFullDescriptionEng { get; set; }
-            public string PartnerFullDescriptionRus { get; set; }
+            public string PartnerFullDescriptionEng { get; set; }            
             public string PartnerWebSite { get; set; }
             public string PartnerImageFilename { get; set; }
             public string PartnerImageHttpPath { get; set; }
-            public string UrlDeleteImage { get; set; }
-            public string TextConfirmDelete { get; set; } = Resources.TextConfirmDeleteImage;
+            public string UrlDeleteImage { get; set; }            
             public bool ShowPartnerImageDeleteButton { get; set; }
             public string UrlPartnerProperties { get; set; }
-            public IFormFile PostedFile { get; set; }
+            public IFormFile PartnerImageFile { get; set; }
+            
+            public readonly string TextPublished = Resources.TextPublished;
+            public readonly string TextName = Resources.TextName;
+            public readonly string TextNameEng = Resources.TextNameEng;
+            public readonly string TextDescriptionShort = Resources.TextDescriptionShort;
+            public readonly string TextDescriptionShortEng = Resources.TextDescriptionShortEng;
+            public readonly string TextDescription = Resources.TextDescription;
+            public readonly string TextDescriptionEng = Resources.TextDescriptionEng;
+            public readonly string TextPageUrl = Resources.TextPageUrl;
+            public readonly string TextUploadImage = Resources.TextUploadImage;
             #endregion
         }
         #endregion

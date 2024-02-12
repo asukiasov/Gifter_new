@@ -1,19 +1,28 @@
 ﻿@model TeamMembersModel.PageViewModel
-
-<div class="actions-row">
-    @await Html.PartialAsync(ViewNames.Admin.Shared.ButtonAddNew, new ButtonAddNewViewModel())
-</div>
-
-
-<div class="row">
-    <div class="col">
-        @Model.Grid.Render(Html)
+<div class="card">
+    <div class="card-body">
+        <div class="row">
+            <div class="col">
+                @if (Model.ShowAddNewButton)
+                {
+                    @await Html.PartialAsync(ViewNames.Admin.Shared.ButtonAddNew, new ButtonAddNewViewModel())
+                }
+            </div>
+        </div>
     </div>
 </div>
-
+<div class="card">
+    <div class="card-body">        
+        <div class="row">
+            <div class="col">
+                @Model.Grid.Render(Html)
+            </div>
+        </div>
+    </div>
+</div>
 @section FooterSection{
     <script src="~/admin/js/TeamMembers/TeamMembers.js"></script>
     <script>
-        TeamMembersModel.UrlSync = '@Model.UrlSync';
+        teamMembersModel.urlSync = '@Model.UrlSync';
     </script>
 }

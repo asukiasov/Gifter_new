@@ -1,84 +1,120 @@
-﻿using SixtyThreeBits.Core.Modules;
+﻿using SixtyThreeBits.Core.Infrastructure.DTO;
+using SixtyThreeBits.Core.Infrastructure.Utilities;
 using SixtyThreeBits.Core.Properties;
-using SixtyThreeBits.Core.Utilities;
-using SixtyThreeBits.Web.Reusables.Core;
+using SixtyThreeBits.Web.Domain;
+using SixtyThreeBits.Web.Domain.SharedViewModels;
 using System;
 using System.Threading.Tasks;
 
 namespace SixtyThreeBits.Web.Admin.Models
 {
-    public class AuthModel : WebProjectModelBase
+    public class LoginModel : WebProjectModelBase
     {
         #region Methods
-        public LoginPageViewModel GetPageViewModel(LoginPageViewModel ViewModel = null)
+        public PageViewModel GetPageViewModel(PageViewModel viewModel = null)
         {
-            if (ViewModel == null)
+            if (viewModel == null)
             {
-                ViewModel = new LoginPageViewModel();
-            }
-            ViewModel.PluginsClient = PluginsClient;
-            return ViewModel;
+                viewModel = new PageViewModel();
+            }            
+            viewModel.PluginsClient = PluginsClient;
+            viewModel.ProjectName = SystemProperties.ProjectName;
+            return viewModel;
         }
 
         public bool IsUserLoggedIn()
         {
-            var IsLoggedIn = SessionAssistance.Get<User>(Constants.Session.User) != null;
-            return IsLoggedIn;
+            var isLoggedIn = SessionAssistance.Get<UserDTO>(Constants.Session.User) != null;
+            return isLoggedIn;
         }
 
-        public async Task<bool> AuthenticateUser(LoginPageViewModel ViewModel)
+        public async Task<bool> AuthenticateUser(PageViewModel viewModel)
         {
-            bool IsAuthenticated = false;
+            bool isAuthenticated = false;
 
-            var User = await DataAccessFactory.Users.GetSingleUserByEmailAndPassword(ViewModel.Username, ViewModel.Password);
-            if (User == null)
+            var repository = RepositoriesFactory.GetUsersRepository();            
+            var user = await repository.UsersGetSingleUserByEmailAndPassword(viewModel.Username, viewModel.Password);
+            if (user == null)
             {
-                ViewModel.IsLoginFailed = true;
+                viewModel.IsLoginFailed = true;
             }
             else
             {
-                IsAuthenticated = true;
-                SessionAssistance.Set(Constants.Session.User, User);
-                if (ViewModel.IsRememberMeChecked)
+                isAuthenticated = true;
+                SessionAssistance.Set(Constants.Session.User, user);
+                if (viewModel.IsRememberMeChecked)
                 {
-                    CookieAssistance.Set(Constants.Cookies.User, User.UserID, DateTime.Now.AddDays(30));
+                    CookieAssistance.Set(Constants.Cookies.User, user.UserID, DateTime.Now.AddDays(30));
                 }
             }
 
-            return IsAuthenticated;
+            return isAuthenticated;
         }
-
-        public void Logout()
-        {
-            SessionAssistance.Clear();
-            CookieAssistance.Remove(Constants.Cookies.User);
-        }
-
+        
         public async Task ReloginUser()
         {
-            var SessionUser = SessionAssistance.Get<User>(Constants.Session.User);
-            if (SessionUser != null)
+            var sessionUser = SessionAssistance.Get<UserDTO>(Constants.Session.User);
+            if (sessionUser != null)
             {
-                var User = await DataAccessFactory.Users.GetSingleUserByID(SessionUser.UserID);
-                if (User != null && User.UserIsActive)
+                var repository = RepositoriesFactory.GetUsersRepository();
+                var user = await repository.UsersGetSingleUserByUserID(sessionUser.UserID);
+                if (user != null && user.UserIsActive)
                 {
-                    SessionAssistance.Set(Constants.Session.User, User);
+                    SessionAssistance.Set(Constants.Session.User, user);
                 }
             }
         }
         #endregion
 
         #region Nested Classes
-        public class LoginPageViewModel
+        public class PageViewModel
         {
             #region Properties         
             public PluginsClient PluginsClient { get; set; }
+            public string ProjectName { get; set; }
             public string Username { get; set; }
             public string Password { get; set; }
             public bool IsRememberMeChecked { get; set; }
             public bool IsLoginFailed { get; set; }
-            public readonly string ErrorMessage = Resources.ValidationUserInvalidUsernameOrPassword;
-            public readonly string ProjectName = Constants.ProjectName;
+            public readonly string TextAdminWelcomeTitle = Resources.TextAdminWelcomeTitle;
+            public readonly string TextAdminWelcomeSubTitle = Resources.TextAdminWelcomeSubTitle;
+            public readonly string TextUsername = Resources.TextUsername;
+            public readonly string TextPassword = Resources.TextPassword;
+            public readonly string TextRememberMe = Resources.TextRememberMe;            
+            public readonly string TextLogin = Resources.TextLogin;
+            public readonly string ValidationUserInvalidUsernameOrPassword = Resources.ValidationUserInvalidUsernameOrPassword;            
+            #endregion
+        }
+        #endregion
+    }
+
+    public class LogoutModel : WebProjectModelBase
+    {
+        #region Methods
+        public void Logout()
+        {
+            SessionAssistance.Clear();
+            CookieAssistance.Remove(Constants.Cookies.User);
+        }        
+        #endregion
+
+        #region Nested Classes
+        public class PageViewModel
+        {
+            #region Properties         
+            public PluginsClient PluginsClient { get; set; }
+            public string ProjectName { get; set; }
+            public string Username { get; set; }
+            public string Password { get; set; }
+            public bool IsRememberMeChecked { get; set; }
+            public bool IsLoginFailed { get; set; }
+            public readonly string TextAdminWelcomeTitle = Resources.TextAdminWelcomeTitle;
+            public readonly string TextAdminWelcomeSubTitle = Resources.TextAdminWelcomeSubTitle;
+            public readonly string TextUsername = Resources.TextUsername;
+            public readonly string TextPassword = Resources.TextPassword;
+            public readonly string TextRememberMe = Resources.TextRememberMe;
+            public readonly string TextLogin = Resources.TextLogin;
+            public readonly string ValidationUserInvalidUsernameOrPassword = Resources.ValidationUserInvalidUsernameOrPassword;
             #endregion
         }
         #endregion

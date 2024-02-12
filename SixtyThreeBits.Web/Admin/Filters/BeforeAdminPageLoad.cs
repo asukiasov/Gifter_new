@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using SixtyThreeBits.Core.Utilities;
+using SixtyThreeBits.Core.Infrastructure.Utilities;
 using SixtyThreeBits.Web.Admin.Models;
-using SixtyThreeBits.Web.Reusables.Core;
+using SixtyThreeBits.Web.Domain;
+using SixtyThreeBits.Web.Domain.Libraries;
+using SixtyThreeBits.Web.Domain.SharedViewModels;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -10,158 +12,175 @@ namespace SixtyThreeBits.Web.Admin.Filters
 {
     public class BeforeAdminPageLoad : IAsyncActionFilter
     {
-        WebProjectModelBase Model;
-        AdminLayoutViewModel ViewModel;
+        #region Properties
+        WebProjectModelBase _model;
+        AdminLayoutViewModel _viewModel;
+        #endregion
 
-        public async Task OnActionExecutionAsync(ActionExecutingContext FilterContext, ActionExecutionDelegate next)
+        #region Methods
+        public async Task OnActionExecutionAsync(ActionExecutingContext filterContext, ActionExecutionDelegate next)
         {
-            ViewModel = new AdminLayoutViewModel();
-            Model = LocalUtilities.GetModelFromController<WebProjectModelBase>(FilterContext.Controller);
-            var C = FilterContext.Controller as Controller;
+            _viewModel = new AdminLayoutViewModel();
+            _model = LocalUtilities.GetModelFromController<WebProjectModelBase>(filterContext.Controller);
+            var c = filterContext.Controller as Controller;
 
-            var IsAuhenticated = IsUserAuhenticated();
-            if (IsAuhenticated)
+            var isAuhenticated = isUserAuhenticated();
+            if (isAuhenticated)
             {
-                var HasPermission = HasUserPermission();
-                if (HasPermission)
+                var hasPermission = hasUserPermission();
+                if (hasPermission)
                 {
-                    InitStartUp();
-                    InitClientPlugins();
-                    InitMenu();
-                    InitBreadCrumbs();
-                    InitTabs();
-                    InitPageTitle();
-                    InitSuccessErrorMessage();
-                    InitSidebar();
-                    LocalUtilities.SetLayoutViewModel(ViewData: C.ViewData, ViewModel: ViewModel, Key: Constants.ViewData.LayoutViewModel);
+                    initStartUp();
+                    initLanguage();
+                    initClientPlugins();
+                    initMenu();
+                    initBreadCrumbs();
+                    initTabs();
+                    initPageTitle();
+                    initSuccessErrorMessage();
+                    initSidebar();
+                    LocalUtilities.SetLayoutViewModel(viewData: c.ViewData, viewModel: _viewModel, key: Constants.ViewData.LayoutViewModel);
                     await next();
                 }
                 else
                 {
-                    FilterContext.Result = new ViewResult { ViewName = ViewNames.Admin.Shared.NotFound };
+                    filterContext.Result = _model.GetNotFoundAdminViewResult();
                 }
             }
             else
             {
-                var UrlLogin = Model.Url.RouteUrl(ControllerActionRouteNames.Admin.Auth.Login);
-                FilterContext.Result = new RedirectResult(UrlLogin);
-            }            
+                var urlLogin = _model.Url.RouteUrl(ControllerActionRouteNames.Admin.Auth.Login);
+                filterContext.Result = new RedirectResult(urlLogin);
+            }
         }
 
-        bool IsUserAuhenticated()
+        bool isUserAuhenticated()
         {
-            return Model.User != null;
+            return _model.User != null;
         }
 
-        bool HasUserPermission() 
+        bool hasUserPermission()
         {
-            var HasPermission = Model.User.HasPermission(Model.UrlCurrentPageWithoutDomain);
-            return HasPermission;
+            var hasPermission = _model.User.HasPermission(_model.UrlCurrentPageWithoutDomain);
+            return hasPermission;
         }
 
-        void InitStartUp()
+        void initStartUp()
         {
-            Model.Culture = Constants.Languages.ENGLISH;
-            ViewModel.UserFullname = Model.User.UserFullname;
+            _viewModel.ProjectName = _model.SystemProperties.ProjectName;
+            _viewModel.UserFullname = _model.User.UserFullname;
+            _viewModel.UserEmail = _model.User.UserEmail;
         }
 
-        void InitClientPlugins()
+        void initClientPlugins()
         {
-            Model.PluginsClient
-            .EnableGoogleFonts(true)
-            .EnableFontAwesome(true)
+            _model.PluginsClient
+            //.EnableGoogleFonts(true)
             .Enable63BitsFonts(true)
-            .EnableBootstrap(true)
-            .EnableAngle(true)
+            .EnableFontAwesome(true)
+            .EnableAdminTheme(true)
             .EnableJQuery(true)
             .EnableJQueryConfirm(true)
             .EnablePreloader(true)
             .Enable63BitsComponents(true)
+            .EnableMetisMenu(true)
             .EnableUtils(true);
 
-            ViewModel.PluginsClient = Model.PluginsClient;
+            _viewModel.PluginsClient = _model.PluginsClient;
         }
 
-        void InitMenu()
+        void initMenu()
         {
-            if (Model.User.Permissions?.Count > 0)
-            {                
-                ViewModel.Menu = Model.User.Permissions
-                .Where(Item => Item.PermissionIsMenuItem && Item.PermissionParentID == null)
-                .Select(Item => new ProjectMenuItem
+            if (_model.User.Permissions?.Count > 0)
+            {
+                _viewModel.Menu = _model.User.Permissions
+                .Where(item => item.PermissionIsMenuItem && item.PermissionParentID == null)
+                .Select(item => new ProjectMenuItem
                 {
-                    Caption = Item.PermissionCaption,
-                    NavigateUrl = string.IsNullOrWhiteSpace(Item.PermissionPagePath) ? Item.PermissionCode : Item.PermissionPagePath,
-                    Icon = Item.PermissionMenuIcon,
-                    IsSelected = Item.PermissionPagePath == Model.UrlCurrentPageWithoutDomain,
-                    Children = Model.User.Permissions.Where(SubItem => SubItem.PermissionIsMenuItem && SubItem.PermissionParentID == Item.PermissionID).Select(SubItem => new ProjectMenuItem
+                    Caption = _model.Utilities.GetValuesByLanguage(_model.LanguageCultureCode, item.HasPermissionMenuTitle ? item.PermissionMenuTitle : item.PermissionCaption, item.HasPermissionMenuTitleEng ? item.PermissionMenuTitleEng : item.PermissionCaptionEng),
+                    NavigateUrl = string.IsNullOrWhiteSpace(item.PermissionPagePath) ? item.PermissionCode : item.PermissionPagePath,
+                    Icon = item.PermissionMenuIcon,
+                    IsSelected = item.PermissionPagePath == _model.UrlCurrentPageWithoutDomain,
+                    Children = _model.User.Permissions.Where(subItem => subItem.PermissionIsMenuItem && subItem.PermissionParentID == item.PermissionID).Select(SubItem => new ProjectMenuItem
                     {
-                        Caption = SubItem.PermissionCaption,
+                        Caption = _model.Utilities.GetValuesByLanguage(_model.LanguageCultureCode, SubItem.HasPermissionMenuTitle ? SubItem.PermissionMenuTitle : SubItem.PermissionCaption, SubItem.HasPermissionMenuTitleEng ? SubItem.PermissionMenuTitleEng : SubItem.PermissionCaptionEng),
                         NavigateUrl = SubItem.PermissionPagePath,
                         Icon = SubItem.PermissionMenuIcon,
-                        IsSelected = SubItem.PermissionPagePath == Model.UrlCurrentPageWithoutDomain
+                        IsSelected = SubItem.PermissionPagePath == _model.UrlCurrentPageWithoutDomain
                     }).ToList()
                 }).ToList();
 
-                ViewModel.Menu.ForEach(Item =>
+                _viewModel.Menu.ForEach(item =>
                 {
-                    if(Item.HasChildren)
+                    if (item.HasChildren)
                     {
-                        Item.IsSelected = Item.Children.Any(SubItem => SubItem.IsSelected);
+                        item.IsSelected = item.Children.Any(subItem => subItem.IsSelected);
                     }
                 });
             }
 
-            ViewModel.UrlRelogin = Model.Url.RouteUrl(ControllerActionRouteNames.Admin.Auth.Relogin);
-            ViewModel.UrlLogout = Model.Url.RouteUrl(ControllerActionRouteNames.Admin.Auth.Logout);
+            _viewModel.UrlRelogin = _model.Url.RouteUrl(ControllerActionRouteNames.Admin.Auth.Relogin);
+            _viewModel.UrlLogout = _model.Url.RouteUrl(ControllerActionRouteNames.Admin.Auth.Logout);
         }
 
-        void InitBreadCrumbs()
+        void initBreadCrumbs()
         {
-            var PageHierarchy = Model.User.Permissions?.Select(Item => new Breadcrumbs.HierarchyItem<int?>
+            var pageHierarchy = _model.User.Permissions?.Select(item => new Breadcrumbs.HierarchyItem<int?>
             {
-                ID = Item.PermissionID,
-                ParentID = Item.PermissionParentID,
-                PageHttpPath = Item.PermissionPagePath,
-                PageTitle = Item.PermissionCaption
+                ID = item.PermissionID,
+                ParentID = item.PermissionParentID,
+                PageHttpPath = item.PermissionPagePath,
+                PageTitle = _model.Utilities.GetValuesByLanguage(_model.LanguageCultureCode, item.PermissionCaption, item.PermissionCaptionEng),
             }).ToList();
 
-            ViewModel.Breadcrumbs = Model.Breadcrumbs = new Breadcrumbs();
-            ViewModel.Breadcrumbs.InitBreadcrumbsByPageUrl(
-                PageHierarchy: PageHierarchy,
-                UrlCurrentPage: Model.UrlCurrentPageWithDomain
+            _viewModel.Breadcrumbs = _model.Breadcrumbs = new Breadcrumbs();
+            _viewModel.Breadcrumbs.InitBreadcrumbsByPageUrl(
+                pageHierarchy: pageHierarchy,
+                urlCurrentPage: _model.UrlCurrentPageWithDomain
             );
-            ViewModel.ShowBreadCrumbs = ViewModel.Breadcrumbs.ItemsCount > 2;
-        }   
-
-        void InitTabs()
-        {
-            ViewModel.Tabs = Model.Tabs;
+            _viewModel.ShowBreadCrumbs = _viewModel.Breadcrumbs.ItemsCount > 2;
         }
 
-        void InitPageTitle()
+        void initTabs()
         {
-            Model.PageTitle = ViewModel.PageTitle = new PageTitle();
-            var P = Model.User.GetPermission(Model.UrlCurrentPageWithoutDomain);
-            if (P != null)
+            _viewModel.Tabs = _model.Tabs;
+        }
+
+        void initPageTitle()
+        {
+            _model.PageTitle = _viewModel.PageTitle = new PageTitle(_model.SystemProperties.ProjectName);
+            var p = _model.User.GetPermission(_model.UrlCurrentPageWithoutDomain);
+            if (p != null)
             {
-                Model.PageTitle.Set(P.PermissionCaption);
-            }            
+                _model.PageTitle.Set(_model.Utilities.GetValuesByLanguage(_model.LanguageCultureCode, p.PermissionCaption, p.PermissionCaptionEng));
+            }
         }
 
-        void InitSidebar()
+        void initSidebar()
         {
-            Model.IsSidebarCollapsed = new ValueReference<bool>
+            _viewModel.IsSidebarCollapsed = _model.IsSidebarCollapsed = new ValueWrapper<bool>();
+            _model.IsSidebarCollapsed.Value = _model.CookieAssistance.Get<bool>(Key: Constants.Cookies.IsAdminSideBarCollapsed);
+        }
+
+        void initSuccessErrorMessage()
+        {
+            _model.InitSuccessErrorPartialViewModel();
+            _viewModel.SuccessErrorPartialViewModel = _model.SuccessErrorPartialViewModel;
+        }
+
+        void initLanguage()
+        {
+            var language = _model.Utilities.GetSupportedLanguageOrDefault(_model.LanguageCultureCode);
+
+            _viewModel.LanguageActive = new AdminLayoutViewModel.Language { LanguageCultureCode = language.LanguageCultureCode, LanguageName = language.LanguageName };
+            _viewModel.Languages = _model.Utilities.SupportedLanguages.Select(item => new AdminLayoutViewModel.Language
             {
-                Value = Model.CookieAssistance.Get<bool>(Key: Constants.Cookies.IsAdminSideBarCollapsed)
-            };
-            ViewModel.IsSidebarCollapsed = Model.IsSidebarCollapsed;
-        }
-
-        void InitSuccessErrorMessage()
-        {
-            Model.InitSuccessErrorPartialViewModel();
-            ViewModel.SuccessErrorPartialViewModel = Model.SuccessErrorPartialViewModel;
-        }
+                LanguageCultureCode = item.LanguageCultureCode,
+                LanguageName = item.LanguageName,
+                IsActive = item.LanguageCultureCode == language.LanguageCultureCode,
+                UrlChangeLanguage = _model.Url.RouteUrl(ControllerActionRouteNames.Admin.ChangeLanguage.Page, new { Culture = item.LanguageCultureCode })
+            }).ToList();
+        } 
+        #endregion
     }
 }

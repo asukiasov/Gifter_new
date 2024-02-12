@@ -1,48 +1,51 @@
-﻿const Components63Bits = {
-    Dialog: {
-        ButtonColors: {
-            Blue: 'btn-blue',
-            Red: 'btn-danger',
-            Green: 'btn-success',
-            Orange: 'btn-warning'
+﻿const components63Bits = {
+    textError: null,
+    textSuccess: null,
+
+    dialog: {
+        buttonColors: {
+            blue: 'btn-blue',
+            red: 'btn-danger',
+            green: 'btn-success',
+            orange: 'btn-warning'
         },
-        Sizes: {
-            XSmall: 'xsmall',
-            Small: 'small',
-            Medium: 'medium',
-            Large: 'large',
-            XLarge: 'xlarge'
+        sizes: {
+            xSmall: 'xsmall',
+            small: 'small',
+            medium: 'medium',
+            large: 'large',
+            xLarge: 'xlarge'
         },
-        Alert: function (Options) {
-            var Title = Options.Title ? Options.Title : '';
-            var TextAlert = Options.TextAlert ? Options.TextAlert : '';
-            var Buttons = Options.Buttons;
+        alert: function (options) {
+            const title = options.title ? options.title : '';
+            const textAlert = options.textAlert ? options.textAlert : '';
+            const buttons = options.buttons;
 
             $.alert({
-                title: Title,
-                content: TextAlert,
-                buttons: Buttons
+                title: title,
+                content: textAlert,
+                buttons: buttons
             });
         },
-        Confirm: function (Options) {
-            var Title = Options.Title ? Options.Title : '';
-            var TextConfirm = Options.TextConfirm ? Options.TextConfirm : '';
-            var Resolve = Options.Resolve ? Options.Resolve : null;
-            var ConfirmButtonColor = Options.ConfirmButtonColor ? Options.ConfirmButtonColor : Components63Bits.Dialog.ButtonColors.Blue;
+        confirm: function (options) {
+            const title = options.title ? options.title : '';
+            const textConfirm = options.textConfirm ? options.textConfirm : '';
+            const resolve = options.resolve ? options.resolve : null;
+            const confirmButtonColor = options.confirmButtonColor ? options.confirmButtonColor : components63Bits.dialog.buttonColors.blue;
 
             $.confirm({
-                title: Title,
-                content: TextConfirm,
+                title: title,
+                content: textConfirm,
                 type: 'yellow',
                 animation: 'scale',
                 closeAnimation: 'scale',
                 scrollToPreviousElement:true,
                 buttons: {
                     'Yes': {
-                        btnClass: ConfirmButtonColor,
+                        btnClass: confirmButtonColor,
                         action: function () {
-                            if (Resolve) {
-                                Resolve();
+                            if (resolve) {
+                                resolve();
                             }
                         }
                     },
@@ -52,10 +55,10 @@
                 }
             });
         },
-        Error: function (ErrorMessage) {
+        error: function (errorMessage) {
             $.alert({
                 title: 'Error',
-                content: ErrorMessage ? ErrorMessage : Globals.TextError,
+                content: errorMessage ? errorMessage : components63Bits.textError,
                 icon: 'fas fa-exclamation-triangle',
                 closeIcon: true,
                 type: 'red',
@@ -64,25 +67,24 @@
                 animateFromElement: false
             });
         },
-        Prompt: function (Options) {
-
-            const Title = Options.Title
-            const Label = Options.Label ? Options.Label : '';
-            const InputPlaceHolder = Options.InputPlaceHolder ? Options.InputPlaceHolder : '';
-            const ButtonColor = Options.ButtonColor ? Options.ButtonColor : Components63Bits.Dialog.ButtonColors.Blue;
-            const Resolve = Options.Resolve;
+        prompt: function (options) {
+            const title = options.title
+            const label = options.label ? options.label : '';
+            const inputPlaceHolder = options.inputPlaceHolder ? options.inputPlaceHolder : '';
+            const buttonColor = options.buttonColor ? options.buttonColor : components63Bits.dialog.buttonColors.blue;
+            const resolve = options.resolve;
 
             $.confirm({
-                title: Title,
-                content: '<div class="form-group"><label>' + Label + '</label><input type="text" placeholder="' + InputPlaceHolder +'" class="form-control js-63bits-components-prompt" /></div>',
+                title: title,
+                content: '<div class="form-group"><label>' + label + '</label><input type="text" placeholder="' + inputPlaceHolder +'" class="form-control js-63bits-components-prompt" /></div>',
                 buttons: {
                     OK: {
                         text: 'OK',
-                        btnClass: ButtonColor,
+                        btnClass: buttonColor,
                         action: function () {
-                            const InputValue = this.$content.find('.js-63bits-components-prompt').val();
-                            if (Resolve) {
-                                Resolve(InputValue);
+                            const inputValue = this.$content.find('.js-63bits-components-prompt').val();
+                            if (resolve) {
+                                resolve(inputValue);
                             }
                         }
                     },
@@ -92,28 +94,28 @@
                 }                
             });
         },
-        Success: function (Options) {
+        success: function (options) {
 
-            const SuccessTitle = Options ? Options.SuccessTitle : null;
-            const SuccessMessage = Options ? Options.SuccessMessage : null;
-            const Size = Options ? (Options.Size ? Options.Size : Components63Bits.Dialog.Sizes.Small) : Components63Bits.Dialog.Sizes.Small;
+            const successTitle = options ? options.successTitle : null;
+            const successMessage = options ? options.successMessage : null;
+            const size = options ? (options.size ? options.size : components63Bits.dialog.sizes.small) : components63Bits.dialog.sizes.small;
 
             $.alert({
-                title: SuccessTitle,
-                content: SuccessMessage ? SuccessMessage : Globals.TextSuccess,
+                title: successTitle,
+                content: successMessage ? successMessage : components63Bits.textSuccess,
                 icon: 'fal fa-shield-check fa-lg',
                 closeIcon: true,
                 type: 'green',
                 animation: 'scale',
                 closeAnimation: 'scale',
-                columnClass: Size,
+                columnClass: size,
                 animateFromElement: false
             });
         },
-        Warning: function (WarningMessage) {
+        warning: function (warningMessage) {
             $.alert({
                 title: 'Warning',
-                content: WarningMessage,
+                content: warningMessage,
                 icon: 'fas fa-exclamation-triangle fa-lg',
                 closeIcon: true,
                 type: 'orange',
@@ -123,10 +125,10 @@
             });
         },
     },
-    Select2: {
-        InitSimple: function (Selector, Searchable) {
-            if (Selector) {
-                $(Selector).select2({
+    select2: {
+        initSimple: function (selector, searchable) {
+            if (selector) {
+                $(selector).select2({
                     minimumResultsForSearch: Searchable ? 1 : -1,                    
                     theme: 'bootstrap4',
                     placeholder: '...',
@@ -138,23 +140,23 @@
                 });
             }
         },
-        InitSimpleWithData: function (Options) {
-            var Selector = Options.Selector;
-            var Data = Options.Data;
-            var KeyFieldName = Options.KeyFieldName;
-            var ValueFieldName = Options.ValueFieldName;
-            var PlaceHolder = Options.PlaceHolder ? Options.PlaceHolder : '...';
-            var AllowClear = Options.AllowClear ? true : false;
+        initSimpleWithData: function (options) {
+            const selector = options.Selector;
+            const data = options.Data;
+            const keyFieldName = options.KeyFieldName;
+            const valueFieldName = options.ValueFieldName;
+            const placeHolder = options.PlaceHolder ? options.PlaceHolder : '...';
+            const allowClear = options.AllowClear ? true : false;
 
-            if (Selector) {
-                var Select2Data = Components63Bits.Select2.ConvertToSelect2DataArray({ Data: Data, KeyFieldName: KeyFieldName, ValueFieldName: ValueFieldName });
+            if (selector) {
+                var select2Data = Components63Bits.Select2.ConvertToSelect2DataArray({ data: data, keyFieldName: keyFieldName, valueFieldName: valueFieldName });
 
-                if (Select2Data.length > 0) {
-                    $(Selector).select2({                        
+                if (select2Data.length > 0) {
+                    $(selector).select2({                        
                         theme: 'bootstrap4',
-                        placeholder: PlaceHolder,
-                        data: Select2Data,
-                        allowClear: AllowClear,
+                        placeholder: placeHolder,
+                        data: select2Data,
+                        allowClear: allowClear,
                         language: {
                             noResults: function () {
                                 return ' ';
@@ -164,292 +166,87 @@
                 }
             }
         },
-        ConvertToSelect2DataArray: function (Options) {
-            var Data = Options.Data;
-            var KeyFieldName = Options.KeyFieldName;
-            var ValueFieldName = Options.ValueFieldName;
-            var Select2DataArray = new Array();
+        convertToSelect2DataArray: function (options) {
+            const data = options.data;
+            const keyFieldName = options.keyFieldName;
+            const valueFieldName = options.valueFieldName;
+            const select2DataArray = new Array();
 
-            if (Data) {
-                Select2DataArray.push({ id: '', text: '...' });
-                $(Data).each(function (Index, Item) {
-                    Select2DataArray.push({
-                        id: Item[KeyFieldName],
-                        text: Item[ValueFieldName]
+            if (data) {
+                select2DataArray.push({ id: '', text: '...' });
+                $(data).each(function (index, item) {
+                    select2DataArray.push({
+                        id: item[keyFieldName],
+                        text: item[valueFieldName]
                     });
                 });
             }
 
-            return Select2DataArray;
+            return select2DataArray;
         },
-        ClearData: function (Options) {
-            var Selector = Options.Selector;
-            if (Selector) {
-                $(Selector).empty();
+        clearData: function (options) {
+            const selector = options.Selector;
+            if (selector) {
+                $(selector).empty();
             }
         },
-        ClearSelection: function (Options) {
-            var Selector = Options.Selector;
-            if (Selector) {
-                $(Selector).val(null).trigger('change');
+        clearSelection: function (options) {
+            const selector = options.selector;
+            if (selector) {
+                $(selector).val(null).trigger('change');
             }
         },
-        ShowDropDown: function (Options) {
-            var Selector = Options.Selector;
-            if (Selector) {
-                $(Selector).select2('open');
+        showDropDown: function (options) {
+            const selector = options.selector;
+            if (selector) {
+                $(selector).select2('open');
             }
         },
-        HideDropDown: function (Options) {
-            var Selector = Options.Selector;
-            if (Selector) {
-                $(Selector).select2('close');
+        hideDropDown: function (options) {
+            const selector = options.selector;
+            if (selector) {
+                $(selector).select2('close');
             }
         },
-        SetSelectedValue: function (Options) {
-            var Selector = Options.Selector;
-            var SelectedValue = Options.SelectedValue;
-            if (Selector) {
-                $(Selector).val(SelectedValue).trigger('change');
-            }
-        },
-        UpdateData: function (Options) {
-            this.ClearData(Options);
-            this.InitSimpleWithData(Options);
-        },
-        Destroy: function (Options) {
-            var Selector = Options.Selector;
+        processSelect2AjaxResultFromSimpleKeyValue: function (result) {
+            const select2Object = { results: new Array() };
 
-            var ClassName = $(Selector).attr('class');
-            if (ClassName && ClassName.indexOf('select2') > -1) {
-                $(Selector).select2('destroy');
+            if (result && result.Data) {
+                $(result.Data).each(function (index, item) {
+                    select2Object.results.push({ id: item.Key, text: item.Value });
+                });
             }
+
+            return select2Object;
+        },
+        setSelectedValue: function (options) {
+            const selector = options.selector;
+            const selectedValue = options.selectedValue;
+            if (selector) {
+                $(selector).val(selectedValue).trigger('change');
+            }
+        },
+        updateData: function (options) {
+            this.clearData(options);
+            this.initSimpleWithData(options);
+        },
+        destroy: function (options) {
+            const selector = options.selector;
+
+            const className = $(selector).attr('class');
+            if (className && className.indexOf('select2') > -1) {
+                $(selector).select2('destroy');
+            }
+        }
+    },
+    modal: {
+        create: function (selector) {
+            const modalElement = document.querySelector(selector);
+            const modal = new bootstrap.Modal(modalElement, {
+                backdrop: 'static',
+                focus: true
+            });
+            return modal;
         }
     }
 };
-
-var FileUplaoderClass = {
-    InputElement: null,
-    UrlFileUplaod: null,
-    RequestFileKey: 'Files',
-    RequestData: null,
-    OnAbort: null,
-    OnProgressCallback: null,
-    OnFinishUploadCallback: null,
-    OnStartCallback: null,
-    OnComplete: null,
-    IsReportProgressIndividual: false,
-    UploadProcessStartedCount: 0,
-    UploadProcessFinishedCount: 0,
-    XhrArray: [],
-
-    Abort: function () {
-        this.XhrArray.forEach(function (xhr, index) {
-            xhr.abort();
-        });
-    },
-
-    InitEvents: function (xhr) {
-        https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/upload
-
-        var _this = this;
-
-        //The upload has begun.
-        xhr.upload.onloadstart = function (e) {
-            _this.UploadProcessStartedCount++;
-
-            if (_this.OnStartCallback) {
-                _this.OnStartCallback({
-                    Filename: xhr.fileName,
-                    xhr: xhr
-                });
-            }
-        }
-
-        //Periodically delivered to indicate the amount of progress made so far.
-        if (_this.OnProgressCallback) {
-            xhr.upload.onprogress = function (e) {
-                const Percent = Math.ceil(100 * e.loaded / e.total);
-                _this.OnProgressCallback({
-                    Filename: xhr.fileName,
-                    BytesUploaded: e.loaded,
-                    BytesTotal: e.total,
-                    ProgressPercent: Percent,
-                    xhr: xhr
-                });
-            }
-        }
-
-        //The upload operation was aborted.
-        xhr.upload.onabort = function (e) {
-            if (_this.OnAbort) {
-                _this.OnAbort({
-                    Filename: xhr.fileName,
-                    xhr: xhr
-                });
-            }
-        }
-
-        //The upload failed due to an error.
-        xhr.upload.onerror = function (e) {
-            if (_this.OnErrorCallback) {
-                _this.OnErrorCallback({
-                    Filename: xhr.fileName,
-                    xhr: xhr,
-                    e: e
-                });
-            }
-        }
-                
-        //The upload timed out because a reply did not arrive within the time interval specified by the XMLHttpRequest.timeout. 
-        xhr.upload.ontimeout = function (e) {
-            if (_this.OnErrorCallback) {
-                _this.OnErrorCallback({
-                    Filename: xhr.fileName,
-                    xhr: xhr,
-                    e: e
-                });
-            }
-        },
-
-        //The upload completed successfully.
-        xhr.onloadend = function (e) {
-            _this.UploadProcessFinishedCount++;
-
-            if (_this.OnFinishUploadCallback) {                
-                let Result = {};
-                try {
-                    Result = JSON.parse(xhr.response);
-                }
-                catch {
-                    Result.ResponseContent = xhr.response;
-                }
-                Result.Status = xhr.status;
-                Result.StatusText = xhr.statusText;
-                Result.Filename = xhr.fileName;
-                Result.xhr = xhr;
-
-                _this.OnFinishUploadCallback(Result)
-            }
-
-            _this.CheckUploadProcessComplete();
-        }
-    },
-
-    Upload: function () {
-        const _this = this;
-
-        _this.UploadProcessStartedCount = 0;
-        _this.UploadProcessFinishedCount = 0;
-
-        if (_this.InputElement.files.length) {
-
-            if (_this.IsReportProgressIndividual) {
-                _this.UploadWithReportProgressIndividual();
-            }
-            else {
-                _this.UploadWithReportProgressGrouped();
-            }
-        }
-        else {
-            throw 'No files to upload';
-        }
-    },
-
-    UploadWithReportProgressIndividual: function () {
-        const _this = this;
-        for (let i = 0; i < _this.InputElement.files.length; i++) {
-
-            const xhr = new XMLHttpRequest();
-            const Data = new FormData();
-            const File = _this.InputElement.files[i];
-
-            Data.append(_this.RequestFileKey, File);
-
-            if (_this.RequestData) {
-                _this.RequestData.forEach(function (Item, Index) {
-                    Data.append(Item.Key, Item.Value);
-                });                
-            }
-            xhr.fileName = File.name;
-
-            _this.InitEvents(xhr);
-            xhr.open('POST', _this.UrlFileUplaod);
-            xhr.send(Data);
-        }
-    },
-
-    UploadWithReportProgressGrouped: function () {
-        const _this = this;
-        const xhr = new XMLHttpRequest();
-        const Data = new FormData();
-        const Files = _this.InputElement.files;
-        const Filenames = new Array();
-        for (let i = 0; i < Files.length; i++) {
-            Data.append(_this.RequestFileKey, Files[i]);
-            Filenames.push(Files[i].name);
-        }
-        xhr.fileName = Filenames.join('; ');
-
-        if (_this.RequestData) {
-            _this.RequestData.forEach(function (Item, Index) {
-                Data.append(Item.Key, Item.Value);
-            });
-        }
-
-        _this.InitEvents(xhr);
-        xhr.open('POST', _this.UrlFileUplaod);
-        xhr.send(Data);
-    },
-
-    CheckUploadProcessComplete: function () {
-        const _this = this;
-
-        if (_this.UploadProcessStartedCount == _this.UploadProcessFinishedCount) {
-            if (_this.OnComplete) {
-                _this.OnComplete();
-            }
-        }
-    }
-}
-
-function FileUplaoder(Options) {
-    if (Options) {
-        const _this = this;
-
-        _this.InputElement = Options.InputElement ? Options.InputElement : null;
-        _this.UrlFileUplaod = Options.UrlFileUplaod ? Options.UrlFileUplaod : null;
-        _this.OnStartCallback = Options.OnStartCallback ? Options.OnStartCallback : null;
-        _this.OnProgressCallback = Options.OnProgressCallback ? Options.OnProgressCallback : null;
-        _this.OnAbort = Options.OnAbort ? Options.OnAbort : null;
-        _this.OnFinishUploadCallback = Options.OnFinishUploadCallback ? Options.OnFinishUploadCallback : null;
-        _this.OnErrorCallback = Options.OnErrorCallback ? Options.OnErrorCallback : null;
-        _this.OnComplete = Options.OnComplete ? Options.OnComplete : null;
-        _this.IsReportProgressIndividual = Options.IsReportProgressIndividual ? true : false;
-        _this.RequestData = Options.RequestData ? Options.RequestData : null;
-
-        if (_this.InputElement == null) {
-            throw new Error('Invalid input type file element is provided');
-        }
-        if (_this.UrlFileUplaod == null) {
-            throw new Error('UrlFileUplaod is not provided');
-        }
-
-        _this.RequestFileKey = _this.InputElement.getAttribute('name') ? _this.InputElement.getAttribute('name') : _this.RequestFileKey;
-
-        if (_this.RequestData != null) {
-            if (Array.isArray(_this.RequestData)) {
-                _this.RequestData.forEach(function (Item, Index) {
-                    if (Item.Key == undefined || Item.Value == undefined) {
-                        throw new Error('RequestData must be an array of Key-Value object [{ Key: "MyKey", Value: "MyValue"}]');
-                    }
-                });
-            }
-            else {
-                throw new Error('RequestData must be an array of Key-Value object [{ Key: "MyKey", Value: "MyValue"}]');
-            }
-        }
-    }
-}
-
-FileUplaoder.prototype = FileUplaoderClass;

@@ -1,40 +1,40 @@
-﻿var SuccessErrorMessageObject = {
-    IsTop: false,
-    Message: null,
-    ShowError: false,
-    ShowSuccess: false,
-    HideSuccessMessageAutomatically: true,
+﻿var successErrorMessageObject = {
+    isTop: false,
+    message: null,
+    showError: false,
+    showSuccess: false,
+    hideSuccessMessageAutomatically: true,
 
-    Init: function (options) {
+    init: function (options) {
 
         if (options != undefined) {
-            SuccessErrorMessageObject.Message = options.Message;
-            SuccessErrorMessageObject.ShowSuccess = options.ShowSuccess;
-            SuccessErrorMessageObject.ShowError = options.ShowError;
-            SuccessErrorMessageObject.HideSuccessMessageAutomatically = options.HideSuccessMessageAutomatically ? options.HideSuccessMessageAutomatically : SuccessErrorMessageObject.HideSuccessMessageAutomatically;
+            successErrorMessageObject.message = options.message;
+            successErrorMessageObject.showSuccess = options.showSuccess;
+            successErrorMessageObject.showError = options.showError;
+            successErrorMessageObject.hideSuccessMessageAutomatically = options.hideSuccessMessageAutomatically ? options.hideSuccessMessageAutomatically : successErrorMessageObject.hideSuccessMessageAutomatically;
         }
 
-        return SuccessErrorMessageObject;
+        return successErrorMessageObject;
     },
 
-    ShowMessage: function () {
+    showMessage: function () {
 
-        $('.succes-error span').html(SuccessErrorMessageObject.Message);
+        $('.succes-error span').html(successErrorMessageObject.message);
         $('.succes-error').removeClass('hidden');
         $('.succes-error').removeClass('error');
 
-        if (!SuccessErrorMessageObject.IsTop) {
+        if (!successErrorMessageObject.isTop) {
             $('.succes-error').addClass('bottom');
         }
 
-        if (SuccessErrorMessageObject.ShowError) {
+        if (successErrorMessageObject.showError) {
             $('.succes-error').addClass('error opened');
         }
-        else if (SuccessErrorMessageObject.ShowSuccess) {
+        else if (successErrorMessageObject.showSuccess) {
             $('.succes-error').addClass('opened');
-            if (SuccessErrorMessageObject.HideSuccessMessageAutomatically) {
+            if (successErrorMessageObject.hideSuccessMessageAutomatically) {
                 setTimeout(function () {
-                    SuccessErrorMessageObject.HideMessage();
+                    successErrorMessageObject.hideMessage();
                 }, 5000);
             }
         }
@@ -43,26 +43,26 @@
         }
     },
 
-    HideMessage: function () {
+    hideMessage: function () {
         $('.succes-error').removeClass('opened');
     },
 
-    ShowGlobalError: function () {
-        SuccessErrorMessageObject.Init({ ShowError: true, Message: Globals.TextError }).ShowMessage();
+    showGlobalError: function () {
+        successErrorMessageObject.init({ showError: true, message: globals.textError }).showMessage();
     },
 
-    ShowGlobalSuccess: function () {
-        SuccessErrorMessageObject.Init({ ShowSuccess: true, Message: Globals.TextSuccess }).ShowMessage();
+    showGlobalSuccess: function () {
+        successErrorMessageObject.init({ showSuccess: true, message: globals.textSuccess }).showMessage();
     }
 }
 
 $(function () {
     $('.succes-error .close-btn').click(function () {
-        SuccessErrorMessageObject.HideMessage();
+        successErrorMessageObject.hideMessage();
         $('.succes-error').removeClass('error')
         return false;
     });
-    if (SuccessErrorMessageObject.HideSuccessMessageAutomatically) {
+    if (successErrorMessageObject.hideSuccessMessageAutomatically) {
         if (!$('.succes-error').hasClass('error')) {
             setTimeout(function () {
                 $('.succes-error .close-btn').trigger('click');

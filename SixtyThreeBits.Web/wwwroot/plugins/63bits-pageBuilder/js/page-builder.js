@@ -15,7 +15,13 @@ var PageBuilderModel = {
     textError: null,
     language: null,
 
-    currentViewSelector: '.js-editor-page',
+    currentViewSelector: '.js-t63-editor-page',
+
+    queryStringKeys: {
+        fileManagerAllowedExtensions: null,
+        fileManagerAllowChooseMultiple: null,
+        fileManagerOnSelectedFilesChooseClientCallback: null,
+    },
 
     guid: {
         generateRandomString: function () {
@@ -41,8 +47,8 @@ var PageBuilderModel = {
     },
 
     builder: {
-        selector: '.js-builder',
-        closeBtnSelector: '.js-close-builder',
+        selector: '.js-t63-builder',
+        closeBtnSelector: '.js-t63-close-builder',
 
         show: function () {
             $(PageBuilderModel.builder.selector).removeClass('closed');
@@ -52,45 +58,54 @@ var PageBuilderModel = {
         },
 
         pageItems: {
-            selector: '.js-page-items',
+            selector: '.js-t63-page-items',
 
             sortable: function () {
-                $(PageBuilderModel.builder.pageItems.selector + ' ul').sortable({
-                    revert: true,
-                    handle: '.js-builder-item-handle',
-                    placeholder: 'ui-sortable-placeholder',
-                    update: function (event, ui) {
 
-                        if (ui.item.hasClass('ui-draggable')) {
-                            PageBuilderModel.builder.toggleCloseBtnByEmtyState();
+                new Sortable($(PageBuilderModel.builder.newItems.selector + ' ul')[0], {
+                    group: {
+                        name: 'pageBuilderNavItems',
+                        pull: 'clone',
+                        put: false,
+                    },
+                    handle: '.js-t63-builder-item-handle',
+                    ghostClass: 't63-pb-item-sortable-placeholder',
+                    animation: 150,
+                    sort: false,
 
-                            //remove draggable selectors
-                            ui.item.removeClass('ui-draggable');
-                            ui.item.find('.handle').removeClass('ui-draggable-handle');
+                    onEnd: function (evt) {
+                        PageBuilderModel.builder.toggleCloseBtnByEmtyState();
 
-                            //add section to page
-                            PageBuilderModel.sections.addTopage(ui.item, ui.item.index(), PageBuilderModel.settings);
+                        //add section to page
+                        PageBuilderModel.sections.addTopage($(evt.item), $(evt.item).index(), PageBuilderModel.settings);
 
-                            //hide new items container
-                            PageBuilderModel.builder.newItems.hide();
-                        }
-                        else {
-                            //sort sections
-                            PageBuilderModel.sections.sort(ui.item, ui.item.index());
+                        //hide new items container
+                        PageBuilderModel.builder.newItems.hide();
 
-                            //scrollto nav items
-                            PageBuilderModel.scrollToNavigation.init();
-                        }
-
+                        //add indexes
                         PageBuilderModel.builder.addIndexToSections();
                     },
                 });
-                $(PageBuilderModel.builder.selector + ' ul').disableSelection();
+
+                new Sortable($(PageBuilderModel.builder.pageItems.selector + ' ul')[0], {
+                    group: 'pageBuilderNavItems',
+                    handle: '.js-t63-builder-item-handle',
+                    ghostClass: 't63-pb-item-sortable-placeholder',
+                    animation: 150,
+
+                    onEnd: function (evt) {
+                        //sort sections
+                        PageBuilderModel.sections.sort($(evt.item), $(evt.item).index());
+
+                        //scrollto nav items
+                        PageBuilderModel.scrollToNavigation.init();
+                    },
+                });
             },
 
             remove: function (index) {
                 $(PageBuilderModel.builder.pageItems.selector + ' [data-index="' + index + '"]').remove();
-                $(PageBuilderModel.currentViewSelector + ' .js-page-section[data-index="' + index + '"]').remove();
+                $(PageBuilderModel.currentViewSelector + ' .js-t63-page-section[data-index="' + index + '"]').remove();
                 PageBuilderModel.builder.addIndexToSections();
                 PageBuilderModel.builder.toggleCloseBtnByEmtyState();
                 if (!$(PageBuilderModel.builder.pageItems.selector + ' li').length && $(PageBuilderModel.builder.newItems.selector + '.hidden').length > 0) {
@@ -108,18 +123,9 @@ var PageBuilderModel = {
         },
 
         newItems: {
-            selector: '.js-new-items',
+            selector: '.js-t63-new-items',
 
-            draggable: function () {
-                $(PageBuilderModel.builder.newItems.selector + ' li').draggable({
-                    connectToSortable: PageBuilderModel.builder.pageItems.selector + ' ul',
-                    helper: 'clone',
-                    revert: 'invalid',
-                    handle: '.handle',
-                    placeholder: 'ui-sortable-placeholder'
-                });
-                $(PageBuilderModel.builder.selector + ' li').disableSelection();
-            },
+            draggable: function () {},
 
             show: function () {
                 $(PageBuilderModel.builder.pageItems.selector).removeClass('hidden');
@@ -136,7 +142,7 @@ var PageBuilderModel = {
         },
 
         addIndexToSections: function () {
-            $('.js-page-items li,' + PageBuilderModel.sections.selector).each(function (i, item) {
+            $('.js-t63-page-items li,' + PageBuilderModel.sections.selector).each(function (i, item) {
                 $(item).attr('data-index', $(item).index());
             });
         },
@@ -151,9 +157,9 @@ var PageBuilderModel = {
 
                 $(PageBuilderModel.builder.pageItems.selector + ' ul').append(builderItem);
 
-                var builderItemName = $(PageBuilderModel.sections.selector).eq($(builderItem).index()).find('.js-display-name-input').val();
+                var builderItemName = $(PageBuilderModel.sections.selector).eq($(builderItem).index()).find('.js-t63-display-name-input').val();
                 if ($.trim(builderItemName) != '') {
-                    $(builderItem).find('.js-builder-item-name').text(builderItemName);
+                    $(builderItem).find('.js-t63-builder-item-name').text(builderItemName);
                 }
             });
         },
@@ -177,7 +183,7 @@ var PageBuilderModel = {
 
             //enable sort and drag
             PageBuilderModel.builder.pageItems.sortable();
-            PageBuilderModel.builder.newItems.draggable();
+            //PageBuilderModel.builder.newItems.draggable();
 
             //toggle builder
             $(PageBuilderModel.builder.pageItems.selector).hover(function () {
@@ -188,23 +194,23 @@ var PageBuilderModel = {
             });
 
             //toggle new items container
-            $('.js-show-new-items-container').click(function () {
+            $('.js-t63-show-new-items-container').click(function () {
                 PageBuilderModel.builder.newItems.show();
             });
-            $('.js-close-new-items-container').click(function () {
+            $('.js-t63-close-new-items-container').click(function () {
                 PageBuilderModel.builder.newItems.hide();
             });
 
             //scrollTo section
-            $('.js-page-items').on('click', '.js-builder-item-name', function () {
-                var index = $(this).closest('.js-builder-item').attr('data-index');
-                var posTop = $('.js-page-section[data-index="' + index + '"]').position().top - parseInt($(PageBuilderModel.currentViewSelector).css('padding-top'));
+            $('.js-t63-page-items').on('click', '.js-t63-builder-item-name', function () {
+                var index = $(this).closest('.js-t63-builder-item').attr('data-index');
+                var posTop = $('.js-t63-page-section[data-index="' + index + '"]').position().top - parseInt($(PageBuilderModel.currentViewSelector).css('padding-top'));
                 $('html,body').animate({ scrollTop: posTop }, 200);
             });
 
             //delete builder item and page section 
-            $('.js-page-items').on('click', '.js-delete-section', function () {
-                var index = $(this).closest('.js-builder-item').attr('data-index');
+            $('.js-t63-page-items').on('click', '.js-t63-delete-section', function () {
+                var index = $(this).closest('.js-t63-builder-item').attr('data-index');
                 PageBuilderModel.builder.pageItems.remove(index);
             });
         }
@@ -469,6 +475,63 @@ var PageBuilderModel = {
                 },
             },
 
+            sliderItem: function () {
+                return {
+                    components: {
+                        title: {
+                            ...PageBuilderModel.settings.components.title,
+                            isFullfeatured: true,
+                            html: '<h3>Lorem Ipsum dolor sit Amet!</h3>'
+                        },
+                        text: {
+                            ...PageBuilderModel.settings.components.text,
+                            html: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum a tempor dolor, ac faucibus ligula.'
+                        },
+                        button: PageBuilderModel.settings.components.button,
+                        multimedia: {
+                            ...PageBuilderModel.settings.components.multimedia,
+                            video: {
+                                ...PageBuilderModel.settings.components.multimedia.video,
+                                controls: false,
+                                muted: true,
+                                loop: true,
+                                autoplay: true,
+                            }
+                        }
+                    }
+                }
+            },
+
+            videoGridItem: function () {
+                return {
+                    columnClassesNames: [
+                        'col-sm-6 col-lg-3',
+                        'col-sm-6 col-lg-4',
+                        'col-sm-6'
+                    ],
+                    size: 3, //1, 2, 3
+
+                    components: {
+                        video: PageBuilderModel.settings.components.video,
+                    },
+                };
+            },
+
+            jwPlayerGridItem: function () {
+                return {
+                    columnClassesNames: [
+                        'col-sm-6 col-lg-3',
+                        'col-sm-6 col-lg-4',
+                        'col-sm-6'
+                    ],
+                    size: 3, //1, 2, 3
+
+                    components: {
+                        jwPlayer: PageBuilderModel.settings.components.jwPlayer,
+                    },
+                };
+            },
+
             articlesGridItem: function () {
                 return {
                     components: {
@@ -495,33 +558,6 @@ var PageBuilderModel = {
                         }
                     }
                 };
-            },
-
-            sliderItem: function () {
-                return {
-                    components: {
-                        title: {
-                            ...PageBuilderModel.settings.components.title,
-                            isFullfeatured: true,
-                            html: '<h3>Lorem Ipsum dolor sit Amet!</h3>'
-                        },
-                        text: {
-                            ...PageBuilderModel.settings.components.text,
-                            html: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum a tempor dolor, ac faucibus ligula.'
-                        },
-                        button: PageBuilderModel.settings.components.button,
-                        multimedia: {
-                            ...PageBuilderModel.settings.components.multimedia,
-                            video: {
-                                ...PageBuilderModel.settings.components.multimedia.video,
-                                controls: false,
-                                muted: true,
-                                loop: true,
-                                autoplay: true,
-                            }
-                        }
-                    }
-                }
             },
 
             accordionItem: function () {
@@ -572,24 +608,31 @@ var PageBuilderModel = {
                         },
                         author: {
                             ...PageBuilderModel.settings.components.textPlain,
-                            additionalClassNames: 'author-wrap js-author-wrap',
+                            additionalClassNames: 'author-wrap js-t63-author-wrap',
                             html: 'Name Surname'
                         },
                         description: {
                             ...PageBuilderModel.settings.components.textPlain,
-                            additionalClassNames: 'description-wrap js-description-wrap',
+                            additionalClassNames: 'description-wrap js-t63-description-wrap',
                             html: 'Position'
                         }
                     }
                 };
             },
 
-            servicesGridItem: function () {
+            packagesGridItem: function () {
                 return {
+                    columnClassesNames: [
+                        'col-sm-6 col-lg-3',
+                        'col-sm-6 col-lg-4',
+                        'col-sm-6'
+                    ],
+                    size: 2, //1, 2, 3
+
                     components: {
                         title: {
                             ...PageBuilderModel.settings.components.title,
-                            html: '<h3>Title</h3>'
+                            html: '<h3>Package Name</h3><p class="h2 mt-3">$99.99<sub> /Month</sub></p>'
                         },
                         subTitle: {
                             ...PageBuilderModel.settings.components.textPlain,
@@ -598,15 +641,45 @@ var PageBuilderModel = {
                         },
                         text: {
                             ...PageBuilderModel.settings.components.text,
-                            html: 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy.'
+                            html: '<ul><li>option 1</li><li>option 2</li><li>option 3</li></ul>'
                         },
-                        button: PageBuilderModel.settings.components.button,
                         icon: PageBuilderModel.settings.components.icon,
+                        button: PageBuilderModel.settings.components.button,
+                    }
+                };
+            },
+
+            servicesGridItem: function () {
+                return {
+                    columnClassesNames: [
+                        'col-sm-6 col-lg-3',
+                        'col-sm-6 col-lg-4',
+                        'col-sm-6'
+                    ],
+                    size: 2, //1, 2, 3
+
+                    components: {
+                        title: {
+                            ...PageBuilderModel.settings.components.title,
+                            html: '<h3>Service Name</h3>'
+                        },
+                        subTitle: {
+                            ...PageBuilderModel.settings.components.textPlain,
+                            isActive: false,
+                            html: '$9.99'
+                        },
+                        text: {
+                            ...PageBuilderModel.settings.components.text,
+                            html: '<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy.</p>'
+                        },
+                        icon: PageBuilderModel.settings.components.fontAwesomeIcon,
+                        fontAwesomeIcon: PageBuilderModel.settings.components.fontAwesomeIcon,
                         //image: {
                         //    ...PageBuilderModel.settings.components.image,
                         //    url: '/plugins/63bits-pageBuilder/images/demo/services_item.svg',
                         //    hasControls: true
-                        //}
+                        //},
+                        button: PageBuilderModel.settings.components.button,
                     }
                 };
             },
@@ -634,7 +707,7 @@ var PageBuilderModel = {
                 };
             },
 
-            packagesGridItem: function () {
+            cardsGridItem: function () {
                 return {
                     columnClassesNames: [
                         'col-sm-6 col-lg-3',
@@ -646,11 +719,11 @@ var PageBuilderModel = {
                     components: {
                         title: {
                             ...PageBuilderModel.settings.components.title,
-                            html: '<h4>Package Name</h4>'
+                            html: '<h3>Card title</h3>'
                         },
                         text: {
                             ...PageBuilderModel.settings.components.text,
-                            html: '<p>package option 1</p><p>package option 2</p><p>package option 3</p>'
+                            html: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
                         },
                         icon: PageBuilderModel.settings.components.icon
                     }
@@ -689,36 +762,6 @@ var PageBuilderModel = {
                 };
             },
 
-            videoGridItem: function () {
-                return {
-                    columnClassesNames: [
-                        'col-sm-6 col-lg-3',
-                        'col-sm-6 col-lg-4',
-                        'col-sm-6'
-                    ],
-                    size: 3, //1, 2, 3
-
-                    components: {
-                        video: PageBuilderModel.settings.components.video,
-                    },
-                };
-            },
-
-            jwPlayerGridItem: function () {
-                return {
-                    columnClassesNames: [
-                        'col-sm-6 col-lg-3',
-                        'col-sm-6 col-lg-4',
-                        'col-sm-6'
-                    ],
-                    size: 3, //1, 2, 3
-
-                    components: {
-                        jwPlayer: PageBuilderModel.settings.components.jwPlayer,
-                    },
-                };
-            },
-
             postCardsGridItem: function () {
                 return {
                     columnClassesNames: [
@@ -733,6 +776,32 @@ var PageBuilderModel = {
                         text: {
                             ...PageBuilderModel.settings.components.text,
                             html: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum a tempor dolor, ac faucibus ligula.'
+                        },
+                        image: {
+                            ...PageBuilderModel.settings.components.image,
+                            hasControls: true
+                        }
+                    }
+                };
+            },
+
+            peopleGridItem: function () {
+                return {
+                    columnClassesNames: [
+                        'col-sm-6 col-lg-3',
+                        'col-sm-6 col-lg-4',
+                        'col-sm-6'
+                    ],
+                    size: 1, //1, 2, 3
+
+                    components: {
+                        title: {
+                            ...PageBuilderModel.settings.components.title,
+                            html: 'Name Surname'
+                        },
+                        text: {
+                            ...PageBuilderModel.settings.components.text,
+                            html: 'Position'
                         },
                         image: {
                             ...PageBuilderModel.settings.components.image,
@@ -766,55 +835,6 @@ var PageBuilderModel = {
                             hasControls: true,
                             url: '/plugins/63bits-pageBuilder/images/demo/book_cover.jpg'
                         }
-                    }
-                };
-            },
-
-            peopleGridItem: function () {
-                return {
-                    columnClassesNames: [
-                        'col-sm-6 col-lg-3',
-                        'col-sm-6 col-lg-4',
-                        'col-sm-6'
-                    ],
-                    size: 1, //1, 2, 3
-
-                    components: {
-                        title: {
-                            ...PageBuilderModel.settings.components.title,
-                            html: 'Name Surname'
-                        },
-                        text: {
-                            ...PageBuilderModel.settings.components.text,
-                            html: 'Position'
-                        },
-                        image: {
-                            ...PageBuilderModel.settings.components.image,
-                            hasControls: true
-                        }
-                    }
-                };
-            },
-
-            cardsGridItem: function () {
-                return {
-                    columnClassesNames: [
-                        'col-sm-6 col-lg-3',
-                        'col-sm-6 col-lg-4',
-                        'col-sm-6'
-                    ],
-                    size: 2, //1, 2, 3
-
-                    components: {
-                        title: {
-                            ...PageBuilderModel.settings.components.title,
-                            html: '<h3>Card title</h3>'
-                        },
-                        text: {
-                            ...PageBuilderModel.settings.components.text,
-                            html: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
-                        },
-                        icon: PageBuilderModel.settings.components.icon
                     }
                 };
             },
@@ -1079,6 +1099,32 @@ var PageBuilderModel = {
                 }
             },
 
+            videoGrid: function () {
+                return {
+                    ...PageBuilderModel.settings.defaults,
+                    name: 'videoGrid',
+                    contentSizes: PageBuilderModel.settings.defaults.contentSizes({
+                        xs: { exists: false }
+                    }),
+
+                    contentAlignment: 'centerLeft', //centerLeft,center,centerRight
+
+                    hasRatioToggler: true,
+                    ratio: PageBuilderModel.settings.defaults.ratio({
+                        auto: { exists: false }
+                    }),
+                    ratioSelected: '16by9',
+
+                    items: [
+                        {
+                            ...PageBuilderModel.settings.components.videoGridItem(),
+                            id: PageBuilderModel.guid.s15(),
+                            columnClassesNames: PageBuilderModel.settings.components.videoGridItem().columnClassesNames[2]
+                        }
+                    ]
+                }
+            },
+
             jwPlayer: function () {
                 return {
                     ...PageBuilderModel.settings.defaults,
@@ -1090,33 +1136,23 @@ var PageBuilderModel = {
                 }
             },
 
-            iframe: function () {
+            jwPlayerGrid: function () {
                 return {
                     ...PageBuilderModel.settings.defaults,
-                    name: 'iframe',
+                    name: 'jwPlayerGrid',
+                    contentSizes: PageBuilderModel.settings.defaults.contentSizes({
+                        xs: { exists: false }
+                    }),
 
-                    components: {
-                        title: {
-                            ...PageBuilderModel.settings.components.title,
-                            isFullfeatured: true
-                        },
-                        iframe: PageBuilderModel.settings.components.iframe,
-                    },
-                }
-            },
+                    contentAlignment: 'centerLeft', //centerLeft,center,centerRight
 
-            html: function () {
-                return {
-                    ...PageBuilderModel.settings.defaults,
-                    name: 'html',
-
-                    components: {
-                        text: {
-                            isActive: true,
-                            isFullfeatured: true,
-                            html: 'enter html'
-                        },
-                    },
+                    items: [
+                        {
+                            ...PageBuilderModel.settings.components.jwPlayerGridItem(),
+                            id: PageBuilderModel.guid.s15(),
+                            columnClassesNames: PageBuilderModel.settings.components.jwPlayerGridItem().columnClassesNames[2]
+                        }
+                    ]
                 }
             },
 
@@ -1291,10 +1327,48 @@ var PageBuilderModel = {
                 };
             },
 
+            packagesGrid: function () {
+                return {
+                    ...PageBuilderModel.settings.defaults,
+                    name: 'packagesGrid',
+                    contentSizes: PageBuilderModel.settings.defaults.contentSizes({
+                        xs: { exists: false }
+                    }),
+
+                    contentAlignment: 'centerLeft', //centerLeft,center,centerRight
+
+                    components: {
+                        title: {
+                            ...PageBuilderModel.settings.components.title,
+                            isActive: false,
+                            isFullfeatured: true,
+                            html: '<h2>Packages</h2>'
+                        },
+                        text: {
+                            ...PageBuilderModel.settings.components.text,
+                            isActive: false,
+                            isFullfeatured: true,
+                            html: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.'
+                        }
+                    },
+
+                    items: [
+                        {
+                            ...PageBuilderModel.settings.components.packagesGridItem(),
+                            id: PageBuilderModel.guid.s15(),
+                            columnClassesNames: PageBuilderModel.settings.components.packagesGridItem().columnClassesNames[1]
+                        }
+                    ]
+                };
+            },
+
             services: function () {
                 return {
                     ...PageBuilderModel.settings.defaults,
                     name: 'services',
+                    contentSizes: PageBuilderModel.settings.defaults.contentSizes({
+                        xs: { exists: false }
+                    }),
 
                     contentAlignment: 'centerLeft', //centerLeft,center,centerRight
 
@@ -1314,7 +1388,11 @@ var PageBuilderModel = {
                     },
 
                     items: [
-                        { ...PageBuilderModel.settings.components.servicesGridItem() }
+                        {
+                            ...PageBuilderModel.settings.components.servicesGridItem(),
+                            id: PageBuilderModel.guid.s15(),
+                            columnClassesNames: PageBuilderModel.settings.components.packagesGridItem().columnClassesNames[1]
+                        }
                     ]
                 };
             },
@@ -1415,6 +1493,41 @@ var PageBuilderModel = {
                 };
             },
 
+            cardsGrid: function () {
+                return {
+                    ...PageBuilderModel.settings.defaults,
+                    name: 'cardsGrid',
+                    contentSizes: PageBuilderModel.settings.defaults.contentSizes({
+                        xs: { exists: false }
+                    }),
+
+                    contentAlignment: 'centerLeft', //centerLeft,center,centerRight
+
+                    components: {
+                        title: {
+                            ...PageBuilderModel.settings.components.title,
+                            isActive: false,
+                            isFullfeatured: true,
+                            html: '<h2>Lorem Ipsum</h2>'
+                        },
+                        text: {
+                            ...PageBuilderModel.settings.components.text,
+                            isActive: false,
+                            isFullfeatured: true,
+                            html: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.'
+                        }
+                    },
+
+                    items: [
+                        {
+                            ...PageBuilderModel.settings.components.cardsGridItem(),
+                            id: PageBuilderModel.guid.s15(),
+                            columnClassesNames: PageBuilderModel.settings.components.cardsGridItem().columnClassesNames[1]
+                        }
+                    ]
+                };
+            },
+
             flipCardsGrid: function () {
                 return {
                     ...PageBuilderModel.settings.defaults,
@@ -1450,10 +1563,48 @@ var PageBuilderModel = {
                 };
             },
 
-            packagesGrid: function () {
+            postCardsGrid: function () {
                 return {
                     ...PageBuilderModel.settings.defaults,
-                    name: 'packagesGrid',
+                    name: 'postCardsGrid',
+                    contentSizes: PageBuilderModel.settings.defaults.contentSizes({
+                        xs: { exists: false }
+                    }),
+
+                    contentAlignment: 'centerLeft', //centerLeft,center,centerRight
+
+                    hasRatioToggler: true,
+                    ratioSelected: '16by9',
+
+                    components: {
+                        title: {
+                            ...PageBuilderModel.settings.components.title,
+                            isActive: false,
+                            isFullfeatured: true,
+                            html: '<h2>Lorem Ipsum</h2>'
+                        },
+                        text: {
+                            ...PageBuilderModel.settings.components.text,
+                            isActive: false,
+                            isFullfeatured: true,
+                            html: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.'
+                        }
+                    },
+
+                    items: [
+                        {
+                            ...PageBuilderModel.settings.components.postCardsGridItem(),
+                            id: PageBuilderModel.guid.s15(),
+                            columnClassesNames: PageBuilderModel.settings.components.postCardsGridItem().columnClassesNames[1]
+                        }
+                    ]
+                };
+            },
+
+            peopleGrid: function () {
+                return {
+                    ...PageBuilderModel.settings.defaults,
+                    name: 'peopleGrid',
                     contentSizes: PageBuilderModel.settings.defaults.contentSizes({
                         xs: { exists: false }
                     }),
@@ -1477,9 +1628,44 @@ var PageBuilderModel = {
 
                     items: [
                         {
-                            ...PageBuilderModel.settings.components.packagesGridItem(),
+                            ...PageBuilderModel.settings.components.peopleGridItem(),
                             id: PageBuilderModel.guid.s15(),
-                            columnClassesNames: PageBuilderModel.settings.components.packagesGridItem().columnClassesNames[1]
+                            columnClassesNames: PageBuilderModel.settings.components.peopleGridItem().columnClassesNames[0]
+                        }
+                    ]
+                };
+            },
+
+            booksGrid: function () {
+                return {
+                    ...PageBuilderModel.settings.defaults,
+                    name: 'booksGrid',
+                    contentSizes: PageBuilderModel.settings.defaults.contentSizes({
+                        xs: { exists: false }
+                    }),
+
+                    contentAlignment: 'centerLeft', //centerLeft,center,centerRight
+
+                    components: {
+                        title: {
+                            ...PageBuilderModel.settings.components.title,
+                            isActive: false,
+                            isFullfeatured: true,
+                            html: '<h2>Lorem Ipsum</h2>'
+                        },
+                        text: {
+                            ...PageBuilderModel.settings.components.text,
+                            isActive: false,
+                            isFullfeatured: true,
+                            html: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.'
+                        }
+                    },
+
+                    items: [
+                        {
+                            ...PageBuilderModel.settings.components.booksGridItem(),
+                            id: PageBuilderModel.guid.s15(),
+                            columnClassesNames: PageBuilderModel.settings.components.booksGridItem().columnClassesNames[1]
                         }
                     ]
                 };
@@ -1532,6 +1718,36 @@ var PageBuilderModel = {
                 }
             },
 
+            html: function () {
+                return {
+                    ...PageBuilderModel.settings.defaults,
+                    name: 'html',
+
+                    components: {
+                        text: {
+                            isActive: true,
+                            isFullfeatured: true,
+                            html: 'enter html'
+                        },
+                    },
+                }
+            },
+
+            iframe: function () {
+                return {
+                    ...PageBuilderModel.settings.defaults,
+                    name: 'iframe',
+
+                    components: {
+                        title: {
+                            ...PageBuilderModel.settings.components.title,
+                            isFullfeatured: true
+                        },
+                        iframe: PageBuilderModel.settings.components.iframe,
+                    },
+                }
+            },
+
             pdfViewer: function () {
                 return {
                     ...PageBuilderModel.settings.defaults,
@@ -1541,195 +1757,6 @@ var PageBuilderModel = {
                         pdfViewerIframe: PageBuilderModel.settings.components.pdfViewerIframe
                     },
                 }
-            },
-
-            videoGrid: function () {
-                return {
-                    ...PageBuilderModel.settings.defaults,
-                    name: 'videoGrid',
-                    contentSizes: PageBuilderModel.settings.defaults.contentSizes({
-                        xs: { exists: false }
-                    }),
-
-                    contentAlignment: 'centerLeft', //centerLeft,center,centerRight
-
-                    hasRatioToggler: true,
-                    ratio: PageBuilderModel.settings.defaults.ratio({
-                        auto: { exists: false }
-                    }),
-                    ratioSelected: '16by9',
-
-                    items: [
-                        {
-                            ...PageBuilderModel.settings.components.videoGridItem(),
-                            id: PageBuilderModel.guid.s15(),
-                            columnClassesNames: PageBuilderModel.settings.components.videoGridItem().columnClassesNames[2]
-                        }
-                    ]
-                }
-            },
-
-            jwPlayerGrid: function () {
-                return {
-                    ...PageBuilderModel.settings.defaults,
-                    name: 'jwPlayerGrid',
-                    contentSizes: PageBuilderModel.settings.defaults.contentSizes({
-                        xs: { exists: false }
-                    }),
-
-                    contentAlignment: 'centerLeft', //centerLeft,center,centerRight
-
-                    items: [
-                        {
-                            ...PageBuilderModel.settings.components.jwPlayerGridItem(),
-                            id: PageBuilderModel.guid.s15(),
-                            columnClassesNames: PageBuilderModel.settings.components.jwPlayerGridItem().columnClassesNames[2]
-                        }
-                    ]
-                }
-            },
-
-            postCardsGrid: function () {
-                return {
-                    ...PageBuilderModel.settings.defaults,
-                    name: 'postCardsGrid',
-                    contentSizes: PageBuilderModel.settings.defaults.contentSizes({
-                        xs: { exists: false }
-                    }),
-
-                    contentAlignment: 'centerLeft', //centerLeft,center,centerRight
-
-                    hasRatioToggler: true,
-                    ratioSelected: '16by9',
-
-                    components: {
-                        title: {
-                            ...PageBuilderModel.settings.components.title,
-                            isActive: false,
-                            isFullfeatured: true,
-                            html: '<h2>Lorem Ipsum</h2>'
-                        },
-                        text: {
-                            ...PageBuilderModel.settings.components.text,
-                            isActive: false,
-                            isFullfeatured: true,
-                            html: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.'
-                        }
-                    },
-
-                    items: [
-                        {
-                            ...PageBuilderModel.settings.components.postCardsGridItem(),
-                            id: PageBuilderModel.guid.s15(),
-                            columnClassesNames: PageBuilderModel.settings.components.packagesGridItem().columnClassesNames[1]
-                        }
-                    ]
-                };
-            },
-
-            booksGrid: function () {
-                return {
-                    ...PageBuilderModel.settings.defaults,
-                    name: 'booksGrid',
-                    contentSizes: PageBuilderModel.settings.defaults.contentSizes({
-                        xs: { exists: false }
-                    }),
-
-                    contentAlignment: 'centerLeft', //centerLeft,center,centerRight
-
-                    components: {
-                        title: {
-                            ...PageBuilderModel.settings.components.title,
-                            isActive: false,
-                            isFullfeatured: true,
-                            html: '<h2>Lorem Ipsum</h2>'
-                        },
-                        text: {
-                            ...PageBuilderModel.settings.components.text,
-                            isActive: false,
-                            isFullfeatured: true,
-                            html: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.'
-                        }
-                    },
-
-                    items: [
-                        {
-                            ...PageBuilderModel.settings.components.booksGridItem(),
-                            id: PageBuilderModel.guid.s15(),
-                            columnClassesNames: PageBuilderModel.settings.components.booksGridItem().columnClassesNames[1]
-                        }
-                    ]
-                };
-            },
-
-            peopleGrid: function () {
-                return {
-                    ...PageBuilderModel.settings.defaults,
-                    name: 'peopleGrid',
-                    contentSizes: PageBuilderModel.settings.defaults.contentSizes({
-                        xs: { exists: false }
-                    }),
-
-                    contentAlignment: 'centerLeft', //centerLeft,center,centerRight
-
-                    components: {
-                        title: {
-                            ...PageBuilderModel.settings.components.title,
-                            isActive: false,
-                            isFullfeatured: true,
-                            html: '<h2>Lorem Ipsum</h2>'
-                        },
-                        text: {
-                            ...PageBuilderModel.settings.components.text,
-                            isActive: false,
-                            isFullfeatured: true,
-                            html: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.'
-                        }
-                    },
-
-                    items: [
-                        {
-                            ...PageBuilderModel.settings.components.peopleGridItem(),
-                            id: PageBuilderModel.guid.s15(),
-                            columnClassesNames: PageBuilderModel.settings.components.peopleGridItem().columnClassesNames[0]
-                        }
-                    ]
-                };
-            },
-
-            cardsGrid: function () {
-                return {
-                    ...PageBuilderModel.settings.defaults,
-                    name: 'cardsGrid',
-                    contentSizes: PageBuilderModel.settings.defaults.contentSizes({
-                        xs: { exists: false }
-                    }),
-
-                    contentAlignment: 'centerLeft', //centerLeft,center,centerRight
-
-                    components: {
-                        title: {
-                            ...PageBuilderModel.settings.components.title,
-                            isActive: false,
-                            isFullfeatured: true,
-                            html: '<h2>Lorem Ipsum</h2>'
-                        },
-                        text: {
-                            ...PageBuilderModel.settings.components.text,
-                            isActive: false,
-                            isFullfeatured: true,
-                            html: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.'
-                        }
-                    },
-
-                    items: [
-                        {
-                            ...PageBuilderModel.settings.components.cardsGridItem(),
-                            id: PageBuilderModel.guid.s15(),
-                            columnClassesNames: PageBuilderModel.settings.components.cardsGridItem().columnClassesNames[1]
-                        }
-                    ]
-                };
             },
         },
     },
@@ -1910,64 +1937,64 @@ var PageBuilderModel = {
             var components = {
                 title: function (container) {
                     return {
-                        isActive: $(container).find('.js-title-visibility-toggler input:checked').length > 0,
-                        isFullfeatured: $(container).find('.js-title.js-tinymce-full').length > 0,
-                        html: $(container).find('.js-title').html().replace(/"/g, '&quot;'),
+                        isActive: $(container).find('.js-t63-title-visibility-toggler input:checked').length > 0,
+                        isFullfeatured: $(container).find('.js-t63-title.js-t63-tinymce-full').length > 0,
+                        html: $(container).find('.js-t63-title').html().replace(/"/g, '&quot;'),
                     };
                 },
                 text: function (container) {
                     return {
-                        isActive: $(container).find('.js-text-visibility-toggler input:checked').length > 0,
-                        isFullfeatured: $(container).find('.js-tinymce-full').length > 0,
-                        html: $(container).find('.js-text-wrap').html().replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;'),
+                        isActive: $(container).find('.js-t63-text-visibility-toggler input:checked').length > 0,
+                        isFullfeatured: $(container).find('.js-t63-tinymce-full').length > 0,
+                        html: $(container).find('.js-t63-text-wrap').html().replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;'),
                     };
                 },
                 textPlain: function (container) {
                     return {
-                        isActive: $(container).find('.js-plain-text-visibility-toggler input:checked').length > 0,
+                        isActive: $(container).find('.js-t63-plain-text-visibility-toggler input:checked').length > 0,
                         additionalClassNames: container.attr('data-additional-classes') || null,
-                        html: $(container).find('.js-plain-text').html().replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;'),
+                        html: $(container).find('.js-t63-plain-text').html().replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;'),
                     };
                 },
                 button: function (container) {
                     return {
-                        isActive: $(container).find('.js-btn-visibility-toggler input:checked').length > 0,
-                        name: $(container).find('.js-btn').text().replace(/"/g, '&quot;'),
-                        href: $(container).find('.js-btn').attr('href'),
-                        isTargetBlank: $(container).find('.js-btn-target-checkbox:checked').length > 0
+                        isActive: $(container).find('.js-t63-btn-visibility-toggler input:checked').length > 0,
+                        name: $(container).find('.js-t63-btn').text().replace(/"/g, '&quot;'),
+                        href: $(container).find('.js-t63-btn').attr('href'),
+                        isTargetBlank: $(container).find('.js-t63-btn-target-checkbox:checked').length > 0
                     };
                 },
                 icon: function (container) {
                     return {
-                        isActive: $(container).find('.js-icon-visibility-toggler input:checked').length > 0,
-                        isImage: $(container).find('.js-icon-type-checkbox:checked').length > 0,
-                        name: $(container).find('.js-font-icon').attr('data-icon-classes'),
-                        url: $(container).find('.js-img-icon').attr('data-icon-url'),
+                        isActive: $(container).find('.js-t63-icon-visibility-toggler input:checked').length > 0,
+                        isImage: $(container).find('.js-t63-icon-type-checkbox:checked').length > 0,
+                        name: $(container).find('.js-t63-font-icon').attr('data-icon-classes'),
+                        url: $(container).find('.js-t63-img-icon').attr('data-icon-url'),
                     };
                 },
                 fontAwesomeIcon: function (container) {
                     return {
-                        isActive: $(container).find('.js-fontawesome-visibility-toggler input:checked').length > 0,
-                        name: $(container).find('.js-fa-icon').attr('data-fontawesome-icon')
+                        isActive: $(container).find('.js-t63-fontawesome-visibility-toggler input:checked').length > 0,
+                        name: $(container).find('.js-t63-fa-icon').attr('data-fontawesome-icon')
                     };
                 },
                 image: function (container) {
                     return {
-                        isActive: $(container).find('.js-image-visibility-toggler').length > 0 ? $(container).find('.js-image-visibility-toggler input').is(':checked') : true,
-                        url: $(container).find('.js-img').attr('data-img-src')
+                        isActive: $(container).find('.js-t63-image-visibility-toggler').length > 0 ? $(container).find('.js-t63-image-visibility-toggler input').is(':checked') : true,
+                        url: $(container).find('.js-t63-img').attr('data-img-src')
                     };
                 },
                 video: function (container) {
                     return {
-                        url: $(container).find('.js-iframe-container iframe').attr('src')
+                        url: $(container).find('.js-t63-iframe-container iframe').attr('src')
                     };
                 },
                 jwPlayer: function (container) {
                     return {
-                        videoUrl: $(container).find('.js-jwPlayer-wrap').attr('data-video-url'),
-                        coverUrl: $(container).find('.js-jwPlayer-wrap').attr('data-cover-url'),
-                        markersUrl: $(container).find('.js-jwPlayer-wrap').attr('data-markers-url'),
-                        subTitlesUrl: $(container).find('.js-jwPlayer-wrap').attr('data-subtitles-url'),
+                        videoUrl: $(container).find('.js-t63-jwPlayer-wrap').attr('data-video-url'),
+                        coverUrl: $(container).find('.js-t63-jwPlayer-wrap').attr('data-cover-url'),
+                        markersUrl: $(container).find('.js-t63-jwPlayer-wrap').attr('data-markers-url'),
+                        subTitlesUrl: $(container).find('.js-t63-jwPlayer-wrap').attr('data-subtitles-url'),
 
                         isPrivate: false,
                         privateUrl: null
@@ -1976,30 +2003,30 @@ var PageBuilderModel = {
                 multimedia: function (container) {
                     return {
                         isActive: true,
-                        isImage: $(container).find('.js-multimedia-container').attr('data-multimedia-type') == 'image',
+                        isImage: $(container).find('.js-t63-multimedia-container').attr('data-multimedia-type') == 'image',
                         image: {
-                            url: $(container).find('.js-multimedia-image').attr('data-image-src')
+                            url: $(container).find('.js-t63-multimedia-image').attr('data-image-src')
                         },
                         video: {
-                            controls: $(container).find('.js-multimedia-video').attr('data-controls') == 'true',
-                            muted: $(container).find('.js-multimedia-video').attr('data-muted') == 'true',
-                            loop: $(container).find('.js-multimedia-video').attr('data-loop') == 'true',
-                            autoplay: $(container).find('.js-multimedia-video').attr('data-autoplay') == 'true',
-                            url: $(container).find('.js-multimedia-video').attr('data-video-src')
+                            controls: $(container).find('.js-t63-multimedia-video').attr('data-controls') == 'true',
+                            muted: $(container).find('.js-t63-multimedia-video').attr('data-muted') == 'true',
+                            loop: $(container).find('.js-t63-multimedia-video').attr('data-loop') == 'true',
+                            autoplay: $(container).find('.js-t63-multimedia-video').attr('data-autoplay') == 'true',
+                            url: $(container).find('.js-t63-multimedia-video').attr('data-video-src')
                         }
                     };
                 },
                 iframe: function (container) {
                     return {
-                        url: $(container).find('.js-iframe-container iframe').attr('src')
+                        url: $(container).find('.js-t63-iframe-container iframe').attr('src')
                     };
                 },
                 pdfViewerIframe: function (container) {
                     return {
                         isActive: true,
-                        url: $(container).find('.js-pdfViewerIframe-container iframe').attr('data-pdfviewer-url'),
-                        urlPdf: $(container).find('.js-pdfViewerIframe-container iframe').attr('data-pdf-url'),
-                        downloadEnabled: $(container).find('.js-pdfViewerIframe-state-toggler input:checked').length > 0
+                        url: $(container).find('.js-t63-pdfViewerIframe-container iframe').attr('data-pdfviewer-url'),
+                        urlPdf: $(container).find('.js-t63-pdfViewerIframe-container iframe').attr('data-pdf-url'),
+                        downloadEnabled: $(container).find('.js-t63-pdfViewerIframe-state-toggler input:checked').length > 0
                     };
                 },
             };
@@ -2017,8 +2044,8 @@ var PageBuilderModel = {
                 var section = $(this);
                 var sectionName = section.attr('data-section');
 
-                var leftCol = section.find('.js-left-col');
-                var rightCol = section.find('.js-right-col');
+                var leftCol = section.find('.js-t63-left-col');
+                var rightCol = section.find('.js-t63-right-col');
 
                 var model = {
                     name: section.attr('data-section'),
@@ -2029,8 +2056,8 @@ var PageBuilderModel = {
                     displayName: section.attr('data-display-name'),
                     isScrollToNavItem: section.attr('data-isScrollToNavItem') === 'true',
 
-                    animations: section.find('.js-section-animation-combo').val() == 'false' ? false : section.find('.js-section-animation-combo').val(),
-                    backgroundColor: +section.find('.js-background-color-toggler input:checked').length > 0,
+                    animations: section.find('.js-t63-section-animation-combo').val() == 'false' ? false : section.find('.js-t63-section-animation-combo').val(),
+                    backgroundColor: +section.find('.js-t63-background-color-toggler input:checked').length > 0,
                     contentAlignment: section.find('[data-align-content]').attr('data-align-content') || null,
 
                     contentSizeSelected: section.attr('data-content-size') || null,
@@ -2073,8 +2100,8 @@ var PageBuilderModel = {
                         //autoplay: section.find('.js-t63-slider').attr('data-slider-autoplay') == 'true',
                         //autoplaySpeed: section.find('.js-t63-slider').attr('data-slider-autoplay-speed'),
 
-                        autoplay: section.find('.js-slider-autoplay-toggler input:checked').length > 0,
-                        autoplaySpeed: $.trim(section.find('.js-slider-autoplay-speed-input').val()) || 4000
+                        autoplay: section.find('.js-t63-slider-autoplay-toggler input:checked').length > 0,
+                        autoplaySpeed: $.trim(section.find('.js-t63-slider-autoplay-speed-input').val()) || 4000
                     }
 
                     model.contentAlignment = section.find('[data-align-content]').attr('data-align-content');
@@ -2158,7 +2185,7 @@ var PageBuilderModel = {
                         attachements: []
                     }
 
-                    section.find('.js-files-container li').each(function () {
+                    section.find('.js-t63-files-container li').each(function () {
                         var file = {
                             name: $(this).find('a').text(),
                             url: $(this).find('a').attr('href'),
@@ -2181,17 +2208,46 @@ var PageBuilderModel = {
                     }
                 }
 
+                if (sectionName == PageBuilderModel.settings.sections.videoGrid().name) {
+                    model.items = [];
+
+                    section.find('.js-t63-video-grid-item').each(function () {
+                        var gridItem = $(this);
+                        var item = {
+                            id: gridItem.attr('data-id'),
+                            size: gridItem.attr('data-size'),
+                            columnClassesNames: PageBuilderModel.settings.components.videoGridItem().columnClassesNames[+gridItem.attr('data-size') - 1],
+
+                            components: {
+                                video: components.video(gridItem)
+                            }
+                        };
+                        model.items.push(item);
+                    });
+                }
+
                 if (sectionName == PageBuilderModel.settings.sections.jwPlayer().name) {
                     model.components = {
                         jwPlayer: components.jwPlayer(section)
                     }
                 }
 
-                if (sectionName == PageBuilderModel.settings.sections.iframe().name) {
-                    model.components = {
-                        title: components.title(section),
-                        iframe: components.iframe(section)
-                    }
+                if (sectionName == PageBuilderModel.settings.sections.jwPlayerGrid().name) {
+                    model.items = [];
+
+                    section.find('.js-t63-jwp-grid-item').each(function () {
+                        var gridItem = $(this);
+                        var item = {
+                            id: gridItem.attr('data-id'),
+                            size: gridItem.attr('data-size'),
+                            columnClassesNames: PageBuilderModel.settings.components.jwPlayerGridItem().columnClassesNames[+gridItem.attr('data-size') - 1],
+
+                            components: {
+                                jwPlayer: components.jwPlayer(gridItem)
+                            }
+                        };
+                        model.items.push(item);
+                    });
                 }
 
                 if (sectionName == PageBuilderModel.settings.sections.imgGrid().name) {
@@ -2202,21 +2258,21 @@ var PageBuilderModel = {
 
                     model.items = [];
 
-                    section.find('.js-img-grid-item').each(function () {
+                    section.find('.js-t63-img-grid-item').each(function () {
                         var gridItem = $(this);
                         var item = {
                             id: gridItem.attr('data-id'),
                             size: gridItem.attr('data-size'),
                             columnClassesNames: PageBuilderModel.settings.components.imgGridItem.columnClassesNames[+gridItem.attr('data-size') - 1],
                             url: $(gridItem).attr('href') || null,
-                            isTargetBlank: $(gridItem).find('.js-target-checkbox:checked').length > 0,
+                            isTargetBlank: $(gridItem).find('.js-t63-target-checkbox:checked').length > 0,
                             title: {
-                                isActive: $(gridItem).find('.js-title-toggler input:checked').length > 0,
-                                value: $(gridItem).find('.js-title').html().replace(/"/g, '&quot;'),
+                                isActive: $(gridItem).find('.js-t63-title-toggler input:checked').length > 0,
+                                value: $(gridItem).find('.js-t63-title').html().replace(/"/g, '&quot;'),
                             },
                             text: {
-                                isActive: $(gridItem).find('.js-text-toggler input:checked').length > 0,
-                                value: $(gridItem).find('.js-text').html().replace(/"/g, '&quot;'),
+                                isActive: $(gridItem).find('.js-t63-text-toggler input:checked').length > 0,
+                                value: $(gridItem).find('.js-t63-text').html().replace(/"/g, '&quot;'),
                             },
                             button: {
                                 isActive: null,
@@ -2232,13 +2288,13 @@ var PageBuilderModel = {
 
                 if (sectionName == PageBuilderModel.settings.sections.articlesGrid().name) {
                     model.components = {
-                        title: components.title(section.find('.js-section-title-container')),
-                        text: components.text(section.find('.js-section-text-container'))
+                        title: components.title(section.find('.js-t63-section-title-container')),
+                        text: components.text(section.find('.js-t63-section-text-container'))
                     };
 
                     model.items = [];
 
-                    section.find('.js-articles-grid-item').each(function () {
+                    section.find('.js-t63-articles-grid-item').each(function () {
                         var gridItem = $(this);
                         var item = {
                             components: {
@@ -2257,13 +2313,13 @@ var PageBuilderModel = {
 
                 if (sectionName == PageBuilderModel.settings.sections.articlesList().name) {
                     model.components = {
-                        title: components.title(section.find('.js-section-title-container')),
-                        text: components.text(section.find('.js-section-text-container'))
+                        title: components.title(section.find('.js-t63-section-title-container')),
+                        text: components.text(section.find('.js-t63-section-text-container'))
                     };
 
                     model.items = [];
 
-                    section.find('.js-articles-list-item').each(function () {
+                    section.find('.js-t63-articles-list-item').each(function () {
                         var listItem = $(this);
                         var item = {
                             components: {
@@ -2282,8 +2338,8 @@ var PageBuilderModel = {
 
                 if (sectionName == PageBuilderModel.settings.sections.accordion().name) {
                     model.components = {
-                        title: components.title(section.find('.js-section-title-container')),
-                        text: components.text(section.find('.js-section-text-container'))
+                        title: components.title(section.find('.js-t63-section-title-container')),
+                        text: components.text(section.find('.js-t63-section-text-container'))
                     };
 
                     model.items = [];
@@ -2303,41 +2359,31 @@ var PageBuilderModel = {
 
                 if (sectionName == PageBuilderModel.settings.sections.tabs().name) {
                     model.components = {
-                        title: components.title(section.find('.js-section-title-container')),
-                        text: components.text(section.find('.js-section-text-container'))
+                        title: components.title(section.find('.js-t63-section-title-container')),
+                        text: components.text(section.find('.js-t63-section-text-container'))
                     };
 
                     model.items = [];
 
-                    section.find('.js-tab-nav-item').each(function () {
+                    section.find('.js-t63-tab-nav-item').each(function () {
                         var tabNavItem = $(this);
                         var id = tabNavItem.children('a').attr('href').slice(1);
-                        var tabContentItem = $('.js-tab-content-item[id="' + id + '"]');
+                        var tabContentItem = $('.js-t63-tab-content-item[id="' + id + '"]');
 
                         var item = {
                             id: id,
-                            isActive: $(tabNavItem).find('.js-tab-visibility-toggler input:checked').length > 0,
-                            name: tabNavItem.find('.js-tab-item-name').html().replace(/"/g, '&quot;'),
+                            isActive: $(tabNavItem).find('.js-t63-tab-visibility-toggler input:checked').length > 0,
+                            name: tabNavItem.find('.js-t63-tab-item-name').html().replace(/"/g, '&quot;'),
                             components: {
                                 text: components.text(tabContentItem),
                                 fontAwesomeIcon: {
-                                    isActive: $(tabNavItem).find('.js-faIcon-toggler input:checked').length > 0,
-                                    name: $(tabNavItem).find('.js-tab-item-icon-wrap i').attr('class')
+                                    isActive: $(tabNavItem).find('.js-t63-faIcon-toggler input:checked').length > 0,
+                                    name: $(tabNavItem).find('.js-t63-tab-item-icon-wrap i').attr('class')
                                 }
                             }
                         };
                         model.items.push(item);
                     });
-                }
-
-                if (sectionName == PageBuilderModel.settings.sections.html().name) {
-                    model.components = {
-                        text: {
-                            isActive: true,
-                            isFullfeatured: false,
-                            html: section.find('.js-plain-html-input').val().replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-                        },
-                    }
                 }
 
                 if (sectionName == PageBuilderModel.settings.sections.testimonials().name) {
@@ -2356,8 +2402,8 @@ var PageBuilderModel = {
                                     ...components.image(slide),
                                     hasControls: PageBuilderModel.settings.components.testimonialsItem().components.image.hasControls
                                 },
-                                author: components.textPlain(slide.find('.js-author-wrap')),
-                                description: components.textPlain(slide.find('.js-description-wrap'))
+                                author: components.textPlain(slide.find('.js-t63-author-wrap')),
+                                description: components.textPlain(slide.find('.js-t63-description-wrap'))
                             }
                         };
 
@@ -2365,23 +2411,56 @@ var PageBuilderModel = {
                     });
                 }
 
-                if (sectionName == PageBuilderModel.settings.sections.services().name) {
+                if (sectionName == PageBuilderModel.settings.sections.packagesGrid().name) {
                     model.components = {
-                        title: components.title(section.find('.js-section-title-container')),
-                        text: components.text(section.find('.js-section-text-container'))
+                        title: components.title(section.find('.js-t63-section-title-container')),
+                        text: components.text(section.find('.js-t63-section-text-container'))
                     };
 
+                    model.contentAlignment = section.find('[data-align-content]').attr('data-align-content');
                     model.items = [];
 
-                    section.find('.js-t63-services-grid-item').each(function () {
+                    section.find('.js-t63-packages-grid-item').each(function () {
                         var gridItem = $(this);
                         var item = {
+                            id: gridItem.attr('data-id'),
+                            size: gridItem.attr('data-size'),
+                            columnClassesNames: PageBuilderModel.settings.components.packagesGridItem().columnClassesNames[+gridItem.attr('data-size') - 1],
                             components: {
                                 title: components.title(gridItem),
                                 subTitle: components.textPlain(gridItem),
                                 text: components.text(gridItem),
                                 button: components.button(gridItem),
                                 icon: components.icon(gridItem),
+                                image: null
+                            }
+                        }
+                        model.items.push(item);
+                    });
+                }
+
+                if (sectionName == PageBuilderModel.settings.sections.services().name) {
+                    model.components = {
+                        title: components.title(section.find('.js-t63-section-title-container')),
+                        text: components.text(section.find('.js-t63-section-text-container'))
+                    };
+
+                    model.contentAlignment = section.find('[data-align-content]').attr('data-align-content');
+                    model.items = [];
+
+                    section.find('.js-t63-services-grid-item').each(function () {
+                        var gridItem = $(this);
+                        var item = {
+                            id: gridItem.attr('data-id'),
+                            size: gridItem.attr('data-size'),
+                            columnClassesNames: PageBuilderModel.settings.components.servicesGridItem().columnClassesNames[+gridItem.attr('data-size') - 1],
+                            components: {
+                                title: components.title(gridItem),
+                                subTitle: components.textPlain(gridItem),
+                                text: components.text(gridItem),
+                                button: components.button(gridItem),
+                                fontAwesomeIcon: components.fontAwesomeIcon(gridItem),
+                                icon: null,
                                 image: null
                                 //image: {
                                 //    ...components.image(gridItem),
@@ -2392,6 +2471,13 @@ var PageBuilderModel = {
 
                         model.items.push(item);
                     });
+                }
+
+                if (sectionName == PageBuilderModel.settings.sections.card2Col().name) {
+                    model.components = {
+                        title: components.title(section),
+                        text: components.text(section)
+                    }
                 }
 
                 if (sectionName == PageBuilderModel.settings.sections.card2ColWithImg().name) {
@@ -2414,19 +2500,19 @@ var PageBuilderModel = {
 
                 if (sectionName == PageBuilderModel.settings.sections.mediaObjectsGrid().name) {
                     model.components = {
-                        title: components.title(section.find('.js-section-title-container')),
-                        text: components.text(section.find('.js-section-text-container'))
+                        title: components.title(section.find('.js-t63-section-title-container')),
+                        text: components.text(section.find('.js-t63-section-text-container'))
                     };
 
                     model.contentAlignment = section.find('[data-align-content]').attr('data-align-content');
                     model.items = [];
 
-                    section.find('.js-media-objects-grid-item').each(function () {
+                    section.find('.js-t63-media-objects-grid-item').each(function () {
                         var gridItem = $(this);
                         var item = {
                             id: gridItem.attr('data-id'),
                             size: gridItem.attr('data-size'),
-                            columnClassesNames: PageBuilderModel.settings.components.packagesGridItem().columnClassesNames[+gridItem.attr('data-size') - 1],
+                            columnClassesNames: PageBuilderModel.settings.components.mediaObjectsGridItem().columnClassesNames[+gridItem.attr('data-size') - 1],
                             components: {
                                 title: components.title(gridItem),
                                 text: components.text(gridItem),
@@ -2437,28 +2523,21 @@ var PageBuilderModel = {
                     });
                 }
 
-                if (sectionName == PageBuilderModel.settings.sections.card2Col().name) {
+                if (sectionName == PageBuilderModel.settings.sections.cardsGrid().name) {
                     model.components = {
-                        title: components.title(section),
-                        text: components.text(section)
-                    }
-                }
-
-                if (sectionName == PageBuilderModel.settings.sections.packagesGrid().name) {
-                    model.components = {
-                        title: components.title(section.find('.js-section-title-container')),
-                        text: components.text(section.find('.js-section-text-container'))
+                        title: components.title(section.find('.js-t63-section-title-container')),
+                        text: components.text(section.find('.js-t63-section-text-container'))
                     };
 
                     model.contentAlignment = section.find('[data-align-content]').attr('data-align-content');
                     model.items = [];
 
-                    section.find('.js-packages-grid-item').each(function () {
+                    section.find('.js-t63-cards-grid-item').each(function () {
                         var gridItem = $(this);
                         var item = {
                             id: gridItem.attr('data-id'),
                             size: gridItem.attr('data-size'),
-                            columnClassesNames: PageBuilderModel.settings.components.packagesGridItem().columnClassesNames[+gridItem.attr('data-size') - 1],
+                            columnClassesNames: PageBuilderModel.settings.components.cardsGridItem().columnClassesNames[+gridItem.attr('data-size') - 1],
                             components: {
                                 title: components.title(gridItem),
                                 text: components.text(gridItem),
@@ -2467,31 +2546,24 @@ var PageBuilderModel = {
                         }
                         model.items.push(item);
                     });
-                }
-
-                if (sectionName == PageBuilderModel.settings.sections.quote().name) {
-                    model.components = {
-                        text: components.text(section),
-                        fontAwesomeIcon: components.fontAwesomeIcon(section)
-                    }
                 }
 
                 if (sectionName == PageBuilderModel.settings.sections.flipCardsGrid().name) {
                     model.components = {
-                        title: components.title(section.find('.js-section-title-container')),
-                        text: components.text(section.find('.js-section-text-container'))
+                        title: components.title(section.find('.js-t63-section-title-container')),
+                        text: components.text(section.find('.js-t63-section-text-container'))
                     };
 
                     model.contentAlignment = section.find('[data-align-content]').attr('data-align-content');
                     model.items = [];
 
-                    section.find('.js-flip-cards-grid-item').each(function () {
+                    section.find('.js-t63-flip-cards-grid-item').each(function () {
                         var gridItem = $(this);
 
                         var item = {
                             id: gridItem.attr('data-id'),
-                            hasIcon: $(gridItem).find('.js-media-container').attr('data-media-type') === 'icon',
-                            hasImage: $(gridItem).find('.js-media-container').attr('data-media-type') === 'image',
+                            hasIcon: $(gridItem).find('.js-t63-media-container').attr('data-media-type') === 'icon',
+                            hasImage: $(gridItem).find('.js-t63-media-container').attr('data-media-type') === 'image',
                             size: gridItem.attr('data-size'),
                             columnClassesNames: PageBuilderModel.settings.components.flipCardsGridItem().columnClassesNames[+gridItem.attr('data-size') - 1],
 
@@ -2511,67 +2583,16 @@ var PageBuilderModel = {
                     });
                 }
 
-                if (sectionName == PageBuilderModel.settings.sections.article2colWithBgImgAndImg().name) {
-                    model.components = {
-                        title: components.title(section),
-                        text: components.text(section),
-                        bgImage: components.image(leftCol),
-                        image: components.image(rightCol)
-                    }
-                }
-
-                if (sectionName == PageBuilderModel.settings.sections.pdfViewer().name) {
-                    model.components = {
-                        pdfViewerIframe: components.pdfViewerIframe(section)
-                    }
-                }
-
-                if (sectionName == PageBuilderModel.settings.sections.videoGrid().name) {
-                    model.items = [];
-
-                    section.find('.js-video-grid-item').each(function () {
-                        var gridItem = $(this);
-                        var item = {
-                            id: gridItem.attr('data-id'),
-                            size: gridItem.attr('data-size'),
-                            columnClassesNames: PageBuilderModel.settings.components.videoGridItem().columnClassesNames[+gridItem.attr('data-size') - 1],
-
-                            components: {
-                                video: components.video(gridItem)
-                            }
-                        };
-                        model.items.push(item);
-                    });
-                }
-
-                if (sectionName == PageBuilderModel.settings.sections.jwPlayerGrid().name) {
-                    model.items = [];
-
-                    section.find('.js-jwp-grid-item').each(function () {
-                        var gridItem = $(this);
-                        var item = {
-                            id: gridItem.attr('data-id'),
-                            size: gridItem.attr('data-size'),
-                            columnClassesNames: PageBuilderModel.settings.components.jwPlayerGridItem().columnClassesNames[+gridItem.attr('data-size') - 1],
-
-                            components: {
-                                jwPlayer: components.jwPlayer(gridItem)
-                            }
-                        };
-                        model.items.push(item);
-                    });
-                }
-
                 if (sectionName == PageBuilderModel.settings.sections.postCardsGrid().name) {
                     model.components = {
-                        title: components.title(section.find('.js-section-title-container')),
-                        text: components.text(section.find('.js-section-text-container'))
+                        title: components.title(section.find('.js-t63-section-title-container')),
+                        text: components.text(section.find('.js-t63-section-text-container'))
                     };
 
                     model.contentAlignment = section.find('[data-align-content]').attr('data-align-content');
                     model.items = [];
 
-                    section.find('.js-post-cards-grid-item').each(function () {
+                    section.find('.js-t63-post-cards-grid-item').each(function () {
                         var gridItem = $(this);
                         var item = {
                             id: gridItem.attr('data-id'),
@@ -2590,16 +2611,44 @@ var PageBuilderModel = {
                     });
                 }
 
-                if (sectionName == PageBuilderModel.settings.sections.booksGrid().name) {
+                if (sectionName == PageBuilderModel.settings.sections.peopleGrid().name) {
                     model.components = {
-                        title: components.title(section.find('.js-section-title-container')),
-                        text: components.text(section.find('.js-section-text-container'))
+                        title: components.title(section.find('.js-t63-section-title-container')),
+                        text: components.text(section.find('.js-t63-section-text-container'))
                     };
 
                     model.contentAlignment = section.find('[data-align-content]').attr('data-align-content');
                     model.items = [];
 
-                    section.find('.js-books-grid-item').each(function () {
+                    section.find('.js-t63-people-grid-item').each(function () {
+                        var gridItem = $(this);
+                        var item = {
+                            id: gridItem.attr('data-id'),
+                            size: gridItem.attr('data-size'),
+                            columnClassesNames: PageBuilderModel.settings.components.peopleGridItem().columnClassesNames[+gridItem.attr('data-size') - 1],
+                            components: {
+                                title: components.title(gridItem),
+                                text: components.text(gridItem),
+                                image: {
+                                    ...components.image(gridItem),
+                                    hasControls: PageBuilderModel.settings.components.peopleGridItem().components.image.hasControls
+                                }
+                            }
+                        }
+                        model.items.push(item);
+                    });
+                }
+
+                if (sectionName == PageBuilderModel.settings.sections.booksGrid().name) {
+                    model.components = {
+                        title: components.title(section.find('.js-t63-section-title-container')),
+                        text: components.text(section.find('.js-t63-section-text-container'))
+                    };
+
+                    model.contentAlignment = section.find('[data-align-content]').attr('data-align-content');
+                    model.items = [];
+
+                    section.find('.js-t63-books-grid-item').each(function () {
                         var gridItem = $(this);
                         var item = {
                             id: gridItem.attr('data-id'),
@@ -2619,57 +2668,43 @@ var PageBuilderModel = {
                     });
                 }
 
-                if (sectionName == PageBuilderModel.settings.sections.peopleGrid().name) {
+                if (sectionName == PageBuilderModel.settings.sections.quote().name) {
                     model.components = {
-                        title: components.title(section.find('.js-section-title-container')),
-                        text: components.text(section.find('.js-section-text-container'))
-                    };
-
-                    model.contentAlignment = section.find('[data-align-content]').attr('data-align-content');
-                    model.items = [];
-
-                    section.find('.js-people-grid-item').each(function () {
-                        var gridItem = $(this);
-                        var item = {
-                            id: gridItem.attr('data-id'),
-                            size: gridItem.attr('data-size'),
-                            columnClassesNames: PageBuilderModel.settings.components.peopleGridItem().columnClassesNames[+gridItem.attr('data-size') - 1],
-                            components: {
-                                title: components.title(gridItem),
-                                text: components.text(gridItem),
-                                image: {
-                                    ...components.image(gridItem),
-                                    hasControls: PageBuilderModel.settings.components.peopleGridItem().components.image.hasControls
-                                }
-                            }
-                        }
-                        model.items.push(item);
-                    });
+                        text: components.text(section),
+                        fontAwesomeIcon: components.fontAwesomeIcon(section)
+                    }
                 }
 
-                if (sectionName == PageBuilderModel.settings.sections.cardsGrid().name) {
+                if (sectionName == PageBuilderModel.settings.sections.article2colWithBgImgAndImg().name) {
                     model.components = {
-                        title: components.title(section.find('.js-section-title-container')),
-                        text: components.text(section.find('.js-section-text-container'))
-                    };
+                        title: components.title(section),
+                        text: components.text(section),
+                        bgImage: components.image(leftCol),
+                        image: components.image(rightCol)
+                    }
+                }
 
-                    model.contentAlignment = section.find('[data-align-content]').attr('data-align-content');
-                    model.items = [];
+                if (sectionName == PageBuilderModel.settings.sections.html().name) {
+                    model.components = {
+                        text: {
+                            isActive: true,
+                            isFullfeatured: false,
+                            html: section.find('.js-t63-plain-html-input').val().replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+                        },
+                    }
+                }
 
-                    section.find('.js-cards-grid-item').each(function () {
-                        var gridItem = $(this);
-                        var item = {
-                            id: gridItem.attr('data-id'),
-                            size: gridItem.attr('data-size'),
-                            columnClassesNames: PageBuilderModel.settings.components.cardsGridItem().columnClassesNames[+gridItem.attr('data-size') - 1],
-                            components: {
-                                title: components.title(gridItem),
-                                text: components.text(gridItem),
-                                icon: components.icon(gridItem)
-                            }
-                        }
-                        model.items.push(item);
-                    });
+                if (sectionName == PageBuilderModel.settings.sections.iframe().name) {
+                    model.components = {
+                        title: components.title(section),
+                        iframe: components.iframe(section)
+                    }
+                }
+
+                if (sectionName == PageBuilderModel.settings.sections.pdfViewer().name) {
+                    model.components = {
+                        pdfViewerIframe: components.pdfViewerIframe(section)
+                    }
                 }
 
 
@@ -2677,7 +2712,7 @@ var PageBuilderModel = {
             });
 
             //--- page scripts
-            $('.js-css-files-container li').each(function (inedx, item) {
+            $('.js-t63-css-files-container li').each(function (inedx, item) {
                 var model = {
                     url: $(item).attr('data-url'),
                     name: $(item).attr('data-name'),
@@ -2685,7 +2720,7 @@ var PageBuilderModel = {
                 }
                 data.pageScripts.headerSection.push(model);
             });
-            $('.js-js-files-container li').each(function (inedx, item) {
+            $('.js-t63-js-t63-files-container li').each(function (inedx, item) {
                 var model = {
                     url: $(item).attr('data-url'),
                     name: $(item).attr('data-name'),
@@ -2775,20 +2810,20 @@ var PageBuilderModel = {
     },
 
     sections: {
-        selector: '.js-page-section',
+        selector: '.js-t63-page-section',
 
         //-- components
         components: {
             title: {
                 partial:
-                    `<div class="section-row title-container js-section--container{{#unless components.title.isActive}} component-disabled{{/unless}}{{#if animations}} t63-invisible js-animate{{/if}}" data-container="title" data-animation="{{animations}}">
-                        <div class="title js-title js-tinymce {{#if components.title.isFullfeatured}}full-featured js-tinymce-full{{else}}js-tinymce-basic{{/if}}">{{components.title.html}}</div>
+                    `<div class="section-row title-container js-t63-section--container{{#unless components.title.isActive}} component-disabled{{/unless}}{{#if animations}} t63-invisible js-animate{{/if}}" data-container="title" data-animation="{{animations}}">
+                        <div class="title js-t63-title js-t63-tinymce {{#if components.title.isFullfeatured}}full-featured js-t63-tinymce-full{{else}}js-t63-tinymce-basic{{/if}}">{{components.title.html}}</div>
                         {{titleControlsHepler components.title}}
                     </div>`,
 
                 template:
-                    `<div class="section-row title-container js-section--container{{#unless title.isActive}} component-disabled{{/unless}}{{#if animations}} t63-invisible js-animate{{/if}}" data-container="title" data-animation="{{animations}}">
-                        <div class="title js-title js-tinymce {{#if title.isFullfeatured}}full-featured js-tinymce-full{{else}}js-tinymce-basic{{/if}}">{{title.html}}</div>
+                    `<div class="section-row title-container js-t63-section--container{{#unless title.isActive}} component-disabled{{/unless}}{{#if animations}} t63-invisible js-animate{{/if}}" data-container="title" data-animation="{{animations}}">
+                        <div class="title js-t63-title js-t63-tinymce {{#if title.isFullfeatured}}full-featured js-t63-tinymce-full{{else}}js-t63-tinymce-basic{{/if}}">{{title.html}}</div>
                         {{titleControlsHepler title}}
                     </div>`,
 
@@ -2799,14 +2834,14 @@ var PageBuilderModel = {
 
             text: {
                 partial:
-                    `<div class="section-row text-container js-section--container{{#unless components.text.isActive}} component-disabled{{/unless}}{{#if animations}} t63-invisible js-animate{{/if}}" data-container="text" data-animation="{{animations}}">
-                        <div class="text-wrap js-text-wrap js-tinymce {{#if components.text.isFullfeatured}}js-tinymce-full{{else}}js-tinymce-basic{{/if}}">{{components.text.html}}</div>
+                    `<div class="section-row text-container js-t63-section--container{{#unless components.text.isActive}} component-disabled{{/unless}}{{#if animations}} t63-invisible js-animate{{/if}}" data-container="text" data-animation="{{animations}}">
+                        <div class="text-wrap js-t63-text-wrap js-t63-tinymce {{#if components.text.isFullfeatured}}js-t63-tinymce-full{{else}}js-t63-tinymce-basic{{/if}}">{{components.text.html}}</div>
                         {{textControlsHepler components.text}}
                     </div>`,
 
                 template:
-                    `<div class="section-row text-container js-section--container{{#unless text.isActive}} component-disabled{{/unless}}{{/unless}}{{#if animations}} t63-invisible js-animate{{/if}}" data-container="text" data-animation="{{animations}}">
-                        <div class="text-wrap js-text-wrap js-tinymce  {{#if text.isFullfeatured}}js-tinymce-full{{else}}js-tinymce-basic{{/if}}">{{text.html}}</div>
+                    `<div class="section-row text-container js-t63-section--container{{#unless text.isActive}} component-disabled{{/unless}}{{/unless}}{{#if animations}} t63-invisible js-animate{{/if}}" data-container="text" data-animation="{{animations}}">
+                        <div class="text-wrap js-t63-text-wrap js-t63-tinymce  {{#if text.isFullfeatured}}js-t63-tinymce-full{{else}}js-t63-tinymce-basic{{/if}}">{{text.html}}</div>
                         {{textControlsHepler text}}
                     </div>`,
 
@@ -2817,14 +2852,14 @@ var PageBuilderModel = {
 
             textPlain: {
                 partial:
-                    `<div class="section-row plain-text-container js-section--container {{components.textPlain.additionalClassNames}}{{#unless components.textPlain.isActive}} component-disabled{{/unless}}{{#if animations}} t63-invisible js-animate{{/if}}" data-container="textPlain" data-additional-classes="{{components.textPlain.additionalClassNames}}" data-animation="{{animations}}">
-						<div class="text js-plain-text">{{components.textPlain.html}}</div>
+                    `<div class="section-row plain-text-container js-t63-section--container {{components.textPlain.additionalClassNames}}{{#unless components.textPlain.isActive}} component-disabled{{/unless}}{{#if animations}} t63-invisible js-animate{{/if}}" data-container="textPlain" data-additional-classes="{{components.textPlain.additionalClassNames}}" data-animation="{{animations}}">
+						<div class="text js-t63-plain-text">{{components.textPlain.html}}</div>
                         {{textPlainControlsHepler components.textPlain}}
 					</div>`,
 
                 template:
-                    `<div class="section-row plain-text-container js-section--container {{textPlain.additionalClassNames}}{{#unless textPlain.isActive}} component-disabled{{/unless}}{{#if animations}} t63-invisible js-animate{{/if}}" data-container="textPlain" data-additional-classes="{{textPlain.additionalClassNames}}" data-animation="{{animations}}">
-                        <div class="text js-plain-text">{{textPlain.html}}</div>
+                    `<div class="section-row plain-text-container js-t63-section--container {{textPlain.additionalClassNames}}{{#unless textPlain.isActive}} component-disabled{{/unless}}{{#if animations}} t63-invisible js-animate{{/if}}" data-container="textPlain" data-additional-classes="{{textPlain.additionalClassNames}}" data-animation="{{animations}}">
+                        <div class="text js-t63-plain-text">{{textPlain.html}}</div>
                         {{textPlainControlsHepler textPlain}}
                     </div>`,
 
@@ -2835,15 +2870,15 @@ var PageBuilderModel = {
 
             button: {
                 partial:
-                    `<div class="section-row btn-container js-section--container{{#unless components.button.isActive}} component-disabled{{/unless}}{{#if animations}} t63-invisible js-animate{{/if}}" data-container="button" data-animation="{{animations}}">
-                        <a href="{{components.button.href}}" class="btn btn-primary js-btn"{{#if components.button.isTargetBlank}} target="_blank"{{/if}}>{{components.button.name}}</a>
+                    `<div class="section-row btn-container js-t63-section--container{{#unless components.button.isActive}} component-disabled{{/unless}}{{#if animations}} t63-invisible js-animate{{/if}}" data-container="button" data-animation="{{animations}}">
+                        <a href="{{components.button.href}}" class="btn btn-primary js-t63-btn"{{#if components.button.isTargetBlank}} target="_blank"{{/if}}>{{components.button.name}}</a>
                         {{actionButtonsHepler actionButtons.button}}
 						{{buttonControlsHepler components.button}}
                     </div>`,
 
                 template:
-                    `<div class="section-row btn-container js-section--container{{#unless button.isActive}} component-disabled{{/unless}}{{#if animations}} t63-invisible js-animate{{/if}}" data-container="button" data-animation="{{animations}}">
-                        <a href="{{button.href}}" class="btn btn-primary js-btn"{{#if button.isTargetBlank}} target="_blank"{{/if}}>{{button.name}}</a>
+                    `<div class="section-row btn-container js-t63-section--container{{#unless button.isActive}} component-disabled{{/unless}}{{#if animations}} t63-invisible js-animate{{/if}}" data-container="button" data-animation="{{animations}}">
+                        <a href="{{button.href}}" class="btn btn-primary js-t63-btn"{{#if button.isTargetBlank}} target="_blank"{{/if}}>{{button.name}}</a>
                         {{actionButtonsHepler actionButtons}}
 						{{buttonControlsHepler button}}
                     </div>`,
@@ -2855,20 +2890,20 @@ var PageBuilderModel = {
 
             icon: {
                 partial:
-                    `<div class="section-row t63-icon-container js-section--container{{#unless components.icon.isActive}} component-disabled{{/unless}}{{#if animations}} t63-invisible js-animate{{/if}}" data-container="icon" data-icon-type="{{#if components.icon.isImage}}image{{else}}font{{/if}}" data-animation="{{animations}}">
+                    `<div class="section-row t63-icon-container js-t63-section--container{{#unless components.icon.isActive}} component-disabled{{/unless}}{{#if animations}} t63-invisible js-animate{{/if}}" data-container="icon" data-icon-type="{{#if components.icon.isImage}}image{{else}}font{{/if}}" data-animation="{{animations}}">
                         <span class="t63-icon-wrap">
-                            <i class="{{components.icon.name}} js-font-icon" data-icon-classes="{{components.icon.name}}"></i>
-                            <img class="js-img-icon" src="{{components.icon.url}}" data-icon-url="{{components.icon.url}}" alt="">
+                            <i class="{{components.icon.name}} js-t63-font-icon" data-icon-classes="{{components.icon.name}}"></i>
+                            <img class="js-t63-img-icon" src="{{components.icon.url}}" data-icon-url="{{components.icon.url}}" alt="">
                         </span>
                         {{actionButtonsHepler actionButtons.icon }}
                         {{iconControlsHepler components.icon}}
                     </div>`,
 
                 template:
-                    `<div class="section-row t63-icon-container js-section--container{{#unless icon.isActive}} component-disabled{{/unless}}{{#if animations}} t63-invisible js-animate{{/if}}" data-container="icon" data-icon-type="{{#if icon.isImage}}image{{else}}font{{/if}}" data-animation="{{animations}}">
+                    `<div class="section-row t63-icon-container js-t63-section--container{{#unless icon.isActive}} component-disabled{{/unless}}{{#if animations}} t63-invisible js-animate{{/if}}" data-container="icon" data-icon-type="{{#if icon.isImage}}image{{else}}font{{/if}}" data-animation="{{animations}}">
                         <span class="t63-icon-wrap">
-                            <i class="{{icon.name}} js-font-icon" data-icon-classes="{{icon.name}}"></i>
-                            <img class="js-img-icon" src="{{icon.url}}" data-icon-url="{{icon.url}}" alt="">
+                            <i class="{{icon.name}} js-t63-font-icon" data-icon-classes="{{icon.name}}"></i>
+                            <img class="js-t63-img-icon" src="{{icon.url}}" data-icon-url="{{icon.url}}" alt="">
                         </span>
                         {{actionButtonsHepler actionButtons }}
                         {{iconControlsHepler icon}}
@@ -2881,18 +2916,18 @@ var PageBuilderModel = {
 
             fontAwesomeIcon: {
                 partial:
-                    `<div class="section-row fontawesome-icon-container js-section--container{{#unless components.fontAwesomeIcon.isActive}} component-disabled{{/unless}}" data-container="fontAwesomeIcon">
+                    `<div class="section-row fontawesome-icon-container js-t63-section--container{{#unless components.fontAwesomeIcon.isActive}} component-disabled{{/unless}}" data-container="fontAwesomeIcon">
                         <span class="t63-icon-wrap">
-                            <i class="{{components.fontAwesomeIcon.name}} js-fa-icon" data-fontawesome-icon="{{components.fontAwesomeIcon.name}}"></i>
+                            <i class="{{components.fontAwesomeIcon.name}} js-t63-fa-icon" data-fontawesome-icon="{{components.fontAwesomeIcon.name}}"></i>
                         </span>
                         {{actionButtonsHepler actionButtons.fontAwesomeIcon }}
                         {{fontAwesomeIconControlsHepler components.fontAwesomeIcon}}
                     </div>`,
 
                 template:
-                    `<div class="section-row fontawesome-icon-container js-section--container{{#unless fontAwesomeIcon.isActive}} component-disabled{{/unless}}" data-container="fontAwesomeIcon">
+                    `<div class="section-row fontawesome-icon-container js-t63-section--container{{#unless fontAwesomeIcon.isActive}} component-disabled{{/unless}}" data-container="fontAwesomeIcon">
                         <span class="t63-icon-wrap">
-                            <i class="{{fontAwesomeIcon.name}} js-fa-icon" data-fontawesome-icon="{{fontAwesomeIcon.name}}"></i>
+                            <i class="{{fontAwesomeIcon.name}} js-t63-fa-icon" data-fontawesome-icon="{{fontAwesomeIcon.name}}"></i>
                         </span>
                         {{actionButtonsHepler actionButtons }}
                         {{fontAwesomeIconControlsHepler fontAwesomeIcon}}
@@ -2905,8 +2940,8 @@ var PageBuilderModel = {
 
             image: {
                 partial:
-                    `<div class="img-container js-section--container{{#unless components.image.isActive}} component-disabled{{/unless}}{{#if animations}} t63-invisible js-animate{{/if}}" data-container="image" data-animation="{{animations}}">
-                        <figure class="embed-responsive js-img" data-img-src="{{components.image.url}}">
+                    `<div class="img-container js-t63-section--container{{#unless components.image.isActive}} component-disabled{{/unless}}{{#if animations}} t63-invisible js-animate{{/if}}" data-container="image" data-animation="{{animations}}">
+                        <figure class="embed-responsive js-t63-img" data-img-src="{{components.image.url}}">
                             <img class="embed-responsive-item" src="{{components.image.url}}" alt="" />
                         </figure>
                         {{actionButtonsHepler actionButtons.image }}
@@ -2916,8 +2951,8 @@ var PageBuilderModel = {
                     </div>`,
 
                 template:
-                    `<div class="img-container js-section--container{{#unless image.isActive}} component-disabled{{/unless}}{{#if animations}} t63-invisible js-animate{{/if}}" data-container="image" data-animation="{{animations}}">
-                        <figure class="embed-responsive js-img" data-img-src="{{image.url}}"><img class="embed-responsive-item" src="{{image.url}}" alt="" /></figure>
+                    `<div class="img-container js-t63-section--container{{#unless image.isActive}} component-disabled{{/unless}}{{#if animations}} t63-invisible js-animate{{/if}}" data-container="image" data-animation="{{animations}}">
+                        <figure class="embed-responsive js-t63-img" data-img-src="{{image.url}}"><img class="embed-responsive-item" src="{{image.url}}" alt="" /></figure>
                         {{actionButtonsHepler actionButtons}}
                         {{#if image.hasControls}}
                             {{imageControlsHepler image}}
@@ -2931,8 +2966,8 @@ var PageBuilderModel = {
 
             bgImage: {
                 partial:
-                    `<div class="img-container js-section--container{{#unless components.image.isActive}} component-disabled{{/unless}}{{#if animations}} t63-invisible js-animate{{/if}}" data-container="image" data-animation="{{animations}}">
-                        <span class="bg-img js-img" style="background-image: url({{components.image.url}})" data-img-src="{{components.image.url}}"></span>
+                    `<div class="img-container js-t63-section--container{{#unless components.image.isActive}} component-disabled{{/unless}}{{#if animations}} t63-invisible js-animate{{/if}}" data-container="image" data-animation="{{animations}}">
+                        <span class="bg-img js-t63-img" style="background-image: url({{components.image.url}})" data-img-src="{{components.image.url}}"></span>
                         {{actionButtonsHepler actionButtons.image }}
                         {{#if components.image.hasControls}}
                             {{imageControlsHepler components.image}}
@@ -2940,8 +2975,8 @@ var PageBuilderModel = {
                     </div>`,
 
                 template:
-                    `<div class="img-container js-section--container{{#unless image.isActive}} component-disabled{{/unless}}{{#if animations}} t63-invisible js-animate{{/if}}" data-container="image" data-animation="{{animations}}">
-                        <span class="bg-img js-img" style="background-image: url({{image.url}})" data-img-src="{{image.url}}"></span>
+                    `<div class="img-container js-t63-section--container{{#unless image.isActive}} component-disabled{{/unless}}{{#if animations}} t63-invisible js-animate{{/if}}" data-container="image" data-animation="{{animations}}">
+                        <span class="bg-img js-t63-img" style="background-image: url({{image.url}})" data-img-src="{{image.url}}"></span>
                         {{actionButtonsHepler actionButtons}}
                         {{#if image.hasControls}}
                             {{imageControlsHepler image}}
@@ -2955,8 +2990,8 @@ var PageBuilderModel = {
 
             video: {
                 partial:
-                    `<div class="section-row video-container js-section--container{{#if animations}} t63-invisible js-animate{{/if}}" data-container="video" data-animation="{{animations}}">
-                        <div class="embed-responsive js-iframe-container">
+                    `<div class="section-row video-container js-t63-section--container{{#if animations}} t63-invisible js-animate{{/if}}" data-container="video" data-animation="{{animations}}">
+                        <div class="embed-responsive js-t63-iframe-container">
                             <iframe class="embed-responsive-item" src="{{components.video.url}}" frameborder="0" allow="encrypted-media" allowfullscreen=""></iframe>
                         </div>
                         {{actionButtonsHepler actionButtons.video }}
@@ -2964,8 +2999,8 @@ var PageBuilderModel = {
                     </div>`,
 
                 template:
-                    `<div class="section-row video-container js-section--container{{#if animations}} t63-invisible js-animate{{/if}}" data-container="video" data-animation="{{animations}}">
-                        <div class="embed-responsive js-iframe-container">
+                    `<div class="section-row video-container js-t63-section--container{{#if animations}} t63-invisible js-animate{{/if}}" data-container="video" data-animation="{{animations}}">
+                        <div class="embed-responsive js-t63-iframe-container">
                             <iframe class="embed-responsive-item" src="{{video.url}}" frameborder="0" allow="encrypted-media" allowfullscreen=""></iframe>
                         </div>
                         {{actionButtonsHepler actionButtons }}
@@ -2979,7 +3014,7 @@ var PageBuilderModel = {
 
             //html5Video: {
             //    partial:
-            //        `<div class="section-row html5-video-container js-section--container{{#if animations}} t63-invisible js-animate{{/if}}" data-container="html5video" data-animation="{{animations}}">
+            //        `<div class="section-row html5-video-container js-t63-section--container{{#if animations}} t63-invisible js-animate{{/if}}" data-container="html5video" data-animation="{{animations}}">
             //            <div class="embed-responsive">
             //                <video class="embed-responsive-item" controls="false" muted autoplay="true">
             //                    <source src="{{components.video.url}}" type="video/mp4">
@@ -2989,7 +3024,7 @@ var PageBuilderModel = {
             //        </div>`,
 
             //    template:
-            //        `<div class="section-row html5-video-container js-section--container{{#if animations}} t63-invisible js-animate{{/if}}" data-container="html5video" data-animation="{{animations}}">
+            //        `<div class="section-row html5-video-container js-t63-section--container{{#if animations}} t63-invisible js-animate{{/if}}" data-container="html5video" data-animation="{{animations}}">
             //            <div class="embed-responsive">
             //                <video class="embed-responsive-item" width="300" height="150" controls="false" muted autoplay="true">
             //                    <source src="{{video.url}}" type="video/mp4">
@@ -3005,8 +3040,8 @@ var PageBuilderModel = {
 
             jwPlayer: {
                 partial:
-                    `<div class="section-row jwplayer-container js-section--container{{#if animations}} t63-invisible js-animate{{/if}}" data-container="jwPlayer" data-animation="{{animations}}">
-                        <div class="js-jwPlayer-wrap" data-video-url="{{components.jwPlayer.videoUrl}}" data-cover-url="{{components.jwPlayer.coverUrl}}" data-markers-url="{{components.jwPlayer.markersUrl}}" data-subtitles-url="{{components.jwPlayer.subTitlesUrl}}" data-player-id="{{id}}">
+                    `<div class="section-row jwplayer-container js-t63-section--container{{#if animations}} t63-invisible js-animate{{/if}}" data-container="jwPlayer" data-animation="{{animations}}">
+                        <div class="js-t63-jwPlayer-wrap" data-video-url="{{components.jwPlayer.videoUrl}}" data-cover-url="{{components.jwPlayer.coverUrl}}" data-markers-url="{{components.jwPlayer.markersUrl}}" data-subtitles-url="{{components.jwPlayer.subTitlesUrl}}" data-player-id="{{id}}">
                             <div>JW Player.</div>
                         </div>
                         {{actionButtonsHepler actionButtons.jwPlayer }}
@@ -3014,8 +3049,8 @@ var PageBuilderModel = {
                     </div>`,
 
                 template:
-                    `<div class="section-row jwplayer-container js-section--container{{#if animations}} t63-invisible js-animate{{/if}}" data-container="jwPlayer" data-animation="{{animations}}">
-                        <div class="js-jwPlayer-wrap" data-video-url="{{jwPlayer.videoUrl}}" data-cover-url="{{jwPlayer.coverUrl}}" data-markers-url="{{jwPlayer.markersUrl}}" data-subtitles-url="{{jwPlayer.subTitlesUrl}}" data-player-id="{{id}}">
+                    `<div class="section-row jwplayer-container js-t63-section--container{{#if animations}} t63-invisible js-animate{{/if}}" data-container="jwPlayer" data-animation="{{animations}}">
+                        <div class="js-t63-jwPlayer-wrap" data-video-url="{{jwPlayer.videoUrl}}" data-cover-url="{{jwPlayer.coverUrl}}" data-markers-url="{{jwPlayer.markersUrl}}" data-subtitles-url="{{jwPlayer.subTitlesUrl}}" data-player-id="{{id}}">
                             <div>JW Player.</div>
                         </div>
                         {{actionButtonsHepler actionButtons }}
@@ -3029,8 +3064,8 @@ var PageBuilderModel = {
 
             iframe: {
                 partial:
-                    `<div class="section-row iframe-container js-section--container{{#if animations}} t63-invisible js-animate{{/if}}" data-container="iframe" data-animation="{{animations}}">
-                        <div class="embed-responsive js-iframe-container">
+                    `<div class="section-row iframe-container js-t63-section--container{{#if animations}} t63-invisible js-animate{{/if}}" data-container="iframe" data-animation="{{animations}}">
+                        <div class="embed-responsive js-t63-iframe-container">
                             <iframe class="embed-responsive-item" src="{{components.iframe.url}}" frameborder="0" allow="encrypted-media" allowfullscreen=""></iframe>
                         </div>
                         {{actionButtonsHepler actionButtons.iframe }}
@@ -3040,8 +3075,8 @@ var PageBuilderModel = {
 
             pdfViewerIframe: {
                 partial:
-                    `<div class="section-row pdfViewerIframe-container js-section--container{{#if animations}} t63-invisible js-animate{{/if}}" data-container="pdfViewerIframe" data-animation="{{animations}}">
-                        <div class="embed-responsive js-pdfViewerIframe-container">
+                    `<div class="section-row pdfViewerIframe-container js-t63-section--container{{#if animations}} t63-invisible js-animate{{/if}}" data-container="pdfViewerIframe" data-animation="{{animations}}">
+                        <div class="embed-responsive js-t63-pdfViewerIframe-container">
                             <iframe class="embed-responsive-item" src="{{components.pdfViewerIframe.url}}" data-pdf-url="{{components.pdfViewerIframe.urlPdf}}" data-pdfviewer-url="{{components.pdfViewerIframe.url}}" frameborder="0" allow="encrypted-media" allowfullscreen=""></iframe>
                         </div>
                         {{actionButtonsHepler actionButtons.pdfViewerIframe }}
@@ -3051,7 +3086,7 @@ var PageBuilderModel = {
 
             attachements: {
                 containerPartial:
-                    `<div class="section-row files-container js-files-container">
+                    `<div class="section-row files-container js-t63-files-container">
 						<ul class="file-list">
 							{{> "filesPartial"}}
 						</ul>
@@ -3060,10 +3095,10 @@ var PageBuilderModel = {
                 files: {
                     partial:
                         `{{#each components.attachements}}
-						<li class="file-item js-section--container{{#if ../animations}} t63-invisible js-animate{{/if}}" data-container="file" data-animation="{{../animations}}">
+						<li class="file-item js-t63-section--container{{#if ../animations}} t63-invisible js-animate{{/if}}" data-container="file" data-animation="{{../animations}}">
 							<img class="icon" src="/plugins/63bits-pageBuilder/images/icons/file.svg" alt="file icon">
 							<div class="name">
-								<a class="link js-file-name" href="{{url}}" download>{{name}}</a>
+								<a class="link js-t63-file-name" href="{{url}}" download>{{name}}</a>
 								{{> "fileControlsPartial"}}
 							</div>
 							{{actionButtonsHepler ../actionButtons.file}}
@@ -3080,12 +3115,12 @@ var PageBuilderModel = {
 
             multimedia: {
                 template:
-                    `<div class="t63-multimedia-container js-multimedia-container js-section--container{{#if animations}} t63-invisible js-animate{{/if}}" data-container="multimedia" data-animation="{{animations}}" data-multimedia-type="{{#if multimedia.isImage}}image{{else}}video{{/if}}">
-                        <figure class="embed-responsive js-multimedia-image-container">
-                            <img class="embed-responsive-item js-multimedia-image" src="{{multimedia.image.url}}" alt="" data-image-src="{{multimedia.image.url}}" />
+                    `<div class="t63-multimedia-container js-t63-multimedia-container js-t63-section--container{{#if animations}} t63-invisible js-animate{{/if}}" data-container="multimedia" data-animation="{{animations}}" data-multimedia-type="{{#if multimedia.isImage}}image{{else}}video{{/if}}">
+                        <figure class="embed-responsive js-t63-multimedia-image-container">
+                            <img class="embed-responsive-item js-t63-multimedia-image" src="{{multimedia.image.url}}" alt="" data-image-src="{{multimedia.image.url}}" />
                         </figure>
-                        <div class="embed-responsive js-multimedia-video-container">
-                            <video class="embed-responsive-item js-multimedia-video"{{#if multimedia.video.controls}} controls{{/if}}{{#if multimedia.video.muted}} muted{{/if}}{{#if multimedia.video.loop}} loop{{/if}}{{#if multimedia.video.autoplay}} autoplay{{/if}} data-video-src="{{multimedia.video.url}}" data-controls="{{multimedia.video.controls}}" data-muted="{{multimedia.video.muted}}" data-autoplay="{{multimedia.video.autoplay}}" data-loop="{{multimedia.video.loop}}">
+                        <div class="embed-responsive js-t63-multimedia-video-container">
+                            <video class="embed-responsive-item js-t63-multimedia-video"{{#if multimedia.video.controls}} controls{{/if}}{{#if multimedia.video.muted}} muted{{/if}}{{#if multimedia.video.loop}} loop{{/if}}{{#if multimedia.video.autoplay}} autoplay{{/if}} data-video-src="{{multimedia.video.url}}" data-controls="{{multimedia.video.controls}}" data-muted="{{multimedia.video.muted}}" data-autoplay="{{multimedia.video.autoplay}}" data-loop="{{multimedia.video.loop}}">
                                 <source src="{{multimedia.video.url}}" type="video/mp4">
                             </video>
                         </div>
@@ -3101,8 +3136,8 @@ var PageBuilderModel = {
         //-- sections
         slide: {
             template:
-                `<section class="t63-section t63-img-section js-page-section{{#if isFullHeight}} t63-invisible{{/if}} {{cssClassNames}}" data-section="slide" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-animation="false" data-children-animation="false" data-is-fullscreen="{{isFullScreen}}" data-is-fullheight="{{isFullHeight}}" data-css-classes="{{cssClassNames}}" data-ratio="{{ratioSelected}}" data-img-original-size="{{isImgOriginalSize}}">
-					<div class="container t63-padding-v" data-align-content="{{contentAlignment}}">
+                `<section class="t63-section t63-img-section js-t63-page-section{{#if isFullHeight}} t63-invisible{{/if}} {{cssClassNames}}" data-section="slide" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-is-fullscreen="{{isFullScreen}}" data-is-fullheight="{{isFullHeight}}" data-css-classes="{{cssClassNames}}" data-ratio="{{ratioSelected}}" data-img-original-size="{{isImgOriginalSize}}">
+					<div class="container t63-padding-v{{#if animations}} t63-invisible js-animate{{/if}}" data-animation="{{animations}}" data-children-animation="false" data-align-content="{{contentAlignment}}">
                         {{> "imagePartial"}}
                     </div>
 					{{> "sectionEditorContainerPartial"}}
@@ -3115,11 +3150,11 @@ var PageBuilderModel = {
 
         slideWithText: {
             template:
-                `<div class="t63-section t63-img-section js-page-section{{#if isFullHeight}} t63-invisible{{/if}} {{cssClassNames}}" data-section="slideWithText" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-animation="false" data-children-animation="false" data-is-fullscreen="{{isFullScreen}}" data-is-fullheight="{{isFullHeight}}" data-css-classes="{{cssClassNames}}">
-                    <div class="container t63-padding-v">
+                `<div class="t63-section t63-img-section js-t63-page-section{{#if isFullHeight}} t63-invisible{{/if}} {{cssClassNames}}" data-section="slideWithText" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-is-fullscreen="{{isFullScreen}}" data-is-fullheight="{{isFullHeight}}" data-css-classes="{{cssClassNames}}">
+                    <div class="container t63-padding-v{{#if animations}} t63-invisible js-animate{{/if}}" data-animation="{{animations}}" data-children-animation="false">
                         <div class="t63-slide-container">
 					        {{> "imagePartial"}}
-					        <div class="container slide-content js-slide-content" data-align-content="{{contentAlignment}}">
+					        <div class="container slide-content js-t63-slide-content" data-align-content="{{contentAlignment}}">
 						        <section>
 							        {{> "titlePartial"}}
                                     {{> "textPartial"}}
@@ -3138,8 +3173,8 @@ var PageBuilderModel = {
 
         slider: {
             template:
-                `<div class="t63-section t63-slider-section js-page-section{{#if isFullHeight}} t63-invisible{{/if}} {{cssClassNames}}" data-section="slider" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-animation="false" data-children-animation="false" data-is-fullscreen="{{isFullScreen}}" data-is-fullheight="{{isFullHeight}}" data-css-classes="{{cssClassNames}}">
-                    <div class="container t63-padding-v">
+                `<div class="t63-section t63-slider-section js-t63-page-section{{#if isFullHeight}} t63-invisible{{/if}} {{cssClassNames}}" data-section="slider" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-is-fullscreen="{{isFullScreen}}" data-is-fullheight="{{isFullHeight}}" data-css-classes="{{cssClassNames}}">
+                    <div class="container t63-padding-v{{#if animations}} t63-invisible js-animate{{/if}}" data-animation="{{animations}}" data-children-animation="false">
                         <div class="t63-slider js-t63-slider js-t63-slider-container" data-slider-autoplay="{{slider?.autoplay}}" data-slider-autoplay-speed="{{slider?.autoplaySpeed}}">
                             {{> "sliderItemsPartial"}}
                         </div>
@@ -3157,7 +3192,7 @@ var PageBuilderModel = {
                     `{{#each items}}
                     <div>
                         {{multimediaHepler components.multimedia ../actionButtons.multimedia}}
-                        <div class="container slide-content js-slide-content" data-align-content="{{contentAlignment}}">
+                        <div class="container slide-content js-t63-slide-content" data-align-content="{{contentAlignment}}">
                             <section>
                                 {{titleHepler components.title ../actionButtons.title}}
                                 {{textHepler components.text ../actionButtons.text}}
@@ -3177,7 +3212,7 @@ var PageBuilderModel = {
 
         article: {
             template:
-                `<section class="t63-section js-page-section {{cssClassNames}}" data-section="article" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-additional-classes="{{additionalClassNames}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-is-card="{{isCard}}" data-css-classes="{{cssClassNames}}">
+                `<section class="t63-section js-t63-page-section {{cssClassNames}}" data-section="article" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-additional-classes="{{additionalClassNames}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-is-card="{{isCard}}" data-css-classes="{{cssClassNames}}">
 					<div class="container t63-padding-v">
 					<article class="t63-article {{additionalClassNames}}">
 						{{> "titlePartial"}}
@@ -3194,17 +3229,17 @@ var PageBuilderModel = {
 
         article2Col: {
             template:
-                `<section class="t63-section js-page-section {{cssClassNames}}" data-section="article2Col" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-css-classes="{{cssClassNames}}">
+                `<section class="t63-section js-t63-page-section {{cssClassNames}}" data-section="article2Col" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-css-classes="{{cssClassNames}}">
                     <div class="container">
 					<div class="row text2col">
-						<div class="col-lg-6 js-left-col">
+						<div class="col-lg-6 js-t63-left-col">
 							<article class="t63-article">
 								{{titleHepler components.title false animations}}
 								{{textHepler components.text false animations}}
 								{{buttonHepler components.button actionButtons.button animations}}
 							</article>
 						</div>
-						<div class="col-lg-6 js-right-col">
+						<div class="col-lg-6 js-t63-right-col">
 							<article class="t63-article">
 								{{titleHepler components.title2 false animations}}
 								{{textHepler components.text2 false animations}}
@@ -3223,15 +3258,15 @@ var PageBuilderModel = {
 
         articleText2Col: {
             template:
-                `<section class="t63-section js-page-section {{cssClassNames}}" data-section="articleText2Col" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-css-classes="{{cssClassNames}}">
+                `<section class="t63-section js-t63-page-section {{cssClassNames}}" data-section="articleText2Col" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-css-classes="{{cssClassNames}}">
 					<article class="container t63-article">
 						{{> "titlePartial"}}
 						<div class="row text2col">
-							<div class="col-lg-6 js-left-col">
+							<div class="col-lg-6 js-t63-left-col">
 								{{textHepler components.text false animations}}
                                 {{buttonHepler components.button actionButtons.button animations}}
 							</div>
-							<div class="col-lg-6 js-right-col">
+							<div class="col-lg-6 js-t63-right-col">
 								{{textHepler components.text2 false animations}}
                                 {{buttonHepler components.button2 actionButtons.button animations}}
 							</div>
@@ -3248,7 +3283,7 @@ var PageBuilderModel = {
 
         article2ColWithImg: {
             template:
-                `<section class="t63-section js-page-section {{additionalClassNames}} {{cssClassNames}}" data-section="article2ColWithImg" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-additional-classes="{{additionalClassNames}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-reverse="{{isReversed}}" data-css-classes="{{cssClassNames}}" data-ratio="{{ratioSelected}}">
+                `<section class="t63-section js-t63-page-section {{additionalClassNames}} {{cssClassNames}}" data-section="article2ColWithImg" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-additional-classes="{{additionalClassNames}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-reverse="{{isReversed}}" data-css-classes="{{cssClassNames}}" data-ratio="{{ratioSelected}}">
                     <div class="container d-lg-flex align-items-stretch t63-padding-v {{additionalClassNames}}">
 					    <div class="col-lg-6 d-lg-flex align-items-center justify-content-end text-col{{#if animations}} t63-invisible js-animate{{/if}}" data-animation="{{animations}}">
 						    <div class="t63-article">
@@ -3271,7 +3306,7 @@ var PageBuilderModel = {
 
         article2ColWithVideo: {
             template:
-                `<section class="t63-section js-page-section {{additionalClassNames}} {{cssClassNames}}" data-section="article2ColWithVideo" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-additional-classes="{{additionalClassNames}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-reverse="{{isReversed}}" data-css-classes="{{cssClassNames}}" data-ratio="{{ratioSelected}}">
+                `<section class="t63-section js-t63-page-section {{additionalClassNames}} {{cssClassNames}}" data-section="article2ColWithVideo" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-additional-classes="{{additionalClassNames}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-reverse="{{isReversed}}" data-css-classes="{{cssClassNames}}" data-ratio="{{ratioSelected}}">
                     <div class="container d-lg-flex align-items-stretch t63-padding-v {{additionalClassNames}}">
 					    <div class="col-lg-6 d-lg-flex align-items-center justify-content-end text-col{{#if animations}} t63-invisible js-animate{{/if}}" data-animation="{{animations}}">
 						    <div class="t63-article">
@@ -3297,7 +3332,7 @@ var PageBuilderModel = {
 
         article2ColWithJwPlayer: {
             template:
-                `<section class="t63-section js-page-section {{additionalClassNames}} {{cssClassNames}}" data-section="article2ColWithJwPlayer" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-additional-classes="{{additionalClassNames}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-reverse="{{isReversed}}" data-css-classes="{{cssClassNames}}">
+                `<section class="t63-section js-t63-page-section {{additionalClassNames}} {{cssClassNames}}" data-section="article2ColWithJwPlayer" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-additional-classes="{{additionalClassNames}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-reverse="{{isReversed}}" data-css-classes="{{cssClassNames}}">
                     <div class="container d-lg-flex align-items-stretch t63-padding-v {{additionalClassNames}}">
 					    <div class="col-lg-6 d-lg-flex align-items-center justify-content-end text-col{{#if animations}} t63-invisible js-animate{{/if}}" data-animation="{{animations}}">
 						    <div class="t63-article">
@@ -3323,14 +3358,14 @@ var PageBuilderModel = {
 
         articleWithFiles: {
             template:
-                `<section class="t63-section js-page-section {{cssClassNames}}" data-section="articleWithFiles" data-type="{{type}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-css-classes="{{cssClassNames}}">
+                `<section class="t63-section js-t63-page-section {{cssClassNames}}" data-section="articleWithFiles" data-type="{{type}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-css-classes="{{cssClassNames}}">
 					<article class="container t63-article">
 						{{> "titlePartial"}}
 						{{> "textPartial"}}
 						{{> "attachemetsContainerPartial"}}
-						<div class="btn-row choose-files-btn-wrap js-additional-action-buttons">
+						<div class="t63-btn-row choose-files-btn-wrap js-t63-additional-action-buttons">
 							<div class="justify-content-center">
-								<button class="btn editor-btn js-choose-file-btn">Attach Files</button>
+								<button class="btn editor-btn js-t63-choose-file-btn">Attach Files</button>
 							</div>
 						</div>
 					</article>
@@ -3344,7 +3379,7 @@ var PageBuilderModel = {
 
         articleWithVideo: {
             template:
-                `<section class="t63-section js-page-section {{cssClassNames}}" data-section="articleWithVideo" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-css-classes="{{cssClassNames}}" data-ratio="{{ratioSelected}}">
+                `<section class="t63-section js-t63-page-section {{cssClassNames}}" data-section="articleWithVideo" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-css-classes="{{cssClassNames}}" data-ratio="{{ratioSelected}}">
 					<article class="container t63-article">
 						{{> "titlePartial"}}
 						{{> "videoPartial"}}
@@ -3360,7 +3395,7 @@ var PageBuilderModel = {
 
         video: {
             template:
-                `<section class="t63-section js-page-section {{cssClassNames}}" data-section="video" data-type="{{type}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-css-classes="{{cssClassNames}}" data-ratio="{{ratioSelected}}">
+                `<section class="t63-section js-t63-page-section {{cssClassNames}}" data-section="video" data-type="{{type}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-css-classes="{{cssClassNames}}" data-ratio="{{ratioSelected}}">
 					<div class="container t63-padding-v">
                         {{> "videoPartial"}}
                     </div>
@@ -3374,16 +3409,16 @@ var PageBuilderModel = {
 
         videoGrid: {
             template:
-                `<section class="t63-section t63-video-grid-section js-page-section {{cssClassNames}}" data-section="videoGrid" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-css-classes="{{cssClassNames}}" data-ratio="{{ratioSelected}}">
+                `<section class="t63-section t63-video-grid-section js-t63-page-section {{cssClassNames}}" data-section="videoGrid" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-css-classes="{{cssClassNames}}" data-ratio="{{ratioSelected}}">
 					<div class="container t63-padding-v">
-						<div class="row js-video-grid-row" data-align-content="{{contentAlignment}}">
+						<div class="row js-t63-video-grid-row" data-align-content="{{contentAlignment}}">
                             {{> "videoGridItemsPartial"}}
                         </div>
-						<div class="btn-row grid-add-cols-btn-wrap js-additional-action-buttons">
+						<div class="t63-btn-row grid-add-cols-btn-wrap js-t63-additional-action-buttons">
 							<div class="justify-content-center">
-								<button class="btn editor-btn js-add-video-grid-col-btn" data-size="1" data-cols="col-sm-6 col-lg-3">Small</button>
-								<button class="btn editor-btn js-add-video-grid-col-btn" data-size="2" data-cols="col-sm-6 col-lg-4">Medium</button>
-								<button class="btn editor-btn js-add-video-grid-col-btn" data-size="3" data-cols="col-sm-6">Large</button>
+								<button class="btn editor-btn js-t63-add-video-grid-col-btn" data-size="1" data-cols="col-sm-6 col-lg-3">Small</button>
+								<button class="btn editor-btn js-t63-add-video-grid-col-btn" data-size="2" data-cols="col-sm-6 col-lg-4">Medium</button>
+								<button class="btn editor-btn js-t63-add-video-grid-col-btn" data-size="3" data-cols="col-sm-6">Large</button>
 							</div>
 						</div>
                     </div>
@@ -3398,10 +3433,11 @@ var PageBuilderModel = {
                 partial:
                     `{{#each items}}
 					<div class="{{columnClassesNames}}">
-						<div class="video-grid-item js-section--container js-video-grid-item{{#if ../../animations}} t63-invisible js-animate{{/if}}" data-container="videoGridItem" data-id="{{id}}" data-size="{{size}}" data-animation="{{../../animations}}" data-children-animation="false">
+						<div class="video-grid-item js-t63-section--container js-t63-video-grid-item{{#if ../../animations}} t63-invisible js-animate{{/if}}" data-container="videoGridItem" data-id="{{id}}" data-size="{{size}}" data-animation="{{../../animations}}" data-children-animation="false">
                             {{videoHepler components.video ../../actionButtons.video}}
                             {{actionButtonsHepler ../actionButtons.videoGridItem}}
 							{{> "videoGridItemControlsPartial"}}
+                            <i class="t63-sortable-handle js-t63-sortable-handle js-t63-additional-action-buttons"><img src="/plugins/63bits-pageBuilder/images/icons/drug.svg" alt="drag icon"></i>
 						</div>
 					</div>
 					{{/each}}`,
@@ -3414,23 +3450,13 @@ var PageBuilderModel = {
             },
 
             sortable: function (container) {
-                if (container || $('.js-video-grid-row').length > 0) {
-                    container = container || '.js-video-grid-row';
-                    $(container).sortable({
-                        placeholder: 'grid-item-placeholder',
-                        start: function (event, ui) {
-                            var className = $(ui.item).attr('class').replace('ui-sortable-handle', '');
-                            $('.grid-item-placeholder').addClass(className);
-                        }
-                    });
-                    $(container).disableSelection();
-                }
+                PageBuilderModel.plugins.sortable('.js-t63-video-grid-row', {handle:true});
             }
         },
 
         jwPlayer: {
             template:
-                `<section class="t63-section js-page-section {{cssClassNames}}" data-section="jwPlayer" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-css-classes="{{cssClassNames}}">
+                `<section class="t63-section js-t63-page-section {{cssClassNames}}" data-section="jwPlayer" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-css-classes="{{cssClassNames}}">
 					<div class="container t63-padding-v{{#if animations}} t63-invisible js-animate{{/if}}" data-animation="{{animations}}">
                         {{> "jwPlayerPartial"}}
                     </div>
@@ -3444,16 +3470,16 @@ var PageBuilderModel = {
 
         jwPlayerGrid: {
             template:
-                `<section class="t63-section t63-jwp-grid-section js-page-section {{cssClassNames}}" data-section="jwPlayerGrid" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-css-classes="{{cssClassNames}}">
+                `<section class="t63-section t63-jwp-grid-section js-t63-page-section {{cssClassNames}}" data-section="jwPlayerGrid" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-css-classes="{{cssClassNames}}">
 					<div class="container t63-padding-v">
-						<div class="row js-jwp-grid-row" data-align-content="{{contentAlignment}}">
+						<div class="row js-t63-jwp-grid-row" data-align-content="{{contentAlignment}}">
                             {{> "jwPlayerGridItemsPartial"}}
                         </div>
-						<div class="btn-row grid-add-cols-btn-wrap js-additional-action-buttons">
+						<div class="t63-btn-row grid-add-cols-btn-wrap js-t63-additional-action-buttons">
 							<div class="justify-content-center">
-								<button class="btn editor-btn js-add-jwp-grid-col-btn" data-size="1" data-cols="col-sm-6 col-lg-3">Small</button>
-								<button class="btn editor-btn js-add-jwp-grid-col-btn" data-size="2" data-cols="col-sm-6 col-lg-4">Medium</button>
-								<button class="btn editor-btn js-add-jwp-grid-col-btn" data-size="3" data-cols="col-sm-6">Large</button>
+								<button class="btn editor-btn js-t63-add-jwp-grid-col-btn" data-size="1" data-cols="col-sm-6 col-lg-3">Small</button>
+								<button class="btn editor-btn js-t63-add-jwp-grid-col-btn" data-size="2" data-cols="col-sm-6 col-lg-4">Medium</button>
+								<button class="btn editor-btn js-t63-add-jwp-grid-col-btn" data-size="3" data-cols="col-sm-6">Large</button>
 							</div>
 						</div>
                     </div>
@@ -3468,10 +3494,11 @@ var PageBuilderModel = {
                 partial:
                     `{{#each items}}
 					<div class="{{columnClassesNames}}">
-						<div class="jwp-grid-item js-section--container js-jwp-grid-item{{#if ../../animations}} t63-invisible js-animate{{/if}}" data-container="jwPlayerGridItem" data-id="{{id}}" data-size="{{size}}" data-animation="{{../../animations}}" data-children-animation="false">
+						<div class="jwp-grid-item js-t63-section--container js-t63-jwp-grid-item{{#if ../../animations}} t63-invisible js-animate{{/if}}" data-container="jwPlayerGridItem" data-id="{{id}}" data-size="{{size}}" data-animation="{{../../animations}}" data-children-animation="false">
                             {{jwPlayerHepler components.jwPlayer ../../actionButtons.jwPlayer}}
                             {{actionButtonsHepler ../actionButtons.jwPlayerGridItem}}
 							{{> "jwPlayerGridItemControlsPartial"}}
+                            <i class="t63-sortable-handle js-t63-sortable-handle js-t63-additional-action-buttons"><img src="/plugins/63bits-pageBuilder/images/icons/drug.svg" alt="drag icon"></i>
 						</div>
 					</div>
 					{{/each}}`,
@@ -3484,34 +3511,24 @@ var PageBuilderModel = {
             },
 
             sortable: function (container) {
-                if (container || $('.js-jwp-grid-row').length > 0) {
-                    container = container || '.js-jwp-grid-row';
-                    $(container).sortable({
-                        placeholder: 'grid-item-placeholder',
-                        start: function (event, ui) {
-                            var className = $(ui.item).attr('class').replace('ui-sortable-handle', '');
-                            $('.grid-item-placeholder').addClass(className);
-                        }
-                    });
-                    $(container).disableSelection();
-                }
+                PageBuilderModel.plugins.sortable('.js-t63-jwp-grid-row', {handle:true});
             }
         },
 
         imgGrid: {
             template:
-                `<section class="t63-section t63-img-grid-section js-page-section {{cssClassNames}}" data-section="imgGrid" data-id="{{id}}" data-type="{{type}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-css-classes="{{cssClassNames}}">
+                `<section class="t63-section t63-img-grid-section js-t63-page-section {{cssClassNames}}" data-section="imgGrid" data-id="{{id}}" data-type="{{type}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-css-classes="{{cssClassNames}}">
 					<div class="container t63-padding-v">
 						{{> "titlePartial"}}
-						<div class="row js-img-grid-row" data-align-content="{{contentAlignment}}">
+						<div class="row js-t63-img-grid-row" data-align-content="{{contentAlignment}}">
                             {{> "imgGridItemsPartial"}}
                         </div>
                         {{> "buttonPartial"}}
-						<div class="btn-row grid-add-cols-btn-wrap js-additional-action-buttons">
+						<div class="t63-btn-row grid-add-cols-btn-wrap js-t63-additional-action-buttons">
 							<div class="justify-content-center">
-								<button class="btn editor-btn js-add-grid-col-btn" data-size="1" data-cols="col-sm-6 col-lg-3">Small</button>
-								<button class="btn editor-btn js-add-grid-col-btn" data-size="2" data-cols="col-sm-6 col-lg-4">Medium</button>
-								<button class="btn editor-btn js-add-grid-col-btn" data-size="3" data-cols="col-sm-6">Large</button>
+								<button class="btn editor-btn js-t63-add-grid-col-btn" data-size="1" data-cols="col-sm-6 col-lg-3">Small</button>
+								<button class="btn editor-btn js-t63-add-grid-col-btn" data-size="2" data-cols="col-sm-6 col-lg-4">Medium</button>
+								<button class="btn editor-btn js-t63-add-grid-col-btn" data-size="3" data-cols="col-sm-6">Large</button>
 							</div>
 						</div>
 					</div>
@@ -3526,17 +3543,17 @@ var PageBuilderModel = {
                 partial:
                     `{{#each items}}
 					<div class="{{columnClassesNames}}">
-						<a class="grid-item js-section--container js-img-grid-item{{#if ../animations}} t63-invisible js-animate{{/if}}" data-container="imgGridItem" data-id="{{id}}" data-size="{{size}}" data-animation="{{../animations}}" data-children-animation="false"{{#if url}} href="{{url}}"{{/if}}{{#if isTargetBlank}} target="_blank"{{/if}}>
-							<div class="img-container js-section--container" data-container="image">
-								<span class="bg-img js-img" style="background-image: url({{image.url}})" data-img-src="{{image.url}}"></span>
+						<a class="grid-item js-t63-section--container js-t63-img-grid-item{{#if ../animations}} t63-invisible js-animate{{/if}}" data-container="imgGridItem" data-id="{{id}}" data-size="{{size}}" data-animation="{{../animations}}" data-children-animation="false"{{#if url}} href="{{url}}"{{/if}}{{#if isTargetBlank}} target="_blank"{{/if}}>
+							<div class="img-container js-t63-section--container" data-container="image">
+								<span class="bg-img js-t63-img" style="background-image: url({{image.url}})" data-img-src="{{image.url}}"></span>
 								{{actionButtonsHepler ../actionButtons.image}}
 							</div>
-							<h3 class="grid-item-title js-title{{#unless title.isActive}} component-disabled{{/unless}}">{{title.value}}</h3>
+							<h3 class="grid-item-title js-t63-title{{#unless title.isActive}} component-disabled{{/unless}}">{{title.value}}</h3>
 
 							<div class="overlay{{#js_if "!this.title.isActive && !this.text.isActive && !this.button.isActive"}} component-disabled{{/js_if}}">
 								<div>
-									<span class="grid-item-title js-title{{#unless title.isActive}} component-disabled{{/unless}}">{{title.value}}</span>
-									<p class="grid-item-text js-text{{#unless text.isActive}} component-disabled{{/unless}}">{{text.value}}</p>
+									<span class="grid-item-title js-t63-title{{#unless title.isActive}} component-disabled{{/unless}}">{{title.value}}</span>
+									<p class="grid-item-text js-t63-text{{#unless text.isActive}} component-disabled{{/unless}}">{{text.value}}</p>
 								</div>
 							</div>
 							{{actionButtonsHepler ../actionButtons.imgGridItem}}
@@ -3553,32 +3570,22 @@ var PageBuilderModel = {
             },
 
             sortable: function (container) {
-                if (container || $('.js-img-grid-row').length > 0) {
-                    container = container || '.js-img-grid-row';
-                    $(container).sortable({
-                        placeholder: 'grid-item-placeholder',
-                        start: function (event, ui) {
-                            var className = $(ui.item).attr('class').replace('ui-sortable-handle', '');
-                            $('.grid-item-placeholder').addClass(className);
-                        }
-                    });
-                    $(container).disableSelection();
-                }
+                PageBuilderModel.plugins.sortable('.js-t63-img-grid-row');
             }
         },
 
         articlesGrid: {
             template:
-                `<section class="t63-section t63-articles-grid-section js-page-section {{cssClassNames}}" data-section="articlesGrid" data-type="{{type}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-css-classes="{{cssClassNames}}" data-ratio="{{ratioSelected}}">
+                `<section class="t63-section t63-articles-grid-section js-t63-page-section {{cssClassNames}}" data-section="articlesGrid" data-type="{{type}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-css-classes="{{cssClassNames}}" data-ratio="{{ratioSelected}}">
 					<div class="container t63-padding-v">
-                        <div class="t63-section-title-container js-section-title-container">{{> "titlePartial"}}</div>
-                        <div class="t63-section-text-container js-section-text-container">{{> "textPartial"}}</div>
-						<div class="row js-articles-grid-row" data-align-content="{{contentAlignment}}">
+                        <div class="t63-section-title-container js-t63-section-title-container">{{> "titlePartial"}}</div>
+                        <div class="t63-section-text-container js-t63-section-text-container">{{> "textPartial"}}</div>
+						<div class="row js-t63-articles-grid-row" data-align-content="{{contentAlignment}}">
 							{{> "articlesGridItemsPartial"}}
 						</div>
-						<div class="btn-row add-new-grid-item-btn-wrap js-additional-action-buttons">
+						<div class="t63-btn-row add-new-grid-item-btn-wrap js-t63-additional-action-buttons">
 							<div class="justify-content-center">
-								<button class="btn editor-btn js-add-articles-grid-item-btn">New item</button>
+								<button class="btn editor-btn js-t63-add-articles-grid-item-btn">New item</button>
 							</div>
 						</div>
 					</div>
@@ -3593,7 +3600,7 @@ var PageBuilderModel = {
                 partial:
                     `{{#each items}}
 					<div class="col-sm-6 col-lg-4">
-                        <div class="grid-item js-articles-grid-item js-section--container{{#if ../animations}} t63-invisible js-animate{{/if}}" data-container="articlesGridItem" data-animation="{{../animations}}" data-children-animation="false">
+                        <div class="grid-item js-t63-articles-grid-item js-t63-section--container{{#if ../animations}} t63-invisible js-animate{{/if}}" data-container="articlesGridItem" data-animation="{{../animations}}" data-children-animation="false">
                             {{imageHepler components.image ../actionButtons.image}}
                             <div class="content">
                                 {{titleHepler components.title}}
@@ -3601,6 +3608,7 @@ var PageBuilderModel = {
 								{{buttonHepler components.button ../actionButtons.button}}
                             </div>
 							{{actionButtonsHepler ../actionButtons.articlesGridItem}}
+                            <i class="t63-sortable-handle js-t63-sortable-handle js-t63-additional-action-buttons"><img src="/plugins/63bits-pageBuilder/images/icons/drug.svg" alt="drag icon"></i>
                         </div>
                     </div>
 					{{/each}}`,
@@ -3610,21 +3618,25 @@ var PageBuilderModel = {
                 getHtml: function (model) {
                     return PageBuilderModel.sections.articlesGrid.items.template(model);
                 }
+            },
+
+            sortable: function (container) {
+                PageBuilderModel.plugins.sortable('.js-t63-articles-grid-row', {handle:true});
             }
         },
 
         articlesList: {
             template:
-                `<section class="t63-section t63-articles-list-section js-page-section {{cssClassNames}}" data-section="articlesList" data-type="{{type}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-css-classes="{{cssClassNames}}" data-ratio="{{ratioSelected}}">
+                `<section class="t63-section t63-articles-list-section js-t63-page-section {{cssClassNames}}" data-section="articlesList" data-type="{{type}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-css-classes="{{cssClassNames}}" data-ratio="{{ratioSelected}}">
 					<div class="container t63-padding-v">
-                        <div class="t63-section-title-container js-section-title-container">{{> "titlePartial"}}</div>
-                        <div class="t63-section-text-container js-section-text-container">{{> "textPartial"}}</div>
-						<div class="js-articles-list-container">
+                        <div class="t63-section-title-container js-t63-section-title-container">{{> "titlePartial"}}</div>
+                        <div class="t63-section-text-container js-t63-section-text-container">{{> "textPartial"}}</div>
+						<div class="js-t63-articles-list-container">
 							{{> "articlesListItemsPartial"}}
 						</div>
-						<div class="btn-row add-new-list-item-btn-wrap js-additional-action-buttons">
+						<div class="t63-btn-row add-new-list-item-btn-wrap js-t63-additional-action-buttons">
 							<div class="justify-content-center">
-								<button class="btn editor-btn js-add-articles-list-item-btn">New item</button>
+								<button class="btn editor-btn js-t63-add-articles-list-item-btn">New item</button>
 							</div>
 						</div>
 					</div>
@@ -3638,7 +3650,7 @@ var PageBuilderModel = {
             items: {
                 partial:
                     `{{#each items}}
-                    <div class="list-item js-articles-list-item js-section--container{{#if ../animations}} t63-invisible js-animate{{/if}}" data-container="articlesListItem" data-animation="{{../animations}}" data-children-animation="false">
+                    <div class="list-item js-t63-articles-list-item js-t63-section--container{{#if ../animations}} t63-invisible js-animate{{/if}}" data-container="articlesListItem" data-animation="{{../animations}}" data-children-animation="false">
                         {{imageHepler components.image ../actionButtons.image}}
                         <div class="content">
                             {{titleHepler components.title}}
@@ -3646,6 +3658,7 @@ var PageBuilderModel = {
 							{{buttonHepler components.button ../actionButtons.button}}
                         </div>
 						{{actionButtonsHepler ../actionButtons.articlesListItem}}
+                        <i class="t63-sortable-handle js-t63-sortable-handle js-t63-additional-action-buttons"><img src="/plugins/63bits-pageBuilder/images/icons/drug.svg" alt="drag icon"></i>
                     </div>
 					{{/each}}`,
 
@@ -3654,69 +3667,27 @@ var PageBuilderModel = {
                 getHtml: function (model) {
                     return PageBuilderModel.sections.articlesList.items.template(model);
                 }
-            }
-        },
-
-        packagesGrid: {
-            template:
-                `<section class="t63-section t63-packages-grid-section js-page-section {{cssClassNames}}" data-section="packagesGrid" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-css-classes="{{cssClassNames}}">
-					<div class="container t63-padding-v">
-                        <div class="t63-section-title-container js-section-title-container">{{> "titlePartial"}}</div>
-                        <div class="t63-section-text-container js-section-text-container">{{> "textPartial"}}</div>
-						<div class="row js-packages-grid-row" data-align-content="{{contentAlignment}}">
-							{{> "packagesGridItemsPartial"}}
-						</div>
-						<div class="btn-row add-new-grid-item-btn-wrap js-additional-action-buttons">
-							<div class="justify-content-center">
-								<button class="btn editor-btn js-add-packages-grid-item-btn" data-size="1" data-cols="col-sm-6 col-lg-3">Small</button>
-								<button class="btn editor-btn js-add-packages-grid-item-btn" data-size="2" data-cols="col-sm-6 col-lg-4">Medium</button>
-								<button class="btn editor-btn js-add-packages-grid-item-btn" data-size="3" data-cols="col-sm-6">Large</button>
-							</div>
-						</div>
-					</div>
-					{{> "sectionEditorContainerPartial"}}
-                </section>`,
-
-            getHtml: function (model) {
-                return PageBuilderModel.sections.packagesGrid.template(model);
             },
 
-            items: {
-                partial:
-                    `{{#each items}}
-					<div class="{{columnClassesNames}}">
-                        <div class="packages-grid-item js-packages-grid-item js-section--container has-circled-icon{{#if ../../animations}} t63-invisible js-animate{{/if}}" data-container="packagesGridItem" data-id="{{id}}" data-size="{{size}}" data-media-link="true" data-animation="{{../../animations}}" data-children-animation="false">
-                            {{iconHepler components.icon ../actionButtons.icon}}
-                            {{titleHepler components.title false false}}
-							{{textHepler components.text false false}}
-							{{actionButtonsHepler ../actionButtons.packagesGridItem}}
-                            {{> "packagesGridItemControlsPartial"}}
-                        </div>
-                    </div>
-					{{/each}}`,
-
-                template: '{{> "packagesGridItemsPartial"}}',
-
-                getHtml: function (model) {
-                    return PageBuilderModel.sections.packagesGrid.items.template(model);
-                }
+            sortable: function (container) {
+                PageBuilderModel.plugins.sortable('.js-t63-articles-list-container', { handle: true });
             }
         },
 
         accordion: {
             template:
-                `<section class="t63-section t63-accordion-section js-page-section {{cssClassNames}}" data-section="accordion" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-css-classes="{{cssClassNames}}">
+                `<section class="t63-section t63-accordion-section js-t63-page-section {{cssClassNames}}" data-section="accordion" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-css-classes="{{cssClassNames}}">
                     <div class="container t63-padding-v">
-                        <div class="t63-section-title-container js-section-title-container">{{> "titlePartial"}}</div>
-                        <div class="t63-section-text-container js-section-text-container">{{> "textPartial"}}</div>
+                        <div class="t63-section-title-container js-t63-section-title-container">{{> "titlePartial"}}</div>
+                        <div class="t63-section-text-container js-t63-section-text-container">{{> "textPartial"}}</div>
                         <div class="content-wrap">
                             <div class="accordion-container">
                                 <div class="js-t63-accordion-items-row">
 					                {{> "accordionItemsPartial"}}
 						        </div>
-					            <div class="btn-row add-accordion-item-btn-wrap js-additional-action-buttons">
+					            <div class="t63-btn-row add-accordion-item-btn-wrap js-t63-additional-action-buttons">
 							        <div class="justify-content-center">
-								        <button class="btn editor-btn js-add-accordion-item-btn">New item</button>
+								        <button class="btn editor-btn js-t63-add-accordion-item-btn">New item</button>
 							        </div>
 						        </div>
 						    </div>
@@ -3732,8 +3703,8 @@ var PageBuilderModel = {
             items: {
                 partial:
                     `{{#each items}}
-					<article class="accordion-item js-section--container js-t63-accordion-item{{#if ../animations}} t63-invisible js-animate{{/if}}" data-container="accordionItem" data-animation="{{../animations}}" data-children-animation="false">
-                        <i class="handle js-additional-action-buttons"><img src="/plugins/63bits-pageBuilder/images/icons/drug.svg" alt="drag icon"></i>
+					<article class="accordion-item js-t63-section--container js-t63-accordion-item{{#if ../animations}} t63-invisible js-animate{{/if}}" data-container="accordionItem" data-animation="{{../animations}}" data-children-animation="false">
+                        <i class="handle js-t63-sortable-handle js-t63-additional-action-buttons"><img src="/plugins/63bits-pageBuilder/images/icons/drug.svg" alt="drag icon"></i>
 						<div class="accordion-item-head js-t63-accordion-item-head">
                             {{fontAwesomeIconHepler components.fontAwesomeIcon ../actionButtons.fontAwesomeIcon}}
                             {{titleHepler components.title}}
@@ -3754,36 +3725,25 @@ var PageBuilderModel = {
             },
 
             sortable: function (container) {
-                if (container || $('.js-t63-accordion-items-row').length > 0) {
-                    container = container || '.js-t63-accordion-items-row';
-
-                    $(container).sortable({
-                        handle: '.handle',
-                        placeholder: 'accordion-item-placeholder',
-                        start: function (event, ui) {
-                            var className = $(ui.item).attr('class').replace('ui-sortable-handle', '');
-                            $('.accordion-item-placeholder').addClass(className);
-                        }
-                    });
-                }
+                PageBuilderModel.plugins.sortable('.js-t63-accordion-items-row', {handle:true});
             }
         },
 
         tabs: {
             template:
-                `<section class="t63-section js-page-section {{cssClassNames}}" data-section="tabs" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-css-classes="{{cssClassNames}}">
+                `<section class="t63-section js-t63-page-section {{cssClassNames}}" data-section="tabs" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-css-classes="{{cssClassNames}}">
                     <div class="container t63-padding-v tabs-container{{#if animations}} t63-invisible js-animate{{/if}}" data-animation="{{animations}}" data-children-animation="false">
-                        <div class="t63-section-title-container js-section-title-container">{{> "titlePartial"}}</div>
-                        <div class="t63-section-text-container js-section-text-container">{{> "textPartial"}}</div>
-					    <ul class="nav tab-nav js-tab-nav">
+                        <div class="t63-section-title-container js-t63-section-title-container">{{> "titlePartial"}}</div>
+                        <div class="t63-section-text-container js-t63-section-text-container">{{> "textPartial"}}</div>
+					    <ul class="nav tab-nav js-t63-tab-nav">
                             {{> "tabNavItemsPartial"}}
                         </ul>
-                        <div class="tab-content js-tab-content">
+                        <div class="tab-content js-t63-tab-content">
                             {{> "tabContentItemsPartial"}}
                         </div>
-					    <div class="btn-row add-accordion-item-btn-wrap js-additional-action-buttons">
+					    <div class="t63-btn-row add-accordion-item-btn-wrap js-t63-additional-action-buttons">
 							<div class="justify-content-center">
-								<button class="btn editor-btn js-add-tab-item-btn">New item</button>
+								<button class="btn editor-btn js-t63-add-tab-item-btn">New item</button>
 							</div>
 						</div>
                     </div>
@@ -3797,12 +3757,12 @@ var PageBuilderModel = {
             navItems: {
                 partial:
                     `{{#each items}}
-					<li class="js-section--container js-tab-nav-item" data-container="tabItem">
+					<li class="js-t63-section--container js-t63-tab-nav-item" data-container="tabItem">
                         <a href="#{{id}}">
-                            <span class="t63-icon-wrap js-tab-item-icon-wrap{{#unless components.fontAwesomeIcon.isActive}} component-disabled{{/unless}}">
+                            <span class="t63-icon-wrap js-t63-tab-item-icon-wrap{{#unless components.fontAwesomeIcon.isActive}} component-disabled{{/unless}}">
                                 <i class="{{components.fontAwesomeIcon.name}}"></i>
                             </span>
-                            <span class="js-tab-item-name">{{name}}</span>
+                            <span class="js-t63-tab-item-name">{{name}}</span>
                         </a>
                         {{actionButtonsHepler ../actionButtons.tabItem}}
                         {{> "tabItemControlsPartial"}}
@@ -3819,7 +3779,7 @@ var PageBuilderModel = {
             contentItems: {
                 partial:
                     `{{#each items}}
-					<div class="tab-pane fade js-tab-content-item" id="{{id}}">
+					<div class="tab-pane fade js-t63-tab-content-item" id="{{id}}">
                         {{textHepler components.text}}
                     </div>
 					{{/each}}`,
@@ -3832,26 +3792,9 @@ var PageBuilderModel = {
             }
         },
 
-        html: {
-            template:
-                `<section class="t63-section js-page-section {{cssClassNames}}" data-section="html" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-css-classes="{{cssClassNames}}">
-					<div class="container t63-padding-v">
-                        <div class="section-row text-container js-section--container" data-container="text">
-                            <textarea class="form-control js-plain-html-input" rows="10">{{components.text.html}}</textarea>
-                            <div class="plain-html-wrap js-plain-html-wrap"><pre class="js-text-wrap"></pre></div>
-                        </div>
-                    </div>
-					{{> "sectionEditorContainerPartial"}}
-				</section>`,
-
-            getHtml: function (model) {
-                return PageBuilderModel.sections.html.template(model);
-            }
-        },
-
         testimonials: {
             template:
-                `<div class="t63-section testimonials-section js-page-section {{cssClassNames}}" data-section="testimonials" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-css-classes="{{cssClassNames}}">
+                `<div class="t63-section testimonials-section js-t63-page-section {{cssClassNames}}" data-section="testimonials" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-css-classes="{{cssClassNames}}">
                     <div class="container t63-padding-v">
 					    {{> "titlePartial"}}
 					
@@ -3890,18 +3833,77 @@ var PageBuilderModel = {
             }
         },
 
+        packagesGrid: {
+            template:
+                `<section class="t63-section t63-packages-grid-section js-t63-page-section {{cssClassNames}}" data-section="packagesGrid" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-css-classes="{{cssClassNames}}">
+					<div class="container t63-padding-v">
+                        <div class="t63-section-title-container js-t63-section-title-container">{{> "titlePartial"}}</div>
+                        <div class="t63-section-text-container js-t63-section-text-container">{{> "textPartial"}}</div>
+						<div class="row js-t63-packages-grid-row" data-align-content="{{contentAlignment}}">
+							{{> "packagesGridItemsPartial"}}
+						</div>
+						<div class="t63-btn-row add-new-grid-item-btn-wrap js-t63-additional-action-buttons">
+							<div class="justify-content-center">
+								<button class="btn editor-btn js-t63-add-packages-grid-item-btn" data-size="1" data-cols="col-sm-6 col-lg-3">Small</button>
+								<button class="btn editor-btn js-t63-add-packages-grid-item-btn" data-size="2" data-cols="col-sm-6 col-lg-4">Medium</button>
+								<button class="btn editor-btn js-t63-add-packages-grid-item-btn" data-size="3" data-cols="col-sm-6">Large</button>
+							</div>
+						</div>
+					</div>
+					{{> "sectionEditorContainerPartial"}}
+                </section>`,
+
+            getHtml: function (model) {
+                return PageBuilderModel.sections.packagesGrid.template(model);
+            },
+
+            items: {
+                partial:
+                    `{{#each items}}
+					<div class="{{columnClassesNames}}">
+                        <div class="card t63-packages-grid-item js-t63-packages-grid-item js-t63-section--container{{#if ../../animations}} t63-invisible js-animate{{/if}}" data-container="packagesGridItem" data-id="{{id}}" data-size="{{size}}" data-media-link="true" data-animation="{{../../animations}}" data-children-animation="false">
+                            <div class="card-header">
+                                {{iconHepler components.icon ../actionButtons.icon}}
+                                {{titleHepler components.title false false}}
+                                {{textPlainHelper components.subTitle}}
+                            </div>
+                            <div class="card-body">
+                                {{textHepler components.text false false}}
+                                {{buttonHepler components.button ../actionButtons.button}}
+                            </div>
+							{{actionButtonsHepler ../actionButtons.packagesGridItem}}
+                            {{> "packagesGridItemControlsPartial"}}
+                            <i class="t63-sortable-handle js-t63-sortable-handle js-t63-additional-action-buttons"><img src="/plugins/63bits-pageBuilder/images/icons/drug.svg" alt="drag icon"></i>
+                        </div>
+                    </div>
+					{{/each}}`,
+
+                template: '{{> "packagesGridItemsPartial"}}',
+
+                getHtml: function (model) {
+                    return PageBuilderModel.sections.packagesGrid.items.template(model);
+                }
+            },
+
+            sortable: function () {
+                PageBuilderModel.plugins.sortable('.js-t63-packages-grid-row', { handle: true });
+            }
+        },
+
         services: {
             template:
-                `<section class="t63-section t63-services-section js-page-section {{cssClassNames}}" data-section="services" data-type="{{type}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-css-classes="{{cssClassNames}}">
+                `<section class="t63-section t63-services-section js-t63-page-section {{cssClassNames}}" data-section="services" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-css-classes="{{cssClassNames}}">
 					<div class="container t63-padding-v">
-                        <div class="t63-section-title-container js-section-title-container">{{> "titlePartial"}}</div>
-                        <div class="t63-section-text-container js-section-text-container">{{> "textPartial"}}</div>
+                        <div class="t63-section-title-container js-t63-section-title-container">{{> "titlePartial"}}</div>
+                        <div class="t63-section-text-container js-t63-section-text-container">{{> "textPartial"}}</div>
 						<div class="row js-t63-services-grid-row" data-align-content="{{contentAlignment}}">
 							{{> "servicesGridItemsPartial"}}
 						</div>
-						<div class="btn-row add-new-grid-item-btn-wrap js-additional-action-buttons">
+                        <div class="t63-btn-row add-new-grid-item-btn-wrap js-t63-additional-action-buttons">
 							<div class="justify-content-center">
-								<button class="btn editor-btn js-add-services-grid-item-btn">New item</button>
+								<button class="btn editor-btn js-t63-add-services-grid-item-btn" data-size="1" data-cols="col-sm-6 col-lg-3">Small</button>
+								<button class="btn editor-btn js-t63-add-services-grid-item-btn" data-size="2" data-cols="col-sm-6 col-lg-4">Medium</button>
+								<button class="btn editor-btn js-t63-add-services-grid-item-btn" data-size="3" data-cols="col-sm-6">Large</button>
 							</div>
 						</div>
 					</div>
@@ -3915,16 +3917,18 @@ var PageBuilderModel = {
             items: {
                 partial:
                     `{{#each items}}
-					<div class="col-sm-6 col-lg-4">
-                        <div class="grid-item js-t63-services-grid-item js-section--container{{#if ../animations}} t63-invisible js-animate{{/if}}" data-container="servicesGridItem" data-animation="{{../animations}}" data-children-animation="false">
-                            {{iconHepler components.icon ../actionButtons.icon}}
-                            <div class="content">
-                                {{titleHepler components.title}}
+					<div class="{{columnClassesNames}}">
+                        <div class="card t63-services-grid-item js-t63-services-grid-item js-t63-section--container{{#if ../../animations}} t63-invisible js-animate{{/if}}" data-container="servicesGridItem" data-animation="{{../animations}}" data-id="{{id}}" data-size="{{size}}" data-media-link="true" data-animation="{{../../animations}}"  data-children-animation="false">
+                            <div class="card-body">
+                                {{fontAwesomeIconHepler components.fontAwesomeIcon ../actionButtons.fontAwesomeIcon}}
+                                {{titleHepler components.title false false}}
                                 {{textPlainHelper components.subTitle}}
 								{{textHepler components.text}}
 								{{buttonHepler components.button ../actionButtons.button}}
                             </div>
 							{{actionButtonsHepler ../actionButtons.servicesGridItem}}
+                            {{> "servicesGridItemControlsPartial"}}
+                            <i class="t63-sortable-handle js-t63-sortable-handle js-t63-additional-action-buttons"><img src="/plugins/63bits-pageBuilder/images/icons/drug.svg" alt="drag icon"></i>
                         </div>
                     </div>
 					{{/each}}`,
@@ -3934,12 +3938,16 @@ var PageBuilderModel = {
                 getHtml: function (model) {
                     return PageBuilderModel.sections.services.items.template(model);
                 }
+            },
+
+            sortable: function (container) {
+                PageBuilderModel.plugins.sortable('.js-t63-services-grid-row', { handle: true });
             }
         },
 
         card2Col: {
             template:
-                `<section class="t63-section t63-card2col-section js-page-section {{additionalClassNames}} {{cssClassNames}}" data-section="card2Col" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-additional-classes="{{additionalClassNames}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-reverse="{{isReversed}}" data-css-classes="{{cssClassNames}}">
+                `<section class="t63-section t63-card2col-section js-t63-page-section {{additionalClassNames}} {{cssClassNames}}" data-section="card2Col" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-additional-classes="{{additionalClassNames}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-reverse="{{isReversed}}" data-css-classes="{{cssClassNames}}">
                     <article class="container t63-padding-v">
 					    <div class="card-col{{#if animations}} t63-invisible js-animate{{/if}}" data-animation="{{animations}}">
 						    {{> "titlePartial"}}
@@ -3958,7 +3966,7 @@ var PageBuilderModel = {
 
         card2ColWithImg: {
             template:
-                `<div class="t63-section t63-card2col-with-img-section js-page-section {{cssClassNames}}" data-section="card2ColWithImg" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-is-card="{{isCard}}" data-reverse="{{isReversed}}" data-css-classes="{{cssClassNames}}">
+                `<div class="t63-section t63-card2col-with-img-section js-t63-page-section {{cssClassNames}}" data-section="card2ColWithImg" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-is-card="{{isCard}}" data-reverse="{{isReversed}}" data-css-classes="{{cssClassNames}}">
                     <div class="container t63-padding-v">
                         <div class="content">
                             <div class="info-wrap">
@@ -3979,7 +3987,7 @@ var PageBuilderModel = {
 
         mediaObject: {
             template:
-                `<section class="t63-section t63-media-object-section js-page-section {{cssClassNames}}" data-section="mediaObject" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-additional-classes="{{additionalClassNames}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-is-card="{{isCard}}" data-css-classes="{{cssClassNames}}">
+                `<section class="t63-section t63-media-object-section js-t63-page-section {{cssClassNames}}" data-section="mediaObject" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-additional-classes="{{additionalClassNames}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-is-card="{{isCard}}" data-css-classes="{{cssClassNames}}">
                     <div class="container t63-padding-v">
 					    <article class="has-circled-icon{{#if animations}} t63-invisible js-animate{{/if}}" data-animation="{{animations}}">
                             {{> "iconPartial"}}
@@ -3999,18 +4007,18 @@ var PageBuilderModel = {
 
         mediaObjectsGrid: {
             template:
-                `<section class="t63-section t63-media-objects-grid-section js-page-section {{cssClassNames}}" data-section="mediaObjectsGrid" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-css-classes="{{cssClassNames}}">
+                `<section class="t63-section t63-media-objects-grid-section js-t63-page-section {{cssClassNames}}" data-section="mediaObjectsGrid" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-css-classes="{{cssClassNames}}">
 					<div class="container t63-padding-v">
-                        <div class="t63-section-title-container js-section-title-container">{{> "titlePartial"}}</div>
-                        <div class="t63-section-text-container js-section-text-container">{{> "textPartial"}}</div>
-						<div class="row js-media-objects-grid-row" data-align-content="{{contentAlignment}}">
+                        <div class="t63-section-title-container js-t63-section-title-container">{{> "titlePartial"}}</div>
+                        <div class="t63-section-text-container js-t63-section-text-container">{{> "textPartial"}}</div>
+						<div class="row js-t63-media-objects-grid-row" data-align-content="{{contentAlignment}}">
 							{{> "mediaObjectsGridItemsPartial"}}
 						</div>
-						<div class="btn-row add-new-grid-item-btn-wrap js-additional-action-buttons">
+						<div class="t63-btn-row add-new-grid-item-btn-wrap js-t63-additional-action-buttons">
 							<div class="justify-content-center">
-								<button class="btn editor-btn js-add-media-objects-grid-col-btn" data-size="1" data-cols="col-sm-6 col-lg-3">Small</button>
-								<button class="btn editor-btn js-add-media-objects-grid-col-btn" data-size="2" data-cols="col-sm-6 col-lg-4">Medium</button>
-								<button class="btn editor-btn js-add-media-objects-grid-col-btn" data-size="3" data-cols="col-sm-6">Large</button>
+								<button class="btn editor-btn js-t63-add-media-objects-grid-col-btn" data-size="1" data-cols="col-sm-6 col-lg-3">Small</button>
+								<button class="btn editor-btn js-t63-add-media-objects-grid-col-btn" data-size="2" data-cols="col-sm-6 col-lg-4">Medium</button>
+								<button class="btn editor-btn js-t63-add-media-objects-grid-col-btn" data-size="3" data-cols="col-sm-6">Large</button>
 							</div>
 						</div>
 					</div>
@@ -4025,7 +4033,7 @@ var PageBuilderModel = {
                 partial:
                     `{{#each items}}
 					<div class="{{columnClassesNames}}">
-                        <div class="t63-media-objects-grid-item js-media-objects-grid-item js-section--container has-rounded-icon{{#if ../../animations}} t63-invisible js-animate{{/if}}" data-container="mediaObjectsGridItem" data-id="{{id}}" data-size="{{size}}" data-animation="{{../../animations}}" data-children-animation="false">
+                        <div class="t63-media-objects-grid-item js-t63-media-objects-grid-item js-t63-section--container has-rounded-icon{{#if ../../animations}} t63-invisible js-animate{{/if}}" data-container="mediaObjectsGridItem" data-id="{{id}}" data-size="{{size}}" data-animation="{{../../animations}}" data-children-animation="false">
                             {{iconHepler components.icon ../actionButtons.icon}}
                             <div class="info-wrap">
                                 {{titleHepler components.title false false}}
@@ -4033,6 +4041,7 @@ var PageBuilderModel = {
                             </div>
 							{{actionButtonsHepler ../actionButtons.mediaObjectsGridItem}}
                             {{> "mediaObjectsGridItemControlsPartial"}}
+                            <i class="t63-sortable-handle js-t63-sortable-handle js-t63-additional-action-buttons"><img src="/plugins/63bits-pageBuilder/images/icons/drug.svg" alt="drag icon"></i>
                         </div>
                     </div>
 					{{/each}}`,
@@ -4042,23 +4051,80 @@ var PageBuilderModel = {
                 getHtml: function (model) {
                     return PageBuilderModel.sections.mediaObjectsGrid.items.template(model);
                 }
+            },
+
+            sortable: function (container) {
+                PageBuilderModel.plugins.sortable('.js-t63-media-objects-grid-row', { handle: true });
+            }
+        },
+
+        cardsGrid: {
+            template:
+                `<section class="t63-section t63-cards-grid-section js-t63-page-section {{cssClassNames}}" data-section="cardsGrid" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-css-classes="{{cssClassNames}}">
+					<div class="container t63-padding-v">
+                        <div class="t63-section-title-container js-t63-section-title-container">{{> "titlePartial"}}</div>
+                        <div class="t63-section-text-container js-t63-section-text-container">{{> "textPartial"}}</div>
+						<div class="row js-t63-cards-grid-row" data-align-content="{{contentAlignment}}">
+							{{> "cardsGridItemsPartial"}}
+						</div>
+						<div class="t63-btn-row add-new-grid-item-btn-wrap js-t63-additional-action-buttons">
+							<div class="justify-content-center">
+								<button class="btn editor-btn js-t63-add-cards-grid-col-btn" data-size="1" data-cols="col-sm-6 col-lg-3">Small</button>
+								<button class="btn editor-btn js-t63-add-cards-grid-col-btn" data-size="2" data-cols="col-sm-6 col-lg-4">Medium</button>
+								<button class="btn editor-btn js-t63-add-cards-grid-col-btn" data-size="3" data-cols="col-sm-6">Large</button>
+							</div>
+						</div>
+					</div>
+					{{> "sectionEditorContainerPartial"}}
+                </section>`,
+
+            getHtml: function (model) {
+                return PageBuilderModel.sections.cardsGrid.template(model);
+            },
+
+            items: {
+                partial:
+                    `{{#each items}}
+					<div class="{{columnClassesNames}}">
+                        <div class="cards-grid-item js-t63-cards-grid-item js-t63-section--container{{#if ../../animations}} t63-invisible js-animate{{/if}}" data-container="cardsGridItem" data-id="{{id}}" data-size="{{size}}" data-media-link="true" data-animation="{{../../animations}}" data-children-animation="false">
+                            <div class="head">
+                                {{iconHepler components.icon ../actionButtons.icon}}
+                                {{titleHepler components.title false false}}
+                            </div>
+							{{textHepler components.text false false}}
+							{{actionButtonsHepler ../actionButtons.cardsGridItem}}
+                            {{> "cardsGridItemControlsPartial"}}
+                            <i class="t63-sortable-handle js-t63-sortable-handle js-t63-additional-action-buttons"><img src="/plugins/63bits-pageBuilder/images/icons/drug.svg" alt="drag icon"></i>
+                        </div>
+                    </div>
+					{{/each}}`,
+
+                template: '{{> "cardsGridItemsPartial"}}',
+
+                getHtml: function (model) {
+                    return PageBuilderModel.sections.cardsGrid.items.template(model);
+                }
+            },
+
+            sortable: function (container) {
+                PageBuilderModel.plugins.sortable('.js-t63-cards-grid-row', { handle: true });
             }
         },
 
         flipCardsGrid: {
             template:
-                `<section class="t63-section t63-flip-cards-section js-page-section {{cssClassNames}}" data-section="flipCardsGrid" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-css-classes="{{cssClassNames}}">
+                `<section class="t63-section t63-flip-cards-section js-t63-page-section {{cssClassNames}}" data-section="flipCardsGrid" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-css-classes="{{cssClassNames}}">
 					<div class="container t63-padding-v">
-                        <div class="t63-section-title-container js-section-title-container">{{> "titlePartial"}}</div>
-                        <div class="t63-section-text-container js-section-text-container">{{> "textPartial"}}</div>
-						<div class="row js-flip-cards-grid-row" data-align-content="{{contentAlignment}}">
+                        <div class="t63-section-title-container js-t63-section-title-container">{{> "titlePartial"}}</div>
+                        <div class="t63-section-text-container js-t63-section-text-container">{{> "textPartial"}}</div>
+						<div class="row js-t63-flip-cards-grid-row" data-align-content="{{contentAlignment}}">
 							{{> "flipCardsGridItemsPartial"}}
 						</div>
-                        <div class="btn-row add-new-grid-item-btn-wrap js-additional-action-buttons">
+                        <div class="t63-btn-row add-new-grid-item-btn-wrap js-t63-additional-action-buttons">
 							<div class="justify-content-center">
-								<button class="btn editor-btn js-add-flip-cards-grid-item-btn" data-size="1" data-cols="col-sm-6 col-lg-3">Small</button>
-								<button class="btn editor-btn js-add-flip-cards-grid-item-btn" data-size="2" data-cols="col-sm-6 col-lg-4">Medium</button>
-								<button class="btn editor-btn js-add-flip-cards-grid-item-btn" data-size="3" data-cols="col-sm-6">Large</button>
+								<button class="btn editor-btn js-t63-add-flip-cards-grid-item-btn" data-size="1" data-cols="col-sm-6 col-lg-3">Small</button>
+								<button class="btn editor-btn js-t63-add-flip-cards-grid-item-btn" data-size="2" data-cols="col-sm-6 col-lg-4">Medium</button>
+								<button class="btn editor-btn js-t63-add-flip-cards-grid-item-btn" data-size="3" data-cols="col-sm-6">Large</button>
 							</div>
 						</div>
 					</div>
@@ -4073,11 +4139,11 @@ var PageBuilderModel = {
                 partial:
                     `{{#each items}}
 					<div class="{{columnClassesNames}}">
-                        <div class="flip-card-item js-flip-cards-grid-item js-section--container has-circled-icon{{#if ../../../animations}} t63-invisible js-animate{{/if}}" data-container="flipCardsGridItem" data-id="{{id}}" data-size="{{size}}" data-clickable="{{rotateOnClick}}" data-animation="{{../../../animations}}" data-children-animation="false">
+                        <div class="flip-card-item js-t63-flip-cards-grid-item js-t63-section--container has-circled-icon{{#if ../../../animations}} t63-invisible js-animate{{/if}}" data-container="flipCardsGridItem" data-id="{{id}}" data-size="{{size}}" data-clickable="{{rotateOnClick}}" data-animation="{{../../../animations}}" data-children-animation="false">
                             <div class="flip-wrapper">
                                 <div class="flip-front">
                                     <div class="front-contents">
-                                        <div class="media-container js-media-container" data-media-type="{{#if hasIcon}}icon{{else}}image{{/if}}" data-icon-type="faIcon">
+                                        <div class="media-container js-t63-media-container" data-media-type="{{#if hasIcon}}icon{{else}}image{{/if}}" data-icon-type="faIcon">
                                             {{iconHepler components.icon ../actionButtons.icon}}
                                             {{imageHepler components.image ../actionButtons.image}}
                                         </div>                                        
@@ -4092,6 +4158,7 @@ var PageBuilderModel = {
                             </div>
                             {{actionButtonsHepler ../actionButtons.flipCardsGridItem}}
                             {{> "flipCardsGridItemControlsPartial"}}
+                            <i class="t63-sortable-handle js-t63-sortable-handle js-t63-additional-action-buttons"><img src="/plugins/63bits-pageBuilder/images/icons/drug.svg" alt="drag icon"></i>
                         </div>
                     </div>
 					{{/each}}`,
@@ -4101,12 +4168,176 @@ var PageBuilderModel = {
                 getHtml: function (model) {
                     return PageBuilderModel.sections.flipCardsGrid.items.template(model);
                 },
+            },
+
+            sortable: function (container) {
+                PageBuilderModel.plugins.sortable('.js-t63-flip-cards-grid-row', { handle: true });
+            }
+        },
+
+        postCardsGrid: {
+            template:
+                `<section class="t63-section t63-post-cards-grid-section js-t63-page-section {{cssClassNames}}" data-section="postCardsGrid" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-css-classes="{{cssClassNames}}" data-ratio="{{ratioSelected}}">
+					<div class="container t63-padding-v">
+                        <div class="t63-section-title-container js-t63-section-title-container">{{> "titlePartial"}}</div>
+                        <div class="t63-section-text-container js-t63-section-text-container">{{> "textPartial"}}</div>
+						<div class="row js-t63-post-cards-grid-row" data-align-content="{{contentAlignment}}">
+							{{> "postCardsGridItemsPartial"}}
+						</div>
+						<div class="t63-btn-row add-new-grid-item-btn-wrap js-t63-additional-action-buttons">
+							<div class="justify-content-center">
+								<button class="btn editor-btn js-t63-add-post-cards-grid-col-btn" data-size="1" data-cols="col-sm-6 col-lg-3">Small</button>
+								<button class="btn editor-btn js-t63-add-post-cards-grid-col-btn" data-size="2" data-cols="col-sm-6 col-lg-4">Medium</button>
+								<button class="btn editor-btn js-t63-add-post-cards-grid-col-btn" data-size="3" data-cols="col-sm-6">Large</button>
+							</div>
+						</div>
+					</div>
+					{{> "sectionEditorContainerPartial"}}
+                </section>`,
+
+            getHtml: function (model) {
+                return PageBuilderModel.sections.postCardsGrid.template(model);
+            },
+
+            items: {
+                partial:
+                    `{{#each items}}
+					<div class="{{columnClassesNames}}">
+                        <div class="card t63-post-cards-grid-item js-t63-post-cards-grid-item js-t63-section--container{{#if ../animations}} t63-invisible js-animate{{/if}}" data-container="postCardsGridItem" data-id="{{id}}" data-size="{{size}}" data-media-link="true" data-animation="{{../animations}}" data-children-animation="false">
+                            {{imageHepler components.image ../actionButtons.image}}
+                            <div class="card-body">
+                                {{titleHepler components.title}}
+								{{textHepler components.text}}
+                            </div>
+							{{actionButtonsHepler ../actionButtons.postCardsGridItem}}
+                            {{> "postCardsGridItemControlsPartial"}}
+                            <i class="t63-sortable-handle js-t63-sortable-handle js-t63-additional-action-buttons"><img src="/plugins/63bits-pageBuilder/images/icons/drug.svg" alt="drag icon"></i>
+                        </div>
+                    </div>
+					{{/each}}`,
+
+                template: '{{> "postCardsGridItemsPartial"}}',
+
+                getHtml: function (model) {
+                    return PageBuilderModel.sections.postCardsGrid.items.template(model);
+                }
+            },
+
+            sortable: function (container) {
+                PageBuilderModel.plugins.sortable('.js-t63-post-cards-grid-row', { handle: true });
+            }
+        },
+
+        peopleGrid: {
+            template:
+                `<section class="t63-section t63-people-grid-section js-t63-page-section {{cssClassNames}}" data-section="peopleGrid" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-css-classes="{{cssClassNames}}">
+					<div class="container t63-padding-v">
+                        <div class="t63-section-title-container js-t63-section-title-container">{{> "titlePartial"}}</div>
+                        <div class="t63-section-text-container js-t63-section-text-container">{{> "textPartial"}}</div>
+						<div class="row js-t63-people-grid-row" data-align-content="{{contentAlignment}}">
+							{{> "peopleGridItemsPartial"}}
+						</div>
+						<div class="t63-btn-row add-new-grid-item-btn-wrap js-t63-additional-action-buttons">
+							<div class="justify-content-center">
+								<button class="btn editor-btn js-t63-add-people-grid-col-btn" data-size="1" data-cols="col-sm-6 col-lg-3">Small</button>
+								<button class="btn editor-btn js-t63-add-people-grid-col-btn" data-size="2" data-cols="col-sm-6 col-lg-4">Medium</button>
+								<button class="btn editor-btn js-t63-add-people-grid-col-btn" data-size="3" data-cols="col-sm-6">Large</button>
+							</div>
+						</div>
+					</div>
+					{{> "sectionEditorContainerPartial"}}
+                </section>`,
+
+            getHtml: function (model) {
+                return PageBuilderModel.sections.peopleGrid.template(model);
+            },
+
+            items: {
+                partial:
+                    `{{#each items}}
+					<div class="{{columnClassesNames}}">
+                        <div class="t63-people-grid-item js-t63-people-grid-item js-t63-section--container{{#if ../animations}} t63-invisible js-animate{{/if}}" data-container="peopleGridItem" data-id="{{id}}" data-size="{{size}}" data-media-link="true" data-animation="{{../animations}}" data-children-animation="false">
+                            {{imageHepler components.image ../actionButtons.image}}
+                            <div class="info-wrap">
+                                {{titleHepler components.title}}
+								{{textHepler components.text}}
+                            </div>
+							{{actionButtonsHepler ../actionButtons.peopleGridItem}}
+                            {{> "peopleGridItemControlsPartial"}}
+                            <i class="t63-sortable-handle js-t63-sortable-handle js-t63-additional-action-buttons"><img src="/plugins/63bits-pageBuilder/images/icons/drug.svg" alt="drag icon"></i>
+                        </div>
+                    </div>
+					{{/each}}`,
+
+                template: '{{> "peopleGridItemsPartial"}}',
+
+                getHtml: function (model) {
+                    return PageBuilderModel.sections.peopleGrid.items.template(model);
+                }
+            },
+
+            sortable: function (container) {
+                PageBuilderModel.plugins.sortable('.js-t63-people-grid-row', { handle: true });
+            }
+        },
+
+        booksGrid: {
+            template:
+                `<section class="t63-section t63-books-grid-section js-t63-page-section {{cssClassNames}}" data-section="booksGrid" data-type="{{type}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-css-classes="{{cssClassNames}}">
+					<div class="container t63-padding-v">
+                        <div class="t63-section-title-container js-t63-section-title-container">{{> "titlePartial"}}</div>
+                        <div class="t63-section-text-container js-t63-section-text-container">{{> "textPartial"}}</div>
+						<div class="row js-t63-books-grid-row" data-align-content="{{contentAlignment}}">
+							{{> "booksGridItemsPartial"}}
+						</div>
+						<div class="t63-btn-row add-new-grid-item-btn-wrap js-t63-additional-action-buttons">
+							<div class="justify-content-center">
+								<button class="btn editor-btn js-t63-add-books-grid-col-btn" data-size="1" data-cols="col-sm-6 col-lg-3">Small</button>
+								<button class="btn editor-btn js-t63-add-books-grid-col-btn" data-size="2" data-cols="col-sm-6 col-lg-4">Medium</button>
+								<button class="btn editor-btn js-t63-add-books-grid-col-btn" data-size="3" data-cols="col-sm-6">Large</button>
+							</div>
+						</div>
+					</div>
+					{{> "sectionEditorContainerPartial"}}
+                </section>`,
+
+            getHtml: function (model) {
+                return PageBuilderModel.sections.booksGrid.template(model);
+            },
+
+            items: {
+                partial:
+                    `{{#each items}}
+					<div class="{{columnClassesNames}}">
+                        <div class="grid-item js-t63-books-grid-item js-t63-section--container{{#if ../animations}} t63-invisible js-animate{{/if}}" data-container="booksGridItem" data-id="{{id}}" data-size="{{size}}" data-animation="{{../animations}}" data-children-animation="false">
+                            {{imageHepler components.image ../actionButtons.image}}
+                            <div class="content">
+                                {{titleHepler components.title}}
+								{{textHepler components.text}}
+								{{buttonHepler components.button ../actionButtons.button}}
+                            </div>
+							{{actionButtonsHepler ../actionButtons.booksGridItem}}
+                            {{> "booksGridItemControlsPartial"}}
+                            <i class="t63-sortable-handle js-t63-sortable-handle js-t63-additional-action-buttons"><img src="/plugins/63bits-pageBuilder/images/icons/drug.svg" alt="drag icon"></i>
+                        </div>
+                    </div>
+					{{/each}}`,
+
+                template: '{{> "booksGridItemsPartial"}}',
+
+                getHtml: function (model) {
+                    return PageBuilderModel.sections.booksGrid.items.template(model);
+                }
+            },
+
+            sortable: function (container) {
+                PageBuilderModel.plugins.sortable('.js-t63-books-grid-row', { handle: true });
             }
         },
 
         quote: {
             template:
-                `<section class="t63-section t63-quote-section js-page-section {{cssClassNames}}" data-section="quote" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-additional-classes="{{additionalClassNames}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-css-classes="{{cssClassNames}}">
+                `<section class="t63-section t63-quote-section js-t63-page-section {{cssClassNames}}" data-section="quote" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-additional-classes="{{additionalClassNames}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-css-classes="{{cssClassNames}}">
                     <div class="container t63-padding-v">
                         <article {{#if animations}}class="t63-invisible js-animate"{{/if}} data-animation="{{animations}}">
                             {{> "fontAwesomeIconPartial"}}
@@ -4123,17 +4354,17 @@ var PageBuilderModel = {
 
         article2colWithBgImgAndImg: {
             template:
-                `<section class="t63-section t63-article2colWithBgImgAndImg-section js-page-section {{additionalClassNames}}" data-section="article2colWithBgImgAndImg" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-additional-classes="{{additionalClassNames}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}">
+                `<section class="t63-section t63-article2colWithBgImgAndImg-section js-t63-page-section {{additionalClassNames}}" data-section="article2colWithBgImgAndImg" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-additional-classes="{{additionalClassNames}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}">
                     <article class="container t63-padding-v">
                         {{> "titlePartial"}}
                         <div class="row">
-					        <div class="col-lg-7 left-col js-left-col{{#if animations}} t63-invisible js-animate{{/if}}" data-animation="{{animations}}" data-children-animation="false">
+					        <div class="col-lg-7 left-col js-t63-left-col{{#if animations}} t63-invisible js-animate{{/if}}" data-animation="{{animations}}" data-children-animation="false">
 						        <div class="content">
                                     {{bgImageHepler components.bgImage ../actionButtons.image}}
 							        {{> "textPartial"}}
 						        </div>
 					        </div>
-					        <div class="col-lg-5 right-col js-right-col{{#if animations}} t63-invisible js-animate{{/if}}" data-animation="{{animations}}" data-children-animation="false">
+					        <div class="col-lg-5 right-col js-t63-right-col{{#if animations}} t63-invisible js-animate{{/if}}" data-animation="{{animations}}" data-children-animation="false">
 						        {{imageHepler components.image ../actionButtons.image}}
 					        </div>
 					    </div>
@@ -4146,9 +4377,26 @@ var PageBuilderModel = {
             }
         },
 
+        html: {
+            template:
+                `<section class="t63-section js-t63-page-section {{cssClassNames}}" data-section="html" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-css-classes="{{cssClassNames}}">
+					<div class="container t63-padding-v">
+                        <div class="section-row text-container js-t63-section--container" data-container="text">
+                            <textarea class="form-control js-t63-plain-html-input" rows="10">{{components.text.html}}</textarea>
+                            <div class="plain-html-wrap js-t63-plain-html-wrap"><pre class="js-t63-text-wrap"></pre></div>
+                        </div>
+                    </div>
+					{{> "sectionEditorContainerPartial"}}
+				</section>`,
+
+            getHtml: function (model) {
+                return PageBuilderModel.sections.html.template(model);
+            }
+        },
+
         iframe: {
             template:
-                `<section class="t63-section js-page-section {{cssClassNames}}" data-section="iframe" data-type="{{type}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-css-classes="{{cssClassNames}}">
+                `<section class="t63-section js-t63-page-section {{cssClassNames}}" data-section="iframe" data-type="{{type}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-css-classes="{{cssClassNames}}">
 					<div class="container t63-article">
                         {{> "titlePartial"}}
                         {{> "iframePartial"}}
@@ -4163,7 +4411,7 @@ var PageBuilderModel = {
 
         pdfViewer: {
             template:
-                `<section class="t63-section js-page-section {{cssClassNames}}" data-section="pdfViewer" data-type="{{type}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-css-classes="{{cssClassNames}}">
+                `<section class="t63-section js-t63-page-section {{cssClassNames}}" data-section="pdfViewer" data-type="{{type}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-css-classes="{{cssClassNames}}">
 					<div class="container t63-article">
                         {{> "pdfViewerIframePartial"}}
                     </div>
@@ -4175,199 +4423,6 @@ var PageBuilderModel = {
             }
         },
 
-        postCardsGrid: {
-            template:
-                `<section class="t63-section t63-post-cards-grid-section js-page-section {{cssClassNames}}" data-section="postCardsGrid" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-css-classes="{{cssClassNames}}" data-ratio="{{ratioSelected}}">
-					<div class="container t63-padding-v">
-                        <div class="t63-section-title-container js-section-title-container">{{> "titlePartial"}}</div>
-                        <div class="t63-section-text-container js-section-text-container">{{> "textPartial"}}</div>
-						<div class="row js-post-cards-grid-row" data-align-content="{{contentAlignment}}">
-							{{> "postCardsGridItemsPartial"}}
-						</div>
-						<div class="btn-row add-new-grid-item-btn-wrap js-additional-action-buttons">
-							<div class="justify-content-center">
-								<button class="btn editor-btn js-add-post-cards-grid-col-btn" data-size="1" data-cols="col-sm-6 col-lg-3">Small</button>
-								<button class="btn editor-btn js-add-post-cards-grid-col-btn" data-size="2" data-cols="col-sm-6 col-lg-4">Medium</button>
-								<button class="btn editor-btn js-add-post-cards-grid-col-btn" data-size="3" data-cols="col-sm-6">Large</button>
-							</div>
-						</div>
-					</div>
-					{{> "sectionEditorContainerPartial"}}
-                </section>`,
-
-            getHtml: function (model) {
-                return PageBuilderModel.sections.postCardsGrid.template(model);
-            },
-
-            items: {
-                partial:
-                    `{{#each items}}
-					<div class="{{columnClassesNames}}">
-                        <div class="card t63-post-cards-grid-item js-post-cards-grid-item js-section--container{{#if ../animations}} t63-invisible js-animate{{/if}}" data-container="postCardsGridItem" data-id="{{id}}" data-size="{{size}}" data-media-link="true" data-animation="{{../animations}}" data-children-animation="false">
-                            {{imageHepler components.image ../actionButtons.image}}
-                            <div class="card-body">
-                                {{titleHepler components.title}}
-								{{textHepler components.text}}
-                            </div>
-							{{actionButtonsHepler ../actionButtons.postCardsGridItem}}
-                            {{> "postCardsGridItemControlsPartial"}}
-                        </div>
-                    </div>
-					{{/each}}`,
-
-                template: '{{> "postCardsGridItemsPartial"}}',
-
-                getHtml: function (model) {
-                    return PageBuilderModel.sections.postCardsGrid.items.template(model);
-                }
-            }
-        },
-
-        booksGrid: {
-            template:
-                `<section class="t63-section t63-books-grid-section js-page-section {{cssClassNames}}" data-section="booksGrid" data-type="{{type}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-css-classes="{{cssClassNames}}">
-					<div class="container t63-padding-v">
-                        <div class="t63-section-title-container js-section-title-container">{{> "titlePartial"}}</div>
-                        <div class="t63-section-text-container js-section-text-container">{{> "textPartial"}}</div>
-						<div class="row js-books-grid-row" data-align-content="{{contentAlignment}}">
-							{{> "booksGridItemsPartial"}}
-						</div>
-						<div class="btn-row add-new-grid-item-btn-wrap js-additional-action-buttons">
-							<div class="justify-content-center">
-								<button class="btn editor-btn js-add-books-grid-col-btn" data-size="1" data-cols="col-sm-6 col-lg-3">Small</button>
-								<button class="btn editor-btn js-add-books-grid-col-btn" data-size="2" data-cols="col-sm-6 col-lg-4">Medium</button>
-								<button class="btn editor-btn js-add-books-grid-col-btn" data-size="3" data-cols="col-sm-6">Large</button>
-							</div>
-						</div>
-					</div>
-					{{> "sectionEditorContainerPartial"}}
-                </section>`,
-
-            getHtml: function (model) {
-                return PageBuilderModel.sections.booksGrid.template(model);
-            },
-
-            items: {
-                partial:
-                    `{{#each items}}
-					<div class="{{columnClassesNames}}">
-                        <div class="grid-item js-books-grid-item js-section--container{{#if ../animations}} t63-invisible js-animate{{/if}}" data-container="booksGridItem" data-id="{{id}}" data-size="{{size}}" data-animation="{{../animations}}" data-children-animation="false">
-                            {{imageHepler components.image ../actionButtons.image}}
-                            <div class="content">
-                                {{titleHepler components.title}}
-								{{textHepler components.text}}
-								{{buttonHepler components.button ../actionButtons.button}}
-                            </div>
-							{{actionButtonsHepler ../actionButtons.booksGridItem}}
-                            {{> "booksGridItemControlsPartial"}}
-                        </div>
-                    </div>
-					{{/each}}`,
-
-                template: '{{> "booksGridItemsPartial"}}',
-
-                getHtml: function (model) {
-                    return PageBuilderModel.sections.booksGrid.items.template(model);
-                }
-            }
-        },
-
-        peopleGrid: {
-            template:
-                `<section class="t63-section t63-people-grid-section js-page-section {{cssClassNames}}" data-section="peopleGrid" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-css-classes="{{cssClassNames}}">
-					<div class="container t63-padding-v">
-                        <div class="t63-section-title-container js-section-title-container">{{> "titlePartial"}}</div>
-                        <div class="t63-section-text-container js-section-text-container">{{> "textPartial"}}</div>
-						<div class="row js-people-grid-row" data-align-content="{{contentAlignment}}">
-							{{> "peopleGridItemsPartial"}}
-						</div>
-						<div class="btn-row add-new-grid-item-btn-wrap js-additional-action-buttons">
-							<div class="justify-content-center">
-								<button class="btn editor-btn js-add-people-grid-col-btn" data-size="1" data-cols="col-sm-6 col-lg-3">Small</button>
-								<button class="btn editor-btn js-add-people-grid-col-btn" data-size="2" data-cols="col-sm-6 col-lg-4">Medium</button>
-								<button class="btn editor-btn js-add-people-grid-col-btn" data-size="3" data-cols="col-sm-6">Large</button>
-							</div>
-						</div>
-					</div>
-					{{> "sectionEditorContainerPartial"}}
-                </section>`,
-
-            getHtml: function (model) {
-                return PageBuilderModel.sections.peopleGrid.template(model);
-            },
-
-            items: {
-                partial:
-                    `{{#each items}}
-					<div class="{{columnClassesNames}}">
-                        <div class="t63-people-grid-item js-people-grid-item js-section--container{{#if ../animations}} t63-invisible js-animate{{/if}}" data-container="peopleGridItem" data-id="{{id}}" data-size="{{size}}" data-media-link="true" data-animation="{{../animations}}" data-children-animation="false">
-                            {{imageHepler components.image ../actionButtons.image}}
-                            <div class="info-wrap">
-                                {{titleHepler components.title}}
-								{{textHepler components.text}}
-                            </div>
-							{{actionButtonsHepler ../actionButtons.peopleGridItem}}
-                            {{> "peopleGridItemControlsPartial"}}
-                        </div>
-                    </div>
-					{{/each}}`,
-
-                template: '{{> "peopleGridItemsPartial"}}',
-
-                getHtml: function (model) {
-                    return PageBuilderModel.sections.peopleGrid.items.template(model);
-                }
-            }
-        },
-
-        cardsGrid: {
-            template:
-                `<section class="t63-section t63-cards-grid-section js-page-section {{cssClassNames}}" data-section="cardsGrid" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-css-classes="{{cssClassNames}}">
-					<div class="container t63-padding-v">
-                        <div class="t63-section-title-container js-section-title-container">{{> "titlePartial"}}</div>
-                        <div class="t63-section-text-container js-section-text-container">{{> "textPartial"}}</div>
-						<div class="row js-cards-grid-row" data-align-content="{{contentAlignment}}">
-							{{> "cardsGridItemsPartial"}}
-						</div>
-						<div class="btn-row add-new-grid-item-btn-wrap js-additional-action-buttons">
-							<div class="justify-content-center">
-								<button class="btn editor-btn js-add-cards-grid-col-btn" data-size="1" data-cols="col-sm-6 col-lg-3">Small</button>
-								<button class="btn editor-btn js-add-cards-grid-col-btn" data-size="2" data-cols="col-sm-6 col-lg-4">Medium</button>
-								<button class="btn editor-btn js-add-cards-grid-col-btn" data-size="3" data-cols="col-sm-6">Large</button>
-							</div>
-						</div>
-					</div>
-					{{> "sectionEditorContainerPartial"}}
-                </section>`,
-
-            getHtml: function (model) {
-                return PageBuilderModel.sections.cardsGrid.template(model);
-            },
-
-            items: {
-                partial:
-                    `{{#each items}}
-					<div class="{{columnClassesNames}}">
-                        <div class="cards-grid-item js-cards-grid-item js-section--container{{#if ../../animations}} t63-invisible js-animate{{/if}}" data-container="cardsGridItem" data-id="{{id}}" data-size="{{size}}" data-media-link="true" data-animation="{{../../animations}}" data-children-animation="false">
-                            <div class="head">
-                                {{iconHepler components.icon ../actionButtons.icon}}
-                                {{titleHepler components.title false false}}
-                            </div>
-							{{textHepler components.text false false}}
-							{{actionButtonsHepler ../actionButtons.cardsGridItem}}
-                            {{> "cardsGridItemControlsPartial"}}
-                        </div>
-                    </div>
-					{{/each}}`,
-
-                template: '{{> "cardsGridItemsPartial"}}',
-
-                getHtml: function (model) {
-                    return PageBuilderModel.sections.cardsGrid.items.template(model);
-                }
-            }
-        },
-
         //-- functions
         addTopage: function (item, index) {
             var sectionHtml, currentSection;
@@ -4375,7 +4430,7 @@ var PageBuilderModel = {
             if (item) {
                 var sectionName = item.data('item') || null;
                 var sectionType = item.data('type') || 1;
-                var sectionDisplayName = item.find('.js-builder-item-name').text();
+                var sectionDisplayName = item.find('.js-t63-builder-item-name').text();
 
                 var model = PageBuilderModel.data.default().find(function (item) {
                     return item.name === sectionName && item.type == sectionType;
@@ -4458,22 +4513,29 @@ var PageBuilderModel = {
             PageBuilderModel.editors.title.tinymce.init(currentSection);
             PageBuilderModel.editors.text.tinymce.init(currentSection);
 
-            PageBuilderModel.sections.imgGrid.sortable();
-            PageBuilderModel.sections.accordion.sortable();
+            /*PageBuilderModel.sections.imgGrid.sortable();
+            PageBuilderModel.sections.articlesGrid.sortable();
+            PageBuilderModel.sections.accordion.sortable();*/
+
+            for (let key in PageBuilderModel.sections) {
+                if (PageBuilderModel.sections[key].sortable) {
+                    PageBuilderModel.sections[key].sortable(currentSection);
+                }
+            }
 
             PageBuilderModel.editors.sliderItem.init(currentSection);
 
-            $('.js-tab-nav-item:first-child a').each(function (index, item) {
+            $('.js-t63-tab-nav-item:first-child a').each(function (index, item) {
                 PageBuilderModel.plugins.tabs.show($(item));
             });
 
-            $('.js-jwPlayer-wrap').each(function (index, item) {
+            $('.js-t63-jwPlayer-wrap').each(function (index, item) {
                 if ($(item).children('.jwplayer').length == 0) {
                     new VideoPlayer({
-                        Selector: $(item).children('div'),
-                        File: $(item).attr('data-video-url'),
-                        Image: $(item).attr('data-cover-url')
-                    }).Init();
+                        selector: $(item).children('div'),
+                        file: $(item).attr('data-video-url'),
+                        image: $(item).attr('data-cover-url')
+                    }).init();
                 }
             });
         },
@@ -4635,15 +4697,15 @@ var PageBuilderModel = {
             },
 
             template:
-                `<div class="action-buttons js-action-buttons">
+                `<div class="action-buttons js-t63-action-buttons">
                     {{#if editBtn}}
-                        <button class="editor-btn-rounded action-btn component-edit-btn js-edit-btn js-togglable-buttons" data-placement="left" data-toggle="tooltip" data-placement="left" title="{{editBtn.tooltip}}"></button>
+                        <button class="editor-btn-rounded action-btn component-edit-btn js-t63-edit-btn js-t63-togglable-buttons" data-placement="left" data-toggle="tooltip" data-placement="left" title="{{editBtn.tooltip}}"></button>
                     {{/if}}
                     {{#if doneBtn}}
-                        <button class="editor-btn-rounded action-btn component-done-btn js-done-btn js-togglable-buttons hidden" data-toggle="tooltip" data-placement="left" title="{{doneBtn.tooltip}}"></button>
+                        <button class="editor-btn-rounded action-btn component-done-btn js-t63-done-btn js-t63-togglable-buttons hidden" data-toggle="tooltip" data-placement="left" title="{{doneBtn.tooltip}}"></button>
                     {{/if}}
                     {{#if removeBtn}}
-                        <button class="editor-btn-rounded action-btn component-remove-btn js-remove-btn" data-toggle="tooltip" data-placement="left" title="{{removeBtn.tooltip}}"></button>
+                        <button class="editor-btn-rounded action-btn component-remove-btn js-t63-remove-btn" data-toggle="tooltip" data-placement="left" title="{{removeBtn.tooltip}}"></button>
                     {{/if}}
                 </div>`,
 
@@ -4652,11 +4714,11 @@ var PageBuilderModel = {
             },
 
             toggleVisibility: function (container) {
-                container.children('.js-action-buttons').find('.js-togglable-buttons').toggleClass('hidden');
+                container.children('.js-t63-action-buttons').find('.js-t63-togglable-buttons').toggleClass('hidden');
             },
 
             remove: function (container) {
-                container.find('.js-action-buttons').remove();
+                container.find('.js-t63-action-buttons').remove();
             }
         },
 
@@ -4664,22 +4726,22 @@ var PageBuilderModel = {
         section: {
             controls: {
                 partial:
-                    `<div class="section-row section-editor-container js-section--container" data-container="section">
+                    `<div class="section-row section-editor-container js-t63-section--container" data-container="section">
 						{{actionButtonsHepler actionButtons.section}}
-						<div class="controls popover js-section-controls hidden">
+						<div class="controls popover js-t63-section-controls hidden">
 							{{#if contentAlignment}}
 								{{> "alignmentWrapPartial"}}
 							{{/if}}
 							<div class="d-flex align-items-center justify-content-between">
 								<label class="form-label">Section name</label>
-								<label class="toggler toggler-sm js-toggler">
+								<label class="toggler toggler-sm js-t63-toggler">
 									<span>ScrollTo Nav</span>
 									<input type="checkbox" {{#if isScrollToNavItem}}checked{{/if}}>
 									<i></i>
 								</label>
 							</div>
 							<div class="form-group">
-								<input type="text" class="form-control js-display-name-input" value="{{displayName}}">
+								<input type="text" class="form-control js-t63-display-name-input" value="{{displayName}}">
 							</div>
                             {{#if hasContentSizesToggler}}
                             <div class="form-group">
@@ -4688,7 +4750,7 @@ var PageBuilderModel = {
                                     {{#each contentSizes}}
                                         {{#if exists}}
                                             <label>
-                                                <input class="js-size-input" type="radio" name="size-{{../../id}}" value="{{value}}" {{#js_if "this.value === ../../contentSizeSelected"}}checked{{/js_if}}>
+                                                <input class="js-t63-size-input" type="radio" name="size-{{../../id}}" value="{{value}}" {{#js_if "this.value === ../../contentSizeSelected"}}checked{{/js_if}}>
                                                 <span>{{name}}</span>
                                             </label>
                                         {{/if}}
@@ -4702,7 +4764,7 @@ var PageBuilderModel = {
                                     {{#each verticalSpacing}}
                                         {{#if exists}}
                                             <label>
-                                                <input class="js-vertical-spacing-input" type="radio" name="vertical-spacing-{{../../id}}" value="{{value}}" {{#js_if "this.value === ../../verticalSpacingSelected"}}checked{{/js_if}}>
+                                                <input class="js-t63-vertical-spacing-input" type="radio" name="vertical-spacing-{{../../id}}" value="{{value}}" {{#js_if "this.value === ../../verticalSpacingSelected"}}checked{{/js_if}}>
                                                 <span>{{name}}</span>
                                             </label>
                                         {{/if}}
@@ -4712,14 +4774,13 @@ var PageBuilderModel = {
                             {{#if hasFullScreenToggler}}
                             <div class="form-group">
 								<label class="form-label">FullScreen</label>
-								
 							    <div class="d-flex align-items-center justify-content-between">
-								    <label class="toggler toggler-sm js-fullscreen-toggler">
+								    <label class="toggler toggler-sm js-t63-fullscreen-toggler">
 									    <input type="checkbox" {{#if isFullScreen}}checked{{/if}}>
 									    <i></i>
                                         <span>isFullScreen</span>
 								    </label>
-								    <label class="toggler toggler-sm js-fullheight-toggler{{#unless isFullScreen}} disabled{{/unless}}">
+								    <label class="toggler toggler-sm js-t63-fullheight-toggler{{#unless isFullScreen}} disabled{{/unless}}">
 									    <input type="checkbox" {{#if isFullHeight}}checked{{/if}}>
 									    <i></i>
                                         <span>Full height</span>
@@ -4730,7 +4791,7 @@ var PageBuilderModel = {
                             {{#if hasCardToggler}}
                             <div class="form-group">
 								<label class="form-label">Card</label>
-								<label class="toggler toggler-sm js-card-toggler">
+								<label class="toggler toggler-sm js-t63-card-toggler">
 									<input type="checkbox" {{#if isCard}}checked{{/if}}>
 									<i></i>
                                     <span>isCard</span>
@@ -4740,20 +4801,20 @@ var PageBuilderModel = {
                             {{#js_if "this.name === 'article2ColWithImg' || this.name === 'article2ColWithVideo' || this.name === 'article2ColWithJwPlayer' || this.name === 'card2Col' || this.name === 'card2ColWithImg'"}}
                             <div class="form-group">
 								<label class="form-label">Reverse content</label>
-								<label class="toggler toggler-sm js-content-reverse-toggler">
+								<label class="toggler toggler-sm js-t63-content-reverse-toggler">
 									<input type="checkbox" {{#if isReversed}}checked{{/if}}>
 									<i></i>
 								</label>
 							</div>
 							{{/js_if}}
                             {{#if hasRatioToggler}}
-                            <div class="form-group js-ratio-controls-wrap">
+                            <div class="form-group js-t63-ratio-controls-wrap">
                                 <label class="form-label">Ratio</label>
                                 <div class="custom-input-group">
                                     {{#each ratio}}
                                         {{#if exists}}
                                             <label>
-                                                <input class="js-ratio-input" type="radio" name="ratio-{{../../id}}" value="{{value}}" {{#js_if "this.value === ../../ratioSelected"}}checked{{/js_if}}>
+                                                <input class="js-t63-ratio-input" type="radio" name="ratio-{{../../id}}" value="{{value}}" {{#js_if "this.value === ../../ratioSelected"}}checked{{/js_if}}>
                                                 <span>{{name}}</span>
                                             </label>
                                         {{/if}}
@@ -4764,24 +4825,23 @@ var PageBuilderModel = {
                             {{#js_if "this.name === 'slide'"}}
                             <div class="form-group">
 								<label class="form-label">Image original size</label>
-								<label class="toggler toggler-sm js-img-original-size-toggler">
+								<label class="toggler toggler-sm js-t63-img-original-size-toggler">
 									<input type="checkbox" {{#if isImgOriginalSize}}checked{{/if}}>
 									<i></i>
 								</label>
 							</div>
 							{{/js_if}}
-                            {{#js_if "this.name !== 'slide' && this.name !== 'slider'"}}
                             <div class="form-group">
 								<label class="form-label">Backgroun color</label>
-								<label class="toggler toggler-sm js-background-color-toggler">
+								<label class="toggler toggler-sm js-t63-background-color-toggler">
 									<input type="checkbox" {{#if backgroundColor}}checked{{/if}}>
 									<i></i>
                                     <span>Dark</span>
 								</label>
 							</div>
                             <div class="form-group">
-							    <label class="form-label">Animations</label>
-								<select class="form-control js-section-animation-combo">
+							    <label class="form-label">Animation (load/scroll)</label>
+								<select class="form-control js-t63-section-animation-combo">
                                     <option value="false" {{#js_if "this.animations === 'false'"}}selected{{/js_if}}>None</option>
                                     <option value="fadeIn" {{#js_if "this.animations === 'fadeIn'"}}selected{{/js_if}}>FadeIn</option>
                                     <option value="fadeInUp" {{#js_if "this.animations === 'fadeInUp'"}}selected{{/js_if}}>FadeIn Up</option>
@@ -4790,27 +4850,26 @@ var PageBuilderModel = {
                                     <option value="fadeInRight" {{#js_if "this.animations === 'fadeInRight'"}}selected{{/js_if}}>FadeIn Right</option>
                                 </select>
 							</div>
-							{{/js_if}}
+                            <div class="form-group">
+								<label class="form-label">Css Classes</label>
+								<input type="text" class="form-control text-start js-t63-css-classes-input" value="{{cssClassNames}}">
+							</div>
                             {{#js_if "this.name === 'slider'"}}
                             <div class="form-group">
 								<label class="form-label">Slider options</label>
                                 <div class="d-flex align-items-center justify-content-between">
-								    <label class="toggler toggler-sm mb-0 js-slider-autoplay-toggler">
+								    <label class="toggler toggler-sm mb-0 js-t63-slider-autoplay-toggler">
 									    <input type="checkbox" {{#if slider?.autoplay}}checked{{/if}}>
 									    <i></i>
                                         <span>autoplay</span>
 								    </label>
 							        <div class="d-flex align-items-center" title="Autoplay Speed in milliseconds">
-                                        <span class="mr-1" style="font-size: 11px; line-height: 15px;">Speed (ms)</span>
-                                        <input style="width: 52px" type="text" class="form-control pl-1 pr-1 js-slider-autoplay-speed-input" value="{{slider?.autoplaySpeed}}">
+                                        <span class="me-1" style="font-size: 11px; line-height: 15px;">Speed (ms)</span>
+                                        <input style="width: 52px" type="text" class="form-control pl-1 pr-1 js-t63-slider-autoplay-speed-input" value="{{slider?.autoplaySpeed}}">
                                     </div>
 							    </div>
 							</div>
 							{{/js_if}}
-                            <div class="form-group">
-								<label class="form-label">Css Classes</label>
-								<input type="text" class="form-control text-left js-css-classes-input" value="{{cssClassNames}}">
-							</div>
 						</div>
 					</div>`,
 
@@ -4819,39 +4878,39 @@ var PageBuilderModel = {
 						<span class="form-label">Alignment</span>
 						<div>
 							<label>
-								<input class="js-alignment-input" type="radio" name="alignment-{{id}}" value="topLeft" {{#js_if "this.contentAlignment === 'topLeft' "}}checked{{/js_if}}>
+								<input class="js-t63-alignment-input" type="radio" name="alignment-{{id}}" value="topLeft" {{#js_if "this.contentAlignment === 'topLeft' "}}checked{{/js_if}}>
 								<span><img src="/plugins/63bits-pageBuilder/images/icons/alignment/1_1.svg" /></span>
 							</label>
 							<label>
-								<input class="js-alignment-input" type="radio" name="alignment-{{id}}" value="topCenter" {{#js_if "this.contentAlignment === 'topCenter' "}}checked{{/js_if}}>
+								<input class="js-t63-alignment-input" type="radio" name="alignment-{{id}}" value="topCenter" {{#js_if "this.contentAlignment === 'topCenter' "}}checked{{/js_if}}>
 								<span><img src="/plugins/63bits-pageBuilder/images/icons/alignment/1_2.svg" /></span>
 							</label>
 							<label>
-								<input class="js-alignment-input" type="radio" name="alignment-{{id}}" value="topRight" {{#js_if "this.contentAlignment === 'topRight' "}}checked{{/js_if}}>
+								<input class="js-t63-alignment-input" type="radio" name="alignment-{{id}}" value="topRight" {{#js_if "this.contentAlignment === 'topRight' "}}checked{{/js_if}}>
 								<span><img src="/plugins/63bits-pageBuilder/images/icons/alignment/1_3.svg" /></span>
 							</label>
 							<label>
-								<input class="js-alignment-input" type="radio" name="alignment-{{id}}" value="centerLeft" {{#js_if "this.contentAlignment === 'centerLeft' "}}checked{{/js_if}}>
+								<input class="js-t63-alignment-input" type="radio" name="alignment-{{id}}" value="centerLeft" {{#js_if "this.contentAlignment === 'centerLeft' "}}checked{{/js_if}}>
 								<span><img src="/plugins/63bits-pageBuilder/images/icons/alignment/2_1.svg" /></span>
 							</label>
 							<label>
-								<input class="js-alignment-input" type="radio" name="alignment-{{id}}" value="center" {{#js_if "this.contentAlignment === 'center' "}}checked{{/js_if}}>
+								<input class="js-t63-alignment-input" type="radio" name="alignment-{{id}}" value="center" {{#js_if "this.contentAlignment === 'center' "}}checked{{/js_if}}>
 								<span><img src="/plugins/63bits-pageBuilder/images/icons/alignment/2_2.svg" /></span>
 							</label>
 							<label>
-								<input class="js-alignment-input" type="radio" name="alignment-{{id}}" value="centerRight" {{#js_if "this.contentAlignment === 'centerRight' "}}checked{{/js_if}}>
+								<input class="js-t63-alignment-input" type="radio" name="alignment-{{id}}" value="centerRight" {{#js_if "this.contentAlignment === 'centerRight' "}}checked{{/js_if}}>
 								<span><img src="/plugins/63bits-pageBuilder/images/icons/alignment/2_3.svg" /></span>
 							</label>
 							<label>
-								<input class="js-alignment-input" type="radio" name="alignment-{{id}}" value="bottomLeft" {{#js_if "this.contentAlignment === 'bottomLeft' "}}checked{{/js_if}}>
+								<input class="js-t63-alignment-input" type="radio" name="alignment-{{id}}" value="bottomLeft" {{#js_if "this.contentAlignment === 'bottomLeft' "}}checked{{/js_if}}>
 								<span><img src="/plugins/63bits-pageBuilder/images/icons/alignment/3_1.svg" /></span>
 							</label>
 							<label>
-								<input class="js-alignment-input" type="radio" name="alignment-{{id}}" value="bottomCenter" {{#js_if "this.contentAlignment === 'bottomCenter' "}}checked{{/js_if}}>
+								<input class="js-t63-alignment-input" type="radio" name="alignment-{{id}}" value="bottomCenter" {{#js_if "this.contentAlignment === 'bottomCenter' "}}checked{{/js_if}}>
 								<span><img src="/plugins/63bits-pageBuilder/images/icons/alignment/3_2.svg" /></span>
 							</label>
 							<label>
-								<input class="js-alignment-input" type="radio" name="alignment-{{id}}" value="bottomRight" {{#js_if "this.contentAlignment === 'bottomRight' "}}checked{{/js_if}}>
+								<input class="js-t63-alignment-input" type="radio" name="alignment-{{id}}" value="bottomRight" {{#js_if "this.contentAlignment === 'bottomRight' "}}checked{{/js_if}}>
 								<span><img src="/plugins/63bits-pageBuilder/images/icons/alignment/3_3.svg" /></span>
 							</label>
 						</div>
@@ -4860,27 +4919,27 @@ var PageBuilderModel = {
 
             applyChanges: function (container) {
                 var section = container.closest(PageBuilderModel.sections.selector);
-                var displayName = $.trim(container.find('.js-display-name-input').val()) || 'Nav Item';
-                var isScrollToNavItem = container.find('.js-toggler input:checked').length > 0;
-                var itemSize = container.find('.js-size-input:checked').val();
-                var verticalSpacing = container.find('.js-vertical-spacing-input:checked').val();
-                var backgoundColor = container.find('.js-background-color-toggler input:checked').length > 0;
-                var isCard = container.find('.js-card-toggler input:checked').length > 0;
-                var isReversed = container.find('.js-content-reverse-toggler input:checked').length > 0;
-                var isFullScreen = container.find('.js-fullscreen-toggler input:checked').length > 0;
-                var isFullHeight = isFullScreen && container.find('.js-fullheight-toggler input:checked').length > 0;
-                var ratio = container.find('.js-ratio-input:checked').val();
-                var isImgOriginalSize = container.find('.js-img-original-size-toggler input:checked').length > 0;
-                var cssClassNames = $.trim(container.find('.js-css-classes-input').val().replace(/  +/g, ' ')) || '';
+                var displayName = $.trim(container.find('.js-t63-display-name-input').val()) || 'Nav Item';
+                var isScrollToNavItem = container.find('.js-t63-toggler input:checked').length > 0;
+                var itemSize = container.find('.js-t63-size-input:checked').val();
+                var verticalSpacing = container.find('.js-t63-vertical-spacing-input:checked').val();
+                var backgoundColor = container.find('.js-t63-background-color-toggler input:checked').length > 0;
+                var isCard = container.find('.js-t63-card-toggler input:checked').length > 0;
+                var isReversed = container.find('.js-t63-content-reverse-toggler input:checked').length > 0;
+                var isFullScreen = container.find('.js-t63-fullscreen-toggler input:checked').length > 0;
+                var isFullHeight = isFullScreen && container.find('.js-t63-fullheight-toggler input:checked').length > 0;
+                var ratio = container.find('.js-t63-ratio-input:checked').val();
+                var isImgOriginalSize = container.find('.js-t63-img-original-size-toggler input:checked').length > 0;
+                var cssClassNames = $.trim(container.find('.js-t63-css-classes-input').val().replace(/  +/g, ' ')) || '';
                 var cssClassNamesOld = section.attr('data-css-classes');
 
                 section.attr('data-display-name', displayName);
-                $(PageBuilderModel.builder.pageItems.selector + ' li').eq(section.index()).find('.js-builder-item-name').text(displayName);
+                $(PageBuilderModel.builder.pageItems.selector + ' li').eq(section.index()).find('.js-t63-builder-item-name').text(displayName);
 
                 section.attr('data-isScrolltoNavItem', isScrollToNavItem);
                 PageBuilderModel.scrollToNavigation.init();
 
-                section.find('[data-align-content]').attr('data-align-content', section.find('.js-alignment-input:checked').val());
+                section.find('[data-align-content]').attr('data-align-content', section.find('.js-t63-alignment-input:checked').val());
 
                 section.attr('data-content-size', itemSize);
 
@@ -4908,8 +4967,8 @@ var PageBuilderModel = {
                 section.attr('data-css-classes', cssClassNames);
 
                 //slider options
-                var sliderAutoplay = container.find('.js-slider-autoplay-toggler input:checked').length > 0;
-                var sliderAutoplaySpeed = $.trim(container.find('.js-slider-autoplay-speed-input').val()) || 4000;
+                var sliderAutoplay = container.find('.js-t63-slider-autoplay-toggler input:checked').length > 0;
+                var sliderAutoplaySpeed = $.trim(container.find('.js-t63-slider-autoplay-speed-input').val()) || 4000;
 
                 section.find('.js-t63-slider-container').attr('data-slider-autoplay', sliderAutoplay);
                 section.find('.js-t63-slider-container').attr('data-slider-autoplay-speed', sliderAutoplaySpeed);
@@ -4922,10 +4981,10 @@ var PageBuilderModel = {
                 PageBuilderModel.editors.actionButtons.toggleVisibility(container);
                 PageBuilderModel.editors.show(container);
 
-                var section = container.closest('.js-page-section');
+                var section = container.closest('.js-t63-page-section');
                 if (section.attr('data-section') === 'slide') {
                     if (section.attr('data-img-original-size') == 'true') {
-                        container.find('.js-ratio-controls-wrap').addClass('disabled');
+                        container.find('.js-t63-ratio-controls-wrap').addClass('disabled');
                     } else {
                         container.find('.content-alignment-wrap').addClass('d-none');
                     }
@@ -4942,7 +5001,7 @@ var PageBuilderModel = {
             },
 
             initAnimations: function (section) {
-                var animation = section.find('.js-section-animation-combo').val();
+                var animation = section.find('.js-t63-section-animation-combo').val();
                 var animatedItem = section.find('[data-animation]');
                 if (animation != 'false') {
                     animatedItem.attr('data-animation', animation);
@@ -4965,9 +5024,9 @@ var PageBuilderModel = {
         title: {
             helper: function (model) {
                 return (
-                    `<div class="controls text-controls js-section-controls">
+                    `<div class="controls text-controls js-t63-section-controls">
 						<div>
-                            <label class="toggler toggler-sm js-component-visibility-toggler js-title-visibility-toggler">
+                            <label class="toggler toggler-sm js-t63-component-visibility-toggler js-t63-title-visibility-toggler">
                                 <span>Is Active</span>
                                 <input type="checkbox" ${model.isActive ? 'checked' : ''}>
                                 <i></i>
@@ -4996,12 +5055,12 @@ var PageBuilderModel = {
                         forced_root_block: ''
                     };
 
-                    if ($(section).find('.js-tinymce-basic.js-title').length > 0) {
-                        PageBuilderModel.plugins.tinymce.init($(section).find('.js-tinymce-basic.js-title'), optionsBasic);
+                    if ($(section).find('.js-t63-tinymce-basic.js-t63-title').length > 0) {
+                        PageBuilderModel.plugins.tinymce.init($(section).find('.js-t63-tinymce-basic.js-t63-title'), optionsBasic);
                     }
 
-                    if ($(section).find('.js-tinymce-full.js-title').length > 0) {
-                        PageBuilderModel.plugins.tinymce.init($(section).find('.js-tinymce-full.js-title'), optionsFullFeatured);
+                    if ($(section).find('.js-t63-tinymce-full.js-t63-title').length > 0) {
+                        PageBuilderModel.plugins.tinymce.init($(section).find('.js-t63-tinymce-full.js-t63-title'), optionsFullFeatured);
                     }
                 }
             }
@@ -5010,9 +5069,9 @@ var PageBuilderModel = {
         text: {
             helper: function (model) {
                 return (
-                    `<div class="controls text-controls js-section-controls">
+                    `<div class="controls text-controls js-t63-section-controls">
 						<div>
-                            <label class="toggler toggler-sm js-component-visibility-toggler js-text-visibility-toggler">
+                            <label class="toggler toggler-sm js-t63-component-visibility-toggler js-t63-text-visibility-toggler">
                                 <span>Is Active</span>
                                 <input type="checkbox" ${model.isActive ? 'checked' : ''}>
                                 <i></i>
@@ -5081,12 +5140,12 @@ var PageBuilderModel = {
                         toolbar_sticky: true
                     };
 
-                    if ($(section).find('.js-tinymce-basic.js-text-wrap').length > 0) {
-                        PageBuilderModel.plugins.tinymce.init($(section).find('.js-tinymce-basic.js-text-wrap'), optionsBasic);
+                    if ($(section).find('.js-t63-tinymce-basic.js-t63-text-wrap').length > 0) {
+                        PageBuilderModel.plugins.tinymce.init($(section).find('.js-t63-tinymce-basic.js-t63-text-wrap'), optionsBasic);
                     }
 
-                    if ($(section).find('.js-tinymce-full.js-text-wrap').length > 0) {
-                        PageBuilderModel.plugins.tinymce.init($(section).find('.js-tinymce-full.js-text-wrap'), optionsFullFeatured);
+                    if ($(section).find('.js-t63-tinymce-full.js-t63-text-wrap').length > 0) {
+                        PageBuilderModel.plugins.tinymce.init($(section).find('.js-t63-tinymce-full.js-t63-text-wrap'), optionsFullFeatured);
                     }
                 }
             }
@@ -5095,11 +5154,11 @@ var PageBuilderModel = {
         textPlain: {
             helper: function (model) {
                 return (
-                    `<div class="controls plain-text-controls js-section-controls">
-                        <input class="plain-text-input js-plain-text-input" type="text" value="${model.html}">
+                    `<div class="controls plain-text-controls js-t63-section-controls">
+                        <input class="plain-text-input js-t63-plain-text-input" type="text" value="${model.html}">
                         <div class="toggler-wrap">
                             <div>
-                                <label class="toggler toggler-sm js-component-visibility-toggler js-plain-text-visibility-toggler">
+                                <label class="toggler toggler-sm js-t63-component-visibility-toggler js-t63-plain-text-visibility-toggler">
                                     <span>Is Active</span>
                                     <input type="checkbox" ${model.isActive ? 'checked' : ''}>
                                     <i></i>
@@ -5110,31 +5169,31 @@ var PageBuilderModel = {
                 );
             },
             done: function (container) {
-                var value = container.find('.js-plain-text-input').val();
-                container.find('.js-plain-text').html(value);
+                var value = container.find('.js-t63-plain-text-input').val();
+                container.find('.js-t63-plain-text').html(value);
             }
         },
 
         button: {
             helper: function (model) {
                 return (
-                    `<div class="controls popover js-section-controls hidden">
+                    `<div class="controls popover js-t63-section-controls hidden">
                         <div class="d-flex justify-content-end">
-                            <label class="toggler toggler-sm js-btn-visibility-toggler">
+                            <label class="toggler toggler-sm js-t63-btn-visibility-toggler">
                                 <span>Is Active</span>
                                 <input type="checkbox" ${model.isActive ? 'checked' : ''}>
                                 <i></i>
                             </label>
                         </div>
                         <div class="form-group">
-                            <input type="text" class="form-control js-btn-name-input" placeholder="Button name" value="${model.name}">
+                            <input type="text" class="form-control js-t63-btn-name-input" placeholder="Button name" value="${model.name}">
                         </div>
                         <div class="form-group">
-                            <input type="text" class="form-control js-btn-url-input" placeholder="http://example.com" value="${model.href}">
+                            <input type="text" class="form-control js-t63-btn-url-input" placeholder="http://example.com" value="${model.href}">
                         </div>
                         <div class="d-flex btn-target-checkbox-wrap">
                             <label>
-                                <input class="js-btn-target-checkbox" type="checkbox" ${model.isTargetBlank ? 'checked' : ''}>
+                                <input class="js-t63-btn-target-checkbox" type="checkbox" ${model.isTargetBlank ? 'checked' : ''}>
                                 <span>Open in new window</span>
                             </label>
                         </div>
@@ -5150,10 +5209,10 @@ var PageBuilderModel = {
                 PageBuilderModel.editors.actionButtons.toggleVisibility(container);
 
                 //
-                var isActive = container.find('.js-btn-visibility-toggler input:checked').length > 0;
-                var btnName = container.find('.js-btn-name-input').val();
-                var btnUrl = container.find('.js-btn-url-input').val();
-                var isTargetBlank = container.find('.js-btn-target-checkbox').is(':checked');
+                var isActive = container.find('.js-t63-btn-visibility-toggler input:checked').length > 0;
+                var btnName = container.find('.js-t63-btn-name-input').val();
+                var btnUrl = container.find('.js-t63-btn-url-input').val();
+                var isTargetBlank = container.find('.js-t63-btn-target-checkbox').is(':checked');
 
                 if (isActive) {
                     container.removeClass('component-disabled');
@@ -5161,14 +5220,14 @@ var PageBuilderModel = {
                 else {
                     container.addClass('component-disabled');
                 }
-                container.children('.js-btn').text(btnName);
-                container.children('.js-btn').attr('href', btnUrl);
+                container.children('.js-t63-btn').text(btnName);
+                container.children('.js-t63-btn').attr('href', btnUrl);
 
                 if (isTargetBlank) {
-                    container.children('.js-btn').attr('target', '_blank');
+                    container.children('.js-t63-btn').attr('target', '_blank');
                 }
                 else {
-                    container.children('.js-btn').removeAttr('target');
+                    container.children('.js-t63-btn').removeAttr('target');
                 }
 
                 //
@@ -5179,23 +5238,23 @@ var PageBuilderModel = {
         icon: {
             helper: function (model) {
                 return (
-                    `<div class="controls popover js-section-controls hidden">
+                    `<div class="controls popover js-t63-section-controls hidden">
                         <div class="d-flex justify-content-end">
-                            <label class="toggler toggler-sm js-icon-visibility-toggler">
+                            <label class="toggler toggler-sm js-t63-icon-visibility-toggler">
                                 <span>Is Active</span>
                                 <input type="checkbox" ${model.isActive ? 'checked' : ''}>
                                 <i></i>
                             </label>
                         </div>
                         <div class="form-group">
-                            <input type="text" class="form-control js-icon-classes-input ${model.isImage ? 'disabled' : ''}" placeholder="icon name" value="${model.name}">
+                            <input type="text" class="form-control js-t63-icon-classes-input ${model.isImage ? 'disabled' : ''}" placeholder="icon name" value="${model.name}">
                         </div>
                         <div class="form-group d-flex align-items-center justify-content-between">
                             <label class="custom-control custom-checkbox">
-                                <input class="custom-control-input js-icon-type-checkbox" type="checkbox" ${model.isImage ? 'checked' : ''}>
+                                <input class="custom-control-input js-t63-icon-type-checkbox" type="checkbox" ${model.isImage ? 'checked' : ''}>
                                 <span class="custom-control-label">Image Icon</span>
                             </label>
-                            <button class="btn btn-xs btn-primary js-icon-upload-btn ${model.isImage ? '' : 'disabled'}">Upload icon</button>
+                            <button class="btn btn-xs btn-primary js-t63-icon-upload-btn ${model.isImage ? '' : 'disabled'}">Upload icon</button>
                         </div>
                     </div>`
                 );
@@ -5208,7 +5267,7 @@ var PageBuilderModel = {
                     if (files) {
                         var urlDownload = files[0].urlDownload;
 
-                        container.find('.js-img-icon').attr({ 'src': urlDownload, 'data-icon-url': urlDownload });
+                        container.find('.js-t63-img-icon').attr({ 'src': urlDownload, 'data-icon-url': urlDownload });
                     }
 
                     PageBuilderModel.plugins.fileManager.hide();
@@ -5224,18 +5283,18 @@ var PageBuilderModel = {
 
                 PageBuilderModel.editors.icon.container = container;
 
-                $('.js-icon-type-checkbox').change(function () {
+                $('.js-t63-icon-type-checkbox').change(function () {
                     if ($(this).is(':checked')) {
-                        container.find('.js-icon-classes-input').addClass('disabled');
-                        container.find('.js-icon-upload-btn').removeClass('disabled');
+                        container.find('.js-t63-icon-classes-input').addClass('disabled');
+                        container.find('.js-t63-icon-upload-btn').removeClass('disabled');
                     } else {
-                        container.find('.js-icon-classes-input').removeClass('disabled');
-                        container.find('.js-icon-upload-btn').addClass('disabled');
+                        container.find('.js-t63-icon-classes-input').removeClass('disabled');
+                        container.find('.js-t63-icon-upload-btn').addClass('disabled');
                     }
                 });
 
-                container.find('.js-icon-upload-btn').off('click');
-                container.find('.js-icon-upload-btn').click(function () {
+                container.find('.js-t63-icon-upload-btn').off('click');
+                container.find('.js-t63-icon-upload-btn').click(function () {
                     PageBuilderModel.plugins.fileManager.show(PageBuilderModel.plugins.fileManager.getIconUrl());
                 });
             },
@@ -5243,9 +5302,9 @@ var PageBuilderModel = {
                 PageBuilderModel.editors.actionButtons.toggleVisibility(container);
 
                 //
-                var isActive = container.find('.js-icon-visibility-toggler input:checked').length > 0;
-                var isImage = container.find('.js-icon-type-checkbox').is(':checked');
-                var iconName = container.find('.js-icon-classes-input').val();
+                var isActive = container.find('.js-t63-icon-visibility-toggler input:checked').length > 0;
+                var isImage = container.find('.js-t63-icon-type-checkbox').is(':checked');
+                var iconName = container.find('.js-t63-icon-classes-input').val();
 
                 if (isActive) {
                     container.removeClass('component-disabled');
@@ -5265,7 +5324,7 @@ var PageBuilderModel = {
                     iconName = iconName.slice(iconName.indexOf('"') + 1, iconName.lastIndexOf('"'))
                 }
 
-                container.find('.js-font-icon').removeAttr('class').addClass(iconName + ' js-font-icon').attr('data-icon-classes', iconName);
+                container.find('.js-t63-font-icon').removeAttr('class').addClass(iconName + ' js-t63-font-icon').attr('data-icon-classes', iconName);
 
                 //
                 PageBuilderModel.editors.hide(container);
@@ -5275,16 +5334,16 @@ var PageBuilderModel = {
         fontAwesomeIcon: {
             helper: function (model) {
                 return (
-                    `<div class="controls popover js-section-controls hidden">
+                    `<div class="controls popover js-t63-section-controls hidden">
                         <div class="d-flex justify-content-end">
-                            <label class="toggler toggler-sm js-fontawesome-visibility-toggler">
+                            <label class="toggler toggler-sm js-t63-fontawesome-visibility-toggler">
                                 <span>Is Active</span>
                                 <input type="checkbox" ${model.isActive ? 'checked' : ''}>
                                 <i></i>
                             </label>
                         </div>
                         <div class="form-group">
-                            <input type="text" class="form-control js-fontawesome-icon-name-input" placeholder="icon name" value="${model.name}">
+                            <input type="text" class="form-control js-t63-fontawesome-icon-name-input" placeholder="icon name" value="${model.name}">
                         </div>
                     </div>`
                 );
@@ -5298,8 +5357,8 @@ var PageBuilderModel = {
                 PageBuilderModel.editors.actionButtons.toggleVisibility(container);
 
                 //
-                var isActive = container.find('.js-fontawesome-visibility-toggler input:checked').length > 0;
-                var iconName = container.find('.js-fontawesome-icon-name-input').val();
+                var isActive = container.find('.js-t63-fontawesome-visibility-toggler input:checked').length > 0;
+                var iconName = container.find('.js-t63-fontawesome-icon-name-input').val();
 
                 if (isActive) {
                     container.removeClass('component-disabled');
@@ -5312,7 +5371,7 @@ var PageBuilderModel = {
                     iconName = iconName.slice(iconName.indexOf('"') + 1, iconName.lastIndexOf('"'))
                 }
 
-                container.find('.js-fa-icon').removeAttr('class').addClass(iconName + ' js-fa-icon').attr('data-fontawesome-icon', iconName);
+                container.find('.js-t63-fa-icon').removeAttr('class').addClass(iconName + ' js-t63-fa-icon').attr('data-fontawesome-icon', iconName);
 
                 //
                 PageBuilderModel.editors.hide(container);
@@ -5322,9 +5381,9 @@ var PageBuilderModel = {
         image: {
             helper: function (model) {
                 return (
-                    `<div class="controls image-controls js-section-controls">
+                    `<div class="controls image-controls js-t63-section-controls">
 						<div>
-                            <label class="toggler toggler-sm js-component-visibility-toggler js-image-visibility-toggler">
+                            <label class="toggler toggler-sm js-t63-component-visibility-toggler js-t63-image-visibility-toggler">
                                 <span>Is Active</span>
                                 <input type="checkbox" ${model.isActive ? 'checked' : ''}>
                                 <i></i>
@@ -5343,7 +5402,7 @@ var PageBuilderModel = {
             add: function (files) {
                 if (files) {
                     var urlDownload = files[0].urlDownload;
-                    var imgWrap = PageBuilderModel.editors.image.container.children('.js-img');
+                    var imgWrap = PageBuilderModel.editors.image.container.children('.js-t63-img');
 
                     imgWrap.attr('data-img-src', urlDownload);
 
@@ -5356,7 +5415,7 @@ var PageBuilderModel = {
                     var slider = PageBuilderModel.editors.image.container.closest('.js-t63-slider-container');
 
                     if ($(slider).length > 0) {
-                        $(slider).closest('.js-page-section').find('.js-slider-settings-container li.active .js-go-to-slide-btn').css({ 'background-image': 'url(\'' + urlDownload + '\')' });
+                        $(slider).closest('.js-t63-page-section').find('.js-t63-slider-settings-container li.active .js-t63-go-to-slide-btn').css({ 'background-image': 'url(\'' + urlDownload + '\')' });
                     }
                 }
                 PageBuilderModel.plugins.fileManager.hide();
@@ -5366,9 +5425,9 @@ var PageBuilderModel = {
         video: {
             helper: function (model) {
                 return (
-                    `<div class="controls popover js-section-controls hidden">
+                    `<div class="controls popover js-t63-section-controls hidden">
                         <div class="form-group">
-                            <input class="form-control js-video-input" placeholder="Video url" />
+                            <input class="form-control js-t63-video-input" placeholder="Video url" />
                         </div>
                     </div>`
                 )
@@ -5395,16 +5454,16 @@ var PageBuilderModel = {
                 PageBuilderModel.editors.actionButtons.toggleVisibility(container);
                 PageBuilderModel.editors.show(container);
 
-                var url = container.find('.js-iframe-container iframe').attr('src');
+                var url = container.find('.js-t63-iframe-container iframe').attr('src');
                 if (url != '') {
-                    container.find('.js-video-input').val(url);
+                    container.find('.js-t63-video-input').val(url);
                 }
             },
             done: function (container) {
                 PageBuilderModel.editors.actionButtons.toggleVisibility(container);
 
                 //
-                var url = $.trim(container.find('.js-video-input').val());
+                var url = $.trim(container.find('.js-t63-video-input').val());
 
                 if (url != '') {
 
@@ -5420,7 +5479,7 @@ var PageBuilderModel = {
                         newUrl = 'https://player.vimeo.com/video/' + id;
                     }
 
-                    container.find('.js-iframe-container iframe').attr('src', newUrl);
+                    container.find('.js-t63-iframe-container iframe').attr('src', newUrl);
                 }
 
                 //
@@ -5431,14 +5490,14 @@ var PageBuilderModel = {
         jwPlayer: {
             helper: function (model) {
                 return (
-                    `<div class="controls popover js-section-controls hidden">
+                    `<div class="controls popover js-t63-section-controls hidden">
                         <div class="form-group">
                             <label class="form-label">Video url</label>
-                            <input class="form-control js-jwPlayer-video-url-input" placeholder="Video url" />
+                            <input class="form-control js-t63-jwPlayer-video-url-input" placeholder="Video url" />
                         </div>
                         <div class="form-group">
                             <label class="form-label">Cover url</label>
-                            <input class="form-control js-jwPlayer-cover-url-input" placeholder="Cover url" />
+                            <input class="form-control js-t63-jwPlayer-cover-url-input" placeholder="Cover url" />
                         </div>
                     </div>`
                 )
@@ -5448,23 +5507,23 @@ var PageBuilderModel = {
                 PageBuilderModel.editors.actionButtons.toggleVisibility(container);
                 PageBuilderModel.editors.show(container);
 
-                var jwPlayer = container.children('.js-jwPlayer-wrap');
+                var jwPlayer = container.children('.js-t63-jwPlayer-wrap');
                 var videoUrl = jwPlayer.attr('data-video-url');
                 var coverUrl = jwPlayer.attr('data-cover-url');
 
                 if (videoUrl != '') {
-                    container.find('.js-jwPlayer-video-url-input').val(videoUrl);
+                    container.find('.js-t63-jwPlayer-video-url-input').val(videoUrl);
                 }
-                container.find('.js-jwPlayer-cover-url-input').val(coverUrl);
+                container.find('.js-t63-jwPlayer-cover-url-input').val(coverUrl);
             },
             done: function (container) {
                 PageBuilderModel.editors.actionButtons.toggleVisibility(container);
 
                 //
-                var videoUrl = $.trim(container.find('.js-jwPlayer-video-url-input').val());
-                var coverUrl = $.trim(container.find('.js-jwPlayer-cover-url-input').val());
+                var videoUrl = $.trim(container.find('.js-t63-jwPlayer-video-url-input').val());
+                var coverUrl = $.trim(container.find('.js-t63-jwPlayer-cover-url-input').val());
 
-                var jwPlayer = container.children('.js-jwPlayer-wrap');
+                var jwPlayer = container.children('.js-t63-jwPlayer-wrap');
 
                 jwPlayer.attr('data-cover-url', coverUrl);
 
@@ -5472,12 +5531,12 @@ var PageBuilderModel = {
                     jwPlayer.attr('data-video-url', videoUrl);
 
                     new VideoPlayer({
-                        Selector: jwPlayer.children(),
-                        File: videoUrl,
-                        Image: coverUrl
-                    }).Init();
+                        selector: jwPlayer.children(),
+                        file: videoUrl,
+                        image: coverUrl
+                    }).init();
 
-                    //container.find('.js-jwPlayer-video-url-input').val('');
+                    //container.find('.js-t63-jwPlayer-video-url-input').val('');
                 }
 
                 //
@@ -5500,14 +5559,14 @@ var PageBuilderModel = {
             //    console.log(files)
             //    if (files) {
             //        var urlDownload = (escape(files[0].urlDownload));
-            //        var jwPlayer = PageBuilderModel.editors.jwPlayer.container.children('.js-jwPlayer-wrap');
+            //        var jwPlayer = PageBuilderModel.editors.jwPlayer.container.children('.js-t63-jwPlayer-wrap');
 
             //        jwPlayer.attr('data-video-url', urlDownload);
 
             //        new VideoPlayer({
-            //            Selector: jwPlayer.children(),
-            //            File: urlDownload
-            //        }).Init();
+            //            selector: jwPlayer.children(),
+            //            file: urlDownload
+            //        }).init();
             //    }
             //    PageBuilderModel.plugins.fileManager.hide();
             //}
@@ -5522,15 +5581,15 @@ var PageBuilderModel = {
                         var urlDownload = files[0].urlDownload;
                         var fileExtension = urlDownload.slice(urlDownload.lastIndexOf('.') + 1);
 
-                        var image = container.find('.js-multimedia-image');
-                        var video = container.find('.js-multimedia-video');
+                        var image = container.find('.js-t63-multimedia-image');
+                        var video = container.find('.js-t63-multimedia-video');
 
                         if (fileExtension == 'mp4') {
                             video.attr('data-video-src', urlDownload);
                             video.children('source').attr('src', urlDownload);
 
-                            var videoHtml = container.find('.js-multimedia-video-container').html()
-                            container.find('.js-multimedia-video-container').html(videoHtml)
+                            var videoHtml = container.find('.js-t63-multimedia-video-container').html()
+                            container.find('.js-t63-multimedia-video-container').html(videoHtml)
                         } else {
                             image.attr({ 'src': urlDownload, 'data-image-src': urlDownload });
                         }
@@ -5541,15 +5600,15 @@ var PageBuilderModel = {
                         var slider = container.closest('.js-t63-slider-container');
                         if ($(slider).length > 0) {
 
-                            $(slider).closest('.js-page-section').find('.js-slider-settings-container li.active .js-multimedia-thumbnail-wrap').attr('data-multimedia-type', multimediaType);
+                            $(slider).closest('.js-t63-page-section').find('.js-t63-slider-settings-container li.active .js-t63-multimedia-thumbnail-wrap').attr('data-multimedia-type', multimediaType);
 
                             if (fileExtension == 'mp4') {
-                                $(slider).closest('.js-page-section').find('.js-slider-settings-container li.active .js-multimedia-video-thumbnail-wrap source').attr('src', urlDownload);
+                                $(slider).closest('.js-t63-page-section').find('.js-t63-slider-settings-container li.active .js-t63-multimedia-video-thumbnail-wrap source').attr('src', urlDownload);
 
-                                var videoThumbHtml = $(slider).closest('.js-page-section').find('.js-slider-settings-container li.active .js-multimedia-video-thumbnail-wrap').html()
-                                $(slider).closest('.js-page-section').find('.js-slider-settings-container li.active .js-multimedia-video-thumbnail-wrap').html(videoThumbHtml)
+                                var videoThumbHtml = $(slider).closest('.js-t63-page-section').find('.js-t63-slider-settings-container li.active .js-t63-multimedia-video-thumbnail-wrap').html()
+                                $(slider).closest('.js-t63-page-section').find('.js-t63-slider-settings-container li.active .js-t63-multimedia-video-thumbnail-wrap').html(videoThumbHtml)
                             } else {
-                                $(slider).closest('.js-page-section').find('.js-slider-settings-container li.active .js-multimedia-image-thumbnail-wrap img').attr('src', urlDownload);
+                                $(slider).closest('.js-t63-page-section').find('.js-t63-slider-settings-container li.active .js-t63-multimedia-image-thumbnail-wrap img').attr('src', urlDownload);
                             }
                         }
                     }
@@ -5572,8 +5631,8 @@ var PageBuilderModel = {
                 if (files) {
                     var urlDownload = files[0].urlDownload;
                     var container = PageBuilderModel.editors.multimedia.container;
-                    var image = container.find('.js-multimedia-image');
-                    var video = container.find('.js-multimedia-video');
+                    var image = container.find('.js-t63-multimedia-image');
+                    var video = container.find('.js-t63-multimedia-video');
 
                     if (fileExtension == 'mp4') {
                         video.attr('data-video-src', urlDownload);
@@ -5586,16 +5645,16 @@ var PageBuilderModel = {
                     if ($(slider).length > 0) {
 
                         if (fileExtension == 'mp4') {
-                            $(slider).closest('.js-page-section').find('.js-slider-settings-container li.active .js-multimedia-video-thumbnail-wrap source').attr('src', urlDownload);
+                            $(slider).closest('.js-t63-page-section').find('.js-t63-slider-settings-container li.active .js-t63-multimedia-video-thumbnail-wrap source').attr('src', urlDownload);
                         } else {
-                            $(slider).closest('.js-page-section').find('.js-slider-settings-container li.active .js-multimedia-image-thumbnail-wrap img').attr('src', urlDownload);
+                            $(slider).closest('.js-t63-page-section').find('.js-t63-slider-settings-container li.active .js-t63-multimedia-image-thumbnail-wrap img').attr('src', urlDownload);
                         }
                     }
 
                     //var slider = PageBuilderModel.editors.image.container.closest('.js-t63-slider-container');
 
                     //if ($(slider).length > 0) {
-                    //    $(slider).closest('.js-page-section').find('.js-slider-settings-container li.active .js-go-to-slide-btn').css({ 'background-image': 'url(\'' + urlDownload + '\')' });
+                    //    $(slider).closest('.js-t63-page-section').find('.js-t63-slider-settings-container li.active .js-t63-go-to-slide-btn').css({ 'background-image': 'url(\'' + urlDownload + '\')' });
                     //}
                 }
                 PageBuilderModel.plugins.fileManager.hide();
@@ -5605,9 +5664,9 @@ var PageBuilderModel = {
         iframe: {
             helper: function (model) {
                 return (
-                    `<div class="controls popover js-section-controls hidden">
+                    `<div class="controls popover js-t63-section-controls hidden">
                         <div class="form-group">
-                            <input class="form-control js-iframe-input" placeholder="Url" />
+                            <input class="form-control js-t63-iframe-input" placeholder="Url" />
                         </div>
                     </div>`
                 )
@@ -5617,19 +5676,19 @@ var PageBuilderModel = {
                 PageBuilderModel.editors.actionButtons.toggleVisibility(container);
                 PageBuilderModel.editors.show(container);
 
-                var url = container.find('.js-iframe-container iframe').attr('src');
+                var url = container.find('.js-t63-iframe-container iframe').attr('src');
                 if (url != '') {
-                    container.find('.js-iframe-input').val(url);
+                    container.find('.js-t63-iframe-input').val(url);
                 }
             },
             done: function (container) {
                 PageBuilderModel.editors.actionButtons.toggleVisibility(container);
 
                 //
-                var url = $.trim(container.find('.js-iframe-input').val());
+                var url = $.trim(container.find('.js-t63-iframe-input').val());
 
                 if (url != '') {
-                    container.find('.js-iframe-container iframe').attr('src', url);
+                    container.find('.js-t63-iframe-container iframe').attr('src', url);
                 }
 
                 //
@@ -5639,29 +5698,29 @@ var PageBuilderModel = {
 
         file: {
             partial:
-                `<div class="controls js-section-controls hidden">
-                    <input type="text" class="form-control js-file-name-input" placeholder="File Name" value="">
+                `<div class="controls js-t63-section-controls hidden">
+                    <input type="text" class="form-control js-t63-file-name-input" placeholder="File Name" value="">
                 </div>`,
 
             edit: function (container) {
                 PageBuilderModel.editors.actionButtons.toggleVisibility(container);
                 //
-                container.find('.js-file-name-input').val(container.find('.js-file-name').text());
-                container.find('.js-file-name').addClass('hidden');
+                container.find('.js-t63-file-name-input').val(container.find('.js-t63-file-name').text());
+                container.find('.js-t63-file-name').addClass('hidden');
                 //
                 PageBuilderModel.editors.show(container);
-                container.find('.js-file-name-input').focus();
+                container.find('.js-t63-file-name-input').focus();
             },
             done: function (container) {
                 PageBuilderModel.editors.actionButtons.toggleVisibility(container);
                 //
-                container.find('.js-file-name').text(container.find('.js-file-name-input').val());
-                container.find('.js-file-name').removeClass('hidden');
+                container.find('.js-t63-file-name').text(container.find('.js-t63-file-name-input').val());
+                container.find('.js-t63-file-name').removeClass('hidden');
                 //
                 PageBuilderModel.editors.hide(container);
             },
 
-            currentSection: $('.js-page-section'),
+            currentSection: $('.js-t63-page-section'),
             choose: function (section) {
                 PageBuilderModel.plugins.fileManager.file.isImage = false;
 
@@ -5693,7 +5752,7 @@ var PageBuilderModel = {
                     }
 
 
-                    $('.js-files-container > ul').append(PageBuilderModel.sections.components.attachements.files.getHtml(model));
+                    $('.js-t63-files-container > ul').append(PageBuilderModel.sections.components.attachements.files.getHtml(model));
                 }
                 //
                 PageBuilderModel.plugins.fileManager.hide();
@@ -5706,20 +5765,20 @@ var PageBuilderModel = {
 
         imgGridItem: {
             partial:
-                `<div class="controls popover js-section-controls hidden">
+                `<div class="controls popover js-t63-section-controls hidden">
                     <div class="form-group">
                         <label class="form-label">Item size</label>
                         <div class="custom-input-group">
                             <label>
-                                <input class="js-size-input" type="radio" name="size-{{id}}" value="1" {{#js_if "this.size == 1"}}checked{{/js_if}}>
+                                <input class="js-t63-size-input" type="radio" name="size-{{id}}" value="1" {{#js_if "this.size == 1"}}checked{{/js_if}}>
                                 <span>Small</span>
                             </label>
                             <label>
-                                <input class="js-size-input" type="radio" name="size-{{id}}" value="2" {{#js_if "this.size == 2"}}checked{{/js_if}}>
+                                <input class="js-t63-size-input" type="radio" name="size-{{id}}" value="2" {{#js_if "this.size == 2"}}checked{{/js_if}}>
                                 <span>Medium</span>
                             </label>
                             <label>
-                                <input class="js-size-input" type="radio" name="size-{{id}}" value="3" {{#js_if "this.size == 3"}}checked{{/js_if}}>
+                                <input class="js-t63-size-input" type="radio" name="size-{{id}}" value="3" {{#js_if "this.size == 3"}}checked{{/js_if}}>
                                 <span>Large</span>
                             </label>
                         </div>
@@ -5727,72 +5786,72 @@ var PageBuilderModel = {
                     
                     <div class="d-flex align-items-center justify-content-between">
                         <label class="form-label">Title</label>
-                        <label class="toggler toggler-sm js-title-toggler">
+                        <label class="toggler toggler-sm js-t63-title-toggler">
                             <span>Is Active</span>
                             <input type="checkbox" {{#if title.isActive}}checked{{/if}}>
                             <i></i>
                         </label>
                     </div>
                     <div class="form-group">
-                        <input type="text" class="form-control js-title-input" placeholder="title" value="{{title.value}}">
+                        <input type="text" class="form-control js-t63-title-input" placeholder="title" value="{{title.value}}">
                     </div>
                     
                     <div class="d-flex align-items-center justify-content-between">
                         <label class="form-label">Text</label>
-                        <label class="toggler toggler-sm js-text-toggler">
+                        <label class="toggler toggler-sm js-t63-text-toggler">
                             <span>Is Active</span>
                             <input type="checkbox" {{#if text.isActive}}checked{{/if}}>
                             <i></i>
                         </label>
                     </div>
                     <div class="form-group">
-                        <textarea class="form-control js-text-input" rows="3" maxlength="160" placeholder="Text">{{text.value}}</textarea>
+                        <textarea class="form-control js-t63-text-input" rows="3" maxlength="160" placeholder="Text">{{text.value}}</textarea>
                     </div>
                     
                     <div class="form-group">
                         <label class="form-label">Url</label>
-                        <input type="text" class="form-control js-url-input" placeholder="http://example.com" value="{{url}}">
+                        <input type="text" class="form-control js-t63-url-input" placeholder="http://example.com" value="{{url}}">
                     </div>
                         <div class="d-flex btn-target-checkbox-wrap">
                             <label>
-                                <input class="js-target-checkbox" type="checkbox" {{#if isTargetBlank}}checked{{/if}}>
+                                <input class="js-t63-target-checkbox" type="checkbox" {{#if isTargetBlank}}checked{{/if}}>
                                 <span>Open in new window</span>
                             </label>
                         </div>
                 </div>`,
 
             applyChanges: function (container) {
-                var itemSize = +container.find('.js-size-input:checked').val();
+                var itemSize = +container.find('.js-t63-size-input:checked').val();
 
-                var url = container.find('.js-url-input').val();
-                var isTargetBlank = container.find('.js-target-checkbox:checked').length > 0;
+                var url = container.find('.js-t63-url-input').val();
+                var isTargetBlank = container.find('.js-t63-target-checkbox:checked').length > 0;
 
                 var title = {
-                    isActive: container.find('.js-title-toggler input:checked').length > 0,
-                    value: container.find('.js-title-input').val()
+                    isActive: container.find('.js-t63-title-toggler input:checked').length > 0,
+                    value: container.find('.js-t63-title-input').val()
                 };
                 var text = {
-                    isActive: container.find('.js-text-toggler input:checked').length > 0,
-                    value: container.find('.js-text-input').val()
+                    isActive: container.find('.js-t63-text-toggler input:checked').length > 0,
+                    value: container.find('.js-t63-text-input').val()
                 };
 
                 //
-                container.find('.js-title').html(title.value);
-                container.find('.js-text').html(text.value);
-                //container.find('.js-btn').html(button.name).attr('href', button.url);
+                container.find('.js-t63-title').html(title.value);
+                container.find('.js-t63-text').html(text.value);
+                //container.find('.js-t63-btn').html(button.name).attr('href', button.url);
 
                 if (title.isActive) {
-                    container.find('.js-title').removeClass('component-disabled');
+                    container.find('.js-t63-title').removeClass('component-disabled');
                 }
                 else {
-                    container.find('.js-title').addClass('component-disabled');
+                    container.find('.js-t63-title').addClass('component-disabled');
                 }
 
                 if (text.isActive) {
-                    container.find('.js-text').removeClass('component-disabled');
+                    container.find('.js-t63-text').removeClass('component-disabled');
                 }
                 else {
-                    container.find('.js-text').addClass('component-disabled');
+                    container.find('.js-t63-text').addClass('component-disabled');
                 }
 
                 if (title.isActive || text.isActive) {
@@ -5836,9 +5895,9 @@ var PageBuilderModel = {
             },
 
             add: function (_this) {
-                var section = _this.closest('.js-page-section');
+                var section = _this.closest('.js-t63-page-section');
                 var itemSize = +_this.attr('data-size');
-                var itemsRow = section.find('.js-img-grid-row');
+                var itemsRow = section.find('.js-t63-img-grid-row');
 
                 var model = {
                     items: [
@@ -5865,725 +5924,22 @@ var PageBuilderModel = {
             }
         },
 
-        articlesGridItem: {
-            add: function (_this) {
-                var section = _this.closest('.js-page-section');
-                var itemsRow = section.find('.js-articles-grid-row');
-
-                var model = {
-                    items: [
-                        {
-                            ...PageBuilderModel.settings.components.articlesGridItem()
-                        }
-                    ],
-                    actionButtons: PageBuilderModel.editors.actionButtons.settings
-                };
-
-                itemsRow.append(PageBuilderModel.sections.articlesGrid.items.getHtml(model));
-
-                PageBuilderModel.editors.title.tinymce.init(itemsRow);
-                PageBuilderModel.editors.text.tinymce.init(itemsRow);
-
-                //animations
-                PageBuilderModel.editors.section.initAnimations(section);
-            },
-
-            remove: function (container) {
-                container.parent().remove();
-            }
-        },
-
-        articlesListItem: {
-            add: function (_this) {
-                var section = _this.closest('.js-page-section');
-                var itemsContainer = section.find('.js-articles-list-container');
-
-                var model = {
-                    items: [
-                        {
-                            ...PageBuilderModel.settings.components.articlesListItem()
-                        }
-                    ],
-                    actionButtons: PageBuilderModel.editors.actionButtons.settings
-                };
-
-                itemsContainer.append(PageBuilderModel.sections.articlesList.items.getHtml(model));
-
-                PageBuilderModel.editors.title.tinymce.init(itemsContainer);
-                PageBuilderModel.editors.text.tinymce.init(itemsContainer);
-
-                //animations
-                PageBuilderModel.editors.section.initAnimations(section);
-            },
-
-            remove: function (container) {
-                container.parent().remove();
-            }
-        },
-
-        sliderItem: {
-            controls: {
-                containerPartial:
-                    `<div class="t63-slider-settings-container js-slider-settings-container">
-                            <div>
-                                <div class="items-wrap">
-                                    <ul>
-                                        {{> "sliderItemsControlsItemPartial"}}
-                                    </ul>
-                                </div>
-                                <button class="editor-btn-rounded add-slide-btn js-add-slide-btn"></button>
-                            </div>
-                        </div>`,
-
-                items: {
-                    partial:
-                        `{{#each items}}
-                            <li>
-                                {{#if components.image}}
-                                <button class="go-to-slide-btn js-go-to-slide-btn" style="background-image: url({{components.image.url}})"></button>
-                                {{/if}}
-                                {{#if components.multimedia}}
-                                    <div class="multimedia-thumbnail-wrap js-multimedia-thumbnail-wrap" data-multimedia-type="{{#if components.multimedia.isImage}}image{{else}}video{{/if}}">
-                                        <figure class="embed-responsive js-multimedia-image-thumbnail-wrap">
-                                            <img class="embed-responsive-item" src="{{components.multimedia.image.url}}" alt="" />
-                                        </figure>
-                                        <div class="embed-responsive js-multimedia-video-thumbnail-wrap">
-                                            <video class="embed-responsive-item">
-                                                <source src="{{components.multimedia.video.url}}" type="video/mp4">
-                                            </video>
-                                        </div>
-                                        <button class="go-to-slide-btn js-go-to-slide-btn"></button>
-                                    </div>
-                                {{/if}}
-                                <button class="remove-slide-btn js-remove-slide-btn"></button>
-                                <i class="handle ui-draggable-handle"></i>
-                            </li>
-                        {{/each}}`,
-
-                    template: '{{> "sliderItemsControlsItemPartial"}}',
-
-                    getHtml: function (model) {
-                        return PageBuilderModel.editors.sliderItem.controls.items.template(model);
-                    },
-                }
-            },
-
-            add: function (_this) {
-                var section = _this.closest('.js-page-section');
-                var sectionName = section.data('section');
-                var slider = section.find('.js-t63-slider-container');
-                var settingItemsContainer = section.find('.js-slider-settings-container ul');
-
-                var model = {
-                    items: [
-                        { ...PageBuilderModel.settings.components[sectionName + 'Item']() }
-                    ],
-                    actionButtons: PageBuilderModel.editors.actionButtons.settings
-                };
-
-                slider.append(PageBuilderModel.sections[sectionName].items.getHtml(model));
-
-                settingItemsContainer.append(PageBuilderModel.editors.sliderItem.controls.items.getHtml(model));
-
-                PageBuilderModel.editors.sliderItem.activeFirstSlide(section);
-                PageBuilderModel.editors.sliderItem.sortable(section);
-
-                var newSlide = slider.children('div:last-child');
-                PageBuilderModel.editors.title.tinymce.init(newSlide);
-                PageBuilderModel.editors.text.tinymce.init(newSlide);
-            },
-
-            remove: function (_this) {
-                var section = _this.closest('.js-page-section');
-
-                section.find('.js-t63-slider-container > div').eq(_this.parent().index()).remove();
-                _this.parent().remove();
-
-                PageBuilderModel.editors.sliderItem.activeFirstSlide(section);
-                PageBuilderModel.editors.sliderItem.sortable(section);
-            },
-
-            goToSlide: function (_this) {
-                var section = _this.closest('.js-page-section');
-                var slide = section.find('.js-t63-slider-container > div');
-                var controlsItem = section.find('.js-slider-settings-container li');
-
-                slide.removeClass('active');
-                controlsItem.removeClass('active');
-
-                _this.closest('li').addClass('active');
-                slide.eq(_this.closest('li').index()).addClass('active');
-            },
-
-            activeFirstSlide: function (section) {
-                if ($(section).find('.js-t63-slider-container > div.active').length == 0) {
-                    $(section).find('.js-t63-slider-container > div:first-child, .js-slider-settings-container li:first-child').addClass('active');
-                }
-            },
-
-            addIndexes: function (section) {
-                $('.js-slider-settings-container li').each(function (index, item) {
-                    $(item).attr('data-index', index);
-                });
-            },
-
-            sortable: function (section) {
-                PageBuilderModel.editors.sliderItem.addIndexes(section);
-
-                var container = section ? section.find('.js-slider-settings-container ul') : $('.js-slider-settings-container ul');
-
-                $(container).sortable({
-                    handle: '.handle',
-                    placeholder: 'slider-settngs-item-placeholder',
-                    update: function (event, ui) {
-                        var oldIndex = +$(ui.item).attr('data-index');
-                        var newIndex = $(ui.item).index();
-
-                        var slide = section.find('.js-t63-slider-container > div');
-
-                        if (newIndex > oldIndex) {
-                            slide.eq(oldIndex).insertAfter(slide.eq(newIndex));
-                        }
-                        else {
-                            slide.eq(oldIndex).insertBefore(slide.eq(newIndex));
-                        }
-                        PageBuilderModel.editors.sliderItem.addIndexes(section);
-                    },
-                });
-                $(container).disableSelection();
-            },
-
-            init: function (section) {
-                PageBuilderModel.editors.sliderItem.activeFirstSlide(section);
-                PageBuilderModel.editors.sliderItem.sortable(section);
-
-                //
-                if (section) {
-                    section.on('click', '.js-add-slide-btn', function () {
-                        PageBuilderModel.editors.sliderItem.add($(this));
-                    });
-                    section.on('click', '.js-remove-slide-btn', function () {
-                        PageBuilderModel.editors.sliderItem.remove($(this));
-                    });
-                    section.on('click', '.js-go-to-slide-btn', function () {
-                        PageBuilderModel.editors.sliderItem.goToSlide($(this));
-                    });
-                }
-            },
-        },
-
-        accordionItem: {
-            add: function (_this) {
-                var section = _this.closest('.js-page-section');
-                var itemsRow = section.find('.js-t63-accordion-items-row');
-
-                var model = {
-                    items: [
-                        {
-                            ...PageBuilderModel.settings.components.accordionItem()
-                        }
-                    ],
-                    actionButtons: PageBuilderModel.editors.actionButtons.settings
-                };
-
-                itemsRow.append(PageBuilderModel.sections.accordion.items.getHtml(model));
-
-                PageBuilderModel.editors.title.tinymce.init(itemsRow);
-                PageBuilderModel.editors.text.tinymce.init(itemsRow);
-
-                //animations
-                PageBuilderModel.editors.section.initAnimations(section);
-            },
-
-            remove: function (container) {
-                container.remove();
-            }
-        },
-
-        tabItem: {
-            partial:
-                `<div class="controls popover js-section-controls hidden">
-                    <div class="d-flex align-items-center justify-content-between">
-                        <label class="form-label">tab</label>
-                        <label class="toggler toggler-sm js-tab-visibility-toggler">
-                            <span>Is Active</span>
-                            <input type="checkbox" {{#if isActive}}checked{{/if}}>
-                            <i></i>
-                        </label>
-                    </div>
-                    <div class="form-group">
-                        <input type="text" class="form-control js-name-input" placeholder="Tab name" value="{{name}}">
-                    </div>
-
-                    <div class="d-flex align-items-center justify-content-between">
-                        <label class="form-label">FontAwesome</label>
-                        <label class="toggler toggler-sm js-faIcon-toggler">
-                            <span>Is Active {{components.fontAwesomeIcon.isActive}}</span>
-                            <input type="checkbox" {{#if components.fontAwesomeIcon.isActive}}checked{{/if}}>
-                            <i></i>
-                        </label>
-                    </div>
-                    <div class="form-group">
-                        <input type="text" class="form-control js-faIcon-name-input" placeholder="faIcon name" value="{{components.fontAwesomeIcon.name}}">
-                    </div>
-                </div>`,
-
-            edit: function (container) {
-                PageBuilderModel.editors.actionButtons.toggleVisibility(container);
-                PageBuilderModel.editors.show(container);
-            },
-            done: function (container) {
-                PageBuilderModel.editors.actionButtons.toggleVisibility(container);
-
-                //
-                var name = container.find('.js-name-input').val();
-                var isActive = container.find('.js-tab-visibility-toggler input').is(':checked');
-
-                var fontAwesomeIcon = {
-                    isActive: container.find('.js-faIcon-toggler input:checked').length > 0,
-                    name: container.find('.js-faIcon-name-input').val()
-                };
-
-                //
-                container.find('.js-tab-item-name').html(name);
-
-                if (fontAwesomeIcon.name.indexOf('class="') > -1) {
-                    fontAwesomeIcon.name = fontAwesomeIcon.name.slice(fontAwesomeIcon.name.indexOf('"') + 1, fontAwesomeIcon.name.lastIndexOf('"'))
-                }
-                container.find('.js-tab-item-icon-wrap i').removeAttr('class').addClass(fontAwesomeIcon.name);
-
-                if (isActive) {
-                    container.removeClass('component-disabled');
-                } else {
-                    container.addClass('component-disabled');
-                }
-
-                if (fontAwesomeIcon.isActive) {
-                    container.find('.js-tab-item-icon-wrap').removeClass('component-disabled');
-                }
-                else {
-                    container.find('.js-tab-item-icon-wrap').addClass('component-disabled');
-                }
-
-                //
-                PageBuilderModel.editors.hide(container);
-            },
-
-            add: function (_this) {
-                var section = _this.closest('.js-page-section');
-                var nav = section.find('.js-tab-nav');
-                var content = section.find('.js-tab-content');
-
-                var model = {
-                    items: [
-                        {
-                            ...PageBuilderModel.settings.components.tabItem()
-                        }
-                    ],
-                    actionButtons: PageBuilderModel.editors.actionButtons.settings
-                };
-
-                nav.append(PageBuilderModel.sections.tabs.navItems.getHtml(model));
-                content.append(PageBuilderModel.sections.tabs.contentItems.getHtml(model));
-
-                PageBuilderModel.editors.text.tinymce.init(content);
-
-                PageBuilderModel.plugins.tabs.show(nav.find('.js-tab-nav-item:last-child a'));
-
-                //animations
-                PageBuilderModel.editors.section.initAnimations(section);
-            },
-
-            remove: function (container) {
-                var section = container.closest('.js-page-section');
-                var id = container.children('a').attr('href');
-
-                $(id).remove();
-                container.remove();
-
-                PageBuilderModel.plugins.tabs.show(section.find('.js-tab-nav-item:first-child a'));
-            }
-        },
-
-        servicesGridItem: {
-            add: function (_this) {
-                var section = _this.closest('.js-page-section');
-                var itemsRow = section.find('.js-t63-services-grid-row');
-
-                var model = {
-                    items: [
-                        {
-                            ...PageBuilderModel.settings.components.servicesGridItem()
-                        }
-                    ],
-                    actionButtons: PageBuilderModel.editors.actionButtons.settings
-                };
-
-                itemsRow.append(PageBuilderModel.sections.services.items.getHtml(model));
-
-                PageBuilderModel.editors.title.tinymce.init(itemsRow);
-                PageBuilderModel.editors.text.tinymce.init(itemsRow);
-
-                //animations
-                PageBuilderModel.editors.section.initAnimations(section);
-            },
-
-            remove: function (container) {
-                container.parent().remove();
-            }
-        },
-
-        mediaObjectsGridItem: {
-            partial:
-                `<div class="controls popover js-section-controls hidden">
-                    <div class="form-group">
-                        <label class="form-label">Item size</label>
-                        <div class="custom-input-group">
-                            <label>
-                                <input class="js-size-input" type="radio" name="size-{{id}}" value="1" {{#js_if "this.size == 1"}}checked{{/js_if}}>
-                                <span>Small</span>
-                            </label>
-                            <label>
-                                <input class="js-size-input" type="radio" name="size-{{id}}" value="2" {{#js_if "this.size == 2"}}checked{{/js_if}}>
-                                <span>Medium</span>
-                            </label>
-                            <label>
-                                <input class="js-size-input" type="radio" name="size-{{id}}" value="3" {{#js_if "this.size == 3"}}checked{{/js_if}}>
-                                <span>Large</span>
-                            </label>
-                        </div>
-                    </div>
-                </div>`,
-
-            applyChanges: function (container) {
-                var itemSize = +container.find('.js-size-input:checked').val();
-
-                container.attr('data-size', itemSize);
-                container.parent().removeAttr('class').addClass(PageBuilderModel.settings.components.mediaObjectsGridItem().columnClassesNames[itemSize - 1]);
-            },
-
-            edit: function (container) {
-                PageBuilderModel.editors.actionButtons.toggleVisibility(container);
-                PageBuilderModel.editors.show(container);
-            },
-            done: function (container) {
-                PageBuilderModel.editors.actionButtons.toggleVisibility(container);
-
-                //
-                PageBuilderModel.editors.mediaObjectsGridItem.applyChanges(container);
-
-                //
-                PageBuilderModel.editors.hide(container);
-            },
-
-            add: function (_this) {
-                var section = _this.closest('.js-page-section');
-                var itemSize = +_this.attr('data-size');
-                var itemsRow = section.find('.js-media-objects-grid-row');
-
-                var model = {
-                    items: [
-                        {
-                            ...PageBuilderModel.settings.components.mediaObjectsGridItem(),
-                            id: PageBuilderModel.guid.s15(),
-                            columnClassesNames: PageBuilderModel.settings.components.mediaObjectsGridItem().columnClassesNames[itemSize - 1],
-                            size: itemSize,
-                        }
-                    ],
-                    actionButtons: PageBuilderModel.editors.actionButtons.settings
-                };
-
-                itemsRow.append(PageBuilderModel.sections.mediaObjectsGrid.items.getHtml(model));
-
-                PageBuilderModel.editors.title.tinymce.init(itemsRow);
-                PageBuilderModel.editors.text.tinymce.init(itemsRow);
-
-                //animations
-                PageBuilderModel.editors.section.initAnimations(section);
-            },
-
-            remove: function (container) {
-                container.parent().remove();
-            }
-        },
-
-        packagesGridItem: {
-            partial:
-                `<div class="controls popover js-section-controls hidden">
-                    <div class="form-group">
-                        <label class="form-label">Item size</label>
-                        <div class="custom-input-group">
-                            <label>
-                                <input class="js-size-input" type="radio" name="size-{{id}}" value="1" {{#js_if "this.size == 1"}}checked{{/js_if}}>
-                                <span>Small</span>
-                            </label>
-                            <label>
-                                <input class="js-size-input" type="radio" name="size-{{id}}" value="2" {{#js_if "this.size == 2"}}checked{{/js_if}}>
-                                <span>Medium</span>
-                            </label>
-                            <label>
-                                <input class="js-size-input" type="radio" name="size-{{id}}" value="3" {{#js_if "this.size == 3"}}checked{{/js_if}}>
-                                <span>Large</span>
-                            </label>
-                        </div>
-                    </div>
-                </div>`,
-
-            applyChanges: function (container) {
-                var itemSize = +container.find('.js-size-input:checked').val();
-
-                container.attr('data-size', itemSize);
-                container.parent().removeAttr('class').addClass(PageBuilderModel.settings.components.packagesGridItem().columnClassesNames[itemSize - 1]);
-            },
-
-            edit: function (container) {
-                PageBuilderModel.editors.actionButtons.toggleVisibility(container);
-                PageBuilderModel.editors.show(container);
-            },
-            done: function (container) {
-                PageBuilderModel.editors.actionButtons.toggleVisibility(container);
-
-                //
-                PageBuilderModel.editors.packagesGridItem.applyChanges(container);
-
-                //
-                PageBuilderModel.editors.hide(container);
-            },
-
-            add: function (_this) {
-                var section = _this.closest('.js-page-section');
-                var itemSize = +_this.attr('data-size');
-                var itemsRow = section.find('.js-packages-grid-row');
-
-                var model = {
-                    items: [
-                        {
-                            ...PageBuilderModel.settings.components.packagesGridItem(),
-                            id: PageBuilderModel.guid.s15(),
-                            columnClassesNames: PageBuilderModel.settings.components.packagesGridItem().columnClassesNames[itemSize - 1],
-                            size: itemSize,
-                        }
-                    ],
-                    actionButtons: PageBuilderModel.editors.actionButtons.settings
-                };
-
-                itemsRow.append(PageBuilderModel.sections.packagesGrid.items.getHtml(model));
-
-                PageBuilderModel.editors.title.tinymce.init(itemsRow);
-                PageBuilderModel.editors.text.tinymce.init(itemsRow);
-
-                //animations
-                PageBuilderModel.editors.section.initAnimations(section);
-            },
-
-            remove: function (container) {
-                container.parent().remove();
-            }
-        },
-
-        flipCardsGridItem: {
-            partial:
-                `<div class="controls popover js-section-controls hidden">
-                    <div class="form-group">
-                        <label class="form-label">Item size</label>
-                        <div class="custom-input-group">
-                            <label>
-                                <input class="js-size-input" type="radio" name="size-{{id}}" value="1" {{#js_if "this.size == 1"}}checked{{/js_if}}>
-                                <span>Small</span>
-                            </label>
-                            <label>
-                                <input class="js-size-input" type="radio" name="size-{{id}}" value="2" {{#js_if "this.size == 2"}}checked{{/js_if}}>
-                                <span>Medium</span>
-                            </label>
-                            <label>
-                                <input class="js-size-input" type="radio" name="size-{{id}}" value="3" {{#js_if "this.size == 3"}}checked{{/js_if}}>
-                                <span>Large</span>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Item Rotate event</label>
-                        <div class="custom-input-group">
-                            <label>
-                                <input class="js-flip-card-item-rotate-event-input" type="radio" name="rotate-event-{{id}}" value="false" {{#unless rotateOnClick}}checked{{/unless}}>
-                                <span>Hover</span>
-                            </label>
-                            <label>
-                                <input class="js-flip-card-item-rotate-event-input" type="radio" name="rotate-event-{{id}}" value="true" {{#if rotateOnClick}}checked{{/if}}>
-                                <span>Click</span>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Media</label>
-                        <div class="custom-input-group">
-                            <label>
-                                <input class="js-flip-card-item-media-input" type="radio" name="media-{{id}}" value="image" {{#if hasImage}}checked{{/if}}>
-                                <span>Image</span>
-                            </label>
-                            <label>
-                                <input class="js-flip-card-item-media-input" type="radio" name="media-{{id}}" value="icon" {{#if hasIcon}}checked{{/if}}>
-                                <span>Icon</span>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <button class="editor-btn-rounded js-flip-card-item-rotate-btn js-additional-action-buttons"><img src="/plugins/63bits-pageBuilder/images/icons/rotate.svg" alt="settings"></button>`,
-
-            applyChanges: function (container) {
-                var itemSize = +container.find('.js-size-input:checked').val();
-                container.attr('data-size', itemSize);
-                container.parent().removeAttr('class').addClass(PageBuilderModel.settings.components.flipCardsGridItem().columnClassesNames[itemSize - 1]);
-
-                var mediaType;
-                if (container.find('.js-flip-card-item-media-input:checked').val() === 'image') {
-                    mediaType = 'image';
-                } else {
-                    ;
-                    mediaType = 'icon';
-                }
-                container.find('.js-media-container').attr('data-media-type', mediaType);
-
-                var isClickable = container.find('.js-flip-card-item-rotate-event-input:checked').val();
-                container.attr('data-clickable', isClickable);
-            },
-
-            edit: function (container) {
-                PageBuilderModel.editors.actionButtons.toggleVisibility(container);
-                PageBuilderModel.editors.show(container);
-            },
-            done: function (container) {
-                PageBuilderModel.editors.actionButtons.toggleVisibility(container);
-
-                //
-                PageBuilderModel.editors.flipCardsGridItem.applyChanges(container);
-
-                //
-                PageBuilderModel.editors.hide(container);
-            },
-
-            changeMediaElement: function (container) {
-                var html, mediaType;
-                if (container.find('.js-flip-card-item-media-input:checked').val() === 'image') {
-                    //html = PageBuilderModel.sections.components.image.helper(PageBuilderModel.settings.components.flipCardsGridItem().components.image, PageBuilderModel.editors.actionButtons.settings.image);
-                    mediaType = 'image';
-                } else {
-                    //html = PageBuilderModel.sections.components.fontAwesomeIcon.helper(PageBuilderModel.settings.components.flipCardsGridItem().components.fontAwesomeIcon, PageBuilderModel.editors.actionButtons.settings.fontAwesomeIcon);
-                    mediaType = 'icon';
-                }
-
-                container.find('.js-media-container').attr('data-media-type', mediaType).html(html)
-            },
-
-            add: function (_this) {
-                var section = _this.closest('.js-page-section');
-                var itemSize = +_this.attr('data-size');
-                var itemsRow = section.find('.js-flip-cards-grid-row');
-
-                var model = {
-                    items: [
-                        {
-                            ...PageBuilderModel.settings.components.flipCardsGridItem(),
-                            id: PageBuilderModel.guid.s15(),
-                            columnClassesNames: PageBuilderModel.settings.components.flipCardsGridItem().columnClassesNames[itemSize - 1],
-                            size: itemSize,
-                        }
-                    ],
-                    actionButtons: PageBuilderModel.editors.actionButtons.settings
-                };
-
-                itemsRow.append(PageBuilderModel.sections.flipCardsGrid.items.getHtml(model));
-
-                PageBuilderModel.editors.title.tinymce.init(itemsRow);
-                PageBuilderModel.editors.text.tinymce.init(itemsRow);
-
-                //animations
-                PageBuilderModel.editors.section.initAnimations(section);
-            },
-
-            remove: function (container) {
-                container.parent().remove();
-            }
-        },
-
-        pdfViewerIframe: {
-            helper: function (model) {
-                return (
-                    `<div class="controls popover js-section-controls hidden">
-                        <div class="d-flex align-items-center justify-content-between">
-                            <label class="toggler toggler-sm js-pdfViewerIframe-state-toggler">
-                                <input type="checkbox" ${model.downloadEnabled ? 'checked' : ''}>
-                                <i></i>
-                                <span>Enable Download</span>
-                            </label>
-                            <button class="btn btn-sm btn-primary js-pdf-upload-btn">Choose</button>
-                        </div>
-                        <input class="js-pdfViewerIframe-input" type="hidden" value="${model.url}"/>
-                    </div>`
-                )
-            },
-
-            fileManager: {
-                onSelectedFilesChooseClientCallback: function (files) {
-                    var container = PageBuilderModel.editors.pdfViewerIframe.container;
-
-                    if (files) {
-                        var urlDownload = files[0].urlDownload; //.replace(/'|`| /g, '')
-                        container.find('.js-pdfViewerIframe-input').val(urlDownload);
-                    }
-
-                    PageBuilderModel.plugins.fileManager.hide();
-                    PageBuilderModel.editors.pdfViewerIframe.done(container)
-                }
-            },
-
-            container: '',
-
-            edit: function (container) {
-                PageBuilderModel.editors.actionButtons.toggleVisibility(container);
-                PageBuilderModel.editors.show(container);
-
-                PageBuilderModel.editors.pdfViewerIframe.container = container;
-
-                container.find('.js-pdf-upload-btn').off('click');
-                container.find('.js-pdf-upload-btn').click(function () {
-                    PageBuilderModel.plugins.fileManager.show(PageBuilderModel.plugins.pdfViewer.getFileUrl());
-                });
-            },
-            done: function (container) {
-                PageBuilderModel.editors.actionButtons.toggleVisibility(container);
-
-                //
-                var pdfUrl = $.trim(container.find('.js-pdfViewerIframe-input').val());
-                var downloadEnabled = container.find('.js-pdfViewerIframe-state-toggler input').is(':checked');
-
-                var url = PageBuilderModel.plugins.pdfViewer.url + '?CanDownload=' + downloadEnabled + '&UrlPdfFile=' + pdfUrl;
-
-                if (pdfUrl !== '') {
-                    container.find('.js-pdfViewerIframe-container iframe').attr({ 'src': url, 'data-pdf-url': pdfUrl, 'data-pdfviewer-url': url });
-                }
-
-                //
-                PageBuilderModel.editors.hide(container);
-            }
-        },
-
         videoGridItem: {
             partial:
-                `<div class="controls popover js-section-controls hidden">
+                `<div class="controls popover js-t63-section-controls hidden">
                     <div class="form-group">
                         <label class="form-label">Item size</label>
                         <div class="custom-input-group">
                             <label>
-                                <input class="js-size-input" type="radio" name="size-{{id}}" value="1" {{#js_if "this.size == 1"}}checked{{/js_if}}>
+                                <input class="js-t63-size-input" type="radio" name="size-{{id}}" value="1" {{#js_if "this.size == 1"}}checked{{/js_if}}>
                                 <span>Small</span>
                             </label>
                             <label>
-                                <input class="js-size-input" type="radio" name="size-{{id}}" value="2" {{#js_if "this.size == 2"}}checked{{/js_if}}>
+                                <input class="js-t63-size-input" type="radio" name="size-{{id}}" value="2" {{#js_if "this.size == 2"}}checked{{/js_if}}>
                                 <span>Medium</span>
                             </label>
                             <label>
-                                <input class="js-size-input" type="radio" name="size-{{id}}" value="3" {{#js_if "this.size == 3"}}checked{{/js_if}}>
+                                <input class="js-t63-size-input" type="radio" name="size-{{id}}" value="3" {{#js_if "this.size == 3"}}checked{{/js_if}}>
                                 <span>Large</span>
                             </label>
                         </div>
@@ -6591,7 +5947,7 @@ var PageBuilderModel = {
                 </div>`,
 
             applyChanges: function (container) {
-                var itemSize = +container.find('.js-size-input:checked').val();
+                var itemSize = +container.find('.js-t63-size-input:checked').val();
 
                 container.attr('data-size', itemSize);
                 container.parent().removeAttr('class').addClass(PageBuilderModel.settings.components.videoGridItem().columnClassesNames[itemSize - 1]);
@@ -6612,9 +5968,9 @@ var PageBuilderModel = {
             },
 
             add: function (_this) {
-                var section = _this.closest('.js-page-section');
+                var section = _this.closest('.js-t63-page-section');
                 var itemSize = +_this.attr('data-size');
-                var itemsRow = section.find('.js-video-grid-row');
+                var itemsRow = section.find('.js-t63-video-grid-row');
 
                 var model = {
                     items: [
@@ -6643,20 +5999,20 @@ var PageBuilderModel = {
 
         jwPlayerGridItem: {
             partial:
-                `<div class="controls popover js-section-controls hidden">
+                `<div class="controls popover js-t63-section-controls hidden">
                     <div class="form-group">
                         <label class="form-label">Item size</label>
                         <div class="custom-input-group">
                             <label>
-                                <input class="js-size-input" type="radio" name="size-{{id}}" value="1" {{#js_if "this.size == 1"}}checked{{/js_if}}>
+                                <input class="js-t63-size-input" type="radio" name="size-{{id}}" value="1" {{#js_if "this.size == 1"}}checked{{/js_if}}>
                                 <span>Small</span>
                             </label>
                             <label>
-                                <input class="js-size-input" type="radio" name="size-{{id}}" value="2" {{#js_if "this.size == 2"}}checked{{/js_if}}>
+                                <input class="js-t63-size-input" type="radio" name="size-{{id}}" value="2" {{#js_if "this.size == 2"}}checked{{/js_if}}>
                                 <span>Medium</span>
                             </label>
                             <label>
-                                <input class="js-size-input" type="radio" name="size-{{id}}" value="3" {{#js_if "this.size == 3"}}checked{{/js_if}}>
+                                <input class="js-t63-size-input" type="radio" name="size-{{id}}" value="3" {{#js_if "this.size == 3"}}checked{{/js_if}}>
                                 <span>Large</span>
                             </label>
                         </div>
@@ -6664,7 +6020,7 @@ var PageBuilderModel = {
                 </div>`,
 
             applyChanges: function (container) {
-                var itemSize = +container.find('.js-size-input:checked').val();
+                var itemSize = +container.find('.js-t63-size-input:checked').val();
 
                 container.attr('data-size', itemSize);
                 container.parent().removeAttr('class').addClass(PageBuilderModel.settings.components.jwPlayerGridItem().columnClassesNames[itemSize - 1]);
@@ -6685,9 +6041,9 @@ var PageBuilderModel = {
             },
 
             add: function (_this) {
-                var section = _this.closest('.js-page-section');
+                var section = _this.closest('.js-t63-page-section');
                 var itemSize = +_this.attr('data-size');
-                var itemsRow = section.find('.js-jwp-grid-row');
+                var itemsRow = section.find('.js-t63-jwp-grid-row');
 
                 var model = {
                     items: [
@@ -6705,13 +6061,13 @@ var PageBuilderModel = {
 
                 //--- init player
                 var itemID = model.items[0].id;
-                var jwPayerWrap = $('[data-id="' + itemID + '"] .js-jwPlayer-wrap');
+                var jwPayerWrap = $('[data-id="' + itemID + '"] .js-t63-jwPlayer-wrap');
 
                 new VideoPlayer({
-                    Selector: jwPayerWrap.children('div'),
-                    File: jwPayerWrap.attr('data-video-url'),
-                    Image: jwPayerWrap.attr('data-cover-url')
-                }).Init();
+                    selector: jwPayerWrap.children('div'),
+                    file: jwPayerWrap.attr('data-video-url'),
+                    image: jwPayerWrap.attr('data-cover-url')
+                }).init();
 
                 //PageBuilderModel.sections.jwPlayerGrid.sortable(itemsRow);
 
@@ -6724,67 +6080,193 @@ var PageBuilderModel = {
             }
         },
 
-        postCardsGridItem: {
-            partial:
-                `<div class="controls popover js-section-controls hidden">
-                    <div class="form-group">
-                        <label class="form-label">Item size</label>
-                        <div class="custom-input-group">
-                            <label>
-                                <input class="js-size-input" type="radio" name="size-{{id}}" value="1" {{#js_if "this.size == 1"}}checked{{/js_if}}>
-                                <span>Small</span>
-                            </label>
-                            <label>
-                                <input class="js-size-input" type="radio" name="size-{{id}}" value="2" {{#js_if "this.size == 2"}}checked{{/js_if}}>
-                                <span>Medium</span>
-                            </label>
-                            <label>
-                                <input class="js-size-input" type="radio" name="size-{{id}}" value="3" {{#js_if "this.size == 3"}}checked{{/js_if}}>
-                                <span>Large</span>
-                            </label>
-                        </div>
-                    </div>
-                </div>`,
+        sliderItem: {
+            controls: {
+                containerPartial:
+                    `<div class="t63-slider-settings-container js-t63-slider-settings-container">
+                            <div>
+                                <div class="items-wrap">
+                                    <ul>
+                                        {{> "sliderItemsControlsItemPartial"}}
+                                    </ul>
+                                </div>
+                                <button class="editor-btn-rounded add-slide-btn js-t63-add-slide-btn"></button>
+                            </div>
+                        </div>`,
 
-            applyChanges: function (container) {
-                var itemSize = +container.find('.js-size-input:checked').val();
+                items: {
+                    partial:
+                        `{{#each items}}
+                            <li>
+                                {{#if components.image}}
+                                <button class="go-to-slide-btn js-t63-go-to-slide-btn" style="background-image: url({{components.image.url}})"></button>
+                                {{/if}}
+                                {{#if components.multimedia}}
+                                    <div class="multimedia-thumbnail-wrap js-t63-multimedia-thumbnail-wrap" data-multimedia-type="{{#if components.multimedia.isImage}}image{{else}}video{{/if}}">
+                                        <figure class="embed-responsive js-t63-multimedia-image-thumbnail-wrap">
+                                            <img class="embed-responsive-item" src="{{components.multimedia.image.url}}" alt="" />
+                                        </figure>
+                                        <div class="embed-responsive js-t63-multimedia-video-thumbnail-wrap">
+                                            <video class="embed-responsive-item">
+                                                <source src="{{components.multimedia.video.url}}" type="video/mp4">
+                                            </video>
+                                        </div>
+                                        <button class="go-to-slide-btn js-t63-go-to-slide-btn"></button>
+                                    </div>
+                                {{/if}}
+                                <button class="remove-slide-btn js-t63-remove-slide-btn"></button>
+                                <i class="handle js-t63-slider-handle"></i>
+                            </li>
+                        {{/each}}`,
 
-                container.attr('data-size', itemSize);
-                container.parent().removeAttr('class').addClass(PageBuilderModel.settings.components.postCardsGridItem().columnClassesNames[itemSize - 1]);
-            },
+                    template: '{{> "sliderItemsControlsItemPartial"}}',
 
-            edit: function (container) {
-                PageBuilderModel.editors.actionButtons.toggleVisibility(container);
-                PageBuilderModel.editors.show(container);
-            },
-            done: function (container) {
-                PageBuilderModel.editors.actionButtons.toggleVisibility(container);
-
-                //
-                PageBuilderModel.editors.postCardsGridItem.applyChanges(container);
-
-                //
-                PageBuilderModel.editors.hide(container);
+                    getHtml: function (model) {
+                        return PageBuilderModel.editors.sliderItem.controls.items.template(model);
+                    },
+                }
             },
 
             add: function (_this) {
-                var section = _this.closest('.js-page-section');
-                var itemSize = +_this.attr('data-size');
-                var itemsRow = section.find('.js-post-cards-grid-row');
+                var section = _this.closest('.js-t63-page-section');
+                var sectionName = section.data('section');
+                var slider = section.find('.js-t63-slider-container');
+                var settingItemsContainer = section.find('.js-t63-slider-settings-container ul');
+
+                var model = {
+                    items: [
+                        { ...PageBuilderModel.settings.components[sectionName + 'Item']() }
+                    ],
+                    actionButtons: PageBuilderModel.editors.actionButtons.settings
+                };
+
+                slider.append(PageBuilderModel.sections[sectionName].items.getHtml(model));
+
+                settingItemsContainer.append(PageBuilderModel.editors.sliderItem.controls.items.getHtml(model));
+
+                PageBuilderModel.editors.sliderItem.activeFirstSlide(section);
+                PageBuilderModel.editors.sliderItem.sortable(section);
+
+                var newSlide = slider.children('div:last-child');
+                PageBuilderModel.editors.title.tinymce.init(newSlide);
+                PageBuilderModel.editors.text.tinymce.init(newSlide);
+            },
+
+            remove: function (_this) {
+                var section = _this.closest('.js-t63-page-section');
+
+                section.find('.js-t63-slider-container > div').eq(_this.parent().index()).remove();
+                _this.parent().remove();
+
+                PageBuilderModel.editors.sliderItem.activeFirstSlide(section);
+                PageBuilderModel.editors.sliderItem.sortable(section);
+            },
+
+            goToSlide: function (_this) {
+                var section = _this.closest('.js-t63-page-section');
+                var slide = section.find('.js-t63-slider-container > div');
+                var controlsItem = section.find('.js-t63-slider-settings-container li');
+
+                slide.removeClass('active');
+                controlsItem.removeClass('active');
+
+                _this.closest('li').addClass('active');
+                slide.eq(_this.closest('li').index()).addClass('active');
+            },
+
+            activeFirstSlide: function (section) {
+                if ($(section).find('.js-t63-slider-container > div.active').length == 0) {
+                    $(section).find('.js-t63-slider-container > div:first-child, .js-t63-slider-settings-container li:first-child').addClass('active');
+                }
+            },
+
+            addIndexes: function (section) {
+                $('.js-t63-slider-settings-container li').each(function (index, item) {
+                    $(item).attr('data-index', index);
+                });
+            },
+
+            sortable: function (section) {
+                PageBuilderModel.editors.sliderItem.addIndexes(section);
+
+                var container = section ? section.find('.js-t63-slider-settings-container ul') : $('.js-t63-slider-settings-container ul');
+
+                if (container.length > 0) {
+                    new Sortable($(container)[0], {
+                        handle: '.js-t63-slider-handle',
+                        ghostClass: 't63-sortable-placeholder',
+
+                        onEnd: function (evt) {
+                            var oldIndex = +$(evt.item).attr('data-index');
+                            var newIndex = $(evt.item).index();
+
+                            var slide = section.find('.js-t63-slider-container > div');
+
+                            if (newIndex > oldIndex) {
+                                slide.eq(oldIndex).insertAfter(slide.eq(newIndex));
+                            }
+                            else {
+                                slide.eq(oldIndex).insertBefore(slide.eq(newIndex));
+                            }
+                            PageBuilderModel.editors.sliderItem.addIndexes(section);
+                        },
+                    });
+                }
+                /*$(container).sortable({
+                    handle: '.handle',
+                    placeholder: 'slider-settngs-item-placeholder',
+                    update: function (event, ui) {
+                        var oldIndex = +$(ui.item).attr('data-index');
+                        var newIndex = $(ui.item).index();
+
+                        var slide = section.find('.js-t63-slider-container > div');
+
+                        if (newIndex > oldIndex) {
+                            slide.eq(oldIndex).insertAfter(slide.eq(newIndex));
+                        }
+                        else {
+                            slide.eq(oldIndex).insertBefore(slide.eq(newIndex));
+                        }
+                        PageBuilderModel.editors.sliderItem.addIndexes(section);
+                    },
+                });
+                $(container).disableSelection();*/
+            },
+
+            init: function (section) {
+                PageBuilderModel.editors.sliderItem.activeFirstSlide(section);
+                PageBuilderModel.editors.sliderItem.sortable(section);
+
+                //
+                if (section) {
+                    section.on('click', '.js-t63-add-slide-btn', function () {
+                        PageBuilderModel.editors.sliderItem.add($(this));
+                    });
+                    section.on('click', '.js-t63-remove-slide-btn', function () {
+                        PageBuilderModel.editors.sliderItem.remove($(this));
+                    });
+                    section.on('click', '.js-t63-go-to-slide-btn', function () {
+                        PageBuilderModel.editors.sliderItem.goToSlide($(this));
+                    });
+                }
+            },
+        },
+
+        articlesGridItem: {
+            add: function (_this) {
+                var section = _this.closest('.js-t63-page-section');
+                var itemsRow = section.find('.js-t63-articles-grid-row');
 
                 var model = {
                     items: [
                         {
-                            ...PageBuilderModel.settings.components.postCardsGridItem(),
-                            id: PageBuilderModel.guid.s15(),
-                            columnClassesNames: PageBuilderModel.settings.components.postCardsGridItem().columnClassesNames[itemSize - 1],
-                            size: itemSize,
+                            ...PageBuilderModel.settings.components.articlesGridItem()
                         }
                     ],
                     actionButtons: PageBuilderModel.editors.actionButtons.settings
                 };
 
-                itemsRow.append(PageBuilderModel.sections.postCardsGrid.items.getHtml(model));
+                itemsRow.append(PageBuilderModel.sections.articlesGrid.items.getHtml(model));
 
                 PageBuilderModel.editors.title.tinymce.init(itemsRow);
                 PageBuilderModel.editors.text.tinymce.init(itemsRow);
@@ -6798,22 +6280,183 @@ var PageBuilderModel = {
             }
         },
 
-        booksGridItem: {
+        articlesListItem: {
+            add: function (_this) {
+                var section = _this.closest('.js-t63-page-section');
+                var itemsContainer = section.find('.js-t63-articles-list-container');
+
+                var model = {
+                    items: [
+                        {
+                            ...PageBuilderModel.settings.components.articlesListItem()
+                        }
+                    ],
+                    actionButtons: PageBuilderModel.editors.actionButtons.settings
+                };
+
+                itemsContainer.append(PageBuilderModel.sections.articlesList.items.getHtml(model));
+
+                PageBuilderModel.editors.title.tinymce.init(itemsContainer);
+                PageBuilderModel.editors.text.tinymce.init(itemsContainer);
+
+                //animations
+                PageBuilderModel.editors.section.initAnimations(section);
+            },
+
+            remove: function (container) {
+                container.parent().remove();
+            }
+        },
+
+        accordionItem: {
+            add: function (_this) {
+                var section = _this.closest('.js-t63-page-section');
+                var itemsRow = section.find('.js-t63-accordion-items-row');
+
+                var model = {
+                    items: [
+                        {
+                            ...PageBuilderModel.settings.components.accordionItem()
+                        }
+                    ],
+                    actionButtons: PageBuilderModel.editors.actionButtons.settings
+                };
+
+                itemsRow.append(PageBuilderModel.sections.accordion.items.getHtml(model));
+
+                PageBuilderModel.editors.title.tinymce.init(itemsRow);
+                PageBuilderModel.editors.text.tinymce.init(itemsRow);
+
+                //animations
+                PageBuilderModel.editors.section.initAnimations(section);
+            },
+
+            remove: function (container) {
+                container.remove();
+            }
+        },
+
+        tabItem: {
             partial:
-                `<div class="controls popover js-section-controls hidden">
+                `<div class="controls popover js-t63-section-controls hidden">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <label class="form-label">tab</label>
+                        <label class="toggler toggler-sm js-t63-tab-visibility-toggler">
+                            <span>Is Active</span>
+                            <input type="checkbox" {{#if isActive}}checked{{/if}}>
+                            <i></i>
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control js-t63-name-input" placeholder="Tab name" value="{{name}}">
+                    </div>
+
+                    <div class="d-flex align-items-center justify-content-between">
+                        <label class="form-label">FontAwesome</label>
+                        <label class="toggler toggler-sm js-t63-faIcon-toggler">
+                            <span>Is Active {{components.fontAwesomeIcon.isActive}}</span>
+                            <input type="checkbox" {{#if components.fontAwesomeIcon.isActive}}checked{{/if}}>
+                            <i></i>
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control js-t63-faIcon-name-input" placeholder="faIcon name" value="{{components.fontAwesomeIcon.name}}">
+                    </div>
+                </div>`,
+
+            edit: function (container) {
+                PageBuilderModel.editors.actionButtons.toggleVisibility(container);
+                PageBuilderModel.editors.show(container);
+            },
+            done: function (container) {
+                PageBuilderModel.editors.actionButtons.toggleVisibility(container);
+
+                //
+                var name = container.find('.js-t63-name-input').val();
+                var isActive = container.find('.js-t63-tab-visibility-toggler input').is(':checked');
+
+                var fontAwesomeIcon = {
+                    isActive: container.find('.js-t63-faIcon-toggler input:checked').length > 0,
+                    name: container.find('.js-t63-faIcon-name-input').val()
+                };
+
+                //
+                container.find('.js-t63-tab-item-name').html(name);
+
+                if (fontAwesomeIcon.name.indexOf('class="') > -1) {
+                    fontAwesomeIcon.name = fontAwesomeIcon.name.slice(fontAwesomeIcon.name.indexOf('"') + 1, fontAwesomeIcon.name.lastIndexOf('"'))
+                }
+                container.find('.js-t63-tab-item-icon-wrap i').removeAttr('class').addClass(fontAwesomeIcon.name);
+
+                if (isActive) {
+                    container.removeClass('component-disabled');
+                } else {
+                    container.addClass('component-disabled');
+                }
+
+                if (fontAwesomeIcon.isActive) {
+                    container.find('.js-t63-tab-item-icon-wrap').removeClass('component-disabled');
+                }
+                else {
+                    container.find('.js-t63-tab-item-icon-wrap').addClass('component-disabled');
+                }
+
+                //
+                PageBuilderModel.editors.hide(container);
+            },
+
+            add: function (_this) {
+                var section = _this.closest('.js-t63-page-section');
+                var nav = section.find('.js-t63-tab-nav');
+                var content = section.find('.js-t63-tab-content');
+
+                var model = {
+                    items: [
+                        {
+                            ...PageBuilderModel.settings.components.tabItem()
+                        }
+                    ],
+                    actionButtons: PageBuilderModel.editors.actionButtons.settings
+                };
+
+                nav.append(PageBuilderModel.sections.tabs.navItems.getHtml(model));
+                content.append(PageBuilderModel.sections.tabs.contentItems.getHtml(model));
+
+                PageBuilderModel.editors.text.tinymce.init(content);
+
+                PageBuilderModel.plugins.tabs.show(nav.find('.js-t63-tab-nav-item:last-child a'));
+
+                //animations
+                PageBuilderModel.editors.section.initAnimations(section);
+            },
+
+            remove: function (container) {
+                var section = container.closest('.js-t63-page-section');
+                var id = container.children('a').attr('href');
+
+                $(id).remove();
+                container.remove();
+
+                PageBuilderModel.plugins.tabs.show(section.find('.js-t63-tab-nav-item:first-child a'));
+            }
+        },
+
+        packagesGridItem: {
+            partial:
+                `<div class="controls popover js-t63-section-controls hidden">
                     <div class="form-group">
                         <label class="form-label">Item size</label>
                         <div class="custom-input-group">
                             <label>
-                                <input class="js-size-input" type="radio" name="size-{{id}}" value="1" {{#js_if "this.size == 1"}}checked{{/js_if}}>
+                                <input class="js-t63-size-input" type="radio" name="size-{{id}}" value="1" {{#js_if "this.size == 1"}}checked{{/js_if}}>
                                 <span>Small</span>
                             </label>
                             <label>
-                                <input class="js-size-input" type="radio" name="size-{{id}}" value="2" {{#js_if "this.size == 2"}}checked{{/js_if}}>
+                                <input class="js-t63-size-input" type="radio" name="size-{{id}}" value="2" {{#js_if "this.size == 2"}}checked{{/js_if}}>
                                 <span>Medium</span>
                             </label>
                             <label>
-                                <input class="js-size-input" type="radio" name="size-{{id}}" value="3" {{#js_if "this.size == 3"}}checked{{/js_if}}>
+                                <input class="js-t63-size-input" type="radio" name="size-{{id}}" value="3" {{#js_if "this.size == 3"}}checked{{/js_if}}>
                                 <span>Large</span>
                             </label>
                         </div>
@@ -6821,10 +6464,10 @@ var PageBuilderModel = {
                 </div>`,
 
             applyChanges: function (container) {
-                var itemSize = +container.find('.js-size-input:checked').val();
+                var itemSize = +container.find('.js-t63-size-input:checked').val();
 
                 container.attr('data-size', itemSize);
-                container.parent().removeAttr('class').addClass(PageBuilderModel.settings.components.booksGridItem().columnClassesNames[itemSize - 1]);
+                container.parent().removeAttr('class').addClass(PageBuilderModel.settings.components.packagesGridItem().columnClassesNames[itemSize - 1]);
             },
 
             edit: function (container) {
@@ -6835,30 +6478,30 @@ var PageBuilderModel = {
                 PageBuilderModel.editors.actionButtons.toggleVisibility(container);
 
                 //
-                PageBuilderModel.editors.booksGridItem.applyChanges(container);
+                PageBuilderModel.editors.packagesGridItem.applyChanges(container);
 
                 //
                 PageBuilderModel.editors.hide(container);
             },
 
             add: function (_this) {
-                var section = _this.closest('.js-page-section');
+                var section = _this.closest('.js-t63-page-section');
                 var itemSize = +_this.attr('data-size');
-                var itemsRow = section.find('.js-books-grid-row');
+                var itemsRow = section.find('.js-t63-packages-grid-row');
 
                 var model = {
                     items: [
                         {
-                            ...PageBuilderModel.settings.components.booksGridItem(),
+                            ...PageBuilderModel.settings.components.packagesGridItem(),
                             id: PageBuilderModel.guid.s15(),
-                            columnClassesNames: PageBuilderModel.settings.components.booksGridItem().columnClassesNames[itemSize - 1],
+                            columnClassesNames: PageBuilderModel.settings.components.packagesGridItem().columnClassesNames[itemSize - 1],
                             size: itemSize,
                         }
                     ],
                     actionButtons: PageBuilderModel.editors.actionButtons.settings
                 };
 
-                itemsRow.append(PageBuilderModel.sections.booksGrid.items.getHtml(model));
+                itemsRow.append(PageBuilderModel.sections.packagesGrid.items.getHtml(model));
 
                 PageBuilderModel.editors.title.tinymce.init(itemsRow);
                 PageBuilderModel.editors.text.tinymce.init(itemsRow);
@@ -6872,22 +6515,22 @@ var PageBuilderModel = {
             }
         },
 
-        peopleGridItem: {
+        servicesGridItem: {
             partial:
-                `<div class="controls popover js-section-controls hidden">
+                `<div class="controls popover js-t63-section-controls hidden">
                     <div class="form-group">
                         <label class="form-label">Item size</label>
                         <div class="custom-input-group">
                             <label>
-                                <input class="js-size-input" type="radio" name="size-{{id}}" value="1" {{#js_if "this.size == 1"}}checked{{/js_if}}>
+                                <input class="js-t63-size-input" type="radio" name="size-{{id}}" value="1" {{#js_if "this.size == 1"}}checked{{/js_if}}>
                                 <span>Small</span>
                             </label>
                             <label>
-                                <input class="js-size-input" type="radio" name="size-{{id}}" value="2" {{#js_if "this.size == 2"}}checked{{/js_if}}>
+                                <input class="js-t63-size-input" type="radio" name="size-{{id}}" value="2" {{#js_if "this.size == 2"}}checked{{/js_if}}>
                                 <span>Medium</span>
                             </label>
                             <label>
-                                <input class="js-size-input" type="radio" name="size-{{id}}" value="3" {{#js_if "this.size == 3"}}checked{{/js_if}}>
+                                <input class="js-t63-size-input" type="radio" name="size-{{id}}" value="3" {{#js_if "this.size == 3"}}checked{{/js_if}}>
                                 <span>Large</span>
                             </label>
                         </div>
@@ -6895,10 +6538,10 @@ var PageBuilderModel = {
                 </div>`,
 
             applyChanges: function (container) {
-                var itemSize = +container.find('.js-size-input:checked').val();
+                var itemSize = +container.find('.js-t63-size-input:checked').val();
 
                 container.attr('data-size', itemSize);
-                container.parent().removeAttr('class').addClass(PageBuilderModel.settings.components.peopleGridItem().columnClassesNames[itemSize - 1]);
+                container.parent().removeAttr('class').addClass(PageBuilderModel.settings.components.servicesGridItem().columnClassesNames[itemSize - 1]);
             },
 
             edit: function (container) {
@@ -6909,30 +6552,104 @@ var PageBuilderModel = {
                 PageBuilderModel.editors.actionButtons.toggleVisibility(container);
 
                 //
-                PageBuilderModel.editors.peopleGridItem.applyChanges(container);
+                PageBuilderModel.editors.servicesGridItem.applyChanges(container);
 
                 //
                 PageBuilderModel.editors.hide(container);
             },
 
             add: function (_this) {
-                var section = _this.closest('.js-page-section');
+                var section = _this.closest('.js-t63-page-section');
                 var itemSize = +_this.attr('data-size');
-                var itemsRow = section.find('.js-people-grid-row');
+                var itemsRow = section.find('.js-t63-services-grid-row');
 
                 var model = {
                     items: [
                         {
-                            ...PageBuilderModel.settings.components.peopleGridItem(),
+                            ...PageBuilderModel.settings.components.servicesGridItem(),
                             id: PageBuilderModel.guid.s15(),
-                            columnClassesNames: PageBuilderModel.settings.components.peopleGridItem().columnClassesNames[itemSize - 1],
+                            columnClassesNames: PageBuilderModel.settings.components.servicesGridItem().columnClassesNames[itemSize - 1],
                             size: itemSize,
                         }
                     ],
                     actionButtons: PageBuilderModel.editors.actionButtons.settings
                 };
 
-                itemsRow.append(PageBuilderModel.sections.peopleGrid.items.getHtml(model));
+                itemsRow.append(PageBuilderModel.sections.services.items.getHtml(model));
+
+                PageBuilderModel.editors.title.tinymce.init(itemsRow);
+                PageBuilderModel.editors.text.tinymce.init(itemsRow);
+
+                //animations
+                PageBuilderModel.editors.section.initAnimations(section);
+            },
+
+            remove: function (container) {
+                container.parent().remove();
+            }
+        },
+
+        mediaObjectsGridItem: {
+            partial:
+                `<div class="controls popover js-t63-section-controls hidden">
+                    <div class="form-group">
+                        <label class="form-label">Item size</label>
+                        <div class="custom-input-group">
+                            <label>
+                                <input class="js-t63-size-input" type="radio" name="size-{{id}}" value="1" {{#js_if "this.size == 1"}}checked{{/js_if}}>
+                                <span>Small</span>
+                            </label>
+                            <label>
+                                <input class="js-t63-size-input" type="radio" name="size-{{id}}" value="2" {{#js_if "this.size == 2"}}checked{{/js_if}}>
+                                <span>Medium</span>
+                            </label>
+                            <label>
+                                <input class="js-t63-size-input" type="radio" name="size-{{id}}" value="3" {{#js_if "this.size == 3"}}checked{{/js_if}}>
+                                <span>Large</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>`,
+
+            applyChanges: function (container) {
+                var itemSize = +container.find('.js-t63-size-input:checked').val();
+
+                container.attr('data-size', itemSize);
+                container.parent().removeAttr('class').addClass(PageBuilderModel.settings.components.mediaObjectsGridItem().columnClassesNames[itemSize - 1]);
+            },
+
+            edit: function (container) {
+                PageBuilderModel.editors.actionButtons.toggleVisibility(container);
+                PageBuilderModel.editors.show(container);
+            },
+            done: function (container) {
+                PageBuilderModel.editors.actionButtons.toggleVisibility(container);
+
+                //
+                PageBuilderModel.editors.mediaObjectsGridItem.applyChanges(container);
+
+                //
+                PageBuilderModel.editors.hide(container);
+            },
+
+            add: function (_this) {
+                var section = _this.closest('.js-t63-page-section');
+                var itemSize = +_this.attr('data-size');
+                var itemsRow = section.find('.js-t63-media-objects-grid-row');
+
+                var model = {
+                    items: [
+                        {
+                            ...PageBuilderModel.settings.components.mediaObjectsGridItem(),
+                            id: PageBuilderModel.guid.s15(),
+                            columnClassesNames: PageBuilderModel.settings.components.mediaObjectsGridItem().columnClassesNames[itemSize - 1],
+                            size: itemSize,
+                        }
+                    ],
+                    actionButtons: PageBuilderModel.editors.actionButtons.settings
+                };
+
+                itemsRow.append(PageBuilderModel.sections.mediaObjectsGrid.items.getHtml(model));
 
                 PageBuilderModel.editors.title.tinymce.init(itemsRow);
                 PageBuilderModel.editors.text.tinymce.init(itemsRow);
@@ -6948,20 +6665,20 @@ var PageBuilderModel = {
 
         cardsGridItem: {
             partial:
-                `<div class="controls popover js-section-controls hidden">
+                `<div class="controls popover js-t63-section-controls hidden">
                     <div class="form-group">
                         <label class="form-label">Item size</label>
                         <div class="custom-input-group">
                             <label>
-                                <input class="js-size-input" type="radio" name="size-{{id}}" value="1" {{#js_if "this.size == 1"}}checked{{/js_if}}>
+                                <input class="js-t63-size-input" type="radio" name="size-{{id}}" value="1" {{#js_if "this.size == 1"}}checked{{/js_if}}>
                                 <span>Small</span>
                             </label>
                             <label>
-                                <input class="js-size-input" type="radio" name="size-{{id}}" value="2" {{#js_if "this.size == 2"}}checked{{/js_if}}>
+                                <input class="js-t63-size-input" type="radio" name="size-{{id}}" value="2" {{#js_if "this.size == 2"}}checked{{/js_if}}>
                                 <span>Medium</span>
                             </label>
                             <label>
-                                <input class="js-size-input" type="radio" name="size-{{id}}" value="3" {{#js_if "this.size == 3"}}checked{{/js_if}}>
+                                <input class="js-t63-size-input" type="radio" name="size-{{id}}" value="3" {{#js_if "this.size == 3"}}checked{{/js_if}}>
                                 <span>Large</span>
                             </label>
                         </div>
@@ -6969,7 +6686,7 @@ var PageBuilderModel = {
                 </div>`,
 
             applyChanges: function (container) {
-                var itemSize = +container.find('.js-size-input:checked').val();
+                var itemSize = +container.find('.js-t63-size-input:checked').val();
 
                 container.attr('data-size', itemSize);
                 container.parent().removeAttr('class').addClass(PageBuilderModel.settings.components.cardsGridItem().columnClassesNames[itemSize - 1]);
@@ -6990,9 +6707,9 @@ var PageBuilderModel = {
             },
 
             add: function (_this) {
-                var section = _this.closest('.js-page-section');
+                var section = _this.closest('.js-t63-page-section');
                 var itemSize = +_this.attr('data-size');
-                var itemsRow = section.find('.js-cards-grid-row');
+                var itemsRow = section.find('.js-t63-cards-grid-row');
 
                 var model = {
                     items: [
@@ -7020,33 +6737,442 @@ var PageBuilderModel = {
             }
         },
 
+        flipCardsGridItem: {
+            partial:
+                `<div class="controls popover js-t63-section-controls hidden">
+                    <div class="form-group">
+                        <label class="form-label">Item size</label>
+                        <div class="custom-input-group">
+                            <label>
+                                <input class="js-t63-size-input" type="radio" name="size-{{id}}" value="1" {{#js_if "this.size == 1"}}checked{{/js_if}}>
+                                <span>Small</span>
+                            </label>
+                            <label>
+                                <input class="js-t63-size-input" type="radio" name="size-{{id}}" value="2" {{#js_if "this.size == 2"}}checked{{/js_if}}>
+                                <span>Medium</span>
+                            </label>
+                            <label>
+                                <input class="js-t63-size-input" type="radio" name="size-{{id}}" value="3" {{#js_if "this.size == 3"}}checked{{/js_if}}>
+                                <span>Large</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Item Rotate event</label>
+                        <div class="custom-input-group">
+                            <label>
+                                <input class="js-t63-flip-card-item-rotate-event-input" type="radio" name="rotate-event-{{id}}" value="false" {{#unless rotateOnClick}}checked{{/unless}}>
+                                <span>Hover</span>
+                            </label>
+                            <label>
+                                <input class="js-t63-flip-card-item-rotate-event-input" type="radio" name="rotate-event-{{id}}" value="true" {{#if rotateOnClick}}checked{{/if}}>
+                                <span>Click</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Media</label>
+                        <div class="custom-input-group">
+                            <label>
+                                <input class="js-t63-flip-card-item-media-input" type="radio" name="media-{{id}}" value="image" {{#if hasImage}}checked{{/if}}>
+                                <span>Image</span>
+                            </label>
+                            <label>
+                                <input class="js-t63-flip-card-item-media-input" type="radio" name="media-{{id}}" value="icon" {{#if hasIcon}}checked{{/if}}>
+                                <span>Icon</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <button class="editor-btn-rounded js-t63-flip-card-item-rotate-btn js-t63-additional-action-buttons"><img src="/plugins/63bits-pageBuilder/images/icons/rotate.svg" alt="settings"></button>`,
+
+            applyChanges: function (container) {
+                var itemSize = +container.find('.js-t63-size-input:checked').val();
+                container.attr('data-size', itemSize);
+                container.parent().removeAttr('class').addClass(PageBuilderModel.settings.components.flipCardsGridItem().columnClassesNames[itemSize - 1]);
+
+                var mediaType;
+                if (container.find('.js-t63-flip-card-item-media-input:checked').val() === 'image') {
+                    mediaType = 'image';
+                } else {
+                    ;
+                    mediaType = 'icon';
+                }
+                container.find('.js-t63-media-container').attr('data-media-type', mediaType);
+
+                var isClickable = container.find('.js-t63-flip-card-item-rotate-event-input:checked').val();
+                container.attr('data-clickable', isClickable);
+            },
+
+            edit: function (container) {
+                PageBuilderModel.editors.actionButtons.toggleVisibility(container);
+                PageBuilderModel.editors.show(container);
+            },
+            done: function (container) {
+                PageBuilderModel.editors.actionButtons.toggleVisibility(container);
+
+                //
+                PageBuilderModel.editors.flipCardsGridItem.applyChanges(container);
+
+                //
+                PageBuilderModel.editors.hide(container);
+            },
+
+            changeMediaElement: function (container) {
+                var html, mediaType;
+                if (container.find('.js-t63-flip-card-item-media-input:checked').val() === 'image') {
+                    //html = PageBuilderModel.sections.components.image.helper(PageBuilderModel.settings.components.flipCardsGridItem().components.image, PageBuilderModel.editors.actionButtons.settings.image);
+                    mediaType = 'image';
+                } else {
+                    //html = PageBuilderModel.sections.components.fontAwesomeIcon.helper(PageBuilderModel.settings.components.flipCardsGridItem().components.fontAwesomeIcon, PageBuilderModel.editors.actionButtons.settings.fontAwesomeIcon);
+                    mediaType = 'icon';
+                }
+
+                container.find('.js-t63-media-container').attr('data-media-type', mediaType).html(html)
+            },
+
+            add: function (_this) {
+                var section = _this.closest('.js-t63-page-section');
+                var itemSize = +_this.attr('data-size');
+                var itemsRow = section.find('.js-t63-flip-cards-grid-row');
+
+                var model = {
+                    items: [
+                        {
+                            ...PageBuilderModel.settings.components.flipCardsGridItem(),
+                            id: PageBuilderModel.guid.s15(),
+                            columnClassesNames: PageBuilderModel.settings.components.flipCardsGridItem().columnClassesNames[itemSize - 1],
+                            size: itemSize,
+                        }
+                    ],
+                    actionButtons: PageBuilderModel.editors.actionButtons.settings
+                };
+
+                itemsRow.append(PageBuilderModel.sections.flipCardsGrid.items.getHtml(model));
+
+                PageBuilderModel.editors.title.tinymce.init(itemsRow);
+                PageBuilderModel.editors.text.tinymce.init(itemsRow);
+
+                //animations
+                PageBuilderModel.editors.section.initAnimations(section);
+            },
+
+            remove: function (container) {
+                container.parent().remove();
+            }
+        },
+
+        postCardsGridItem: {
+            partial:
+                `<div class="controls popover js-t63-section-controls hidden">
+                    <div class="form-group">
+                        <label class="form-label">Item size</label>
+                        <div class="custom-input-group">
+                            <label>
+                                <input class="js-t63-size-input" type="radio" name="size-{{id}}" value="1" {{#js_if "this.size == 1"}}checked{{/js_if}}>
+                                <span>Small</span>
+                            </label>
+                            <label>
+                                <input class="js-t63-size-input" type="radio" name="size-{{id}}" value="2" {{#js_if "this.size == 2"}}checked{{/js_if}}>
+                                <span>Medium</span>
+                            </label>
+                            <label>
+                                <input class="js-t63-size-input" type="radio" name="size-{{id}}" value="3" {{#js_if "this.size == 3"}}checked{{/js_if}}>
+                                <span>Large</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>`,
+
+            applyChanges: function (container) {
+                var itemSize = +container.find('.js-t63-size-input:checked').val();
+
+                container.attr('data-size', itemSize);
+                container.parent().removeAttr('class').addClass(PageBuilderModel.settings.components.postCardsGridItem().columnClassesNames[itemSize - 1]);
+            },
+
+            edit: function (container) {
+                PageBuilderModel.editors.actionButtons.toggleVisibility(container);
+                PageBuilderModel.editors.show(container);
+            },
+            done: function (container) {
+                PageBuilderModel.editors.actionButtons.toggleVisibility(container);
+
+                //
+                PageBuilderModel.editors.postCardsGridItem.applyChanges(container);
+
+                //
+                PageBuilderModel.editors.hide(container);
+            },
+
+            add: function (_this) {
+                var section = _this.closest('.js-t63-page-section');
+                var itemSize = +_this.attr('data-size');
+                var itemsRow = section.find('.js-t63-post-cards-grid-row');
+
+                var model = {
+                    items: [
+                        {
+                            ...PageBuilderModel.settings.components.postCardsGridItem(),
+                            id: PageBuilderModel.guid.s15(),
+                            columnClassesNames: PageBuilderModel.settings.components.postCardsGridItem().columnClassesNames[itemSize - 1],
+                            size: itemSize,
+                        }
+                    ],
+                    actionButtons: PageBuilderModel.editors.actionButtons.settings
+                };
+
+                itemsRow.append(PageBuilderModel.sections.postCardsGrid.items.getHtml(model));
+
+                PageBuilderModel.editors.title.tinymce.init(itemsRow);
+                PageBuilderModel.editors.text.tinymce.init(itemsRow);
+
+                //animations
+                PageBuilderModel.editors.section.initAnimations(section);
+            },
+
+            remove: function (container) {
+                container.parent().remove();
+            }
+        },
+
+        peopleGridItem: {
+            partial:
+                `<div class="controls popover js-t63-section-controls hidden">
+                    <div class="form-group">
+                        <label class="form-label">Item size</label>
+                        <div class="custom-input-group">
+                            <label>
+                                <input class="js-t63-size-input" type="radio" name="size-{{id}}" value="1" {{#js_if "this.size == 1"}}checked{{/js_if}}>
+                                <span>Small</span>
+                            </label>
+                            <label>
+                                <input class="js-t63-size-input" type="radio" name="size-{{id}}" value="2" {{#js_if "this.size == 2"}}checked{{/js_if}}>
+                                <span>Medium</span>
+                            </label>
+                            <label>
+                                <input class="js-t63-size-input" type="radio" name="size-{{id}}" value="3" {{#js_if "this.size == 3"}}checked{{/js_if}}>
+                                <span>Large</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>`,
+
+            applyChanges: function (container) {
+                var itemSize = +container.find('.js-t63-size-input:checked').val();
+
+                container.attr('data-size', itemSize);
+                container.parent().removeAttr('class').addClass(PageBuilderModel.settings.components.peopleGridItem().columnClassesNames[itemSize - 1]);
+            },
+
+            edit: function (container) {
+                PageBuilderModel.editors.actionButtons.toggleVisibility(container);
+                PageBuilderModel.editors.show(container);
+            },
+            done: function (container) {
+                PageBuilderModel.editors.actionButtons.toggleVisibility(container);
+
+                //
+                PageBuilderModel.editors.peopleGridItem.applyChanges(container);
+
+                //
+                PageBuilderModel.editors.hide(container);
+            },
+
+            add: function (_this) {
+                var section = _this.closest('.js-t63-page-section');
+                var itemSize = +_this.attr('data-size');
+                var itemsRow = section.find('.js-t63-people-grid-row');
+
+                var model = {
+                    items: [
+                        {
+                            ...PageBuilderModel.settings.components.peopleGridItem(),
+                            id: PageBuilderModel.guid.s15(),
+                            columnClassesNames: PageBuilderModel.settings.components.peopleGridItem().columnClassesNames[itemSize - 1],
+                            size: itemSize,
+                        }
+                    ],
+                    actionButtons: PageBuilderModel.editors.actionButtons.settings
+                };
+
+                itemsRow.append(PageBuilderModel.sections.peopleGrid.items.getHtml(model));
+
+                PageBuilderModel.editors.title.tinymce.init(itemsRow);
+                PageBuilderModel.editors.text.tinymce.init(itemsRow);
+
+                //animations
+                PageBuilderModel.editors.section.initAnimations(section);
+            },
+
+            remove: function (container) {
+                container.parent().remove();
+            }
+        },
+
+        booksGridItem: {
+            partial:
+                `<div class="controls popover js-t63-section-controls hidden">
+                    <div class="form-group">
+                        <label class="form-label">Item size</label>
+                        <div class="custom-input-group">
+                            <label>
+                                <input class="js-t63-size-input" type="radio" name="size-{{id}}" value="1" {{#js_if "this.size == 1"}}checked{{/js_if}}>
+                                <span>Small</span>
+                            </label>
+                            <label>
+                                <input class="js-t63-size-input" type="radio" name="size-{{id}}" value="2" {{#js_if "this.size == 2"}}checked{{/js_if}}>
+                                <span>Medium</span>
+                            </label>
+                            <label>
+                                <input class="js-t63-size-input" type="radio" name="size-{{id}}" value="3" {{#js_if "this.size == 3"}}checked{{/js_if}}>
+                                <span>Large</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>`,
+
+            applyChanges: function (container) {
+                var itemSize = +container.find('.js-t63-size-input:checked').val();
+
+                container.attr('data-size', itemSize);
+                container.parent().removeAttr('class').addClass(PageBuilderModel.settings.components.booksGridItem().columnClassesNames[itemSize - 1]);
+            },
+
+            edit: function (container) {
+                PageBuilderModel.editors.actionButtons.toggleVisibility(container);
+                PageBuilderModel.editors.show(container);
+            },
+            done: function (container) {
+                PageBuilderModel.editors.actionButtons.toggleVisibility(container);
+
+                //
+                PageBuilderModel.editors.booksGridItem.applyChanges(container);
+
+                //
+                PageBuilderModel.editors.hide(container);
+            },
+
+            add: function (_this) {
+                var section = _this.closest('.js-t63-page-section');
+                var itemSize = +_this.attr('data-size');
+                var itemsRow = section.find('.js-t63-books-grid-row');
+
+                var model = {
+                    items: [
+                        {
+                            ...PageBuilderModel.settings.components.booksGridItem(),
+                            id: PageBuilderModel.guid.s15(),
+                            columnClassesNames: PageBuilderModel.settings.components.booksGridItem().columnClassesNames[itemSize - 1],
+                            size: itemSize,
+                        }
+                    ],
+                    actionButtons: PageBuilderModel.editors.actionButtons.settings
+                };
+
+                itemsRow.append(PageBuilderModel.sections.booksGrid.items.getHtml(model));
+
+                PageBuilderModel.editors.title.tinymce.init(itemsRow);
+                PageBuilderModel.editors.text.tinymce.init(itemsRow);
+
+                //animations
+                PageBuilderModel.editors.section.initAnimations(section);
+            },
+
+            remove: function (container) {
+                container.parent().remove();
+            }
+        },
+
+        pdfViewerIframe: {
+            helper: function (model) {
+                return (
+                    `<div class="controls popover js-t63-section-controls hidden">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <label class="toggler toggler-sm js-t63-pdfViewerIframe-state-toggler">
+                                <input type="checkbox" ${model.downloadEnabled ? 'checked' : ''}>
+                                <i></i>
+                                <span>Enable Download</span>
+                            </label>
+                            <button class="btn btn-sm btn-primary js-t63-pdf-upload-btn">Choose</button>
+                        </div>
+                        <input class="js-t63-pdfViewerIframe-input" type="hidden" value="${model.url}"/>
+                    </div>`
+                )
+            },
+
+            fileManager: {
+                onSelectedFilesChooseClientCallback: function (files) {
+                    var container = PageBuilderModel.editors.pdfViewerIframe.container;
+
+                    if (files) {
+                        var urlDownload = files[0].urlDownload; //.replace(/'|`| /g, '')
+                        container.find('.js-t63-pdfViewerIframe-input').val(urlDownload);
+                    }
+
+                    PageBuilderModel.plugins.fileManager.hide();
+                    PageBuilderModel.editors.pdfViewerIframe.done(container)
+                }
+            },
+
+            container: '',
+
+            edit: function (container) {
+                PageBuilderModel.editors.actionButtons.toggleVisibility(container);
+                PageBuilderModel.editors.show(container);
+
+                PageBuilderModel.editors.pdfViewerIframe.container = container;
+
+                container.find('.js-t63-pdf-upload-btn').off('click');
+                container.find('.js-t63-pdf-upload-btn').click(function () {
+                    PageBuilderModel.plugins.fileManager.show(PageBuilderModel.plugins.pdfViewer.getFileUrl());
+                });
+            },
+            done: function (container) {
+                PageBuilderModel.editors.actionButtons.toggleVisibility(container);
+
+                //
+                var pdfUrl = $.trim(container.find('.js-t63-pdfViewerIframe-input').val());
+                var downloadEnabled = container.find('.js-t63-pdfViewerIframe-state-toggler input').is(':checked');
+
+                var url = PageBuilderModel.plugins.pdfViewer.url + '?CanDownload=' + downloadEnabled + '&UrlPdfFile=' + pdfUrl;
+
+                if (pdfUrl !== '') {
+                    container.find('.js-t63-pdfViewerIframe-container iframe').attr({ 'src': url, 'data-pdf-url': pdfUrl, 'data-pdfviewer-url': url });
+                }
+
+                //
+                PageBuilderModel.editors.hide(container);
+            }
+        },
+
         done: function () {
-            $('.js-done-btn:visible').trigger('click');
+            $('.js-t63-done-btn:visible').trigger('click');
         },
 
         show: function (container) {
-            container.children('.js-section-controls').removeClass('hidden');
+            container.children('.js-t63-section-controls').removeClass('hidden');
         },
 
         hide: function (container) {
-            container.find('.js-section-controls:not(.image-controls)').addClass('hidden');
+            container.find('.js-t63-section-controls:not(.image-controls)').addClass('hidden');
         },
 
         remove: function (container) {
             container = container || $(PageBuilderModel.sections.selector);
-            container.find('.js-section--container[data-container="section"], .js-section-controls, .js-action-buttons, .js-additional-action-buttons').remove();
-            container.find('.js-tinymce')
-                .removeClass('js-tinymce mce-content-body mce-edit-focus')
+            container.find('.js-t63-section--container[data-container="section"], .js-t63-section-controls, .js-t63-action-buttons, .js-t63-additional-action-buttons').remove();
+            container.find('.js-t63-tinymce')
+                .removeClass('js-t63-tinymce mce-content-body mce-edit-focus')
                 .removeAttr('style id contenteditable spellcheck');
 
-            container.find('.js-slider-settings-container').remove();
+            container.find('.js-t63-slider-settings-container').remove();
             container.find('.js-t63-slider-container > div').removeAttr('class');
         },
 
         init: function () {
             //
-            $(PageBuilderModel.currentViewSelector).on('click', '.js-edit-btn', function () {
-                var container = $(this).closest('.js-section--container');
+            $(PageBuilderModel.currentViewSelector).on('click', '.js-t63-edit-btn', function () {
+                var container = $(this).closest('.js-t63-section--container');
                 var containerName = container.attr('data-container');
 
                 PageBuilderModel.editors[containerName].edit(container);
@@ -7058,92 +7184,92 @@ var PageBuilderModel = {
 
                 //
                 $('body').click(function (e) {
-                    if (!$(e.target).closest('.js-action-buttons').length && !$(e.target).hasClass('.js-section-controls') && !$(e.target).closest('.js-section-controls').length) {
+                    if (!$(e.target).closest('.js-t63-action-buttons').length && !$(e.target).hasClass('.js-t63-section-controls') && !$(e.target).closest('.js-t63-section-controls').length) {
                         PageBuilderModel.editors.done();
                         $('body').off('click');
                     }
                 });
             });
-            $(PageBuilderModel.currentViewSelector).on('click', '.js-done-btn', function () {
-                var container = $(this).closest('.js-section--container');
+            $(PageBuilderModel.currentViewSelector).on('click', '.js-t63-done-btn', function () {
+                var container = $(this).closest('.js-t63-section--container');
                 var containerName = container.attr('data-container');
 
                 PageBuilderModel.editors[containerName].done(container);
             });
-            $(PageBuilderModel.currentViewSelector).on('click', '.js-remove-btn', function () {
-                var container = $(this).closest('.js-section--container');
+            $(PageBuilderModel.currentViewSelector).on('click', '.js-t63-remove-btn', function () {
+                var container = $(this).closest('.js-t63-section--container');
                 var containerName = container.attr('data-container');
 
                 PageBuilderModel.editors[containerName].remove(container);
             });
 
             //
-            $(PageBuilderModel.currentViewSelector).on('click', '.js-choose-file-btn', function () {
-                var section = $(this).closest('.js-page-section');
+            $(PageBuilderModel.currentViewSelector).on('click', '.js-t63-choose-file-btn', function () {
+                var section = $(this).closest('.js-t63-page-section');
 
                 PageBuilderModel.editors.file.choose(section);
             });
 
             //--- add grid/list item
-            $(PageBuilderModel.currentViewSelector).on('click', '.js-add-grid-col-btn', function () {
+            $(PageBuilderModel.currentViewSelector).on('click', '.js-t63-add-grid-col-btn', function () {
                 PageBuilderModel.editors.imgGridItem.add($(this));
             });
 
-            $(PageBuilderModel.currentViewSelector).on('click', '.js-add-articles-grid-item-btn', function () {
+            $(PageBuilderModel.currentViewSelector).on('click', '.js-t63-add-articles-grid-item-btn', function () {
                 PageBuilderModel.editors.articlesGridItem.add($(this));
             });
 
-            $(PageBuilderModel.currentViewSelector).on('click', '.js-add-articles-list-item-btn', function () {
+            $(PageBuilderModel.currentViewSelector).on('click', '.js-t63-add-articles-list-item-btn', function () {
                 PageBuilderModel.editors.articlesListItem.add($(this));
             });
 
-            $(PageBuilderModel.currentViewSelector).on('click', '.js-add-services-grid-item-btn', function () {
-                PageBuilderModel.editors.servicesGridItem.add($(this));
-            });
-
-            $(PageBuilderModel.currentViewSelector).on('click', '.js-add-media-objects-grid-col-btn', function () {
-                PageBuilderModel.editors.mediaObjectsGridItem.add($(this));
-            });
-
-            $(PageBuilderModel.currentViewSelector).on('click', '.js-add-packages-grid-item-btn', function () {
+            $(PageBuilderModel.currentViewSelector).on('click', '.js-t63-add-packages-grid-item-btn', function () {
                 PageBuilderModel.editors.packagesGridItem.add($(this));
             });
 
-            $(PageBuilderModel.currentViewSelector).on('click', '.js-add-tab-item-btn', function () {
+            $(PageBuilderModel.currentViewSelector).on('click', '.js-t63-add-services-grid-item-btn', function () {
+                PageBuilderModel.editors.servicesGridItem.add($(this));
+            });
+
+            $(PageBuilderModel.currentViewSelector).on('click', '.js-t63-add-media-objects-grid-col-btn', function () {
+                PageBuilderModel.editors.mediaObjectsGridItem.add($(this));
+            });
+
+            $(PageBuilderModel.currentViewSelector).on('click', '.js-t63-add-tab-item-btn', function () {
                 PageBuilderModel.editors.tabItem.add($(this));
             });
 
-            $(PageBuilderModel.currentViewSelector).on('click', '.js-add-video-grid-col-btn', function () {
+            $(PageBuilderModel.currentViewSelector).on('click', '.js-t63-add-video-grid-col-btn', function () {
                 PageBuilderModel.editors.videoGridItem.add($(this));
             });
 
-            $(PageBuilderModel.currentViewSelector).on('click', '.js-add-jwp-grid-col-btn', function () {
+            $(PageBuilderModel.currentViewSelector).on('click', '.js-t63-add-jwp-grid-col-btn', function () {
                 PageBuilderModel.editors.jwPlayerGridItem.add($(this));
             });
 
-            $(PageBuilderModel.currentViewSelector).on('click', '.js-add-post-cards-grid-col-btn', function () {
+            $(PageBuilderModel.currentViewSelector).on('click', '.js-t63-add-post-cards-grid-col-btn', function () {
                 PageBuilderModel.editors.postCardsGridItem.add($(this));
             });
 
-            $(PageBuilderModel.currentViewSelector).on('click', '.js-add-books-grid-col-btn', function () {
+            $(PageBuilderModel.currentViewSelector).on('click', '.js-t63-add-books-grid-col-btn', function () {
                 PageBuilderModel.editors.booksGridItem.add($(this));
             });
 
-            $(PageBuilderModel.currentViewSelector).on('click', '.js-add-people-grid-col-btn', function () {
+            $(PageBuilderModel.currentViewSelector).on('click', '.js-t63-add-people-grid-col-btn', function () {
                 PageBuilderModel.editors.peopleGridItem.add($(this));
             });
 
-            $(PageBuilderModel.currentViewSelector).on('click', '.js-add-cards-grid-col-btn', function () {
+            $(PageBuilderModel.currentViewSelector).on('click', '.js-t63-add-cards-grid-col-btn', function () {
                 PageBuilderModel.editors.cardsGridItem.add($(this));
             });
 
             //--- add accordion item
-            $(PageBuilderModel.currentViewSelector).on('click', '.js-add-accordion-item-btn', function () {
+            $(PageBuilderModel.currentViewSelector).on('click', '.js-t63-add-accordion-item-btn', function () {
                 PageBuilderModel.editors.accordionItem.add($(this));
             });
 
             //
-            $(PageBuilderModel.currentViewSelector).on('change', '.js-component-visibility-toggler input', function () {
+            $(PageBuilderModel.currentViewSelector).on('change', '.js-t63-component-visibility-toggler input', function () {
                 var container = $(this).closest('[data-container]');
                 if ($(this).is(':checked')) {
                     container.removeClass('component-disabled');
@@ -7153,36 +7279,36 @@ var PageBuilderModel = {
             });
 
             //--- simple text
-            $(PageBuilderModel.currentViewSelector).on('blur', '.js-plain-text-input', function () {
-                var container = $(this).closest('.js-section--container');
+            $(PageBuilderModel.currentViewSelector).on('blur', '.js-t63-plain-text-input', function () {
+                var container = $(this).closest('.js-t63-section--container');
                 var containerName = container.attr('data-container');
 
                 PageBuilderModel.editors[containerName].done(container);
             });
 
             //--- flip card
-            $(PageBuilderModel.currentViewSelector).on('click', '.js-add-flip-cards-grid-item-btn', function () {
+            $(PageBuilderModel.currentViewSelector).on('click', '.js-t63-add-flip-cards-grid-item-btn', function () {
                 PageBuilderModel.editors.flipCardsGridItem.add($(this));
             });
 
-            $(PageBuilderModel.currentViewSelector).on('click', '.js-flip-card-item-rotate-btn', function () {
-                $(this).closest('.js-flip-cards-grid-item').toggleClass('flip-card-item--rotate');
+            $(PageBuilderModel.currentViewSelector).on('click', '.js-t63-flip-card-item-rotate-btn', function () {
+                $(this).closest('.js-t63-flip-cards-grid-item').toggleClass('flip-card-item--rotate');
             });
 
             //--- full screen
-            $(PageBuilderModel.currentViewSelector).on('change', '.js-fullscreen-toggler input', function () {
-                var section = $(this).closest('.js-page-section');
+            $(PageBuilderModel.currentViewSelector).on('change', '.js-t63-fullscreen-toggler input', function () {
+                var section = $(this).closest('.js-t63-page-section');
                 if ($(this).is(':checked')) {
-                    section.find('.js-fullheight-toggler').removeClass('disabled');
+                    section.find('.js-t63-fullheight-toggler').removeClass('disabled');
                 } else {
-                    section.find('.js-fullheight-toggler').addClass('disabled').find('input').prop('checked', false);
+                    section.find('.js-t63-fullheight-toggler').addClass('disabled').find('input').prop('checked', false);
                 }
             });
 
 
             //--- apply changes
-            $(PageBuilderModel.currentViewSelector).on('change', '.js-section-controls input[type="checkbox"],.js-section-controls input[type="radio"],.js-section-controls select', function () {
-                var container = $(this).closest('.js-section--container');
+            $(PageBuilderModel.currentViewSelector).on('change', '.js-t63-section-controls input[type="checkbox"],.js-t63-section-controls input[type="radio"],.js-t63-section-controls select', function () {
+                var container = $(this).closest('.js-t63-section--container');
                 var containerName = container.attr('data-container');
 
                 if (PageBuilderModel.editors[containerName].applyChanges) {
@@ -7191,20 +7317,25 @@ var PageBuilderModel = {
             });
 
             //--- prevent outer click (popover)
-            $(PageBuilderModel.currentViewSelector).on('click', '.js-section-controls', function (e) {
+            $(PageBuilderModel.currentViewSelector).on('click', '.js-t63-section-controls', function (e) {
                 e.stopPropagation();
             });
 
             //--- 
-            $(PageBuilderModel.currentViewSelector).on('change', '.js-img-original-size-toggler input', function () {
-                var container = $(this).closest('.js-section--container');
+            $(PageBuilderModel.currentViewSelector).on('change', '.js-t63-img-original-size-toggler input', function () {
+                var container = $(this).closest('.js-t63-section--container');
                 if ($(this).is(':checked')) {
                     container.find('.content-alignment-wrap').removeClass('d-none');
-                    container.find('.js-ratio-controls-wrap').addClass('disabled');
+                    container.find('.js-t63-ratio-controls-wrap').addClass('disabled');
                 } else {
                     container.find('.content-alignment-wrap').addClass('d-none');
-                    container.find('.js-ratio-controls-wrap').removeClass('disabled');
+                    container.find('.js-t63-ratio-controls-wrap').removeClass('disabled');
                 }
+            });
+
+            //---
+            $(PageBuilderModel.currentViewSelector).on('click', '.js-t63-img-grid-item', function (e) {
+                e.preventDefault();
             });
         }
     },
@@ -7224,13 +7355,13 @@ var PageBuilderModel = {
             partial:
                 `{{#each items}}
                     <li class="file-item" data-url="{{url}}" data-name="{{name}}" data-extension="{{extension}}">
-                        <i class="handle ui-sortable-handle"><img src="/plugins/63bits-pageBuilder/images/icons/drug.svg" alt="drag icon"></i>
+                        <i class="handle js-t63-page-script-item-handle"><img src="/plugins/63bits-pageBuilder/images/icons/drug.svg" alt="drag icon"></i>
                         <img class="icon" src="/plugins/63bits-pageBuilder/images/icons/{{extension}}.svg" alt="file icon">
                         <div class="name">
-                            <a class="link js-file-name" href="{{url}}" target="blank">{{name}}</a>
+                            <a class="link js-t63-file-name" href="{{url}}" target="blank">{{name}}</a>
                         </div>
                         <div class="action-buttons">
-                            <button class="editor-btn-rounded action-btn component-remove-btn js-remove-btn"></button>
+                            <button class="editor-btn-rounded action-btn component-remove-btn js-t63-remove-btn"></button>
                         </div>
                     </li>
 				{{/each}}`,
@@ -7261,7 +7392,7 @@ var PageBuilderModel = {
                         fileExtension = filename.slice(filename.lastIndexOf('.') + 1);
 
                         isAllowedFiles =
-                            $('.js-' + fileExtension + '-files-container [data-name="' + filename + '"]').length == 0
+                            $('.js-t63-' + fileExtension + '-files-container [data-name="' + filename + '"]').length == 0
                             && !filename.includes('bootstrap.css')
                             && !filename.includes('bootstrap.min.css')
                             && !filename.includes('jquery.js')
@@ -7282,7 +7413,7 @@ var PageBuilderModel = {
                         }
                     }
 
-                    $('.js-' + fileExtension + '-files-container').append(PageBuilderModel.pageScripts.files.getHtml(model[fileExtension]));
+                    $('.js-t63-' + fileExtension + '-files-container').append(PageBuilderModel.pageScripts.files.getHtml(model[fileExtension]));
 
                     //PageBuilderModel.pageScripts.isUpdated = true;
                 }
@@ -7295,13 +7426,13 @@ var PageBuilderModel = {
                     var headerScriptsModel = {
                         items: PageBuilderModel.data.fromServer.pageScripts.headerSection
                     };
-                    $('.js-css-files-container').append(PageBuilderModel.pageScripts.files.getHtml(headerScriptsModel));
+                    $('.js-t63-css-files-container').append(PageBuilderModel.pageScripts.files.getHtml(headerScriptsModel));
                 }
                 if (PageBuilderModel.data.fromServer.pageScripts?.footerSection) {
                     var footerScriptsModel = {
                         items: PageBuilderModel.data.fromServer.pageScripts.footerSection
                     }
-                    $('.js-js-files-container').append(PageBuilderModel.pageScripts.files.getHtml(footerScriptsModel));
+                    $('.js-t63-js-t63-files-container').append(PageBuilderModel.pageScripts.files.getHtml(footerScriptsModel));
                 }
             },
 
@@ -7311,18 +7442,21 @@ var PageBuilderModel = {
             },
 
             sortable: function () {
-                $('.js-page-scripts-popup .js-sortable').sortable({
-                    handle: '.ui-sortable-handle',
-                    placeholder: 'file-item-placeholder',
+                new Sortable($('.js-t63-page-scripts-popup .js-t63-css-files-sortable')[0], {
+                    handle: '.js-t63-page-script-item-handle',
+                    ghostClass: 't63-sortable-placeholder',
                 });
-                $('.js-page-scripts-popup .js-sortable').disableSelection();
+                new Sortable($('.js-t63-page-scripts-popup .js-t63-js-files-sortable')[0], {
+                    handle: '.js-t63-page-script-item-handle',
+                    ghostClass: 't63-sortable-placeholder',
+                });
             }
         },
 
         getHeaderSectionHtml: function () {
             var html = '';
 
-            $('.js-css-files-container li').each(function (inedx, item) {
+            $('.js-t63-css-files-container li').each(function (inedx, item) {
                 html += '<link rel="stylesheet" href="' + $(item).attr('data-url') + '" />';
             });
 
@@ -7332,7 +7466,7 @@ var PageBuilderModel = {
         getFooterSectionHtml: function () {
             var html = '';
 
-            $('.js-js-files-container li').each(function (inedx, item) {
+            $('.js-t63-javascript-files-container li').each(function (inedx, item) {
                 html += '<script src="' + $(item).attr('data-url') + '"></script>';
             });
 
@@ -7350,24 +7484,24 @@ var PageBuilderModel = {
             PageBuilderModel.pageScripts.files.sortable();
 
             //--- toggle page settings popup
-            $('.js-show-page-scripts-popup-btn').click(function () {
-                $('.js-page-scripts-popup').addClass('show');
+            $('.js-t63-show-page-scripts-popup-btn').click(function () {
+                $('.js-t63-page-scripts-popup').addClass('show');
             });
-            $('.js-page-scripts-popup .js-close-popup-btn').click(function () {
-                $('.js-page-scripts-popup').removeClass('show');
+            $('.js-t63-page-scripts-popup .js-t63-close-popup-btn').click(function () {
+                $('.js-t63-page-scripts-popup').removeClass('show');
             });
 
             //--- choose file
-            $('.js-choose-css-files-btn').click(function () {
+            $('.js-t63-css-files-choose-btn').click(function () {
                 PageBuilderModel.plugins.fileManager.show(PageBuilderModel.plugins.fileManager.getCssFilesUrl());
             });
 
-            $('.js-choose-js-files-btn').click(function () {
+            $('.js-t63-js-files-choose-btn').click(function () {
                 PageBuilderModel.plugins.fileManager.show(PageBuilderModel.plugins.fileManager.getJsFilesUrl());
             });
 
             //--- remove file
-            $('.js-page-scripts-popup').on('click', '.js-remove-btn', function () {
+            $('.js-t63-page-scripts-popup').on('click', '.js-t63-remove-btn', function () {
                 PageBuilderModel.pageScripts.files.remove($(this));
             });
         }
@@ -7417,24 +7551,24 @@ var PageBuilderModel = {
         Template7.registerPartial('attachemetsContainerPartial', PageBuilderModel.sections.components.attachements.containerPartial);
         Template7.registerPartial('filesPartial', PageBuilderModel.sections.components.attachements.files.partial);
         Template7.registerPartial('imgGridItemsPartial', PageBuilderModel.sections.imgGrid.items.partial);
+        Template7.registerPartial('videoGridItemsPartial', PageBuilderModel.sections.videoGrid.items.partial);
+        Template7.registerPartial('jwPlayerGridItemsPartial', PageBuilderModel.sections.jwPlayerGrid.items.partial);
+        Template7.registerPartial('sliderItemsPartial', PageBuilderModel.sections.slider.items.partial);
         Template7.registerPartial('articlesGridItemsPartial', PageBuilderModel.sections.articlesGrid.items.partial);
         Template7.registerPartial('articlesListItemsPartial', PageBuilderModel.sections.articlesList.items.partial);
-        Template7.registerPartial('sliderItemsPartial', PageBuilderModel.sections.slider.items.partial);
         Template7.registerPartial('accordionItemsPartial', PageBuilderModel.sections.accordion.items.partial);
         Template7.registerPartial('tabNavItemsPartial', PageBuilderModel.sections.tabs.navItems.partial);
         Template7.registerPartial('tabContentItemsPartial', PageBuilderModel.sections.tabs.contentItems.partial);
         Template7.registerPartial('testimonialsItemsPartial', PageBuilderModel.sections.testimonials.items.partial);
+        Template7.registerPartial('packagesGridItemsPartial', PageBuilderModel.sections.packagesGrid.items.partial);
         Template7.registerPartial('servicesGridItemsPartial', PageBuilderModel.sections.services.items.partial);
         Template7.registerPartial('mediaObjectsGridItemsPartial', PageBuilderModel.sections.mediaObjectsGrid.items.partial);
-        Template7.registerPartial('packagesGridItemsPartial', PageBuilderModel.sections.packagesGrid.items.partial);
-        Template7.registerPartial('flipCardsGridItemsPartial', PageBuilderModel.sections.flipCardsGrid.items.partial);
-        Template7.registerPartial('pdfViewerIframePartial', PageBuilderModel.sections.components.pdfViewerIframe.partial);
-        Template7.registerPartial('videoGridItemsPartial', PageBuilderModel.sections.videoGrid.items.partial);
-        Template7.registerPartial('jwPlayerGridItemsPartial', PageBuilderModel.sections.jwPlayerGrid.items.partial);
-        Template7.registerPartial('postCardsGridItemsPartial', PageBuilderModel.sections.postCardsGrid.items.partial);
-        Template7.registerPartial('booksGridItemsPartial', PageBuilderModel.sections.booksGrid.items.partial);
-        Template7.registerPartial('peopleGridItemsPartial', PageBuilderModel.sections.peopleGrid.items.partial);
         Template7.registerPartial('cardsGridItemsPartial', PageBuilderModel.sections.cardsGrid.items.partial);
+        Template7.registerPartial('flipCardsGridItemsPartial', PageBuilderModel.sections.flipCardsGrid.items.partial);
+        Template7.registerPartial('postCardsGridItemsPartial', PageBuilderModel.sections.postCardsGrid.items.partial);
+        Template7.registerPartial('peopleGridItemsPartial', PageBuilderModel.sections.peopleGrid.items.partial);
+        Template7.registerPartial('booksGridItemsPartial', PageBuilderModel.sections.booksGrid.items.partial);
+        Template7.registerPartial('pdfViewerIframePartial', PageBuilderModel.sections.components.pdfViewerIframe.partial);
 
         //--- components templates
         PageBuilderModel.sections.components.title.template = Template7.compile(PageBuilderModel.sections.components.title.template);
@@ -7449,24 +7583,24 @@ var PageBuilderModel = {
         PageBuilderModel.sections.components.jwPlayer.template = Template7.compile(PageBuilderModel.sections.components.jwPlayer.template);
         PageBuilderModel.sections.components.attachements.files.template = Template7.compile(PageBuilderModel.sections.components.attachements.files.template);
         PageBuilderModel.sections.components.multimedia.template = Template7.compile(PageBuilderModel.sections.components.multimedia.template);
+        PageBuilderModel.sections.imgGrid.items.template = Template7.compile(PageBuilderModel.sections.imgGrid.items.template);
+        PageBuilderModel.sections.videoGrid.items.template = Template7.compile(PageBuilderModel.sections.videoGrid.items.template);
+        PageBuilderModel.sections.jwPlayerGrid.items.template = Template7.compile(PageBuilderModel.sections.jwPlayerGrid.items.template);
+        PageBuilderModel.sections.slider.items.template = Template7.compile(PageBuilderModel.sections.slider.items.template);
         PageBuilderModel.sections.articlesGrid.items.template = Template7.compile(PageBuilderModel.sections.articlesGrid.items.template);
         PageBuilderModel.sections.articlesList.items.template = Template7.compile(PageBuilderModel.sections.articlesList.items.template);
-        PageBuilderModel.sections.imgGrid.items.template = Template7.compile(PageBuilderModel.sections.imgGrid.items.template);
-        PageBuilderModel.sections.slider.items.template = Template7.compile(PageBuilderModel.sections.slider.items.template);
         PageBuilderModel.sections.accordion.items.template = Template7.compile(PageBuilderModel.sections.accordion.items.template);
         PageBuilderModel.sections.tabs.navItems.template = Template7.compile(PageBuilderModel.sections.tabs.navItems.template);
         PageBuilderModel.sections.tabs.contentItems.template = Template7.compile(PageBuilderModel.sections.tabs.contentItems.template);
         PageBuilderModel.sections.testimonials.items.template = Template7.compile(PageBuilderModel.sections.testimonials.items.template);
+        PageBuilderModel.sections.packagesGrid.items.template = Template7.compile(PageBuilderModel.sections.packagesGrid.items.template);
         PageBuilderModel.sections.services.items.template = Template7.compile(PageBuilderModel.sections.services.items.template);
         PageBuilderModel.sections.mediaObjectsGrid.items.template = Template7.compile(PageBuilderModel.sections.mediaObjectsGrid.items.template);
-        PageBuilderModel.sections.packagesGrid.items.template = Template7.compile(PageBuilderModel.sections.packagesGrid.items.template);
-        PageBuilderModel.sections.flipCardsGrid.items.template = Template7.compile(PageBuilderModel.sections.flipCardsGrid.items.template);
-        PageBuilderModel.sections.videoGrid.items.template = Template7.compile(PageBuilderModel.sections.videoGrid.items.template);
-        PageBuilderModel.sections.jwPlayerGrid.items.template = Template7.compile(PageBuilderModel.sections.jwPlayerGrid.items.template);
-        PageBuilderModel.sections.postCardsGrid.items.template = Template7.compile(PageBuilderModel.sections.postCardsGrid.items.template);
-        PageBuilderModel.sections.booksGrid.items.template = Template7.compile(PageBuilderModel.sections.booksGrid.items.template);
-        PageBuilderModel.sections.peopleGrid.items.template = Template7.compile(PageBuilderModel.sections.peopleGrid.items.template);
         PageBuilderModel.sections.cardsGrid.items.template = Template7.compile(PageBuilderModel.sections.cardsGrid.items.template);
+        PageBuilderModel.sections.flipCardsGrid.items.template = Template7.compile(PageBuilderModel.sections.flipCardsGrid.items.template);
+        PageBuilderModel.sections.postCardsGrid.items.template = Template7.compile(PageBuilderModel.sections.postCardsGrid.items.template);
+        PageBuilderModel.sections.peopleGrid.items.template = Template7.compile(PageBuilderModel.sections.peopleGrid.items.template);
+        PageBuilderModel.sections.booksGrid.items.template = Template7.compile(PageBuilderModel.sections.booksGrid.items.template);
 
         //--- sections templates
         PageBuilderModel.sections.slide.template = Template7.compile(PageBuilderModel.sections.slide.template);
@@ -7481,31 +7615,31 @@ var PageBuilderModel = {
         PageBuilderModel.sections.articleWithFiles.template = Template7.compile(PageBuilderModel.sections.articleWithFiles.template);
         PageBuilderModel.sections.articleWithVideo.template = Template7.compile(PageBuilderModel.sections.articleWithVideo.template);
         PageBuilderModel.sections.video.template = Template7.compile(PageBuilderModel.sections.video.template);
+        PageBuilderModel.sections.videoGrid.template = Template7.compile(PageBuilderModel.sections.videoGrid.template);
         PageBuilderModel.sections.jwPlayer.template = Template7.compile(PageBuilderModel.sections.jwPlayer.template);
-        PageBuilderModel.sections.iframe.template = Template7.compile(PageBuilderModel.sections.iframe.template);
+        PageBuilderModel.sections.jwPlayerGrid.template = Template7.compile(PageBuilderModel.sections.jwPlayerGrid.template);
         PageBuilderModel.sections.imgGrid.template = Template7.compile(PageBuilderModel.sections.imgGrid.template);
         PageBuilderModel.sections.articlesGrid.template = Template7.compile(PageBuilderModel.sections.articlesGrid.template);
         PageBuilderModel.sections.articlesList.template = Template7.compile(PageBuilderModel.sections.articlesList.template);
         PageBuilderModel.sections.accordion.template = Template7.compile(PageBuilderModel.sections.accordion.template);
         PageBuilderModel.sections.tabs.template = Template7.compile(PageBuilderModel.sections.tabs.template);
-        PageBuilderModel.sections.html.template = Template7.compile(PageBuilderModel.sections.html.template);
         PageBuilderModel.sections.testimonials.template = Template7.compile(PageBuilderModel.sections.testimonials.template);
+        PageBuilderModel.sections.packagesGrid.template = Template7.compile(PageBuilderModel.sections.packagesGrid.template);
         PageBuilderModel.sections.services.template = Template7.compile(PageBuilderModel.sections.services.template);
+        PageBuilderModel.sections.card2Col.template = Template7.compile(PageBuilderModel.sections.card2Col.template);
         PageBuilderModel.sections.card2ColWithImg.template = Template7.compile(PageBuilderModel.sections.card2ColWithImg.template);
         PageBuilderModel.sections.mediaObject.template = Template7.compile(PageBuilderModel.sections.mediaObject.template);
         PageBuilderModel.sections.mediaObjectsGrid.template = Template7.compile(PageBuilderModel.sections.mediaObjectsGrid.template);
-        PageBuilderModel.sections.card2Col.template = Template7.compile(PageBuilderModel.sections.card2Col.template);
+        PageBuilderModel.sections.cardsGrid.template = Template7.compile(PageBuilderModel.sections.cardsGrid.template);
         PageBuilderModel.sections.flipCardsGrid.template = Template7.compile(PageBuilderModel.sections.flipCardsGrid.template);
-        PageBuilderModel.sections.packagesGrid.template = Template7.compile(PageBuilderModel.sections.packagesGrid.template);
+        PageBuilderModel.sections.postCardsGrid.template = Template7.compile(PageBuilderModel.sections.postCardsGrid.template);
+        PageBuilderModel.sections.peopleGrid.template = Template7.compile(PageBuilderModel.sections.peopleGrid.template);
+        PageBuilderModel.sections.booksGrid.template = Template7.compile(PageBuilderModel.sections.booksGrid.template);
         PageBuilderModel.sections.quote.template = Template7.compile(PageBuilderModel.sections.quote.template);
         PageBuilderModel.sections.article2colWithBgImgAndImg.template = Template7.compile(PageBuilderModel.sections.article2colWithBgImgAndImg.template);
+        PageBuilderModel.sections.html.template = Template7.compile(PageBuilderModel.sections.html.template);
+        PageBuilderModel.sections.iframe.template = Template7.compile(PageBuilderModel.sections.iframe.template);
         PageBuilderModel.sections.pdfViewer.template = Template7.compile(PageBuilderModel.sections.pdfViewer.template);
-        PageBuilderModel.sections.jwPlayerGrid.template = Template7.compile(PageBuilderModel.sections.jwPlayerGrid.template);
-        PageBuilderModel.sections.videoGrid.template = Template7.compile(PageBuilderModel.sections.videoGrid.template);
-        PageBuilderModel.sections.postCardsGrid.template = Template7.compile(PageBuilderModel.sections.postCardsGrid.template);
-        PageBuilderModel.sections.booksGrid.template = Template7.compile(PageBuilderModel.sections.booksGrid.template);
-        PageBuilderModel.sections.peopleGrid.template = Template7.compile(PageBuilderModel.sections.peopleGrid.template);
-        PageBuilderModel.sections.cardsGrid.template = Template7.compile(PageBuilderModel.sections.cardsGrid.template);
 
         //--- actionButtons templates
         PageBuilderModel.editors.actionButtons.template = Template7.compile(PageBuilderModel.editors.actionButtons.template);
@@ -7636,42 +7770,93 @@ var PageBuilderModel = {
             url: null,
             getSingleImageUrl: function () {
                 if (PageBuilderModel.plugins.fileManager.url) {
-                    return PageBuilderModel.plugins.fileManager.url + '&AllowedExtensions=.jpg,.jpeg,.png,.gif&AllowSelectMultiple=false&OnSelectedFilesChooseClientCallback=PageBuilderModel.plugins.fileManager.onSelectedFilesChooseClientCallback';
+
+                    const QueryString =
+                        (PageBuilderModel.queryStringKeys.fileManagerAllowedExtensions + '=.jpg,.jpeg,.png,.gif&')
+                        +
+                        (PageBuilderModel.queryStringKeys.fileManagerAllowChooseMultiple + '=false&')
+                        +
+                        (PageBuilderModel.queryStringKeys.fileManagerOnSelectedFilesChooseClientCallback + '=PageBuilderModel.plugins.fileManager.onSelectedFilesChooseClientCallback');
+
+                    return PageBuilderModel.plugins.fileManager.url + '?' + QueryString;
                 }
             },
             getSingleFileUrl: function () {
                 if (PageBuilderModel.plugins.fileManager.url) {
-                    return PageBuilderModel.plugins.fileManager.url + '&AllowSelectMultiple=false&OnSelectedFilesChooseClientCallback=PageBuilderModel.plugins.fileManager.onSelectedFilesChooseClientCallback';
+                    const QueryString =
+                        (PageBuilderModel.queryStringKeys.fileManagerAllowChooseMultiple + '=false&')
+                        +
+                        (PageBuilderModel.queryStringKeys.fileManagerOnSelectedFilesChooseClientCallback + '=PageBuilderModel.plugins.fileManager.onSelectedFilesChooseClientCallback');
+
+                    return PageBuilderModel.plugins.fileManager.url + '?' + QueryString;
                 }
             },
             getJwPlayerUrl: function () {
                 if (PageBuilderModel.plugins.fileManager.url) {
-                    return PageBuilderModel.plugins.fileManager.url + '&AllowSelectMultiple=false&OnSelectedFilesChooseClientCallback=PageBuilderModel.editors.jwPlayer.fileManager.onSelectedFilesChooseClientCallback';
+                    const QueryString =
+                        (PageBuilderModel.queryStringKeys.fileManagerAllowChooseMultiple + '=false&')
+                        +
+                        (PageBuilderModel.queryStringKeys.fileManagerOnSelectedFilesChooseClientCallback + '=PageBuilderModel.editors.jwPlayer.fileManager.onSelectedFilesChooseClientCallback');
+
+                    return PageBuilderModel.plugins.fileManager.url + '?' + QueryString;
                 }
             },
             getMultipleFilesUrl: function () {
                 if (PageBuilderModel.plugins.fileManager.url) {
-                    return PageBuilderModel.plugins.fileManager.url + '&AllowSelectMultiple=true&OnSelectedFilesChooseClientCallback=PageBuilderModel.plugins.fileManager.onSelectedFilesChooseClientCallback';
+                    const QueryString =
+                        (PageBuilderModel.queryStringKeys.fileManagerAllowChooseMultiple + '=true&')
+                        +
+                        (PageBuilderModel.queryStringKeys.fileManagerOnSelectedFilesChooseClientCallback + '=PageBuilderModel.plugins.fileManager.onSelectedFilesChooseClientCallback')
+
+                    return PageBuilderModel.plugins.fileManager.url + '?' + QueryString;
                 }
             },
             getCssFilesUrl: function () {
                 if (PageBuilderModel.plugins.fileManager.url) {
-                    return PageBuilderModel.plugins.fileManager.url + '&AllowedExtensions=.css&AllowSelectMultiple=true&OnSelectedFilesChooseClientCallback=PageBuilderModel.pageScripts.fileManager.onSelectedFilesChooseClientCallback';
+                    const QueryString =
+                        (PageBuilderModel.queryStringKeys.fileManagerAllowedExtensions + '=.css&')
+                        +
+                        (PageBuilderModel.queryStringKeys.fileManagerAllowChooseMultiple + '=true&')
+                        +
+                        (PageBuilderModel.queryStringKeys.fileManagerOnSelectedFilesChooseClientCallback + '=PageBuilderModel.pageScripts.fileManager.onSelectedFilesChooseClientCallback');
+
+                    return PageBuilderModel.plugins.fileManager.url + '?' + QueryString;
                 }
             },
             getJsFilesUrl: function () {
                 if (PageBuilderModel.plugins.fileManager.url) {
-                    return PageBuilderModel.plugins.fileManager.url + '&AllowedExtensions=.js&AllowSelectMultiple=true&OnSelectedFilesChooseClientCallback=PageBuilderModel.pageScripts.fileManager.onSelectedFilesChooseClientCallback';
+                    const QueryString =
+                        (PageBuilderModel.queryStringKeys.fileManagerAllowedExtensions + '=.js&')
+                        +
+                        (PageBuilderModel.queryStringKeys.fileManagerAllowChooseMultiple + '=true&')
+                        +
+                        (PageBuilderModel.queryStringKeys.fileManagerOnSelectedFilesChooseClientCallback + '=PageBuilderModel.pageScripts.fileManager.onSelectedFilesChooseClientCallback');
+
+                    return PageBuilderModel.plugins.fileManager.url + '?' + QueryString;
                 }
             },
             getIconUrl: function () {
                 if (PageBuilderModel.plugins.fileManager.url) {
-                    return PageBuilderModel.plugins.fileManager.url + '&AllowedExtensions=.svg,.jpg,.jpeg,.png,.gif&AllowSelectMultiple=false&OnSelectedFilesChooseClientCallback=PageBuilderModel.editors.icon.fileManager.onSelectedFilesChooseClientCallback';
+                    const QueryString =
+                        (PageBuilderModel.queryStringKeys.fileManagerAllowedExtensions + '=.jpg,.jpeg,.png,.svg&')
+                        +
+                        (PageBuilderModel.queryStringKeys.fileManagerAllowChooseMultiple + '=false&')
+                        +
+                        (PageBuilderModel.queryStringKeys.fileManagerOnSelectedFilesChooseClientCallback + '=PageBuilderModel.editors.icon.fileManager.onSelectedFilesChooseClientCallback');
+
+                    return PageBuilderModel.plugins.fileManager.url + '?' + QueryString;
                 }
             },
             getMultimediaFilesUrl: function () {
                 if (PageBuilderModel.plugins.fileManager.url) {
-                    return PageBuilderModel.plugins.fileManager.url + '&AllowedExtensions=.jpg,.jpeg,.png,.gif,.mp4&AllowSelectMultiple=false&OnSelectedFilesChooseClientCallback=PageBuilderModel.editors.multimedia.fileManager.onSelectedFilesChooseClientCallback';
+                    const QueryString =
+                        (PageBuilderModel.queryStringKeys.fileManagerAllowedExtensions + '=.jpg,.jpeg,.png,.gif,.mp4&')
+                        +
+                        (PageBuilderModel.queryStringKeys.fileManagerAllowChooseMultiple + '=false&')
+                        +
+                        (PageBuilderModel.queryStringKeys.fileManagerOnSelectedFilesChooseClientCallback + '=PageBuilderModel.editors.multimedia.fileManager.onSelectedFilesChooseClientCallback');
+
+                    return PageBuilderModel.plugins.fileManager.url + '?' + QueryString;
                 }
             },
             file: {
@@ -7684,14 +7869,14 @@ var PageBuilderModel = {
                 type: null
             },
             show: function (fileManagerUrl) {
-                FancyBox.Init({
+                fancyBox.init({
                     slideClass: 'fileManager-iframe',
                     src: fileManagerUrl,
                     smallBtn: true
-                }).ShowIframePopup();
+                }).showIframePopup();
             },
             hide: function () {
-                window.FancyBox.ClosePopup();
+                window.fancyBox.closePopup();
             },
             onSelectedFilesChooseClientCallback: function (files) {
                 if (PageBuilderModel.plugins.fileManager.tinymce.isEnabled) {
@@ -7719,29 +7904,61 @@ var PageBuilderModel = {
         },
         tabs: {
             show: function (navItem) {
-                var container = $(navItem).closest('.js-page-section');
+                var container = $(navItem).closest('.js-t63-page-section');
                 var id = $(navItem).attr('href');
 
-                container.find('.js-tab-nav-item a').removeClass('active');
-                container.find('.js-tab-content-item').removeClass('show').removeClass('active');
+                container.find('.js-t63-tab-nav-item > a').removeClass('active');
+                container.find('.js-t63-tab-content-item').removeClass('show').removeClass('active');
 
                 $(navItem).addClass('active');
                 $(id).addClass('active').addClass('show');
+
             },
             init: function () {
-                $('.js-editor-page').on('click', '.js-tab-nav-item a', function (e) {
+                $('.js-t63-editor-page').on('click', '.js-t63-tab-nav-item > a', function (e) {
+                    e.preventDefault();
                     PageBuilderModel.plugins.tabs.show($(this));
-                    return false;
+                });
+            }
+        },
+        sortable: function (container, options = {}) {
+            container = $(container);
+
+            if (container.length > 0) {
+                let ghostClass = options.ghostClass || 't63-sortable-placeholder';
+                let handle = options.handle ? '.js-t63-sortable-handle' : false;
+
+                container.addClass('t63-sortable-container');
+
+                if (!options.handle) {
+                    container.addClass('t63-sortable-cursor');
+                }
+
+                container.each(function (index,item) {
+                    new Sortable(item, {
+                        handle: handle,
+                        ghostClass: ghostClass,
+                        onChoose: function (evt) {
+                            $(evt.item).parent().addClass('t63-sorting');
+
+                            const height = $(evt.item).outerHeight();
+                            $(evt.item).css({ 'min-height': height });
+                        },
+                        onUnchoose: function (evt) {
+                            $(evt.item).parent().removeClass('t63-sorting');
+                            $(evt.item).css({ 'min-height': 'auto' });
+                        },
+                    });
                 });
             }
         },
         init: function () {
-            $('[data-toggle="tooltip"]').tooltip();
+            //$('[data-toggle="tooltip"]').tooltip();
             PageBuilderModel.plugins.tabs.init();
 
-            $('.js-show-filemanager-popup-btn').click(function () {
+            $('.js-t63-show-filemanager-popup-btn').click(function () {
                 if (PageBuilderModel.plugins.fileManager.url) {
-                    PageBuilderModel.plugins.fileManager.show(PageBuilderModel.plugins.fileManager.url + '&AllowSelectMultiple=false')
+                    PageBuilderModel.plugins.fileManager.show(PageBuilderModel.plugins.fileManager.url);
                 }
             });
         },
@@ -7753,11 +7970,11 @@ var PageBuilderModel = {
             pageContent = $(pageContent);
             PageBuilderModel.editors.remove(pageContent);
             pageContent.find('.component-disabled').remove();
-            pageContent.find('.js-section-title-container:empty,.js-section-text-container:empty').remove();
+            pageContent.find('.js-t63-section-title-container:empty,.js-t63-section-text-container:empty').remove();
 
             //icons
-            pageContent.find('[data-icon-type="font"] .js-img-icon').remove();
-            pageContent.find('[data-icon-type="image"] .js-font-icon').remove();
+            pageContent.find('[data-icon-type="font"] .js-t63-img-icon').remove();
+            pageContent.find('[data-icon-type="image"] .js-t63-font-icon').remove();
 
             //replace special img with audio
             pageContent.find('img.mce-object-audio').each(function (index, item) {
@@ -7777,41 +7994,41 @@ var PageBuilderModel = {
             });
 
             //tabs
-            pageContent.find('.js-tab-nav-item').removeClass('active');
-            pageContent.find('.js-tab-content-item').removeClass('active').removeClass('show');
+            pageContent.find('.js-t63-tab-nav-item').removeClass('active');
+            pageContent.find('.js-t63-tab-content-item').removeClass('active').removeClass('show');
 
             //flip cards
-            pageContent.find('.js-flip-cards-grid-item').removeClass('flip-card-item--rotate');
+            pageContent.find('.js-t63-flip-cards-grid-item').removeClass('flip-card-item--rotate');
 
             //external plugins
             //pageContent.find('[data-plagin-container]').html('<div></div>');
             pageContent.find('[data-plagin-container]').removeClass('mceNonEditable').removeAttr('contenteditable');
 
             //jwplayer
-            pageContent.find('.js-jwPlayer-wrap').html('<div></div>');
+            pageContent.find('.js-t63-jwPlayer-wrap').html('<div></div>');
 
             //links
             pageContent.find('[data-media-link="true"]').each(function (index, item) {
-                var href = $(item).find('.js-title a').attr('href');
-                var target = $(item).find('.js-title a').attr('target') || '_self';
+                var href = $(item).find('.js-t63-title a').attr('href');
+                var target = $(item).find('.js-t63-title a').attr('target') || '_self';
 
                 if (href) {
-                    $(item).find('.js-img img').wrap('<a href="' + href + '" target="' + target + '"></a>');
+                    $(item).find('.js-t63-img img').wrap('<a href="' + href + '" target="' + target + '"></a>');
                     $(item).find('.t63-icon-wrap').append('<a href="' + href + '" target="' + target + '"></a>');
                 } else {
-                    $(item).find('.js-img a img').unwrap();
+                    $(item).find('.js-t63-img a img').unwrap();
                     $(item).find('.t63-icon-wrap a').remove();
                 }
             });
 
             //multimedia
-            pageContent.find('[data-multimedia-type="image"] .js-multimedia-video-container').remove();
-            pageContent.find('[data-multimedia-type="video"] .js-multimedia-image-container').remove();
+            pageContent.find('[data-multimedia-type="image"] .js-t63-multimedia-video-container').remove();
+            pageContent.find('[data-multimedia-type="video"] .js-t63-multimedia-image-container').remove();
 
             //plain html
             pageContent.find('[data-section="html"]').each(function (index, item) {
-                var textarea = $(item).find('.js-plain-html-input');
-                $(item).find('.js-plain-html-wrap').html(textarea.val());
+                var textarea = $(item).find('.js-t63-plain-html-input');
+                $(item).find('.js-t63-plain-html-wrap').html(textarea.val());
                 textarea.remove();
             });
 
@@ -7844,8 +8061,8 @@ var PageBuilderModel = {
                     $(Selector).closest('.form-group').addClass('has-error');
                     $(Selector).siblings('.tooltip').find('.tooltip-inner').text(Item.Value);
 
-                    $('.js-loader-img').addClass('hidden');
-                    $('.js-save-img').removeClass('hidden');
+                    $('.js-t63-loader-img').addClass('hidden');
+                    $('.js-t63-save-img').removeClass('hidden');
                 });
             },
             HideErrors: function () {
@@ -7864,8 +8081,8 @@ var PageBuilderModel = {
                     dataType: 'json',
                     beforeSend: function () {
                         preloader.show();
-                        $('.js-save-img').addClass('hidden');
-                        $('.js-loader-img').removeClass('hidden');
+                        $('.js-t63-save-img').addClass('hidden');
+                        $('.js-t63-loader-img').removeClass('hidden');
                     },
                     success: function (res) {
                         if (res.IsSuccess) {
@@ -7888,41 +8105,41 @@ var PageBuilderModel = {
             });
         },
         successAnimation: function () {
-            $('.js-loader-img').addClass('hidden');
-            $('.js-success-img').removeClass('hidden');
+            $('.js-t63-loader-img').addClass('hidden');
+            $('.js-t63-success-img').removeClass('hidden');
             setTimeout(function () {
-                $('.js-success-img').addClass('hidden');
-                $('.js-save-img').removeClass('hidden');
+                $('.js-t63-success-img').addClass('hidden');
+                $('.js-t63-save-img').removeClass('hidden');
             }, 1000);
         }
     },
 
     deleteContentDataAndSave: function () {
-        $('.js-page-section').remove();
+        $('.js-t63-page-section').remove();
         PageBuilderModel.data.fromServer.sections = [];
         PageBuilderModel.save.promise().then(location.reload());
     },
 
     Sideabr: {
         Show: function () {
-            $('.js-editor-sidebar-toggle-btn').addClass('is-active');
-            $('.js-editor-sidebar').addClass('show');
+            $('.js-t63-editor-sidebar-toggle-btn').addClass('is-active');
+            $('.js-t63-editor-sidebar').addClass('show');
         },
         Hide: function () {
-            $('.js-editor-sidebar-toggle-btn').removeClass('is-active');
-            $('.js-editor-sidebar').removeClass('show');
+            $('.js-t63-editor-sidebar-toggle-btn').removeClass('is-active');
+            $('.js-t63-editor-sidebar').removeClass('show');
         },
         IsOpen: function () {
-            return $('.js-editor-sidebar.show').length > 0;
+            return $('.js-t63-editor-sidebar.show').length > 0;
         },
         Init: function () {
-            if ($('.js-editor-sidebar').length > 0) {
-                $('.desktop .js-editor-sidebar-scrollable-container').mCustomScrollbar({
+            if ($('.js-t63-editor-sidebar').length > 0) {
+                $('.desktop .js-t63-editor-sidebar-scrollable-container').mCustomScrollbar({
                     theme: 'minimal-dark',
                     scrollInertia: 100
                 });
 
-                $('.js-editor-sidebar-toggle-btn').click(function () {
+                $('.js-t63-editor-sidebar-toggle-btn').click(function () {
                     if (PageBuilderModel.Sideabr.IsOpen()) {
                         PageBuilderModel.Sideabr.Hide();
                     } else {
@@ -7930,7 +8147,7 @@ var PageBuilderModel = {
                     }
                 });
 
-                $('.js-editor-sidebar-close-btn').click(function () {
+                $('.js-t63-editor-sidebar-close-btn').click(function () {
                     PageBuilderModel.Sideabr.Hide();
                 });
             }
@@ -7946,7 +8163,7 @@ var PageBuilderModel = {
         PageBuilderModel.editors.init();
         PageBuilderModel.scrollToNavigation.init();
 
-        $('.js-save-btn').click(function () {
+        $('.js-t63-save-btn').click(function () {
             PageBuilderModel.editors.done();
             PageBuilderModel.save.promise().then(PageBuilderModel.save.successAnimation).catch(PageBuilderModel.save.validation.ShowErrors);
         });
@@ -7958,7 +8175,7 @@ var PageBuilderModel = {
 $(function () {
     PageBuilderModel.init();
 
-    //$('.js-copy-to-clipboard-btn').click(function () {
+    //$('.js-t63-copy-to-clipboard-btn').click(function () {
     //    copyToClipboard(PageBuilderModel.save.getCleanHtml(PageBuilderModel.currentViewSelector));
     //});
 });

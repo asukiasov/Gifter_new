@@ -1,262 +1,62 @@
 ﻿using DevExtreme.AspNet.Mvc;
 using DevExtreme.AspNet.Mvc.Builders;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using SixtyThreeBits.Core.BusinessLogics;
-using SixtyThreeBits.Core.Modules;
+using SixtyThreeBits.Core.Infrastructure.DTO;
+using SixtyThreeBits.Core.Infrastructure.Libraries;
+using SixtyThreeBits.Core.Infrastructure.Libraries.FileStorages;
+using SixtyThreeBits.Core.Infrastructure.Utilities;
 using SixtyThreeBits.Core.Properties;
-using SixtyThreeBits.Core.Services;
-using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries;
-using SixtyThreeBits.Web.Reusables.Core;
+using SixtyThreeBits.Libraries.Extensions;
+using SixtyThreeBits.Web.Domain;
+using SixtyThreeBits.Web.Domain.Libraries;
+using SixtyThreeBits.Web.Domain.SharedViewModels;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace SixtyThreeBits.Web.Admin.Models
 {
-    public class ProductCategoriesModel : WebProjectModelBase
-    {
-        #region Methods
-        public async Task<PageViewModel> GetPageViewModel()
-        {
-            var ViewModel = new PageViewModel();
-            ViewModel.ShowAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.ProductCategories.Add);
-            ViewModel.UrlAddNew = Url.RouteUrl(ControllerActionRouteNames.Admin.ProductCategories.Add);
-            ViewModel.UrlDelete = Url.RouteUrl(ControllerActionRouteNames.Admin.ProductCategories.Delete);
-            ViewModel.UrlSort = Url.RouteUrl(ControllerActionRouteNames.Admin.ProductCategories.Sort);
-            ViewModel.ProductCategories = (await DataAccessFactory.Products.ProductCategoriesList())?.Select(Item => new TreeNodeItem
-            {
-                NodeID = Item.ProductCategoryID.ToString(),
-                ParentID = Item.ProductCategoryParentID.HasValue ? Item.ProductCategoryParentID.ToString() : null,
-                Caption = Item.ProductCategoryName,
-                NavigateUrl = Url.RouteUrl(ControllerActionRouteNames.Admin.ProductCategories.ProductCategory.Properties, new { ProductCategoryID = Item.ProductCategoryID }),
-                ShowAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.ProductCategories.Add) && Item.ProductCategoryParentID == null,
-                ShowDeleteButton = User.HasPermission(ControllerActionRouteNames.Admin.ProductCategories.Delete)
-            }).ToList();
-            if (ViewModel.HasCategories)
-            {
-                ViewModel.ProductCategories.ToRecursive(IDPropertyName: nameof(TreeNodeItem.NodeID), nameof(TreeNodeItem.ParentID), nameof(TreeNodeItem.Children));
-            }
-            return ViewModel;
-        }
-
-        public async Task<AjaxResponse> DeleteRecursive(int? ProductCategoryID)
-        {
-            var AR = new AjaxResponse();
-            await DataAccessFactory.Products.ProductCategoriesDeleteRecursive(ProductCategoryID);
-            AR.IsSuccess = !DataAccessFactory.Products.IsError;
-            return AR;
-        }
-
-        public async Task<AjaxResponse> CreateProductCategory(int? ProductCategoryParentID, string ProductCategoryName)
-        {
-            TreeNodeItem Node = null;
-
-            var ProductCategoryID = await DataAccessFactory.Products.ProductCategoriesIUD(
-                DatabaseAction: Enums.DatabaseActions.CREATE,
-                ProductCategoryParentID: ProductCategoryParentID,
-                ProductCategoryName: ProductCategoryName
-            );
-
-            if (ProductCategoryID > 0)
-            {
-                Node = new TreeNodeItem();
-                Node.NodeID = ProductCategoryID.ToString();
-                Node.ParentID = ProductCategoryParentID.HasValue ? ProductCategoryParentID.ToString() : null;
-                Node.Caption = ProductCategoryName;
-                Node.NavigateUrl = Url.RouteUrl(ControllerActionRouteNames.Admin.ProductCategories.ProductCategory.Properties, new { ProductCategoryID = ProductCategoryID });
-                Node.ShowAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.ProductCategories.Add) && ProductCategoryParentID is null;
-                Node.ShowDeleteButton = User.HasPermission(ControllerActionRouteNames.Admin.ProductCategories.Delete);
-            }
-
-            var AR = new AjaxResponse();
-
-            if (Node != null)
-            {
-                AR.IsSuccess = true;
-                AR.Data = Node;
-            }
-
-            return AR;
-        }
-
-        public async Task<AjaxResponse> SyncParentsAndSortIndexes(SyncSortIndexesModel SubmitModel)
-        {
-            var AR = new AjaxResponse();
-            await DataAccessFactory.Products.ProductCategoriesSyncParentsAndSortIndexes(SubmitModel.SortIndexes);
-            AR.IsSuccess = !DataAccessFactory.Products.IsError;
-            return AR;
-        }
-        #endregion
-
-        #region Nested Classes
-        public class PageViewModel
-        {
-            #region Properties
-            public bool HasCategories => ProductCategories != null && ProductCategories.Count > 0;
-            public List<TreeNodeItem> ProductCategories { get; set; }
-            public bool ShowAddNewButton { get; set; }
-            public string UrlAddNew { get; set; }
-            public string UrlDelete { get; set; }
-            public string UrlSort { get; set; }
-            public readonly string TextConfirmDeleteRecord = Resources.TextConfirmDelete;
-            public readonly string TextConfirmDeleteRecursive = Resources.TextConfirmDeleteRecursive;
-            #endregion
-        }
-        #endregion
-    }
-
-    public class CategoriesModelBase : WebProjectModelBase
-    {
-        #region Properties
-        public ProductCategory DBItem { get; set; }
-        #endregion
-    }
-
-    public class CategoryPropertiesModel : CategoriesModelBase
-    {
-        #region Methods
-        public ProductCategoryPropertiesViewModel GetPageViewModel(int? ProductCategoryID, ProductCategoryPropertiesViewModel ViewModel)
-        {
-            if (ViewModel == null)
-            {
-                ViewModel = new ProductCategoryPropertiesViewModel();
-
-                ViewModel.ProductCategoryParentID = DBItem.ProductCategoryParentID;
-                ViewModel.ProductCategoryName = DBItem.ProductCategoryName;
-                ViewModel.ProductCategoryNameEng = DBItem.ProductCategoryNameEng;
-                ViewModel.ProductCategoryNameRus = DBItem.ProductCategoryNameRus;
-                ViewModel.ProductCategoryDescriptionShort = DBItem.ProductCategoryDescriptionShort;
-                ViewModel.ProductCategoryDescriptionShortEng = DBItem.ProductCategoryDescriptionShortEng;
-                ViewModel.ProductCategoryDescriptionShortRus = DBItem.ProductCategoryDescriptionShortRus;
-
-            }
-            ViewModel.ProductCategoryImageFilename = DBItem.ProductCategoryImageFilename;
-            ViewModel.ProductCategoryImageHttpPath = Utilities.GetUploadedFileHttpPath(DBItem.ProductCategoryImageFilename);
-            ViewModel.UrlDeleteImage = Url.RouteUrl(ControllerActionRouteNames.Admin.ProductCategories.ProductCategory.ImageDelete, new { ProductCategoryID = ProductCategoryID });
-
-            return ViewModel;
-        }
-
-        public async Task<AjaxResponse> DeleteImage(int? ProductCategoryID)
-        {
-            Utilities.DeleteUploadedFile(DBItem.ProductCategoryImageFilename);
-
-            var AR = new AjaxResponse();
-
-            await DataAccessFactory.Products.ProductCategoriesIUD(
-                DatabaseAction: Enums.DatabaseActions.UPDATE,
-                ProductCategoryID: ProductCategoryID,
-                ProductCategoryImageFilename: Constants.NullValueFor.String
-            );
-
-            AR.IsSuccess = !DataAccessFactory.Products.IsError;
-
-            return AR;
-        }
-
-        public async Task SaveCategoryProperties(int? ProductCategoryID, ProductCategoryPropertiesViewModel ViewModel)
-        {
-            var HasCategoryImage = ViewModel.ProductCategoryImageFile?.Length > 0;
-            var CategoryImageFilename = HasCategoryImage ? GetFilenameFromUploadedFile(ViewModel.ProductCategoryImageFile) : null;
-
-            if (HasCategoryImage)
-            {
-                Utilities.DeleteUploadedFile(ViewModel.ProductCategoryImageFilename);
-            }
-
-            await DataAccessFactory.Products.ProductCategoriesIUD(
-                DatabaseAction: Enums.DatabaseActions.UPDATE,
-                ProductCategoryID: ProductCategoryID,
-                ProductCategoryParentID: ViewModel.ProductCategoryParentID,
-                ProductCategoryName: ViewModel.ProductCategoryName,
-                ProductCategoryNameEng: ViewModel.ProductCategoryNameEng ?? Constants.NullValueFor.String,
-                ProductCategorynameRus: ViewModel.ProductCategoryNameRus ?? Constants.NullValueFor.String,
-                ProductCategoryImageFilename: CategoryImageFilename,
-                ProductCategoryDescriptionShort: ViewModel.ProductCategoryDescriptionShort ?? Constants.NullValueFor.String,
-                ProductCategoryDescriptionShortEng: ViewModel.ProductCategoryDescriptionShortEng ?? Constants.NullValueFor.String,
-                ProductCategoryDescriptionShortRus: ViewModel.ProductCategoryDescriptionShortRus ?? Constants.NullValueFor.String
-            );
-
-            if (!DataAccessFactory.Products.IsError)
-            {
-                ViewModel.IsSaved = true;
-                if (HasCategoryImage)
-                {
-                    await SaveUploadedFile(PostedFile: ViewModel.ProductCategoryImageFile, Filename: CategoryImageFilename);
-                }
-            }
-        }
-
-        public void ValidatePageViewModel(ProductCategoryPropertiesViewModel ViewModel)
-        {
-            ViewModel.Errors = new List<SimpleKeyValue<string, string>>
-            {
-                Validation.ValidateRequired(ErrorKey:$"[name=\"{nameof(ViewModel.ProductCategoryName)}\"]", ValueToValidate:ViewModel.ProductCategoryName)
-            };
-            ViewModel.Errors.RemoveAll(Item => Item == null);
-        }
-        #endregion
-
-        #region Nested Classes
-        public class ProductCategoryPropertiesViewModel : FormViewModelBase
-        {
-            #region Properties
-            public int? ProductCategoryID { get; set; }
-            public int? ProductCategoryParentID { get; set; }
-            public string ProductCategoryName { get; set; }
-            public string ProductCategoryNameEng { get; set; }
-            public string ProductCategoryNameRus { get; set; }
-            public string CategoryImageFilenameProduct { get; set; }
-            public string ProductCategoryDescriptionShort { get; set; }
-            public string ProductCategoryDescriptionShortEng { get; set; }
-            public string ProductCategoryDescriptionShortRus { get; set; }
-            public string ProductCategoryImageFilename { get; set; }
-            public string ProductCategoryImageHttpPath { get; set; }
-            public bool HasProductCategoryImage => !string.IsNullOrWhiteSpace(ProductCategoryImageFilename);
-            public string UrlDeleteImage { get; set; }
-            public IFormFile ProductCategoryImageFile { get; set; }
-
-            public readonly string TextConfirmDelete = Resources.TextConfirmDelete; 
-            #endregion
-        }
-        #endregion
-    }
-
     public class ProductsModel : WebProjectModelBase
     {
+        #region Properties
+        readonly string _folderPath = FileStorageManager.Modules[Enums.FileManagerModules.Products].FolderName;
+        #endregion
+
         #region Methods
         public async Task<PageViewModel> GetPageViewModel()
         {
-            var ViewModel = new PageViewModel();
-            ViewModel.ShowAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.Products.GridAdd);
-            ViewModel.ShowExcelUploadButton = User.HasPermission(ControllerActionRouteNames.Admin.Products.ExcelUpload) && User.HasPermission(ControllerActionRouteNames.Admin.Products.ExcelDownload);
-            ViewModel.UrlExcelUpload = Url.RouteUrl(ControllerActionRouteNames.Admin.Products.ExcelUpload);
-            ViewModel.UrlExcelDownload = Url.RouteUrl(ControllerActionRouteNames.Admin.Products.ExcelDownload);            
+            var viewModel = new PageViewModel();
+            viewModel.ShowAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.Products.GridAdd);
+            viewModel.ShowExcelUploadButton = User.HasPermission(ControllerActionRouteNames.Admin.Products.ExcelUpload) && User.HasPermission(ControllerActionRouteNames.Admin.Products.ExcelDownload);
+            viewModel.UrlExcelUpload = Url.RouteUrl(ControllerActionRouteNames.Admin.Products.ExcelUpload);
+            viewModel.UrlExcelDownload = Url.RouteUrl(ControllerActionRouteNames.Admin.Products.ExcelDownload);            
 
-            ViewModel.Grid = new PageViewModel.GridModel();
-            ViewModel.Grid.UrlLoad = Url.RouteUrl(ControllerActionRouteNames.Admin.Products.Grid);
-            ViewModel.Grid.UrlAddNew = Url.RouteUrl(ControllerActionRouteNames.Admin.Products.GridAdd);
-            ViewModel.Grid.UrlUpdate = Url.RouteUrl(ControllerActionRouteNames.Admin.Products.GridUpdate);
-            ViewModel.Grid.UrlDelete = Url.RouteUrl(ControllerActionRouteNames.Admin.Products.GridDelete);
-            ViewModel.Grid.AllowAdd = User.HasPermission(ControllerActionRouteNames.Admin.Products.GridAdd);
-            ViewModel.Grid.AllowUpdate = User.HasPermission(ControllerActionRouteNames.Admin.Products.GridUpdate);
-            ViewModel.Grid.AllowDelete = User.HasPermission(ControllerActionRouteNames.Admin.Products.GridDelete);
+            viewModel.Grid = new PageViewModel.GridModel();
+            viewModel.Grid.UrlLoad = Url.RouteUrl(ControllerActionRouteNames.Admin.Products.Grid);
+            viewModel.Grid.UrlAddNew = Url.RouteUrl(ControllerActionRouteNames.Admin.Products.GridAdd);
+            viewModel.Grid.UrlUpdate = Url.RouteUrl(ControllerActionRouteNames.Admin.Products.GridUpdate);
+            viewModel.Grid.UrlDelete = Url.RouteUrl(ControllerActionRouteNames.Admin.Products.GridDelete);
+            viewModel.Grid.AllowAdd = User.HasPermission(ControllerActionRouteNames.Admin.Products.GridAdd);
+            viewModel.Grid.AllowUpdate = User.HasPermission(ControllerActionRouteNames.Admin.Products.GridUpdate);
+            viewModel.Grid.AllowDelete = User.HasPermission(ControllerActionRouteNames.Admin.Products.GridDelete);
 
-            ViewModel.Grid.Categories = (await DataAccessFactory.Products.ProductCategoriesListWithTitlePaddindHierarchy(PadChar:'-')).Select(Item => new SimpleKeyValue<int?, string>
+            var repository = RepositoriesFactory.GetProductsRepository();
+            viewModel.Grid.Categories = (await repository.ProductCategoriesListWithTitlePaddindHierarchy(padChar:'-')).Select(item => new KeyValueTuple<int?, string>
             {
-                Key = Item.ProductCategoryID,
-                Value = Item.ProductCategoryName
+                Key = item.ProductCategoryID,
+                Value = item.ProductCategoryName
             }).ToList();
 
-            return ViewModel;
+            return viewModel;
         }
 
         public async Task<List<PageViewModel.GridModel.GridItem>> GetGridViewModel()
         {
-            var Products = (await DataAccessFactory.Products.ProductsList())?.Select(Item => new PageViewModel.GridModel.GridItem
+            var repository = RepositoriesFactory.GetProductsRepository();
+            var viewModel = (await repository.ProductsList())?.Select(Item => new PageViewModel.GridModel.GridItem
             {
                 ProductID = Item.ProductID,
                 ProductName = Item.ProductName,
@@ -268,36 +68,38 @@ namespace SixtyThreeBits.Web.Admin.Models
                 ProductCategoryID = Item.ProductCategoryID,
                 UrlProductsProperties = Url.RouteUrl(ControllerActionRouteNames.Admin.Products.Product.Properties, new { ProductID = Item.ProductID })
             }).ToList();
-            return Products;
+            return viewModel;
         }
 
-        public async Task CRUD(Enums.DatabaseActions DatabaseAction, int? ProductID, PageViewModel.GridModel.GridItem SubmitModel)
+        public async Task CRUD(Enums.DatabaseActions databaseAction, int? productID, PageViewModel.GridModel.GridItem submitModel)
         {
-            if(DatabaseAction == Enums.DatabaseActions.DELETE)
-            {
-                var DBItem = await DataAccessFactory.Products.ProductsGetSingleByID(ProductID);
+            var repository = RepositoriesFactory.GetProductsRepository();
+
+            if (databaseAction == Enums.DatabaseActions.DELETE)
+            {                
+                var DBItem = await repository.ProductsGetSingleByID(productID);
                 if(DBItem?.ProductImages?.Any() == true)
                 {
                     foreach(var Item in DBItem.ProductImages)
                     {
-                        Utilities.DeleteUploadedFile(Item.ProductImageFilename);
+                        await DeleteUploadedFile(Item.ProductImageFilename, _folderPath);
                     }
                 }
             }
-
-            await DataAccessFactory.Products.ProductsIUD(
-                DatabaseAction: DatabaseAction,
-                ProductID: ProductID,
-                ProductCategoryID: SubmitModel.ProductCategoryID,
-                ProductName: SubmitModel.ProductName,
-                ProductIsPublished: SubmitModel.ProductIsPublished,
-                ProductPrice: SubmitModel.ProductPrice,
-                ProductPriceOld: SubmitModel.ProductPriceOld,
-                ProductRemainder: SubmitModel.ProductRemainder,
-                ProductIsFeatured: SubmitModel.ProductIsFeatured
+            
+            await repository.ProductsIUD(
+                databaseAction: databaseAction,
+                productID: productID,
+                productCategoryID: submitModel.ProductCategoryID,
+                productName: submitModel.ProductName,
+                productIsPublished: submitModel.ProductIsPublished,
+                productPrice: submitModel.ProductPrice,
+                productPriceOld: submitModel.ProductPriceOld,
+                productRemainder: submitModel.ProductRemainder,
+                productIsFeatured: submitModel.ProductIsFeatured
             );
 
-            if (DataAccessFactory.Products.IsError)
+            if (repository.IsError)
             {
                 Form.AddError(Resources.TextError);
             }
@@ -305,45 +107,45 @@ namespace SixtyThreeBits.Web.Admin.Models
 
         public async Task<byte[]> GetProductsSyncExcelFileBytes()
         {
-            var BL = new ProductsBusinessLogic.GetProductsPricesAndRemaindersExcelFile(
-                DataAccessFactory: DataAccessFactory,
-                AppSettings: AppSettings
+            var bl = new ProductsBusinessLogic.GetProductsPricesAndRemaindersExcelFile(
+                dataAccessFactory: RepositoriesFactory,
+                appSettings: AppSettings
             );
-            var Result = await BL.Execute();
-            return Result.ExcelFileBytes;
+            var result = await bl.Execute();
+            return result.ExcelFileBytes;
         }
 
-        public async Task<AjaxResponse> SyncExcel(byte[] ExcelFileBytes, string ExcelFilename)
+        public async Task<AjaxResponse> SyncExcel(ExcelUploadSubmitModel submitModel)
         {
-            var AR = new AjaxResponse();
-            var BL = new ProductsBusinessLogic.SyncProductPricesAndRemainders(
-                ExcelFileBytes: ExcelFileBytes,
-                IsXslx: ExcelFilename?.EndsWith(".xlsx") == true,
-                DataAccessFactory: DataAccessFactory
+            var viewModel = new AjaxResponse();
+            var bl = new ProductsBusinessLogic.SyncProductPricesAndRemainders(
+                excelFileBytes: submitModel.ExcelFileBytes,
+                isXslx: submitModel.ExcelFilename?.EndsWith(".xlsx") == true,
+                dataAccessFactory: RepositoriesFactory
             );
-            var Result = await BL.Execute();
-            if (Result.IsError)
+            var result = await bl.Execute();
+            if (result.IsError)
             {
-                if (Result.HasExcelErrors)
+                if (result.HasExcelErrors)
                 {
-					AR.Data = new
+					viewModel.Data = new
 					{
-						HasExcelErrors = Result.HasExcelErrors,
-						ExcelErrors = Result.ExcelErrors				
+						HasExcelErrors = result.HasExcelErrors,
+						ExcelErrors = result.ExcelErrors				
 					};
 				}
                 else
                 {
-                    AR.Data = Result.ErrorMessage;
+                    viewModel.Data = result.ErrorMessage;
                 }
                 
             }
             else
             {
-                AR.IsSuccess = true;
+                viewModel.IsSuccess = true;
             }
 
-            return AR;
+            return viewModel;
 
 		}
         #endregion
@@ -356,42 +158,45 @@ namespace SixtyThreeBits.Web.Admin.Models
             public bool ShowExcelUploadButton { get; set; }
             public string UrlExcelDownload { get; set; }
             public string UrlExcelUpload { get; set; }
-            public GridModel Grid { get; set; }
+            public GridModel Grid { get; set; }            
+            public readonly string TextRemainderUpload = Resources.TextRemainderUpload;
+            public readonly string TextExcelUpload = Resources.TextExcelUpload;
+            public readonly string TextExcelDownloadTemplate = Resources.TextExcelDownloadTemplate;
+            public readonly string TextUpload = Resources.TextUpload;            
             #endregion
 
             #region Nested Classes
             public class GridModel : DevExtremeGridViewModelBase, IDevExtremeGridModel<GridModel.GridItem>
             {
                 #region Properties
-                public List<SimpleKeyValue<int?,string>> Categories { get; set; }
+                public List<KeyValueTuple<int?,string>> Categories { get; set; }
                 #endregion
 
                 #region Methods
-                public DataGridBuilder<GridItem> Render(IHtmlHelper Html)
+                public DataGridBuilder<GridItem> Render(IHtmlHelper html)
                 {
-                    var Grid = GetGridWithStartupValues<GridItem>(Html: Html, KeyFieldName: nameof(GridItem.ProductID));
+                    var grid = GetGridWithStartupValues<GridItem>(html: html, keyFieldName: nameof(GridItem.ProductID));
 
-                    Grid
+                    grid
                    .ID("ProductsGrid")                   
-                   .OnInitialized("ProductsModel.OnGridInit")
-                   .Columns(Columns =>
+                   .OnInitialized("productsModel.onGridInit")
+                   .Columns(columns =>
                    {
-                       Columns.Add().Width(30).Caption(" ").InitDetailsUrlCellTemplate(nameof(GridItem.UrlProductsProperties));
-                       Columns.AddFor(m => m.ProductName).Caption("დასახელება").Width(350).ValidationRules(Options =>
+                       columns.Add().Width(30).Caption(" ").InitDetailsUrlCellTemplate(nameof(GridItem.UrlProductsProperties));
+                       columns.AddFor(m => m.ProductName).Caption(Resources.TextName).Width(350).ValidationRules(options =>
                        {
-                           Options.AddRequired();
+                           options.AddRequired();
                        });
-                       Columns.AddFor(m => m.ProductCategoryID).Caption("კატეგორია").Width(250).InitLookupColumn(Data: Categories, IsRequired: true);
-                       Columns.AddFor(m => m.ProductPrice).Caption("ფასი").Width(100).Alignment(HorizontalAlignment.Right).DataType(GridColumnDataType.Number);
-                       Columns.AddFor(m => m.ProductPriceOld).Caption("ძველი ფასი").Width(100).Alignment(HorizontalAlignment.Right).DataType(GridColumnDataType.Number);
-                       Columns.AddFor(m => m.ProductRemainder).Caption("ნაშთი").Width(100).Alignment(HorizontalAlignment.Right).DataType(GridColumnDataType.Number);
-                       Columns.AddFor(m => m.ProductIsPublished).Caption("აქტიური").Width(80).InitCheckboxColumn();
-                       Columns.AddFor(m => m.ProductIsFeatured).Caption("სპეც შეთავაზება").Width(120).InitCheckboxColumn();                       
-                       Columns.Add();
+                       columns.AddFor(m => m.ProductCategoryID).Caption(Resources.TextCategory).Width(250).InitLookupColumn(data: Categories, isRequired: true);
+                       columns.AddFor(m => m.ProductPrice).Caption(Resources.TextPrice).Width(100).Alignment(HorizontalAlignment.Right).DataType(GridColumnDataType.Number);
+                       columns.AddFor(m => m.ProductPriceOld).Caption(Resources.TextPriceOld).Width(100).Alignment(HorizontalAlignment.Right).DataType(GridColumnDataType.Number);
+                       columns.AddFor(m => m.ProductRemainder).Caption(Resources.TextRemainder).Width(100).Alignment(HorizontalAlignment.Right).DataType(GridColumnDataType.Number);
+                       columns.AddFor(m => m.ProductIsPublished).Caption(Resources.TextPublished).Width(80).InitCheckboxColumn();
+                       columns.AddFor(m => m.ProductIsFeatured).Caption(Resources.TextFeatured).Width(120).InitCheckboxColumn();                       
+                       columns.Add();
                    });
 
-                    return Grid;
-
+                    return grid;
                 }
                 #endregion
 
@@ -414,180 +219,192 @@ namespace SixtyThreeBits.Web.Admin.Models
             }
             #endregion
         }
+
+        public class ExcelUploadSubmitModel
+        {
+            #region Properties
+            public byte[] ExcelFileBytes { get; set; }
+            public string ExcelFilename { get; set; } 
+            #endregion
+        }
         #endregion
     }
 
     public class ProductsModelBase : WebProjectModelBase
     {
         #region Properties        
-        public Product DBItemProduct { get; set; }
+        public ProductDTO DBItem { get; set; }
         #endregion
     }
 
     public class ProductPropertiesModel : ProductsModelBase
     {
+        #region Properties
+        readonly string _folderPath = FileStorageManager.Modules[Enums.FileManagerModules.Products].FolderName;
+        #endregion
+
         #region Methods        
-        public async Task<ProductsPropertiesViewModel> GetPageViewModel(int? ProductID, ProductsPropertiesViewModel ViewModel)
+        public async Task<ProductsPropertiesViewModel> GetPageViewModel(ProductsPropertiesViewModel viewModel = null)
         {
-            if (ViewModel == null)
+            if (viewModel == null)
             {
-                ViewModel = new ProductsPropertiesViewModel();
-                ViewModel.ProductIsPublished = DBItemProduct.ProductIsPublished;
-                ViewModel.ProductIsFeatured = DBItemProduct.ProductIsFeatured;
-                ViewModel.BrandID = DBItemProduct.BrandID;
-                ViewModel.ProductCategoryID = DBItemProduct.ProductCategoryID;
-                ViewModel.ProductName = DBItemProduct.ProductName;
-                ViewModel.ProductNameEng = DBItemProduct.ProductNameEng;
-                ViewModel.ProductNameRus = DBItemProduct.ProductNameRus;
-                ViewModel.ProductPrice = Utilities.FormatPriceValue(DBItemProduct.ProductPrice);
-                ViewModel.ProductPriceOld = Utilities.FormatPriceValue(DBItemProduct.ProductPriceOld);
-                ViewModel.ProductRemainder = Utilities.FormatQuantityValue(DBItemProduct.ProductRemainder);
-                ViewModel.ProductSKU = DBItemProduct.ProductSKU;
-                ViewModel.ProductDescriptionShort = DBItemProduct.ProductDescriptionShort;
-                ViewModel.ProductDescriptionShortEng = DBItemProduct.ProductDescriptionShortEng;
-                ViewModel.ProductDescriptionShortRus = DBItemProduct.ProductDescriptionShortRus;
-                ViewModel.ProductDescription = DBItemProduct.ProductDescription;
-                ViewModel.ProductDescriptionEng = DBItemProduct.ProductDescriptionEng;
-                ViewModel.ProductDescriptionRus = DBItemProduct.ProductDescriptionRus;
+                viewModel = new ProductsPropertiesViewModel();
+                viewModel.ProductIsPublished = DBItem.ProductIsPublished;
+                viewModel.ProductIsFeatured = DBItem.ProductIsFeatured;
+                viewModel.BrandID = DBItem.BrandID;
+                viewModel.ProductCategoryID = DBItem.ProductCategoryID;
+                viewModel.ProductName = DBItem.ProductName;
+                viewModel.ProductNameEng = DBItem.ProductNameEng;
+                viewModel.ProductPrice = Utilities.FormatPriceValue(DBItem.ProductPrice);
+                viewModel.ProductPriceOld = Utilities.FormatPriceValue(DBItem.ProductPriceOld);
+                viewModel.ProductRemainder = Utilities.FormatQuantityValue(DBItem.ProductRemainder);
+                viewModel.ProductSKU = DBItem.ProductSKU;
+                viewModel.ProductDescriptionShort = DBItem.ProductDescriptionShort;
+                viewModel.ProductDescriptionShortEng = DBItem.ProductDescriptionShortEng;
+                viewModel.ProductDescription = DBItem.ProductDescription;
+                viewModel.ProductDescriptionEng = DBItem.ProductDescriptionEng;
             }
-            ViewModel.ProductImageFilename = DBItemProduct.ProductImageFilename;
-            ViewModel.ProductImageHttpPath = Utilities.GetUploadedFileHttpPath(DBItemProduct.ProductImageFilename);            
+            viewModel.ProductImageFilename = DBItem.ProductImageFilename;
+            viewModel.ProductImageHttpPath = FileStorage.GetUploadedFileHttpPath(DBItem.ProductImageFilename, _folderPath);
 
-            ViewModel.Brands = (await DataAccessFactory.Brands.ListBrands()).Select(Item => new SimpleKeyValue<int?, string> 
+            var repositoryBrands = RepositoriesFactory.GetBrandsRepository();
+            viewModel.Brands = (await repositoryBrands.BrandsList()).Select(item => new KeyValueSelectedTuple<int?, string> 
             { 
-                Key = Item.BrandID, 
-                Value = Item.BrandName, 
-                IsSelected = Item.BrandID == ViewModel.BrandID
+                Key = item.BrandID, 
+                Value = item.BrandName, 
+                IsSelected = item.BrandID == viewModel.BrandID
             }).ToList();
-            ViewModel.Categories = (await DataAccessFactory.Products.ProductCategoriesListWithTitlePaddindHierarchy('-')).Select(Item => new SimpleKeyValue<int?, string>
-            {
-                Key = Item.ProductCategoryID,
-                Value = Item.ProductCategoryName,
-                IsSelected = Item.ProductCategoryID == ViewModel.ProductCategoryID
-            }).ToList();
-      
-            ViewModel.ProductProducerCountries = (await DataAccessFactory.Dictionaries.CountriesListAsSimpleKeyValue(SelectedCountryID: DBItemProduct.CountryIDProducer));
 
-            ViewModel.ProductImages = DBItemProduct.ProductImages?.Select(Item => new ProductsPropertiesViewModel.ProductImage
+            var repositoryProducts = RepositoriesFactory.GetProductsRepository();
+            viewModel.Categories = (await repositoryProducts.ProductCategoriesListWithTitlePaddindHierarchy('-')).Select(item => new KeyValueSelectedTuple<int?, string>
+            {
+                Key = item.ProductCategoryID,
+                Value = item.ProductCategoryName,
+                IsSelected = item.ProductCategoryID == viewModel.ProductCategoryID
+            }).ToList();
+
+            var repositoryCountries = RepositoriesFactory.GetCountriesRepository();
+            viewModel.ProductProducerCountries = (await repositoryCountries.CountriesListAsSimpleKeyValue(SelectedCountryID: DBItem.CountryIDProducer));
+
+            viewModel.ProductImages = DBItem.ProductImages?.Select(Item => new ProductsPropertiesViewModel.ProductImage
             {
                 ProductImageID = Item.ProductImageID,
                 ProductImageFilename = Item.ProductImageFilename,
-                ProductImageFileHttpPath = Utilities.GetUploadedFileHttpPath(Item.ProductImageFilename)
+                ProductImageFileHttpPath = FileStorage.GetUploadedFileHttpPath(Item.ProductImageFilename, _folderPath)
             }).ToList();
 
-            ViewModel.UrlImageUpload = Url.RouteUrl(ControllerActionRouteNames.Admin.Products.Product.PropertiesImagesUpload, new { ProductID = ProductID });
-            ViewModel.UrlImageSort = Url.RouteUrl(ControllerActionRouteNames.Admin.Products.Product.PropertiesImagesSort, new { ProductID = ProductID });
-            ViewModel.UrlImageDelete = Url.RouteUrl(ControllerActionRouteNames.Admin.Products.Product.PropertiesImagesDelete, new { ProductID = ProductID });
+            viewModel.UrlImageUpload = Url.RouteUrl(ControllerActionRouteNames.Admin.Products.Product.PropertiesImagesUpload, new { productID = DBItem.ProductID });
+            viewModel.UrlImageSort = Url.RouteUrl(ControllerActionRouteNames.Admin.Products.Product.PropertiesImagesSort, new { productID = DBItem.ProductID });
+            viewModel.UrlImageDelete = Url.RouteUrl(ControllerActionRouteNames.Admin.Products.Product.PropertiesImagesDelete, new { productID = DBItem.ProductID });
 
-            return ViewModel;
+            return viewModel;
         }
 
-        public async Task<AjaxResponse> DeleteImage(int? ProductID)
+        public async Task<AjaxResponse> DeleteImage()
         {
+            var viewModel = new AjaxResponse();
 
-            Utilities.DeleteUploadedFile(DBItemProduct.ProductImageFilename);
+            await DeleteUploadedFile(DBItem.ProductImageFilename, _folderPath);
 
-            var AR = new AjaxResponse();
-
-            await DataAccessFactory.Products.ProductsIUD(
-                DatabaseAction: Enums.DatabaseActions.UPDATE,
-                ProductID: ProductID,
-                ProductImageFilename: Constants.NullValueFor.String
+            var repository = RepositoriesFactory.GetProductsRepository();
+            await repository.ProductsIUD(
+                databaseAction: Enums.DatabaseActions.UPDATE,
+                productID: DBItem.ProductID,
+                productImageFilename: Constants.NullValueFor.String
             );
 
-            AR.IsSuccess = !DataAccessFactory.Products.IsError;
+            viewModel.IsSuccess = !repository.IsError;
 
-            return AR;
+            return viewModel;
         }
 
-        public void ValidatePageViewModel(ProductsPropertiesViewModel ViewModel)
+        public void ValidatePageViewModel(ProductsPropertiesViewModel viewModel)
         {
-            ViewModel.Errors = new List<SimpleKeyValue<string, string>>
+            viewModel.AddError(Validation.ValidateRequired(errorKey: Validation.GetJQueryNameSelectorFor(nameof(viewModel.ProductName)), valueToValidate: viewModel.ProductName));            
+        }
+
+        public async Task Save(ProductsPropertiesViewModel viewModel)
+        {
+            var repository = RepositoriesFactory.GetProductsRepository();
+            await repository.ProductsIUD(
+                databaseAction: Enums.DatabaseActions.UPDATE,
+                productID: DBItem.ProductID,
+                productCategoryID: viewModel.ProductCategoryID ?? Constants.NullValueFor.Int,
+                countryIDProducer: viewModel.CountryIDProducer ?? Constants.NullValueFor.Int,
+                brandID: viewModel.BrandID ?? Constants.NullValueFor.Int,                                
+                productName: viewModel.ProductName,
+                productPrice: viewModel.ProductPrice.ToDecimal() ?? Constants.NullValueFor.Int,
+                productPriceOld: viewModel.ProductPriceOld.ToDecimal() ?? Constants.NullValueFor.Int,
+                productRemainder: viewModel.ProductRemainder.ToDecimal() ?? Constants.NullValueFor.Int,
+                productNameEng: viewModel.ProductNameEng ?? Constants.NullValueFor.String,
+                productDescriptionShort: viewModel.ProductDescriptionShort ?? Constants.NullValueFor.String,
+                productDescriptionShortEng: viewModel.ProductDescriptionShortEng ?? Constants.NullValueFor.String,
+                productDescription: viewModel.ProductDescription ?? Constants.NullValueFor.String,
+                productDescriptionEng: viewModel.ProductDescriptionEng ?? Constants.NullValueFor.String,
+                productIsPublished: viewModel.ProductIsPublished,
+                productIsFeatured: viewModel.ProductIsFeatured,
+                productSKU: viewModel.ProductSKU ?? Constants.NullValueFor.String
+            );
+            viewModel.IsSaved = !repository.IsError;            
+        }
+
+        public async Task<AjaxResponse> UploadImages()
+        {
+            var viewModel = new AjaxResponse();
+
+            var postedFile = Request.Form.Files[0];
+            var productImageFilenameOriginal = postedFile.FileName;
+            var productImageFilename = GetFilenameFromUploadedFile(postedFile);
+
+            var repository = RepositoriesFactory.GetProductsRepository();
+            var productImageID = await repository.ProductsImagesIUD(
+                databaseAction: Enums.DatabaseActions.CREATE,
+                productID: DBItem.ProductID,
+                productImageFilename: productImageFilename
+            );
+
+            if (productImageID > 0)
             {
-                Validation.ValidateRequired(ErrorKey: Validation.GetJQueryNameSelectorFor(nameof(ViewModel.ProductName)), ValueToValidate:ViewModel.ProductName)                
-            };
-            ViewModel.Errors.RemoveAll(Item => Item == null);
-        }
+                await SaveUploadedFile(postedFile: postedFile, filename: productImageFilename, folderPath: _folderPath);
 
-        public async Task SaveProductsProperties(int? ProductID, ProductsPropertiesViewModel ViewModel)
-        {            
-            await DataAccessFactory.Products.ProductsIUD(
-                DatabaseAction: Enums.DatabaseActions.UPDATE,
-                ProductID: ProductID,
-                ProductCategoryID: ViewModel.ProductCategoryID ?? Constants.NullValueFor.Int,
-                CountryIDProducer: ViewModel.CountryIDProducer ?? Constants.NullValueFor.Int,
-                BrandID: ViewModel.BrandID ?? Constants.NullValueFor.Int,                                
-                ProductName: ViewModel.ProductName,
-                ProductPrice: ViewModel.ProductPrice.ToDecimal() ?? Constants.NullValueFor.Int,
-                ProductPriceOld: ViewModel.ProductPriceOld.ToDecimal() ?? Constants.NullValueFor.Int,
-                ProductRemainder: ViewModel.ProductRemainder.ToDecimal() ?? Constants.NullValueFor.Int,
-                ProductNameEng: ViewModel.ProductNameEng ?? Constants.NullValueFor.String,
-                ProductNameRus: ViewModel.ProductNameRus ?? Constants.NullValueFor.String,
-                ProductDescriptionShort: ViewModel.ProductDescriptionShort ?? Constants.NullValueFor.String,
-                ProductDescriptionShortEng: ViewModel.ProductDescriptionShortEng ?? Constants.NullValueFor.String,
-                ProductDescriptionShortRus: ViewModel.ProductDescriptionShortRus ?? Constants.NullValueFor.String,
-                ProductDescription: ViewModel.ProductDescription ?? Constants.NullValueFor.String,
-                ProductDescriptionEng: ViewModel.ProductDescriptionEng ?? Constants.NullValueFor.String,
-                ProductDescriptionRus: ViewModel.ProductDescriptionRus ?? Constants.NullValueFor.String,
-                ProductIsPublished: ViewModel.ProductIsPublished,
-                ProductIsFeatured: ViewModel.ProductIsFeatured,
-                ProductSKU: ViewModel.ProductSKU ?? Constants.NullValueFor.String
-            );
-            ViewModel.IsSaved = !DataAccessFactory.Products.IsError;            
-        }
-
-        public async Task<AjaxResponse> UploadImages(int? ProductID)
-        {
-            var AR = new AjaxResponse();
-            var Images = new List<ProductsPropertiesViewModel.ProductImage>();
-
-            var PostedFile = Request.Form.Files[0];
-            var ProductImageFilenameOriginal = PostedFile.FileName;
-            var ProductImageFilename = GetFilenameFromUploadedFile(PostedFile);
-                
-            var ProductImageID = await DataAccessFactory.Products.ProductsImagesIUD(
-                DatabaseAction: Enums.DatabaseActions.CREATE,
-                ProductID: ProductID,
-                ProductImageFilename: ProductImageFilename
-            );
-            if (ProductImageID > 0)
-            {
-                await SaveUploadedFile(PostedFile: PostedFile, Filename: ProductImageFilename);
-
-                AR.Data = new ProductsPropertiesViewModel.ProductImage
+                viewModel.Data = new ProductsPropertiesViewModel.ProductImage
                 {
-                    ProductImageID = ProductImageID,
-                    ProductImageFilename = ProductImageFilenameOriginal,
-                    ProductImageFileHttpPath = Utilities.GetUploadedFileHttpPath(ProductImageFilename)
+                    ProductImageID = productImageID,
+                    ProductImageFilename = productImageFilenameOriginal,
+                    ProductImageFileHttpPath = FileStorage.GetUploadedFileHttpPath(productImageFilename,_folderPath)
                 };
-                AR.IsSuccess = true;
+                viewModel.IsSuccess = true;
             }
 
-            return AR;
+            return viewModel;
         }
 
-        public async Task<AjaxResponse> DeleteImage(int? ProductID, int? ProductImageID)
+        public async Task<AjaxResponse> DeleteImage(DeleteImageSubmitModel submitModel)
         {
-            var AR = new AjaxResponse();
-            var ProductImage = DBItemProduct.ProductImages?.FirstOrDefault(Item => Item.ProductImageID == ProductImageID);       
-            if (ProductImage != null)
+            var viewModel = new AjaxResponse();
+
+            var productImage = DBItem.ProductImages?.FirstOrDefault(Item => Item.ProductImageID == submitModel.ProductImageID);       
+            if (productImage != null)
             {
-                Utilities.DeleteUploadedFile(ProductImage.ProductImageFilename);
-                await DataAccessFactory.Products.ProductsImagesIUD(
-                    DatabaseAction: Enums.DatabaseActions.DELETE,
-                    ProductImageID: ProductImageID
+                await DeleteUploadedFile(productImage.ProductImageFilename, _folderPath);
+
+                var repository = RepositoriesFactory.GetProductsRepository();
+                await repository.ProductsImagesIUD(
+                    databaseAction: Enums.DatabaseActions.DELETE,
+                    productImageID: submitModel.ProductImageID
                 );
-                AR.IsSuccess = !DataAccessFactory.Products.IsError;
+                viewModel.IsSuccess = !repository.IsError;
             }
-            return AR;
+            return viewModel;
         }
 
-        public async Task<AjaxResponse> SortImages(int? ProductID, SyncSortIndexesModel SubmitModel)
+        public async Task<AjaxResponse> SortImages(SyncSortIndexesSubmitModel SubmitModel)
         {
-            var AR = new AjaxResponse();
-            await DataAccessFactory.Products.ProductsImagesSyncSortIndex(ProductID, SubmitModel.SortIndexes);
-            AR.IsSuccess = !DataAccessFactory.Products.IsError;
-            return AR;
+            var viewModel = new AjaxResponse();
+            var repository = RepositoriesFactory.GetProductsRepository();
+            await repository.ProductsImagesSyncSortIndex(DBItem.ProductID, SubmitModel.SortIndexes);
+            viewModel .IsSuccess = !repository.IsError;
+            return viewModel;
         }
         #endregion
 
@@ -602,15 +419,12 @@ namespace SixtyThreeBits.Web.Admin.Models
             public string ProductPrice { get; set; }
             public string ProductPriceOld { get; set; }            
             public string ProductRemainder { get; set; }
-            public string ProductNameRus { get; set; }
             public bool ProductIsPublished { get; set; }
             public bool ProductIsFeatured { get; set; }
             public string ProductDescriptionShort { get; set; }
             public string ProductDescriptionShortEng { get; set; }
-            public string ProductDescriptionShortRus { get; set; }
             public string ProductDescription { get; set; }
             public string ProductDescriptionEng { get; set; }
-            public string ProductDescriptionRus { get; set; }
             public string ProductImageFilename { get; set; }
             public string ProductImageHttpPath { get; set; }
             public bool HasProductImage => !string.IsNullOrWhiteSpace(ProductImageFilename);
@@ -621,11 +435,11 @@ namespace SixtyThreeBits.Web.Admin.Models
             public List<ProductImage> ProductImages { get; set; }
             public bool HasProductImages => ProductImages?.Any() == true;
 
-            public List<SimpleKeyValue<int?, string>> Brands { get; set; }
+            public List<KeyValueSelectedTuple<int?, string>> Brands { get; set; }
             public bool HasBrands => Brands?.Any() == true;
-            public List<SimpleKeyValue<int?, string>> Categories { get; set; }
+            public List<KeyValueSelectedTuple<int?, string>> Categories { get; set; }
             public bool HasCategories => Categories?.Any() == true;
-            public List<SimpleKeyValue<int?, string>> ProductProducerCountries { get; set; }
+            public List<KeyValueSelectedTuple<int?, string>> ProductProducerCountries { get; set; }
             public bool HasProductProducerCountries => ProductProducerCountries?.Any() == true;
 
             public string UrlImageUpload { get; set; }
@@ -633,10 +447,23 @@ namespace SixtyThreeBits.Web.Admin.Models
             public string UrlImageSort { get; set; }
 
 
-            public readonly string TextConfirmDelete = Resources.TextConfirmDelete;
+            public readonly string TextPublished = Resources.TextPublished;
+            public readonly string TextFeatured = Resources.TextFeatured;
+            public readonly string TextCategory = Resources.TextCategory;
+            public readonly string TextPrice = Resources.TextPrice;
+            public readonly string TextPriceOld = Resources.TextPriceOld;
+            public readonly string TextRemainder = Resources.TextRemainder;
+            public readonly string TextBrand = Resources.TextBrand;
+            public readonly string TextProducerCountry = Resources.TextProducerCountry;
+            public readonly string TextCaption = Resources.TextCaption;
+            public readonly string TextCaptionEng = Resources.TextCaptionEng;
+            public readonly string TextDescriptionShort = Resources.TextDescriptionShort;
+            public readonly string TextDescriptionShortEng = Resources.TextDescriptionShortEng;
+            public readonly string TextDescription = Resources.TextDescription;
+            public readonly string TextDescriptionEng = Resources.TextDescription;
+            public readonly string TextPhotos = Resources.TextPhotos;
+            public readonly string TextUploadImage = Resources.TextUploadImage;
             public readonly string TextConfirmDeleteImage = Resources.TextConfirmDeleteImage;            
-            public readonly string TextDropzone = Resources.TextDropzone;
-
             #endregion
 
             #region Nested Classes
@@ -650,7 +477,13 @@ namespace SixtyThreeBits.Web.Admin.Models
             }
             #endregion
         }
-        #endregion
 
+        public class DeleteImageSubmitModel
+        {
+            #region Properties
+            public int? ProductImageID { get; set; }
+            #endregion
+        }
+        #endregion
     }    
 }

@@ -1,71 +1,75 @@
-﻿const ProductsModel = {
-    Grid: null,
-    UrlExcelUpload: null,
-    OnGridInit: function (s) {
-        ProductsModel.Grid = s.component;
-        Globals.Devexpress.SetGridFullHeight(ProductsModel.Grid, s.element[0]);
+﻿const productsModel = {
+    grid: null,
+    urlExcelUpload: null,
+    excelUploadModal: null,
+    onGridInit: function (s) {
+        productsModel.grid = s.component;
+        globals.devexpress.setGridFullHeight(s.component, s.element[0]);
     },
-    GetDetailsButtonColumnCellHtml: function (Element, CellInfo) {
-        Element.append('<a href=\'' + CellInfo.data.UrlProductsProperties + '\'><i class=\'fas fa-info-circle\'></i></a>')
+    getDetailsButtonColumnCellHtml: function (element, cellInfo) {
+        element.append('<a href=\'' + cellInfo.data.UrlProductsProperties + '\'><i class=\'fas fa-info-circle\'></i></a>')
     }
 };
 
 $(function () {
-    $('.js-add-new-button').click(function () {
-        ProductsModel.Grid.addRow();
+    productsModel.excelUploadModal = components63Bits.modal.create('.js-upload-excel-file-modal');
+
+    $(globals.selectors.buttonAddNew).click(function () {
+        productsModel.grid.addRow();
     });
 
     $('.js-upload-excel-button').click(function () {
-        $('.js-custom-file-upload .js-clear-button').trigger('click');
+        $('.js-custom-file-upload-clear-button').trigger('click');
         $('.js-excel-errors').empty();
-        $('.js-upload-excel-file-modal').modal({ show: true, backdrop: 'static' });
+        productsModel.excelUploadModal.show();        
     });
     
     $('.js-upload-excel-file-button').click(function () {        
-        const HasExcelFile = $('.js-excel-file-input').val().length;
-        if (HasExcelFile) {
+        const hasExcelFile = $('.js-excel-file-input').val().length;
+        if (hasExcelFile) {
             preloader.show();
 
-            Utilities.GetBase64FromInputFilePromise('.js-excel-file-input').then(function (Result) {
+            utilities.getBase64FromInputFilePromise('.js-excel-file-input').then(function (result) {
                 $.ajax({
                     method: 'POST',
-                    url: ProductsModel.UrlExcelUpload,
-                    data: { ExcelFileBytes: Result.FileBase64, ExcelFilename: Result.Filename },
+                    url: productsModel.urlExcelUpload,
+                    data: { ExcelFileBytes: result.fileBase64, ExcelFilename: result.filename },
                     dataType: 'json',
                     beforeSend: function () {
                         $('.js-excel-errors').empty();
                     },
                     success: function (res) {                        
                         if (res.IsSuccess) {
-                            ProductsModel.Grid.refresh();
+                            productsModel.grid.refresh();
                             $('.js-upload-excel-file-modal').modal('hide');
                         }
                         else {
                             if (res.Data && res.Data.HasExcelErrors) {
-                                const ErrorsHtml = Validation.Templates.ErrorsListTemplate(res.Data.ExcelErrors);
+                                const ErrorsHtml = validation.templates.errorsListTemplate(res.Data.ExcelErrors);
                                 $('.js-excel-errors').html(ErrorsHtml);
                             }
                             else {
-                                Components63Bits.Dialog.Error(res.Data);
+                                components63Bits.dialog.error(res.Data);
                             }
                         }
                     },
                     error: function () {
-                        Components63Bits.Dialog.Error();
+                        components63Bits.dialog.error();
                     },
                     complete: function () {
                         preloader.hide();
-                        $('.js-custom-file-upload .js-clear-button').trigger('click');
+                        $('.js-custom-file-upload-clear-button').trigger('click');
                     }
                 });
 
-            }).catch(function () {
+            }).catch(function (e) {
+                alert(e)
                 preloader.hide();
-                Components63Bits.Dialog.Error();
+                components63Bits.dialog.error();
             });
         }
         else {
-            $('.js-excel-file-input').closest('.form-group').Shake();
+            $('.js-excel-file-input').closest('.form-group').shakeElement();
         }
     }); 
 });

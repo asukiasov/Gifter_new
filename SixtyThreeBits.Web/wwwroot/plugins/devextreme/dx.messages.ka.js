@@ -170,7 +170,7 @@
             "dxDataGrid-filterPanelFilterEnabledHint": "Enable the filter",
             "dxTreeList-ariaTreeList": "Tree list",
             "dxTreeList-editingAddRowToNode": "Add",
-            "dxPager-infoText": "Page {0} of {1} ({2} items)",
+            "dxPager-infoText": "გვერდი {0} - {1} დან (სულ {2} ჩანაწერი)",
             "dxPager-pagesCountText": "of",
             "dxPivotGrid-grandTotal": "Grand Total",
             "dxPivotGrid-total": "{0} Total",

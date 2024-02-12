@@ -3,15 +3,19 @@ using DevExtreme.AspNet.Mvc.Builders;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using SixtyThreeBits.Core.Modules;
+using SixtyThreeBits.Core.Infrastructure.DTO;
+using SixtyThreeBits.Core.Infrastructure.Libraries;
+using SixtyThreeBits.Core.Infrastructure.Repositories;
+using SixtyThreeBits.Core.Infrastructure.Utilities;
 using SixtyThreeBits.Core.Properties;
-using SixtyThreeBits.Core.Services;
-using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries;
-using SixtyThreeBits.Web.Reusables.Core;
+using SixtyThreeBits.Web.Domain;
+using SixtyThreeBits.Web.Domain.Libraries;
+using SixtyThreeBits.Web.Domain.SharedViewModels;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static SixtyThreeBits.Core.Infrastructure.Utilities.Constants;
 
 namespace SixtyThreeBits.Web.Admin.Models
 {
@@ -20,71 +24,76 @@ namespace SixtyThreeBits.Web.Admin.Models
         #region Methods
         public async Task<PageViewModel> GetPageViewModel()
         {
-            var ViewModel = new PageViewModel();
-            ViewModel.Grid = new PageViewModel.GridModel();
-            ViewModel.Grid.UrlLoad = Url.RouteUrl(ControllerActionRouteNames.Admin.TeamMembers.TeamMembersGrid);
-            ViewModel.Grid.UrlAddNew = Url.RouteUrl(ControllerActionRouteNames.Admin.TeamMembers.TeamMembersGridAdd);
-            ViewModel.Grid.UrlUpdate = Url.RouteUrl(ControllerActionRouteNames.Admin.TeamMembers.TeamMembersGridUpdate);
-            ViewModel.Grid.UrlDelete = Url.RouteUrl(ControllerActionRouteNames.Admin.TeamMembers.TeamMembersGridDelete);
-            ViewModel.Grid.AllowAdd = User.HasPermission(ControllerActionRouteNames.Admin.TeamMembers.TeamMembersGridAdd);
-            ViewModel.Grid.AllowUpdate = User.HasPermission(ControllerActionRouteNames.Admin.TeamMembers.TeamMembersGridUpdate);
-            ViewModel.Grid.AllowDelete = User.HasPermission(ControllerActionRouteNames.Admin.TeamMembers.TeamMembersGridDelete);
-            ViewModel.Grid.TeamMemberCategories = await DataAccessFactory.Dictionaries.ListDictionariesAsSimpleKeyValue(Enums.DictionaryCodes.TeamMemberCategories);
-            ViewModel.UrlSync = Url.RouteUrl(ControllerActionRouteNames.Admin.TeamMembers.TeamMembersSyncSortIndexes);
-            return ViewModel;
+            var viewModel = new PageViewModel();
+
+            viewModel.ShowAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.TeamMembers.TeamMembersGridAdd);
+            viewModel.Grid = new PageViewModel.GridModel();
+            viewModel.Grid.UrlLoad = Url.RouteUrl(ControllerActionRouteNames.Admin.TeamMembers.TeamMembersGrid);
+            viewModel.Grid.UrlAddNew = Url.RouteUrl(ControllerActionRouteNames.Admin.TeamMembers.TeamMembersGridAdd);
+            viewModel.Grid.UrlUpdate = Url.RouteUrl(ControllerActionRouteNames.Admin.TeamMembers.TeamMembersGridUpdate);
+            viewModel.Grid.UrlDelete = Url.RouteUrl(ControllerActionRouteNames.Admin.TeamMembers.TeamMembersGridDelete);
+            viewModel.Grid.AllowAdd = User.HasPermission(ControllerActionRouteNames.Admin.TeamMembers.TeamMembersGridAdd);
+            viewModel.Grid.AllowUpdate = User.HasPermission(ControllerActionRouteNames.Admin.TeamMembers.TeamMembersGridUpdate);
+            viewModel.Grid.AllowDelete = User.HasPermission(ControllerActionRouteNames.Admin.TeamMembers.TeamMembersGridDelete);
+
+            var repository = RepositoriesFactory.GetDictionariesRepository();
+            viewModel.Grid.TeamMemberCategories = await repository.DictionariesListAsKeyValueTuple(Enums.DictionaryCodes.TeamMemberCategories);
+            viewModel.UrlSync = Url.RouteUrl(ControllerActionRouteNames.Admin.TeamMembers.TeamMembersGridSort);
+
+            return viewModel;
         }
 
         public async Task<List<PageViewModel.GridModel.GridItem>> GetGridViewModel()
         {
-            var TeamMembers = (await DataAccessFactory.TeamMembers.ListTeamMembers())
-            ?.Select(Item => new PageViewModel.GridModel.GridItem
+            var repository = RepositoriesFactory.GetTeamMembersRepository();
+            var viewModel = (await repository.TeamMembersList())?.Select(item => new PageViewModel.GridModel.GridItem
             {
-                TeamMemberID = Item.TeamMemberID,
-                TeamMemberFirstname = Item.TeamMemberFirstname,
-                TeamMemberLastname = Item.TeamMemberLastname,
-                TeamMemberPosition = Item.TeamMemberPosition,
-                TeamMemberIsPublished = Item.TeamMemberIsPublished,
-                TeamMemberCategoryID = Item.TeamMemberCategoryID,
-                TeamMemberSortIndex = Item.TeamMemberSortIndex,
-                UrlTeamMemberProperties = Url.RouteUrl(ControllerActionRouteNames.Admin.TeamMembers.TeamMember.Properties, new { TeamMemberID = Item.TeamMemberID })
-            }).OrderBy(Item=> Item.TeamMemberSortIndex).ToList();
+                TeamMemberID = item.TeamMemberID,
+                TeamMemberFirstname = item.TeamMemberFirstname,
+                TeamMemberLastname = item.TeamMemberLastname,
+                TeamMemberPosition = item.TeamMemberPosition,
+                TeamMemberIsPublished = item.TeamMemberIsPublished,
+                TeamMemberCategoryID = item.TeamMemberCategoryID,
+                TeamMemberSortIndex = item.TeamMemberSortIndex,
+                UrlTeamMemberProperties = Url.RouteUrl(ControllerActionRouteNames.Admin.TeamMembers.TeamMember.Properties, new { teamMemberID = item.TeamMemberID })
+            }).OrderBy(item => item.TeamMemberSortIndex).ToList();
 
-            return TeamMembers;
+            return viewModel;
         }
 
-        public async Task CRUD(Enums.DatabaseActions DatabaseAction, int? TeamMemberID, PageViewModel.GridModel.GridItem SubmitModel)
+        public async Task CRUD(Enums.DatabaseActions databaseAction, int? teamMemberID, PageViewModel.GridModel.GridItem submitModel)
         {
-            if (DatabaseAction == Enums.DatabaseActions.DELETE)
-            {
-                var DBItem = await DataAccessFactory.TeamMembers.GetSingleTeamMemberID(TeamMemberID);
-                if (DBItem != null)
-                {
-                    Utilities.DeleteUploadedFile(DBItem.TeamMemberImageFilename);
-                }
+            var repository = RepositoriesFactory.GetTeamMembersRepository();
+
+            if (databaseAction == Enums.DatabaseActions.DELETE)
+            {                
+                var dbItem = await repository.TeamMembersGetSingleByID(teamMemberID);
+                await DeleteUploadedFile(dbItem.TeamMemberImageFilename, folderPath: null);
             }
-            await DataAccessFactory.TeamMembers.TeamMembersIUD(
-                DatabaseAction: DatabaseAction,
-                TeamMemberID: TeamMemberID,
-                TeamMemberFirstname: SubmitModel.TeamMemberFirstname,
-                TeamMemberLastName: SubmitModel.TeamMemberLastname,
-                TeamMemberPosition: SubmitModel.TeamMemberPosition,
-                TeamMemberIsPublished: SubmitModel.TeamMemberIsPublished,
-                TeamMemberCategoryID: SubmitModel.TeamMemberCategoryID
+
+            await repository.TeamMembersIUD(
+                databaseAction: databaseAction,
+                teamMemberID: teamMemberID,
+                teamMemberFirstname: submitModel.TeamMemberFirstname,
+                teamMemberLastName: submitModel.TeamMemberLastname,
+                teamMemberPosition: submitModel.TeamMemberPosition,
+                teamMemberIsPublished: submitModel.TeamMemberIsPublished,
+                teamMemberCategoryID: submitModel.TeamMemberCategoryID
             );
 
-            if (DataAccessFactory.TeamMembers.IsError)
+            if (repository.IsError)
             {
                 Form.AddError(Resources.TextError);
             }
         }
 
-        public async Task<AjaxResponse> TeamMembersSyncSortIndexes(SyncSortIndexesModel SubmitModel)
-        {
-            var AR = new AjaxResponse();
-            await DataAccessFactory.TeamMembers.TeamMembersSyncSortIndexes(SubmitModel.SortIndexes);
-
-            AR.IsSuccess = !DataAccessFactory.TeamMembers.IsError;
-            return AR;
+        public async Task<AjaxResponse> TeamMembersSyncSortIndexes(SyncSortIndexesSubmitModel submitModel)
+        {            
+            var viewModel = new AjaxResponse();
+            var repository = RepositoriesFactory.GetTeamMembersRepository();
+            await repository.TeamMembersSyncSortIndexes(submitModel.SortIndexes);
+            viewModel.IsSuccess = !repository.IsError;
+            return viewModel;
         }
 
         #endregion
@@ -93,6 +102,7 @@ namespace SixtyThreeBits.Web.Admin.Models
         public class PageViewModel
         {
             #region Properties
+            public bool ShowAddNewButton { get; set; }
             public GridModel Grid { get; set; }
             public string UrlSync { get; set; }
             #endregion
@@ -101,13 +111,13 @@ namespace SixtyThreeBits.Web.Admin.Models
             public class GridModel : DevExtremeGridViewModelBase, IDevExtremeGridModel<GridModel.GridItem>
             {
                 #region Properties
-                public List<SimpleKeyValue<int?, string>> TeamMemberCategories { get; set; }
+                public List<KeyValueTuple<int?, string>> TeamMemberCategories { get; set; }
                 #endregion
 
                 #region Methods
                 public DataGridBuilder<GridItem> Render(IHtmlHelper Html)
                 {
-                    var Grid = GetGridWithStartupValues<GridItem>(Html: Html, KeyFieldName: nameof(GridItem.TeamMemberID));
+                    var Grid = GetGridWithStartupValues<GridItem>(html: Html, keyFieldName: nameof(GridItem.TeamMemberID));
 
                     Grid
                    .Sorting(sorting => sorting.Mode(GridSortingMode.None))
@@ -117,7 +127,7 @@ namespace SixtyThreeBits.Web.Admin.Models
                    })
                    .RowDragging(rd => rd
                         .AllowReordering(true)
-                        .OnReorder("TeamMembersModel.OnGridReorder")
+                        .OnReorder("teamMembersModel.onGridReorder")
                         .DropFeedbackMode(DropFeedbackMode.Push)
                         .ShowDragIcons(true)
                     )
@@ -130,21 +140,21 @@ namespace SixtyThreeBits.Web.Admin.Models
                    {
                        Options.Visible(false);
                    })
-                   .OnInitialized("TeamMembersModel.OnGridInit")                   
+                   .OnInitialized("teamMembersModel.onGridInit")                   
                    .Columns(Columns =>
                    {
                        Columns.Add().Width(30).Caption(" ").InitDetailsUrlCellTemplate(nameof(GridItem.UrlTeamMemberProperties));
-                       Columns.AddFor(m => m.TeamMemberFirstname).Caption("სახელი").Width(150).ValidationRules(Options =>
+                       Columns.AddFor(m => m.TeamMemberFirstname).Caption(Resources.TextFirstname).Width(150).ValidationRules(Options =>
                        {
                            Options.AddRequired();
                        });
-                       Columns.AddFor(m => m.TeamMemberLastname).Caption("გვარი").Width(150).ValidationRules(Options =>
+                       Columns.AddFor(m => m.TeamMemberLastname).Caption(Resources.TextLastname).Width(150).ValidationRules(Options =>
                        {
                            Options.AddRequired();
                        });
-                       Columns.AddFor(m => m.TeamMemberPosition).Caption("პოზიცია").Width(150);
-                       Columns.AddFor(m => m.TeamMemberCategoryID).Caption("კატეგორია").Width(150).InitLookupColumn(Data: TeamMemberCategories, AllowNull: true);
-                       Columns.AddFor(m => m.TeamMemberIsPublished).Caption("გამოქვეყნებული").DataType(GridColumnDataType.Boolean).Width(130).InitCheckboxColumn();
+                       Columns.AddFor(m => m.TeamMemberPosition).Caption(Resources.TextPosition).Width(150);
+                       Columns.AddFor(m => m.TeamMemberCategoryID).Caption(Resources.TextCategory).Width(150).InitLookupColumn(data: TeamMemberCategories, allowNull: true);
+                       Columns.AddFor(m => m.TeamMemberIsPublished).Caption(Resources.TextPublished).DataType(GridColumnDataType.Boolean).Width(130).InitCheckboxColumn();
                        Columns.Add();
                    });
 
@@ -176,7 +186,7 @@ namespace SixtyThreeBits.Web.Admin.Models
     public class TeamMembersModelBase : WebProjectModelBase
     {
         #region Properties        
-        public TeamMember DBItemTeamMember { get; set; }
+        public TeamMemberDTO DBItem { get; set; }
         #endregion
     }
 
@@ -184,89 +194,85 @@ namespace SixtyThreeBits.Web.Admin.Models
     {
         #region Methods
 
-        public void ValidateTeamMemberPropertiesViewModel(TeamMembersPropertiesViewModel ViewModel)
+        public void ValidatePageViewModel(PageViewModel viewModel)
         {
-            ViewModel.Errors = new List<SimpleKeyValue<string, string>>
-            {
-                Validation.ValidateRequired(ErrorKey: Validation.GetJQueryNameSelectorFor(nameof(ViewModel.TeamMemberFirstname)), ValueToValidate:ViewModel.TeamMemberFirstname),
-                Validation.ValidateRequired(ErrorKey: Validation.GetJQueryNameSelectorFor(nameof(ViewModel.TeamMemberLastname)), ValueToValidate:ViewModel.TeamMemberLastname),
-            };
-            ViewModel.Errors.RemoveAll(Item => Item == null);
+            viewModel.AddError(Validation.ValidateRequired(errorKey: Validation.GetJQueryNameSelectorFor(nameof(viewModel.TeamMemberFirstname)), valueToValidate: viewModel.TeamMemberFirstname));
+            viewModel.AddError(Validation.ValidateRequired(errorKey: Validation.GetJQueryNameSelectorFor(nameof(viewModel.TeamMemberLastname)), valueToValidate: viewModel.TeamMemberLastname));            
         }
 
-        public async Task<TeamMembersPropertiesViewModel> GetTeamMembersPropertiesViewModel(TeamMembersPropertiesViewModel ViewModel)
-        {
-            if (ViewModel == null)
+        public async Task<PageViewModel> GetTeamMembersPropertiesViewModel(PageViewModel viewModel)
+        {            
+            if (viewModel == null)
             {
-                ViewModel = new TeamMembersPropertiesViewModel();
-                ViewModel.TeamMemberFirstname = DBItemTeamMember.TeamMemberFirstname;
-                ViewModel.TeamMemberLastname = DBItemTeamMember.TeamMemberLastname;
-                ViewModel.TeamMemberPosition = DBItemTeamMember.TeamMemberPosition;
-                ViewModel.TeamMemberShortDescription = DBItemTeamMember.TeamMemberShortDescription;
-                ViewModel.TeamMemberLongDescription = DBItemTeamMember.TeamMemberLongDescription;
-                ViewModel.TeamMemberIsPublished = DBItemTeamMember.TeamMemberIsPublished;
-                ViewModel.TeamMemberCategoryID = DBItemTeamMember.TeamMemberCategoryID;
+                viewModel = new PageViewModel();
+                viewModel.TeamMemberFirstname = DBItem.TeamMemberFirstname;
+                viewModel.TeamMemberLastname = DBItem.TeamMemberLastname;
+                viewModel.TeamMemberPosition = DBItem.TeamMemberPosition;
+                viewModel.TeamMemberShortDescription = DBItem.TeamMemberShortDescription;
+                viewModel.TeamMemberLongDescription = DBItem.TeamMemberLongDescription;
+                viewModel.TeamMemberIsPublished = DBItem.TeamMemberIsPublished;
+                viewModel.TeamMemberCategoryID = DBItem.TeamMemberCategoryID;
             }
-            ViewModel.TeamMemberCategories = await DataAccessFactory.Dictionaries.ListDictionariesAsSimpleKeyValue(DictionaryCode: Enums.DictionaryCodes.TeamMemberCategories, SelectedValue: ViewModel.TeamMemberCategoryID);
-            ViewModel.TeamMemberImageFilename = DBItemTeamMember.TeamMemberImageFilename;
-            ViewModel.TeamMemberImageHttpPath = Utilities.GetUploadedFileHttpPath(DBItemTeamMember.TeamMemberImageFilename);
-            ViewModel.UrlDeleteImage = Url.RouteUrl(ControllerActionRouteNames.Admin.TeamMembers.TeamMember.TeamMembersItemDeleteImage, new { TeamMemberID = DBItemTeamMember.TeamMemberID });
-            return ViewModel;
+
+            var repository = RepositoriesFactory.GetDictionariesRepository();
+            viewModel.TeamMemberCategories = await repository.DictionariesListAsKeyValueSelectedTuple(dictionaryCode: Enums.DictionaryCodes.TeamMemberCategories, selectedValue: viewModel.TeamMemberCategoryID);
+            viewModel.TeamMemberImageFilename = DBItem.TeamMemberImageFilename;
+            viewModel.TeamMemberImageHttpPath = FileStorage.GetUploadedFileHttpPath(DBItem.TeamMemberImageFilename);
+            viewModel.UrlDeleteImage = Url.RouteUrl(ControllerActionRouteNames.Admin.TeamMembers.TeamMember.PropertiesDeleteImage, new { teamMemberID = DBItem.TeamMemberID });
+            return viewModel;
         }
 
-        public async Task SaveTeamMemberProperties(TeamMembersPropertiesViewModel ViewModel)
-        {
-            var HasTeamMemberImage = ViewModel.TeamMemberImageFile?.Length > 0;
-            var TeamMemberImageFilename = HasTeamMemberImage ? GetFilenameFromUploadedFile(ViewModel.TeamMemberImageFile) : null;
-            if (HasTeamMemberImage)
+        public async Task SaveTeamMemberProperties(PageViewModel viewModel)
+        {            
+            var hasTeamMemberImage = viewModel.TeamMemberImageFile?.Length > 0;
+            var teamMemberImageFilename = hasTeamMemberImage ? GetFilenameFromUploadedFile(viewModel.TeamMemberImageFile) : null;
+            if (hasTeamMemberImage)
             {
-                Utilities.DeleteUploadedFile(DBItemTeamMember.TeamMemberImageFilename);
+                await DeleteUploadedFile(DBItem.TeamMemberImageFilename, folderPath: null);
             }
 
-            await DataAccessFactory.TeamMembers.TeamMembersIUD(
-                DatabaseAction: Enums.DatabaseActions.UPDATE,
-                TeamMemberID: DBItemTeamMember.TeamMemberID,
-                TeamMemberFirstname: ViewModel.TeamMemberFirstname,
-                TeamMemberLastName: ViewModel.TeamMemberLastname,
-                TeamMemberPosition: ViewModel.TeamMemberPosition ?? Constants.NullValueFor.String,
-                TeamMemberShortDescription: ViewModel.TeamMemberShortDescription ?? Constants.NullValueFor.String,
-                TeamMemberLongDescription: ViewModel.TeamMemberLongDescription ?? Constants.NullValueFor.String,
-                TeamMemberImageFilename: TeamMemberImageFilename,
-                TeamMemberIsPublished: ViewModel.TeamMemberIsPublished,
-                TeamMemberCategoryID: ViewModel.TeamMemberCategoryID
+            var repository = RepositoriesFactory.GetTeamMembersRepository();
+            await repository.TeamMembersIUD(
+                databaseAction: Enums.DatabaseActions.UPDATE,
+                teamMemberID: DBItem.TeamMemberID,
+                teamMemberFirstname: viewModel.TeamMemberFirstname,
+                teamMemberLastName: viewModel.TeamMemberLastname,
+                teamMemberPosition: viewModel.TeamMemberPosition ?? Constants.NullValueFor.String,
+                teamMemberShortDescription: viewModel.TeamMemberShortDescription ?? Constants.NullValueFor.String,
+                teamMemberLongDescription: viewModel.TeamMemberLongDescription ?? Constants.NullValueFor.String,
+                teamMemberImageFilename: teamMemberImageFilename,
+                teamMemberIsPublished: viewModel.TeamMemberIsPublished,
+                teamMemberCategoryID: viewModel.TeamMemberCategoryID
             );
 
-            if (!DataAccessFactory.TeamMembers.IsError)
+            if (!repository.IsError)
             {
-                ViewModel.IsSaved = true;
-                if (HasTeamMemberImage)
+                viewModel.IsSaved = true;
+                if (hasTeamMemberImage)
                 {
-                    await SaveUploadedFile(PostedFile: ViewModel.TeamMemberImageFile, Filename: TeamMemberImageFilename);
+                    await SaveUploadedFile(viewModel.TeamMemberImageFile, teamMemberImageFilename, folderPath: null);
                 }
             }
         }
 
-        public async Task<AjaxResponse> DeleteImage(int? TeamMemberID)
+        public async Task<AjaxResponse> DeleteImage()
         {
-            var TeamMemberProperties = await DataAccessFactory.TeamMembers.GetSingleTeamMemberID(TeamMemberID);
-            Utilities.DeleteUploadedFile(TeamMemberProperties.TeamMemberImageFilename);
-
-            var AR = new AjaxResponse();
-            await DataAccessFactory.TeamMembers.TeamMembersIUD(
-                DatabaseAction: Enums.DatabaseActions.UPDATE,
-                TeamMemberID: TeamMemberID,
-                TeamMemberImageFilename: Constants.NullValueFor.String
+            var viewModel = new AjaxResponse();
+            await DeleteUploadedFile(DBItem.TeamMemberImageFilename, folderPath: null);
+            var repository = RepositoriesFactory.GetTeamMembersRepository();
+            await repository.TeamMembersIUD(
+                databaseAction: Enums.DatabaseActions.UPDATE,
+                teamMemberID: DBItem.TeamMemberID,
+                teamMemberImageFilename: Constants.NullValueFor.String
             );
-
-            AR.IsSuccess = !DataAccessFactory.TeamMembers.IsError;
-
-            return AR;
+            viewModel.IsSuccess = !repository.IsError;
+            return viewModel;
         }
 
         #endregion
 
         #region Nested Classes
-        public class TeamMembersPropertiesViewModel : FormViewModelBase
+        public class PageViewModel : FormViewModelBase
         {
             #region Properties             
             public string TeamMemberFirstname { get; set; }
@@ -278,12 +284,22 @@ namespace SixtyThreeBits.Web.Admin.Models
             public bool TeamMemberIsPublished { get; set; }
             public int TeamMemberCategoryID { get; set; }
             public bool HasTeamMemberCategories => TeamMemberCategories?.Count > 0;
-            public List<SimpleKeyValue<int?, string>> TeamMemberCategories { get; set; }
+            public List<KeyValueSelectedTuple<int?, string>> TeamMemberCategories { get; set; }
             public string TeamMemberImageHttpPath { get; set; }
             public bool HasTeamMemberImage => !string.IsNullOrWhiteSpace(TeamMemberImageFilename);
             public string UrlDeleteImage { get; set; }
-            public readonly string TextConfirmDelete = Resources.TextConfirmDelete;
             public IFormFile TeamMemberImageFile { get; set; }
+
+            public readonly int NullValueForInt = Constants.NullValueFor.Int;
+
+            public readonly string TextPublished = Resources.TextPublished;
+            public readonly string TextFirstname = Resources.TextFirstname;
+            public readonly string TextLastname = Resources.TextLastname;
+            public readonly string TextPosition = Resources.TextPosition;
+            public readonly string TextCategory = Resources.TextCategory;
+            public readonly string TextUploadImage = Resources.TextUploadImage;
+            public readonly string TextDescriptionShort = Resources.TextDescriptionShort;
+            public readonly string TextDescription = Resources.TextDescription;            
             #endregion
         }
         #endregion

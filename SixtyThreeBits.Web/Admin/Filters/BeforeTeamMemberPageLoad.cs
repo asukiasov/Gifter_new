@@ -1,34 +1,48 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
-using SixtyThreeBits.Core.Utilities;
-using SixtyThreeBits.Libraries;
+using SixtyThreeBits.Core.Infrastructure.Utilities;
+using SixtyThreeBits.Libraries.Extensions;
 using SixtyThreeBits.Web.Admin.Models;
-using SixtyThreeBits.Web.Reusables.Core;
+using SixtyThreeBits.Web.Domain;
 using System.Threading.Tasks;
 
 namespace SixtyThreeBits.Web.Admin.Filters
 {
     public class BeforeTeamMemberPageLoad : IAsyncActionFilter
     {
-        #region Constructors
-        public BeforeTeamMemberPageLoad()
-        {
-        }
+        #region Properties
+        TeamMembersModelBase _model;
         #endregion
 
-        public async Task OnActionExecutionAsync(ActionExecutingContext FilterContext, ActionExecutionDelegate next)
+        #region Methods
+        public async Task OnActionExecutionAsync(ActionExecutingContext filterContext, ActionExecutionDelegate next)
         {
-            var Model = LocalUtilities.GetModelFromController<TeamMembersModelBase>(FilterContext.Controller);
-            var TeamMemberID = FilterContext.RouteData.Values[Constants.RouteValues.TeamMemberID].ToString().ToInt();
+            _model = LocalUtilities.GetModelFromController<TeamMembersModelBase>(filterContext.Controller);
+            var teamMemberID = filterContext.RouteData.Values[Constants.RouteValues.TeamMemberID]?.ToString().ToInt();
 
-            Model.DBItemTeamMember = await Model.DataAccessFactory.TeamMembers.GetSingleTeamMemberID(TeamMemberID);
-            if (Model.DBItemTeamMember == null)
+            var repository = _model.RepositoriesFactory.GetTeamMembersRepository();
+            _model.DBItem = await repository.TeamMembersGetSingleByID(teamMemberID);
+            if (_model.DBItem == null)
             {
-                FilterContext.Result = Model.GetNotFoundAdminViewResult();
+                filterContext.Result = _model.GetNotFoundAdminViewResult();
             }
             else
             {
+                initPageTitle();
+                reinitBreadCrumbs();
                 await next();
             }
         }
+
+        void initPageTitle()
+        {
+            _model.PageTitle.Set(_model.DBItem.TeamMemberFullname);
+        }
+
+        void reinitBreadCrumbs()
+        {
+            _model.Breadcrumbs.RemoveAt(2);
+            _model.Breadcrumbs.RenameLastItem(_model.DBItem.TeamMemberFullname);
+        } 
+        #endregion
     }
 }

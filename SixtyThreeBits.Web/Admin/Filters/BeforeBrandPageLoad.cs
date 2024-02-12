@@ -1,45 +1,48 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
-using SixtyThreeBits.Core.Utilities;
-using SixtyThreeBits.Libraries;
+using SixtyThreeBits.Core.Infrastructure.Utilities;
+using SixtyThreeBits.Libraries.Extensions;
 using SixtyThreeBits.Web.Admin.Models;
-using SixtyThreeBits.Web.Reusables.Core;
+using SixtyThreeBits.Web.Domain;
 using System.Threading.Tasks;
 
 namespace SixtyThreeBits.Web.Admin.Filters
 {
     public class BeforeBrandPageLoad: IAsyncActionFilter
     {
-        public BeforeBrandPageLoad()
-        {           
-        }
+        #region Properties
+        BrandsModelBase _model;
+        #endregion
 
-        public async Task OnActionExecutionAsync(ActionExecutingContext FilterContext, ActionExecutionDelegate next)
+        #region Methods
+        public async Task OnActionExecutionAsync(ActionExecutingContext filterContext, ActionExecutionDelegate next)
         {
-            var Model = LocalUtilities.GetModelFromController<BrandsModelBase>(FilterContext.Controller);
-            var BrandID = FilterContext.RouteData.Values[Constants.RouteValues.BrandID].ToString().ToInt();
+            _model = LocalUtilities.GetModelFromController<BrandsModelBase>(filterContext.Controller);
+            var brandID = filterContext.RouteData.Values[Constants.RouteValues.BrandID]?.ToString().ToInt();
 
-            Model.DBItemBrands = await Model.DataAccessFactory.Brands.GetSingleBrandByID(BrandID);
-            if (Model.DBItemBrands == null)
+            var repository = _model.RepositoriesFactory.GetBrandsRepository();
+            _model.DBItem = await repository.BrandsGetSingleByID(brandID);
+            if (_model.DBItem == null)
             {
-                FilterContext.Result = Model.GetNotFoundAdminViewResult();
+                filterContext.Result = _model.GetNotFoundAdminViewResult();
             }
             else
             {
-                InitPageTitle(Model);
-                ReinitBreadCrumbs(Model);                
+                initPageTitle();
+                reinitBreadCrumbs();
                 await next();
             }
         }
 
-        void InitPageTitle(BrandsModelBase Model)
+        void initPageTitle()
         {
-            Model.PageTitle.Set(Model.DBItemBrands.BrandName);
+            _model.PageTitle.Set(_model.DBItem.BrandName);
         }
 
-        void ReinitBreadCrumbs(BrandsModelBase Model)
+        void reinitBreadCrumbs()
         {
-            Model.Breadcrumbs.DeleteLastItem();
-            Model.Breadcrumbs.RenameLastItem(Model.DBItemBrands.BrandName);
-        }
+            _model.Breadcrumbs.DeleteLastItem();
+            _model.Breadcrumbs.RenameLastItem(_model.DBItem.BrandName);
+        } 
+        #endregion
     }
 }

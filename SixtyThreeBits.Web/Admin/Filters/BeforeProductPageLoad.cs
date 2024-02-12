@@ -1,46 +1,48 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
-using SixtyThreeBits.Core.Utilities;
-using SixtyThreeBits.Libraries;
+using SixtyThreeBits.Core.Infrastructure.Utilities;
+using SixtyThreeBits.Libraries.Extensions;
 using SixtyThreeBits.Web.Admin.Models;
-using SixtyThreeBits.Web.Reusables.Core;
+using SixtyThreeBits.Web.Domain;
 using System.Threading.Tasks;
 
 namespace SixtyThreeBits.Web.Admin.Filters
 {
     public class BeforeProductPageLoad : IAsyncActionFilter
-    {        
+    {
+        #region Properties
+        ProductsModelBase _model;
+        #endregion
 
-        public BeforeProductPageLoad()
-        {            
-        }
-        
-        public async Task OnActionExecutionAsync(ActionExecutingContext FilterContext, ActionExecutionDelegate next)
+        #region Methods
+        public async Task OnActionExecutionAsync(ActionExecutingContext filterContext, ActionExecutionDelegate next)
         {
-            var Model = LocalUtilities.GetModelFromController<ProductsModelBase>(FilterContext.Controller);
-            var ProductID = FilterContext.RouteData.Values[Constants.RouteValues.ProductID].ToString().ToInt();
+            _model = LocalUtilities.GetModelFromController<ProductsModelBase>(filterContext.Controller);
+            var productID = filterContext.RouteData.Values[Constants.RouteValues.ProductID]?.ToString().ToInt();
 
-            Model.DBItemProduct = await Model.DataAccessFactory.Products.ProductsGetSingleByID(ProductID);
-            if (Model.DBItemProduct == null)
+            var repository = _model.RepositoriesFactory.GetProductsRepository();
+            _model.DBItem = await repository.ProductsGetSingleByID(productID);
+            if (_model.DBItem == null)
             {
-                FilterContext.Result = Model.GetNotFoundAdminViewResult();
+                filterContext.Result = _model.GetNotFoundAdminViewResult();
             }
             else
             {
-                InitPageTitle(Model);
-                ReinitBreadCrumbs(Model);
+                initPageTitle();
+                reinitBreadCrumbs();
                 await next();
-            }            
+            }
         }
 
-        void InitPageTitle(ProductsModelBase Model)
+        void initPageTitle()
         {
-            Model.PageTitle.Set(Model.DBItemProduct.ProductName);
+            _model.PageTitle.Set(_model.DBItem.ProductName);
         }
 
-        void ReinitBreadCrumbs(ProductsModelBase Model)
+        void reinitBreadCrumbs()
         {
-            Model.Breadcrumbs.RemoveAt(2);
-            Model.Breadcrumbs.RenameLastItem(Model.DBItemProduct.ProductName);
-        }
+            _model.Breadcrumbs.RemoveAt(2);
+            _model.Breadcrumbs.RenameLastItem(_model.DBItem.ProductName);
+        } 
+        #endregion
     }
 }

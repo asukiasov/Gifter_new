@@ -1,91 +1,169 @@
 ﻿using DevExtreme.AspNet.Mvc;
 using DevExtreme.AspNet.Mvc.Builders;
-using DevExtreme.AspNet.Mvc.Factories;
-using DevExtreme.AspNet.Mvc.FileManagement;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
+using SixtyThreeBits.Core.Infrastructure.Libraries;
+using SixtyThreeBits.Core.Infrastructure.Libraries.FileStorages;
+using SixtyThreeBits.Core.Infrastructure.Utilities;
 using SixtyThreeBits.Libraries;
-using SixtyThreeBits.Web.Reusables.Core;
+using SixtyThreeBits.Libraries.Extensions;
+using SixtyThreeBits.Web.Domain;
+using SixtyThreeBits.Web.Domain.SharedViewModels;
+using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace SixtyThreeBits.Web.Admin.Models
 {
     public class FileManagerModel : WebProjectModelBase
     {
-        #region Properties
-        public const string FileManagerFolderName = "FileManager";
-        #endregion
-
         #region Methods
-        public PageViewModel GetPageViewModel(string FolderVirtualPathHash, string FolderPhysicalPathHash, bool AllowSelectMultiple, string AllowedExtensions, string OnSelectedFilesChooseClientCallback, string Opener)
+        public PageViewModel GetPageViewModel(string moduleName)
         {
-            var ViewModel = new PageViewModel();
-            ViewModel.PluginClient = new PluginsClient();
-            ViewModel.IsTinyMce = (Opener?.ToLower() == "tinymce").ToString().ToLower();
-            ViewModel.UrlUploadFiles = Url.RouteUrl(ControllerActionRouteNames.Admin.FileManager.FilesUpload, new { FolderVirtualPathHash, FolderPhysicalPathHash, AllowSelectMultiple, AllowedExtensions });
-            ViewModel.OnSelectedFilesChooseClientCallback = OnSelectedFilesChooseClientCallback;
-            ViewModel.FileManager = new PageViewModel.FileManagerPartialViewModel();
+            var viewModel = new PageViewModel();
+            viewModel.PluginClient = new PluginsClient();
 
-            ViewModel.FileManager.FolderVirtualPath = FolderVirtualPathHash.AESDecryptString();
-            ViewModel.FileManager.FolderPhysicalPath = FolderPhysicalPathHash.AESDecryptString();
-            ViewModel.FileManager.AllowedExtensions = AllowedExtensions == null ? new string[0] : AllowedExtensions.Split(',');
-            ViewModel.FileManager.AllowSelectMultiple = AllowSelectMultiple;
-            ViewModel.FileManager.UrlListFiles = Url.RouteUrl(ControllerActionRouteNames.Admin.FileManager.Files, new { FolderVirtualPathHash, FolderPhysicalPathHash, AllowSelectMultiple, AllowedExtensions });
+            var allowedExtensions = Request.Query[Constants.QueryStringKeys.FileManagerAllowedExtensions].ToString();
+            var allowChooseMultiple = Request.Query[Constants.QueryStringKeys.FileManagerAllowChooseMultiple].ToString().ToLower().ToBooleanValue();
+            var onSelectedFilesChooseClientCallback = Request.Query[Constants.QueryStringKeys.FileManagerOnSelectedFilesChooseClientCallback].ToString();
+                        
+            viewModel.UrlGetFiles = Url.RouteUrl(ControllerActionRouteNames.Admin.FileManager.Files, new { moduleName });
+            viewModel.UrlUpload = Url.RouteUrl(ControllerActionRouteNames.Admin.FileManager.Upload, new { moduleName });
+            viewModel.UrlDelete = Url.RouteUrl(ControllerActionRouteNames.Admin.FileManager.Delete, new { moduleName });
+            
+            viewModel.OnSelectedFilesChooseClientCallback = onSelectedFilesChooseClientCallback;
 
-            ViewModel.PluginClient.EnableJQuery(true).EnableDevextreme(true).EnableFontAwesome(true).EnableFancybox(true);
-            return ViewModel;
+            viewModel.FileManager = new PageViewModel.FileManagerPartialViewModel();
+            viewModel.FileManager.ModuleName = moduleName;            
+            viewModel.FileManager.AllowedExtensions = string.IsNullOrWhiteSpace(allowedExtensions) ? new string[0] : allowedExtensions.Split(',');
+            viewModel.FileManager.AllowChooseMultiple = allowChooseMultiple;
+
+
+            return viewModel;
+        }
+        
+        public async Task<AjaxResponse> GetFiles(string moduleName)
+        {
+            var viewModel = new AjaxResponse();
+            var fileStorageModule = FileStorageManager.Modules[moduleName];
+
+            var files = (await FileStorage.GetFiles(folderPath: fileStorageModule.FolderName));
+            var fileManagerItems = files
+            .OrderByDescending(item => item.FileDateCreated)
+            .Select((Item, Index) => new FileManagerItem
+            {
+                Name = Item.Filename,
+                Size = Item.FilesizeBytes,
+                SizeString = Utilities.FormatFileSizeBytes(Item.FilesizeBytes),
+                UrlDownload = FileStorage.GetUploadedFileHttpPath(filename: Item.Filename, folderPath: fileStorageModule.FolderName),
+                UrlThumbnail = GetUrlThumbnail(Item.Filename, fileStorageModule.ThumbnailFolderPath),
+                DateModified = Item.FileDateUpdated,
+                DateModifiedString = Utilities.FormatDateTime(Item.FileDateUpdated),
+                IsLastItem = Index == files.Count - 1
+            }).ToList();
+
+            viewModel.IsSuccess = true;
+            viewModel.Data = fileManagerItems.ToJson();
+
+            return viewModel;
+        }
+        string GetUrlThumbnail(string filename, string thumbnailFolderPath)
+        {
+            string urlThumbnail;
+            var ext = Path.GetExtension(filename);
+            var isImage = ext == ".jpg" || ext == ".jpeg" || ext == ".gif" || ext == ".png";                        
+            if (isImage)
+            {
+                urlThumbnail = FileStorage.GetUploadedFileHttpPath(filename: ThumbnailGenerator.GetThumbnailnameFromFilename(filename), folderPath: thumbnailFolderPath);
+            }
+            else
+            {
+                switch (ext)
+                {
+                    case ".doc":
+                    case ".docx":
+                        {
+                            urlThumbnail = "/images/icons/filemanager/word.svg";
+                            break;
+                        }
+                    case ".xls":
+                    case ".xlsx":
+                        {
+                            urlThumbnail = "/images/icons/filemanager/excel.svg";
+                            break;
+                        }
+                    case ".ppt":
+                    case ".pptx":
+                        {
+                            urlThumbnail = "/images/icons/filemanager/powerpoint.svg";
+                            break;
+                        }
+                    case ".pdf":
+                        {
+                            urlThumbnail = "/images/icons/filemanager/adobe_reader.svg";
+                            break;
+                        }
+                    default:
+                        {
+                            urlThumbnail = "/images/icons/filemanager/file.svg";
+                            break;
+                        }
+                }
+            }
+            return urlThumbnail;
         }
 
-        public object GetFileManagerResult(HttpRequest Request, FileSystemCommand Command, string Arguments, string FolderVirtualPathHash, string FolderPhysicalPathHash, string AllowedExtensions, bool AllowSelectMultiple)
+        public async Task<AjaxResponse> UploadFile(string moduleName)
         {
-            var FileManagerPartialViewModel = new PageViewModel.FileManagerPartialViewModel();
-            FileManagerPartialViewModel.AllowSelectMultiple = AllowSelectMultiple;
-            var FileManagerFolderPhysicalPath = FolderPhysicalPathHash.AESDecryptString();
-            var FileManagerFolderVirtualPath = FolderVirtualPathHash.AESDecryptString();
-            if (!Directory.Exists(FileManagerFolderPhysicalPath))
+            var viewModel = new AjaxResponse();
+            var fileManagerModule = FileStorageManager.Modules[moduleName];
+
+            var postedFile = Request.Form.Files[0];
+            var filename = Request.Form["Filename"].ToString();
+            var chunkIndex = Request.Form["ChunkIndex"].ToString().ToInt();
+            var chunkCount = Request.Form["ChunkCount"].ToString().ToInt();
+
+            var tempFilePath = Path.Combine(AppSettings.WebRootPath, filename);
+            using (var tempFile = File.Open(tempFilePath, FileMode.Append))
             {
-                Directory.CreateDirectory(FileManagerFolderPhysicalPath);
+                await postedFile.CopyToAsync(tempFile);
             }
-            var Config = new FileSystemConfiguration();
-            Config.Request = Request;
 
-            Config.FileSystemProvider = new PhysicalFileSystemProvider(
-                FileManagerFolderPhysicalPath,
-                (FileSystemItem, ClientItem) =>
+            if(chunkIndex == chunkCount - 1)
+            {
+                await FileStorage.SaveUploadedFile(sourceFilePhysicalPath: tempFilePath, filename: filename, folderPath: fileManagerModule.FolderName);
+
+                var tg = new ThumbnailGenerator(tempFilePath);
+                var thumbnailBytes = await tg.GetThumbnail(128, 128);
+                if (thumbnailBytes != null)
                 {
-                    if (!ClientItem.IsDirectory)
-                    {
-                        ClientItem.Thumbnail = $"{WebsiteDomain}{FileManagerFolderVirtualPath}{FileSystemItem.Name}";
-                        ClientItem.CustomFields["url"] = $"{WebsiteDomain}{FileManagerFolderVirtualPath}{FileSystemItem.Name}";
-                        if (Utilities.IsImage(FileSystemItem.Name))
-                        {
-                            ClientItem.CustomFields["thumbnailUrl"] = $"{WebsiteDomain}{FileManagerFolderVirtualPath}{FileSystemItem.Name}?width=100";
-                        }
-                    }
+                    var thumbnailFilename = tg.GetThumbnailFilename();
+                    await FileStorage.SaveUploadedFile(sourceFileBytes: thumbnailBytes, filename: thumbnailFilename, folderPath: fileManagerModule.ThumbnailFolderPath);
                 }
-            );
-            Config.AllowedFileExtensions = AllowedExtensions == null ? new string[0] : AllowedExtensions.Split(',');
 
-            //uncomment the code below to enable file/directory management
-            //Config.AllowCopy = true;
-            //Config.AllowCreate = true;
-            //Config.AllowMove = true;
+                File.Delete(tempFilePath);
+            }
+                                                                                    
+            viewModel.IsSuccess = true;
+            return viewModel;
+        }
 
-            //Config.FileSystemProvider = new PhysicalFileSystemProvider(FileManagerFolderPhysicalPath, ThumbnailGenerator.AssignThumbnailUrl);
+        public async Task<AjaxResponse> DeleteFile(string moduleName,string filename)
+        {
+            var viewModel = new AjaxResponse();
+            var fileManagerModule = FileStorageManager.Modules[moduleName];
 
+            var tg = new ThumbnailGenerator(filename);
+            var thumbnailFilename = tg.GetThumbnailFilename();
 
-            Config.AllowDelete = true;
-            Config.AllowRename = true;
-            Config.AllowUpload = true;
-            Config.AllowDownload = true;
+            await FileStorage.DeleteFile(filename: filename, folderPath: fileManagerModule.FolderName);
+            await FileStorage.DeleteFile(filename: thumbnailFilename, folderPath: fileManagerModule.ThumbnailFolderPath);
 
-            var Processor = new FileSystemCommandProcessor(Config);
-            var Result = Processor.Execute(Command, Arguments);
-
-            return Result.GetClientCommandResult();
+            viewModel.IsSuccess = true;
+            return viewModel;
         }
         #endregion
 
@@ -94,10 +172,11 @@ namespace SixtyThreeBits.Web.Admin.Models
         {
             #region Properties
             public PluginsClient PluginClient { get; set; }
-            public string UrlUploadFiles { get; set; }
+            public string UrlGetFiles { get; set; }
+            public string UrlUpload { get; set; }
+            public string UrlDelete { get; set; }
             public string OnSelectedFilesChooseClientCallback { get; set; }
             public bool HasOnSelectedFilesChooseClientCallback => !string.IsNullOrWhiteSpace(OnSelectedFilesChooseClientCallback);
-            public string IsTinyMce { get; set; }
             public FileManagerPartialViewModel FileManager { get; set; }
             #endregion
 
@@ -105,10 +184,8 @@ namespace SixtyThreeBits.Web.Admin.Models
             public class FileManagerPartialViewModel
             {
                 #region Properties
-                public string UrlListFiles { get; set; }
-                public string FolderVirtualPath { get; set; }
-                public string FolderPhysicalPath { get; set; }
-                public bool AllowSelectMultiple { get; set; }
+                public string ModuleName { get; set; }
+                public bool AllowChooseMultiple { get; set; }
                 public string[] AllowedExtensions { get; set; }
                 #endregion
 
@@ -116,58 +193,106 @@ namespace SixtyThreeBits.Web.Admin.Models
                 public FileManagerBuilder Render(IHtmlHelper Html)
                 {
                     return Html.DevExtreme().FileManager()
-                        .OnInitialized("FileManagerModel.OnInitialized")
-                        .CurrentPath(FolderPhysicalPath)
-                        .Toolbar(Toolbar =>
+                        .OnInitialized("fileManagerModel.onInitialized")                        
+                        .CustomizeThumbnail("fileManagerModel.customizeThumbnail")
+                        .AllowedFileExtensions(AllowedExtensions)
+                        .FileSystemProvider(provider =>
+                            provider.Custom()
+                            .UploadFileChunk("fileManagerModel.uploadFileChunk")
+                            .GetItems("fileManagerModel.getFiles")
+                            .DeleteItem("fileManagerModel.deleteFile")
+                            .DownloadItems("fileManagerModel.downloadFile")
+                        )
+                        .Toolbar(toolbar =>
                         {
-                            Toolbar.Items(Items =>
+                            toolbar.Items(items =>
                             {
-                                Items.Add().Name(FileManagerToolbarItem.Upload);
-                                Items.Add().Name(FileManagerToolbarItem.Refresh);
+                                items.Add().Name(FileManagerToolbarItem.Upload);
+                                items.Add().Name(FileManagerToolbarItem.Refresh);
                             });
 
-                            Toolbar.FileSelectionItems(Items => {
-                                Items.Add().Name(FileManagerToolbarItem.Download);
-                                Items.Add().Name(FileManagerToolbarItem.Separator);
-                                Items.Add().Name(FileManagerToolbarItem.Rename);
-                                Items.Add().Name(FileManagerToolbarItem.Separator);
-                                Items.Add().Name(FileManagerToolbarItem.Delete);
-                                Items.Add().Name(FileManagerToolbarItem.Separator);
+                            toolbar.FileSelectionItems(items =>
+                            {
+                                items.Add().Name(FileManagerToolbarItem.Download);
+                                items.Add().Name(FileManagerToolbarItem.Separator);
+                                items.Add().Name(FileManagerToolbarItem.Delete);
 
-                                Items.Add()
+                                items.Add()
                                     .Widget(Widget => Widget.Menu()
-                                        .Items(MenuItems => {
-                                            MenuItems.Add().Text("Get Url").Icon("link").Option("commandName", "GetLinkButton");
-                                            MenuItems.Add().Text("Choose").Icon("check").Option("commandName", "ChoosePictureButton");
+                                        .Items(MenuItems =>
+                                        {
+                                            MenuItems.Add().Text("Get Url").Icon("link").Option("commandName", "getLinkButton");
+                                            MenuItems.Add().Text("Choose").Icon("check").Option("commandName", "choosePictureButton");
                                         })
-                                        .OnItemClick("FileManagerModel.OnFileManagerCustomCommand"))
+                                        .OnItemClick("fileManagerModel.onCustomButtonClick"))
                                         .Location(ToolbarItemLocation.Before);
 
-                                Items.Add().Name(FileManagerToolbarItem.ClearSelection);
+                                items.Add().Name(FileManagerToolbarItem.ClearSelection);
                             });
-                        })
-                        .AllowedFileExtensions(AllowedExtensions)
-                        .FileSystemProvider(Provider => Provider.Remote().Url(UrlListFiles))
-                        .SelectionMode(AllowSelectMultiple ? FileManagerSelectionMode.Multiple : FileManagerSelectionMode.Single)
-                        .CustomizeThumbnail("function (fileManagerItem) { return fileManagerItem.dataItem ? fileManagerItem.dataItem.thumbnailUrl : null; }")
-                        .Permissions(Permissions =>
+                        })                                                                                                                                              
+                        .SelectionMode(AllowChooseMultiple ? FileManagerSelectionMode.Multiple : FileManagerSelectionMode.Single)
+                        .Permissions(permissions =>
                         {
-                            Permissions.Upload(true);
-                            Permissions.Delete(true);
-                            Permissions.Download(true);
-                            Permissions.Rename(true);
+                            permissions.Upload(true);
+                            permissions.Delete(true);
+                            permissions.Download(true);
+                        })                                                                            
+                        .Permissions(permissions =>
+                        {
+                            permissions.Upload(true);
+                            permissions.Delete(true);
+                            permissions.Download(true);
                         })
-                        .ItemView(ItemView => {
-                            ItemView.ShowFolders(false);
-                            ItemView.ShowParentFolder(false);
-                            ItemView.Mode(FileManagerItemViewMode.Thumbnails);
-                        })
-                        .OnSelectedFileOpened("FileManagerModel.OnSelectedFileOpened");
+                        .ItemView(itemView =>
+                        {
+                            itemView.ShowFolders(false);
+                            itemView.ShowParentFolder(false);
+                            itemView.Mode(FileManagerItemViewMode.Thumbnails);
+                        });
+                        
                 }
                 #endregion
             }
             #endregion
         }
+
+        public class FileManagerItem
+        {
+            #region Properties
+            [JsonProperty("name")]
+            public string Name { get; set; }
+
+            [JsonProperty("id")]
+            public int? ID { get; set; }
+
+            [JsonProperty("isDirectory")]
+            public bool IsDirectory { get; set; }
+
+            [JsonProperty("size")]
+            public long? Size { get; set; }
+
+            [JsonProperty("sizeString")]
+            public string SizeString { get; set; }
+
+            [JsonProperty("urlDownload")]
+            public string UrlDownload { get; set; }
+
+            [JsonProperty("urlThumbnail")]
+            public string UrlThumbnail { get; set; }
+
+            [JsonProperty("dateModified")]
+            public DateTime? DateModified { get; set; }                        
+
+            [JsonProperty("dateModifiedString")]
+            public string DateModifiedString { get; set; }
+
+            [JsonProperty("isLastItem")]
+            public bool IsLastItem { get; set; }
+
+            [JsonProperty("items")]
+            public List<FileManagerItem> Children { get; set; }
+            #endregion
+        }        
         #endregion
     }
 }

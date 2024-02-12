@@ -1,0 +1,94 @@
+﻿@model UserPropertiesModel.PageViewModel
+<div class="card">
+    <div class="card-body">
+        <div class="row">
+            <div class="col">
+                @await Html.PartialAsync(ViewNames.Admin.Shared.ButtonSave, new ButtonSaveViewModel { FormID = "form", CssClass = "js-show-preloader" })
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card">
+    <div class="card-body">
+        <form id="form" method="post" enctype="multipart/form-data">
+            <div class="row">
+                <div class="col-lg-6 form-group">
+                    <label>@Html.Raw(Model.TextActive)</label>
+                    <label class="toggler toggler-lg">
+                        <input type="checkbox" name="@nameof(Model.UserIsActive)" value="true" @(Model.UserIsActive ? Html.Raw("checked") : null) />
+                        <i></i>
+                    </label>                    
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xl-6 form-group">
+                    <label>@Html.Raw(Model.TextEmail) *</label>
+                    <input type="text" class="form-control" name="@nameof(Model.UserEmail)" value="@Html.Raw(Model.UserEmail)"/>
+                </div>
+                <div class="col-xl-6 form-group">
+                    <label>@Html.Raw(Model.TextPassword)</label>
+                    <div class="input-group">
+                    <input type="password" class="form-control" name="@nameof(Model.UserPassword)" />
+                        <div class="input-group-text">
+                            <a href="#" class="js-password-show-hide-toggle-button" data-is-hidden="true">
+                                <i class="fa-regular fa-eye"></i>
+                                <i class="fa-solid fa-eye-slash hidden"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xl-6 form-group">
+                    <label>@Html.Raw(Model.TextFirstname) *</label>
+                    <input type="text" class="form-control" name="@nameof(Model.UserFirstname)" value="@Html.Raw(Model.UserFirstname)" />
+                    <div class="invalid-feedback"></div>
+                </div>
+                <div class="col-xl-6 form-group">
+                    <label>@Html.Raw(Model.TextLastname) *</label>
+                    <input type="text" class="form-control" name="@nameof(Model.UserLastname)" value="@Html.Raw(Model.UserLastname)" />
+                    <div class="invalid-feedback"></div>
+                </div>
+                <div class="col-xl-6 form-group">
+                    <label>@Html.Raw(Model.TextBirthDate)</label>
+                    <div class="form-control">
+                        @(Html.DevExtreme()
+                            .DateBox()
+                            .Name(nameof(Model.UserBirthdate))                        
+                            .Value(Model.UserBirthdate)
+                            .DisplayFormat(Model.FormatDate)
+                            .ElementAttr("class", "border-0")
+                            .OpenOnFieldClick(true)
+                        )
+                    </div>                    
+                </div>
+                <div class="col-xl-6 form-group">
+                    <label>@Html.Raw(Model.TextPhoneCell)</label>
+                    <input type="text" class="form-control js-mask-phone" name="@nameof(Model.UserPhoneNumberMobile)" value="@Html.Raw(Model.UserPhoneNumberMobile)" />                    
+                </div>
+                <div class="col-xl-6 form-group">
+                    <label>@Html.Raw(Model.TextRole)</label>
+                    <select class="form-select" name="@nameof(Model.RoleID)">
+                        <option></option>
+                        @if(Model.HasRoles)
+                        {
+                            @foreach(var item in Model.Roles)
+                            {
+                                <option value="@Html.Raw(item.Key)" @(item.IsSelected ? Html.Raw("selected") : null)>@Html.Raw(item.Value)</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+@section FooterSection{
+    <script src="/admin/js/usermanagement/user/userproperties.js"></script>
+    @if (Model.HasErrors)
+    {
+        <script>
+            validation.init({ errorsJson: @Html.Raw(Model.ErrorsJson)}).showErrors();
+        </script>
+    }
+}

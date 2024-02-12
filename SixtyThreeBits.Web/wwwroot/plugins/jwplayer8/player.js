@@ -1,170 +1,169 @@
 ﻿jwplayer.key = '10rlDJHyHzxLnnjPfSkloG/gMlj7bIHr4VBVStEvd9g=';
-var VideoTimes = new Object();
 
 var VideoPlayerClass = {
-    Selector: null,
-    PlayerJQueryElement: null,
-    PlayerHtmlElement: null,
-    PlayerInstance: null,
-    VideoTitle: 'video',
-    File: null,
-    Image: null,
-    Height: null,
-    Width: null,
-    ShouldAutostart: false,    
-    StartTime: null,
-    UrlMarkers: null,
-    UrlDownload: null,
-    OnTime: null,
-    OnPause: null,
-    OnComplete: null,
-    OnError: null,
-    Tracks: new Array(),
-    Logo: null,
-    UrlWatermark: null,
+    selector: null,
+    playerJQueryElement: null,
+    playerHtmlElement: null,
+    playerInstance: null,
+    videoTitle: 'video',
+    file: null,
+    image: null,
+    height: null,
+    width: null,
+    shouldAutostart: false,    
+    startTime: null,    
+    onTime: null,
+    onPause: null,
+    onComplete: null,
+    onError: null,
+    tracks: new Array(),
+    logo: null,
+    urlDownload: null,
+    urlMarkers: null,    
+    urlWatermark: null,
 
-    Init: function () {
-        this.InitTracks();
-        this.InitWatermark()
-        this.PlayerInstance = jwplayer(this.PlayerHtmlElement).setup({
-            file: this.File,
-            image: this.Image,
-            height: this.Height,
-            width: this.Width,
+    init: function () {
+        this.initTracks();
+        this.initWatermark()
+        this.playerInstance = jwplayer(this.playerHtmlElement).setup({
+            file: this.file,
+            image: this.image,
+            height: this.height,
+            width: this.width,
             aspectratio: '16:9',
             playbackRateControls: true,
-            autostart: this.ShouldAutostart ? 'viewable' : false,
-            logo: this.Logo,
-            tracks: this.Tracks
+            autostart: this.shouldAutostart ? 'viewable' : false,
+            logo: this.logo,
+            tracks: this.tracks
         });
-        this.InitEvents();
-        this.InitDownloadButton();
+        this.initEvents();
+        this.initDownloadButton();
 
-        if (this.StartTime > 0) {
+        if (this.startTime > 0) {
             var _this = this;
             setTimeout(function () {
-                _this.Seek(_this.StartTime);
+                _this.Seek(_this.startTime);
             }, 1000);
         }
 
     },
-    InitTracks: function () {
-        if (this.UrlMarkers) {
-            this.Tracks.push({
-                file: this.UrlMarkers,
+    initTracks: function () {
+        if (this.urlMarkers) {
+            this.tracks.push({
+                file: this.urlMarkers,
                 kind: 'chapters'
             });
         }
     },
-    InitWatermark: function () {
-        if (this.UrlWatermark && this.UrlWatermark.length) {
-            this.Logo = {
-                file: this.UrlWatermark,                                
+    initWatermark: function () {
+        if (this.urlWatermark && this.urlWatermark.length) {
+            this.logo = {
+                file: this.urlWatermark,                                
                 position: 'top-left'
             }
         }
     },
-    InitDownloadButton: function () {
-        if (this.UrlDownload) {
-            var ButtonID = 'download-video-button';
-            var IconPath = '/plugins/jwplayer8/img/download.svg';
-            var TooltipText = 'Download Video';
-            var _this = this;
-            this.PlayerInstance.addButton(
-                IconPath,
-                TooltipText,
+    initDownloadButton: function () {
+        if (this.urlDownload) {
+            const buttonID = 'download-video-button';
+            const iconPath = '/plugins/jwplayer8/img/download.svg';
+            const tooltipText = 'Download Video';
+            const _this = this;
+            this.playerInstance.addButton(
+                iconPath,
+                tooltipText,
                 function () {
                     var anchor = document.createElement('a');
-                    anchor.setAttribute('href', _this.UrlDownload);
+                    anchor.setAttribute('href', _this.urlDownload);
                     anchor.setAttribute('target', '_blank');
-                    anchor.setAttribute('download', _this.VideoTitle);
+                    anchor.setAttribute('download', _this.videoTitle);
                     anchor.style.display = 'none';
                     document.body.appendChild(anchor);
                     anchor.click();
                     document.body.removeChild(anchor);
                 },
-                ButtonID
+                buttonID
             );
         }
     },
 
-    Play: function () {
-        if (this.PlayerInstance.getState() != 'playing') {
-            this.PlayerInstance.play();
+    play: function () {
+        if (this.playerInstance.getState() != 'playing') {
+            this.playerInstance.play();
         }
     },
-    Pause: function () {
-        this.PlayerInstance.pause();
+    pause: function () {
+        this.playerInstance.pause();
     },
-    Seek: function (PositionSeconds) {
-        this.PlayerInstance.seek(PositionSeconds);
+    seek: function (positionSeconds) {
+        this.playerInstance.seek(positionSeconds);
     },
-    GetCurrentPosition: function () {
-        return this.PlayerInstance.getPosition();
+    getCurrentPosition: function () {
+        return this.playerInstance.getPosition();
     },
 
-    VideoTimeCurrent: 0,
-    VideoTimeSpent: 0,
-    VideoTimeTicks: 0,
+    _videoTimeCurrent: 0,
+    _videoTimeSpent: 0,
+    _videoTimeTicks: 0,
 
-    InitEvents: function () {
+    initEvents: function () {
         var _this = this;
-        this.PlayerInstance.on('time', function (e) {
-            ++_this.VideoTimeTicks;
-            var Diff = e.position - _this.VideoTimeCurrent;
-            _this.VideoTimeCurrent = e.position;
+        this.playerInstance.on('time', function (e) {
+            ++_this._videoTimeTicks;
+            var Diff = e.position - _this._videoTimeCurrent;
+            _this._videoTimeCurrent = e.position;
             if (Diff > 0 && Diff < 1.5) {
-                _this.VideoTimeSpent += Diff;
+                _this._videoTimeSpent += Diff;
             }
-            if (_this.OnTime) {
-                _this.OnTime(_this.VideoTimeCurrent, _this.VideoTimeSpent, _this.VideoTimeTicks);
-            }
-        });
-
-        this.PlayerInstance.on('pause', function (e) {
-            if (_this.OnPause) {
-                _this.OnPause(_this.VideoTimeCurrent, _this.VideoTimeSpent);
+            if (_this.onTime) {
+                _this.onTime(_this._videoTimeCurrent, _this._videoTimeSpent, _this._videoTimeTicks);
             }
         });
 
-        this.PlayerInstance.on('complete', function (e) {
-            if (_this.OnComplete) {
-                _this.OnComplete(_this.VideoTimeCurrent, _this.VideoTimeSpent);
+        this.playerInstance.on('pause', function (e) {
+            if (_this.onPause) {
+                _this.onPause(_this._videoTimeCurrent, _this._videoTimeSpent);
             }
         });
 
-        this.PlayerInstance.on('error', function (e) {
-            if (_this.OnError) {
-                _this.OnError(e);
+        this.playerInstance.on('complete', function (e) {
+            if (_this.onComplete) {
+                _this.onComplete(_this._videoTimeCurrent, _this._videoTimeSpent);
+            }
+        });
+
+        this.playerInstance.on('error', function (e) {
+            if (_this.onError) {
+                _this.onError(e);
             }
         });
     }
 }
 
-function VideoPlayer(Options) {
-    this.Selector = Options.Selector;
-    this.PlayerJQueryElement = $(this.Selector);
+function VideoPlayer(options) {
+    this.selector = options.selector;
+    this.playerJQueryElement = $(this.selector);
 
-    if (this.PlayerJQueryElement.length) {
-        this.PlayerHtmlElement = $(this.PlayerJQueryElement)[0];
-        this.VideoTitle = Options.VideoTitle ? Options.VideoTitle : 'video';
-        this.File = Options.File;
-        this.Image = Options.Image;
-        this.Height = Options.Height ? Options.Height : '100%';
-        this.Width = Options.Width ? Options.Width : '100%';
-        this.UrlMarkers = Options.UrlMarkers;
-        this.UrlDownload = Options.UrlDownload;
-        this.ShouldAutostart = Options.ShouldAutostart ? true : false;
-        this.StartTime = Options.StartTime;
-        this.UrlWatermark = Options.UrlWatermark;
+    if (this.playerJQueryElement.length) {
+        this.playerHtmlElement = $(this.playerJQueryElement)[0];
+        this.videoTitle = options.videoTitle ? options.videoTitle : 'video';
+        this.file = options.file;
+        this.image = options.image;
+        this.height = options.height ? options.height : '100%';
+        this.width = options.width ? options.width : '100%';
+        this.urlMarkers = options.urlMarkers;
+        this.urlDownload = options.urlDownload;
+        this.shouldAutostart = options.shouldAutostart ? true : false;
+        this.startTime = options.startTime;
+        this.urlWatermark = options.urlWatermark;
 
-        this.OnTime = Options.OnTime;
-        this.OnPause = Options.OnPause;
-        this.OnComplete = Options.OnComplete;
-        this.OnError = Options.OnError;
+        this.onTime = options.onTime;
+        this.onPause = options.onPause;
+        this.onComplete = options.onComplete;
+        this.onError = options.onError;
     }
     else {
-        throw new DOMException('Element not found by given selector "' + Options.Selector + '"');
+        throw new DOMException('Element not found by given selector "' + options.selector + '"');
     }
 }
 

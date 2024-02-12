@@ -1,46 +1,41 @@
 ﻿@model EmailTemplatePropertiesModel.PageViewModel
-<div class="actions-row">
-    <button type="submit" class="btn btn-circle btn-primary js-save-button" form="BrandsPropertiesForm"><i class="fas fa-save"></i></button>
-</div>
-
 <div class="card">
     <div class="card-body">
-        <form id="BrandsPropertiesForm" method="post" enctype="multipart/form-data">
+        <div class="row">
+            <div class="col">
+                @await Html.PartialAsync(ViewNames.Admin.Shared.ButtonSave, new ButtonSaveViewModel { FormID = "form", CssClass = "js-show-preloader" })
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card">
+    <div class="card-body">
+        <form id="form" method="post" enctype="multipart/form-data">
             <div class="row">
                 <div class="form-group col-xl-12">
-                    <label>Email Template Caption *</label>
+                    <label>@Html.Raw(Model.TextCaption) *</label>
                     <input type="text" name="@nameof(Model.EmailTemplateName)" class="form-control" value="@Html.Raw(Model.EmailTemplateName)" />
-                    <p class="help-block">
-                        <span class="error-text"></span>
-                    </p>
+                    <div class="invalid-feedback"></div>
                 </div>
                 <div class="form-group col-xl-6">
                     <label>Subject *</label>
                     <input type="text" name="@nameof(Model.EmailTemplateSubject)" class="form-control" value="@Html.Raw(Model.EmailTemplateSubject)" />
-                    <p class="help-block">
-                        <span class="error-text"></span>
-                    </p>
+                    <div class="invalid-feedback"></div>
                 </div>
                 <div class="form-group col-xl-6">
                     <label>Subject Eng *</label>
                     <input type="text" name="@nameof(Model.EmailTemplateSubjectEng)" class="form-control" value="@Html.Raw(Model.EmailTemplateSubjectEng)" />
-                    <p class="help-block">
-                        <span class="error-text"></span>
-                    </p>
+                    <div class="invalid-feedback"></div>
                 </div>
                 <div class="form-group col-xl-6">
                     <label>Body *</label>
                     <textarea name="@nameof(Model.EmailTemplateBody)" class="form-control js-apply-tinymce">@Html.Raw(Model.EmailTemplateBody)</textarea>
-                    <p class="help-block">
-                        <span class="error-text"></span>
-                    </p>
+                    <div class="invalid-feedback"></div>
                 </div>
                 <div class="form-group col-xl-6">
                     <label>Body Eng *</label>
                     <textarea name="@nameof(Model.EmailTemplateBodyEng)" class="form-control js-apply-tinymce">@Html.Raw(Model.EmailTemplateBodyEng)</textarea>
-                    <p class="help-block">
-                        <span class="error-text"></span>
-                    </p>
+                    <div class="invalid-feedback"></div>
                 </div>
             </div>
         </form>
@@ -48,14 +43,14 @@
 </div>
 
 @section FooterSection{
-    <script src="~/admin/js/EmailTemplates/EmailTemplate.js"></script>
+    <script src="~/admin/js/EmailTemplates/EmailTemplateProperties.js"></script>
     <script>
-        EmailTemplateModel.EmailTemplatePlaceHoldersJson = @Html.Raw(Model.EmailTemplatePlaceHoldersJson);
+        emailTemplateModel.emailTemplatePlaceHoldersJson = @Html.Raw(Model.EmailTemplatePlaceHoldersJson);
     </script>
     @if (Model.HasErrors)
     {
         <script>
-            Validation.Init({ErrorsJson:@Html.Raw(Model.ErrorsJson)}).ShowErrors();
+            validation.init({ errorsJson: @Html.Raw(Model.ErrorsJson)}).showErrors();
         </script>
     }
 }

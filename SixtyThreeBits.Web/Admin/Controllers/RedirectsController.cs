@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SixtyThreeBits.Core.Utilities;
-using SixtyThreeBits.Libraries;
+using SixtyThreeBits.Core.Infrastructure.Utilities;
+using SixtyThreeBits.Libraries.Extensions;
 using SixtyThreeBits.Web.Admin.Models;
-using SixtyThreeBits.Web.Reusables.Core;
+using SixtyThreeBits.Web.Domain;
 using System.Threading.Tasks;
 
 namespace SixtyThreeBits.Web.Admin.Controllers
@@ -24,23 +24,23 @@ namespace SixtyThreeBits.Web.Admin.Controllers
         public ActionResult Redirects()
         {
             Model.PluginsClient.EnableDevextreme(true).Enable63BitsForms(true).EnableTemplate7(true);
-            var ViewModel = Model.GetPageViewModel();
-            return View(ViewNames.Admin.Redirects.Page, ViewModel);
+            var viewModel = Model.GetPageViewModel();
+            return View(ViewNames.Admin.Redirects.Page, viewModel);
         }
 
         [Route("grid", Name = ControllerActionRouteNames.Admin.Redirects.Grid)]
         public async Task<ActionResult> RedirectsGrid()
         {
-            var ViewModel = await Model.GetGridViewModel();
-            return Json(ViewModel);
+            var viewModel = await Model.GetGridViewModel();
+            return Json(viewModel);
         }
 
         [HttpPost]
         [Route("grid/add", Name = ControllerActionRouteNames.Admin.Redirects.GridAdd)]
         public async Task<ActionResult> RedirectsGridAdd(int? key, string values)
         {
-            var SubmitModel = values.DeserializeJsonTo<RedirectsModel.PageViewModel.GridModel.GridItem>() ?? new RedirectsModel.PageViewModel.GridModel.GridItem();
-            await Model.CRUD(DatabaseAction: Enums.DatabaseActions.CREATE, RedirectID: key, SubmitModel: SubmitModel);
+            var submitModel = values.DeserializeJsonTo<RedirectsModel.PageViewModel.GridModel.GridItem>() ?? new RedirectsModel.PageViewModel.GridModel.GridItem();
+            await Model.CRUD(databaseAction: Enums.DatabaseActions.CREATE, redirectID: key, submitModel: submitModel);
             if (Model.Form.HasErrors)
             {
                 return GetDevexpressErrorResult(Model.Form.ErrorMessage);
@@ -55,8 +55,8 @@ namespace SixtyThreeBits.Web.Admin.Controllers
         [Route("grid/update", Name = ControllerActionRouteNames.Admin.Redirects.GridUpdate)]
         public async Task<ActionResult> RedirectsGridUpdate(int? key, string values)
         {
-            var SubmitModel = values.DeserializeJsonTo<RedirectsModel.PageViewModel.GridModel.GridItem>() ?? new RedirectsModel.PageViewModel.GridModel.GridItem();
-            await Model.CRUD(DatabaseAction: Enums.DatabaseActions.UPDATE, RedirectID: key, SubmitModel: SubmitModel);
+            var submitModel = values.DeserializeJsonTo<RedirectsModel.PageViewModel.GridModel.GridItem>() ?? new RedirectsModel.PageViewModel.GridModel.GridItem();
+            await Model.CRUD(databaseAction: Enums.DatabaseActions.UPDATE, redirectID: key, submitModel: submitModel);
             if (Model.Form.HasErrors)
             {
                 return GetDevexpressErrorResult(Model.Form.ErrorMessage);
@@ -71,8 +71,7 @@ namespace SixtyThreeBits.Web.Admin.Controllers
         [Route("grid/delete", Name = ControllerActionRouteNames.Admin.Redirects.GridDelete)]
         public async Task<ActionResult> RedirectsGridDelete(int? key)
         {
-            
-            await Model.CRUD(DatabaseAction: Enums.DatabaseActions.DELETE, RedirectID: key, SubmitModel: new RedirectsModel.PageViewModel.GridModel.GridItem());
+            await Model.CRUD(databaseAction: Enums.DatabaseActions.DELETE, redirectID: key, submitModel: new RedirectsModel.PageViewModel.GridModel.GridItem());
             if (Model.Form.HasErrors)
             {
                 return GetDevexpressErrorResult(Model.Form.ErrorMessage);

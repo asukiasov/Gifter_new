@@ -3,12 +3,16 @@ using DevExtreme.AspNet.Mvc.Builders;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using SixtyThreeBits.Core.Modules;
+using SixtyThreeBits.Core.Infrastructure.DTO;
+using SixtyThreeBits.Core.Infrastructure.Libraries;
+using SixtyThreeBits.Core.Infrastructure.Libraries.FileStorages;
+using SixtyThreeBits.Core.Infrastructure.Repositories;
+using SixtyThreeBits.Core.Infrastructure.Utilities;
 using SixtyThreeBits.Core.Properties;
-using SixtyThreeBits.Core.Services;
-using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries;
-using SixtyThreeBits.Web.Reusables.Core;
+using SixtyThreeBits.Web.Domain;
+using SixtyThreeBits.Web.Domain.Libraries;
+using SixtyThreeBits.Web.Domain.SharedViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,56 +22,64 @@ namespace SixtyThreeBits.Web.Admin.Models
 {
     public class BlogModel : WebProjectModelBase
     {
+        #region Properties
+        readonly string _folderPath = FileStorageManager.Modules[Enums.FileManagerModules.Blog].FolderName;
+        #endregion
+
         #region Methods
         public PageViewModel GetPageViewModel()
         {
-            var ViewModel = new PageViewModel();
-            ViewModel.ShowAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.Blog.GridAdd);
+            var viewModel = new PageViewModel();
+            viewModel.ShowAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.Blog.GridAdd);
 
-            ViewModel.Grid = new PageViewModel.GridModel();
-            ViewModel.Grid.AllowAdd = User.HasPermission(ControllerActionRouteNames.Admin.Blog.GridAdd);
-            ViewModel.Grid.AllowUpdate = User.HasPermission(ControllerActionRouteNames.Admin.Blog.GridUpdate);
-            ViewModel.Grid.AllowDelete = User.HasPermission(ControllerActionRouteNames.Admin.Blog.GridDelete);
-            ViewModel.Grid.UrlLoad = Url.RouteUrl(ControllerActionRouteNames.Admin.Blog.Grid);
-            ViewModel.Grid.UrlAddNew = Url.RouteUrl(ControllerActionRouteNames.Admin.Blog.GridAdd);
-            ViewModel.Grid.UrlUpdate = Url.RouteUrl(ControllerActionRouteNames.Admin.Blog.GridUpdate);
-            ViewModel.Grid.UrlDelete = Url.RouteUrl(ControllerActionRouteNames.Admin.Blog.GridDelete);
+            viewModel.Grid = new PageViewModel.GridModel();
+            viewModel.Grid.AllowAdd = User.HasPermission(ControllerActionRouteNames.Admin.Blog.GridAdd);
+            viewModel.Grid.AllowUpdate = User.HasPermission(ControllerActionRouteNames.Admin.Blog.GridUpdate);
+            viewModel.Grid.AllowDelete = User.HasPermission(ControllerActionRouteNames.Admin.Blog.GridDelete);
+            viewModel.Grid.UrlLoad = Url.RouteUrl(ControllerActionRouteNames.Admin.Blog.Grid);
+            viewModel.Grid.UrlAddNew = Url.RouteUrl(ControllerActionRouteNames.Admin.Blog.GridAdd);
+            viewModel.Grid.UrlUpdate = Url.RouteUrl(ControllerActionRouteNames.Admin.Blog.GridUpdate);
+            viewModel.Grid.UrlDelete = Url.RouteUrl(ControllerActionRouteNames.Admin.Blog.GridDelete);
 
-            return ViewModel;
+            return viewModel;
         }
 
         public async Task<List<PageViewModel.GridModel.GridItem>> GetGridViewModel()
         {
-            var ViewModel = (await DataAccessFactory.Blog.ListBlog())?.Select(Item => new PageViewModel.GridModel.GridItem
+            var repository = RepositoriesFactory.GetBlogRepository();
+            var viewModel = (await repository.BlogPostList())?.Select(item => new PageViewModel.GridModel.GridItem
             {
-                BlogPostID = Item.BlogPostID,
-                BlogPostTitle = Item.BlogPostTitle,
-                BlogPostAuthorName = Item.BlogPostAuthorName,
-                BlogPostDate = Item.BlogPostDate,
-                BlogPostIsPublished = Item.BlogPostIsPublished,
-                UrlBlogPost = Url.RouteUrl(ControllerActionRouteNames.Admin.Blog.PostProperties, new { BlogPostID = Item.BlogPostID })
+                BlogPostID = item.BlogPostID,
+                BlogPostTitle = item.BlogPostTitle,
+                BlogPostAuthorName = item.BlogPostAuthorName,
+                BlogPostDate = item.BlogPostDate,
+                BlogPostIsPublished = item.BlogPostIsPublished,
+                BlogPostDateCreated = item.BlogPostDateCreated,
+                UrlBlogPost = Url.RouteUrl(ControllerActionRouteNames.Admin.Blog.PostProperties, new { blogPostID = item.BlogPostID })
             }).ToList();
-            return ViewModel;
+            return viewModel;
         }
 
-        public async Task CRUD(Enums.DatabaseActions DatabaseAction, int? BlogPostID, PageViewModel.GridModel.GridItem SubmitModel)
-        {
-            if (DatabaseAction == Enums.DatabaseActions.DELETE)
+        public async Task CRUD(Enums.DatabaseActions databaseAction, int? blogPostID, PageViewModel.GridModel.GridItem submitModel)
+        {            
+            var repository = RepositoriesFactory.GetBlogRepository();
+
+            if (databaseAction == Enums.DatabaseActions.DELETE)
             {
-                var DBItem = await DataAccessFactory.Blog.GetSingleBlogByID(BlogPostID);
-                Utilities.DeleteUploadedFile(DBItem?.BlogPostImageFilename);
+                var DBItem = await repository.BlogPostGetSingleByID(blogPostID);
+                await DeleteUploadedFile(DBItem.BlogPostImageFilename, folderPath: _folderPath);
             }
 
-            await DataAccessFactory.Blog.BlogIUD(
-                DatabaseAction: DatabaseAction,
-                BlogPostID: BlogPostID,
-                BlogPostTitle: SubmitModel.BlogPostTitle,
-                BlogPostAuthorName: SubmitModel.BlogPostAuthorName,
-                BlogPostDate: SubmitModel.BlogPostDate,
-                BlogPostIsPublished: SubmitModel.BlogPostIsPublished
+            await repository.BlogIUD(
+                databaseAction: databaseAction,
+                blogPostID: blogPostID,
+                blogPostTitle: submitModel.BlogPostTitle,
+                blogPostAuthorName: submitModel.BlogPostAuthorName,
+                blogPostDate: submitModel.BlogPostDate,
+                blogPostIsPublished: submitModel.BlogPostIsPublished
             );
 
-            if (DataAccessFactory.Blog.IsError)
+            if (repository.IsError)
             {
                 Form.AddError(Resources.TextError);
             }
@@ -86,28 +98,29 @@ namespace SixtyThreeBits.Web.Admin.Models
             public class GridModel : DevExtremeGridViewModelBase, IDevExtremeGridModel<GridModel.GridItem>
             {
                 #region Methods
-                public DataGridBuilder<GridItem> Render(IHtmlHelper Html)
+                public DataGridBuilder<GridItem> Render(IHtmlHelper html)
                 {
-                    var Grid = GetGridWithStartupValues<GridItem>(Html: Html, KeyFieldName: nameof(GridItem.BlogPostID));
+                    var grid = GetGridWithStartupValues<GridItem>(html: html, keyFieldName: nameof(GridItem.BlogPostID));
 
-                    Grid
+                    grid
                     .ID("BlogGrid")
-                    .OnInitialized("BlogModel.OnGridInit")  
-                    .Columns(Columns =>
+                    .OnInitialized("blogModel.onGridInit")  
+                    .Columns(columns =>
                     {
-                        Columns.Add().Width(30).Caption(" ").InitDetailsUrlCellTemplate(nameof(GridItem.UrlBlogPost));
-                        Columns.AddFor(m => m.BlogPostTitle).Caption("სათაური").Width(400).ValidationRules(Options =>
+                        columns.Add().Width(30).Caption(" ").InitDetailsUrlCellTemplate(nameof(GridItem.UrlBlogPost));
+                        columns.AddFor(m => m.BlogPostTitle).Caption(Resources.TextTitle).Width(400).ValidationRules(options =>
                         {
-                            Options.AddRequired();
+                            options.AddRequired();
                         });
-                        Columns.AddFor(m => m.BlogPostAuthorName).Caption("ავტორი").Width(150);
-                        Columns.AddFor(m => m.BlogPostDate).Caption("თარიღი").DataType(GridColumnDataType.Date).Width(150).InitDateColumn();
-                        Columns.AddFor(m => m.BlogPostIsPublished).Caption("გამოქვეყნებული").DataType(GridColumnDataType.Boolean).Width(130).InitCheckboxColumn();
-                        Columns.Add();
+                        columns.AddFor(m => m.BlogPostAuthorName).Caption(Resources.TextAuthor).Width(150);
+                        columns.AddFor(m => m.BlogPostDate).Caption(Resources.TextDate).DataType(GridColumnDataType.Date).Width(150).InitDateColumn();
+                        columns.AddFor(m => m.BlogPostIsPublished).Caption(Resources.TextPublished).DataType(GridColumnDataType.Boolean).Width(130).InitCheckboxColumn();
+                        columns.AddFor(m => m.BlogPostDateCreated).Caption(Resources.TextDateCreated).DataType(GridColumnDataType.Date).Width(150).InitDateColumn(formatDateTime: true).AllowEditing(false);
+                        columns.Add();
                     });
 
 
-                    return Grid;
+                    return grid;
                 }
                 #endregion
 
@@ -119,6 +132,7 @@ namespace SixtyThreeBits.Web.Admin.Models
                     public string BlogPostTitle { get; set; }
                     public string BlogPostAuthorName { get; set; }
                     public DateTime? BlogPostDate { get; set; }
+                    public DateTime? BlogPostDateCreated { get; set; }
                     public bool BlogPostIsPublished { get; set; }
                     public string UrlBlogPost { get; set; }
                     #endregion
@@ -133,99 +147,105 @@ namespace SixtyThreeBits.Web.Admin.Models
     public class BlogModelBase : WebProjectModelBase
     {
         #region Properties
-        public BlogPost DBItemBlog { get; set; }
+        public BlogPostDTO DBItem { get; set; }
         #endregion
     }
 
     public class BlogPropertiesModel : BlogModelBase
     {
+        #region Properties
+        readonly string _folderPath = FileStorageManager.Modules[Enums.FileManagerModules.Blog].FolderName;
+        #endregion
+
         #region Methods
-        public BlogPropertiesViewModel GetBlogPropertiesViewModel(BlogPropertiesViewModel ViewModel)
+        public BlogPropertiesViewModel GetBlogPropertiesViewModel(BlogPropertiesViewModel viewModel)
         {
-            if (ViewModel == null)
+            if (viewModel == null)
             {
-                ViewModel = new BlogPropertiesViewModel();
-                ViewModel.BlogPostIsPublished = DBItemBlog.BlogPostIsPublished;
-                ViewModel.BlogPostSlug = DBItemBlog.BlogPostSlug;
-                ViewModel.BlogPostTitle = DBItemBlog.BlogPostTitle;
-                ViewModel.BlogPostShortText = DBItemBlog.BlogPostShortText;
-                ViewModel.BlogPostText = DBItemBlog.BlogPostText;
-                ViewModel.BlogPostAuthorName = DBItemBlog.BlogPostAuthorName;
-                ViewModel.BlogPostDate = DBItemBlog.BlogPostDate;
+                viewModel = new BlogPropertiesViewModel();
+                viewModel.BlogPostIsPublished = DBItem.BlogPostIsPublished;
+                viewModel.BlogPostSlug = DBItem.BlogPostSlug;
+                viewModel.BlogPostTitle = DBItem.BlogPostTitle;
+                viewModel.BlogPostShortText = DBItem.BlogPostShortText;
+                viewModel.BlogPostText = DBItem.BlogPostText;
+                viewModel.BlogPostAuthorName = DBItem.BlogPostAuthorName;
+                viewModel.BlogPostDate = DBItem.BlogPostDate;
+                viewModel.BlogPostDateString = Utilities.FormatDate(DBItem.BlogPostDate, Utilities.CultureInvariant);
             }
 
-            ViewModel.BlogPostImageFilename = DBItemBlog.BlogPostImageFilename;
-            ViewModel.BlogPostImageHttpPath = Utilities.GetUploadedFileHttpPath(DBItemBlog.BlogPostImageFilename);
-            ViewModel.UrlDeleteImage = Url.RouteUrl(ControllerActionRouteNames.Admin.Blog.PostPropertiesDeleteImage, new { BlogPostID = DBItemBlog.BlogPostID });
+            viewModel.BlogPostImageFilename = DBItem.BlogPostImageFilename;
+            viewModel.BlogPostImageHttpPath = FileStorage.GetUploadedFileHttpPath(DBItem.BlogPostImageFilename, _folderPath);
+            viewModel.UrlDeleteImage = Url.RouteUrl(ControllerActionRouteNames.Admin.Blog.PostPropertiesDeleteImage, new { blogPostID = DBItem.BlogPostID });
 
-            return ViewModel;
+            return viewModel;
         }
 
-        public async Task ValidateBlogPropertiesViewModel(BlogPropertiesViewModel ViewModel)
+        public async Task ValidatePageViewModel(BlogPropertiesViewModel viewModel)
         {
-            ViewModel.Errors = new List<SimpleKeyValue<string, string>>
-            {
-                Validation.ValidateRequired(ErrorKey: Validation.GetJQueryNameSelectorFor(nameof(ViewModel.BlogPostTitle)), ValueToValidate:ViewModel.BlogPostTitle),
-                Validation.ValidateRequired(ErrorKey: Validation.GetJQueryNameSelectorFor(nameof(ViewModel.BlogPostSlug)), ValueToValidate:ViewModel.BlogPostSlug),
+            viewModel.AddError(Validation.ValidateRequired(errorKey: Validation.GetJQueryNameSelectorFor(nameof(viewModel.BlogPostTitle)), valueToValidate: viewModel.BlogPostTitle));
+            viewModel.AddError(Validation.ValidateRequired(errorKey: Validation.GetJQueryNameSelectorFor(nameof(viewModel.BlogPostSlug)), valueToValidate: viewModel.BlogPostSlug));
+            viewModel.AddError(
                 await Validation.ValidateAsync(
-                    ErrorAction: async () =>
+                    errorAction: async () =>
                     {
-                        var IsUniq = await DataAccessFactory.Blog.IsBlogSlugUniq(BlogPostSlug:ViewModel.BlogPostSlug, BlogPostID:DBItemBlog.BlogPostID);
-                        return !IsUniq;
+                        var repository = RepositoriesFactory.GetBlogRepository();                        
+                        var isUniq = await repository.BlogPostIsSlugUniq(blogPostSlug: viewModel.BlogPostSlug, blogPostID: DBItem.BlogPostID);
+                        return !isUniq;
                     },
-                    ErrorKey: Validation.GetJQueryNameSelectorFor(nameof(ViewModel.BlogPostSlug)),
-                    ErrorMessage: Resources.ValidationSlugNotUniq
+                    errorKey: Validation.GetJQueryNameSelectorFor(nameof(viewModel.BlogPostSlug)),
+                    errorMessage: Resources.ValidationSlugNotUniq
                 )
-            };
-            ViewModel.Errors.RemoveAll(Item => Item == null);
+            );            
         }
 
-        public async Task SaveBlogProperties(BlogPropertiesViewModel ViewModel)
+        public async Task Save(BlogPropertiesViewModel viewModel)
         {
-            var HasBlogImage = ViewModel.PostedFile?.Length > 0;
-            var BlogPostImageFilename = HasBlogImage ? GetFilenameFromUploadedFile(ViewModel.PostedFile) : null;
-            if (HasBlogImage)
+            var hasBlogImage = viewModel.BlogImageFile?.Length > 0;
+            var blogPostImageFilename = hasBlogImage ? GetFilenameFromUploadedFile(viewModel.BlogImageFile) : null;
+            if (hasBlogImage)
             {
-                Utilities.DeleteUploadedFile(DBItemBlog.BlogPostImageFilename);
+                await DeleteUploadedFile(DBItem.BlogPostImageFilename, _folderPath);
             }
 
-            await DataAccessFactory.Blog.BlogIUD(
-                DatabaseAction: Enums.DatabaseActions.UPDATE,
-                BlogPostID: DBItemBlog.BlogPostID,
-                BlogPostSlug: ViewModel.BlogPostSlug,
-                BlogPostTitle: ViewModel.BlogPostTitle,
-                BlogPostShortText: ViewModel.BlogPostShortText,
-                BlogPostText: ViewModel.BlogPostText,
-                BlogPostAuthorName: ViewModel.BlogPostAuthorName,
-                BlogPostImageFilename: BlogPostImageFilename,
-                BlogPostDate: ViewModel.BlogPostDate,
-                BlogPostIsPublished: ViewModel.BlogPostIsPublished
+            var repository = RepositoriesFactory.GetBlogRepository();
+            await repository.BlogIUD(
+                databaseAction: Enums.DatabaseActions.UPDATE,
+                blogPostID: DBItem.BlogPostID,
+                blogPostSlug: viewModel.BlogPostSlug,
+                blogPostTitle: viewModel.BlogPostTitle,
+                blogPostShortText: viewModel.BlogPostShortText,
+                blogPostText: viewModel.BlogPostText,
+                blogPostAuthorName: viewModel.BlogPostAuthorName,
+                blogPostImageFilename: blogPostImageFilename,
+                blogPostDate: viewModel.BlogPostDate,
+                blogPostIsPublished: viewModel.BlogPostIsPublished
             );
 
-            if (!DataAccessFactory.Blog.IsError)
+            if (!repository.IsError)
             {
-                ViewModel.IsSaved = true;
-                if (HasBlogImage)
+                viewModel.IsSaved = true;
+                if (hasBlogImage)
                 {
-                    await SaveUploadedFile(PostedFile: ViewModel.PostedFile, Filename: BlogPostImageFilename);
+                    await SaveUploadedFile(viewModel.BlogImageFile, blogPostImageFilename, _folderPath);
                 }
             }
         }
 
-        public async Task<AjaxResponse> DeleteImage(int? BlogPostID)
+        public async Task<AjaxResponse> DeleteImage()
         {
-            Utilities.DeleteUploadedFile(DBItemBlog.BlogPostImageFilename);
-
-            var AR = new AjaxResponse();
-            await DataAccessFactory.Blog.BlogIUD(
-                DatabaseAction: Enums.DatabaseActions.UPDATE,
-                BlogPostID: BlogPostID,
-                BlogPostImageFilename: Constants.NullValueFor.String
+            var viewModel = new AjaxResponse();
+            await DeleteUploadedFile(DBItem.BlogPostImageFilename, _folderPath);
+            
+            var repository = RepositoriesFactory.GetBlogRepository();
+            await repository.BlogIUD(
+                databaseAction: Enums.DatabaseActions.UPDATE,
+                blogPostID: DBItem.BlogPostID,
+                blogPostImageFilename: Constants.NullValueFor.String
             );
 
-            AR.IsSuccess = !DataAccessFactory.Blog.IsError;
+            viewModel.IsSuccess = !repository.IsError;
 
-            return AR;
+            return viewModel;
         }
 
         #endregion
@@ -241,12 +261,22 @@ namespace SixtyThreeBits.Web.Admin.Models
             public string BlogPostText { get; set; }
             public string BlogPostAuthorName { get; set; }
             public DateTime? BlogPostDate { get; set; }
+            public string BlogPostDateString { get; set; }
             public string BlogPostImageFilename { get; set; }
             public string BlogPostImageHttpPath { get; set; }
             public bool HasBlogPostImage => !string.IsNullOrWhiteSpace(BlogPostImageFilename);
-            public IFormFile PostedFile { get; set; }
+            public IFormFile BlogImageFile { get; set; }
             public string UrlDeleteImage { get; set; }
-            public readonly string TextConfirmDelete = Resources.TextConfirmDelete;
+
+            public readonly string TextPublished = Resources.TextPublished;
+            public readonly string TextUploadImage = Resources.TextUploadImage;
+            public readonly string TextTitle = Resources.TextTitle;
+            public readonly string TextSlug = Resources.TextSlug;
+            public readonly string TextGenerateFromTitle = Resources.TextGenerateFromTitle;
+            public readonly string TextAuthor = Resources.TextAuthor;
+            public readonly string TextDate = Resources.TextDate;
+            public readonly string TextDescriptionShort = Resources.TextDescriptionShort;
+            public readonly string TextDescription = Resources.TextDescription;
             #endregion
         }
         #endregion

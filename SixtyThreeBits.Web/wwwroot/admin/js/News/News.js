@@ -1,13 +1,13 @@
-﻿const NewsModel = {
-    Grid: null,
-    OnGridInit: function (s) {
-        NewsModel.Grid = s.component;
-        Globals.Devexpress.SetGridFullHeight(NewsModel.Grid, s.element[0]);
+﻿const newsModel = {
+    grid: null,
+    onGridInit: function (e) {
+        newsModel.grid = e.component;
+        globals.devexpress.setGridFullHeight(e.component, e.element[0]);
     }
 };
 
 $(function () {
-    $('.js-add-new-button').click(function () {
-        NewsModel.Grid.addRow();
+    $(globals.selectors.buttonAddNew).click(function () {
+        newsModel.grid.addRow();
     });
 });

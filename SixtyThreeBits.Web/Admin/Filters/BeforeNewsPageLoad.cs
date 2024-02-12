@@ -1,45 +1,48 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
-using SixtyThreeBits.Core.Utilities;
-using SixtyThreeBits.Libraries;
+using SixtyThreeBits.Core.Infrastructure.Utilities;
+using SixtyThreeBits.Libraries.Extensions;
 using SixtyThreeBits.Web.Admin.Models;
-using SixtyThreeBits.Web.Reusables.Core;
+using SixtyThreeBits.Web.Domain;
 using System.Threading.Tasks;
 
 namespace SixtyThreeBits.Web.Admin.Filters
 {
     public class BeforeNewsPageLoad : IAsyncActionFilter
-    {        
+    {
+        #region Properties
+        NewsModelBase _model;
+        #endregion
 
-        public BeforeNewsPageLoad()
-        {            
-        }
-        
-        public async Task OnActionExecutionAsync(ActionExecutingContext FilterContext, ActionExecutionDelegate next)
+        #region Methods
+        public async Task OnActionExecutionAsync(ActionExecutingContext filterContext, ActionExecutionDelegate next)
         {
-            var Model = LocalUtilities.GetModelFromController<NewsModelBase>(FilterContext.Controller);
-            var NewsID = FilterContext.RouteData.Values[Constants.RouteValues.NewsID].ToString().ToInt();
+            _model = LocalUtilities.GetModelFromController<NewsModelBase>(filterContext.Controller);
+            var newsID = filterContext.RouteData.Values[Constants.RouteValues.NewsID]?.ToString().ToInt();
 
-            Model.DBItemNews = await Model.DataAccessFactory.News.GetSingleNewsByID(NewsID);
-            if (Model.DBItemNews == null)
+            var repository = _model.RepositoriesFactory.GetNewsRepository();
+            _model.DBItem = await repository.NewsGetSingleByID(newsID);
+            if (_model.DBItem == null)
             {
-                FilterContext.Result = Model.GetNotFoundAdminViewResult();
+                filterContext.Result = _model.GetNotFoundAdminViewResult();
             }
             else
             {
-                InitPageTitle(Model);
-                ReinitBreadCrumbs(Model);
+                initPageTitle();
+                reinitBreadCrumbs();
                 await next();
             }
         }
 
-        void InitPageTitle(NewsModelBase Model)
+        void initPageTitle()
         {
-            Model.PageTitle.Set(Model.DBItemNews.NewsTitle);
+            _model.PageTitle.Set(_model.DBItem.NewsTitle);
         }
 
-        void ReinitBreadCrumbs(NewsModelBase Model)
+        void reinitBreadCrumbs()
         {
-            Model.Breadcrumbs.RenameAt(2, Model.DBItemNews.NewsTitle);
-        }
+            _model.Breadcrumbs.DeleteLastItem();
+            _model.Breadcrumbs.RenameLastItem(_model.DBItem.NewsTitle);
+        } 
+        #endregion
     }
 }

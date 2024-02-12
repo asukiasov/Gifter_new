@@ -1,37 +1,35 @@
-﻿const TeamMembersModel = {
-
-    TeamMemberID: null,
-    UrlSync: null,
-
-    Grid: null,
-    OnGridInit: function (s) {
-        TeamMembersModel.Grid = s.component;
-        Globals.Devexpress.SetGridFullHeight(TeamMembersModel.Grid, s.element[0]);
+﻿const teamMembersModel = {
+    grid: null,
+    urlSync: null,
+    
+    onGridInit: function (e) {
+        teamMembersModel.grid = e.component;
+        globals.devexpress.setGridFullHeight(e.component, e.element[0]);
     },
-    OnGridReorder: function (e) {
-        TeamMembersModel.SyncTeamMemberSortIndexes(e);
+    onGridReorder: function (e) {
+        teamMembersModel.syncSortIndexes(e);
     },    
-    SyncTeamMemberSortIndexes: function (e) {
-        const TeamMembersSortIndexes = Globals.Devexpress.GetGridSortIndexes('TeamMemberID', TeamMembersModel.Grid, e);
+    syncSortIndexes: function (e) {
+        const sortIndexes = globals.devexpress.getGridSortIndexes('TeamMemberID', teamMembersModel.grid, e);
         
         $.ajax({
             type: 'POST',
-            url: TeamMembersModel.UrlSync,
-            data: { SortIndexes: TeamMembersSortIndexes },
+            url: teamMembersModel.urlSync,
+            data: { SortIndexes: sortIndexes },
             dataType: 'json',
             beforeSend: function () {
                 preloader.show();
             },
             success: function (res) {
                 if (res.IsSuccess) {
-                    TeamMembersModel.Grid.refresh()
+                    teamMembersModel.grid.refresh()
                 }
                 else {
-                    Components63Bits.Dialog.Error();
+                    components63Bits.dialog.error();
                 }
             },
             error: function () {
-                Components63Bits.Dialog.Error();
+                components63Bits.dialog.error();
             },
             complete: function () {
                 preloader.hide();
@@ -41,7 +39,7 @@
 }
 
 $(function () {
-    $('.js-add-new-button').click(function () {
-        TeamMembersModel.Grid.addRow();
+    $(globals.selectors.buttonAddNew).click(function () {
+        teamMembersModel.grid.addRow();
     });
 });

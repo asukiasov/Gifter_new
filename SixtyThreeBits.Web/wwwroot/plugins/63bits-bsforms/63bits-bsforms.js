@@ -1,47 +1,47 @@
-﻿const Validation = {
-    ErrorsJson: null,
-    Init: function (Options) {
-        if (typeof (Options.ErrorsJson) == 'object') {
-            Validation.ErrorsJson = Options.ErrorsJson;
+﻿const validation = {
+    errorsJson: null,
+    init: function (options) {
+        if (typeof (options.errorsJson) == 'object') {
+            validation.errorsJson = options.errorsJson;
         }
-        else if (typeof (Options.ErrorsJson) == 'string') {
-            Validation.ErrorsJson = JSON.parse(Options.ErrorsJson);
+        else if (typeof (options.errorsJson) == 'string') {
+            validation.errorsJson = JSON.parse(options.errorsJson);
         }
         else {
-            Validation.ErrorsJson = null;
+            validation.errorsJson = null;
         }
 
-        return Validation;
+        return validation;
     },
-    ShowErrors: function () {
-        $(Validation.ErrorsJson).each(function (Index, Item) {
-            var Selector = Item.Key;
-            $(Selector).closest('.form-group').addClass('has-error');
-            $(Selector).closest('.form-group').find('.help-block').text(Item.Value);
+    showErrors: function () {
+        $(validation.errorsJson).each(function (index, item) {
+            const selector = item.Key;
+            $(selector).addClass('is-invalid');
+            $(selector).parent().find('.invalid-feedback').text(item.Value);
         });
-        $('.has-error').first().ScrollTo();
+        $('.is-invalid').first().scrollToElement();
     },
-    GetErrorMessageFromValidationObject: function (ValidationObject) {
-        var ErrorMessage = null;
-        if (ValidationObject && ValidationObject.Errors && ValidationObject.Errors.length > 0) {
-            ErrorMessage = ValidationObject.Errors[0].Message;
+    getErrorMessageFromvalidationObject: function (validationObject) {
+        let errorMessage = null;
+        if (validationObject && validationObject.Errors && validationObject.Errors.length > 0) {
+            errorMessage = validationObject.Errors[0].Message;
         }
 
-        return ErrorMessage;
+        return errorMessage;
     },
-    HideErrors: function () {
-        $('.has-error').removeClass('has-error');
+    hideErrors: function () {
+        $('.is-invalid').removeClass('is-invalid');
     },
-    Templates: {
-        Compile: function () {
-            Validation.Templates.ErrorsListTemplate = Template7.compile(Validation.Templates.ErrorsListTemplate);
+    templates: {
+        compile: function () {
+            validation.templates.errorsListTemplate = Template7.compile(validation.templates.errorsListTemplate);
         },
-        ErrorsListTemplate: `<ul class="list-group js-errors-list">
+        errorsListTemplate: `<ul class="list-group js-errors-list">
 {{#each this}}
 <li class="list-group-item js-validation-error-item">
     <label class="d-flex justify-content-start align-middle">
-        <input type="checkbox"class="mr-2 js-validation-error-checkbox" />
-        <span>{{this}}</div>
+        <input type="checkbox"class="me-2 js-validation-error-checkbox" />
+        <span class="text-danger">{{this}}</div>
     </div>
 </li>
 {{/each}}
@@ -50,11 +50,10 @@
     }
 };
 
-
 $(function () {
     //https://idangero.us/template7/
     if (window.Template7) {
-        Validation.Templates.Compile();
+        validation.templates.compile();
         $(document).on('click', '.js-validation-error-checkbox', function (e) {
             if ($(this).is(':checked')) {
                 $(this).next().addClass('strike');
@@ -65,67 +64,89 @@ $(function () {
         });
     }
 
-    $('.js-custom-file-upload input').change(function () {
-        var Container = $(this).closest('.js-custom-file-upload');
-        var CurrentAttachment = Container.find('.js-attachment');
-        var NewAttachment = Container.find('.js-new-attachment');
-        var ClearButton = Container.find('.js-clear-button');
-        var DeleteButton = Container.find('.js-delete-button');
-
-
-        CurrentAttachment.Hide();
-        NewAttachment.text($(this).val())
-        NewAttachment.Show();
-        ClearButton.Show();
-    });
-
-    $('.js-custom-file-upload .js-clear-button').click(function () {
-        var Container = $(this).closest('.js-custom-file-upload');
-        var CurrentAttachment = Container.find('.js-attachment');
-        var NewAttachment = Container.find('.js-new-attachment');
-        var ClearButton = Container.find('.js-clear-button');
-        var DeleteButton = Container.find('.js-delete-button');
-
-        CurrentAttachment.Show();
-        NewAttachment.text('');
-        NewAttachment.Hide();
-        ClearButton.Hide();
-
-        Container.find('input').val('');
-    });
-
-    $('.js-custom-file-upload .js-image-attachment').click(function (e) {
+    $('.js-generate-slug-from-title').click(function (e) {
         e.preventDefault();
-        FancyBox.Init({
-            src: $(this).attr('href')
-        }).ShowImagePopup();
+        const titleInputSelector = $(this).data('title-input-selector');
+        const slugInputSelector = $(this).data('slug-input-selectpr');
+        const slug = $(titleInputSelector).toSlug();
+        $(slugInputSelector).val(slug);
     });
+    $('.js-apply-slug-input-behaviour').focusout(function () {
+        const slugInput = $(this);
+        slugInput.val(slugInput.toSlug());
+    })
 
-    $('.js-custom-file-upload .js-delete-button').click(function () {
-        var _this = $(this)
-        var Container = _this.closest('.js-custom-file-upload');
-        var CurrentAttachment = Container.find('.js-attachment');
-        var DeleteButton = Container.find('.js-delete-button');
-        var TextConfirm = _this.attr('data-text-confirm');
-        var UrlDelete = _this.attr('data-url');
-        var Hash = _this.attr('data-hash');
+    $('.js-password-show-hide-toggle-button').click(function (e) {
+        e.preventDefault();
+        const isHidden = $(this).attr('data-is-hidden') == 'true';
+        $(this).find('i').hideElement();
+        if (isHidden) {
+            $(this).closest('.form-group').find('input').attr('type', 'text');
+            $(this).find('i:eq(1)').showElement();
+            $(this).attr('data-is-hidden', 'false');
+        }
+        else {
+            $(this).closest('.form-group').find('input').attr('type', 'password');            
+            $(this).find('i:eq(0)').showElement();
+            $(this).attr('data-is-hidden', 'true');
+        }
+    })
 
-        Components63Bits.Dialog.Confirm({
-            TextConfirm: TextConfirm,
-            ConfirmButtonColor: Components63Bits.Dialog.ButtonColors.Red,
-            Resolve: function () {
+    $('.js-custom-file-upload input').change(function () {
+        const container = $(this).closest('.js-custom-file-upload');
+        const currentAttachment = container.find('.js-custom-file-upload-attachment');
+        const newAttachment = container.find('.js-custom-file-upload-new-attachment');
+        const clearButton = container.find('.js-custom-file-upload-clear-button');
+
+        currentAttachment.hideElement();
+        newAttachment.text($(this).val())
+        newAttachment.showElement();
+        clearButton.showElement();
+    });
+    $('.js-custom-file-upload-clear-button').click(function () {
+        const container = $(this).closest('.js-custom-file-upload');
+        const currentAttachment = container.find('.js-custom-file-upload-attachment');
+        const newAttachment = container.find('.js-custom-file-upload-new-attachment');
+        const clearButton = container.find('.js-custom-file-upload-clear-button');
+
+        currentAttachment.showElement();
+        newAttachment.text('');
+        newAttachment.hideElement();
+        clearButton.hideElement();
+
+        container.find('input').val(null);
+    });
+    $('.js-custom-file-upload .js-custom-file-upload-attachment[data-type="image"]').click(function (e) {
+        e.preventDefault();
+        fancyBox.init({
+            src: $(this).attr('href')
+        }).showImagePopup();
+    });
+    $('.js-custom-file-upload-delete-button').click(function () {
+        const _this = $(this)
+        const container = _this.closest('.js-custom-file-upload');
+        const currentAttachment = container.find('.js-custom-file-upload-attachment');
+        const deleteButton = container.find('.js-custom-file-upload-delete-button');
+        const textConfirm = _this.attr('data-text-confirm');
+        const urlDelete = _this.attr('data-url');
+        const hash = _this.attr('data-hash');
+
+        components63Bits.dialog.confirm({
+            textConfirm: textConfirm,
+            confirmButtonColor: components63Bits.dialog.buttonColors.red,
+            resolve: function () {
                 $.ajax({
                     type: 'POST',
-                    url: UrlDelete,
-                    data: { Hash: Hash },
+                    url: urlDelete,
+                    data: { Hash: hash },
                     dataType: 'json',
                     beforeSend: function () {
                         preloader.show();
                     },
                     success: function (res) {
                         if (res.IsSuccess) {
-                            DeleteButton.Hide();
-                            CurrentAttachment.remove();
+                            deleteButton.remove();
+                            currentAttachment.remove();
                         }
                     },
                     complete: function () {
@@ -134,14 +155,7 @@ $(function () {
                 });
             }
         });        
-    });
-
-    $('input[type=file]').each(function (index, i) {
-        var item = $(i);
-        if (item.hasClass('input-error')) {
-            item.parents('.input-group').addClass('input-error');
-        }
-    });
+    });   
 
     $('.checkbox-list input').change(function () {
         $(this).parent().toggleClass('active');

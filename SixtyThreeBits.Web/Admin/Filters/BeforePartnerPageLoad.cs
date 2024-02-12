@@ -1,44 +1,48 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
-using SixtyThreeBits.Core.Utilities;
-using SixtyThreeBits.Libraries;
+using SixtyThreeBits.Core.Infrastructure.Utilities;
+using SixtyThreeBits.Libraries.Extensions;
 using SixtyThreeBits.Web.Admin.Models;
-using SixtyThreeBits.Web.Reusables.Core;
+using SixtyThreeBits.Web.Domain;
 using System.Threading.Tasks;
 
 namespace SixtyThreeBits.Web.Admin.Filters
 {
     public class BeforePartnerPageLoad : IAsyncActionFilter
     {
+        #region Properties
+        PartnersModelBase _model;
+        #endregion
 
-        public BeforePartnerPageLoad()
+        #region Methods
+        public async Task OnActionExecutionAsync(ActionExecutingContext filterContext, ActionExecutionDelegate next)
         {
-        }
-        public async Task OnActionExecutionAsync(ActionExecutingContext FilterContext, ActionExecutionDelegate next)
-        {
-            var Model = LocalUtilities.GetModelFromController<PartnersModelBase>(FilterContext.Controller);
-            var PartnerID = FilterContext.RouteData.Values[Constants.RouteValues.PartnersID].ToString().ToInt();
+            _model = LocalUtilities.GetModelFromController<PartnersModelBase>(filterContext.Controller);
+            var partnerID = filterContext.RouteData.Values[Constants.RouteValues.PartnerID]?.ToString().ToInt();
 
-            Model.DBItemPartner = await Model.DataAccessFactory.Partners.GetSinglePartnerByID(PartnerID);
-            if (Model.DBItemPartner == null)
+            var repository = _model.RepositoriesFactory.GetPartnersRepository();
+            _model.DBItem = await repository.PartnersGetSingleByID(partnerID);
+            if (_model.DBItem == null)
             {
-                FilterContext.Result = Model.GetNotFoundAdminViewResult();
+                filterContext.Result = _model.GetNotFoundAdminViewResult();
             }
             else
             {
-                InitPageTitle(Model);
-                ReinitBreadCrumbs(Model);
+                initPageTitle();
+                reinitBreadCrumbs();
                 await next();
             }
         }
 
-        void InitPageTitle(PartnersModelBase Model)
+        void initPageTitle()
         {
-            Model.PageTitle.Set(Model.DBItemPartner.PartnerName);
+            _model.PageTitle.Set(_model.DBItem.PartnerName);
         }
 
-        void ReinitBreadCrumbs(PartnersModelBase Model)
+        void reinitBreadCrumbs()
         {
-            Model.Breadcrumbs.RenameLastItem(Model.DBItemPartner.PartnerName);
-        }
+            _model.Breadcrumbs.DeleteLastItem();
+            _model.Breadcrumbs.RenameLastItem(_model.DBItem.PartnerName);
+        } 
+        #endregion
     }
 }

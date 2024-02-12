@@ -1,40 +1,42 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
-using SixtyThreeBits.Core.Utilities;
-using SixtyThreeBits.Libraries;
+using SixtyThreeBits.Core.Infrastructure.Utilities;
+using SixtyThreeBits.Libraries.Extensions;
 using SixtyThreeBits.Web.Admin.Models;
-using SixtyThreeBits.Web.Reusables.Core;
+using SixtyThreeBits.Web.Domain;
 using System.Threading.Tasks;
 
 namespace SixtyThreeBits.Web.Admin.Filters
 {
     public class BeforeBlogPageLoad : IAsyncActionFilter
-    {        
+    {
+        #region Properties
+        BlogModelBase _model;
+        #endregion
 
-        public BeforeBlogPageLoad()
-        {            
-        }
-        
-        public async Task OnActionExecutionAsync(ActionExecutingContext FilterContext, ActionExecutionDelegate next)
+        #region Methods
+        public async Task OnActionExecutionAsync(ActionExecutingContext filterContext, ActionExecutionDelegate next)
         {
-            var Model = LocalUtilities.GetModelFromController<BlogModelBase>(FilterContext.Controller);
-            var BlogPostID = FilterContext.RouteData.Values[Constants.RouteValues.BlogPostID].ToString().ToInt();
+            _model = LocalUtilities.GetModelFromController<BlogModelBase>(filterContext.Controller);
+            var blogPostID = filterContext.RouteData.Values[Constants.RouteValues.BlogPostID]?.ToString().ToInt();
 
-            Model.DBItemBlog = await Model.DataAccessFactory.Blog.GetSingleBlogByID(BlogPostID);
-            if (Model.DBItemBlog == null)
-            {                
-                FilterContext.Result = Model.GetNotFoundAdminViewResult();
+            var repository = _model.RepositoriesFactory.GetBlogRepository();
+            _model.DBItem = await repository.BlogPostGetSingleByID(blogPostID);
+            if (_model.DBItem == null)
+            {
+                filterContext.Result = _model.GetNotFoundAdminViewResult();
             }
             else
             {
-                ReinitBreadCrumbs(Model);
+                reinitBreadCrumbs();
                 await next();
             }
         }
 
-        void ReinitBreadCrumbs(BlogModelBase Model)
+        void reinitBreadCrumbs()
         {
-            Model.Breadcrumbs.DeleteLastItem();
-            Model.Breadcrumbs.RenameLastItem(Model.DBItemBlog.BlogPostTitle);
-        } 
+            _model.Breadcrumbs.DeleteLastItem();
+            _model.Breadcrumbs.RenameLastItem(_model.DBItem.BlogPostTitle);
+        }  
+        #endregion
     }
 }

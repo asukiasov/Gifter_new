@@ -1,6 +1,6 @@
 ﻿@model List<TreeNodeItem>
 <div class="sortable">
-    <ul class="js-file-tree-editor">
+    <ul class="js-file-tree-editor js-tree-items-container">
         @if (Model != null)
         {
         foreach (var Item in Model)
@@ -44,6 +44,13 @@
                 <label class="toggler">
                     <span>{{TextToggler2}}</span>
                     <input type="checkbox" {{#if IsToggler2Checked}} checked {{/if}} class="js-file-tree-editor-item-toggler-2-checkbox" />
+                    <i></i>
+                </label>
+                {{/if}}
+                {{#if ShowToggler3}}
+                <label class="toggler">
+                    <span>{{TextToggler3}}</span>
+                    <input type="checkbox" {{#if IsToggler3Checked}} checked {{/if}} class="js-file-tree-editor-item-toggler-3-checkbox" />
                     <i></i>
                 </label>
                 {{/if}}

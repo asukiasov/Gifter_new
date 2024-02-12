@@ -1,5 +1,5 @@
-﻿const LayoutModel = {
-    Animations: {
+﻿const layoutModel = {
+    animations: {
         cssAnimations: {
             selector: '.js-animate:not(.animated)',
             init: function (_this, index) {
@@ -12,7 +12,7 @@
         },
         appear: {
             init: function (selector, func) {
-                if ($(LayoutModel.Animations.cssAnimations.selector).length) {
+                if ($(layoutModel.animations.cssAnimations.selector).length) {
                     $(selector).appear();
 
                     if ($().appear) {
@@ -35,5 +35,5 @@
 
 $(function () {
     //--- animations
-    LayoutModel.Animations.appear.init(LayoutModel.Animations.cssAnimations.selector, LayoutModel.Animations.cssAnimations.init);
+    layoutModel.animations.appear.init(layoutModel.animations.cssAnimations.selector, layoutModel.animations.cssAnimations.init);
 });

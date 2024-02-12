@@ -1,0 +1,74 @@
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using SixtyThreeBits.Core.Infrastructure.Base;
+using SixtyThreeBits.Core.Infrastructure.Database;
+using SixtyThreeBits.Core.Infrastructure.Database.Core;
+using SixtyThreeBits.Core.Infrastructure.DTO;
+using SixtyThreeBits.Core.Infrastructure.Utilities;
+using SixtyThreeBits.Libraries.Extensions;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace SixtyThreeBits.Core.Infrastructure.Repositories
+{
+    public class EmailTemplatesRepository : RepositoryBase
+    {
+        #region Constructors
+        public EmailTemplatesRepository(ConnectionFactory connectionFactory) : base(connectionFactory)
+        {
+            _mapper = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<DBQueriesDataContext.EmailTemplatesListEntity, EmailTemplateDTO>();
+            }).CreateMapper();
+        }
+        #endregion
+
+        #region Methods        
+        public async Task<EmailTemplateDTO> EmailTemplatesGetSingleByID(int? emailTemplateID)
+        {
+            return await TryToReturnAsyncTask($"{nameof(EmailTemplatesGetSingleByID)}({nameof(emailTemplateID)} = {emailTemplateID})", async () =>
+            {
+                using (var db = _connectionFactory.GetDBQueriesDataContext())
+                {
+                    return (await db.EmailTemplatesGetSingleByID(emailTemplateID)).DeserializeJsonTo<EmailTemplateDTO>();
+                }
+            });
+        }
+
+        public async Task<int?> EmailTemplatesIUD(Enums.DatabaseActions databaseAction, int? emailTemplateID = null, string emailTemplateName = null, string emailTemplateSubject = null, string emailTemplateSubjectEng = null, string emailTemplateBody = null, string emailTemplateBodyEng = null)
+        {
+            return await TryToReturnAsyncTask($"{nameof(EmailTemplatesIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(emailTemplateID)} = {emailTemplateID}, {nameof(emailTemplateName)} = {emailTemplateName}, {nameof(emailTemplateSubject)} = {emailTemplateSubject}, {nameof(emailTemplateSubjectEng)} = {emailTemplateSubjectEng}, {nameof(emailTemplateBody)} = {emailTemplateBody}, {nameof(emailTemplateBodyEng)} = {emailTemplateBodyEng})", async () =>
+            {
+                using (var db = _connectionFactory.GetDBCommandsDataContext())
+                {
+                    await db.EmailTemplatesIUD(databaseAction, emailTemplateID, emailTemplateName, emailTemplateSubject, emailTemplateSubjectEng, emailTemplateBody, emailTemplateBodyEng);
+                    return emailTemplateID;
+                }
+            });
+        }
+
+        public async Task<List<EmailTemplateDTO>> EmailTemplatesList()
+        {
+            return await TryToReturnAsyncTask($"{nameof(EmailTemplatesList)}", async () =>
+            {
+                using (var db = _connectionFactory.GetDBQueriesDataContext())
+                {
+                    return (await db.EmailTemplatesList().ToListAsync())?.Select(item => _mapper.Map<EmailTemplateDTO>(item)).ToList();
+                }
+            });
+        }
+
+        public async Task<string> EmailTemplatesWrapInLayout(string websiteHttpPath, string languageCultureCode, string bodyText, string urlUnsubscribe = null)
+        {
+            return await TryToReturnAsyncTask($"{nameof(EmailTemplatesWrapInLayout)}({nameof(websiteHttpPath)} = {websiteHttpPath}, {nameof(languageCultureCode)} = {languageCultureCode}, {nameof(bodyText)} = {bodyText}, {nameof(urlUnsubscribe)} = {urlUnsubscribe})", async () =>
+            {
+                using (var db = _connectionFactory.GetDBQueriesDataContext())
+                {
+                    return await db.EmailTemplatesWrapInLayout(websiteHttpPath, languageCultureCode, bodyText, urlUnsubscribe);
+                }
+            });
+        }
+        #endregion
+    }
+}

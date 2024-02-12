@@ -1,4 +1,8 @@
-﻿.dx-row-focused > td {
+﻿.dx-widget {
+    font-family: var(--font-family);
+}
+
+.dx-row-focused:not(.dx-master-detail-row) > td {
     background-color: #d9e4fd !important;
     border-color: #d9e4fd !important;
     color: #000 !important;
@@ -7,6 +11,18 @@
     background-color: #d9e4fd !important;
     border-color: #d9e4fd !important;
 }
+
+
 .dx-datagrid-validator.dx-datagrid-invalid {
     background-color: rgba(244, 67, 54, 0.32) !important;
+}
+
+.dx-icon.dx-filemanager-thumbnails-item-thumbnail {
+    width: 128px !important;
+    height: 128px !important;
+}
+
+.dx-filemanager .dx-filemanager-thumbnails .dx-filemanager-thumbnails-view-port .dx-filemanager-thumbnails-item {
+    width: 160px !important;
+    height: 180px !important;
 }

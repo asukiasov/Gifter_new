@@ -1,16 +1,25 @@
 ﻿@model BrandsModel.PageViewModel
-@if (Model.ShowAddNewButton)
-{
-    <div class="actions-row">
-        <button class="btn btn-oval btn-default js-add-new-button"><i class="fas fa-plus"></i> დამატება</button>
-    </div>
-}
-<div class="row">
-    <div class="col">
-        @Model.Grid.Render(Html)
+<div class="card">
+    <div class="card-body">
+        <div class="row">
+            <div class="col">
+                @if (Model.ShowAddNewButton)
+                {
+                    @await Html.PartialAsync(ViewNames.Admin.Shared.ButtonAddNew, new ButtonAddNewViewModel())
+                }
+            </div>
+        </div>
     </div>
 </div>
-
+<div class="card">
+    <div class="card-body">
+        <div class="row">
+            <div class="col">
+                @Model.Grid.Render(Html)
+            </div>
+        </div>
+    </div>
+</div>
 @section FooterSection{
     <script src="~/admin/js/Brands/Brands.js"></script>
 }

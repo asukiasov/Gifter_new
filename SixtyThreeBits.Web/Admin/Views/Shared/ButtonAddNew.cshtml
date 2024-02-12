@@ -1,9 +1,9 @@
 ﻿@model ButtonAddNewViewModel
 @if (Model.HasUrlAddNew)
 {
-<a href="@Html.Raw(Model.UrlAddNew)" class="btn btn-oval btn-default @Html.Raw(Model.CssClass)"><i class="fas fa-plus"></i> @Html.Raw(Model.ButtonText)</a>
+    <a href="@Html.Raw(Model.UrlAddNew)" class="btn btn-light btn-rounded @Html.Raw(Model.CssClass) @Html.Raw(Model.JsSelector)"><i class="fa-solid fa-plus"></i> @Html.Raw(Model.ButtonText)</a>
 }
 else
 {
-<button type="button" class="btn btn-oval btn-default @Html.Raw(Model.CssClass) @Html.Raw(Model.JsSelector)"><i class="fas fa-plus"></i> @Html.Raw(Model.ButtonText)</button>
+    <button type="button" class="btn btn-light btn-rounded @Html.Raw(Model.CssClass) @Html.Raw(Model.JsSelector)"><i class="fa-solid fa-plus"></i> @Html.Raw(Model.ButtonText)</button>
 }

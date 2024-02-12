@@ -3,12 +3,15 @@ using DevExtreme.AspNet.Mvc.Builders;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using SixtyThreeBits.Core.Modules;
+using SixtyThreeBits.Core.Infrastructure.DTO;
+using SixtyThreeBits.Core.Infrastructure.Libraries;
+using SixtyThreeBits.Core.Infrastructure.Repositories;
+using SixtyThreeBits.Core.Infrastructure.Utilities;
 using SixtyThreeBits.Core.Properties;
-using SixtyThreeBits.Core.Services;
-using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries;
-using SixtyThreeBits.Web.Reusables.Core;
+using SixtyThreeBits.Web.Domain;
+using SixtyThreeBits.Web.Domain.Libraries;
+using SixtyThreeBits.Web.Domain.SharedViewModels;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -21,51 +24,52 @@ namespace SixtyThreeBits.Web.Admin.Models
         #region Methods
         public PageViewModel GetPageViewModel()
         {
-            var ViewModel = new PageViewModel();
-            ViewModel.ShowAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.Brands.BrandsGridAdd);
+            var viewModel = new PageViewModel();
+            viewModel.ShowAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.Brands.BrandsGridAdd);
 
-            ViewModel.Grid = new PageViewModel.GridModel();
-            ViewModel.Grid.UrlLoad = Url.RouteUrl(ControllerActionRouteNames.Admin.Brands.BrandsGrid);
-            ViewModel.Grid.UrlAddNew = Url.RouteUrl(ControllerActionRouteNames.Admin.Brands.BrandsGridAdd);
-            ViewModel.Grid.UrlUpdate = Url.RouteUrl(ControllerActionRouteNames.Admin.Brands.BrandsGridUpdate);
-            ViewModel.Grid.UrlDelete = Url.RouteUrl(ControllerActionRouteNames.Admin.Brands.BrandsGridDelete);
-            ViewModel.Grid.AllowAdd = User.HasPermission(ControllerActionRouteNames.Admin.Brands.BrandsGridAdd);
-            ViewModel.Grid.AllowUpdate = User.HasPermission(ControllerActionRouteNames.Admin.Brands.BrandsGridUpdate);
-            ViewModel.Grid.AllowDelete = User.HasPermission(ControllerActionRouteNames.Admin.Brands.BrandsGridDelete);
+            viewModel.Grid = new PageViewModel.GridModel();
+            viewModel.Grid.UrlLoad = Url.RouteUrl(ControllerActionRouteNames.Admin.Brands.BrandsGrid);
+            viewModel.Grid.UrlAddNew = Url.RouteUrl(ControllerActionRouteNames.Admin.Brands.BrandsGridAdd);
+            viewModel.Grid.UrlUpdate = Url.RouteUrl(ControllerActionRouteNames.Admin.Brands.BrandsGridUpdate);
+            viewModel.Grid.UrlDelete = Url.RouteUrl(ControllerActionRouteNames.Admin.Brands.BrandsGridDelete);
+            viewModel.Grid.AllowAdd = User.HasPermission(ControllerActionRouteNames.Admin.Brands.BrandsGridAdd);
+            viewModel.Grid.AllowUpdate = User.HasPermission(ControllerActionRouteNames.Admin.Brands.BrandsGridUpdate);
+            viewModel.Grid.AllowDelete = User.HasPermission(ControllerActionRouteNames.Admin.Brands.BrandsGridDelete);
 
-            return ViewModel;
+            return viewModel;
         }
 
         public async Task<List<PageViewModel.GridModel.GridItem>> GetGridViewModel()
         {
-            var Brands = (await DataAccessFactory.Brands.ListBrands())?.Select(Item => new PageViewModel.GridModel.GridItem
+            var repository = RepositoriesFactory.GetBrandsRepository();
+            var brands = (await repository.BrandsList())?.Select(item => new PageViewModel.GridModel.GridItem
             {
-                BrandID = Item.BrandID,
-                BrandName = Item.BrandName,
-                BrandNameEng = Item.BrandNameEng,
-                BrandNameRus = Item.BrandNameRus,
-                UrlBrandProperties = Url.RouteUrl(ControllerActionRouteNames.Admin.Brands.Brand.Properties, new { BrandID = Item.BrandID })
+                BrandID = item.BrandID,
+                BrandName = item.BrandName,
+                BrandNameEng = item.BrandNameEng,
+                UrlBrandProperties = Url.RouteUrl(ControllerActionRouteNames.Admin.Brands.Brand.Properties, new { brandID = item.BrandID })
             }).ToList();
-            return Brands;
+            return brands;
         }
 
-        public async Task CRUD(Enums.DatabaseActions DatabaseAction, int? BrandID, PageViewModel.GridModel.GridItem SubmitModel)
+        public async Task CRUD(Enums.DatabaseActions DatabaseAction, int? brandID, PageViewModel.GridModel.GridItem submitModel)
         {
+            var repository = RepositoriesFactory.GetBrandsRepository();
+
             if (DatabaseAction == Enums.DatabaseActions.DELETE)
             {
-                var DBItem = await DataAccessFactory.Brands.GetSingleBrandByID(BrandID);
-                Utilities.DeleteUploadedFile(DBItem?.BrandImageFilename);
+                var dbItem = await repository.BrandsGetSingleByID(brandID);
+                await DeleteUploadedFile(dbItem.BrandImageFilename, folderPath: null);
             }
 
-            await DataAccessFactory.Brands.BrandsIUD(
-                DatabaseAction: DatabaseAction,
-                BrandID: BrandID,
-                BrandName: SubmitModel.BrandName,
-                BrandNameEng: SubmitModel.BrandNameEng ?? Constants.NullValueFor.String,
-                BrandNameRus: SubmitModel.BrandNameRus ?? Constants.NullValueFor.String
+            await repository.BrandsIUD(
+                databaseAction: DatabaseAction,
+                brandID: brandID,
+                brandName: submitModel.BrandName,
+                brandNameEng: submitModel.BrandNameEng ?? Constants.NullValueFor.String
             );
 
-            if (DataAccessFactory.Brands.IsError)
+            if (repository.IsError)
             {
                 Form.AddError(Resources.TextError);
             }
@@ -84,26 +88,25 @@ namespace SixtyThreeBits.Web.Admin.Models
             public class GridModel : DevExtremeGridViewModelBase, IDevExtremeGridModel<GridModel.GridItem>
             {
                 #region Methods
-                public DataGridBuilder<GridItem> Render(IHtmlHelper Html)
+                public DataGridBuilder<GridItem> Render(IHtmlHelper html)
                 {
-                    var Grid = GetGridWithStartupValues<GridItem>(Html: Html, KeyFieldName: nameof(GridItem.BrandID));
+                    var grid = GetGridWithStartupValues<GridItem>(html: html, keyFieldName: nameof(GridItem.BrandID));
 
-                    Grid
+                    grid
                       .ID("BrandsGrid")                      
-                      .OnInitialized("BrandsModel.OnGridInit")
-                      .Columns(Columns =>
+                      .OnInitialized("brandsModel.onGridInit")
+                      .Columns(columns =>
                       {
-                          Columns.Add().Width(30).Caption(" ").InitDetailsUrlCellTemplate(nameof(GridItem.UrlBrandProperties));
-                          Columns.AddFor(m => m.BrandName).Caption("დასახელება").Width(350).ValidationRules(Options =>
+                          columns.Add().Width(30).Caption(" ").InitDetailsUrlCellTemplate(nameof(GridItem.UrlBrandProperties));
+                          columns.AddFor(m => m.BrandName).Caption(Resources.TextName).Width(350).ValidationRules(Options =>
                           {
                               Options.AddRequired();
                           });
-                          Columns.AddFor(m => m.BrandNameEng).Caption("დასახელება Eng").Width(350);
-                          Columns.AddFor(m => m.BrandNameRus).Caption("დასახელება Rus").Width(350);
-                          Columns.Add();
+                          columns.AddFor(m => m.BrandNameEng).Caption(Resources.TextNameEng).Width(350);
+                          columns.Add();
                       });
 
-                    return Grid;
+                    return grid;
                 }
                 #endregion
 
@@ -114,7 +117,6 @@ namespace SixtyThreeBits.Web.Admin.Models
                     public int? BrandID { get; set; }
                     public string BrandName { get; set; }
                     public string BrandNameEng { get; set; }
-                    public string BrandNameRus { get; set; }
                     public string UrlBrandProperties { get; set; }
                     #endregion
                 }
@@ -123,109 +125,103 @@ namespace SixtyThreeBits.Web.Admin.Models
             #endregion
         }
         #endregion
-
     }
 
     public class BrandsModelBase : WebProjectModelBase
     {
         #region Properties
-        public Brand DBItemBrands { get; set; }
+        public BrandDTO DBItem { get; set; }
         #endregion
     }
 
     public class BrandsPropertiesModel : BrandsModelBase
     {
         #region Methods
-        public BrandsPropertiesViewModel GetPageViewModel(int? BrandID, BrandsPropertiesViewModel ViewModel)
+        public PageViewModel GetPageViewModel(PageViewModel viewModel)
         {
-            if (ViewModel == null)
+            if (viewModel == null)
             {
-                ViewModel = new BrandsPropertiesViewModel();
-                ViewModel.BrandName = DBItemBrands.BrandName;
-                ViewModel.BrandNameEng = DBItemBrands.BrandNameEng;
-                ViewModel.BrandNameRus = DBItemBrands.BrandNameRus;
+                viewModel = new PageViewModel();
+                viewModel.BrandName = DBItem.BrandName;
+                viewModel.BrandNameEng = DBItem.BrandNameEng;
             }
-            ViewModel.BrandImageFilename = DBItemBrands.BrandImageFilename;
-            ViewModel.BrandImageHttpPath = Utilities.GetUploadedFileHttpPath(DBItemBrands.BrandImageFilename);
-            ViewModel.UrlDeleteImage = Url.RouteUrl(ControllerActionRouteNames.Admin.Brands.Brand.DeleteCoverImage, new { BrandID = BrandID });
+            viewModel.BrandImageFilename = DBItem.BrandImageFilename;
+            viewModel.BrandImageHttpPath = FileStorage.GetUploadedFileHttpPath(DBItem.BrandImageFilename);
+            viewModel.UrlDeleteImage = Url.RouteUrl(ControllerActionRouteNames.Admin.Brands.Brand.DeleteCoverImage, new { brandID = DBItem.BrandID });
 
-            return ViewModel;
+            return viewModel;
         }
-
-        public async Task<AjaxResponse> DeleteImage(int? BrandID)
+        
+        public async Task Save(PageViewModel viewModel)
         {
+            var repository = RepositoriesFactory.GetBrandsRepository();
 
-            Utilities.DeleteUploadedFile(DBItemBrands.BrandImageFilename);
+            var hasBrandImage = viewModel.BrandImageFile?.Length > 0;
+            var brandImageFilename = hasBrandImage ? GetFilenameFromUploadedFile(viewModel.BrandImageFile) : null;
 
-            var AR = new AjaxResponse();
-
-            await DataAccessFactory.Brands.BrandsIUD(
-                DatabaseAction: Enums.DatabaseActions.UPDATE,
-                BrandID: BrandID,
-                BrandImageFilename: Constants.NullValueFor.String
-            );
-
-            AR.IsSuccess = !DataAccessFactory.Brands.IsError;
-
-            return AR;
-        }
-
-        public async Task SaveBrandsProperties(int? BrandID, BrandsPropertiesViewModel ViewModel)
-        {
-            var HasBrandImage = ViewModel.PostedFile?.Length > 0;
-            var BrandImageFilename = HasBrandImage ? GetFilenameFromUploadedFile(ViewModel.PostedFile) : null;
-
-            if (HasBrandImage)
+            if (hasBrandImage)
             {
-                Utilities.DeleteUploadedFile(ViewModel.BrandImageFilename);
+                await DeleteUploadedFile(viewModel.BrandImageFilename, folderPath: null);
             }
 
-            await DataAccessFactory.Brands.BrandsIUD(
-                DatabaseAction: Enums.DatabaseActions.UPDATE,
-                BrandID: BrandID,
-                BrandName: ViewModel.BrandName,
-                BrandNameEng: ViewModel.BrandNameEng,
-                BrandNameRus: ViewModel.BrandNameRus,
-                BrandImageFilename: BrandImageFilename
+            await repository.BrandsIUD(
+                databaseAction: Enums.DatabaseActions.UPDATE,
+                brandID: DBItem.BrandID,
+                brandName: viewModel.BrandName,
+                brandNameEng: viewModel.BrandNameEng,
+                brandImageFilename: brandImageFilename
           
             );
 
-            if (!DataAccessFactory.Brands.IsError)
+            if (!repository.IsError)
             {
-                ViewModel.IsSaved = true;
-                if (HasBrandImage)
+                viewModel.IsSaved = true;
+                if (hasBrandImage)
                 {
-                    await SaveUploadedFile(PostedFile: ViewModel.PostedFile, Filename: BrandImageFilename);
+                    await SaveUploadedFile(viewModel.BrandImageFile, brandImageFilename, folderPath: null);
                 }
             }
         }
 
-        public void ValidatePageViewModel(BrandsPropertiesViewModel ViewModel)
+        public void ValidatePageViewModel(PageViewModel viewModel)
         {
-            ViewModel.Errors = new List<SimpleKeyValue<string, string>>
-            {
+            viewModel.AddError(Validation.ValidateRequired(errorKey: Validation.GetJQueryNameSelectorFor(nameof(viewModel.BrandName)), valueToValidate: viewModel.BrandName));
+        }
 
-                Validation.ValidateRequired(ErrorKey:$"[name=\"{nameof(ViewModel.BrandName)}\"]", ValueToValidate:ViewModel.BrandName)
+        public async Task<AjaxResponse> DeleteImage()
+        {
+            var viewModel = new AjaxResponse();
+            var repository = RepositoriesFactory.GetBrandsRepository();
 
-            };
-            ViewModel.Errors.RemoveAll(Item => Item == null);
+            await DeleteUploadedFile(DBItem.BrandImageFilename, folderPath: null);
+
+            await repository.BrandsIUD(
+                databaseAction: Enums.DatabaseActions.UPDATE,
+                brandID: DBItem.BrandID,
+                brandImageFilename: Constants.NullValueFor.String
+            );
+
+            viewModel.IsSuccess = !repository.IsError;
+
+            return viewModel;
         }
         #endregion
 
         #region Nested Classes
-        public class BrandsPropertiesViewModel : FormViewModelBase
+        public class PageViewModel : FormViewModelBase
         {
             #region Properties           
             public string BrandName { get; set; }
             public string BrandNameEng { get; set; }
-            public string BrandNameRus { get; set; }           
             public string BrandImageFilename { get; set; }
             public string BrandImageHttpPath { get; set; }
             public bool HasBrandImage => !string.IsNullOrWhiteSpace(BrandImageFilename);
             public string UrlDeleteImage { get; set; }            
-            public IFormFile PostedFile { get; set; }
+            public IFormFile BrandImageFile { get; set; }
 
-            public readonly string TextConfirmDelete = Resources.TextConfirmDelete;
+            public readonly string TextName = Resources.TextName;
+            public readonly string TextNameEng = Resources.TextNameEng;
+            public readonly string TextUploadImage = Resources.TextUploadImage;
             #endregion
         }
         #endregion

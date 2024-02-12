@@ -1,16 +1,16 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SixtyThreeBits.Web.Admin.Filters;
-using SixtyThreeBits.Web.Reusables.Core;
+using SixtyThreeBits.Web.Domain;
 
 namespace SixtyThreeBits.Web.Admin.Controllers
-{    
+{
     [TypeFilter(typeof(BeforeAdminPageLoad), Order = 1)]
-    public class AdminControllerBase<T> : WebProjectController<T>
+    public class AdminControllerBase<T> : WebProjectControllerBase<T>
     {
         [NonAction]
-        public ContentResult GetDevexpressErrorResult(string ErrorMessage)
+        public ContentResult GetDevexpressErrorResult(string errorMessage)
         {
-            return new ContentResult { Content = ErrorMessage, StatusCode = 500 };
+            return new ContentResult { Content = errorMessage, StatusCode = 500 };
         }
 
         [NonAction]

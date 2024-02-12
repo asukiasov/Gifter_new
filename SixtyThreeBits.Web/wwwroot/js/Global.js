@@ -1,110 +1,87 @@
-﻿//TextAbort და TextSuccess ცვლადების მნიშნველობების გაფორმება ხდება _Layout.cshtml - ის ბოლოში
-const Globals = {
-    TextError: null,
-    TextSuccess: null,
-    Constants: {
-        NullValueFor: {
-            Int: -1,
-            String: '',
-            Date:'1900-01-01'
+﻿//values for globals.textAbort and globals.textSuccess variables, are assigned in the end of  _Layout.cshtml file
+const globals = {
+    textError: null,
+    textSuccess: null,
+    constants: {
+        nullValueFor: {
+            int: -1,
+            string: '',
+            date:'1900-01-01'
         }
     },
-    Formats: {
-        JQueryIUDate: 'M d, yy'
-    },
-    Devexpress: {
-        OnGridCheckBoxColumnEditorInit: function (Grid, Editor, EventArgs) {
-            if (Grid.IsNewRowEditing()) {
-                Editor.SetValue(false);
+    devexpress: {
+        onGridCheckBoxColumnEditorInit: function (grid, editor, eventArgs) {
+            if (grid.IsNewRowEditing()) {
+                editor.SetValue(false);
             }
         },
 
-        OnGridEndCallback: function (Grid, EventArgs) {
-            if (Grid.cpErrorMessage && Grid.cpErrorMessage != '') {
-                Components63Bits.Dialog.Error(Grid.cpErrorMessage);
-                Grid.cpErrorMessage = null;
+        onGridEndCallback: function (grid, eventArgs) {
+            if (grid.cpErrorMessage && grid.cpErrorMessage != '') {
+                components63Bits.dialog.error(grid.cpErrorMessage);
+                grid.cpErrorMessage = null;
             }
         },
 
-        OnTreeEndCallback: function (Tree, EventArgs) {
-            if (Tree.cpErrorMessage && Tree.cpErrorMessage != '') {
-                Components63Bits.Dialog.Error(Tree.cpErrorMessage);
-                Tree.cpErrorMessage = null;
+        onTreeEndCallback: function (tree, eventArgs) {
+            if (tree.cpErrorMessage && tree.cpErrorMessage != '') {
+                components63Bits.dialog.error(tree.cpErrorMessage);
+                tree.cpErrorMessage = null;
             }
         },
 
-        OnTreeCheckBoxColumnEditorInit: function (Tree, Editor, EventArgs) {
-            var Value = Editor.GetValue(); // Can return NULL
-            if (Value) {
-                Editor.SetChecked(true);
+        onTreeCheckBoxColumnEditorInit: function (tree, editor, eventArgs) {
+            const value = editor.GetValue(); // Can return NULL
+            if (value) {
+                editor.SetChecked(true);
             }
             else {
-                Editor.SetChecked(false);
+                editor.SetChecked(false);
             }
         },
 
-        SetGridFullHeight: function (Grid, GridElement, HeightCorrectionInPixels) {
-            // Making sure that number is passed, if not HeightCorrectionInPixels will be zero.
-            HeightCorrectionInPixels = HeightCorrectionInPixels % 1 === 0 ? HeightCorrectionInPixels : 0;
-            const ScreenHeight = $(window).outerHeight();
-                        
-            
-            const PaddingBottom = 25;
-            const OffsetTop = $(GridElement).offset().top;
-            const GridHeight = ScreenHeight - OffsetTop - PaddingBottom;
-            Grid.option('height', GridHeight);
+        setGridFullHeight: function (grid, gridElement, heightCorrectionInPixels) {
+            // Making sure that number is passed, if not heightCorrectionInPixels will be zero.
+            heightCorrectionInPixels = heightCorrectionInPixels % 1 === 0 ? heightCorrectionInPixels : 0;
+            const screenHeight = $(window).outerHeight();                                    
+            const paddingBottom = 50;
+            const offsetTop = $(gridElement).offset().top;
+            const gridHeight = screenHeight - offsetTop - paddingBottom;
+            grid.option('height', gridHeight);
             
         },
 
-        GetGridSortIndexes: function (KeyFieldName, Grid, e) {            
-            const Rows = Grid.getVisibleRows();
+        getGridSortIndexes: function (keyFieldName, grid, e) {            
+            const rows = grid.getVisibleRows();
+            const sortIndexes = new Array();
 
-            var SortIndexes = new Array();
-
-            Rows.forEach(function (Item, Index) {
-                SortIndexes.push({
-                    ID: Item.data[KeyFieldName],
-                    SortIndex: Index
+            rows.forEach(function (item, index) {
+                sortIndexes.push({
+                    ID: item.data[keyFieldName],
+                    SortIndex: index
                 });
             });
 
             if (e && e.event != undefined) {
-                const FromIndex = e.fromIndex;
-                const ToIndex = e.toIndex;
-                const IsMovingUp = FromIndex > ToIndex;
+                const fromIndex = e.fromIndex;
+                const toIndex = e.toIndex;
+                const isMovingUp = fromIndex > toIndex;
 
-                const Step = IsMovingUp ? 1 : - 1;
-                SortIndexes[ToIndex].SortIndex += Step;
-                let i = ToIndex + Step;
-                while (i != FromIndex) {
-                    SortIndexes[i].SortIndex += Step;
-                    i += Step;
+                const step = isMovingUp ? 1 : - 1;
+                sortIndexes[toIndex].SortIndex += step;
+                let i = toIndex + step;
+                while (i != fromIndex) {
+                    sortIndexes[i].SortIndex += step;
+                    i += step;
                 }
-                SortIndexes[FromIndex].SortIndex = ToIndex;
+                sortIndexes[fromIndex].SortIndex = toIndex;
             }
 
-            return SortIndexes;
+            return sortIndexes;
         }
-    },
-    Common: {
-        ProcessSelect2AjaxResultFromSimpleKeyValue: function (Result) {
-            const Select2Object = { results: new Array() };
-
-            if (Result && Result.Data) {
-                $(Result.Data).each(function (Index, Item) {
-                    Select2Object.results.push({ id: Item.Key, text: Item.Value });
-                });
-            }
-
-            return Select2Object;
-        },
-        ClosePopupAndRefreshGrid: function (Grid) {
-            FancyBox.ClosePopup();
-            Grid.Refresh();
-        }
-    },
-    Selectors: {
-        ButtonAddNew: '.js-add-new-button',
-        ButtonSave: '.js-save-button'
+    },    
+    selectors: {
+        buttonAddNew: '.js-add-new-button',
+        buttonSave: '.js-save-button'
     },
 };

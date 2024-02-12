@@ -1,7 +1,7 @@
-﻿const EmailTemplatesModel = {
-    Grid:null,
-    OnGridInit: function (s) {
-        EmailTemplatesModel.Grid = s.component;
-        Globals.Devexpress.SetGridFullHeight(s.component, s.element[0]);
+﻿const emailTemplatesModel = {
+    grid:null,
+    onGridInit: function (e) {
+        emailTemplatesModel.grid = e.component;
+        globals.devexpress.setGridFullHeight(e.component, e.element[0]);
     }    
 };

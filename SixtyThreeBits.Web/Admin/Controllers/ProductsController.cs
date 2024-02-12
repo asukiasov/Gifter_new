@@ -1,124 +1,14 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using SixtyThreeBits.Core.Utilities;
-using SixtyThreeBits.Libraries;
+﻿using Microsoft.AspNetCore.Mvc;
+using SixtyThreeBits.Core.Infrastructure.Utilities;
+using SixtyThreeBits.Libraries.Extensions;
 using SixtyThreeBits.Web.Admin.Filters;
 using SixtyThreeBits.Web.Admin.Models;
-using SixtyThreeBits.Web.Reusables.Core;
+using SixtyThreeBits.Web.Domain;
+using SixtyThreeBits.Web.Domain.SharedViewModels;
 using System.Threading.Tasks;
 
 namespace SixtyThreeBits.Web.Admin.Controllers
 {
-    [Route("admin/product-categories")]
-    public class CategoriesController : AdminControllerBase<ProductCategoriesModel>
-    {
-        #region Constructors
-        public CategoriesController()
-        {
-            Model = new ProductCategoriesModel();
-        }
-        #endregion
-
-        #region Actions
-        [HttpGet]
-        [Route("", Name = ControllerActionRouteNames.Admin.ProductCategories.Index)]
-        public async Task<IActionResult> Categories()
-        {
-            Model.PluginsClient.EnableJQueryUI(EnableJs: true).EnableJQueryNestedSortable(true).EnableTemplate7(true);
-            var ViewModel = await Model.GetPageViewModel();
-            return View(ViewNames.Admin.ProductCategories.Page, ViewModel);
-        }
-
-        [Route("add", Name = ControllerActionRouteNames.Admin.ProductCategories.Add)]
-        public async Task<IActionResult> Create(int? ProductCategoryParentID, string ProductCategoryName)
-        {
-            var ViewModel = await Model.CreateProductCategory(ProductCategoryParentID, ProductCategoryName);
-            return Json(ViewModel);
-        }
-
-        [Route("sort", Name = ControllerActionRouteNames.Admin.ProductCategories.Sort)]
-        public async Task<IActionResult> Sort(SyncSortIndexesModel SubmitModel)
-        {
-            var ViewModel = await Model.SyncParentsAndSortIndexes(SubmitModel);
-            return Json(ViewModel);
-        }
-
-        [Route("delete", Name = ControllerActionRouteNames.Admin.ProductCategories.Delete)]
-        public async Task<IActionResult> Delete(int? ProductCategoryID)
-        {
-            var ViewModel = await Model.DeleteRecursive(ProductCategoryID);
-            return Json(ViewModel);
-        }
-        #endregion
-    }
-
-    [Route("admin/product-categories/{ProductCategoryID:int}/properties")]
-    [TypeFilter(typeof(BeforeProductCategoryPageLoad), Order = 2)]
-    public class CategoriesPropertiesController : AdminControllerBase<CategoryPropertiesModel>
-    {
-        #region Constructors
-        public CategoriesPropertiesController()
-        {
-            Model = new CategoryPropertiesModel();
-        }
-        #endregion
-
-        #region Actions
-        [HttpGet]
-        [Route("", Name = ControllerActionRouteNames.Admin.ProductCategories.ProductCategory.Properties)]
-        public IActionResult Properties(int? ProductCategoryID)
-        {
-            Model.PluginsClient.Enable63BitsForms(true).EnableFancybox(true).EnableTinyMce(true);
-            var ViewModel = Model.GetPageViewModel(ProductCategoryID, ViewModel: null);
-            if (ViewModel == null)
-            {
-                return Model.GetNotFoundAdminViewResult();
-            }
-            else
-            {
-                return View(ViewNames.Admin.ProductCategories.ProductCategoryProperties, ViewModel);
-            }
-        }
-
-        [HttpPost]
-        [Route("")]
-        public async Task<IActionResult> Properties(CategoryPropertiesModel.ProductCategoryPropertiesViewModel SubmitModel, int? ProductCategoryID)
-        {
-            var Result = default(IActionResult);
-            Model.PluginsClient.Enable63BitsForms(true).EnableFancybox(true).EnableDevextreme(true).EnableTinyMce(true);
-            var ViewModel = Model.GetPageViewModel(ProductCategoryID, SubmitModel);
-            Model.ValidatePageViewModel(ViewModel);
-            if (ViewModel.IsValid)
-            {
-                await Model.SaveCategoryProperties(ProductCategoryID, ViewModel);
-                if (ViewModel.IsSaved)
-                {
-                    Model.ShowSuccess();
-                    Result = Redirect(Url.RouteUrl(ControllerActionRouteNames.Admin.ProductCategories.ProductCategory.Properties, new { ProductCategoryID = ProductCategoryID }));
-                }
-                else
-                {
-                    Model.ShowError();
-                    Result = View(ViewNames.Admin.ProductCategories.ProductCategoryProperties, ViewModel);
-                }
-            }
-            else
-            {
-                Result = View(ViewNames.Admin.ProductCategories.ProductCategoryProperties, ViewModel);
-            }
-            return Result;
-        }
-
-        [HttpPost]
-        [Route("image/delete", Name = ControllerActionRouteNames.Admin.ProductCategories.ProductCategory.ImageDelete)]
-        public async Task<IActionResult> CategoryDeleteImage(int? ProductCategoryID)
-        {
-            var Result = await Model.DeleteImage(ProductCategoryID);
-            return Json(Result);
-        }
-        #endregion
-    }
-
     [Route("admin/products")]
     public class ProductsController : AdminControllerBase<ProductsModel>
     {
@@ -135,23 +25,23 @@ namespace SixtyThreeBits.Web.Admin.Controllers
         public async Task<ActionResult> Products()
         {
             Model.PluginsClient.EnableDevextreme(true).Enable63BitsForms(true).EnableTemplate7(true);
-            var ViewModel = await Model.GetPageViewModel();
-            return View(ViewNames.Admin.Products.Page, ViewModel);
+            var viewModel = await Model.GetPageViewModel();
+            return View(ViewNames.Admin.Products.Page, viewModel);
         }
 
         [Route("grid", Name = ControllerActionRouteNames.Admin.Products.Grid)]
         public async Task<ActionResult> ProductsGrid()
         {
-            var ViewModel = await Model.GetGridViewModel();
-            return Json(ViewModel);
+            var viewModel = await Model.GetGridViewModel();
+            return Json(viewModel);
         }
 
         [HttpPost]
         [Route("grid/add", Name = ControllerActionRouteNames.Admin.Products.GridAdd)]
         public async Task<ActionResult> ProductsGridAdd(int? key, string values)
         {
-            var SubmitModel = values.DeserializeJsonTo<ProductsModel.PageViewModel.GridModel.GridItem>() ?? new ProductsModel.PageViewModel.GridModel.GridItem();
-            await Model.CRUD(DatabaseAction: Enums.DatabaseActions.CREATE, ProductID: key, SubmitModel: SubmitModel);
+            var submitModel = values.DeserializeJsonTo<ProductsModel.PageViewModel.GridModel.GridItem>() ?? new ProductsModel.PageViewModel.GridModel.GridItem();
+            await Model.CRUD(databaseAction: Enums.DatabaseActions.CREATE, productID: key, submitModel: submitModel);
             if (Model.Form.HasErrors)
             {
                 return GetDevexpressErrorResult(Model.Form.ErrorMessage);
@@ -166,8 +56,8 @@ namespace SixtyThreeBits.Web.Admin.Controllers
         [Route("grid/update", Name = ControllerActionRouteNames.Admin.Products.GridUpdate)]
         public async Task<ActionResult> ProductsGridUpdate(int? key, string values)
         {
-            var SubmitModel = values.DeserializeJsonTo<ProductsModel.PageViewModel.GridModel.GridItem>() ?? new ProductsModel.PageViewModel.GridModel.GridItem();
-            await Model.CRUD(DatabaseAction: Enums.DatabaseActions.UPDATE, ProductID: key, SubmitModel: SubmitModel);
+            var submitModel = values.DeserializeJsonTo<ProductsModel.PageViewModel.GridModel.GridItem>() ?? new ProductsModel.PageViewModel.GridModel.GridItem();
+            await Model.CRUD(databaseAction: Enums.DatabaseActions.UPDATE, productID: key, submitModel: submitModel);
             if (Model.Form.HasErrors)
             {
                 return GetDevexpressErrorResult(Model.Form.ErrorMessage);
@@ -181,9 +71,8 @@ namespace SixtyThreeBits.Web.Admin.Controllers
         [HttpDelete]
         [Route("grid/delete", Name = ControllerActionRouteNames.Admin.Products.GridDelete)]
         public async Task<ActionResult> ProductsGridDelete(int? key)
-        {
-            
-            await Model.CRUD(DatabaseAction: Enums.DatabaseActions.DELETE, ProductID: key, SubmitModel: new ProductsModel.PageViewModel.GridModel.GridItem());
+        {            
+            await Model.CRUD(databaseAction: Enums.DatabaseActions.DELETE, productID: key, submitModel: new ProductsModel.PageViewModel.GridModel.GridItem());
             if (Model.Form.HasErrors)
             {
                 return GetDevexpressErrorResult(Model.Form.ErrorMessage);
@@ -197,21 +86,21 @@ namespace SixtyThreeBits.Web.Admin.Controllers
         [Route("excel/download", Name = ControllerActionRouteNames.Admin.Products.ExcelDownload)]
         public async Task<IActionResult> ExcelDownload()
         {
-            var ExcelFileBytes = await Model.GetProductsSyncExcelFileBytes();
-            return File(ExcelFileBytes, "application/force-download", "ProductsSync.xlsx");
+            var excelFileBytes = await Model.GetProductsSyncExcelFileBytes();
+            return File(excelFileBytes, "application/force-download", "ProductsSync.xlsx");
         }
 
         [HttpPost]
         [Route("excel/upload", Name = ControllerActionRouteNames.Admin.Products.ExcelUpload)]
-        public async Task<IActionResult> ExcelSync(byte[] ExcelFileBytes, string ExcelFilename)
+        public async Task<IActionResult> ExcelSync(ProductsModel.ExcelUploadSubmitModel submitModel)
         {
-            var ViewModel = await Model.SyncExcel(ExcelFileBytes, ExcelFilename);
-            return Json(ViewModel);
+            var viewModel = await Model.SyncExcel(submitModel);
+            return Json(viewModel);
         }
         #endregion
     }
 
-    [Route("admin/products/{ProductID:int}/properties")]
+    [Route("admin/products/{productID:int}/properties")]
     [TypeFilter(typeof(BeforeProductPageLoad), Order = 2)]    
     public class ProductsPropertiesController : AdminControllerBase<ProductPropertiesModel>
     {
@@ -225,71 +114,65 @@ namespace SixtyThreeBits.Web.Admin.Controllers
         #region Actions
         [HttpGet]
         [Route("", Name = ControllerActionRouteNames.Admin.Products.Product.Properties)]
-        public async Task<IActionResult> Properties(int? ProductID)
+        public async Task<IActionResult> Properties()
         {
-            Model.PluginsClient.Enable63BitsForms(true).EnableFancybox(true).EnableTinyMce(true).EnableJQueryNumericInput(true).EnableTemplate7(true).EnableJQueryUI(true);
-            var ViewModel = await Model.GetPageViewModel(ProductID, ViewModel: null);
-            if (ViewModel == null)
-            {
-                return Model.GetNotFoundAdminViewResult();
-            }
-            else
-            {
-                return View(ViewNames.Admin.Products.Product, ViewModel);
-            }
+            Model.PluginsClient.Enable63BitsForms(true).Enable63BitsFileUploader(true).EnableFancybox(true).EnableTinyMce(true).EnableJQueryNumericInput(true).EnableTemplate7(true).EnableSortableJS(true);
+            var viewModel = await Model.GetPageViewModel();
+            return View(ViewNames.Admin.Products.ProductProperties, viewModel);
+
         }
 
         [HttpPost]
         [Route("")]
-        public async Task<IActionResult> Properties(int? ProductID, ProductPropertiesModel.ProductsPropertiesViewModel SubmitModel)
+        public async Task<IActionResult> Properties(ProductPropertiesModel.ProductsPropertiesViewModel submitModel)
         {
-            var Result = default(IActionResult);
-            Model.PluginsClient.Enable63BitsForms(true).EnableFancybox(true).EnableTinyMce(true).EnableJQueryNumericInput(true).EnableTemplate7(true).EnableJQueryUI(true);
-            var ViewModel = await Model.GetPageViewModel(ProductID, SubmitModel);
-            Model.ValidatePageViewModel(ViewModel);
-            if (ViewModel.IsValid)
+            var result = default(IActionResult);
+            Model.PluginsClient.Enable63BitsForms(true).Enable63BitsFileUploader(true).EnableFancybox(true).EnableTinyMce(true).EnableJQueryNumericInput(true).EnableTemplate7(true).EnableSortableJS(true);
+            var viewModel = await Model.GetPageViewModel(submitModel);
+            Model.ValidatePageViewModel(viewModel);
+            if (viewModel.IsValid)
             {
-                await Model.SaveProductsProperties(ProductID, ViewModel);
-                if (ViewModel.IsSaved)
+                await Model.Save(viewModel);
+                if (viewModel.IsSaved)
                 {
                     Model.ShowSuccess();
-                    Result = Redirect(Url.RouteUrl(ControllerActionRouteNames.Admin.Products.Product.Properties, new { ProductID = ProductID }));
+                    result = Redirect(Url.RouteUrl(ControllerActionRouteNames.Admin.Products.Product.Properties, new { ProductID = Model.DBItem.ProductID }));
                 }
                 else
                 {
                     Model.ShowError();
-                    Result = View(ViewNames.Admin.Products.Product, ViewModel);
+                    result = View(ViewNames.Admin.Products.ProductProperties, viewModel);
                 }
             }
             else
             {
-                Result = View(ViewNames.Admin.Products.Product, ViewModel);
+                result = View(ViewNames.Admin.Products.ProductProperties, viewModel);
             }
-            return Result;
+            return result;
         }        
 
         [HttpPost]
         [Route("images/upload", Name = ControllerActionRouteNames.Admin.Products.Product.PropertiesImagesUpload)]
-        public async Task<IActionResult> PropertiesImagesUpload(int? ProductID)
+        public async Task<IActionResult> PropertiesImagesUpload()
         {            
-            var ViewModel = await Model.UploadImages(ProductID);
-            return Json(ViewModel);
+            var viewModel = await Model.UploadImages();
+            return Json(viewModel);
         }
 
         [HttpPost]
         [Route("images/sort", Name = ControllerActionRouteNames.Admin.Products.Product.PropertiesImagesSort)]
-        public async Task<IActionResult> PropertiesImagesSort(int? ProductID, SyncSortIndexesModel SubmitModel)
+        public async Task<IActionResult> PropertiesImagesSort(SyncSortIndexesSubmitModel submitModel)
         {
-            var ViewModel = await Model.SortImages(ProductID, SubmitModel);
-            return Json(ViewModel);
+            var viewModel = await Model.SortImages(submitModel);
+            return Json(viewModel);
         }
 
         [HttpPost]
         [Route("images/delete", Name = ControllerActionRouteNames.Admin.Products.Product.PropertiesImagesDelete)]
-        public async Task<IActionResult> PropertiesImagesDelete(int? ProductID, int? ProductImageID)
+        public async Task<IActionResult> PropertiesImagesDelete(ProductPropertiesModel.DeleteImageSubmitModel submitModel)
         {
-            var ViewModel = await Model.DeleteImage(ProductID, ProductImageID);
-            return Json(ViewModel);
+            var viewModel = await Model.DeleteImage(submitModel);
+            return Json(viewModel);
         }        
         #endregion      
     }    

@@ -17,19 +17,16 @@
 {
     <link href="~/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
 }
-@if (Model.IsAngleEnabled)
+@if (Model.IsAdminThemeEnabled)
 {
-    <link href="~/plugins/angle/css/app.css" rel="stylesheet" />
-    <link href="~/plugins/angle/css/theme-a.css" rel="stylesheet" />
+    <link href="/plugins/borex/css/icons.min.css" rel="stylesheet" />
+    <link href="/plugins/borex/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="/plugins/borex/plugins/simplebar/simplebar.min.css" rel="stylesheet" />
+    <link href="/plugins/borex/css/app.css" rel="stylesheet" />
 }
 @if (Model.IsJQueryConfirmEnabled)
 {
     <link href="~/plugins/jquery-confirm/jquery-confirm.min.css" rel="stylesheet" />
-}
-@if (Model.IsJQueryUICssEnabled)
-{
-    <link href="~/plugins/jquery-ui/jquery-ui.min.css" rel="stylesheet" />
-    <link href="~/plugins/jquery-ui/jquery-ui.theme.min.css" rel="stylesheet" />
 }
 @if (Model.IsFancyboxEnabled)
 {
@@ -43,6 +40,10 @@
 @if (Model.Is63BitsFormsEnabled)
 {
     <link href="~/plugins/63bits-bsforms/63bits-bsforms.css" rel="stylesheet" />
+}
+@if(Model.IsMetisMenuEnabled)
+{
+    <link href="~/plugins/metismenujs/metismenujs.min.css" rel="stylesheet" />
 }
 @if (Model.IsPreloaderEnabled)
 {
@@ -58,10 +59,9 @@
     <link href="~/plugins/63bits-pageBuilder/css/template63.css" rel="stylesheet" />
     <link href="~/plugins/63bits-pageBuilder/css/page-builder.css" rel="stylesheet" />
 }
-@if (Model.IsSelect2Enabled)
+@if (Model.IsFlatPickrEnabled)
 {
-    <link href="~/plugins/select2/css/select2-bootstrap4.min.css" rel="stylesheet" />
-    <link href="~/plugins/select2/css/select2.min.css" rel="stylesheet" />
+    <link href="~/plugins/flatpickr/flatpickr.min.css" rel="stylesheet" />
 }
 @if (Model.IsSlickSliderEnabled)
 {
@@ -83,5 +83,9 @@
     <script src="~/plugins/devextreme/js/dx.all.js"></script>
     <script src="~/plugins/devextreme/js/aspnet/dx.aspnet.data.js"></script>
     <script src="~/plugins/devextreme/js/aspnet/dx.aspnet.mvc.js"></script>
-    <script src="~/plugins/devextreme/js/localization/dx.messages.ka.js"></script>
+    <script src="~/plugins/devextreme/devextreme-license.js"></script>
+    @if (Model.ShouldIncludeLocalizationFile)
+    {
+        <script src="~/plugins/devextreme/js/localization/dx.messages.@(Html.Raw(Model.LanguageCultureCode)).js"></script>
+    }
 }

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SixtyThreeBits.Web.Domain;
 using SixtyThreeBits.Web.Models;
-using SixtyThreeBits.Web.Reusables.Core;
 
 namespace SixtyThreeBits.Web.Controllers
 {
@@ -16,10 +16,10 @@ namespace SixtyThreeBits.Web.Controllers
 
         #region Actions
         [Route("pdf", Name = ControllerActionRouteNames.Website.FileViewer.Pdf)]
-        public IActionResult PDF(string UrlPdfFile, bool CanDownload = true, string PageTitle = "PDF")
+        public IActionResult PDF(FileViewerModel.SubmitModel submitModel)
         {
-            var ViewModel = Model.GetPDFViewModel(UrlPdfFile, CanDownload, PageTitle);
-            return View(ViewNames.Website.FileViewer.Pdf, ViewModel);
+            var viewModel = Model.GetPDFViewModel(submitModel);
+            return View(ViewNames.Website.FileViewer.Pdf, viewModel);
         }
         #endregion
     }

@@ -1,16 +1,16 @@
-﻿const UsersModel = {
-    UsersGrid:null,
-    OnUsersGridInit: function (s) {
-        UsersModel.UsersGrid = s.component;        
-        Globals.Devexpress.SetGridFullHeight(UsersModel.UsersGrid,s.element[0]);        
+﻿const usersModel = {
+    grid: null,
+    onGridInit: function (e) {
+        usersModel.grid = e.component;
+        globals.devexpress.setGridFullHeight(e.component, e.element[0]);
     },
-    GetDetailsButtonColumnCellHtml: function (Element, CellInfo) {
-        //Element.append('<a href=\"' + CellInfo.data.UrlDetails + '\"><i class=\"fas fa-info-circle\"></i></a>');
+    getDetailsButtonColumnCellHtml: function (element, cellInfo) {
+        //element.append('<a href=\"' + cellInfo.data.UrlDetails + '\"><i class=\"fas fa-info-circle\"></i></a>');
     }
 };
 
 $(function () {
-    $('.js-add-new-button').click(function () {
-        UsersModel.UsersGrid.addRow();
+    $(globals.selectors.buttonAddNew).click(function () {
+        usersModel.grid.addRow();
     });
 });

@@ -1,12 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SixtyThreeBits.Core.Utilities;
-using SixtyThreeBits.Libraries;
+using SixtyThreeBits.Core.Infrastructure.Utilities;
+using SixtyThreeBits.Libraries.Extensions;
 using SixtyThreeBits.Web.Admin.Filters;
 using SixtyThreeBits.Web.Admin.Models;
-using SixtyThreeBits.Web.Reusables.Core;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using SixtyThreeBits.Web.Domain;
 using System.Threading.Tasks;
 
 namespace SixtyThreeBits.Web.Admin.Controllers
@@ -26,22 +23,22 @@ namespace SixtyThreeBits.Web.Admin.Controllers
         public IActionResult Partners()
         {
             Model.PluginsClient.EnableDevextreme(true).Enable63BitsForms(true).Enable63BitsComponents(true).EnableTinyMce(true).EnableFancybox(true);
-            var ViewModel = Model.GetPageViewModel();
-            return View(ViewNames.Admin.Partners.Page, ViewModel);
+            var viewModel = Model.GetPageViewModel();
+            return View(ViewNames.Admin.Partners.Page, viewModel);
         }
 
         [Route("grid", Name = ControllerActionRouteNames.Admin.Partners.PartnersGrid)]
         public async Task<IActionResult> PartnersGrid()
         {
-            var ViewModel = await Model.GetGridViewModel();
-            return Json(ViewModel);
+            var viewModel = await Model.GetGridViewModel();
+            return Json(viewModel);
         }
 
         [Route("grid/add", Name = ControllerActionRouteNames.Admin.Partners.PartnersGridAdd)]
         public async Task<IActionResult> PartnersGridAdd(int? key, string values)
         {
-            var SubmitModel = values.DeserializeJsonTo<PartnersModel.PageViewModel.GridModel.GridItem>() ?? new PartnersModel.PageViewModel.GridModel.GridItem();
-            await Model.CRUD(DatabaseAction: Enums.DatabaseActions.CREATE, PartnerID: key, SubmitModel: SubmitModel);
+            var submitModel = values.DeserializeJsonTo<PartnersModel.PageViewModel.GridModel.GridItem>() ?? new PartnersModel.PageViewModel.GridModel.GridItem();
+            await Model.CRUD(databaseAction: Enums.DatabaseActions.CREATE, partnerID: key, submitModel: submitModel);
             if (Model.Form.HasErrors)
             {
                 return GetDevexpressErrorResult(Model.Form.ErrorMessage);
@@ -55,8 +52,8 @@ namespace SixtyThreeBits.Web.Admin.Controllers
         [Route("grid/update", Name = ControllerActionRouteNames.Admin.Partners.PartnersGridUpdate)]
         public async Task<IActionResult> PartnersGridUpdate(int key, string values)
         {
-            var SubmitModel = values.DeserializeJsonTo<PartnersModel.PageViewModel.GridModel.GridItem>() ?? new PartnersModel.PageViewModel.GridModel.GridItem();
-            await Model.CRUD(DatabaseAction: Enums.DatabaseActions.UPDATE, PartnerID: key, SubmitModel: SubmitModel);
+            var submitModel = values.DeserializeJsonTo<PartnersModel.PageViewModel.GridModel.GridItem>() ?? new PartnersModel.PageViewModel.GridModel.GridItem();
+            await Model.CRUD(databaseAction: Enums.DatabaseActions.UPDATE, partnerID: key, submitModel: submitModel);
             if (Model.Form.HasErrors)
             {
                 return GetDevexpressErrorResult(Model.Form.ErrorMessage);
@@ -70,7 +67,7 @@ namespace SixtyThreeBits.Web.Admin.Controllers
         [Route("grid/delete", Name = ControllerActionRouteNames.Admin.Partners.PartnersGridDelete)]
         public async Task<IActionResult> PartnersGridDelete(int key)
         {
-            await Model.CRUD(DatabaseAction: Enums.DatabaseActions.DELETE, PartnerID: key, SubmitModel: new PartnersModel.PageViewModel.GridModel.GridItem());
+            await Model.CRUD(databaseAction: Enums.DatabaseActions.DELETE, partnerID: key, submitModel: new PartnersModel.PageViewModel.GridModel.GridItem());
             if (Model.Form.HasErrors)
             {
                 return GetDevexpressErrorResult(Model.Form.ErrorMessage);
@@ -83,7 +80,7 @@ namespace SixtyThreeBits.Web.Admin.Controllers
         #endregion 
     }
 
-    [Route("admin/partners/{PartnersID:int}")]
+    [Route("admin/partners/{partnerID:int}")]
     [TypeFilter(typeof(BeforePartnerPageLoad), Order = 2)]
     public class PartnerPropertiesController : AdminControllerBase<PartnerPropertiesModel>
     {
@@ -100,45 +97,45 @@ namespace SixtyThreeBits.Web.Admin.Controllers
         public IActionResult Properties()
         {
             Model.PluginsClient.Enable63BitsForms(true).EnableTinyMce(true).EnableFancybox(true);
-            var ViewModel = Model.GetPartnerPropertiesViewModel(ViewModel: null);
-            return View(ViewNames.Admin.Partners.Partner, ViewModel);
+            var viewModel = Model.GetPageViewModel(viewModel: null);
+            return View(ViewNames.Admin.Partners.Partner, viewModel);
         }
 
         [HttpPost]
         [Route("properties")]
-        public async Task<IActionResult> Properties(PartnerPropertiesModel.PartnerPropertiesViewModel SubmitModel)
+        public async Task<IActionResult> Properties(PartnerPropertiesModel.PageViewModel SubmitModel)
         {
             Model.PluginsClient.Enable63BitsForms(true).EnableFancybox(true).EnableDevextreme(true).EnableTinyMce(true);
-            var ViewModel = Model.GetPartnerPropertiesViewModel(ViewModel: SubmitModel);
-            var Result = default(IActionResult);
-            Model.ValidatePartnerPropertiesViewModel(ViewModel: SubmitModel);
-            if (ViewModel.IsValid)
+            var viewModel = Model.GetPageViewModel(viewModel: SubmitModel);
+            var result = default(IActionResult);
+            Model.ValidatePageViewModel(viewModel: SubmitModel);
+            if (viewModel.IsValid)
             {
-                var IsSaved = await Model.SavePartnerProperties(SubmitModel);
-                if (IsSaved)
+                await Model.Save(SubmitModel);
+                if (viewModel.IsSaved)
                 {
                     Model.ShowSuccess();
-                    Result = Redirect(Url.RouteUrl(ControllerActionRouteNames.Admin.Partners.Partner.Properties, new { PartnersID = Model.DBItemPartner.PartnerID }));
+                    result = Redirect(Url.RouteUrl(ControllerActionRouteNames.Admin.Partners.Partner.Properties, new { PartnerID = Model.DBItem.PartnerID }));
                 }
                 else
                 {
                     Model.ShowError();
-                    Result = View(ViewNames.Admin.Partners.Partner, ViewModel);
+                    result = View(ViewNames.Admin.Partners.Partner, viewModel);
                 }
             }
             else
             {
-                Result = View(ViewNames.Admin.Partners.Partner, ViewModel);
+                result = View(ViewNames.Admin.Partners.Partner, viewModel);
             }
-            return Result;
+            return result;
         }
 
         [HttpPost]
-        [Route("properties/delete-image", Name = ControllerActionRouteNames.Admin.Partners.PartnersPartnerPropertiesDeleteImage)]
-        public async Task<IActionResult> PartnerPropertiesDeleteImage(int? PartnersID)
+        [Route("properties/delete-image", Name = ControllerActionRouteNames.Admin.Partners.Partner.PropertiesDeleteImage)]
+        public async Task<IActionResult> PartnerPropertiesDeleteImage()
         {
-            var Result = await Model.DeleteImage(PartnersID);
-            return Json(Result);
+            var viewModel = await Model.DeleteImage();
+            return Json(viewModel);
         }
         #endregion
     }

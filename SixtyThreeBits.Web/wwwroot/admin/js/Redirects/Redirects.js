@@ -1,13 +1,13 @@
-﻿const RedirectsModel = {
-    RedirectsGrid: null,
-    OnGridInit: function (s) {
-        RedirectsModel.RedirectsGrid = s.component;
-        Globals.Devexpress.SetGridFullHeight(RedirectsModel.RedirectsGrid, s.element[0]);
+﻿const redirectsModel = {
+    grid: null,
+    onGridInit: function (e) {
+        redirectsModel.grid = e.component;
+        globals.devexpress.setGridFullHeight(e.component, e.element[0]);
     }        
 };
 
 $(function () {
-    $(Globals.Selectors.ButtonAddNew).click(function () {
-        RedirectsModel.RedirectsGrid.addRow();
+    $(globals.selectors.buttonAddNew).click(function () {
+        redirectsModel.grid.addRow();
     });
 });

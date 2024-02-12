@@ -1,13 +1,13 @@
-﻿const BrandsModel = {
-    Grid: null,
-    OnGridInit: function (s) {
-        BrandsModel.Grid = s.component;
-        Globals.Devexpress.SetGridFullHeight(BrandsModel.Grid, s.element[0]);
+﻿const brandsModel = {
+    grid: null,
+    onGridInit: function (e) {
+        brandsModel.grid = e.component;
+        globals.devexpress.setGridFullHeight(e.component, e.element[0]);
     }    
 };
 
 $(function () {
     $('.js-add-new-button').click(function () {
-        BrandsModel.Grid.addRow();
+        brandsModel.grid.addRow();
     });
 });

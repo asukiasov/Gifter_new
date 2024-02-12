@@ -1,0 +1,26 @@
+﻿{
+  "OrderID": 1,
+  "UserID": 1,
+  "DictionaryIDOrderPaymentOption": 101,
+  "DictionaryIDOrderStatus": 202,
+  "OrderTotalPricePaid": 2399.0000,
+  "OrderDateCreated": "2024-02-12T12:16:53.800",
+  "OrderDetails": [
+    {
+      "OrderDetailID": 1,
+      "OrderID": 1,
+      "OrderDetailCaption": "Apple iPhone 15",
+      "OrderDetailProductPriceUnit": 1499.0000,
+      "OrderDetailProductQuantity": 1,
+      "OrderDetailProductPriceTotal": 1499.0000
+    },
+    {
+      "OrderDetailID": 2,
+      "OrderID": 1,
+      "OrderDetailCaption": "Apple iWatch Series 9",
+      "OrderDetailProductPriceUnit": 450.0000,
+      "OrderDetailProductQuantity": 2,
+      "OrderDetailProductPriceTotal": 900.0000
+    }
+  ]
+}

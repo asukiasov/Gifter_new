@@ -15,10 +15,6 @@
 {
     <script src="~/plugins/jquery-appear/jquery.appear.js"></script>
 }
-@if (Model.IsJQueryUIJsEnabled)
-{
-    <script src="~/plugins/jquery-ui/jquery-ui.js"></script>
-}
 @if (Model.IsJQueryConfirmEnabled)
 {
     <script src="~/plugins/jquery-confirm/jquery-confirm.min.js"></script>
@@ -42,15 +38,20 @@
 @if (Model.Is63BitsComponentsEnabled)
 {
     <script src="~/plugins/63bits-components/63bits-components.js?v=@Guid.NewGuid()"></script>
+    <script>components63Bits.textError = '@Html.Raw(Model.TextError)'; components63Bits.textSuccess = '@Html.Raw(Model.TextSuccess)';</script>
 }
 @if (Model.IsFancyboxEnabled)
 {
     <script src="~/plugins/fancybox/jquery.fancybox.js"></script>
-    <script src="~/plugins/fancybox/FancyMethods.js"></script>
+    <script src="~/plugins/fancybox/fancy-methods.js"></script>
 }
 @if (Model.Is63BitsFormsEnabled)
 {
     <script src="~/plugins/63bits-bsforms/63bits-bsforms.js"></script>
+}
+@if (Model.Is63BitsFileUploaderEnabled)
+{
+    <script src="~/plugins/63bits-file-uploader/63bits-file-uploader.js"></script>
 }
 @if (Model.IsJQueryMaskedInputEnabled)
 {
@@ -60,21 +61,29 @@
 {
     <script src="~/plugins/jquery-numeric-input/jquery.numericInput.js"></script>
 }
-@if (Model.IsSelect2Enabled)
-{
-    <script src="~/plugins/select2/js/select2.full.min.js"></script>
-}
 @if (Model.IsSlickSliderEnabled)
 {
     <script src="~/plugins/slick/slick.min.js"></script>
+}
+@if (Model.IsSortableJSEnabled)
+{
+    <script src="~/plugins/SoratbleJS/Sortable.min.js"></script>
 }
 @if (Model.IsMalihuScrollEnabled)
 {
     <script src="~/plugins/malihu-scrollbar/jquery.mCustomScrollbar.concat.min.js"></script>
 }
+@if (Model.IsMetisMenuEnabled)
+{
+    <script src="~/plugins/metismenujs/metismenujs.min.js"></script>
+}
 @if (Model.IsTemplate7Enabled)
 {
     <script src="~/plugins/template7/template7.min.js"></script>
+}
+@if(Model.IsFlatPickrEnabled)
+{
+    <script src="~/plugins/flatpickr/flatpickr.min.js"></script>
 }
 @if (Model.IsJsZipEnabled)
 {
@@ -84,10 +93,15 @@
 {
     <script src="~/plugins/tinymce/tinymce.min.js"></script>
     <script src="~/plugins/tinymce/jquery.tinymce.min.js"></script>
-    <script src="~/plugins/tinymce/TinyMceHelper.js"></script>
+    <script src="~/plugins/tinymce/tinymce-helper.js"></script>
 }
 @if (Model.IsJWPlayerEnabled)
 {
     <script src="~/plugins/jwplayer8/jwplayer.js"></script>
     <script src="~/plugins/jwplayer8/player.js"></script>
+}
+@if (Model.IsAdminThemeEnabled)
+{
+    <script src="~/plugins/borex/js/bootstrap.bundle.min.js"></script>
+    <script src="~/plugins/borex/plugins/simplebar/simplebar.min.js"></script>    
 }

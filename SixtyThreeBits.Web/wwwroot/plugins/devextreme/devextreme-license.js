@@ -1,0 +1,2 @@
+﻿const devextremeLicenseKey = 'ewogICJmb3JtYXQiOiAxLAogICJjdXN0b21lcklkIjogImJkZmI1YjJjLTY1ZTAtNDg1Yi05YmM4LWI1OWI0MTYzYjkzOCIsCiAgIm1heFZlcnNpb25BbGxvd2VkIjogMjMyCn0=.ijWupH84OrE6YOlM0uyQOp2sr2X/vvC8J9hzaPBFGzeP/BZ36MwNrkyVtSgQaDmKX4ol5Zzs5iMupIQLFw9u6/oNt1d4AAHidbyOjtvZPDGUo1O28JK6j1wulOUSY3PpMaX19g==';
+DevExpress.config({ licenseKey: devextremeLicenseKey });

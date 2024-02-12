@@ -1,10 +1,9 @@
-﻿using Azure;
-using ExcelDataReader;
+﻿using ExcelDataReader;
 using OfficeOpenXml;
-using SixtyThreeBits.Core.Modules;
+using SixtyThreeBits.Core.Infrastructure.Factories;
+using SixtyThreeBits.Core.Infrastructure.Utilities;
 using SixtyThreeBits.Core.Properties;
-using SixtyThreeBits.Core.Utilities;
-using SixtyThreeBits.Libraries;
+using SixtyThreeBits.Libraries.Extensions;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -13,63 +12,58 @@ using System.Threading.Tasks;
 
 namespace SixtyThreeBits.Core.BusinessLogics
 {
-	public class ProductsBusinessLogic
+    public class ProductsBusinessLogic
 	{
 		public class GetProductsPricesAndRemaindersExcelFile
 		{
 			#region Properties
-			readonly AppSettingsCollection AppSettings;
-            readonly DataAccessFactory DataAccessFactory;
+			readonly RepositoryFactory _dataAccessFactory;
 
-			readonly GetProductsPricesAndRemaindersExcelFileResult Result = new GetProductsPricesAndRemaindersExcelFileResult();
+            readonly AppSettingsCollection _appSettings;			
+            readonly GetProductsPricesAndRemaindersExcelFileResult _result = new ();
             #endregion
 
             #region Constructors
-            public GetProductsPricesAndRemaindersExcelFile(DataAccessFactory DataAccessFactory, AppSettingsCollection AppSettings)
+            public GetProductsPricesAndRemaindersExcelFile(RepositoryFactory dataAccessFactory, AppSettingsCollection appSettings)
             {
-				this.AppSettings = AppSettings;
-				this.DataAccessFactory = DataAccessFactory;
+				_dataAccessFactory = dataAccessFactory;
+                _appSettings = appSettings;
+				
             }
             #endregion
 
             #region Methods
             public async Task<GetProductsPricesAndRemaindersExcelFileResult> Execute()
 			{
-
 				try
 				{
-					using (var Excel = new ExcelPackage(new FileInfo($"{AppSettings.DownloadFolderPhysicalPath}ProductsSync.xlsx")))
+					using (var excel = new ExcelPackage(new FileInfo($"{_appSettings.DownloadFolderPhysicalPath}\\ProductsSync.xlsx")))
 					{
-						var WorkSheet = Excel.Workbook.Worksheets[0];
+						var workSheet = excel.Workbook.Worksheets[0];
+						var repository = _dataAccessFactory.GetProductsRepository();													
+						var products = await repository.ProductsList();
 
-						var Products = await DataAccessFactory.Products.ProductsList();
-						if (Products?.Any() == true)
+						if (products?.Any() == true)
 						{
-							var Index = 2;
-							foreach (var P in Products)
+							var index = 2;
+							foreach (var p in products)
 							{
-								WorkSheet.Cells[Index, 1].Value = P.ProductName;
-								WorkSheet.Cells[Index, 2].Value = P.ProductPrice;
-								WorkSheet.Cells[Index, 3].Value = P.ProductRemainder;
-								++Index;
+								workSheet.Cells[index, 1].Value = p.ProductName;
+								workSheet.Cells[index, 2].Value = p.ProductPrice;
+								workSheet.Cells[index, 3].Value = p.ProductRemainder;
+								++index;
                             }
 						}
-
-						Result.ExcelFileBytes = Excel.GetAsByteArray();
-
-						//Response.ContentType = "application/force-download";
-						//Response.AppendHeader("Content-Disposition", "attachment;filename=UserCourseSubscriptionsImportTemplate.xlsx");
-
-						//Response.BinaryWrite(FileBytes);
+						_result.ExcelFileBytes = excel.GetAsByteArray();
 					}
 				}
 				catch(Exception ex)
 				{
-					Result.IsError = true;
-					Result.ErrorMessage = ex.Message;
+					_result.IsError = true;
+					_result.ErrorMessage = ex.Message;
 				}
 
-				return Result;
+				return _result;
             }
             #endregion
 
@@ -86,59 +80,60 @@ namespace SixtyThreeBits.Core.BusinessLogics
         public class SyncProductPricesAndRemainders
 		{
 			#region Properties
-			readonly byte[] ExcelFileBytes;
-			readonly bool IsXlsx;
-			readonly DataAccessFactory DataAccessFactory;			
+			readonly byte[] _excelFileBytes;
+			readonly bool _isXlsx;
+			readonly RepositoryFactory _repositoryFactory;
 
-			Dictionary<string, int?> ProductsDictionary;
-			List<ProductExcelItem> ExcelItems;
+            Dictionary<string, int?> _productsDictionary;
+			List<ProductExcelItem> _excelItems;
 
-            readonly SyncProductPricesAndRemaindersResult Result = new SyncProductPricesAndRemaindersResult();
+            readonly SyncProductPricesAndRemaindersResult _result = new();
             #endregion
 
             #region Constructors
-            public SyncProductPricesAndRemainders(byte[] ExcelFileBytes, bool IsXslx, DataAccessFactory DataAccessFactory)
+            public SyncProductPricesAndRemainders(byte[] excelFileBytes, bool isXslx, RepositoryFactory dataAccessFactory)
 			{
-				this.ExcelFileBytes = ExcelFileBytes;
-				this.IsXlsx = IsXslx;
-				this.DataAccessFactory = DataAccessFactory;
-			}
+				_excelFileBytes = excelFileBytes;
+				_isXlsx = isXslx;
+				_repositoryFactory = dataAccessFactory;
+            }
 			#endregion
 
 			#region Methods
 			public async Task<SyncProductPricesAndRemaindersResult> Execute()
 			{
 				await InitBusinessLogicProperties();
-				if (!Result.IsError)
+				if (!_result.IsError)
 				{
 					ParseExcel();
-					if (!Result.IsError)
+					if (!_result.IsError)
 					{
 						ValidateExcel();
-						if (!Result.IsError)
+						if (!_result.IsError)
 						{
 							await InitProductIDs();
-							if (!Result.IsError)
+							if (!_result.IsError)
 							{
 								await SyncPricesAndRemainders();
 							}
 						}
 					}
 				}
-				return Result;
+				return _result;
 			}
 
 			async Task InitBusinessLogicProperties()
 			{
-				var Products = await DataAccessFactory.Products.ProductsList();
-				if (Products == null)
+				var repository = _repositoryFactory.GetProductsRepository();
+				var products = await repository.ProductsList();
+				if (products == null)
 				{
-					Result.IsError = true;
-					Result.ErrorMessage = DataAccessFactory.Products.ErrorMessage;
+					_result.IsError = true;
+					_result.ErrorMessage = repository.ErrorMessage;
 				}
 				else
 				{
-					ProductsDictionary = Products.ToDictionary(Key => Key.ProductName, Value => Value.ProductID);
+					_productsDictionary = products.ToDictionary(Key => Key.ProductName, Value => Value.ProductID);
 				}
 			}
 
@@ -146,98 +141,100 @@ namespace SixtyThreeBits.Core.BusinessLogics
 			{
 				try
 				{
-					using (var InputStream = new MemoryStream(ExcelFileBytes))
+					using (var inputStream = new MemoryStream(_excelFileBytes))
 					{
-						using (var ExcelReader = IsXlsx ? ExcelReaderFactory.CreateOpenXmlReader(InputStream) : ExcelReaderFactory.CreateBinaryReader(InputStream))
+						using (var excelReader = _isXlsx ? ExcelReaderFactory.CreateOpenXmlReader(inputStream) : ExcelReaderFactory.CreateBinaryReader(inputStream))
 						{
-							ExcelReader.Read();
+							excelReader.Read();
 
-							ExcelItems = new List<ProductExcelItem>(ExcelReader.ResultsCount);
-							var RowNumber = 1;
-							while (ExcelReader.Read())
+							_excelItems = new List<ProductExcelItem>(excelReader.ResultsCount);
+							var rowNumber = 1;
+							while (excelReader.Read())
 							{
-								var Item = new ProductExcelItem();
-								Item.RowNumber = ++RowNumber;
-								Item.ProductName = ExcelReader.GetValue(0)?.ToString().Trim();
+								var item = new ProductExcelItem();
+								item.RowNumber = ++rowNumber;
+								item.ProductName = excelReader.GetValue(0)?.ToString().Trim();
 
-								Item.ProductPriceString = ExcelReader.GetValue(1)?.ToString().Trim();
-								Item.ProductPrice = Item.ProductPriceString.ToDecimal();
+								item.ProductPriceString = excelReader.GetValue(1)?.ToString().Trim();
+								item.ProductPrice = item.ProductPriceString.ToDecimal();
 
-								Item.ProductRemainderString = ExcelReader.GetValue(2)?.ToString().Trim();
-								Item.ProductRemainder = Item.ProductRemainderString.ToInt();
+								item.ProductRemainderString = excelReader.GetValue(2)?.ToString().Trim();
+								item.ProductRemainder = item.ProductRemainderString.ToInt();
 
-								ExcelItems.Add(Item);
+								_excelItems.Add(item);
 							}
 						}
 					}
 				}
 				catch(Exception ex)
 				{
-					Result.IsError = true;
-					Result.ErrorMessage = ex.Message;
+					_result.IsError = true;
+					_result.ErrorMessage = ex.Message;
 				}
 			}
 
 			void ValidateExcel()
 			{
-				var ErrorStringTemplateLineColumn = "Line {0} - Column {1} - {2}";
-				Result.ExcelErrors = new List<string>();
+				var errorStringTemplateLineColumn = "Line {0} - Column {1} - {2}";
+				_result.ExcelErrors = [];
 
-				foreach(var ExcelItem in ExcelItems)
+				foreach(var excelItem in _excelItems)
 				{
-					if (string.IsNullOrWhiteSpace(ExcelItem.ProductName))
+					if (string.IsNullOrWhiteSpace(excelItem.ProductName))
 					{
-						Result.ExcelErrors.Add(string.Format(ErrorStringTemplateLineColumn, ExcelItem.RowNumber, "A", Resources.ValidationProductNameRequired));
+						_result.ExcelErrors.Add(string.Format(errorStringTemplateLineColumn, excelItem.RowNumber, "A", Resources.ValidationProductNameRequired));
 					}
 
-					if (string.IsNullOrWhiteSpace(ExcelItem.ProductPriceString))
+					if (string.IsNullOrWhiteSpace(excelItem.ProductPriceString))
 					{
-						Result.ExcelErrors.Add(string.Format(ErrorStringTemplateLineColumn, ExcelItem.RowNumber, "B", Resources.ValidationProductPriceRequired));
+						_result.ExcelErrors.Add(string.Format(errorStringTemplateLineColumn, excelItem.RowNumber, "B", Resources.ValidationProductPriceRequired));
 					}
-					else if(ExcelItem.ProductPrice is null || ExcelItem.ProductPrice < 0)
+					else if(excelItem.ProductPrice is null || excelItem.ProductPrice < 0)
 					{
-						Result.ExcelErrors.Add(string.Format(ErrorStringTemplateLineColumn, ExcelItem.RowNumber, "B", Resources.ValidationProductPriceFormatInvalid));
-					}
-
-					if (string.IsNullOrWhiteSpace(ExcelItem.ProductRemainderString))
-					{
-						Result.ExcelErrors.Add(string.Format(ErrorStringTemplateLineColumn, ExcelItem.RowNumber, "B", Resources.ValidationProductRemainderRequired));
-					}
-					else if (ExcelItem.ProductRemainder is null || ExcelItem.ProductRemainder < 0)
-					{
-						Result.ExcelErrors.Add(string.Format(ErrorStringTemplateLineColumn, ExcelItem.RowNumber, "B", Resources.ValidationProductRemainderFormatInvalid));
+						_result.ExcelErrors.Add(string.Format(errorStringTemplateLineColumn, excelItem.RowNumber, "B", Resources.ValidationProductPriceFormatInvalid));
 					}
 
-					var DuplicateFound = ExcelItems.LastOrDefault(Item => Item.RowNumber < ExcelItem.RowNumber && !string.IsNullOrWhiteSpace(Item.ProductName) && Item.ProductName == ExcelItem.ProductName);
-					if(DuplicateFound != null)
+					if (string.IsNullOrWhiteSpace(excelItem.ProductRemainderString))
 					{
-						Result.ExcelErrors.Add(string.Format(ErrorStringTemplateLineColumn, ExcelItem.RowNumber, "A", string.Format(Resources.ValidationExcelDuplicateItemFound, DuplicateFound.RowNumber)));
+						_result.ExcelErrors.Add(string.Format(errorStringTemplateLineColumn, excelItem.RowNumber, "B", Resources.ValidationProductRemainderRequired));
+					}
+					else if (excelItem.ProductRemainder is null || excelItem.ProductRemainder < 0)
+					{
+						_result.ExcelErrors.Add(string.Format(errorStringTemplateLineColumn, excelItem.RowNumber, "B", Resources.ValidationProductRemainderFormatInvalid));
+					}
+
+					var duplicateFound = _excelItems.LastOrDefault(item => item.RowNumber < excelItem.RowNumber && !string.IsNullOrWhiteSpace(item.ProductName) && item.ProductName == excelItem.ProductName);
+					if(duplicateFound != null)
+					{
+						_result.ExcelErrors.Add(string.Format(errorStringTemplateLineColumn, excelItem.RowNumber, "A", string.Format(Resources.ValidationExcelDuplicateItemFound, duplicateFound.RowNumber)));
 					}
 				}
 
-				Result.HasExcelErrors = Result.ExcelErrors.Any();
-				Result.IsError = Result.HasExcelErrors;
+				_result.HasExcelErrors = _result.ExcelErrors.Any();
+				_result.IsError = _result.HasExcelErrors;
 			}
 
 			async Task InitProductIDs()
 			{
-				foreach(var ExcelItem in ExcelItems)
+				var repository = _repositoryFactory.GetProductsRepository();
+
+				foreach(var excelItem in _excelItems)
 				{
-					var IsProductFound = ProductsDictionary.ContainsKey(ExcelItem.ProductName);
-					if (IsProductFound)
+					var isProductFound = _productsDictionary.ContainsKey(excelItem.ProductName);
+					if (isProductFound)
 					{
-						ExcelItem.ProductID = ProductsDictionary[ExcelItem.ProductName].Value;
+						excelItem.ProductID = _productsDictionary[excelItem.ProductName].Value;
 					}
 					else
 					{
-						ExcelItem.ProductID = await DataAccessFactory.Products.ProductsIUD(
-							DatabaseAction: Enums.DatabaseActions.CREATE,
-							ProductName: ExcelItem.ProductName
+						excelItem.ProductID = await repository.ProductsIUD(
+							databaseAction: Enums.DatabaseActions.CREATE,
+							productName: excelItem.ProductName
 						);
-						if (DataAccessFactory.Products.IsError)
+						if (repository.IsError)
 						{
-							Result.IsError = true;
-							Result.ErrorMessage = DataAccessFactory.Products.ErrorMessage;
+							_result.IsError = true;
+							_result.ErrorMessage = repository.ErrorMessage;
 							break;
 						}
 					}
@@ -246,18 +243,20 @@ namespace SixtyThreeBits.Core.BusinessLogics
 
 			async Task SyncPricesAndRemainders()
 			{
-				foreach (var ExcelItem in ExcelItems)
+                var command = _repositoryFactory.GetProductsRepository();
+
+                foreach (var ExcelItem in _excelItems)
 				{
-					await DataAccessFactory.Products.ProductsIUD(
-						DatabaseAction: Enums.DatabaseActions.UPDATE,
-						ProductID: ExcelItem.ProductID,
-						ProductPrice: ExcelItem.ProductPrice,
-						ProductRemainder: ExcelItem.ProductRemainder
+					await command.ProductsIUD(
+						databaseAction: Enums.DatabaseActions.UPDATE,
+						productID: ExcelItem.ProductID,
+						productPrice: ExcelItem.ProductPrice,
+						productRemainder: ExcelItem.ProductRemainder
 					);
-					if (DataAccessFactory.Products.IsError)
+					if (command.IsError)
 					{
-						Result.IsError = true;
-						Result.ErrorMessage = DataAccessFactory.Products.ErrorMessage;
+						_result.IsError = true;
+						_result.ErrorMessage = command.ErrorMessage;
 						break;
 					}
 				}

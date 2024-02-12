@@ -1,19 +1,19 @@
-﻿using SixtyThreeBits.Web.Reusables.Core;
+﻿using SixtyThreeBits.Web.Domain;
 
 namespace SixtyThreeBits.Web.Models
 {
     public class FileViewerModel : WebProjectModelBase
     {
         #region Methods
-        public PdfPageViewModel GetPDFViewModel(string UrlPdfFile, bool? CanDownload, string PageTitle)
+        public PdfPageViewModel GetPDFViewModel(SubmitModel submitModel)
         {
-            var ViewModel = new PdfPageViewModel();
+            var viewModel = new PdfPageViewModel();
 
-            ViewModel.PageTitle = PageTitle;
-            ViewModel.UrlPdfFile = UrlPdfFile;
-            ViewModel.CanDownload = CanDownload ?? false;
+            viewModel.PageTitle = submitModel.PageTitle;
+            viewModel.UrlPdfFile = submitModel.UrlPdfFile;
+            viewModel.CanDownload = submitModel.CanDownload ?? false;
 
-            return ViewModel;
+            return viewModel;
         }
         #endregion
 
@@ -26,6 +26,13 @@ namespace SixtyThreeBits.Web.Models
             public bool CanDownload { get; set; }
             #endregion
         } 
+
+        public class SubmitModel
+        {
+            public string UrlPdfFile { get; set; }
+            public bool? CanDownload { get; set; }
+            public string PageTitle { get; set; } = "PDF";
+        }
         #endregion
     }
 }

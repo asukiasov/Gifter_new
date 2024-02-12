@@ -1,9 +1,3 @@
-﻿const PartnerPropertiesModel = {
+﻿const partnerPropertiesModel = {
 
 };
-
-$(function () {
-    $('.js-save-button').click(function () {
-        preloader.show();
-    });
-});

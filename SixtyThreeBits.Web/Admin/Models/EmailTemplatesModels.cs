@@ -2,10 +2,13 @@
 using DevExtreme.AspNet.Mvc.Builders;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using SixtyThreeBits.Core.Services;
-using SixtyThreeBits.Core.Utilities;
-using SixtyThreeBits.Libraries;
-using SixtyThreeBits.Web.Reusables.Core;
+using SixtyThreeBits.Core.Infrastructure.Libraries;
+using SixtyThreeBits.Core.Infrastructure.Utilities;
+using SixtyThreeBits.Core.Properties;
+using SixtyThreeBits.Libraries.Extensions;
+using SixtyThreeBits.Web.Domain;
+using SixtyThreeBits.Web.Domain.Libraries;
+using SixtyThreeBits.Web.Domain.SharedViewModels;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,21 +20,22 @@ namespace SixtyThreeBits.Web.Admin.Models
         #region Methods
         public PageViewModel GetPageViewModel()
         {
-            var ViewModel = new PageViewModel();
-            ViewModel.Grid = new PageViewModel.GridModel();            
-            ViewModel.Grid.UrlLoad = Url.RouteUrl(ControllerActionRouteNames.Admin.EmailTemplates.Grid);
-            return ViewModel;
+            var viewModel = new PageViewModel();
+            viewModel.Grid = new();            
+            viewModel.Grid.UrlLoad = Url.RouteUrl(ControllerActionRouteNames.Admin.EmailTemplates.Grid);
+            return viewModel;
         }
 
         public async Task<List<PageViewModel.GridModel.GridItem>> GetGridModel()
-        {            
-            var ViewModel = (await DataAccessFactory.EmailTemplates.ListEmailTemplates())?.Select(Item => new PageViewModel.GridModel.GridItem
+        {
+            var repository = RepositoriesFactory.GetEmailTemplatesRepository();
+            var viewModel = (await repository.EmailTemplatesList())?.Select(Item => new PageViewModel.GridModel.GridItem
             {
                 EmailTemplateID = Item.EmailTemplateID,
                 EmailTemplateName = Item.EmailTemplateName,
                 UrlEmailTemplate = Url.RouteUrl(ControllerActionRouteNames.Admin.EmailTemplates.EmailTemplate.Properties, new { EmailTemplateID = Item.EmailTemplateID })
             }).ToList();
-            return ViewModel;
+            return viewModel;
         }        
         #endregion
 
@@ -46,22 +50,22 @@ namespace SixtyThreeBits.Web.Admin.Models
             public class GridModel : DevExtremeGridViewModelBase, IDevExtremeGridModel<GridModel.GridItem>
             {
                 #region Methods
-                public DataGridBuilder<GridItem> Render(IHtmlHelper Html)
+                public DataGridBuilder<GridItem> Render(IHtmlHelper html)
                 {
-                    var Grid = GetGridWithStartupValues<GridItem>(Html: Html, KeyFieldName: nameof(GridItem.EmailTemplateID));
+                    var grid = GetGridWithStartupValues<GridItem>(html: html, keyFieldName: nameof(GridItem.EmailTemplateID));
 
-                    Grid                        
+                    grid                        
                     .ID("EmailTemplatesGrid")
-                    .OnInitialized("EmailTemplatesModel.OnGridInit")
-                    .Columns(Columns =>
+                    .OnInitialized("emailTemplatesModel.onGridInit")
+                    .Columns(columns =>
                     {
-                        Columns.Add().Width(30).Caption(" ").InitDetailsUrlCellTemplate(nameof(GridItem.UrlEmailTemplate));
-                        Columns.AddFor(m => m.EmailTemplateName).Caption("Templates").Width(300);
-                        Columns.Add();
+                        columns.Add().Width(30).Caption(" ").InitDetailsUrlCellTemplate(nameof(GridItem.UrlEmailTemplate));
+                        columns.AddFor(m => m.EmailTemplateName).Caption(Resources.TextTemplate).Width(300);
+                        columns.Add();
                     });
 
 
-                    return Grid;
+                    return grid;
                 }
                 #endregion
 
@@ -84,61 +88,59 @@ namespace SixtyThreeBits.Web.Admin.Models
     public class EmailTemplatePropertiesModel : WebProjectModelBase
     {
         #region Methods
-        public async Task<PageViewModel> GetPageViewModel(int? EmailTemplateID, PageViewModel ViewModel = null)
+        public async Task<PageViewModel> GetPageViewModel(int? emailTemplateID, PageViewModel viewModel = null)
         {
-            var DBItem = await DataAccessFactory.EmailTemplates.GetSingleEmailTemplateByID(EmailTemplateID);
-            if (DBItem == null)
+            var repository = RepositoriesFactory.GetEmailTemplatesRepository();
+            var dbItem = await repository.EmailTemplatesGetSingleByID(emailTemplateID);
+            if (dbItem == null)
             {
-                ViewModel = null;
+                viewModel = null;
             }
             else
             {
-                if(ViewModel == null)
+                if(viewModel == null)
                 {
-                    ViewModel = new PageViewModel();
-                    ViewModel.EmailTemplateName = DBItem.EmailTemplateName;
-                    ViewModel.EmailTemplateSubject = DBItem.EmailTemplateSubject;
-                    ViewModel.EmailTemplateSubjectEng = DBItem.EmailTemplateSubjectEng;
-                    ViewModel.EmailTemplateBody = DBItem.EmailTemplateBody;
-                    ViewModel.EmailTemplateBodyEng = DBItem.EmailTemplateBodyEng;
+                    viewModel = new PageViewModel();
+                    viewModel.EmailTemplateName = dbItem.EmailTemplateName;
+                    viewModel.EmailTemplateSubject = dbItem.EmailTemplateSubject;
+                    viewModel.EmailTemplateSubjectEng = dbItem.EmailTemplateSubjectEng;
+                    viewModel.EmailTemplateBody = dbItem.EmailTemplateBody;
+                    viewModel.EmailTemplateBodyEng = dbItem.EmailTemplateBodyEng;
                 }
-                ViewModel.EmailTemplatePlaceHoldersJson = DBItem.EmailTemplatesPlaceHolders?.Any() == true ? DBItem.EmailTemplatesPlaceHolders.ToJson() : "[]";
+                viewModel.EmailTemplatePlaceHoldersJson = dbItem.EmailTemplatesPlaceHolders?.Any() == true ? dbItem.EmailTemplatesPlaceHolders.ToJson() : "[]";
             }
 
-            return ViewModel;
+            return viewModel;
         }
 
-        public void ValidatePageViewModel(PageViewModel ViewModel)
+        public void ValidatePageViewModel(PageViewModel viewModel)
         {
-            ViewModel.Errors = new List<SimpleKeyValue<string, string>>
-            {
-                Validation.ValidateRequired(Validation.GetJQueryNameSelectorFor(nameof(ViewModel.EmailTemplateName)),ViewModel.EmailTemplateName),
-                Validation.ValidateRequired(Validation.GetJQueryNameSelectorFor(nameof(ViewModel.EmailTemplateSubject)),ViewModel.EmailTemplateSubject),
-                //Validation.ValidateRequired(Validation.GetJQueryNameSelectorFor(nameof(ViewModel.EmailTemplateBody)),ViewModel.EmailTemplateBody),
-                //Validation.ValidateRequired(Validation.GetJQueryNameSelectorFor(nameof(ViewModel.EmailTemplateSubjectEng)),ViewModel.EmailTemplateSubjectEng),
-                //Validation.ValidateRequired(Validation.GetJQueryNameSelectorFor(nameof(ViewModel.EmailTemplateBodyEng)),ViewModel.EmailTemplateBodyEng)
-            };
-            ViewModel.Errors.RemoveAll(Item => Item == null);
+            viewModel.AddError(Validation.ValidateRequired(Validation.GetJQueryNameSelectorFor(nameof(viewModel.EmailTemplateName)), viewModel.EmailTemplateName));
+            viewModel.AddError(Validation.ValidateRequired(Validation.GetJQueryNameSelectorFor(nameof(viewModel.EmailTemplateSubject)), viewModel.EmailTemplateSubject));
+            viewModel.AddError(Validation.ValidateRequired(Validation.GetJQueryNameSelectorFor(nameof(viewModel.EmailTemplateBody)), viewModel.EmailTemplateBody));
+            viewModel.AddError(Validation.ValidateRequired(Validation.GetJQueryNameSelectorFor(nameof(viewModel.EmailTemplateSubjectEng)), viewModel.EmailTemplateSubjectEng));
+            viewModel.AddError(Validation.ValidateRequired(Validation.GetJQueryNameSelectorFor(nameof(viewModel.EmailTemplateBodyEng)), viewModel.EmailTemplateBodyEng));            
         }
 
-        public async Task Save(int? EmailTemplateID, PageViewModel ViewModel)
+        public async Task Save(int? emailTemplateID, PageViewModel viewModel)
         {
-            await DataAccessFactory.EmailTemplates.EmailTemplatesIUD(
-                DatabaseAction: Enums.DatabaseActions.UPDATE,
-                EmailTemplateID: EmailTemplateID,
-                EmailTemplateName: ViewModel.EmailTemplateName,
-                EmailTemplateSubject: ViewModel.EmailTemplateSubject,
-                EmailTemplateSubjectEng: ViewModel.EmailTemplateSubjectEng,
-                EmailTemplateBody: ViewModel.EmailTemplateBody,
-                EmailTemplateBodyEng: ViewModel.EmailTemplateBodyEng
+            var repository = RepositoriesFactory.GetEmailTemplatesRepository();
+            await repository.EmailTemplatesIUD(
+                databaseAction: Enums.DatabaseActions.UPDATE,
+                emailTemplateID: emailTemplateID,
+                emailTemplateName: viewModel.EmailTemplateName,
+                emailTemplateSubject: viewModel.EmailTemplateSubject,
+                emailTemplateSubjectEng: viewModel.EmailTemplateSubjectEng,
+                emailTemplateBody: viewModel.EmailTemplateBody,
+                emailTemplateBodyEng: viewModel.EmailTemplateBodyEng
             );
-            if (DataAccessFactory.EmailTemplates.IsError)
+            if (repository.IsError)
             {
-                ViewModel.AddError(DataAccessFactory.EmailTemplates.ErrorMessage);
+                viewModel.AddError(repository.ErrorMessage);
             }
             else
             {
-                ViewModel.IsSaved = true;
+                viewModel.IsSaved = true;
             }
         }
         #endregion
@@ -153,6 +155,8 @@ namespace SixtyThreeBits.Web.Admin.Models
             public string EmailTemplateBody { get; set; }
             public string EmailTemplateBodyEng { get; set; }
             public string EmailTemplatePlaceHoldersJson { get; set; }
+
+            public readonly string TextCaption = Resources.TextCaption;
             #endregion
         }
         #endregion

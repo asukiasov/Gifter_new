@@ -1,15 +1,15 @@
-﻿const DictionariesModel = {    
-    Tree: null,
-    UrlUpdate: null,
+﻿const dictionariesModel = {    
+    tree: null,
+    urlUpdate: null,
 
-    OnTreeInit: function (s) {
-        DictionariesModel.Tree = s.component;
-        Globals.Devexpress.SetGridFullHeight(DictionariesModel.Tree, s.element[0]);
+    onTreeInit: function (e) {
+        dictionariesModel.tree = e.component;
+        globals.devexpress.setGridFullHeight(dictionariesModel.tree, e.element[0]);
     }
 };
 
 $(function () {
-    $('.js-add-new-button').click(function () {
-        DictionariesModel.Tree.addRow();
+    $(globals.selectors.buttonAddNew).click(function () {
+        dictionariesModel.tree.addRow();
     });
 });

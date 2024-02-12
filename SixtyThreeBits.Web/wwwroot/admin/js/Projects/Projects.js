@@ -1,46 +1,45 @@
-﻿const ProjectsModel = {
+﻿const projectsModel = {    
+    grid: null,
+    urlSync: null,    
 
-    ProjectID: null,
-    UrlSync: null,
+    onGridInit: function (e) {
+        projectsModel.grid = e.component;
+        globals.devexpress.setGridFullHeight(e.component, e.element[0]);
+    },
+    onGridReorder: function (e) {
+        projectsModel.syncSortIndexes(e);        
+    },
+    syncSortIndexes: function (e) {
+        const sortIndexes = globals.devexpress.getGridSortIndexes('ProjectID', projectsModel.grid, e);
 
-    ProjectsGrid: null,
-    OnProjectsGridInit: function (s) {
-        ProjectsModel.ProjectsGrid = s.component;
-        Globals.Devexpress.SetGridFullHeight(ProjectsModel.ProjectsGrid, s.element[0]);
-    }    
-
-    OnReorder: function (e) {
-        const ProjectsSortIndexes = Globals.Devexpress.GetGridSortIndexes(e, 'ProjectID');
-        var SortIndexes = new Array();
-        console.log(JSON.stringify(ProjectsSortIndexes));
         $.ajax({
             type: 'POST',
-            url: ProjectsModel.UrlSync,
-            data: { SortIndexes: ProjectsSortIndexes },
+            url: projectsModel.urlSync,
+            data: { SortIndexes: sortIndexes },
             dataType: 'json',
             beforeSend: function () {
                 preloader.show();
             },
             success: function (res) {
                 if (res.IsSuccess) {
+                    projectsModel.grid.refresh()
                 }
                 else {
-                    Components63Bits.Dialog.Error();
+                    components63Bits.dialog.error();
                 }
             },
             error: function () {
-                Components63Bits.Dialog.Error();
+                components63Bits.dialog.error();
             },
             complete: function () {
                 preloader.hide();
             }
         });
-        e.component.refresh()
     }
 };
 
 $(function () {
     $('.js-add-new-button').click(function () {
-        ProjectsModel.ProjectsGrid.addRow();
+        projectsModel.grid.addRow();
     });
 });

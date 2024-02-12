@@ -2,10 +2,10 @@
 using DevExtreme.AspNet.Mvc.Builders;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using SixtyThreeBits.Core.Modules;
+using SixtyThreeBits.Core.Infrastructure.Utilities;
 using SixtyThreeBits.Core.Properties;
-using SixtyThreeBits.Core.Utilities;
-using SixtyThreeBits.Web.Reusables.Core;
+using SixtyThreeBits.Web.Domain;
+using SixtyThreeBits.Web.Domain.Libraries;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,43 +17,44 @@ namespace SixtyThreeBits.Web.Admin.Models
         #region Methods
         public PageViewModel GetPageViewModel()
         {
-            var ViewModel = new PageViewModel();
-            ViewModel.ShowAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.Redirects.GridAdd);
+            var viewModel = new PageViewModel();
+            viewModel.ShowAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.Redirects.GridAdd);
 
-            ViewModel.Grid = new PageViewModel.GridModel();
-            ViewModel.Grid.UrlLoad = Url.RouteUrl(ControllerActionRouteNames.Admin.Redirects.Grid);
-            ViewModel.Grid.UrlAddNew = Url.RouteUrl(ControllerActionRouteNames.Admin.Redirects.GridAdd);
-            ViewModel.Grid.UrlUpdate = Url.RouteUrl(ControllerActionRouteNames.Admin.Redirects.GridUpdate);
-            ViewModel.Grid.UrlDelete = Url.RouteUrl(ControllerActionRouteNames.Admin.Redirects.GridDelete);
-            ViewModel.Grid.AllowAdd = User.HasPermission(ControllerActionRouteNames.Admin.Redirects.GridAdd);
-            ViewModel.Grid.AllowUpdate = User.HasPermission(ControllerActionRouteNames.Admin.Redirects.GridUpdate);
-            ViewModel.Grid.AllowDelete = User.HasPermission(ControllerActionRouteNames.Admin.Redirects.GridDelete);
+            viewModel.Grid = new PageViewModel.GridModel();
+            viewModel.Grid.UrlLoad = Url.RouteUrl(ControllerActionRouteNames.Admin.Redirects.Grid);
+            viewModel.Grid.UrlAddNew = Url.RouteUrl(ControllerActionRouteNames.Admin.Redirects.GridAdd);
+            viewModel.Grid.UrlUpdate = Url.RouteUrl(ControllerActionRouteNames.Admin.Redirects.GridUpdate);
+            viewModel.Grid.UrlDelete = Url.RouteUrl(ControllerActionRouteNames.Admin.Redirects.GridDelete);
+            viewModel.Grid.AllowAdd = User.HasPermission(ControllerActionRouteNames.Admin.Redirects.GridAdd);
+            viewModel.Grid.AllowUpdate = User.HasPermission(ControllerActionRouteNames.Admin.Redirects.GridUpdate);
+            viewModel.Grid.AllowDelete = User.HasPermission(ControllerActionRouteNames.Admin.Redirects.GridDelete);
 
-            return ViewModel;
+            return viewModel;
         }
 
         public async Task<List<PageViewModel.GridModel.GridItem>> GetGridViewModel()
         {
-            var Redirects = (await DataAccessFactory.Redirects.RedirectsList())?.Select(Item => new PageViewModel.GridModel.GridItem
+            var repository = RepositoriesFactory.GetRedirectsRepository();
+            var viewModel = (await repository.RedirectsList())?.Select(Item => new PageViewModel.GridModel.GridItem
             {
                 RedirectID = Item.RedirectID,                
                 RedirectFrom = Item.RedirectFrom,
                 RedirectTo = Item.RedirectTo
             }).ToList();
-            return Redirects;
+            return viewModel;
         }
 
-        public async Task CRUD(Enums.DatabaseActions DatabaseAction, int? RedirectID, PageViewModel.GridModel.GridItem SubmitModel)
+        public async Task CRUD(Enums.DatabaseActions databaseAction, int? redirectID, PageViewModel.GridModel.GridItem submitModel)
         {
-
-            await DataAccessFactory.Redirects.RedirectsIUD(
-                DatabaseAction: DatabaseAction,
-                RedirectID: RedirectID,
-                RedirectFrom: SubmitModel.RedirectFrom,
-                RedirectTo: SubmitModel.RedirectTo                
+            var repository = RepositoriesFactory.GetRedirectsRepository();
+            await repository.RedirectsIUD(
+                databaseAction: databaseAction,
+                redirectID: redirectID,
+                redirectFrom: submitModel.RedirectFrom,
+                redirectTo: submitModel.RedirectTo                
             );
 
-            if (DataAccessFactory.Redirects.IsError)
+            if (repository.IsError)
             {
                 Form.AddError(Resources.TextError);
             }
@@ -72,21 +73,21 @@ namespace SixtyThreeBits.Web.Admin.Models
             public class GridModel : DevExtremeGridViewModelBase, IDevExtremeGridModel<GridModel.GridItem>
             {                
                 #region Methods
-                public DataGridBuilder<GridItem> Render(IHtmlHelper Html)
+                public DataGridBuilder<GridItem> Render(IHtmlHelper html)
                 {
-                    var Grid = GetGridWithStartupValues<GridItem>(Html: Html, KeyFieldName: nameof(GridItem.RedirectID));
+                    var grid = GetGridWithStartupValues<GridItem>(html: html, keyFieldName: nameof(GridItem.RedirectID));
 
-                    Grid
+                    grid
                    .ID("RedirectsGrid")                   
-                   .OnInitialized("RedirectsModel.OnGridInit")
-                   .Columns(Columns =>
+                   .OnInitialized("redirectsModel.onGridInit")
+                   .Columns(columns =>
                    {
-                       Columns.AddFor(m => m.RedirectFrom).Caption("Redirect From").Width(500);
-                       Columns.AddFor(m => m.RedirectTo).Caption("Redirect To").Width(500);                       
-                       Columns.Add();
+                       columns.AddFor(m => m.RedirectFrom).Caption(Resources.TextRedirectFrom).Width(500);
+                       columns.AddFor(m => m.RedirectTo).Caption(Resources.TextRedirectTo).Width(500);                       
+                       columns.Add();
                    });
 
-                    return Grid;
+                    return grid;
 
                 }
                 #endregion

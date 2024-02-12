@@ -213,6 +213,7 @@
 }
 .tree-item .handle div.right-col > * {
     margin-left: 10px;
+    margin-bottom:0;
 }
 .tree-item .handle div.right-col i{
     display:block;

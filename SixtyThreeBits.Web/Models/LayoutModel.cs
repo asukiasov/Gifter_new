@@ -1,4 +1,4 @@
-﻿using SixtyThreeBits.Web.Reusables.Core;
+﻿using SixtyThreeBits.Web.Domain.SharedViewModels;
 
 namespace SixtyThreeBits.Web.Models
 {

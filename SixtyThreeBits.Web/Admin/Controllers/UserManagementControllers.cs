@@ -1,8 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
-using SixtyThreeBits.Core.Utilities;
-using SixtyThreeBits.Libraries;
+using SixtyThreeBits.Core.Infrastructure.Utilities;
+using SixtyThreeBits.Libraries.Extensions;
+using SixtyThreeBits.Web.Admin.Filters;
 using SixtyThreeBits.Web.Admin.Models;
-using SixtyThreeBits.Web.Reusables.Core;
+using SixtyThreeBits.Web.Domain;
 using System.Threading.Tasks;
 
 namespace SixtyThreeBits.Web.Admin.Controllers
@@ -23,30 +24,30 @@ namespace SixtyThreeBits.Web.Admin.Controllers
         public async Task<ActionResult> Users()
         {            
             Model.PluginsClient.EnableDevextreme(true);
-            var ViewModel = await Model.GetPageViewModel();
-            return View(ViewNames.Admin.UserManagement.Users, ViewModel);
+            var viewModel = await Model.GetPageViewModel();
+            return View(ViewNames.Admin.UserManagement.Users, viewModel);
         }
 
         [Route("grid", Name = ControllerActionRouteNames.Admin.UserManagement.UsersGrid)]
         public async Task<ActionResult> UsersGrid()
         {
-            var ViewModel = await Model.GetGridViewModel();
-            return Json(ViewModel);
+            var viewModel = await Model.GetGridViewModel();
+            return Json(viewModel);
         }
 
         [HttpPost]
         [Route("grid/add", Name = ControllerActionRouteNames.Admin.UserManagement.UsersGridAdd)]
         public async Task<ActionResult> UsersGridAdd(int? key, string values)
         {
-            var SubmitModel = values.DeserializeJsonTo<UsersModel.PageViewModel.GridModel.GridItem>() ?? new UsersModel.PageViewModel.GridModel.GridItem();
-            await Model.ValidateUserEmail(UserEmail: SubmitModel.UserEmail, UserID: key);
+            var submitModel = values.DeserializeJsonTo<UsersModel.PageViewModel.GridModel.GridItem>() ?? new UsersModel.PageViewModel.GridModel.GridItem();
+            await Model.ValidateUserEmail(userEmail: submitModel.UserEmail, userID: key);
             if (Model.Form.HasErrors)
             {
                 return GetDevexpressErrorResult(Model.Form.ErrorMessage);
             }
             else
             {
-                await Model.CRUD(DatabaseAction: Enums.DatabaseActions.CREATE, UserID: key, SubmitModel: SubmitModel);
+                await Model.CRUD(databaseAction: Enums.DatabaseActions.CREATE, userID: key, submitModel: submitModel);
                 return GetDevexpressSuccessResult();
             }
         }
@@ -55,35 +56,35 @@ namespace SixtyThreeBits.Web.Admin.Controllers
         [Route("grid/update", Name = ControllerActionRouteNames.Admin.UserManagement.UsersGridUpdate)]
         public async Task<ActionResult> UsersGridUpdate(int? key, string values)
         {
-            var Result = default(ActionResult);
-            var SubmitModel = values.DeserializeJsonTo<UsersModel.PageViewModel.GridModel.GridItem>() ?? new UsersModel.PageViewModel.GridModel.GridItem();
+            var result = default(ActionResult);
+            var submitModel = values.DeserializeJsonTo<UsersModel.PageViewModel.GridModel.GridItem>() ?? new UsersModel.PageViewModel.GridModel.GridItem();
 
-            await Model.ValidateUserEmail(UserEmail: SubmitModel.UserEmail, UserID: key);
+            await Model.ValidateUserEmail(userEmail: submitModel.UserEmail, userID: key);
             if (Model.Form.HasErrors)
             {
-                Result = GetDevexpressErrorResult(Model.Form.ErrorMessage);
+                result = GetDevexpressErrorResult(Model.Form.ErrorMessage);
             }
             else
             {
-                await Model.CRUD(DatabaseAction: Enums.DatabaseActions.UPDATE, UserID: key, SubmitModel: SubmitModel);
+                await Model.CRUD(databaseAction: Enums.DatabaseActions.UPDATE, userID: key, submitModel: submitModel);
                 if (Model.Form.HasErrors)
                 {
-                    Result = GetDevexpressErrorResult(Model.Form.ErrorMessage);
+                    result = GetDevexpressErrorResult(Model.Form.ErrorMessage);
                 }
                 else
                 {
-                    Result = GetDevexpressSuccessResult();
+                    result = GetDevexpressSuccessResult();
                 }
             }
 
-            return Result;
+            return result;
         }
 
         [HttpDelete]
         [Route("grid/delete", Name = ControllerActionRouteNames.Admin.UserManagement.UsersGridDelete)]
         public async Task<ActionResult> UsersGridDelete(int? key)
         {
-            await Model.CRUD(DatabaseAction: Enums.DatabaseActions.DELETE, UserID: key, SubmitModel: new UsersModel.PageViewModel.GridModel.GridItem());
+            await Model.CRUD(databaseAction: Enums.DatabaseActions.DELETE, userID: key, submitModel: new UsersModel.PageViewModel.GridModel.GridItem());
             if (Model.Form.HasErrors)
             {
                 return GetDevexpressErrorResult(Model.Form.ErrorMessage);
@@ -112,23 +113,23 @@ namespace SixtyThreeBits.Web.Admin.Controllers
         public ActionResult Roles()
         {
             Model.PluginsClient.EnableDevextreme(true);
-            var ViewModel = Model.GetPageViewModel();
-            return View(ViewNames.Admin.UserManagement.Roles, ViewModel);
+            var viewModel = Model.GetPageViewModel();
+            return View(ViewNames.Admin.UserManagement.Roles, viewModel);
         }
 
         [Route("grid", Name = ControllerActionRouteNames.Admin.UserManagement.RolesGrid)]
         public async Task<ActionResult> RolesGrid()
         {
-            var ViewModel = await Model.GetGridViewModel();
-            return Json(ViewModel);
+            var viewModel = await Model.GetGridViewModel();
+            return Json(viewModel);
         }
 
         [HttpPost]
         [Route("grid/add", Name = ControllerActionRouteNames.Admin.UserManagement.RolesGridAdd)]
         public async Task<ActionResult> RolesGridAdd(int? key, string values)
         {
-            var SubmitModel = values.DeserializeJsonTo<RolesModel.PageViewModel.GridModel.GridItem>() ?? new RolesModel.PageViewModel.GridModel.GridItem();
-            await Model.CRUD(DatabaseAction: Enums.DatabaseActions.CREATE, RoleID: key, SubmitModel: SubmitModel);
+            var submitModel = values.DeserializeJsonTo<RolesModel.PageViewModel.GridModel.GridItem>() ?? new RolesModel.PageViewModel.GridModel.GridItem();
+            await Model.CRUD(databaseAction: Enums.DatabaseActions.CREATE, roleID: key, submitModel: submitModel);
             if (Model.Form.HasErrors)
             {
                 return GetDevexpressErrorResult(Model.Form.ErrorMessage);
@@ -143,8 +144,8 @@ namespace SixtyThreeBits.Web.Admin.Controllers
         [Route("grid/update", Name = ControllerActionRouteNames.Admin.UserManagement.RolesGridUpdate)]
         public async Task<ActionResult> RolesGridUpdate(int? key, string values)
         {
-            var SubmitModel = values.DeserializeJsonTo<RolesModel.PageViewModel.GridModel.GridItem>() ?? new RolesModel.PageViewModel.GridModel.GridItem();
-            await Model.CRUD(DatabaseAction: Enums.DatabaseActions.UPDATE, RoleID: key, SubmitModel: SubmitModel);
+            var submitModel = values.DeserializeJsonTo<RolesModel.PageViewModel.GridModel.GridItem>() ?? new RolesModel.PageViewModel.GridModel.GridItem();
+            await Model.CRUD(databaseAction: Enums.DatabaseActions.UPDATE, roleID: key, submitModel: submitModel);
             if (Model.Form.HasErrors)
             {
                 return GetDevexpressErrorResult(Model.Form.ErrorMessage);
@@ -159,7 +160,7 @@ namespace SixtyThreeBits.Web.Admin.Controllers
         [Route("grid/delete", Name = ControllerActionRouteNames.Admin.UserManagement.RolesGridDelete)]
         public async Task<ActionResult> RolesGridDelete(int? key)
         {
-            await Model.CRUD(DatabaseAction: Enums.DatabaseActions.DELETE, RoleID: key, SubmitModel: new RolesModel.PageViewModel.GridModel.GridItem());
+            await Model.CRUD(databaseAction: Enums.DatabaseActions.DELETE, roleID: key, submitModel: new RolesModel.PageViewModel.GridModel.GridItem());
             if (Model.Form.HasErrors)
             {
                 return GetDevexpressErrorResult(Model.Form.ErrorMessage);
@@ -188,23 +189,23 @@ namespace SixtyThreeBits.Web.Admin.Controllers
         public ActionResult Permissions()
         {
             Model.PluginsClient.EnableDevextreme(true);
-            var ViewModel = Model.GetPageViewModel();
-            return View(ViewNames.Admin.UserManagement.Permissions, ViewModel);
+            var viewModel = Model.GetPageViewModel();
+            return View(ViewNames.Admin.UserManagement.Permissions, viewModel);
         }
 
         [Route("tree", Name = ControllerActionRouteNames.Admin.UserManagement.PermissionsTree)]
         public async Task<ActionResult> PermissionsTree()
         {
-            var ViewModel = await Model.GetGridViewModel();
-            return Json(ViewModel);
+            var viewModel = await Model.GetGridViewModel();
+            return Json(viewModel);
         }
 
         [HttpPost]
         [Route("tree/add", Name = ControllerActionRouteNames.Admin.UserManagement.PermissionsTreeAdd)]
         public async Task<ActionResult> PermissionsTreeAdd(int? key, string values)
         {
-            var SubmitModel = values.DeserializeJsonTo<PermissionsModel.PageViewModel.TreeModel.TreeItem>() ?? new PermissionsModel.PageViewModel.TreeModel.TreeItem();
-            await Model.CRUD(DatabaseAction: Enums.DatabaseActions.CREATE, PermissionID: key, SubmitModel: SubmitModel);
+            var submitModel = values.DeserializeJsonTo<PermissionsModel.PageViewModel.TreeModel.TreeItem>() ?? new PermissionsModel.PageViewModel.TreeModel.TreeItem();
+            await Model.CRUD(databaseAction: Enums.DatabaseActions.CREATE, permissionID: key, submitModel: submitModel);
             if (Model.Form.HasErrors)
             {
                 return GetDevexpressErrorResult(Model.Form.ErrorMessage);
@@ -219,8 +220,8 @@ namespace SixtyThreeBits.Web.Admin.Controllers
         [Route("tree/update", Name = ControllerActionRouteNames.Admin.UserManagement.PermissionsTreeUpdate)]
         public async Task<ActionResult> PermissionsTreeUpdate(int? key, string values)
         {
-            var SubmitModel = values.DeserializeJsonTo<PermissionsModel.PageViewModel.TreeModel.TreeItem>() ?? new PermissionsModel.PageViewModel.TreeModel.TreeItem();
-            await Model.CRUD(DatabaseAction: Enums.DatabaseActions.UPDATE, PermissionID: key, SubmitModel: SubmitModel);
+            var submitModel = values.DeserializeJsonTo<PermissionsModel.PageViewModel.TreeModel.TreeItem>() ?? new PermissionsModel.PageViewModel.TreeModel.TreeItem();
+            await Model.CRUD(databaseAction: Enums.DatabaseActions.UPDATE, permissionID: key, submitModel: submitModel);
             if (Model.Form.HasErrors)
             {
                 return GetDevexpressErrorResult(Model.Form.ErrorMessage);
@@ -235,7 +236,7 @@ namespace SixtyThreeBits.Web.Admin.Controllers
         [Route("tree/delete", Name = ControllerActionRouteNames.Admin.UserManagement.PermissionsTreeDelete)]
         public async Task<ActionResult> PermissionsTreeDelete(int? key)
         {
-            await Model.DeleteRecursive(PermissionID: key);
+            await Model.DeleteRecursive(permissionID: key);
             if (Model.Form.HasErrors)
             {
                 return GetDevexpressErrorResult(Model.Form.ErrorMessage);
@@ -265,40 +266,94 @@ namespace SixtyThreeBits.Web.Admin.Controllers
         {
             Model.PluginsClient.EnableDevextreme(true).EnableSuccessErrorMessage(true);
             Model.SuccessErrorPartialViewModel.IsInitialized = true;
-            var ViewModel = Model.GetPageViewModel();
-            return View(ViewNames.Admin.UserManagement.RolePermissions, ViewModel);
+            var viewModel = Model.GetPageViewModel();
+            return View(ViewNames.Admin.UserManagement.RolePermissions, viewModel);
         }
 
         [HttpGet]
         [Route("get", Name = ControllerActionRouteNames.Admin.UserManagement.RolePermissionsGet)]
         public async Task<ActionResult> RolePermissionsGet(int? RoleID)
         {
-            var ViewModel = await Model.GetRolePermissions(RoleID);
-            return Json(ViewModel);
+            var viewModel = await Model.GetRolePermissions(RoleID);
+            return Json(viewModel);
         }
 
         [HttpGet]
         [Route("roles/grid", Name = ControllerActionRouteNames.Admin.UserManagement.RolePermissionsRolesGrid)]
         public async Task<ActionResult> RolePermissionsRolesGrid()
         {
-            var ViewModel = await Model.GetRolesGridModel();
-            return Json(ViewModel);
+            var viewModel = await Model.GetRolesGridModel();
+            return Json(viewModel);
         }
 
         [HttpGet]
         [Route("permissions/tree", Name = ControllerActionRouteNames.Admin.UserManagement.RolePermissionsPermissionsTree)]
         public async Task<ActionResult> RolePermissionsPermissionsTree()
         {
-            var ViewModel = await Model.GetPermissionsTreeModel();
-            return Json(ViewModel);
+            var viewModel = await Model.GetPermissionsTreeModel();
+            return Json(viewModel);
         }
 
         [HttpPut]
         [Route("save", Name = ControllerActionRouteNames.Admin.UserManagement.RolePermissionsSave)]
-        public async Task<ActionResult> RolePermissionsSave(RolePermissionsModel.PageViewModel.RolePermissionSaveSubmitModel SubmitModel)
+        public async Task<ActionResult> RolePermissionsSave(RolePermissionsModel.PageViewModel.RolePermissionSaveSubmitModel submitModel)
         {
-            var ViewModel = await Model.SaveRolePermissions(SubmitModel);
-            return Json(ViewModel);
+            var viewModel = await Model.SaveRolePermissions(submitModel);
+            return Json(viewModel);
+        }
+        #endregion
+    }
+
+    [Route("admin/um/users/{userID:int}/properties")]
+    [TypeFilter(typeof(BeforeUserPageLoad), Order = 2)]
+    public class UserPropertiesController : AdminControllerBase<UserPropertiesModel>
+    {
+        #region Constructors
+        public UserPropertiesController()
+        {
+            Model = new UserPropertiesModel();
+        }
+        #endregion
+
+        #region Actions
+        [HttpGet]
+        [Route("", Name = ControllerActionRouteNames.Admin.UserManagement.User.Properties)]
+        public async Task<IActionResult> UserProperties()
+        {
+            Model.PluginsClient.Enable63BitsForms(true).EnableDevextreme(true).EnableJQueryMaskedInput(true);
+            var viewModel = await Model.GetPageViewModel();
+            return View(ViewNames.Admin.UserManagement.User.Properties, viewModel);
+        }
+
+        [HttpPost]
+        [Route("")]
+        public async Task<IActionResult> UserPropertiesSave(UserPropertiesModel.PageViewModel submitModel)
+        {
+            var Result = default(IActionResult);
+            Model.PluginsClient.Enable63BitsForms(true).EnableDevextreme(true).EnableJQueryMaskedInput(true);
+            var viewModel = await Model.GetPageViewModel(submitModel);
+
+            await Model.ValidatePageViewModel(viewModel);
+            if (viewModel.IsValid)
+            {
+                await Model.Save(viewModel);
+                if (viewModel.IsSaved)
+                {
+                    Result = Redirect(Model.UrlCurrentPageWithDomain);
+                    Model.ShowSuccess();
+                }
+                else
+                {
+                    Result = View(ViewNames.Admin.UserManagement.User.Properties, viewModel);
+                    Model.ShowError(viewModel.ErrorMessage);
+                }
+            }
+            else
+            {
+                Result = View(ViewNames.Admin.UserManagement.User.Properties, viewModel);
+            }
+
+            return Result;
         }
         #endregion
     }

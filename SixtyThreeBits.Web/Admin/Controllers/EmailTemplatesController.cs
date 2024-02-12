@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using SixtyThreeBits.Web.Admin.Models;
-using SixtyThreeBits.Web.Reusables.Core;
+using SixtyThreeBits.Web.Domain;
 using System.Threading.Tasks;
 
 namespace SixtyThreeBits.Web.Admin.Controllers
@@ -21,20 +21,20 @@ namespace SixtyThreeBits.Web.Admin.Controllers
         public IActionResult EmailTemplates()
         {
             Model.PluginsClient.EnableDevextreme(true);
-            var ViewModel = Model.GetPageViewModel();
-            return View(ViewNames.Admin.EmailTemplates.Page, ViewModel);
+            var viewModel = Model.GetPageViewModel();
+            return View(ViewNames.Admin.EmailTemplates.Page, viewModel);
         }
 
         [Route("grid", Name = ControllerActionRouteNames.Admin.EmailTemplates.Grid)]
         public async Task<IActionResult> EmailTemplateGrid()
         {
-            var ViewModel = await Model.GetGridModel();
-            return Json(ViewModel);
+            var viewModel = await Model.GetGridModel();
+            return Json(viewModel);
         }
         #endregion
     }
 
-    [Route("admin/email-templates/{EmailTemplateID}/properties")]
+    [Route("admin/email-templates/{emailTemplateID:int}/properties")]
     public class EmailTemplatePropertiesController : AdminControllerBase<EmailTemplatePropertiesModel>
     {
         #region Constructors
@@ -47,62 +47,62 @@ namespace SixtyThreeBits.Web.Admin.Controllers
         #region Methods
         [HttpGet]
         [Route("", Name = ControllerActionRouteNames.Admin.EmailTemplates.EmailTemplate.Properties)]
-        public async Task<IActionResult> EmailTemplateProperties(int? EmailTemplateID)
+        public async Task<IActionResult> EmailTemplateProperties(int? emailTemplateID)
         {
-            var Result = default(IActionResult);
-            var ViewModel = await Model.GetPageViewModel(EmailTemplateID);
-            if(ViewModel == null)
+            var result = default(IActionResult);
+            var viewModel = await Model.GetPageViewModel(emailTemplateID);
+            if(viewModel == null)
             {
-                Result = Model.GetNotFoundViewResult();
+                result = Model.GetNotFoundViewResult();
             }
             else
             {
                 Model.PluginsClient.EnableTinyMce(true).Enable63BitsForms(true);
-                Model.PageTitle.Set(ViewModel.EmailTemplateName);
-                Model.Breadcrumbs.RenameLastItem(ViewModel.EmailTemplateName);
-                Result = View(ViewNames.Admin.EmailTemplates.EmailTemplate.Properties, ViewModel);
+                Model.PageTitle.Set(viewModel.EmailTemplateName);
+                Model.Breadcrumbs.RenameLastItem(viewModel.EmailTemplateName);
+                result = View(ViewNames.Admin.EmailTemplates.EmailTemplate.Properties, viewModel);
             }
-            return Result;
+            return result;
         }
 
         [HttpPost]
         [Route("")]
-        public async Task<IActionResult> EmailTemplateProperties(int? EmailTemplateID, EmailTemplatePropertiesModel.PageViewModel SubmitModel)
+        public async Task<IActionResult> EmailTemplateProperties(int? emailTemplateID, EmailTemplatePropertiesModel.PageViewModel submitModel)
         {
-            var Result = default(IActionResult);
-            var ViewModel = await Model.GetPageViewModel(EmailTemplateID, SubmitModel);
-            if (ViewModel == null)
+            var result = default(IActionResult);
+            var viewModel = await Model.GetPageViewModel(emailTemplateID, submitModel);
+            if (viewModel == null)
             {
-                Result = Model.GetNotFoundViewResult();
+                result = Model.GetNotFoundViewResult();
             }
             else
             {
                 Model.PluginsClient.EnableTinyMce(true).Enable63BitsForms(true);
-                Model.PageTitle.Set(ViewModel.EmailTemplateName);
-                Model.Breadcrumbs.RenameLastItem(ViewModel.EmailTemplateName);
+                Model.PageTitle.Set(viewModel.EmailTemplateName);
+                Model.Breadcrumbs.RenameLastItem(viewModel.EmailTemplateName);
 
-                Model.ValidatePageViewModel(ViewModel);
-                if (ViewModel.IsValid)
+                Model.ValidatePageViewModel(viewModel);
+                if (viewModel.IsValid)
                 {
-                    await Model.Save(EmailTemplateID, ViewModel);
-                    if (ViewModel.IsSaved)
+                    await Model.Save(emailTemplateID, viewModel);
+                    if (viewModel.IsSaved)
                     {
-                        Result = Redirect(Model.Url.RouteUrl(ControllerActionRouteNames.Admin.EmailTemplates.EmailTemplate.Properties, new { EmailTemplateID = EmailTemplateID }));
+                        result = Redirect(Model.Url.RouteUrl(ControllerActionRouteNames.Admin.EmailTemplates.EmailTemplate.Properties, new { emailTemplateID = emailTemplateID }));
                         Model.ShowSuccess();
                     }
                     else
                     {
-                        Result = View(ViewNames.Admin.EmailTemplates.EmailTemplate.Properties, ViewModel);
-                        Model.ShowError(ViewModel.ErrorMessage);
+                        result = View(ViewNames.Admin.EmailTemplates.EmailTemplate.Properties, viewModel);
+                        Model.ShowError(viewModel.ErrorMessage);
                     }
                 }
                 else
                 {
-                    Result = View(ViewNames.Admin.EmailTemplates.EmailTemplate.Properties, ViewModel);
+                    result = View(ViewNames.Admin.EmailTemplates.EmailTemplate.Properties, viewModel);
                 }
             }
 
-            return Result;
+            return result;
         }
         #endregion
     }

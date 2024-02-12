@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SixtyThreeBits.Core.Modules;
-using SixtyThreeBits.Libraries;
-using SixtyThreeBits.Web.Filters;
+using SixtyThreeBits.Web.Domain;
 using SixtyThreeBits.Web.Models;
-using SixtyThreeBits.Web.Reusables.Core;
 
 namespace SixtyThreeBits.Web.Controllers
 {

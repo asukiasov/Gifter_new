@@ -1,35 +1,35 @@
-﻿const PermissionsModel = {    
-    PermissionsTree: null,
-    UrlUpdate: null,
+﻿const permissionsModel = {    
+    tree: null,
+    urlUpdate: null,
 
-    OnPermissionsTreeInit: function (s) {
-        PermissionsModel.PermissionsTree = s.component;
-        Globals.Devexpress.SetGridFullHeight(PermissionsModel.PermissionsTree, s.element[0]);
+    onTreeInit: function (e) {
+        permissionsModel.tree = e.component;
+        globals.devexpress.setGridFullHeight(e.component, e.element[0]);
     },
-    OnPermissionsTreeInitNewRow: function (s) {
-        s.data.PermissionIsMenuItem = false;
+    onTreeInitNewRow: function (e) {
+        e.data.PermissionIsMenuItem = false;
     },    
-    OnPermissionsTreeReorder: function (s) {
+    onTreeReorder: function (e) {
 
-        const PermissionID = s.itemData.PermissionID
-        let PermissionParentID = Globals.Constants.NullValueFor.Int;
+        const permissionID = e.itemData.PermissionID
+        let permissionParentID = globals.constants.nullValueFor.int;
         
-        if (s.dropInsideItem) {
-            visibleRows = PermissionsModel.PermissionsTree.getVisibleRows();
-            const Parent = visibleRows[s.toIndex].data;
-            PermissionParentID = Parent.PermissionID;
+        if (e.dropInsideItem) {
+            visibleRows = permissionsModel.tree.getVisibleRows();
+            const parent = visibleRows[e.toIndex].data;
+            permissionParentID = parent.PermissionID;
         }
 
         $.ajax({
             type: 'PUT',
-            url: PermissionsModel.UrlUpdate,
-            data: { key: PermissionID, values: JSON.stringify({ PermissionParentID: PermissionParentID }) },
+            url: permissionsModel.urlUpdate,
+            data: { key: permissionID, values: JSON.stringify({ PermissionParentID: permissionParentID }) },
             dataType: 'json',
             beforeSend: function () {
                 preloader.show();
             },            
             complete: function () {
-                PermissionsModel.PermissionsTree.refresh();
+                permissionsModel.tree.refresh();
                 preloader.hide();
             }
         });
@@ -37,7 +37,7 @@
 };
 
 $(function () {
-    $('.js-add-new-button').click(function () {
-        PermissionsModel.PermissionsTree.addRow();
+    $(globals.selectors.buttonAddNew).click(function () {
+        permissionsModel.tree.addRow();
     });
 });

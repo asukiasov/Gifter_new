@@ -1,9 +1,9 @@
 /*!
 * DevExtreme (dx.aspnet.mvc.js)
-* Version: 22.2.3
-* Build date: Mon Dec 05 2022
+* Version: 23.2.4
+* Build date: Mon Jan 29 2024
 *
-* Copyright (c) 2012 - 2022 Developer Express Inc. ALL RIGHTS RESERVED
+* Copyright (c) 2012 - 2024 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
 */
 ! function(factory) {
@@ -33,9 +33,9 @@
                 bag.push("_.push(");
                 var expression = value;
                 if (encode) {
-                    expression = "arguments[1]((" + value + " !== null && " + value + " !== undefined) ? " + value + ' : "")';
+                    expression = "encodeHtml((" + value + " !== null && " + value + " !== undefined) ? " + value + ' : "")';
                     if (/^\s*$/.test(value)) {
-                        expression = "arguments[1](" + value + ")"
+                        expression = "encodeHtml(" + value + ")"
                     }
                 }
                 bag.push(expression);
@@ -44,7 +44,8 @@
                 bag.push(code + "\n")
             }
         }
-        return function(text) {
+        return function(element) {
+            var text = extractTemplateMarkup(element);
             var bag = ["var _ = [];", "with(obj||{}) {"],
                 chunks = text.split(EXTENDED_OPEN_TAG);
             acceptText(bag, chunks.shift());
@@ -57,7 +58,20 @@
                 acceptText(bag, tmp[1])
             }
             bag.push("}", "return _.join('')");
-            return new Function("obj", bag.join(""))
+            var code = bag.join("");
+            try {
+                return new Function("obj", "encodeHtml", code)
+            } catch (e) {
+                var src = element[0];
+                if ("SCRIPT" === src.tagName) {
+                    var funcName = src.id.replaceAll("-", "");
+                    var func = "function " + funcName + "(obj,encodeHtml){\n" + code + "\n}";
+                    $.globalEval(func, src, window.document);
+                    return funcName
+                } else {
+                    return text
+                }
+            }
         }
     }();
     var pendingCreateComponentRoutines = [];
@@ -108,15 +122,23 @@
             if (setTemplateEngine) {
                 setTemplateEngine({
                     compile: function(element) {
-                        return templateCompiler(extractTemplateMarkup(element))
+                        return templateCompiler(element)
                     },
                     render: function(template, data) {
-                        var html = template(data, encodeHtml);
-                        var dxMvcExtensionsObj = window.MVCx;
-                        if (dxMvcExtensionsObj && !dxMvcExtensionsObj.isDXScriptInitializedOnLoad) {
-                            html = html.replace(/(<script[^>]+)id="dxss_.+?"/g, "$1")
+                        if (template instanceof Function) {
+                            var html = template(data, encodeHtml);
+                            var dxMvcExtensionsObj = window.MVCx;
+                            if (dxMvcExtensionsObj && !dxMvcExtensionsObj.isDXScriptInitializedOnLoad) {
+                                html = html.replace(/(<script[^>]+)id="dxss_.+?"/g, "$1")
+                            }
+                            return html
+                        } else if (window[template] instanceof Function) {
+                            return window[template](data, encodeHtml)
+                        } else if ("string" === typeof template) {
+                            return template
+                        } else {
+                            throw "Unknown template type"
                         }
-                        return html
                     }
                 })
             }

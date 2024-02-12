@@ -61,11 +61,38 @@ namespace SixtyThreeBits.Core.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Active.
+        /// </summary>
+        public static string TextActive {
+            get {
+                return ResourceManager.GetString("TextActive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add.
         /// </summary>
         public static string TextAdd {
             get {
                 return ResourceManager.GetString("TextAdd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please sign in to continue for administration.
+        /// </summary>
+        public static string TextAdminWelcomeSubTitle {
+            get {
+                return ResourceManager.GetString("TextAdminWelcomeSubTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Welcome to Admin.
+        /// </summary>
+        public static string TextAdminWelcomeTitle {
+            get {
+                return ResourceManager.GetString("TextAdminWelcomeTitle", resourceCulture);
             }
         }
         
@@ -79,11 +106,47 @@ namespace SixtyThreeBits.Core.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Author.
+        /// </summary>
+        public static string TextAuthor {
+            get {
+                return ResourceManager.GetString("TextAuthor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Back to Previous Page.
+        /// </summary>
+        public static string TextBackToPreviousPage {
+            get {
+                return ResourceManager.GetString("TextBackToPreviousPage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Back to Website.
         /// </summary>
         public static string TextBackToWebsite {
             get {
                 return ResourceManager.GetString("TextBackToWebsite", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Date of birth.
+        /// </summary>
+        public static string TextBirthDate {
+            get {
+                return ResourceManager.GetString("TextBirthDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Brand.
+        /// </summary>
+        public static string TextBrand {
+            get {
+                return ResourceManager.GetString("TextBrand", resourceCulture);
             }
         }
         
@@ -97,20 +160,65 @@ namespace SixtyThreeBits.Core.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Caption.
+        /// </summary>
+        public static string TextCaption {
+            get {
+                return ResourceManager.GetString("TextCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Caption Eng.
+        /// </summary>
+        public static string TextCaptionEng {
+            get {
+                return ResourceManager.GetString("TextCaptionEng", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Category.
+        /// </summary>
+        public static string TextCategory {
+            get {
+                return ResourceManager.GetString("TextCategory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cloud Properties.
+        /// </summary>
+        public static string TextCloudProperties {
+            get {
+                return ResourceManager.GetString("TextCloudProperties", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Code.
+        /// </summary>
+        public static string TextCode {
+            get {
+                return ResourceManager.GetString("TextCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Codename.
+        /// </summary>
+        public static string TextCodename {
+            get {
+                return ResourceManager.GetString("TextCodename", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Do you really want to delete this item?.
         /// </summary>
         public static string TextConfirmDelete {
             get {
                 return ResourceManager.GetString("TextConfirmDelete", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Do you really want to delete this attachment?.
-        /// </summary>
-        public static string TextConfirmDeleteAttachment {
-            get {
-                return ResourceManager.GetString("TextConfirmDeleteAttachment", resourceCulture);
             }
         }
         
@@ -133,6 +241,51 @@ namespace SixtyThreeBits.Core.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Contact Address.
+        /// </summary>
+        public static string TextContactAddress {
+            get {
+                return ResourceManager.GetString("TextContactAddress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Contact Email.
+        /// </summary>
+        public static string TextContactEmail {
+            get {
+                return ResourceManager.GetString("TextContactEmail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Contact Phone.
+        /// </summary>
+        public static string TextContactPhone {
+            get {
+                return ResourceManager.GetString("TextContactPhone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Date.
+        /// </summary>
+        public static string TextDate {
+            get {
+                return ResourceManager.GetString("TextDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Date Created.
+        /// </summary>
+        public static string TextDateCreated {
+            get {
+                return ResourceManager.GetString("TextDateCreated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Delete.
         /// </summary>
         public static string TextDelete {
@@ -142,11 +295,65 @@ namespace SixtyThreeBits.Core.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Drag Images Here &lt;br /&gt; OR &lt;br /&gt; Click to Upload.
+        ///   Looks up a localized string similar to Description.
         /// </summary>
-        public static string TextDropzone {
+        public static string TextDescription {
             get {
-                return ResourceManager.GetString("TextDropzone", resourceCulture);
+                return ResourceManager.GetString("TextDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Description Eng.
+        /// </summary>
+        public static string TextDescriptionEng {
+            get {
+                return ResourceManager.GetString("TextDescriptionEng", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Short Description.
+        /// </summary>
+        public static string TextDescriptionShort {
+            get {
+                return ResourceManager.GetString("TextDescriptionShort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Short Description Eng.
+        /// </summary>
+        public static string TextDescriptionShortEng {
+            get {
+                return ResourceManager.GetString("TextDescriptionShortEng", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dictionary Code.
+        /// </summary>
+        public static string TextDictionaryCode {
+            get {
+                return ResourceManager.GetString("TextDictionaryCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Email.
+        /// </summary>
+        public static string TextEmail {
+            get {
+                return ResourceManager.GetString("TextEmail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Email Properties.
+        /// </summary>
+        public static string TextEmailProperties {
+            get {
+                return ResourceManager.GetString("TextEmailProperties", resourceCulture);
             }
         }
         
@@ -160,6 +367,60 @@ namespace SixtyThreeBits.Core.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Download Excel Template.
+        /// </summary>
+        public static string TextExcelDownloadTemplate {
+            get {
+                return ResourceManager.GetString("TextExcelDownloadTemplate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Upload Excel.
+        /// </summary>
+        public static string TextExcelUpload {
+            get {
+                return ResourceManager.GetString("TextExcelUpload", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to External Page.
+        /// </summary>
+        public static string TextExternalPage {
+            get {
+                return ResourceManager.GetString("TextExternalPage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Featured.
+        /// </summary>
+        public static string TextFeatured {
+            get {
+                return ResourceManager.GetString("TextFeatured", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Uplaod File.
+        /// </summary>
+        public static string TextFileUpload {
+            get {
+                return ResourceManager.GetString("TextFileUpload", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Firstname.
+        /// </summary>
+        public static string TextFirstname {
+            get {
+                return ResourceManager.GetString("TextFirstname", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Footer.
         /// </summary>
         public static string TextFooter {
@@ -169,11 +430,119 @@ namespace SixtyThreeBits.Core.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to General Properties.
+        /// </summary>
+        public static string TextGeneralProperties {
+            get {
+                return ResourceManager.GetString("TextGeneralProperties", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to generate from title.
+        /// </summary>
+        public static string TextGenerateFromTitle {
+            get {
+                return ResourceManager.GetString("TextGenerateFromTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Get me outta here.
+        /// </summary>
+        public static string TextGetMeOuttaHere {
+            get {
+                return ResourceManager.GetString("TextGetMeOuttaHere", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Int Code.
+        /// </summary>
+        public static string TextIntCode {
+            get {
+                return ResourceManager.GetString("TextIntCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Lastname.
+        /// </summary>
+        public static string TextLastname {
+            get {
+                return ResourceManager.GetString("TextLastname", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Login.
+        /// </summary>
+        public static string TextLogin {
+            get {
+                return ResourceManager.GetString("TextLogin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Logout.
+        /// </summary>
+        public static string TextLogout {
+            get {
+                return ResourceManager.GetString("TextLogout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Menu.
         /// </summary>
         public static string TextMenu {
             get {
                 return ResourceManager.GetString("TextMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Menu Icon.
+        /// </summary>
+        public static string TextMenuIcon {
+            get {
+                return ResourceManager.GetString("TextMenuIcon", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Menu Title.
+        /// </summary>
+        public static string TextMenuTitle {
+            get {
+                return ResourceManager.GetString("TextMenuTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Menu Title Eng.
+        /// </summary>
+        public static string TextMenuTitleEng {
+            get {
+                return ResourceManager.GetString("TextMenuTitleEng", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        public static string TextName {
+            get {
+                return ResourceManager.GetString("TextName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name Eng.
+        /// </summary>
+        public static string TextNameEng {
+            get {
+                return ResourceManager.GetString("TextNameEng", resourceCulture);
             }
         }
         
@@ -196,11 +565,137 @@ namespace SixtyThreeBits.Core.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 404 - Page Not Found.
+        /// </summary>
+        public static string TextPageNotFound {
+            get {
+                return ResourceManager.GetString("TextPageNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sorry, page not found.
+        /// </summary>
+        public static string TextPageNotFoundMessage1 {
+            get {
+                return ResourceManager.GetString("TextPageNotFoundMessage1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The resource you were looking for is not found.
+        /// </summary>
+        public static string TextPageNotFoundMessage2 {
+            get {
+                return ResourceManager.GetString("TextPageNotFoundMessage2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Page Url.
+        /// </summary>
+        public static string TextPageUrl {
+            get {
+                return ResourceManager.GetString("TextPageUrl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Password.
+        /// </summary>
+        public static string TextPassword {
+            get {
+                return ResourceManager.GetString("TextPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Permission.
+        /// </summary>
+        public static string TextPermission {
+            get {
+                return ResourceManager.GetString("TextPermission", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Permissions.
+        /// </summary>
+        public static string TextPermissions {
+            get {
+                return ResourceManager.GetString("TextPermissions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cell number.
+        /// </summary>
+        public static string TextPhoneCell {
+            get {
+                return ResourceManager.GetString("TextPhoneCell", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Photos.
+        /// </summary>
+        public static string TextPhotos {
+            get {
+                return ResourceManager.GetString("TextPhotos", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Position.
+        /// </summary>
+        public static string TextPosition {
+            get {
+                return ResourceManager.GetString("TextPosition", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Next.
         /// </summary>
         public static string TextPrev {
             get {
                 return ResourceManager.GetString("TextPrev", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Price.
+        /// </summary>
+        public static string TextPrice {
+            get {
+                return ResourceManager.GetString("TextPrice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Price Old.
+        /// </summary>
+        public static string TextPriceOld {
+            get {
+                return ResourceManager.GetString("TextPriceOld", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Producer Country.
+        /// </summary>
+        public static string TextProducerCountry {
+            get {
+                return ResourceManager.GetString("TextProducerCountry", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Project Name.
+        /// </summary>
+        public static string TextProjectName {
+            get {
+                return ResourceManager.GetString("TextProjectName", resourceCulture);
             }
         }
         
@@ -214,11 +709,74 @@ namespace SixtyThreeBits.Core.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Redirect From.
+        /// </summary>
+        public static string TextRedirectFrom {
+            get {
+                return ResourceManager.GetString("TextRedirectFrom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Redirect To.
+        /// </summary>
+        public static string TextRedirectTo {
+            get {
+                return ResourceManager.GetString("TextRedirectTo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Relogin.
         /// </summary>
         public static string TextRelogin {
             get {
                 return ResourceManager.GetString("TextRelogin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remainder.
+        /// </summary>
+        public static string TextRemainder {
+            get {
+                return ResourceManager.GetString("TextRemainder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Upload Remainders.
+        /// </summary>
+        public static string TextRemainderUpload {
+            get {
+                return ResourceManager.GetString("TextRemainderUpload", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remember Me.
+        /// </summary>
+        public static string TextRememberMe {
+            get {
+                return ResourceManager.GetString("TextRememberMe", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Role.
+        /// </summary>
+        public static string TextRole {
+            get {
+                return ResourceManager.GetString("TextRole", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Roles.
+        /// </summary>
+        public static string TextRoles {
+            get {
+                return ResourceManager.GetString("TextRoles", resourceCulture);
             }
         }
         
@@ -232,20 +790,29 @@ namespace SixtyThreeBits.Core.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sign In.
+        ///   Looks up a localized string similar to Slug.
         /// </summary>
-        public static string TextSignIn {
+        public static string TextSlug {
             get {
-                return ResourceManager.GetString("TextSignIn", resourceCulture);
+                return ResourceManager.GetString("TextSlug", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sign Out.
+        ///   Looks up a localized string similar to Sort Index.
         /// </summary>
-        public static string TextSignOut {
+        public static string TextSortIndex {
             get {
-                return ResourceManager.GetString("TextSignOut", resourceCulture);
+                return ResourceManager.GetString("TextSortIndex", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to String Code.
+        /// </summary>
+        public static string TextStringCode {
+            get {
+                return ResourceManager.GetString("TextStringCode", resourceCulture);
             }
         }
         
@@ -259,11 +826,83 @@ namespace SixtyThreeBits.Core.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Template.
+        /// </summary>
+        public static string TextTemplate {
+            get {
+                return ResourceManager.GetString("TextTemplate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Test.
+        /// </summary>
+        public static string TextTestButton {
+            get {
+                return ResourceManager.GetString("TextTestButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Title.
+        /// </summary>
+        public static string TextTitle {
+            get {
+                return ResourceManager.GetString("TextTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Title Eng.
+        /// </summary>
+        public static string TextTitleEng {
+            get {
+                return ResourceManager.GetString("TextTitleEng", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Update.
         /// </summary>
         public static string TextUpdate {
             get {
                 return ResourceManager.GetString("TextUpdate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Upload.
+        /// </summary>
+        public static string TextUpload {
+            get {
+                return ResourceManager.GetString("TextUpload", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Upload Image.
+        /// </summary>
+        public static string TextUploadImage {
+            get {
+                return ResourceManager.GetString("TextUploadImage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Username.
+        /// </summary>
+        public static string TextUsername {
+            get {
+                return ResourceManager.GetString("TextUsername", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Video Url.
+        /// </summary>
+        public static string TextVideoUrl {
+            get {
+                return ResourceManager.GetString("TextVideoUrl", resourceCulture);
             }
         }
         

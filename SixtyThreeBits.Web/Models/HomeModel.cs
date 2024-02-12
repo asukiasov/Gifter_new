@@ -1,8 +1,4 @@
-﻿using SixtyThreeBits.Core.Modules;
-using SixtyThreeBits.Web.Reusables.Core;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using static SixtyThreeBits.Core.DB.DBCoreDataContext;
+﻿using SixtyThreeBits.Web.Domain;
 
 namespace SixtyThreeBits.Web.Models
 {

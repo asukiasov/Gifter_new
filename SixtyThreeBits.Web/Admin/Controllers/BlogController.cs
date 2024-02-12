@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using SixtyThreeBits.Core.Utilities;
-using SixtyThreeBits.Libraries;
+﻿using Microsoft.AspNetCore.Mvc;
+using SixtyThreeBits.Core.Infrastructure.Utilities;
+using SixtyThreeBits.Libraries.Extensions;
 using SixtyThreeBits.Web.Admin.Filters;
 using SixtyThreeBits.Web.Admin.Models;
-using SixtyThreeBits.Web.Reusables.Core;
+using SixtyThreeBits.Web.Domain;
+using System.Threading.Tasks;
 
 namespace SixtyThreeBits.Web.Admin.Controllers
 {
@@ -27,23 +24,23 @@ namespace SixtyThreeBits.Web.Admin.Controllers
         public ActionResult Blog()
         {
             Model.PluginsClient.EnableDevextreme(true);
-            var ViewModel = Model.GetPageViewModel();
-            return View(ViewNames.Admin.Blog.Page, ViewModel);
+            var viewModel = Model.GetPageViewModel();
+            return View(ViewNames.Admin.Blog.Page, viewModel);
         }
 
         [Route("grid", Name = ControllerActionRouteNames.Admin.Blog.Grid)]
         public async Task<ActionResult> BlogGrid()
         {
-            var ViewModel = await Model.GetGridViewModel();
-            return Json(ViewModel);
+            var viewModel = await Model.GetGridViewModel();
+            return Json(viewModel);
         }
 
         [HttpPost]
         [Route("grid/add", Name = ControllerActionRouteNames.Admin.Blog.GridAdd)]
         public async Task<ActionResult> BlogGridAdd(int? key, string values)
         {
-            var SubmitModel = values.DeserializeJsonTo<BlogModel.PageViewModel.GridModel.GridItem>() ?? new BlogModel.PageViewModel.GridModel.GridItem();
-            await Model.CRUD(DatabaseAction: Enums.DatabaseActions.CREATE, BlogPostID: key, SubmitModel: SubmitModel);
+            var submitModel = values.DeserializeJsonTo<BlogModel.PageViewModel.GridModel.GridItem>() ?? new BlogModel.PageViewModel.GridModel.GridItem();
+            await Model.CRUD(databaseAction: Enums.DatabaseActions.CREATE, blogPostID: key, submitModel: submitModel);
             if (Model.Form.HasErrors)
             {
                 return GetDevexpressErrorResult(Model.Form.ErrorMessage);
@@ -58,8 +55,8 @@ namespace SixtyThreeBits.Web.Admin.Controllers
         [Route("grid/update", Name = ControllerActionRouteNames.Admin.Blog.GridUpdate)]
         public async Task<ActionResult> BlogGridUpdate(int? key, string values)
         {
-            var SubmitModel = values.DeserializeJsonTo<BlogModel.PageViewModel.GridModel.GridItem>() ?? new BlogModel.PageViewModel.GridModel.GridItem();
-            await Model.CRUD(DatabaseAction: Enums.DatabaseActions.UPDATE, BlogPostID: key, SubmitModel: SubmitModel);
+            var submitModel = values.DeserializeJsonTo<BlogModel.PageViewModel.GridModel.GridItem>() ?? new BlogModel.PageViewModel.GridModel.GridItem();
+            await Model.CRUD(databaseAction: Enums.DatabaseActions.UPDATE, blogPostID: key, submitModel: submitModel);
             if (Model.Form.HasErrors)
             {
                 return GetDevexpressErrorResult(Model.Form.ErrorMessage);
@@ -74,7 +71,7 @@ namespace SixtyThreeBits.Web.Admin.Controllers
         [Route("grid/delete", Name = ControllerActionRouteNames.Admin.Blog.GridDelete)]
         public async Task<ActionResult> BlogGridDelete(int? key)
         {
-            await Model.CRUD(DatabaseAction: Enums.DatabaseActions.DELETE, BlogPostID: key, SubmitModel: new BlogModel.PageViewModel.GridModel.GridItem());
+            await Model.CRUD(databaseAction: Enums.DatabaseActions.DELETE, blogPostID: key, submitModel: new BlogModel.PageViewModel.GridModel.GridItem());
             if (Model.Form.HasErrors)
             {
                 return GetDevexpressErrorResult(Model.Form.ErrorMessage);
@@ -87,7 +84,7 @@ namespace SixtyThreeBits.Web.Admin.Controllers
         #endregion
     }
 
-    [Route("admin/blog/{BlogPostID:int}")]
+    [Route("admin/blog/{blogPostID:int}")]
     [TypeFilter(typeof(BeforeBlogPageLoad), Order = 2)]
     public class BlogPropertiesController : AdminControllerBase<BlogPropertiesModel>
     {
@@ -103,52 +100,52 @@ namespace SixtyThreeBits.Web.Admin.Controllers
         [Route("properties", Name = ControllerActionRouteNames.Admin.Blog.PostProperties)]
         public IActionResult Properties()
         {
-            Model.PluginsClient.Enable63BitsForms(true).EnableFancybox(true).EnableDevextreme(true).EnableTinyMce(true);
-            var ViewModel = Model.GetBlogPropertiesViewModel(ViewModel: null);
-            Model.PageTitle.Set(Model.DBItemBlog.BlogPostTitle);
-            Model.Breadcrumbs.RenameLastItem(Model.DBItemBlog.BlogPostTitle);
-            return View(ViewNames.Admin.Blog.BlogItem, ViewModel);
+            Model.PluginsClient.Enable63BitsForms(true).EnableFancybox(true).EnableTinyMce(true).EnableFlatPickr(true);
+            var viewModel = Model.GetBlogPropertiesViewModel(viewModel: null);
+            Model.PageTitle.Set(Model.DBItem.BlogPostTitle);
+            Model.Breadcrumbs.RenameLastItem(Model.DBItem.BlogPostTitle);
+            return View(ViewNames.Admin.Blog.BlogPostProperties, viewModel);
         }
 
         [HttpPost]
         [Route("properties")]
-        public async Task<IActionResult> Properties(BlogPropertiesModel.BlogPropertiesViewModel SubmitModel)
+        public async Task<IActionResult> Properties(BlogPropertiesModel.BlogPropertiesViewModel submitModel)
         {
-            var Result = default(IActionResult);
-            Model.PluginsClient.Enable63BitsForms(true).EnableFancybox(true).EnableDevextreme(true).EnableTinyMce(true);
-            var ViewModel = Model.GetBlogPropertiesViewModel(ViewModel: SubmitModel);
+            var result = default(IActionResult);
+            Model.PluginsClient.Enable63BitsForms(true).EnableFancybox(true).EnableDevextreme(true).EnableTinyMce(true).EnableFlatPickr(true);
+            var viewModel = Model.GetBlogPropertiesViewModel(viewModel: submitModel);
 
-            Model.PageTitle.Set(Model.DBItemBlog.BlogPostTitle);
-            Model.Breadcrumbs.RenameLastItem(Model.DBItemBlog.BlogPostTitle);
+            Model.PageTitle.Set(Model.DBItem.BlogPostTitle);
+            Model.Breadcrumbs.RenameLastItem(Model.DBItem.BlogPostTitle);
 
-            await Model.ValidateBlogPropertiesViewModel(ViewModel);
-            if (ViewModel.IsValid)
+            await Model.ValidatePageViewModel(viewModel);
+            if (viewModel.IsValid)
             {
-                await Model.SaveBlogProperties(ViewModel);
-                if (ViewModel.IsSaved)
+                await Model.Save(viewModel);
+                if (viewModel.IsSaved)
                 {
                     Model.ShowSuccess();
-                    Result = Redirect(Url.RouteUrl(ControllerActionRouteNames.Admin.Blog.PostProperties, new { BlogPostID = Model.DBItemBlog.BlogPostID }));
+                    result = Redirect(Url.RouteUrl(ControllerActionRouteNames.Admin.Blog.PostProperties, new { blogPostID = Model.DBItem.BlogPostID }));
                 }
                 else
                 {
                     Model.ShowError();
-                    Result = View(ViewNames.Admin.Blog.BlogItem, ViewModel);
+                    result = View(ViewNames.Admin.Blog.BlogPostProperties, viewModel);
                 }
             }
             else
             {
-                Result = View(ViewNames.Admin.Blog.BlogItem, ViewModel);
+                result = View(ViewNames.Admin.Blog.BlogPostProperties, viewModel);
             }
-            return Result;
+            return result;
         }
 
         [HttpPost]
         [Route("properties/delete-image", Name = ControllerActionRouteNames.Admin.Blog.PostPropertiesDeleteImage)]
-        public async Task<IActionResult> BlogItemDeleteImage(int? BlogPostID)
+        public async Task<IActionResult> BlogItemDeleteImage()
         {
-            var Result = await Model.DeleteImage(BlogPostID);
-            return Json(Result);
+            var viewModel = await Model.DeleteImage();
+            return Json(viewModel);
         }
         #endregion
     }

@@ -3,12 +3,16 @@ using DevExtreme.AspNet.Mvc.Builders;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using SixtyThreeBits.Core.Modules;
+using SixtyThreeBits.Core.Infrastructure.DTO;
+using SixtyThreeBits.Core.Infrastructure.Libraries;
+using SixtyThreeBits.Core.Infrastructure.Libraries.FileStorages;
+using SixtyThreeBits.Core.Infrastructure.Repositories;
+using SixtyThreeBits.Core.Infrastructure.Utilities;
 using SixtyThreeBits.Core.Properties;
-using SixtyThreeBits.Core.Services;
-using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries;
-using SixtyThreeBits.Web.Reusables.Core;
+using SixtyThreeBits.Web.Domain;
+using SixtyThreeBits.Web.Domain.Libraries;
+using SixtyThreeBits.Web.Domain.SharedViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,54 +22,50 @@ namespace SixtyThreeBits.Web.Admin.Models
 {
     public class NewsModel : WebProjectModelBase
     {
-
         #region Methods
         public PageViewModel GetPageViewModel()
         {
-            var ViewModel = new PageViewModel();
-            ViewModel.ShowAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.News.GridAdd);
+            var viewModel = new PageViewModel();
+            viewModel.ShowAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.News.GridAdd);
 
-            ViewModel.Grid = new PageViewModel.GridModel();
-            ViewModel.Grid.AllowAdd = User.HasPermission(ControllerActionRouteNames.Admin.News.GridAdd);
-            ViewModel.Grid.AllowUpdate = User.HasPermission(ControllerActionRouteNames.Admin.News.GridUpdate);
-            ViewModel.Grid.AllowDelete = User.HasPermission(ControllerActionRouteNames.Admin.News.GridDelete);
-            ViewModel.Grid.UrlLoad = Url.RouteUrl(ControllerActionRouteNames.Admin.News.Grid);
-            ViewModel.Grid.UrlAddNew = Url.RouteUrl(ControllerActionRouteNames.Admin.News.GridAdd);
-            ViewModel.Grid.UrlUpdate = Url.RouteUrl(ControllerActionRouteNames.Admin.News.GridUpdate);
-            ViewModel.Grid.UrlDelete = Url.RouteUrl(ControllerActionRouteNames.Admin.News.GridDelete);
+            viewModel.Grid = new PageViewModel.GridModel();
+            viewModel.Grid.AllowAdd = User.HasPermission(ControllerActionRouteNames.Admin.News.GridAdd);
+            viewModel.Grid.AllowUpdate = User.HasPermission(ControllerActionRouteNames.Admin.News.GridUpdate);
+            viewModel.Grid.AllowDelete = User.HasPermission(ControllerActionRouteNames.Admin.News.GridDelete);
+            viewModel.Grid.UrlLoad = Url.RouteUrl(ControllerActionRouteNames.Admin.News.Grid);
+            viewModel.Grid.UrlAddNew = Url.RouteUrl(ControllerActionRouteNames.Admin.News.GridAdd);
+            viewModel.Grid.UrlUpdate = Url.RouteUrl(ControllerActionRouteNames.Admin.News.GridUpdate);
+            viewModel.Grid.UrlDelete = Url.RouteUrl(ControllerActionRouteNames.Admin.News.GridDelete);
 
-            return ViewModel;
+            return viewModel;
         }
 
         public async Task<List<PageViewModel.GridModel.GridItem>> GetGridViewModel()
         {
-            var ViewModel = (await DataAccessFactory.News.ListNews()).Select(Item => new PageViewModel.GridModel.GridItem
+            var repository = RepositoriesFactory.GetNewsRepository();
+            var viewModel = (await repository.NewsList()).Select(item => new PageViewModel.GridModel.GridItem
             {
-                NewsID = Item.NewsID,
-                NewsTitle = Item.NewsTitle,
-                NewsDatePublished = Item.NewsDatePublished,
-                NewsIsPublished = Item.NewsIsPublished,
-                UrlNewsProperties = Url.RouteUrl(ControllerActionRouteNames.Admin.News.NewsItem, new { NewsID = Item.NewsID })
+                NewsID = item.NewsID,
+                NewsTitle = item.NewsTitle,
+                NewsDatePublished = item.NewsDatePublished,
+                NewsIsPublished = item.NewsIsPublished,
+                NewsDateCreated = item.NewsDateCreated,
+                UrlNewsProperties = Url.RouteUrl(ControllerActionRouteNames.Admin.News.NewsItem, new { newsID = item.NewsID })
             }).ToList();
-            return ViewModel;
+            return viewModel;
         }
 
-        public async Task CRUD(Enums.DatabaseActions DatabaseAction, int? NewsID, PageViewModel.GridModel.GridItem SubmitModel)
+        public async Task CRUD(Enums.DatabaseActions databaseAction, int? newsID, PageViewModel.GridModel.GridItem submitModel)
         {
-            if (DatabaseAction == Enums.DatabaseActions.DELETE)
-            {
-                var DBItem = await DataAccessFactory.News.GetSingleNewsByID(NewsID);
-                Utilities.DeleteUploadedFile(DBItem?.NewsImageFilename);
-            }
-            await DataAccessFactory.News.NewsIUD(
-                DatabaseAction: DatabaseAction,
-                NewsID: NewsID,
-                NewsTitle: SubmitModel.NewsTitle,                
-                NewsDatePublished: SubmitModel.NewsDatePublished,
-                NewsIsPublished: SubmitModel.NewsIsPublished
+            var repository = RepositoriesFactory.GetNewsRepository();
+            await repository.NewsIUD(
+                databaseAction: databaseAction,
+                newsID: newsID,
+                newsTitle: submitModel.NewsTitle,                
+                newsDatePublished: submitModel.NewsDatePublished,
+                newsIsPublished: submitModel.NewsIsPublished
             );
-
-            if (DataAccessFactory.News.IsError)
+            if (repository.IsError)
             {
                 Form.AddError(Resources.TextError);
             }
@@ -84,26 +84,26 @@ namespace SixtyThreeBits.Web.Admin.Models
             public class GridModel : DevExtremeGridViewModelBase, IDevExtremeGridModel<GridModel.GridItem>
             {
                 #region Methods
-                public DataGridBuilder<GridItem> Render(IHtmlHelper Html)
+                public DataGridBuilder<GridItem> Render(IHtmlHelper html)
                 {
-                    var Grid = GetGridWithStartupValues<GridItem>(Html: Html, KeyFieldName: nameof(GridItem.NewsID));
-
-                    Grid
+                    var grid = GetGridWithStartupValues<GridItem>(html: html, keyFieldName: nameof(GridItem.NewsID));
+                    grid
                     .ID("NewsGrid")
-                    .OnInitialized("NewsModel.OnGridInit")
-                    .Columns(Columns =>
+                    .OnInitialized("newsModel.onGridInit")
+                    .Columns(columns =>
                     {
-                        Columns.Add().Width(30).Caption(" ").InitDetailsUrlCellTemplate(nameof(GridItem.UrlNewsProperties));
-                        Columns.AddFor(m => m.NewsTitle).Caption("სათაური").Width(400).ValidationRules(Options =>
+                        columns.Add().Width(30).Caption(" ").InitDetailsUrlCellTemplate(nameof(GridItem.UrlNewsProperties));
+                        columns.AddFor(m => m.NewsTitle).Caption(Resources.TextTitle).Width(400).ValidationRules(options =>
                         {
-                            Options.AddRequired();
+                            options.AddRequired();
                         });
-                        Columns.AddFor(m => m.NewsDatePublished).Caption("თარიღი").DataType(GridColumnDataType.Date).Width(150).InitDateColumn();
-                        Columns.AddFor(m => m.NewsIsPublished).Caption("გამოქვეყნებული").DataType(GridColumnDataType.Boolean).Width(130).InitCheckboxColumn();
-                        Columns.Add();
+                        columns.AddFor(m => m.NewsDatePublished).Caption(Resources.TextDate).DataType(GridColumnDataType.Date).Width(150).InitDateColumn();
+                        columns.AddFor(m => m.NewsIsPublished).Caption(Resources.TextPublished).DataType(GridColumnDataType.Boolean).Width(130).InitCheckboxColumn();
+                        columns.AddFor(m => m.NewsDateCreated).Caption(Resources.TextDateCreated).DataType(GridColumnDataType.Date).Width(150).InitDateColumn(formatDateTime: true).AllowEditing(false);                        
+                        columns.Add();
                     });
 
-                    return Grid;
+                    return grid;
                 }
                 #endregion
 
@@ -115,6 +115,7 @@ namespace SixtyThreeBits.Web.Admin.Models
                     public string NewsTitle { get; set; }
                     public DateTime? NewsDatePublished { get; set; }
                     public bool NewsIsPublished { get; set; }
+                    public DateTime? NewsDateCreated { get; set; }
                     public string UrlNewsProperties { get; set; }
                     #endregion
                 }
@@ -128,144 +129,149 @@ namespace SixtyThreeBits.Web.Admin.Models
     public class NewsModelBase : WebProjectModelBase
     {
         #region Properties
-        public News DBItemNews { get; set; }
+        public NewsDTO DBItem { get; set; }
         #endregion
     }
 
     public class NewsPropertiesModel : NewsModelBase
     {
-        #region Methods
+        #region Properties
+        readonly string _folderPath = FileStorageManager.Modules[Enums.FileManagerModules.News].FolderName;
+        #endregion
 
-        public NewsPropertiesViewModel GetNewsPropertiesViewModel(NewsPropertiesViewModel ViewModel)
+        #region Methods
+        public PageViewModel GetPageViewModel(PageViewModel viewModel)
         {
-            if (ViewModel == null)
+            if (viewModel == null)
             {
-                ViewModel = new NewsPropertiesViewModel();
-                ViewModel.NewsSlug = DBItemNews.NewsSlug;
-                ViewModel.NewsTitle = DBItemNews.NewsTitle;
-                ViewModel.NewsTitleEng = DBItemNews.NewsTitleEng;
-                ViewModel.NewsTitleRus = DBItemNews.NewsTitleRus;                
-                ViewModel.NewsShortDescription = DBItemNews.NewsShortDescription;
-                ViewModel.NewsShortDescriptionEng = DBItemNews.NewsShortDescriptionEng;
-                ViewModel.NewsShortDescriptionRus = DBItemNews.NewsShortDescriptionRus;
-                ViewModel.NewsText = DBItemNews.NewsText;
-                ViewModel.NewsTextEng = DBItemNews.NewsTextEng;
-                ViewModel.NewsTextRus = DBItemNews.NewsTextRus;
-                ViewModel.NewsIsPublished = DBItemNews.NewsIsPublished;
-                ViewModel.NewsDatePublished = DBItemNews.NewsDatePublished;
+                viewModel = new PageViewModel();
+                viewModel.NewsSlug = DBItem.NewsSlug;
+                viewModel.NewsTitle = DBItem.NewsTitle;
+                viewModel.NewsTitleEng = DBItem.NewsTitleEng;
+                viewModel.NewsShortDescription = DBItem.NewsShortDescription;
+                viewModel.NewsShortDescriptionEng = DBItem.NewsShortDescriptionEng;
+                viewModel.NewsText = DBItem.NewsText;
+                viewModel.NewsTextEng = DBItem.NewsTextEng;
+                viewModel.NewsIsPublished = DBItem.NewsIsPublished;
+                viewModel.NewsDatePublished = DBItem.NewsDatePublished;
             }
 
-            ViewModel.NewsImageFilename = DBItemNews.NewsImageFilename;
-            ViewModel.NewsImageHttpPath = Utilities.GetUploadedFileHttpPath(DBItemNews.NewsImageFilename);
-            ViewModel.UrlDeleteImage = Url.RouteUrl(ControllerActionRouteNames.Admin.News.NewsItemDeleteImage, new { NewsID = DBItemNews.NewsID });
-            ViewModel.UrlFileManager = GetFileManagerUrl(
-                FolderPhysicalPath: DataAccessFactory.News.GetFolderPhysicalPath(),
-                FolderVirtualPath: DataAccessFactory.News.GetFolderVirtualPath()
-            );
+            viewModel.NewsImageFilename = DBItem.NewsImageFilename;
+            viewModel.NewsImageHttpPath = FileStorage.GetUploadedFileHttpPath(DBItem.NewsImageFilename, _folderPath);
+            viewModel.UrlDeleteImage = Url.RouteUrl(ControllerActionRouteNames.Admin.News.NewsItemDeleteImage, new { newsID = DBItem.NewsID });
 
-            return ViewModel;
+            var urlFileManager = Url.RouteUrl(ControllerActionRouteNames.Admin.FileManager.Page, new { ModuleName = Enums.FileManagerModules.News });            
+            viewModel.UrlFileManager = urlFileManager;
+
+            return viewModel;
         }
 
-        public async Task ValidateNewsPropertiesViewModel(NewsPropertiesViewModel ViewModel)
+        public async Task ValidatePageViewModel(PageViewModel viewModel)
         {
-            ViewModel.Errors = new List<SimpleKeyValue<string, string>>
-            {
-                Validation.ValidateRequired(ErrorKey: Validation.GetJQueryNameSelectorFor(nameof(ViewModel.NewsTitle)), ValueToValidate:ViewModel.NewsTitle),
-                Validation.ValidateRequired(ErrorKey: Validation.GetJQueryNameSelectorFor(nameof(ViewModel.NewsSlug)), ValueToValidate:ViewModel.NewsSlug),
+            viewModel.AddError(Validation.ValidateRequired(errorKey: Validation.GetJQueryNameSelectorFor(nameof(viewModel.NewsTitle)), valueToValidate: viewModel.NewsTitle));
+            viewModel.AddError(Validation.ValidateRequired(errorKey: Validation.GetJQueryNameSelectorFor(nameof(viewModel.NewsSlug)), valueToValidate: viewModel.NewsSlug));
+            viewModel.AddError(
                 await Validation.ValidateAsync(
-                    ErrorAction: async () =>
+                    errorAction: async () =>
                     {
-                        var IsUniq = await DataAccessFactory.News.IsSlugUniq(NewsSlug:ViewModel.NewsSlug, NewsID: DBItemNews.NewsID);
+                        var repository = RepositoriesFactory.GetNewsRepository();
+                        var IsUniq = await repository.NewsIsSlugUniq(newsSlug: viewModel.NewsSlug, newsID: DBItem.NewsID);
                         return !IsUniq;
                     },
-                    ErrorKey: Validation.GetJQueryNameSelectorFor(nameof(ViewModel.NewsSlug)),
-                    ErrorMessage: Resources.ValidationSlugNotUniq
+                    errorKey: Validation.GetJQueryNameSelectorFor(nameof(viewModel.NewsSlug)),
+                    errorMessage: Resources.ValidationSlugNotUniq
                 )
-            };
-            ViewModel.Errors.RemoveAll(Item => Item == null);
+            );        
         }
 
-        public async Task<bool> SaveNewsProperties(NewsPropertiesViewModel ViewModel)
+        public async Task Save(PageViewModel viewModel)
         {
-            var HasNewsImage = ViewModel.PostedFile?.Length > 0;
-            var NewsImageFilename = HasNewsImage ? GetFilenameFromUploadedFile(ViewModel.PostedFile) : null;
-            if (HasNewsImage)
+            var hasNewsImage = viewModel.NewsImageFile?.Length > 0;
+            var newsImageFilename = hasNewsImage ? GetFilenameFromUploadedFile(viewModel.NewsImageFile) : null;
+            if (hasNewsImage)
             {
-                Utilities.DeleteUploadedFile(DBItemNews.NewsImageFilename);
+                await DeleteUploadedFile(newsImageFilename, _folderPath);
             }
-            await DataAccessFactory.News.NewsIUD(
-                DatabaseAction: Enums.DatabaseActions.UPDATE,
-                NewsID: DBItemNews.NewsID,
-                NewsSlug: ViewModel.NewsSlug,
-                NewsTitle: ViewModel.NewsTitle,
-                NewsTitleEng: ViewModel.NewsTitleEng ?? Constants.NullValueFor.String,
-                NewsTitleRus: ViewModel.NewsTitleRus ?? Constants.NullValueFor.String,
-                NewsShortDescription: ViewModel.NewsShortDescription ?? Constants.NullValueFor.String,
-                NewsShortDescriptionEng: ViewModel.NewsShortDescriptionEng ?? Constants.NullValueFor.String,
-                NewsShortDescriptionRus: ViewModel.NewsShortDescriptionRus ?? Constants.NullValueFor.String,
-                NewsText: ViewModel.NewsText ?? Constants.NullValueFor.String,
-                NewsTextEng: ViewModel.NewsTextEng ?? Constants.NullValueFor.String,
-                NewsTextRus: ViewModel.NewsTextRus ?? Constants.NullValueFor.String,
-                NewsImageFilename: NewsImageFilename,
-                NewsDatePublished: ViewModel.NewsDatePublished,
-                NewsIsPublished: ViewModel.NewsIsPublished
+
+            var repository = RepositoriesFactory.GetNewsRepository();
+            await repository.NewsIUD(
+                databaseAction: Enums.DatabaseActions.UPDATE,
+                newsID: DBItem.NewsID,
+                newsSlug: viewModel.NewsSlug,
+                newsTitle: viewModel.NewsTitle,
+                newsTitleEng: viewModel.NewsTitleEng ?? Constants.NullValueFor.String,
+                newsShortDescription: viewModel.NewsShortDescription ?? Constants.NullValueFor.String,
+                newsShortDescriptionEng: viewModel.NewsShortDescriptionEng ?? Constants.NullValueFor.String,
+                newsText: viewModel.NewsText ?? Constants.NullValueFor.String,
+                newsTextEng: viewModel.NewsTextEng ?? Constants.NullValueFor.String,
+                newsImageFilename: newsImageFilename,
+                newsDatePublished: viewModel.NewsDatePublished,
+                newsIsPublished: viewModel.NewsIsPublished
             );
 
-            if (!DataAccessFactory.News.IsError)
+            if (!repository.IsError)
             {
-                ViewModel.IsSaved = true;
-                if (HasNewsImage)
-                {
-                    await SaveUploadedFile(PostedFile: ViewModel.PostedFile, Filename: NewsImageFilename);
+                viewModel.IsSaved = true;
+                if (hasNewsImage)
+                {                    
+                    await SaveUploadedFile(viewModel.NewsImageFile, newsImageFilename, _folderPath);
                 }
-            }
-
-            return ViewModel.IsSaved;
+            }            
         }
 
-        public async Task<AjaxResponse> DeleteImage(int? NewsID)
+        public async Task<AjaxResponse> DeleteImage()
         {
-            var NewsItem = await DataAccessFactory.News.GetSingleNewsByID(NewsID);
-            Utilities.DeleteUploadedFile(NewsItem.NewsImageFilename);
+            var viewModel = new AjaxResponse();
 
-            var AR = new AjaxResponse();
-            await DataAccessFactory.News.NewsIUD(
-                DatabaseAction: Enums.DatabaseActions.UPDATE,
-                NewsID: NewsID,
-                NewsImageFilename: Constants.NullValueFor.String
+            await DeleteUploadedFile(DBItem.NewsImageFilename, _folderPath);
+            
+            var repository = RepositoriesFactory.GetNewsRepository();
+            await repository.NewsIUD(
+                databaseAction: Enums.DatabaseActions.UPDATE,
+                newsID: DBItem.NewsID,
+                newsImageFilename: Constants.NullValueFor.String
             );
-            AR.IsSuccess = !DataAccessFactory.News.IsError;
-            return AR;
+            viewModel.IsSuccess = !repository.IsError;
+            return viewModel;
         }
 
         #endregion
 
         #region Nested Classes
-        public class NewsPropertiesViewModel : FormViewModelBase
+        public class PageViewModel : FormViewModelBase
         {
             #region Properties             
             public string NewsSlug { get; set; }
             public string NewsTitle { get; set; }
             public string NewsTitleEng { get; set; }
-            public string NewsTitleRus { get; set; }
             public string NewsShortDescription { get; set; }
             public string NewsShortDescriptionEng { get; set; }
-            public string NewsShortDescriptionRus { get; set; }
             public string NewsText { get; set; }
             public string NewsTextEng { get; set; }
-            public string NewsTextRus { get; set; }
-            public DateTime? NewsDatePublished { get; set; }
+            public DateTime? NewsDatePublished { get; set; }            
             public bool NewsIsPublished { get; set; }
             public string NewsImageFilename { get; set; }
             public string NewsImageHttpPath { get; set; }
             public bool HasNewsImage => !string.IsNullOrWhiteSpace(NewsImageFilename);
-            public IFormFile PostedFile { get; set; }
+            public IFormFile NewsImageFile { get; set; }
             public string UrlDeleteImage { get; set; }
             public string UrlFileManager { get; set; }
-            public readonly string TextConfirmDelete = Resources.TextConfirmDelete;
+
+            public readonly string FormatDate = Constants.Formats.Date;
+
+            public readonly string TextTitle = Resources.TextTitle;
+            public readonly string TextTitleEng = Resources.TextTitleEng;
+            public readonly string TextSlug = Resources.TextSlug;
+            public readonly string TextGenerateFromTitle = Resources.TextGenerateFromTitle;
+            public readonly string TextPublished = Resources.TextPublished;
+            public readonly string TextDate = Resources.TextDate;
+            public readonly string TextUploadImage = Resources.TextUploadImage;
+            public readonly string TextDescriptionShort = Resources.TextDescriptionShort;
+            public readonly string TextDescriptionShortEng = Resources.TextDescriptionShortEng;
+            public readonly string TextDescription = Resources.TextDescription;
+            public readonly string TextDescriptionEng = Resources.TextDescriptionEng;
             #endregion
         }
         #endregion
     }
-
 }

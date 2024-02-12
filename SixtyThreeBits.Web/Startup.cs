@@ -1,4 +1,3 @@
-using Imageflow.Server;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -10,10 +9,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
-using SixtyThreeBits.Core.Utilities;
+using SixtyThreeBits.Core.Infrastructure.Factories;
+using SixtyThreeBits.Core.Infrastructure.Utilities;
 using System;
-using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -21,49 +19,44 @@ namespace SixtyThreeBits.Web
 {
     public class Startup
     {
-        readonly AppSettingsCollection AppSettings;
-        readonly UtilityCollection Utilities;
+        readonly AppSettingsCollection _appSettings;
+        readonly UtilityCollection _utilities;
+        readonly RepositoryFactory _repositoryFactory;
 
-        public Startup(IWebHostEnvironment Env)
+        public Startup(IWebHostEnvironment env)
         {
-            if (Env.IsDevelopment())
+            IConfiguration appSettingsConfiguration;
+            if (env.IsDevelopment())
             {
-                var Builder = new ConfigurationBuilder().SetBasePath(Env.ContentRootPath).AddJsonFile("appsettings.json");
-                AppSettings = new AppSettingsCollection(Builder.Build());
-                AppSettings.IsDevelopment = true;
+                appSettingsConfiguration = new ConfigurationBuilder().SetBasePath(env.ContentRootPath).AddJsonFile("appsettings.json").Build();
             }
             else
             {
                 #if DEBUG
-                var Builder = new ConfigurationBuilder().SetBasePath(Env.ContentRootPath).AddJsonFile("appsettings.debug.json");
-                AppSettings = new AppSettingsCollection(Builder.Build());
-                AppSettings.IsDevelopment = true;
+                appSettingsConfiguration = new ConfigurationBuilder().SetBasePath(env.ContentRootPath).AddJsonFile("appsettings.Staging.json").Build();
                 #else
-                var Builder = new ConfigurationBuilder().SetBasePath(Env.ContentRootPath).AddJsonFile("appsettings.release.json");
-                AppSettings = new AppSettingsCollection(Builder.Build());
-                AppSettings.IsDevelopment = false;
+                appSettingsConfiguration = new ConfigurationBuilder().SetBasePath(env.ContentRootPath).AddJsonFile("appsettings.Production.json").Build();                
                 #endif
             }
-            Utilities = new UtilityCollection(AppSettings);
+            _appSettings = new AppSettingsCollection(env.WebRootPath, appSettingsConfiguration);
+            _utilities = new UtilityCollection();
+            _repositoryFactory = new RepositoryFactory(_appSettings.ConnectionStrings.CommandsConnectionString, _appSettings.ConnectionStrings.QueriesConnectionString);            
         }
 
-        public void ConfigureServices(IServiceCollection Services)
+        public void ConfigureServices(IServiceCollection services)
         {
-            Services.AddSingleton(AppSettings);
-            Services.AddSingleton(Utilities);
-            //Honestly, EFCore team are idiots !!! because of "A second operation started on this context before a previous operation completed. Any instance members are not guaranteed to be thread safe."
-            //The whole idea of .NET Core + DI is create once use anywhere. I'm not able to use same DBDataContext to perform multiple db queries, so what is the point of DI then?
-            //Services.AddDbContext<DBCoreDataContext>(Options => Options.UseSqlServer(AppSettings.DBConnectionStrings.DBConnectionString), optionsLifetime: ServiceLifetime.Scoped);
+            services.AddSingleton(_appSettings);
+            services.AddSingleton(_utilities);
+            services.AddSingleton(_repositoryFactory);
             
-            Services.AddDistributedMemoryCache();
-            Services.AddSession(options =>
+            services.AddDistributedMemoryCache();
+            services.AddSession(options =>
             {
                 options.IdleTimeout = TimeSpan.FromMinutes(30);
                 options.Cookie.HttpOnly = true;
-                //options.Cookie.Name = AppSettings.IsDevelopment ? $".{Constants.ProjectName}Development" : $".{Constants.ProjectName}Production";
                 options.Cookie.IsEssential = true;
             });
-            Services.Configure<CookiePolicyOptions>(Options =>
+            services.Configure<CookiePolicyOptions>(Options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
                 Options.CheckConsentNeeded = context => false;
@@ -71,106 +64,107 @@ namespace SixtyThreeBits.Web
             });
             
 
-            Services.AddControllersWithViews(Options=> { 
+            services.AddControllersWithViews(Options=> { 
                 Options.RespectBrowserAcceptHeader = true;                
-            }).AddJsonOptions(Options => { 
-                Options.JsonSerializerOptions.PropertyNamingPolicy = null;  
+            }).AddJsonOptions(options => { 
+                options.JsonSerializerOptions.PropertyNamingPolicy = null;  
             });
             
-            Services.Configure<RouteOptions>(routeOptions => {
-                routeOptions.AppendTrailingSlash = true;
+            services.Configure<RouteOptions>(routeOptions => {
+                routeOptions.AppendTrailingSlash = false;
             });
 
-            Services.AddResponseCompression(Options =>
+            //Response Compression
+            services.AddResponseCompression(options =>
             {
-                Options.EnableForHttps = true;
-                Options.Providers.Add<BrotliCompressionProvider>();
-                Options.Providers.Add<GzipCompressionProvider>();
-                Options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[] { "image/svg+xml" });
+                options.EnableForHttps = true;
+                options.Providers.Add<BrotliCompressionProvider>();
+                options.Providers.Add<GzipCompressionProvider>();
+                options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[] { "image/svg+xml" });
             });
-            Services.Configure<BrotliCompressionProviderOptions>(Options =>
+            services.Configure<BrotliCompressionProviderOptions>(options =>
             {
-                Options.Level = System.IO.Compression.CompressionLevel.Optimal;
+                options.Level = System.IO.Compression.CompressionLevel.Optimal;
             });
-            Services.Configure<GzipCompressionProviderOptions>(Options =>
+            services.Configure<GzipCompressionProviderOptions>(options =>
             {
-                Options.Level = System.IO.Compression.CompressionLevel.Optimal;
+                options.Level = System.IO.Compression.CompressionLevel.Optimal;
             });
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder App, IWebHostEnvironment Env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (AppSettings.IsDevelopment)
+            var urlRewriteOptions = new RewriteOptions().AddRedirect(@"(.*)/$", "$1", 301).AddRewrite(@"^$", "/", true).AddRewrite(@"(.*)/$", "$1", true);
+
+            if (env.IsDevelopment())
             {
-                App.UseDeveloperExceptionPage();
+                app.UseDeveloperExceptionPage();
             }
             else
             {
-                App.UseExceptionHandler(Options =>
+                app.UseExceptionHandler(Options =>
                 {
-                    App.UseExceptionHandler("/error/404/");
+                    app.UseExceptionHandler("/error/404/");
                 });
-                App.UseHsts();
-                App.UseRewriter(new RewriteOptions().AddRedirectToNonWwwPermanent().AddRedirectToHttpsPermanent());
+                app.UseHsts();
+                urlRewriteOptions.AddRedirectToNonWwwPermanent().AddRedirectToHttpsPermanent();                
             }
-            App.UseImageflow(new ImageflowMiddlewareOptions()
-                .SetMapWebRoot(false)                
-                .MapPath(AppSettings.UploadFolderHttpPath, AppSettings.UploadFolderPhysicalPath));
 
-            App.UseFileServer();
-            App.UseStaticFiles(new StaticFileOptions
+            app.UseRewriter(urlRewriteOptions);
+
+            app.UseFileServer();
+            app.UseStaticFiles(new StaticFileOptions
             {
-                FileProvider = new PhysicalFileProvider(AppSettings.UploadFolderPhysicalPath),
-                RequestPath = AppSettings.UploadFolderHttpPath.TrimEnd('/')
+                FileProvider = new PhysicalFileProvider(_appSettings.UploadFolderPhysicalPath),
+                RequestPath = _appSettings.UploadFolderHttpPath.TrimEnd('/')
             });
-            App.UseRouting();
-            App.UseSession();
+            app.UseRouting();
+            app.UseSession();
 
-            
+            var requestLocalizationOptions = new RequestLocalizationOptions();
+            requestLocalizationOptions.RequestCultureProviders.Clear();
+            requestLocalizationOptions.RequestCultureProviders.Add(new CustomCultureProvider(_utilities));
+            requestLocalizationOptions.SupportedCultures = _utilities.SupportedCultures;
+            requestLocalizationOptions.SupportedUICultures = _utilities.SupportedCultures;
+            app.UseRequestLocalization(requestLocalizationOptions);
 
-            var RequestLocalizationOptions = new RequestLocalizationOptions();
-            RequestLocalizationOptions.RequestCultureProviders.Clear();
-            RequestLocalizationOptions.RequestCultureProviders.Add(new CustomCultureProvider(Utilities));
-            RequestLocalizationOptions.SupportedCultures = new List<CultureInfo> { new CultureInfo(Enums.Languages.GEORGIAN) { NumberFormat = new NumberFormatInfo { CurrencyDecimalSeparator = "." } }, new CultureInfo(Enums.Languages.ENGLISH) };
-            RequestLocalizationOptions.SupportedUICultures = new List<CultureInfo> { new CultureInfo(Enums.Languages.GEORGIAN) { NumberFormat = new NumberFormatInfo { CurrencyDecimalSeparator = "." } }, new CultureInfo(Enums.Languages.ENGLISH) };
-            App.UseRequestLocalization(RequestLocalizationOptions);
-
-            App.UseEndpoints(Endpoints =>
+            app.UseEndpoints(endpoints =>
             {
-                Endpoints.MapControllers();
+                endpoints.MapControllers();
             });
         }
 
         public class CustomCultureProvider : RequestCultureProvider
         {
             #region Properties
-            UtilityCollection Utilities;
+            readonly UtilityCollection _utilities;
             #endregion
 
             #region Constructors
-            public CustomCultureProvider(UtilityCollection Utilities)
+            public CustomCultureProvider(UtilityCollection utilities)
             {
-                this.Utilities = Utilities;
+                _utilities = utilities;
             }
             #endregion
 
             #region Methods
-            public override async Task<ProviderCultureResult> DetermineProviderCultureResult(HttpContext Context)
+            public override async Task<ProviderCultureResult> DetermineProviderCultureResult(HttpContext context)
             {
-                string Culture = null;
-                var Path = Context.Request.Path.ToString() ?? string.Empty;
-                if (Path.StartsWith("/admin/"))
+                string culture;
+                var path = context.Request.Path.ToString() ?? string.Empty;
+                if (path.StartsWith("/admin/"))
                 {
-                    Culture = Enums.Languages.GEORGIAN;
+                    var languageCultureCode = context.Request.Cookies[Constants.Cookies.AdminLanguageCultureCode]?.ToString();
+                    var language = _utilities.GetSupportedLanguageOrDefault(languageCultureCode);
+                    culture = language.LanguageCultureCode;
                 }
                 else
                 {
-                    Culture = Context.Request.RouteValues[Constants.RouteValues.Culture]?.ToString() ?? Enums.Languages.GEORGIAN;
+                    culture = context.Request.RouteValues[Constants.RouteValues.Culture]?.ToString() ?? _utilities.LanguageDefault.LanguageCultureCode;
                 }
 
                 await Task.Yield();
-                return new ProviderCultureResult(Culture);
+                return new ProviderCultureResult(culture);
             } 
             #endregion
         }

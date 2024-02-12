@@ -1,96 +1,70 @@
-﻿$(function () {
-    $('[data-trigger-resize]').click(function (e) {
-        e.preventDefault();
-        const Body = $('body');
-        let IsSidebarCollapsed;
+﻿const layoutModel = {
+    scrollPosition: null,
+    topbar: null,
+    sidebarStatusCookieKey: null,
+    resizeTimeout: null,
+    initTopbarSticky: function () {
+        layoutModel.scrollPosition = window.scrollY;
+        layoutModel.topbar = document.getElementById('page-topbar');
+    },
+    initSideMenu: function () {
+        new MetisMenu('.js-side-menu')
+    },
 
-        if ($(this).hasClass('sidebar-toggle')) {
-            if (Body.hasClass('aside-toggled')) {
-                Body.removeClass('aside-toggled');
-                IsSidebarCollapsed = false;
-            }
-            else {
-                Body.addClass('aside-toggled');
-                IsSidebarCollapsed = true;
-            }
+    setMainContentMinHeight: function () {
+        const sidebarHeight = $('.js-app-sidebar-menu-wrapper').offset().top + $('.js-app-sidebar-menu-wrapper').outerHeight();
+
+        if ($('body').attr('data-sidebar-size') == 'sm' && sidebarHeight > $(window).outerHeight()) {
+            $('.js-app-main-content').css({ 'min-height': sidebarHeight });
+        } else {
+            $('.js-app-main-content').removeAttr('style');
+        }
+    },
+};
+$(function () {
+    layoutModel.initSideMenu();
+    layoutModel.initTopbarSticky();
+
+    $('.js-side-menu-collapse-button').click(function () {
+        $('body').attr('class', 'sidebar-enable');
+        $('body').attr('data-sidebar-size', 'sm');
+        const IsSidebarCollapsed = true;
+        utilities.setCookie(layoutModel.sidebarStatusCookieKey, IsSidebarCollapsed);
+
+        layoutModel.setMainContentMinHeight();
+    });
+    $('.js-side-menu-expand-button').click(function () {
+        if ($(window).width() > 991) {
+            $('body').removeAttr('class');
+            $('body').attr('data-sidebar-size', 'lg');
+            const IsSidebarCollapsed = false;
+            utilities.setCookie(layoutModel.sidebarStatusCookieKey, IsSidebarCollapsed);
         }
         else {
-            if (Body.hasClass('aside-collapsed')) {
-                Body.removeClass('aside-collapsed');
-                IsSidebarCollapsed = false;
-            }
-            else {
-                Body.addClass('aside-collapsed');
-                IsSidebarCollapsed = true;
-            }
+            $('body').toggleClass('sidebar-enable');
         }
 
-        Utilities.SetCookie(LayoutModel.SidebarStatusCookieKey, IsSidebarCollapsed);
-    });
+        layoutModel.setMainContentMinHeight();
+    });        
 
-    $(document).on('mouseenter', '.aside-collapsed ul.sidebar-nav > [data-menu-top-item]', function () {
-        LayoutModel.Navigation.ToggleMenuItem($(this));
-    });
+    $('.js-show-preloader').click(function () { preloader.show(); });
 });
 
-const LayoutModel = {
-    SidebarStatusCookieKey: null,
-    Navigation: {
-        ToggleMenuItem: function ($listItem) {
-
-            LayoutModel.Navigation.RemoveFloatingNav();
-
-            $sidebar = $('.sidebar');
-            $win = $(window);
-
-            var ul = $listItem.children('ul');
-
-            if (!ul.length) return $();
-            if ($listItem.hasClass('open')) {
-                LayoutModel.Navigation.ToggleTouchItem($listItem);
-                return $();
-            }
-
-            var $aside = $('.aside-container');
-            var $asideInner = $('.aside-inner'); // for top offset calculation
-            // float aside uses extra padding on aside
-            var mar = parseInt($asideInner.css('padding-top'), 0) + parseInt($aside.css('padding-top'), 0);
-
-            var subNav = ul.clone().appendTo($aside);
-
-            LayoutModel.Navigation.ToggleTouchItem($listItem);
-
-            var itemTop = ($listItem.position().top + mar) - $sidebar.scrollTop();
-            var vwHeight = $win.height();
-
-            subNav
-              .addClass('nav-floating')
-              .css({
-                  position: 'absolute',
-                  top: itemTop,
-                  bottom: (subNav.outerHeight(true) + itemTop > vwHeight) ? 0 : 'auto'
-              });
-
-            subNav.on('mouseleave', function () {
-                LayoutModel.Navigation.ToggleTouchItem($listItem);
-                subNav.remove();
-            });
-
-            return subNav;
-        },
-
-        ToggleTouchItem: function ($element) {
-            $element
-              .siblings('li')
-              .removeClass('open')
-              .end()
-              .toggleClass('open');
-        },
-
-        RemoveFloatingNav: function () {
-            $('.sidebar-subnav.nav-floating').remove();
-            $('.dropdown-backdrop').remove();
-            $('.sidebar li.open').removeClass('open');
-        }
+window.addEventListener('scroll', function () {
+    layoutModel.scrollPosition = window.scrollY;
+    if (layoutModel.scrollPosition >= 30) {
+        layoutModel.topbar.classList.add('sticky');
+    } else {
+        layoutModel.topbar.classList.remove('sticky');
     }
-};
+});
+
+$(window).on('load resize', function () {
+    if (layoutModel.resizeTimeout) {
+        layoutModel.resizeTimeout = null;
+    }
+
+    layoutModel.resizeTimeout = setTimeout(function () {
+        layoutModel.setMainContentMinHeight();
+    }, 200);
+});

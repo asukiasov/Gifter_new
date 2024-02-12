@@ -1,45 +1,45 @@
-﻿const RolePermissionsModel = {    
-    RolesGrid: null,
-    PermissionsTree: null,
-    UrlGetRolePermissions: null,
-    UrlSave: null,
-    UrlUpdate: null,    
-    RoleIDRocused: null,    
-    IsPermissionsTreeContentReady:false,
+﻿const rolePermissionsModel = {    
+    rolesGrid: null,
+    permissionsTree: null,
+    urlGetRolePermissions: null,
+    urlSave: null,
+    urlUpdate: null,    
+    roleIDRocused: null,    
+    isPermissionsTreeContentReady:false,
 
-    OnRolesGridInit: function (e) {
-        RolePermissionsModel.RolesGrid = e.component;
-        Globals.Devexpress.SetGridFullHeight(RolePermissionsModel.RolesGrid, e.element[0]);
+    onRolesGridInit: function (e) {
+        rolePermissionsModel.rolesGrid = e.component;
+        globals.devexpress.setGridFullHeight(e.component, e.element[0]);
     },    
-    OnPermissionsTreeInit: function (e) {
-        RolePermissionsModel.PermissionsTree = e.component;
-        Globals.Devexpress.SetGridFullHeight(RolePermissionsModel.PermissionsTree, e.element[0]);
+    onPermissionsTreeInit: function (e) {
+        rolePermissionsModel.permissionsTree = e.component;
+        globals.devexpress.setGridFullHeight(e.component, e.element[0]);
     },
-    OnPermissionsTreeContentReady: function (e) {
-        RolePermissionsModel.IsPermissionsTreeContentReady = true;
+    onPermissionsTreeContentReady: function (e) {
+        rolePermissionsModel.isPermissionsTreeContentReady = true;
     },
-    OnRolesGridFocusedRowChanged: function (e) {        
+    onRolesGridFocusedRowChanged: function (e) {        
 
-        if (!RolePermissionsModel.IsPermissionsTreeContentReady) {
+        if (!rolePermissionsModel.isPermissionsTreeContentReady) {
             setTimeout(function () {
-                RolePermissionsModel.OnRolesGridFocusedRowChanged(e);
+                rolePermissionsModel.onRolesGridFocusedRowChanged(e);
             }, 1000);
 
             return;
         }
 
-        const RoleID = RolePermissionsModel.RoleIDRocused = e.row.key;
+        const roleID = rolePermissionsModel.roleIDRocused = e.row.key;
         $.ajax({
             type: 'GET',
-            url: RolePermissionsModel.UrlGetRolePermissions,
-            data: { RoleID: RoleID  },
+            url: rolePermissionsModel.urlGetRolePermissions,
+            data: { RoleID: roleID  },
             dataType: 'json',
             beforeSend: function () {
                 preloader.show();
             },
             success: function (res) {
                 if (res.IsSuccess) {
-                    RolePermissionsModel.PermissionsTree.selectRows(res.Data);
+                    rolePermissionsModel.permissionsTree.selectRows(res.Data);
                 }
             },
             complete: function () {                
@@ -50,20 +50,20 @@
 };
 
 $(function () {
-    $('.js-save-button').click(function () {
-        const PermissionIDs = RolePermissionsModel.PermissionsTree.getSelectedRowKeys();
+    $(globals.selectors.buttonSave).click(function () {
+        const permissionIDs = rolePermissionsModel.permissionsTree.getSelectedRowKeys();
 
         $.ajax({
             type: 'PUT',
-            url: RolePermissionsModel.UrlSave,
-            data: { RoleID: RolePermissionsModel.RoleIDRocused, PermissionIDs: PermissionIDs },
+            url: rolePermissionsModel.urlSave,
+            data: { RoleID: rolePermissionsModel.roleIDRocused, PermissionIDs: permissionIDs },
             dataType: 'json',
             beforeSend: function () {
                 preloader.show();
             },
             success: function (res) {
                 if (res.IsSuccess) {
-                    SuccessErrorMessageObject.ShowGlobalSuccess();
+                    successErrorMessageObject.showGlobalSuccess();
                 }
             },
             complete: function () {
