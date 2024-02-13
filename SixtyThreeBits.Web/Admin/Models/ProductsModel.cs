@@ -162,6 +162,7 @@ namespace SixtyThreeBits.Web.Admin.Models
             public readonly string TextRemainderUpload = Resources.TextRemainderUpload;
             public readonly string TextExcelUpload = Resources.TextExcelUpload;
             public readonly string TextExcelDownloadTemplate = Resources.TextExcelDownloadTemplate;
+            public readonly string TextExport = Resources.TextExport;
             public readonly string TextUpload = Resources.TextUpload;            
             #endregion
 
@@ -182,7 +183,7 @@ namespace SixtyThreeBits.Web.Admin.Models
                    .OnInitialized("productsModel.onGridInit")
                    .Columns(columns =>
                    {
-                       columns.Add().Width(30).Caption(" ").InitDetailsUrlCellTemplate(nameof(GridItem.UrlProductsProperties));
+                       columns.Add().Width(30).Caption(" ").InitDetailsUrlCellTemplate(nameof(GridItem.UrlProductsProperties)).AllowExporting(false);
                        columns.AddFor(m => m.ProductName).Caption(Resources.TextName).Width(350).ValidationRules(options =>
                        {
                            options.AddRequired();

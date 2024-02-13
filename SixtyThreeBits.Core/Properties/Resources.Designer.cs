@@ -385,6 +385,15 @@ namespace SixtyThreeBits.Core.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Export.
+        /// </summary>
+        public static string TextExport {
+            get {
+                return ResourceManager.GetString("TextExport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to External Page.
         /// </summary>
         public static string TextExternalPage {

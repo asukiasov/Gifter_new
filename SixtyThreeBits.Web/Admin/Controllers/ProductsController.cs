@@ -24,7 +24,7 @@ namespace SixtyThreeBits.Web.Admin.Controllers
         [Route("", Name = ControllerActionRouteNames.Admin.Products.Index)]
         public async Task<ActionResult> Products()
         {
-            Model.PluginsClient.EnableDevextreme(true).Enable63BitsForms(true).EnableTemplate7(true);
+            Model.PluginsClient.EnableDevextreme(true).EnableDevextremeExportExcelLibraries(true).Enable63BitsForms(true).EnableTemplate7(true);
             var viewModel = await Model.GetPageViewModel();
             return View(ViewNames.Admin.Products.Page, viewModel);
         }

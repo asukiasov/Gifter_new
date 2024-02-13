@@ -225,6 +225,9 @@
   <data name="TextExcelUpload" xml:space="preserve">
     <value>Upload Excel</value>
   </data>
+  <data name="TextExport" xml:space="preserve">
+    <value>Export</value>
+  </data>
   <data name="TextExternalPage" xml:space="preserve">
     <value>External Page</value>
   </data>

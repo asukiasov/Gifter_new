@@ -13,6 +13,7 @@ namespace SixtyThreeBits.Web.Domain.SharedViewModels
         public bool IsAdminThemeEnabled { get; private set; }
         public bool IsBootstrapEnabled { get; private set; }
         public bool IsDevextremeEnabled { get; private set; }
+        public bool IsDevextremeExportExcelLibrariesEnabled { get; private set; }
         public bool IsGoogleFontsEnabled { get; private set; }
         public bool IsFancyboxEnabled { get; private set; }
         public bool IsFlatPickrEnabled { get; private set; }
@@ -98,6 +99,12 @@ namespace SixtyThreeBits.Web.Domain.SharedViewModels
         public PluginsClient EnableDevextreme(bool value)
         {
             IsDevextremeEnabled = value;
+            return this;
+        }
+
+        public PluginsClient EnableDevextremeExportExcelLibraries(bool value)
+        {
+            IsDevextremeExportExcelLibrariesEnabled = value;
             return this;
         }
 

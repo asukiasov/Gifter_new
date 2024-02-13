@@ -225,6 +225,9 @@
   <data name="TextExcelUpload" xml:space="preserve">
     <value>ექსელის ატვირთვა</value>
   </data>
+  <data name="TextExport" xml:space="preserve">
+    <value>ექსპორტი</value>
+  </data>
   <data name="TextExternalPage" xml:space="preserve">
     <value>გარე გვერდი</value>
   </data>
