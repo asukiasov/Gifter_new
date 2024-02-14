@@ -6,9 +6,6 @@
         productsModel.grid = s.component;
         globals.devexpress.setGridFullHeight(s.component, s.element[0]);
     },
-    onGridExport: function (s) {
-        //globals.devexpress.exportGridToExcel(productsModel.grid, 'Products.xlsx');
-    },
     getDetailsButtonColumnCellHtml: function (element, cellInfo) {
         element.append('<a href=\'' + cellInfo.data.UrlProductsProperties + '\'><i class=\'fas fa-info-circle\'></i></a>')
     }
@@ -76,7 +73,7 @@ $(function () {
         }
     }); 
 
-    $('.js-export-excel-button').on('click', function () {
+    $('.js-export-excel-button').click(function () {
         globals.devexpress.exportGridToExcel(productsModel.grid, 'Products.xlsx');
     });
 });
