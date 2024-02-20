@@ -1,0 +1,98 @@
+﻿@model TeamMemberPropertiesModel.PageViewModel
+<div class="card">
+    <div class="card-body">
+        <div class="row">
+            <div class="col">
+                @await Html.PartialAsync(ViewNames.Admin.Shared.ButtonSave, new ButtonSaveViewModel { FormID = "form" })
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card">
+    <div class="card-body">
+        <form id="form" method="post" enctype="multipart/form-data">
+            <div class="row">
+                <div class="col-lg-3 form-group">
+                    <label>@Html.Raw(Model.TextPublished)</label>
+                    <label class="toggler toggler-lg">
+                        <input type="checkbox" name="@nameof(Model.TeamMemberIsPublished)" value="true" @(Model.TeamMemberIsPublished ? Html.Raw("checked") : null) />
+                        <i></i>
+                    </label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-3 form-group">
+                    <label>@Html.Raw(Model.TextFirstname) *</label>
+                    <input name="@nameof(Model.TeamMemberFirstname)" class="form-control" value="@Model.TeamMemberFirstname" />
+                    <div class="invalid-feedback"></div>
+                </div>
+                <div class="col-lg-3 form-group">
+                    <label>@Html.Raw(Model.TextLastname) *</label>
+                    <input name="@nameof(Model.TeamMemberLastname)" class="form-control" value="@Model.TeamMemberLastname" />
+                    <div class="invalid-feedback"></div>
+                </div>
+                <div class="col-lg-3 form-group">
+                    <label>@Html.Raw(Model.TextPosition)</label>
+                    <input name="@nameof(Model.TeamMemberPosition)" class="form-control" value="@Model.TeamMemberPosition" />
+                </div>
+                <div class="col-lg-3 form-group">
+                    <label>@Html.Raw(Model.TextCategory)</label>
+                    <select name="@nameof(Model.TeamMemberCategoryID)" class="form-control">
+                        <option value="@Model.NullValueForInt"></option>
+
+                        @if (Model.HasTeamMemberCategories)
+                        {
+                            @foreach (var TeamMemberCategory in Model.TeamMemberCategories)
+                            {
+                                <option selected="@TeamMemberCategory.IsSelected" value="@TeamMemberCategory.Key">@TeamMemberCategory.Value</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12 form-group">
+                    <label>@Html.Raw(Model.TextUploadImage)</label>
+                    <div class="input-group custom-file-group js-custom-file-upload">
+                        <div class="form-control">
+                            <a class="js-custom-file-upload-attachment" data-type="image" href="@Html.Raw(Model.TeamMemberImageHttpPath)">@Html.Raw(Model.TeamMemberImageFilename)</a>
+                            <span class="js-custom-file-upload-new-attachment hidden"></span>
+                        </div>
+                        @if (Model.HasTeamMemberImage)
+                        {
+                            <button type="button" data-url="@Html.Raw(Model.UrlDeleteImage)" data-text-confirm="@Html.Raw(Model.TextConfirmDelete)" class="btn btn-outline-light js-custom-file-upload-delete-button"><i class="fa-light fa-trash-can"></i></button>
+                        }
+                        <button type="button" class="btn btn-outline-light hidden js-custom-file-upload-clear-button"><i class="fa fa-times"></i></button>
+                        <span class="btn btn-outline-light custom-file-upload">
+                            <i class="fas fa-folder-open"></i>
+                            <input type="file" name="@nameof(Model.TeamMemberImageFile)" accept="image/*" />
+                        </span>
+                    </div>                    
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12 form-group">
+                    <label>@Html.Raw(Model.TextDescriptionShort)</label>
+                    <textarea name="@nameof(Model.TeamMemberShortDescription)" class="form-control">@Model.TeamMemberShortDescription</textarea>
+                </div>
+                <span class="help-block"></span>
+            </div>
+            <div class="row">
+                <div class="col-lg-12 form-group">
+                    <label>@Html.Raw(Model.TextDescription)</label>
+                    <textarea name="@nameof(Model.TeamMemberLongDescription)" class="form-control js-apply-tinymce">@Model.TeamMemberLongDescription</textarea>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section FooterSection{
+    <script src="/js/admin/teamMembers/teamMemberProperties.js"></script>
+    @if (Model.HasErrors)
+    {
+        <script>
+            validation.init({errorsJson: @Html.Raw(Model.ErrorsJson)}).showErrors();
+        </script>
+    }
+}

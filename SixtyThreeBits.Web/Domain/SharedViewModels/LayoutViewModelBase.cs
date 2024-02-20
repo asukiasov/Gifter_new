@@ -10,7 +10,6 @@ namespace SixtyThreeBits.Web.Domain.SharedViewModels
         #region Properties
         public IPageTitle PageTitle { get; set; }
         public SuccessErrorPartialViewModel SuccessErrorPartialViewModel { get; set; }
-        public bool IsSuccessErrorPartialViewModelinitialized => SuccessErrorPartialViewModel?.IsInitialized == true;
         public List<ProjectMenuItem> Menu { get; set; }
         public bool HasMenu => Menu?.Count > 0;
         public Breadcrumbs Breadcrumbs { get; set; }

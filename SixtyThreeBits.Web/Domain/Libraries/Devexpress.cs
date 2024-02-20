@@ -1,8 +1,8 @@
 ﻿using DevExtreme.AspNet.Mvc;
 using DevExtreme.AspNet.Mvc.Builders;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using SixtyThreeBits.Core.Infrastructure.Utilities;
 using SixtyThreeBits.Core.Properties;
+using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries;
 using System.Collections.Generic;
 
@@ -228,7 +228,8 @@ namespace SixtyThreeBits.Web.Domain.Libraries
                 if (AllowAdd || AllowUpdate || AllowDelete)
                 {
                     var isAllowedAddOrUpdate = AllowAdd || AllowUpdate;
-                    var width = isAllowedAddOrUpdate ? 60 : 30;
+                    var isAllowedAll = AllowAdd && AllowUpdate && AllowDelete;
+                    var width = isAllowedAll ? 90 : (isAllowedAddOrUpdate ? 60 : 30);
                     var commandColumn = Columns.Add();
                     commandColumn
                         .Width(width)

@@ -1,0 +1,65 @@
+﻿@{
+    var Model = WebUtilities.GetLayoutViewModel<WebsiteLayoutViewModel>(viewData: ViewData, key: WebConstants.ViewData.LayoutViewModel);
+}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+    <title>@Html.Raw(Model.PageTitle.TitleHead)</title>
+    @await Html.PartialAsync(ViewNames.Shared.PluginsClient.Header, Model.PluginsClient)    
+    <link href="/css/style.css" rel="stylesheet" />
+    
+    @RenderSection("HeaderSection", false)
+    @Html.Raw(Model.ScriptsHeader)
+</head>
+<body>
+    @Html.Raw(Model.ScriptsBodyStart)
+    <div class="app">
+        <header class="app-header">
+            @if (Model.HasMenu)
+            {
+                <nav>
+                    <div class="container-lg">
+                        <ul class="row">
+                            @foreach (var Item in Model.Menu)
+                            {
+                                <li class="col-sm-6 col-md-4 col-lg-3">
+                                    @if (Item.HasChildren)
+                                    {
+                                        <a class="nav-link @(Item.IsSelected ?  Html.Raw("active") : null)" @(Item.IsTargetBlank ? Html.Raw("target=\"_blank\"") : null)>@Html.Raw(Item.Caption)</a>
+                                        <ul>
+                                            @foreach (var SubItem in Item.Children)
+                                            {
+                                                <li>
+                                                    <a @(SubItem.IsSelected ? Html.Raw("class=\"active\"") : Html.Raw($"href=\"{SubItem.NavigateUrl}\"")) @(Item.IsTargetBlank ? Html.Raw("target=\"_blank\"") : null)>@Html.Raw(SubItem.Caption)</a>
+                                                </li>
+                                            }
+                                        </ul>
+                                    }
+                                    else
+                                    {
+                                        <a @(Item.IsSelected ? Html.Raw("class=\"active\"") : Html.Raw($"href=\"{Item.NavigateUrl}\"")) @(Item.IsTargetBlank ? Html.Raw("target=\"_blank\"") : null)>@Html.Raw(Item.Caption)</a>
+                                    }
+
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </nav>
+            }
+
+        </header>
+        @RenderBody()
+        <footer class="app-page">
+        </footer>
+    </div>
+    <script src="~/plugins/jsClient/jsClient.min.js"></script>
+    @await Html.PartialAsync(ViewNames.Shared.PluginsClient.Footer, Model.PluginsClient)
+    <script src="/js/Layout.js"></script>
+    @RenderSection("FooterSection", false)
+    @Html.Raw(Model.ScriptsBodyEnd)
+</body>
+</html>

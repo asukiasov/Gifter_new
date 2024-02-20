@@ -1,6 +1,6 @@
-﻿using SixtyThreeBits.Core.Infrastructure.Base;
-using SixtyThreeBits.Core.Infrastructure.Database.Core;
-using SixtyThreeBits.Core.Infrastructure.DTO;
+﻿using SixtyThreeBits.Core.DTO;
+using SixtyThreeBits.Core.Infrastructure.Factories;
+using SixtyThreeBits.Core.Infrastructure.Repositories.Base;
 using SixtyThreeBits.Libraries.Extensions;
 using System.Threading.Tasks;
 

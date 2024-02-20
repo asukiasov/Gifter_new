@@ -1,5 +1,4 @@
-﻿using SixtyThreeBits.Core.Infrastructure.Database.Core;
-using SixtyThreeBits.Core.Infrastructure.Utilities;
+﻿using SixtyThreeBits.Core.Utilities;
 using System.Data;
 using System.Threading.Tasks;
 
@@ -29,12 +28,12 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
             return roleID;
         }
 
-        public async Task RolePermissionsUpdate(int? roleID, string permissionIDsJson)
+        public async Task RolesPermissionsUpdate(int? roleID, string permissionIDsJson)
         {
             var sqb = new SqlQueryBuilder(
                 dbContext: this,
                 databaseObjectType: DatabaseObjectTypes.STORED_PROCEDURE,
-                databaseObjectName: nameof(RolePermissionsUpdate),
+                databaseObjectName: nameof(RolesPermissionsUpdate),
                 itemType: null,
                 sqlParameters:
                 [

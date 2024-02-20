@@ -1,0 +1,61 @@
+﻿@model ProductsCategoriesModel.PageViewModel
+
+@section HeaderSection{
+    <link href="/css/admin/SortableTree.css" rel="stylesheet" />
+}
+<div class="card">
+    <div class="card-body">
+        <div class="row">
+            <div class="col">
+                @if (Model.ShowAddNewButton)
+                {
+                    @await Html.PartialAsync(ViewNames.Admin.Shared.ButtonAddNew, new ButtonAddNewViewModel { JsSelector = "js-show-create-new-page-modal-button" })
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card">
+    <div class="card-body">        
+        <div class="row">
+            <div class="col">
+                @await Html.PartialAsync(ViewNames.Admin.Shared.FileTreeEditor.Editor, Model.ProductCategories)
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade js-create-new-category-modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">@Html.Raw(Model.TextAdd)</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col form-group">
+                        <label>@Html.Raw(Model.TextCaption)</label>
+                        <input type="text" class="form-control js-create-new-category-modal-input" />
+                        <input type="hidden" class="js-create-new-category-modal-category-parent-id-hf" />
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                @await Html.PartialAsync(ViewNames.Admin.Shared.ButtonSave, new ButtonSaveViewModel { JsSelector = "js-create-new-category-modal-save-button"})                
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section FooterSection{
+    <script src="/js/admin/productCategories/productCategories.js"></script>
+    <script>
+        productCategoriesModel.urlAddNew = '@Model.UrlAddNew';    
+        productCategoriesModel.urlDelete = '@Model.UrlDelete';
+        productCategoriesModel.urlSort = '@Model.UrlSort';
+        productCategoriesModel.textConfirmDeleteRecord = '@Html.Raw(Model.TextConfirmDeleteRecord)';
+        productCategoriesModel.textConfirmDeleteRecursive = '@Html.Raw(Model.TextConfirmDeleteRecursive)';        
+    </script>
+}

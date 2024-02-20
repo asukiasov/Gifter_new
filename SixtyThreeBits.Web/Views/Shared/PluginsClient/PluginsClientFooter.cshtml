@@ -1,114 +1,118 @@
 ﻿@model PluginsClient
 @if (Model.IsJsClientEnabled)
 {
-    <script src="~/plugins/jsClient/jsClient.min.js"></script>
+    <script src="/plugins/jsClient/jsClient.min.js"></script>
 }
 @if (Model.IsBootstrapEnabled)
 {
-    <script src="~/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 }
 @if (Model.IsUtilsEnabled)
 {
-    <script src="~/plugins/utils/utils.js"></script>
+    <script src="/plugins/utils/utils.js"></script>
 }
 @if (Model.IsJQueryAppearEnabled)
 {
-    <script src="~/plugins/jquery-appear/jquery.appear.js"></script>
+    <script src="/plugins/jquery-appear/jquery.appear.js"></script>
 }
 @if (Model.IsJQueryConfirmEnabled)
 {
-    <script src="~/plugins/jquery-confirm/jquery-confirm.min.js"></script>
+    <script src="/plugins/jquery-confirm/jquery-confirm.min.js"></script>
 }
 @if (Model.IsJQueryNestedSortableEnabled)
 {
-    <script src="~/plugins/jquery-nestedSortable/jquery.mjs.nestedSortable.js"></script>
+    <script src="/plugins/jquery-nestedSortable/jquery.mjs.nestedSortable.js"></script>
 }
 @if (Model.IsPageBuilderEnabled)
 {
-    <script src="~/plugins/63bits-pageBuilder/js/template63.js"></script>
+    <script src="/plugins/63bits-pageBuilder/js/template63.js"></script>
 }
 @if (Model.IsPageBuilderEditorEnabled)
 {
-    <script src="~/plugins/63bits-pageBuilder/js/page-builder.js"></script>
+    <script src="/plugins/63bits-pageBuilder/js/page-builder.js"></script>
 }
 @if (Model.IsPreloaderEnabled)
 {
-    <script src="~/plugins/preloader/preloader.js"></script>
+    <script src="/plugins/preloader/preloader.js"></script>
 }
 @if (Model.Is63BitsComponentsEnabled)
 {
-    <script src="~/plugins/63bits-components/63bits-components.js?v=@Guid.NewGuid()"></script>
+    <script src="/plugins/63bits-components/63bits-components.js?v=@Guid.NewGuid()"></script>
     <script>components63Bits.textError = '@Html.Raw(Model.TextError)'; components63Bits.textSuccess = '@Html.Raw(Model.TextSuccess)';</script>
 }
 @if (Model.IsFancyboxEnabled)
 {
-    <script src="~/plugins/fancybox/jquery.fancybox.js"></script>
-    <script src="~/plugins/fancybox/fancy-methods.js"></script>
+    <script src="/plugins/fancybox/jquery.fancybox.js"></script>
+    <script src="/plugins/fancybox/fancy-methods.js"></script>
 }
 @if (Model.Is63BitsFormsEnabled)
 {
-    <script src="~/plugins/63bits-bsforms/63bits-bsforms.js"></script>
+    <script src="/plugins/63bits-bsforms/63bits-bsforms.js"></script>
 }
 @if (Model.Is63BitsFileUploaderEnabled)
 {
-    <script src="~/plugins/63bits-file-uploader/63bits-file-uploader.js"></script>
+    <script src="/plugins/63bits-file-uploader/63bits-file-uploader.js"></script>
 }
 @if (Model.IsJQueryMaskedInputEnabled)
 {
-    <script src="~/plugins/jquery-masked-input/jquery.maskedinput.min.js"></script>
+    <script src="/plugins/jquery-masked-input/jquery.maskedinput.min.js"></script>
 }
 @if (Model.IsJQueryNumericInputEnabled)
 {
-    <script src="~/plugins/jquery-numeric-input/jquery.numericInput.js"></script>
+    <script src="/plugins/jquery-numeric-input/jquery.numericInput.js"></script>
 }
 @if (Model.IsSlickSliderEnabled)
 {
-    <script src="~/plugins/slick/slick.min.js"></script>
+    <script src="/plugins/slick/slick.min.js"></script>
 }
 @if (Model.IsSortableJSEnabled)
 {
-    <script src="~/plugins/SoratbleJS/Sortable.min.js"></script>
+    <script src="/plugins/SoratbleJS/Sortable.min.js"></script>
 }
 @if (Model.IsMalihuScrollEnabled)
 {
-    <script src="~/plugins/malihu-scrollbar/jquery.mCustomScrollbar.concat.min.js"></script>
+    <script src="/plugins/malihu-scrollbar/jquery.mCustomScrollbar.concat.min.js"></script>
 }
 @if (Model.IsMetisMenuEnabled)
 {
-    <script src="~/plugins/metismenujs/metismenujs.min.js"></script>
+    <script src="/plugins/metismenujs/metismenujs.min.js"></script>
 }
 @if (Model.IsTemplate7Enabled)
 {
-    <script src="~/plugins/template7/template7.min.js"></script>
+    <script src="/plugins/template7/template7.min.js"></script>
 }
 @if(Model.IsFlatPickrEnabled)
 {
-    <script src="~/plugins/flatpickr/flatpickr.min.js"></script>
+    <script src="/plugins/flatpickr/flatpickr.min.js"></script>
 }
 @if (Model.IsJsZipEnabled)
 {
-    <script src="~/plugins/jszip/jszip.min.js"></script>
+    <script src="/plugins/jszip/jszip.min.js"></script>
 }
 @if (Model.IsTinyMceEnabled)
 {
-    <script src="~/plugins/tinymce/tinymce.min.js"></script>
-    <script src="~/plugins/tinymce/jquery.tinymce.min.js"></script>
-    <script src="~/plugins/tinymce/tinymce-helper.js"></script>
+    <script src="/plugins/tinymce/tinymce.min.js"></script>
+    <script src="/plugins/tinymce/jquery.tinymce.min.js"></script>
+    <script src="/plugins/tinymce/tinymce-helper.js"></script>
 }
 @if (Model.IsJWPlayerEnabled)
 {
-    <script src="~/plugins/jwplayer8/jwplayer.js"></script>
-    <script src="~/plugins/jwplayer8/player.js"></script>
+    <script src="/plugins/jwplayer8/jwplayer.js"></script>
+    <script src="/plugins/jwplayer8/player.js"></script>
+}
+@if (Model.Is63BitsSuccessErrorToastEnabled)
+{
+    <script src="/plugins/63bits-success-error-toast/63bits-success-error-toast.js"></script>
 }
 @if (Model.IsAdminThemeEnabled)
 {
-    <script src="~/plugins/borex/js/bootstrap.bundle.min.js"></script>
-    <script src="~/plugins/borex/plugins/simplebar/simplebar.min.js"></script>    
+    <script src="/plugins/borex/js/bootstrap.bundle.min.js"></script>
+    <script src="/plugins/borex/plugins/simplebar/simplebar.min.js"></script>    
 }
 @if(Model.IsDevextremeExportExcelLibrariesEnabled)
 {
     @* https://js.devexpress.com/jQuery/Documentation/ApiReference/UI_Components/dxDataGrid/Configuration/export/ *@
-    <script src="~/plugins/devextreme/js-excel-export-libraries/polyfill.min.js"></script>
-    <script src="~/plugins/devextreme/js-excel-export-libraries/exceljs.min.js"></script>
-    <script src="~/plugins/devextreme/js-excel-export-libraries/filesaver.min.js"></script>
+    <script src="/plugins/devextreme/js-excel-export-libraries/polyfill.min.js"></script>
+    <script src="/plugins/devextreme/js-excel-export-libraries/exceljs.min.js"></script>
+    <script src="/plugins/devextreme/js-excel-export-libraries/filesaver.min.js"></script>
 }

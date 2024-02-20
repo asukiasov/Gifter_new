@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using SixtyThreeBits.Core.Infrastructure.Utilities;
+using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Web.Domain.Libraries;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,7 +29,7 @@ namespace SixtyThreeBits.Web.Domain
             return Model;
         }
 
-        public static T GetLayoutViewModel<T>(ViewDataDictionary viewData, string key = Constants.ViewData.LayoutViewModel)
+        public static T GetLayoutViewModel<T>(ViewDataDictionary viewData, string key)
         {
             return (T)viewData[key];
         }

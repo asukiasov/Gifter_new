@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SixtyThreeBits.Core.Infrastructure.Base;
-using SixtyThreeBits.Core.Infrastructure.Database.Core;
+using SixtyThreeBits.Core.Infrastructure.Factories;
+using SixtyThreeBits.Core.Infrastructure.Repositories.Base;
 using SixtyThreeBits.Libraries;
 using System.Collections.Generic;
 using System.Linq;

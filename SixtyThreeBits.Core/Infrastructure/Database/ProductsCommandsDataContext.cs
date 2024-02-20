@@ -1,7 +1,4 @@
-﻿using Microsoft.Data.SqlClient;
-using SixtyThreeBits.Core.Infrastructure.Database.Core;
-using SixtyThreeBits.Core.Infrastructure.Utilities;
-using System;
+﻿using SixtyThreeBits.Core.Utilities;
 using System.Data;
 using System.Threading.Tasks;
 

@@ -7,7 +7,6 @@
         public string Message { set; get; }
         public bool ShowError { set; get; }
         public bool ShowSuccess { set; get; }
-        public bool IsInitialized { get; set; }
         #endregion
     }
 }

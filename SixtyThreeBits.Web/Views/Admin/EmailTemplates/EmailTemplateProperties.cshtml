@@ -1,0 +1,56 @@
+﻿@model EmailTemplatePropertiesModel.PageViewModel
+<div class="card">
+    <div class="card-body">
+        <div class="row">
+            <div class="col">
+                @await Html.PartialAsync(ViewNames.Admin.Shared.ButtonSave, new ButtonSaveViewModel { FormID = "form", CssClass = "js-show-preloader" })
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card">
+    <div class="card-body">
+        <form id="form" method="post" enctype="multipart/form-data">
+            <div class="row">
+                <div class="form-group col-xl-12">
+                    <label>@Html.Raw(Model.TextCaption) *</label>
+                    <input type="text" name="@nameof(Model.EmailTemplateName)" class="form-control" value="@Html.Raw(Model.EmailTemplateName)" />
+                    <div class="invalid-feedback"></div>
+                </div>
+                <div class="form-group col-xl-6">
+                    <label>Subject *</label>
+                    <input type="text" name="@nameof(Model.EmailTemplateSubject)" class="form-control" value="@Html.Raw(Model.EmailTemplateSubject)" />
+                    <div class="invalid-feedback"></div>
+                </div>
+                <div class="form-group col-xl-6">
+                    <label>Subject Eng *</label>
+                    <input type="text" name="@nameof(Model.EmailTemplateSubjectEng)" class="form-control" value="@Html.Raw(Model.EmailTemplateSubjectEng)" />
+                    <div class="invalid-feedback"></div>
+                </div>
+                <div class="form-group col-xl-6">
+                    <label>Body *</label>
+                    <textarea name="@nameof(Model.EmailTemplateBody)" class="form-control js-apply-tinymce">@Html.Raw(Model.EmailTemplateBody)</textarea>
+                    <div class="invalid-feedback"></div>
+                </div>
+                <div class="form-group col-xl-6">
+                    <label>Body Eng *</label>
+                    <textarea name="@nameof(Model.EmailTemplateBodyEng)" class="form-control js-apply-tinymce">@Html.Raw(Model.EmailTemplateBodyEng)</textarea>
+                    <div class="invalid-feedback"></div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section FooterSection{
+    <script src="/js/admin/emailTemplates/emailTemplateProperties.js"></script>
+    <script>
+        emailTemplateModel.emailTemplatePlaceHoldersJson = @Html.Raw(Model.EmailTemplatePlaceHoldersJson);
+    </script>
+    @if (Model.HasErrors)
+    {
+        <script>
+            validation.init({ errorsJson: @Html.Raw(Model.ErrorsJson)}).showErrors();
+        </script>
+    }
+}

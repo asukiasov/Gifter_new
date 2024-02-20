@@ -1,0 +1,399 @@
+﻿@model SystemPropertiesModel.PageViewModel
+@section HeaderSection{
+}
+<div class="card">
+    <div class="card-body">
+        <div class="row">
+            <div class="col">
+                @await Html.PartialAsync(ViewNames.Admin.Shared.ButtonSave, new ButtonSaveViewModel { FormID = "form", CssClass = "js-show-preloader" })
+            </div>
+        </div>       
+    </div>
+</div>
+<div class="card">
+    <ul class="nav nav-tabs nav-tabs-custom nav-justified" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <a href="#general-properties-tab-pane" class="nav-link active" id="generalProperties-tab" data-bs-toggle="tab" data-bs-target="#general-properties-tab-pane">
+                <i class="fa-lg"></i>
+                <span class="d-none d-sm-block">@Html.Raw(Model.TextGeneralProperties)</span>
+            </a>
+        </li>
+        <li class="nav-item" role="presentation">
+            <a href="#email-properties-tab-pane" class="nav-link" id="email-tab" data-bs-toggle="tab" data-bs-target="#email-properties-tab-pane">
+                <i class="fa-lg"></i>
+                <span class="d-none d-sm-block">@Html.Raw(Model.TextEmailProperties)</span>
+            </a>
+        </li>
+        <li class="nav-item" role="presentation">
+            <a href="#cloud-properties-tab-pane" class="nav-link" id="email-tab" data-bs-toggle="tab" data-bs-target="#cloud-properties-tab-pane">
+                <i class="fa-lg"></i>
+                <span class="d-none d-sm-block">@Html.Raw(Model.TextCloudProperties)</span>
+            </a>
+        </li>
+    </ul>
+    <form id="form" method="post" enctype="multipart/form-data">
+    <div class="tab-content p-4">
+        <div class="tab-pane fade show active" id="general-properties-tab-pane">        
+            <div class="row">
+                <div class="col-lg-4 form-group">
+                    <label>@Html.Raw(Model.TextProjectName)</label>
+                    <input type="text" name="@nameof(Model.ProjectName)" class="form-control" value="@Model.ProjectName" />
+                </div>
+            </div>
+            <hr />
+            <div class="row">
+                <div class="col-lg-4 form-group">
+                    <label>@Html.Raw(Model.TextContactPhone)</label>
+                    <input type="text" name="@nameof(Model.ContactPhone)" class="form-control" value="@Model.ContactPhone" />                
+                </div>
+                <div class="col-lg-4 form-group">
+                    <label>@Html.Raw(Model.TextContactEmail)</label>
+                    <input type="text" name="@nameof(Model.ContactEmail)" class="form-control" value="@Model.ContactEmail" />                
+                </div>
+                <div class="col-lg-4 form-group">
+                    <label>@Html.Raw(Model.TextContactAddress)</label>
+                    <input type="text" name="@nameof(Model.ContactAddress)" class="form-control" value="@Model.ContactAddress" />                
+                </div>
+            </div>
+                <hr />
+            <div class="row">
+                <div class="col-lg-4 form-group">
+                    <label>Facebook Url</label>
+                    <input type="text" name="@nameof(Model.FacebookUrl)" class="form-control" value="@Html.Raw(Model.FacebookUrl)" />
+                </div>
+                <div class="col-lg-4 form-group">
+                    <label>Instagram Url</label>
+                    <input type="text" name="@nameof(Model.InstagramUrl)" class="form-control" value="@Html.Raw(Model.InstagramUrl)" />
+                </div>
+                <div class="col-lg-4 form-group">
+                    <label>Twitter Url</label>
+                    <input type="text" name="@nameof(Model.TwitterUrl)" class="form-control" value="@Html.Raw(Model.TwitterUrl)" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 form-group">
+                    <label>Youtube Url</label>
+                    <input type="text" name="@nameof(Model.YoutubeUrl)" class="form-control" value="@Html.Raw(Model.YoutubeUrl)" />
+                </div>
+                <div class="col-lg-4 form-group">
+                    <label>LinkedIn Url</label>
+                    <input type="text" name="@nameof(Model.LinkedInUrl)" class="form-control" value="@Html.Raw(Model.LinkedInUrl)" />
+                </div>
+                <div class="col-lg-4 form-group">
+                </div>
+            </div>
+                <hr />
+            <div class="row">
+                <div class="form-group col-lg-12">
+                    <label>Scripts Header</label>
+                    <textarea class="form-control" rows="5" name="@nameof(Model.ScriptsHeader)">@Html.Raw(Model.ScriptsHeader)</textarea>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-lg-12">
+                    <label>Scripts Body Start</label>
+                    <textarea class="form-control" rows="5" name="@nameof(Model.ScriptsBodyStart)">@Html.Raw(Model.ScriptsBodyStart)</textarea>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-lg-12">
+                    <label>Scripts Body End</label>
+                    <textarea class="form-control" rows="5" name="@nameof(Model.ScriptsBodyEnd)">@Html.Raw(Model.ScriptsBodyEnd)</textarea>
+                </div>
+            </div>
+                <hr />
+            <div class="row">
+                <div class="form-group col-lg-12">
+                    <label>Google iFrame <a href="/images/google-maps-iframe-help.png" class="js-google-iframe-help"><i class="fas fa-question-circle"></i></a></label>
+                    <textarea name="@nameof(Model.GoogleMapsIFrame)" class="form-control">@Html.Raw(Model.GoogleMapsIFrame)</textarea>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-lg-12">
+                    @Html.Raw(Model.GoogleMapsIFrame)
+                </div>
+            </div>        
+        </div>
+        <div class="tab-pane fade" id="email-properties-tab-pane">
+            <div class="row mb-4">
+                <div class="form-check col-lg-4 d-flex align-items-center justify-content-center">
+                    <input class="form-check-input" type="radio" name="@nameof(Model.EmailTypesSelectedOption)" value="@nameof(Model.IsEmailSmtpEnabled)" id="smtpEmail" @(Model.IsEmailSmtpEnabled ? Html.Raw("checked") : null)>
+                    <label class="form-check-label" style="padding-left: 15px" for="smtpEmail">
+                        SMTP
+                    </label>
+                </div>
+                <div class="form-check col-lg-4 d-flex align-items-center justify-content-center">
+                    <input class="form-check-input" type="radio" name="@nameof(Model.EmailTypesSelectedOption)" value="@nameof(Model.IsEmailMailgunEnabled)" id="mailgun" @(Model.IsEmailMailgunEnabled ? Html.Raw("checked") : null)>
+                    <label class="form-check-label" style="padding-left: 15px" for="mailgun">
+                        Mailgun
+                    </label>
+                </div>
+                <div class="form-check col-lg-4 d-flex align-items-center justify-content-center">
+                    <input class="form-check-input" type="radio" name="@nameof(Model.EmailTypesSelectedOption)" value="@nameof(Model.IsEmailOffice365Enabled)" id="office365" @(Model.IsEmailOffice365Enabled ? Html.Raw("checked") : null)>
+                    <label class="form-check-label" style="padding-left: 15px" for="office365">
+                        Office365
+                    </label>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-4 mb-3 d-flex align-items-stretch">
+                    <div class="card">
+                        <div class="card-header col-lg-12">
+                            SMTP
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-2">
+                                <div class="col-lg-12 form-group">
+                                    <label>SMTP Address</label>
+                                    <input type="text" name="@nameof(Model.SmtpAddress)" class="form-control js-smtp-address-input" value="@Model.SmtpAddress" />
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6 form-group">
+                                        <label>SMTP Port</label>
+                                        <input type="text" name="@nameof(Model.SmtpPort)" class="form-control js-smtp-port-input" value="@Model.SmtpPort" />
+                                    </div>
+                                    <div class="col-lg-6 form-group">
+                                        <label>SMTP Use SSL?</label>
+                                        <label class="toggler toggler-lg">
+                                            <input type="checkbox" name="@nameof(Model.SmtpUseSsl)" class="js-smtp-use-ssl-checkbox" value="true" @(Model.SmtpUseSsl ? Html.Raw("checked") : null) />
+                                            <i></i>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12 form-group">
+                                    <label>SMTP From</label>
+                                    <input type="text" name="@nameof(Model.SmtpFrom)" class="form-control js-smtp-from-input" value="@Model.SmtpFrom" />
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6 form-group">
+                                        <label>SMTP Username</label>
+                                        <input type="text" name="@nameof(Model.SmtpUsername)" class="form-control js-smtp-username-input" value="@Model.SmtpUsername" />
+                                    </div>
+                                    <div class="col-lg-6 form-group">
+                                        <label>SMTP Password</label>
+                                        <div class="input-group">
+                                            <input type="password" name="@nameof(Model.SmtpPassword)" class="form-control js-smtp-password-input" value="@Model.SmtpPassword" />
+                                            <div class="input-group-text">
+                                                <a href="#" class="js-password-show-hide-toggle-button" data-is-hidden="true">
+                                                    <i class="fa-regular fa-eye"></i>
+                                                    <i class="fa-solid fa-eye-slash hidden"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12 d-flex justify-content-center">
+                                    <button type="button" class="btn btn-primary btn-rounded js-test-smtp-email-button"><i class="fas fa-paper-plane"></i> @Html.Raw(Model.TextTestButton)</button>
+                                </div>                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 mb-3 d-flex align-items-stretch">
+                    <div class="card">
+                        <div class="card-header col-lg-12">
+                            Mailgun
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-2">
+                                <div class="col-lg-12 form-group">
+                                    <label>Mailgun Base Url</label>
+                                    <input type="text" name="@nameof(Model.MailgunBaseUrl)" class="form-control js-mailgun-base-url-input" value="@Model.MailgunBaseUrl" />
+                                </div>
+                                <div class="col-lg-12 form-group">
+                                    <label>Mailgun Domain</label>
+                                    <input type="text" name="@nameof(Model.MailgunDomain)" class="form-control js-mailgun-domain-input" value="@Model.MailgunDomain" />
+                                </div>
+                                <div class="col-lg-12 form-group">
+                                    <label>Mailgun From</label>
+                                    <input type="text" name="@nameof(Model.MailgunFrom)" class="form-control js-mailgun-from-input" value="@Model.MailgunFrom" />
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6 form-group d-flex flex-column">
+                                        <label>Mailgun Api Key</label>
+                                        <div class="input-group">
+                                            <input type="password" name="@nameof(Model.MailgunApiKey)" class="form-control js-mailgun-api-key-input" value="@Model.MailgunApiKey" />
+                                            <div class="input-group-text">
+                                                <a href="#" class="js-password-show-hide-toggle-button" data-is-hidden="true">
+                                                    <i class="fa-regular fa-eye"></i>
+                                                    <i class="fa-solid fa-eye-slash hidden"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 form-group d-flex flex-column">
+                                        <label class="text-truncate">Mailgun Webhook Signing Key</label>
+                                        <div class="input-group">
+                                            <input type="password" name="@nameof(Model.MailgunWebhookWebhookSigningKey)" class="form-control js-mailgun-webhook-signing-key-input" value="@Model.MailgunWebhookWebhookSigningKey" />
+                                            <div class="input-group-text">
+                                                <a href="#" class="js-password-show-hide-toggle-button" data-is-hidden="true">
+                                                    <i class="fa-regular fa-eye"></i>
+                                                    <i class="fa-solid fa-eye-slash hidden"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12 d-flex justify-content-center">
+                                    <button type="button" class="btn btn-primary btn-rounded js-test-mailgun-email-button"><i class="fas fa-paper-plane"></i> @Html.Raw(Model.TextTestButton)</button>
+                                </div>                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 mb-3 d-flex align-items-stretch">
+                    <div class="card">
+                        <div class="card-header col-lg-12">
+                            Office 365
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-2">
+                                <div class="col-lg-12 form-group">
+                                    <label>Tenant</label>
+                                    <input type="text" name="@nameof(Model.MicrosoftGraphServiceTenant)" class="form-control js-microsoft-graph-service-tenant-input" value="@Model.MicrosoftGraphServiceTenant" />
+                                </div>
+                                <div class="col-lg-12 form-group">
+                                    <label>ClientID</label>
+                                    <input type="text" name="@nameof(Model.MicrosoftGraphServiceClientID)" class="form-control js-microsoft-graph-service-cliendID-input" value="@Model.MicrosoftGraphServiceClientID" />
+                                </div>
+                                <div class="col-lg-12 form-group">
+                                    <label>Secret</label>
+                                    <div class="input-group">
+                                        <input type="password" name="@nameof(Model.MicrosoftGraphServiceClientSecret)" class="form-control js-microsoft-graph-service-secret-input" value="@Model.MicrosoftGraphServiceClientSecret" />
+                                        <div class="input-group-text">
+                                            <a href="#" class="js-password-show-hide-toggle-button" data-is-hidden="true">
+                                                <i class="fa-regular fa-eye"></i>
+                                                <i class="fa-solid fa-eye-slash hidden"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12 form-group">
+                                    <label>UserID</label>
+                                    <input type="text" name="@nameof(Model.MicrosoftGraphServiceUserID)" class="form-control js-microsoft-graph-service-userID-input" value="@Model.MicrosoftGraphServiceUserID" />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12 d-flex justify-content-center">
+                                    <button type="button" class="btn btn-primary btn-rounded js-test-office365-email-button"><i class="fas fa-paper-plane"></i> @Html.Raw(Model.TextTestButton)</button>
+                                </div>                                
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="cloud-properties-tab-pane">
+            <div class="card">
+                <div class="card-header">AWS</div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-6 form-group">
+                            <label>Aws S3 Public Bucket Name</label>
+                            <input type="text" name="@nameof(Model.AwsS3BucketNamePublic)" class="form-control" value="@Model.AwsS3BucketNamePublic" />
+                        </div>
+                        <div class="col-lg-6 form-group">
+                            <label>Aws Public Bucket Region <a href="#" data-bs-toggle="modal" data-bs-target="#AwsRegionDescriptionHelperModal"><i class="fas fa-question-circle"></i></a></label>
+                            <input type="text" name="@nameof(Model.AwsS3RegionSystemName)" class="form-control" value="@Model.AwsS3RegionSystemName" />
+                        </div>
+                        <div class="col-lg-6 form-group">
+                            <label>Aws Access Key ID</label>
+                            <div class="input-group">
+                                <input type="password" name="@nameof(Model.AwsAccessKeyID)" class="form-control" value="@Model.AwsAccessKeyID" />
+                                <div class="input-group-text">
+                                    <a href="#" class="js-password-show-hide-toggle-button" data-is-hidden="true">
+                                        <i class="fa-regular fa-eye"></i>
+                                        <i class="fa-solid fa-eye-slash hidden"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 form-group">
+                            <label>Aws Secret Access Key</label>
+                            <div class="input-group">
+                                <input type="password" name="@nameof(Model.AwsSecretAccessKey)" class="form-control" value="@Model.AwsSecretAccessKey" />
+                                <div class="input-group-text">
+                                    <a href="#" class="js-password-show-hide-toggle-button" data-is-hidden="true">
+                                        <i class="fa-regular fa-eye"></i>
+                                        <i class="fa-solid fa-eye-slash hidden"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>            
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12 d-flex justify-content-center">
+                            <button type="button" class="btn btn-primary btn-rounded js-test-aws-button"><i class="fas fa-paper-plane"></i> @Html.Raw(Model.TextTestButton)</button>
+                        </div>            
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">Azure</div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-6 form-group">
+                            <label>Azure Storage Account Connection String</label>
+                            <div class="input-group">
+                                <input type="password" name="@nameof(Model.AzureConnectionString)" class="form-control" value="@Model.AzureConnectionString" />
+                                <div class="input-group-text">
+                                    <a href="#" class="js-password-show-hide-toggle-button" data-is-hidden="true">
+                                        <i class="fa-regular fa-eye"></i>
+                                        <i class="fa-solid fa-eye-slash hidden"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 form-group">
+                            <label>Azure Blob Storage Container</label>
+                            <div class="input-group">
+                                <input type="text" name="@nameof(Model.AzureBlobStorageContainerName)" class="form-control" value="@Model.AzureBlobStorageContainerName" />
+                            </div>
+                        </div> 
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>    
+    </form>
+</div>
+
+<div class="modal fade" id="AwsRegionDescriptionHelperModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <strong class="modal-title">Aws Public Bucket Region</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>All amazon S3 buckets are located in one of the aws regions.</p>
+                <p>
+                    In order to provide a proper value for "Aws Public Bucket Region" field, please find a region you choose for your AWS S3 bucket from the list below
+                    <a href="https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.RegionsAndAvailabilityZones.html#Concepts.RegionsAndAvailabilityZones.Availability" target="_blank">AWS Regions</a>.
+                </p>
+                <p>
+                    Pick a value from the <b>"Region"</b> (for example <b>eu-central-1</b>) and put it in the text input.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section FooterSection{
+    <script src="/admin/js/systemProperties/systemProperties.js"></script>        
+    <script>
+        systemPropertiesModel.urlTestEmailSmtp = '@Html.Raw(Model.UrlTestEmailSmtp)';
+        systemPropertiesModel.urlTestEmailMailgun = '@Html.Raw(Model.UrlTestEmailMailgun)';
+        systemPropertiesModel.urlTestEmailOffice365 = '@Html.Raw(Model.UrlTestEmailOffice365)';
+        systemPropertiesModel.urlTestAws = '@Html.Raw(Model.UrlTestAws)';
+    </script>
+}

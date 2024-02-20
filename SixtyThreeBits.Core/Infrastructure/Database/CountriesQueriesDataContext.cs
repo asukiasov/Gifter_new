@@ -1,5 +1,4 @@
-﻿using SixtyThreeBits.Core.Infrastructure.Database.Core;
-using System.Linq;
+﻿using System.Linq;
 
 namespace SixtyThreeBits.Core.Infrastructure.Database
 {

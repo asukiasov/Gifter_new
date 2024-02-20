@@ -9,67 +9,59 @@
             public static class Auth
             {
                 #region Properties
-                public const string Login = "~/Admin/Views/Auth/Login.cshtml";
+                public const string Login = "~/Views/Admin/Auth/Login.cshtml";
                 #endregion
             }
 
             public static class Blog
             {
                 #region Properties
-                public const string Page = "~/Admin/Views/Blog/Blog.cshtml";
-                public const string BlogPostProperties = "~/Admin/Views/Blog/BlogPostProperties.cshtml";
+                public const string Page = "~/Views/Admin/Blog/Blog.cshtml";
+                public const string BlogPostProperties = "~/Views/Admin/Blog/BlogPostProperties.cshtml";
                 #endregion
             }
 
             public static class Brands
             {
                 #region Properties
-                public const string Page = "~/Admin/Views/Brands/Brands.cshtml";
-                public const string BrandProperties = "~/Admin/Views/Brands/BrandProperties.cshtml";
+                public const string Page = "~/Views/Admin/Brands/Brands.cshtml";
+                public const string BrandProperties = "~/Views/Admin/Brands/BrandProperties.cshtml";
                 #endregion                
             }
 
             public static class Carousel
             {
                 #region Properties
-                public const string Page = "~/Admin/Views/Carousel/Carousel.cshtml";
-                public const string CarouselItem = "~/Admin/Views/Carousel/CarouselItem.cshtml";
+                public const string Page = "~/Views/Admin/Carousel/Carousel.cshtml";
+                public const string CarouselItem = "~/Views/Admin/Carousel/CarouselItem.cshtml";
                 #endregion               
             }
-
-            public static class ProductCategories
-            {
-                #region Properties
-                public const string Page = "~/Admin/Views/ProductCategories/ProductCategories.cshtml";
-                public const string ProductCategoryProperties = "~/Admin/Views/ProductCategories/ProductCategoryProperties.cshtml";
-                #endregion                
-            }
-
+            
             public static class Dictionaries
             {
                 #region Properties
-                public const string Page = "~/Admin/Views/Dictionaries/Dictionaries.cshtml";
+                public const string Page = "~/Views/Admin/Dictionaries/Dictionaries.cshtml";
                 #endregion
             }
 
             public static class DiscountCoupons
             {
                 #region Properties
-                public const string Page = "~/Admin/Views/DiscountCoupons/DiscountCoupons.cshtml";
+                public const string Page = "~/Views/Admin/DiscountCoupons/DiscountCoupons.cshtml";
                 #endregion
             }
 
             public static class EmailTemplates
             {
                 #region Properties
-                public const string Page = "~/Admin/Views/EmailTemplates/EmailTemplates.cshtml";
+                public const string Page = "~/Views/Admin/EmailTemplates/EmailTemplates.cshtml";
                 #endregion
 
                 #region Nested Classes
                 public static class EmailTemplate
                 {
                     #region Properties
-                    public const string Properties = "~/Admin/Views/EmailTemplates/EmailTemplateProperties.cshtml";
+                    public const string Properties = "~/Views/Admin/EmailTemplates/EmailTemplateProperties.cshtml";
                     #endregion
                 }
                 #endregion
@@ -78,37 +70,44 @@
             public static class FileManager
             {
                 #region Properties
-                public const string Page = "~/Admin/Views/FileManager/FileManager.cshtml";
+                public const string Page = "~/Views/Admin/FileManager/FileManager.cshtml";
                 #endregion
             }
 
             public static class Home
             {
                 #region Properties
-                public const string Index = "~/Admin/Views/Home/Index.cshtml";
+                public const string Index = "~/Views/Admin/Home/Index.cshtml";
                 #endregion
             }
 
             public static class News
             {
                 #region Properties
-                public const string Page = "~/Admin/Views/News/News.cshtml";
-                public const string NewsProperties = "~/Admin/Views/News/NewsProperties.cshtml";
+                public const string Page = "~/Views/Admin/News/News.cshtml";
+                public const string NewsProperties = "~/Views/Admin/News/NewsProperties.cshtml";
+                #endregion
+            }
+
+            public static class NotFound
+            {
+                #region Properties
+                public const string Page = "~/Views/Website/NotFound/NotFound.cshtml";
                 #endregion
             }
 
             public static class Pages
             {
                 #region Properties
-                public const string Tree = "~/Admin/Views/Pages/PagesTree.cshtml";
+                public const string Tree = "~/Views/Admin/Pages/PagesTree.cshtml";
                 #endregion
 
                 #region Nested Classes
                 public static class Page
                 {
                     #region Properties
-                    public const string Properties = "~/Admin/Views/Pages/Page/PageProperties.cshtml";
-                    public const string Builder = "~/Admin/Views/Pages/Page/PageBuilder.cshtml";
+                    public const string Properties = "~/Views/Admin/Pages/Page/PageProperties.cshtml";
+                    public const string Builder = "~/Views/Admin/Pages/Page/PageBuilder.cshtml";
                     #endregion
                 }
                 #endregion
@@ -117,52 +116,81 @@
             public static class Partners
             {
                 #region Properties
-                public const string Page = "Admin/Views/Partners/Partners.cshtml";
-                public const string Partner = "Admin/Views/Partners/PartnerProperties.cshtml";
+                public const string Page = "Views/Admin/Partners/Partners.cshtml";
+                public const string Partner = "Views/Admin/Partners/PartnerProperties.cshtml";
                 #endregion
+            }
+
+            public static class ProductCategories
+            {
+                #region Properties
+                public const string Page = "~/Views/Admin/ProductCategories/ProductCategories.cshtml";
+                public const string ProductCategoryProperties = "~/Views/Admin/ProductCategories/ProductCategoryProperties.cshtml";
+                #endregion                
             }
 
             public static class Products
             {
                 #region Properties
-                public const string Page = "~/Admin/Views/Products/Products.cshtml";
-                public const string ProductProperties = "~/Admin/Views/Products/ProductProperties.cshtml";
+                public const string Page = "~/Views/Admin/Products/Products.cshtml";
+                public const string ProductProperties = "~/Views/Admin/Products/ProductProperties.cshtml";
                 #endregion                
             }            
+
+            public static class Permissions
+            {
+                #region Properties
+                public const string Page = "~/Views/Admin/Permissions/Permissions.cshtml";
+                #endregion
+            }
 
             public static class Redirects
             {
                 #region Properties
-                public const string Page = "~/Admin/Views/Redirects/Redirects.cshtml";
+                public const string Page = "~/Views/Admin/Redirects/Redirects.cshtml";
                 #endregion               
+            }
+
+            public static class Roles
+            {
+                #region Properties
+                public const string Page = "~/Views/Admin/Roles/Roles.cshtml";
+                #endregion
+            }
+
+            public static class RolesPermissions
+            {
+                #region Properties
+                public const string Page = "~/Views/Admin/RolesPermissions/RolesPermissions.cshtml";
+                #endregion
             }
 
             public static class ServiceLogs
             {
                 #region Properties
-                public const string Page = "~/Admin/Views/ExternalCommunicationServiceLog/ExternalCommunicationServiceLog.cshtml";
+                public const string Page = "~/Views/Admin/ExternalCommunicationServiceLog/ExternalCommunicationServiceLog.cshtml";
                 #endregion
             }
 
             public static class Shared
             {
                 #region Properties
-                public const string Layout = "~/Admin/Views/Shared/Layout.cshtml";
-                public const string NotFound = "~/Admin/Views/Shared/NotFound.cshtml";
-                public const string PopupLayout = "~/Admin/Views/Shared/PopupLayout.cshtml";
-                public const string Tabs = "~/Admin/Views/Shared/Tabs.cshtml";
-                public const string SuccessErrorPartialView = "~/Admin/Views/Shared/SuccessErrorPartialView.cshtml";
+                public const string Layout = "~/Views/Admin/Shared/Layout.cshtml";
+                public const string NotFound = "~/Views/Admin/Shared/NotFound.cshtml";
+                public const string PopupLayout = "~/Views/Admin/Shared/PopupLayout.cshtml";
+                public const string Tabs = "~/Views/Admin/Shared/Tabs.cshtml";
+                public const string SuccessErrorToastPartialView = "~/Views/Admin/Shared/SuccessErrorToastPartialView.cshtml";
 
-                public const string ButtonAddNew = "~/Admin/Views/Shared/ButtonAddNew.cshtml";
-                public const string ButtonSave = "~/Admin/Views/Shared/ButtonSave.cshtml";
+                public const string ButtonAddNew = "~/Views/Admin/Shared/ButtonAddNew.cshtml";
+                public const string ButtonSave = "~/Views/Admin/Shared/ButtonSave.cshtml";
                 #endregion
 
                 #region Nested Classes
                 public static class FileTreeEditor
                 {
                     #region Properties
-                    public const string Editor = "~/Admin/Views/Shared/FileTreeEditor/FileTreeEditor.cshtml";
-                    public const string File = "~/Admin/Views/Shared/FileTreeEditor/FileTreeEditorFile.cshtml";
+                    public const string Editor = "~/Views/Admin/Shared/FileTreeEditor/FileTreeEditor.cshtml";
+                    public const string File = "~/Views/Admin/Shared/FileTreeEditor/FileTreeEditorFile.cshtml";
                     #endregion
                 }
                 #endregion
@@ -171,34 +199,30 @@
             public static class SystemProperties
             {
                 #region Properties
-                public const string Page = "~/Admin/Views/SystemProperties/SystemProperties.cshtml";
+                public const string Page = "~/Views/Admin/SystemProperties/SystemProperties.cshtml";
                 #endregion
             }
 
             public static class TeamMembers
             {
                 #region Properties
-                public const string TeamMembersPage = "~/Admin/Views/TeamMembers/TeamMembers.cshtml";
-                public const string TeamMemberProperties = "~/Admin/Views/TeamMembers/TeamMemberProperties.cshtml";
+                public const string TeamMembersPage = "~/Views/Admin/TeamMembers/TeamMembers.cshtml";
+                public const string TeamMemberProperties = "~/Views/Admin/TeamMembers/TeamMemberProperties.cshtml";
                 #endregion
             }
 
-            public static class UserManagement
+            public static class Users
             {
                 #region Properties
-                public const string Users = "~/Admin/Views/UserManagement/Users.cshtml";
-                public const string MyAccount = "~/Admin/Views/UserManagement/MyAccount.cshtml";
-                public const string Roles = "~/Admin/Views/UserManagement/Roles.cshtml";
-                public const string Permissions = "~/Admin/Views/UserManagement/Permissions.cshtml";
-                public const string RolePermissions = "~/Admin/Views/UserManagement/RolePermissions.cshtml";
+                public const string Page = "~/Views/Admin/Users/Users.cshtml";                
                 #endregion
 
                 #region Nested Classes
                 public static class User
                 {
                     #region Properties
-                    public const string Layout = "~/Admin/Views/UserManagement/User/UserLayout.cshtml";
-                    public const string Properties = "~/Admin/Views/UserManagement/User/UserProperties.cshtml";
+                    public const string Layout = "~/Views/Admin/UserManagement/User/UserLayout.cshtml";
+                    public const string Properties = "~/Views/Admin/UserManagement/User/UserProperties.cshtml";
                     #endregion
                 }
                 #endregion
@@ -207,7 +231,7 @@
             public static class Utilities
             {
                 #region Properties
-                public const string Page = "~/Admin/Views/Utilities/Utilities.cshtml";
+                public const string Page = "~/Views/Admin/Utilities/Utilities.cshtml";
                 #endregion
             }
             #endregion
@@ -219,47 +243,50 @@
             public static class FileViewer
             {
                 #region Properties
-                public const string Pdf = "~/Views/PdfViewer/PdfViewer.cshtml";
+                public const string Pdf = "~/Views/Website/PdfViewer/PdfViewer.cshtml";
                 #endregion
             }
 
             public static class Home
             {
                 #region Properties
-                public const string Page = "~/Views/Home/Index.cshtml";
+                public const string Page = "~/Views/Website/Home/Index.cshtml";
+                #endregion
+            }
+
+            public static class NotFound
+            {
+                #region Properties
+                public const string Page = "~/Views/Website/NotFound/NotFound.cshtml";
                 #endregion
             }
 
             public static class Test
             {
                 #region Properties
-                public const string Page = "~/Views/Test/Test.cshtml";
+                public const string Page = "~/Views/Website/Test/Test.cshtml";
                 #endregion
             }
 
             public static class Pages
             {
                 #region Properties
-                public const string Page = "~/Views/Pages/Page.cshtml";
+                public const string Page = "~/Views/Website/Pages/Page.cshtml";
                 #endregion
             }
 
             public static class Shared
             {
                 #region Properties
-                public const string Layout = "~/Views/Shared/Layout.cshtml";
-                public const string Pager = "~/Views/Shared/Pager.cshtml";
+                public const string Layout = "~/Views/Website/Shared/Layout.cshtml";
+                public const string Pager = "~/Views/Website/Shared/Pager.cshtml";
                 #endregion
             }
             #endregion
         }
 
         public static class Shared
-        {
-            #region Properties
-            public const string NotFound = "~/Views/Shared/NotFound.cshtml";
-            #endregion
-
+        {            
             #region Nested Classes            
             public static class FileTree
             {

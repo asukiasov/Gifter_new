@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using SixtyThreeBits.Core.Infrastructure.Base;
+using SixtyThreeBits.Core.DTO;
 using SixtyThreeBits.Core.Infrastructure.Database;
-using SixtyThreeBits.Core.Infrastructure.Database.Core;
-using SixtyThreeBits.Core.Infrastructure.DTO;
-using SixtyThreeBits.Core.Infrastructure.Utilities;
+using SixtyThreeBits.Core.Infrastructure.Factories;
+using SixtyThreeBits.Core.Infrastructure.Repositories.Base;
+using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries;
 using SixtyThreeBits.Libraries.Extensions;
 using System.Collections.Generic;
@@ -80,14 +80,14 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
             });
         }
 
-        public async Task RolePermissionsUpdate(int? roleID, List<int?> permissionIDs)
+        public async Task RolesPermissionsUpdate(int? roleID, List<int?> permissionIDs)
         {
             var PermissionIDsJson = permissionIDs.ToJson();
-            await TryExecuteAsyncTask($"{nameof(RolePermissionsUpdate)}({nameof(roleID)} = {roleID}, {nameof(permissionIDs)} = {PermissionIDsJson})", async () =>
+            await TryExecuteAsyncTask($"{nameof(RolesPermissionsUpdate)}({nameof(roleID)} = {roleID}, {nameof(permissionIDs)} = {PermissionIDsJson})", async () =>
             {
                 using (var db = _connectionFactory.GetDBCommandsDataContext())
                 {
-                    await db.RolePermissionsUpdate(roleID, PermissionIDsJson);
+                    await db.RolesPermissionsUpdate(roleID, PermissionIDsJson);
                 }
             });
         }

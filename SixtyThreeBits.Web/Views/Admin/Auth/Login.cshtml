@@ -1,0 +1,116 @@
+﻿@model LoginModel.PageViewModel
+@{ Layout = null;}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+    <title>@Html.Raw(Model.TextLogin) | @Html.Raw(Model.ProjectName)</title>
+    @await Html.PartialAsync(ViewNames.Shared.PluginsClient.Header, Model.PluginsClient)    
+</head>
+<body>
+
+
+    <div class="auth-page">
+        <div class="container-fluid p-0">
+            <div class="row g-0 align-items-center">
+                <div class="col-xxl-4 col-lg-4 col-md-6">
+                    <div class="row justify-content-center g-0">
+                        <div class="col-xl-9">
+                            <div class="p-4">
+                                <div class="card mb-0">
+                                    <div class="card-body">
+                                        <div class="auth-full-page-content rounded d-flex p-3 my-2">
+                                            <div class="w-100">
+                                                <div class="d-flex flex-column h-100">
+                                                    <div class="mb-3">
+                                                        <a class="d-block auth-logo">
+                                                            <img src="/images/logo.svg" alt="logo" height="22" class="auth-logo-dark me-start">
+                                                            <img src="/images/logo.svg" alt="logo" height="22" class="auth-logo-light me-start">
+                                                        </a>
+                                                    </div>
+                                                    <div class="auth-content my-auto">
+                                                        <div class="text-center">
+                                                            @*<h5 class="mb-0">@Html.Raw(Model.TextAdminWelcomeTitle)</h5>
+                                                            <p class="text-muted mt-2">@Html.Raw(Model.TextAdminWelcomeSubTitle)</p>*@
+                                                            <h5 class="mb-0">@Html.Raw(Model.ProjectName)</h5>                                                            
+                                                        </div>
+                                                        <form method="post" class="mt-4 pt-2">
+                                                            <div class="form-floating form-floating-custom mb-4">
+                                                                <input type="text" id="username-input" class="form-control" name="@nameof(Model.Username)" placeholder="Enter User Name">
+                                                                <label for="username-input">@Html.Raw(Model.TextUsername)</label>
+                                                                <div class="form-floating-icon">
+                                                                    <i class="fa-solid fa-user"></i>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="form-floating form-floating-custom mb-4 auth-pass-inputgroup">
+                                                                <input type="password" id="password-input" name="@nameof(Model.Password)" class="form-control pe-5" placeholder="Enter Password">                                                                
+                                                                <label for="password-input">@Html.Raw(Model.TextPassword)</label>
+                                                                <div class="form-floating-icon">
+                                                                    <i class="fa-solid fa-lock-keyhole"></i>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="row mb-4">
+                                                                <div class="col">
+                                                                    <div class="form-check font-size-15">
+                                                                        <input class="form-check-input" type="checkbox" id="remember-check" name="@nameof(Model.IsRememberMeChecked)" value="true" checked />
+                                                                        <label class="form-check-label font-size-13" for="remember-check">
+                                                                            @Html.Raw(Model.TextRememberMe)
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <button class="btn btn-primary w-100 waves-effect waves-light" type="submit">@Html.Raw(Model.TextLogin)</button>
+                                                            </div>
+                                                            @if (Model.IsLoginFailed)
+                                                            {
+                                                                <p class="text-danger text-center">@Html.Raw(Model.ValidationUserInvalidUsernameOrPassword)</p>
+                                                            }
+                                                        </form>                                                        
+                                                    </div>
+                                                    <div class="mt-4 text-center">
+                                                        <p class="mb-0">© @DateTime.Now.Year @Html.Raw(Model.ProjectName). <br />Crafted with <span class="text-danger">❤️</span> by 63BITS</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xxl-8 col-lg-8 col-md-6 d-none d-lg-block">
+                    <div class="auth-bg bg-white py-md-5 p-4 d-flex">
+                        <div class="bg-overlay bg-white"></div>
+                        <div class="row justify-content-center align-items-center">
+                            <div class="col-xl-8">
+                                <div class="mt-4">
+                                    <img src="/plugins/borex/images/login-img.png" class="img-fluid" alt="">
+                                </div>
+                                <div class="p-0 p-sm-4 px-xl-0 py-5">
+                                    <div class="testi-contain text-center">
+                                        <h5 class="font-size-20 mt-4">
+                                            @Html.Raw(Model.TextAdminWelcomeTitle)                                                                                        
+                                        </h5>
+                                        <p class="font-size-15 text-muted mt-3 mb-0">
+                                            @Html.Raw(Model.TextAdminWelcomeSubTitle)
+                                        </p>
+                                    </div>                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>    
+    @await Html.PartialAsync(ViewNames.Shared.PluginsClient.Footer, Model.PluginsClient)    
+</body>
+</html>

@@ -10,7 +10,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using SixtyThreeBits.Core.Infrastructure.Factories;
-using SixtyThreeBits.Core.Infrastructure.Utilities;
+using SixtyThreeBits.Core.Utilities;
+using SixtyThreeBits.Web.Domain;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -154,13 +155,13 @@ namespace SixtyThreeBits.Web
                 var path = context.Request.Path.ToString() ?? string.Empty;
                 if (path.StartsWith("/admin/"))
                 {
-                    var languageCultureCode = context.Request.Cookies[Constants.Cookies.AdminLanguageCultureCode]?.ToString();
+                    var languageCultureCode = context.Request.Cookies[WebConstants.Cookies.AdminLanguageCultureCode]?.ToString();
                     var language = _utilities.GetSupportedLanguageOrDefault(languageCultureCode);
                     culture = language.LanguageCultureCode;
                 }
                 else
                 {
-                    culture = context.Request.RouteValues[Constants.RouteValues.Culture]?.ToString() ?? _utilities.LanguageDefault.LanguageCultureCode;
+                    culture = context.Request.RouteValues[WebConstants.RouteValues.Culture]?.ToString() ?? _utilities.LanguageDefault.LanguageCultureCode;
                 }
 
                 await Task.Yield();

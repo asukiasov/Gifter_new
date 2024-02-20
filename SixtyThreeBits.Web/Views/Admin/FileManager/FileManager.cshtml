@@ -1,0 +1,28 @@
+﻿@model FileManagerModel.PageViewModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <link href="/css/admin/devexpress.css" rel="stylesheet" />
+    @await Html.PartialAsync(ViewNames.Shared.PluginsClient.Header, Model.PluginClient)    
+</head>
+<body>
+    @Model.FileManager.Render(Html)    
+    @await Html.PartialAsync(ViewNames.Shared.PluginsClient.Footer, Model.PluginClient)
+    
+    <script src="/js/global.js?v=@Guid.NewGuid()"></script>
+    <script src="/js/admin/fileManager/fileManager.js?v=@Guid.NewGuid()"></script>
+    <script>
+        @if (Model.HasOnSelectedFilesChooseClientCallback)
+        {
+        <text>fileManagerModel.onSelectedFilesChooseClientCallback = '@Model.OnSelectedFilesChooseClientCallback';</text>
+        }        
+        fileManagerModel.urlGetFiles = '@Html.Raw(Model.UrlGetFiles)';
+        fileManagerModel.urlUpload = '@Html.Raw(Model.UrlUpload)';
+        fileManagerModel.urlDelete = '@Html.Raw(Model.UrlDelete)';
+    </script>
+</body>
+</html>

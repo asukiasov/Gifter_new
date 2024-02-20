@@ -1,0 +1,6 @@
+﻿@model SuccessErrorPartialViewModel
+<div class="succes-error @(Model.ShowError ? "error opened" : (Model.ShowSuccess ? "opened" : "hidden")) @(Model.IsTop ? "" : "bottom") js-succes-error">
+    <div>
+        <span>@Model.Message</span><button class="close-btn js-succes-error-close-button"></button>
+    </div>
+</div>

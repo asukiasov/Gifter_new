@@ -5,20 +5,12 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="App_Data\**" />
-    <Compile Remove="wwwroot\admin\html\**" />
-    <Compile Remove="wwwroot\admin\html_borex\**" />
     <Compile Remove="wwwroot\upload\**" />
     <Content Remove="App_Data\**" />
-    <Content Remove="wwwroot\admin\html\**" />
-    <Content Remove="wwwroot\admin\html_borex\**" />
     <Content Remove="wwwroot\upload\**" />
     <EmbeddedResource Remove="App_Data\**" />
-    <EmbeddedResource Remove="wwwroot\admin\html\**" />
-    <EmbeddedResource Remove="wwwroot\admin\html_borex\**" />
     <EmbeddedResource Remove="wwwroot\upload\**" />
     <None Remove="App_Data\**" />
-    <None Remove="wwwroot\admin\html\**" />
-    <None Remove="wwwroot\admin\html_borex\**" />
     <None Remove="wwwroot\upload\**" />
   </ItemGroup>
   <ItemGroup>
@@ -31,16 +23,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SixtyThreeBits.Core\SixtyThreeBits.Core.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="wwwroot\admin\images\flags\" />
-    <Folder Include="wwwroot\plugins\bootstrap\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Update="Admin\Views\UserManagement\User\UserLayout.cshtml">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
   </ItemGroup>
   <ProjectExtensions>
     <VisualStudio>

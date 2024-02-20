@@ -182,6 +182,18 @@
                 #endregion
             }
 
+            public static class Permissions
+            {
+                #region Properties
+                public const string Page = "AdminPermissions";
+                public const string Tree = "AdminPermissionsTree";
+                public const string TreeAdd = "AdminPermissionsTreeAdd";
+                public const string TreeUpdate = "AdminPermissionsTreeUpdate";
+                public const string TreeDelete = "AdminPermissionsTreeDelete";
+                public const string TreeUpdateParent = "AdminPermissionsTreeUpdateParent"; 
+                #endregion
+            }
+
             public static class ProductCategories
             {
                 #region Properties
@@ -241,6 +253,28 @@
                 #endregion
             }
 
+            public static class Roles
+            {
+                #region Properties
+                public const string Page = "AdminRoles";
+                public const string Grid = "AdminRolesGrid";
+                public const string GridAdd = "AdminRolesGridAdd";
+                public const string GridUpdate = "AdminRolesGridUpdate";
+                public const string GridDelete = "AdminRolesGridDelete";
+                #endregion
+            }
+
+            public static class RolesPermissions
+            {
+                #region Properties
+                public const string Page = "AdminRolesPermissions";
+                public const string RolesGrid = "AdminRolesPermissionsRolesGrid";
+                public const string PermissionsTree = "AdminRolesPermissionsPermissionsTree";
+                public const string PermissionsGetByRole = "AdminRolesPermissionsPermissionsGetByRole";                
+                public const string Save = "AdminRolesPermissionsSave"; 
+                #endregion
+            }
+
             public static class ServiceLogs
             {
                 #region Properties
@@ -282,41 +316,22 @@
                 #endregion
             }
 
-            public static class UserManagement
+            public static class Users
             {
                 #region Properties
-                public const string Users = "AdminUserManagementUsers";
-                public const string UsersGrid = "AdminUserManagementUsersGrid";
-                public const string UsersGridAdd = "AdminUserManagementUsersGridAdd";
-                public const string UsersGridUpdate = "AdminUserManagementUsersGridUpdate";
-                public const string UsersGridDelete = "AdminUserManagementUsersGridDelete";
-
-                public const string Roles = "AdminUserManagementRoles";
-                public const string RolesGrid = "AdminUserManagementRolesGrid";
-                public const string RolesGridAdd = "AdminUserManagementRolesGridAdd";
-                public const string RolesGridUpdate = "AdminUserManagementRolesGridUpdate";
-                public const string RolesGridDelete = "AdminUserManagementRolesGridDelete";
-
-                public const string Permissions = "AdminUserManagementPermissions";
-                public const string PermissionsTree = "AdminUserManagementPermissionsTree";
-                public const string PermissionsTreeAdd = "AdminUserManagementPermissionsTreeAdd";
-                public const string PermissionsTreeUpdate = "AdminUserManagementPermissionsTreeUpdate";
-                public const string PermissionsTreeDelete = "AdminUserManagementPermissionsTreeDelete";
-                public const string PermissionsTreeUpdateParent = "AdminUserManagementPermissionsTreeUpdateParent";
-
-                public const string RolePermissions = "AdminUserManagementRolePermissions";
-                public const string RolePermissionsGet = "AdminUserManagementRolePermissionsGet";
-                public const string RolePermissionsRolesGrid = "AdminUserManagementRolePermissionsRolesGrid";
-                public const string RolePermissionsPermissionsTree = "AdminUserManagementRolePermissionsPermissionsTree";
-                public const string RolePermissionsSave = "AdminUserManagementRolePermissionsSave";
+                public const string Page = "AdminUsers";
+                public const string Grid = "AdminUsersGrid";
+                public const string GridAdd = "AdminUsersGridAdd";
+                public const string GridUpdate = "AdminUsersGridUpdate";
+                public const string GridDelete = "AdminUsersGridDelete";                                                
                 #endregion
 
                 #region Nested Classes
                 public static class User
                 {
                     #region Properties
-                    public const string Root = "AdminUserManagementUsersUser";
-                    public const string Properties = "AdminUserManagementUsersUserProperties";
+                    public const string Root = "AdminUsersUser";
+                    public const string Properties = "AdminUsersUserProperties";
                     #endregion
                 }
                 #endregion

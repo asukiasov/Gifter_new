@@ -1,0 +1,39 @@
+﻿@model RolePermissionsModel.PageViewModel
+<div class="card">
+    <div class="card-body">
+        <div class="row">
+            <div class="col">
+                @if (Model.ShowSaveButton)
+                {
+                    @await Html.PartialAsync(ViewNames.Admin.Shared.ButtonSave, new ButtonSaveViewModel())
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card">
+    <div class="card-body">        
+        <div class="row">            
+            <div class="col-xl-4">
+                <div class="card m-0">
+                    <div class="card-header">@Html.Raw(Model.TextRoles)</div>
+                    <div class="card-body p-0">@Model.RolesGrid.Render(Html)</div>
+                </div>
+            </div>
+            <div class="col-xl-8">
+                <div class="card m-0">
+                    <div class="card-header">@Html.Raw(Model.TextPermissions)</div>
+                    <div class="card-body p-0">@Model.PermissionsTree.Render(Html)</div>
+                </div>                                
+            </div>
+        </div>
+    </div>
+</div>
+
+@section FooterSection{
+<script src="/js/admin/rolesPermissions/rolesPermissions.js"></script>
+<script>
+    rolesPermissionsModel.urlSave = '@Html.Raw(Model.UrlSave)';
+    rolesPermissionsModel.urlPermissionsGetByRole = '@Html.Raw(Model.UrlPermissionsGetByRole)';
+</script>
+}

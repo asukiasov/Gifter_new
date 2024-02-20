@@ -1,0 +1,90 @@
+﻿@model BlogPropertiesModel.BlogPropertiesViewModel
+<div class="card">
+    <div class="card-body">
+        <div class="row">
+            <div class="col">
+                @await Html.PartialAsync(ViewNames.Admin.Shared.ButtonSave, new ButtonSaveViewModel { FormID = "form", CssClass = "js-show-preloader" })
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card">
+    <div class="card-body">
+        <form id="form" method="post" enctype="multipart/form-data">
+            <div class="row">
+                <div class="col-lg-6 form-group">
+                    <label>@Html.Raw(Model.TextPublished)</label>
+                    <label class="toggler toggler-lg">
+                        <input type="checkbox" name="@nameof(Model.BlogPostIsPublished)" value="true" @(Model.BlogPostIsPublished ? Html.Raw("checked") : null) />
+                        <i></i>
+                    </label>
+                </div>
+                <div class="col-lg-6 form-group">
+                    <label>@Html.Raw(Model.TextUploadImage)</label>
+                    <div class="input-group custom-file-group js-custom-file-upload">
+                        <div class="form-control">
+                            <a class="js-custom-file-upload-attachment" data-type="image" href="@Html.Raw(Model.BlogPostImageHttpPath)">@Html.Raw(Model.BlogPostImageFilename)</a>
+                            <span class="js-custom-file-upload-new-attachment hidden"></span>
+                        </div>
+                        @if (Model.HasBlogPostImage)
+                        {
+                        <button type="button" data-url="@Html.Raw(Model.UrlDeleteImage)" data-text-confirm="@Html.Raw(Model.TextConfirmDelete)" class="btn btn-outline-light js-custom-file-upload-delete-button"><i class="fa-light fa-trash-can"></i></button>
+                        }
+                        <button type="button" class="btn btn-outline-light hidden js-custom-file-upload-clear-button"><i class="fa fa-times"></i></button>
+                        <span class="btn btn-outline-light custom-file-upload">
+                            <i class="fas fa-folder-open"></i>
+                            <input type="file" name="@nameof(Model.BlogImageFile)" accept="image/*" />
+                        </span>
+                    </div>                                       
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6 form-group">
+                    <label>@Html.Raw(Model.TextTitle) *</label>                    
+                    <input type="text" name="@nameof(Model.BlogPostTitle)" class="form-control js-title-input" value="@Model.BlogPostTitle" />
+                    <div class="invalid-feedback"></div>
+                </div>
+                <div class="col-lg-6 form-group">
+                    <label class="d-flex justify-content-between">
+                        <span>@Html.Raw(Model.TextSlug) *</span>
+                        <a href="#" class="js-generate-slug-from-title" data-title-input-selector=".js-title-input" data-slug-input-selectpr=".js-slug-input">@Html.Raw(Model.TextGenerateFromTitle)</a>
+                    </label>
+                    <input type="text" name="@nameof(Model.BlogPostSlug)" class="form-control js-slug-input js-apply-slug-input-behaviour" value="@Html.Raw(Model.BlogPostSlug)" />                    
+                    <div class="invalid-feedback"></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6 form-group">
+                    <label>@Html.Raw(Model.TextAuthor)</label>
+                    <input type="text" name="@nameof(Model.BlogPostAuthorName)" class="form-control" value="@Model.BlogPostAuthorName" />
+                </div>
+                <div class="col-lg-6 form-group">
+                    <label>@Html.Raw(Model.TextDate)</label>
+                    <input type="text" name="@nameof(Model.BlogPostDate)" class="form-control js-date-picker" value="@Html.Raw(Model.BlogPostDateString)" />
+                </div>                
+            </div>
+            <div class="row">
+                <div class="form-group col-lg-12">
+                    <label>@Html.Raw(Model.TextDescriptionShort)</label>
+                    <textarea name="@nameof(Model.BlogPostShortText)" class="form-control" rows="4">@Html.Raw(Model.BlogPostShortText)</textarea>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-lg-12">
+                    <label>@Html.Raw(Model.TextDescription)</label>
+                    <textarea name="@nameof(Model.BlogPostText)" class="form-control js-apply-tinymce">@Html.Raw(Model.BlogPostText)</textarea>
+                </div>
+            </div>
+        </form>
+
+    </div>
+</div>
+@section FooterSection{
+    <script src="/js/admin/blog/blogPostProperties.js"></script>
+    @if (Model.HasErrors)
+    {
+        <script>
+            validation.init({ errorsJson: @Html.Raw(Model.ErrorsJson)}).showErrors();
+        </script>
+    }
+}

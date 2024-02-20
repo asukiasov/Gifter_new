@@ -7,15 +7,15 @@
 }
 @if (Model.IsFontAwesomeEnabled)
 {
-    <link href="~/plugins/fontawesome/css/all.css" rel="stylesheet" />
+    <link href="/plugins/fontawesome/css/all.css" rel="stylesheet" />
 }
 @if (Model.Is63BitsFontsEnabled)
 {
-    <link href="~/plugins/63bits-fonts/fonts.css" rel="stylesheet" />
+    <link href="/plugins/63bits-fonts/fonts.css" rel="stylesheet" />
 }
 @if (Model.IsBootstrapEnabled)
 {
-    <link href="~/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
 }
 @if (Model.IsAdminThemeEnabled)
 {
@@ -26,66 +26,71 @@
 }
 @if (Model.IsJQueryConfirmEnabled)
 {
-    <link href="~/plugins/jquery-confirm/jquery-confirm.min.css" rel="stylesheet" />
+    <link href="/plugins/jquery-confirm/jquery-confirm.min.css" rel="stylesheet" />
 }
 @if (Model.IsFancyboxEnabled)
 {
-    <link href="~/plugins/fancybox/jquery.fancybox.css" rel="stylesheet" />
-    <link href="~/plugins/fancybox/style.css" rel="stylesheet" />
+    <link href="/plugins/fancybox/jquery.fancybox.css" rel="stylesheet" />
+    <link href="/plugins/fancybox/style.css" rel="stylesheet" />
 }
 @if (Model.IsUtilsEnabled)
 {
-    <link href="~/plugins/utils/utils.css" rel="stylesheet" />
+    <link href="/plugins/utils/utils.css" rel="stylesheet" />
 }
 @if (Model.Is63BitsFormsEnabled)
 {
-    <link href="~/plugins/63bits-bsforms/63bits-bsforms.css" rel="stylesheet" />
+    <link href="/plugins/63bits-bsforms/63bits-bsforms.css" rel="stylesheet" />
 }
 @if(Model.IsMetisMenuEnabled)
 {
-    <link href="~/plugins/metismenujs/metismenujs.min.css" rel="stylesheet" />
+    <link href="/plugins/metismenujs/metismenujs.min.css" rel="stylesheet" />
 }
 @if (Model.IsPreloaderEnabled)
 {
-    <link href="~/plugins/preloader/preloader.css" rel="stylesheet" />
+    <link href="/plugins/preloader/preloader.css" rel="stylesheet" />
 }
 @if (Model.IsPageBuilderEnabled)
 {
-    <link href="~/plugins/63bits-pageBuilder/css/template63.css" rel="stylesheet" />
+    <link href="/plugins/63bits-pageBuilder/css/template63.css" rel="stylesheet" />
 }
 @if (Model.IsPageBuilderEditorEnabled)
 {
     <link href="~/css/style.css" rel="stylesheet" />
-    <link href="~/plugins/63bits-pageBuilder/css/template63.css" rel="stylesheet" />
-    <link href="~/plugins/63bits-pageBuilder/css/page-builder.css" rel="stylesheet" />
+    <link href="/plugins/63bits-pageBuilder/css/template63.css" rel="stylesheet" />
+    <link href="/plugins/63bits-pageBuilder/css/page-builder.css" rel="stylesheet" />
 }
 @if (Model.IsFlatPickrEnabled)
 {
-    <link href="~/plugins/flatpickr/flatpickr.min.css" rel="stylesheet" />
+    <link href="/plugins/flatpickr/flatpickr.min.css" rel="stylesheet" />
 }
 @if (Model.IsSlickSliderEnabled)
 {
-    <link href="~/Plugins/slick/slick.min.css" rel="stylesheet" />
+    <link href="/plugins/slick/slick.min.css" rel="stylesheet" />
 }
 @if (Model.IsMalihuScrollEnabled)
 {
-    <link href="~/plugins/malihu-scrollbar/jquery.mCustomScrollbar.min.css" rel="stylesheet" />
+    <link href="/plugins/malihu-scrollbar/jquery.mCustomScrollbar.min.css" rel="stylesheet" />
 }
+@if (Model.Is63BitsSuccessErrorToastEnabled)
+{
+    <link href="/plugins/63bits-success-error-toast/63bits-success-error-toast.css" rel="stylesheet" />
+}
+
 @if (Model.IsJQueryEnabled)
 {
     <script src="~/plugins/jquery/jquery.min.js"></script>
 }
 @if (Model.IsDevextremeEnabled)
 {    
-    <link href="~/plugins/devextreme/css/dx.light.compact.css" rel="stylesheet" />
-    <link href="~/admin/css/Devexpress.css" rel="stylesheet" />
-    <script src="~/plugins/devextreme/js/jszip.js"></script>
-    <script src="~/plugins/devextreme/js/dx.all.js"></script>
-    <script src="~/plugins/devextreme/js/aspnet/dx.aspnet.data.js"></script>
-    <script src="~/plugins/devextreme/js/aspnet/dx.aspnet.mvc.js"></script>
-    <script src="~/plugins/devextreme/devextreme-license.js"></script>
+    <link href="/plugins/devextreme/css/dx.light.compact.css" rel="stylesheet" />
+    <link href="/css/admin/devexpress.css" rel="stylesheet" />
+    <script src="/plugins/devextreme/js/jszip.js"></script>
+    <script src="/plugins/devextreme/js/dx.all.js"></script>
+    <script src="/plugins/devextreme/js/aspnet/dx.aspnet.data.js"></script>
+    <script src="/plugins/devextreme/js/aspnet/dx.aspnet.mvc.js"></script>
+    <script src="/plugins/devextreme/devextreme-license.js"></script>
     @if (Model.ShouldIncludeLocalizationFile)
     {
-        <script src="~/plugins/devextreme/js/localization/dx.messages.@(Html.Raw(Model.LanguageCultureCode)).js"></script>
+    <script src="/plugins/devextreme/js/localization/dx.messages.@(Html.Raw(Model.LanguageCultureCode)).js"></script>
     }
 }

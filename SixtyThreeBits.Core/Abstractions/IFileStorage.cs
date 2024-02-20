@@ -1,4 +1,4 @@
-﻿using SixtyThreeBits.Core.Infrastructure.Libraries.FileStorages.Core;
+﻿using SixtyThreeBits.Core.Libraries.FileStorages.Core;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;

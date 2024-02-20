@@ -1,0 +1,75 @@
+﻿@model ProductsModel.PageViewModel
+<div class="card">
+    <div class="card-body">
+        <div class="row">
+            <div class="col">
+                @if (Model.ShowAddNewButton)
+                {
+                    @await Html.PartialAsync(ViewNames.Admin.Shared.ButtonAddNew, new ButtonAddNewViewModel{ CssClass = "me-3"})
+                }
+                @if (Model.ShowExcelUploadButton)
+                {
+
+                    <button class="btn btn-light btn-rounded js-upload-excel-button"><i class="fa-solid fa-upload"></i> @Html.Raw(Model.TextRemainderUpload)</button>
+                }
+                <button class="btn btn-light btn-rounded js-export-excel-button"><i class="fa-solid fa-file-excel"></i> @Html.Raw(Model.TextExport)</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card">
+    <div class="card-body">        
+        <div class="row">
+            <div class="col">
+                @Model.Grid.Render(Html)
+            </div>
+        </div>
+    </div>
+</div>
+@if (Model.ShowExcelUploadButton)
+{
+    <div class="modal fade js-upload-excel-file-modal">
+        <div class="modal-dialog modal-dialog-scrollable modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">@Html.Raw(Model.TextExcelUpload)</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="form-group col-lg-12">
+                            <label> @Html.Raw(Model.TextExcelUpload)</label>
+                            <div class="input-group custom-file-group js-custom-file-upload">
+                                <div class="form-control">
+                                    <span class="js-custom-file-upload-new-attachment hidden"></span>
+                                </div>
+                                <button type="button" class="btn btn-outline-light hidden js-custom-file-upload-clear-button"><i class="fa fa-times"></i></button>
+                                <span class="btn btn-outline-light custom-file-upload">
+                                    <i class="fas fa-folder-open"></i>
+                                    <input type="file" class="js-excel-file-input" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel" />
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col js-excel-errors">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer d-flex justify-content-between">
+                    <a href="@Html.Raw(Model.UrlExcelDownload)" class="btn btn-light btn-rounded js-download-excel-file-button"><i class="fas fa-download"></i> @Html.Raw(Model.TextExcelDownloadTemplate)</a>
+                    <button class="btn btn-primary btn-rounded js-upload-excel-file-button"><i class="fas fa-upload"></i> @Html.Raw(Model.TextUpload)</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+@section FooterSection{    
+    <script src="/js/admin/products/products.js"></script>
+    @if (Model.ShowExcelUploadButton)
+    {
+        <script>
+            productsModel.urlExcelUpload = '@Html.Raw(Model.UrlExcelUpload)';
+        </script>
+    }
+}

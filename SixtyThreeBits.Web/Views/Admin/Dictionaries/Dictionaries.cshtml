@@ -1,0 +1,28 @@
+﻿@model DictionariesModel.PageViewModel
+<div class="card">
+    <div class="card-body">
+        <div class="row">
+            <div class="col">
+                @if (Model.ShowAddNewButton)
+                {
+                    @await Html.PartialAsync(ViewNames.Admin.Shared.ButtonAddNew, new ButtonAddNewViewModel())
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card">
+    <div class="card-body">        
+        <div class="row">
+            <div class="col">
+                @Model.Tree.Render(Html)
+            </div>
+        </div>
+    </div>
+</div>
+@section FooterSection{
+<script src="/js/admin/dictionaries/dictionaries.js"></script>
+<script>
+    dictionariesModel.urlUpdate = '@Html.Raw(Model.UrlUpdate)';
+</script>
+}

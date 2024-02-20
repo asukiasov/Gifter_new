@@ -1,0 +1,209 @@
+﻿@{
+    var Model = WebUtilities.GetLayoutViewModel<AdminLayoutViewModel>(viewData: ViewData, key: WebConstants.ViewData.LayoutViewModel);
+}
+<!DOCTYPE html>
+<html lang="en" class="csstransforms3d">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+    <title>@Html.Raw(Model.PageTitle.TitleHead)</title>
+    @await Html.PartialAsync(ViewNames.Shared.PluginsClient.Header, Model.PluginsClient)
+    <link href="/css/admin/style.css" rel="stylesheet" />
+    @RenderSection(Model.HeaderSectionName, false)
+</head>
+<body class="@(Model.IsSidebarCollapsed.Value ? "sidebar-enable" : null)" data-sidebar="dark" data-sidebar-size="@(Model.IsSidebarCollapsed.Value ? "sm" : "lg")">
+    <div id="layout-wrapper">            
+        <header id="page-topbar" class="isvertical-topbar">
+            <div class="navbar-header">
+                <div class="d-flex">                        
+                    <div class="navbar-brand-box">
+                        <span class="logo">
+                            <span class="logo-sm">
+                                <img src="/images/logo_small.svg" alt="logo" height="22">
+                            </span>
+                            <span class="logo-lg">
+                                <img src="/images/logo.svg" alt="logo" height="22">
+                            </span>
+                        </span>                        
+                    </div>
+
+                    <button type="button" class="btn btn-sm px-3 font-size-16 header-item vertical-menu-btn topnav-hamburger js-side-menu-expand-button">
+                        <span class="hamburger-icon open">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </span>
+                    </button>
+
+                    <div class="d-none d-sm-block ms-3 align-self-center">
+                        <h4 class="page-title">@Html.Raw(Model.PageTitle.Value)</h4>
+                    </div>
+
+                </div>
+
+                <div class="d-flex">
+                    <div class="dropdown d-inline-block language-switch">
+                        <button type="button" class="btn header-item" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <img class="header-lang-img" src="/images/flags/@(Html.Raw(Model.LanguageActive.LanguageCultureCode)).jpg" alt="language-@Html.Raw(Model.LanguageActive.LanguageCultureCode)" height="16">
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-end">
+                            @foreach(var Item in Model.Languages)
+                            {
+                                @if (Item.IsActive)
+                                {
+                                    <a class="dropdown-item notify-item language disabled">
+                                        <img src="/images/flags/@(Html.Raw(Item.LanguageCultureCode)).jpg" alt="flag @Html.Raw(Item.LanguageCultureCode)" class="me-1" height="12"> <span class="align-middle">@Html.Raw(Item.LanguageName)</span>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a href="@Html.Raw(Item.UrlChangeLanguage)" class="dropdown-item notify-item language">
+                                        <img src="/images/flags/@(Html.Raw(Item.LanguageCultureCode)).jpg" alt="flag @Html.Raw(Item.LanguageCultureCode)" class="me-1" height="12"> <span class="align-middle">@Html.Raw(Item.LanguageName)</span>
+                                    </a>
+                                }
+                            }                            
+                        </div>
+                    </div>
+                    <div class="dropdown d-inline-block">
+                        <button type="button" class="btn header-item user text-start d-flex align-items-center" id="page-header-user-dropdown-v" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <img class="rounded-circle header-profile-user" src="/images/no_avatar.svg" alt="Header Avatar">
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-end pt-0">
+                            <div class="p-3 border-bottom">
+                                <h6 class="mb-0">@Html.Raw(Model.UserFullname)</h6>
+                                <p class="mb-0 font-size-11 text-muted">@Html.Raw(Model.UserEmail)</p>
+                            </div>
+                            <a class="dropdown-item" href="/"><i class="fa-regular fa-globe"></i> <span class="align-middle">@Html.Raw(Model.TextBackToWebsite)</span></a>
+                            <a class="dropdown-item" href="@Html.Raw(Model.UrlRelogin)"><i class="fa-regular fa-rotate-right"></i> <span class="align-middle">@Html.Raw(Model.TextRelogin)</span></a>
+                            <a class="dropdown-item" href="@Html.Raw(Model.UrlLogout)"><i class="fa-light fa-right-from-bracket"></i> <span class="align-middle">@Html.Raw(Model.TextLogout)</span></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+            
+        <div class="vertical-menu">                
+            <div class="navbar-brand-box">
+                <div class="logo">
+                    <span class="logo-sm">
+                        <img src="/images/logo_small.svg" alt="" height="22">
+                    </span>
+                    <span class="logo-lg">
+                        <img src="/images/logo.svg" alt="" height="22">
+                    </span>
+                </div>                
+            </div>
+
+            <button type="button" class="btn btn-sm px-3 header-item vertical-menu-btn topnav-hamburger js-side-menu-collapse-button">
+                <span class="hamburger-icon">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </span>
+            </button>
+            <div class="sidebar-menu-wrapper js-app-sidebar-menu-wrapper">
+                <div data-simplebar class="sidebar-menu-scroll">
+
+                    <div id="sidebar-menu">
+                        <ul class="metismenu list-unstyled js-side-menu" id="side-menu">
+                            <li class="menu-title">Menu</li>
+                            @if (Model.HasMenu)
+                            {
+                                foreach (var Item in Model.Menu)
+                                {
+
+                                    <li @(Item.IsSelected ? Html.Raw("class=\"mm-active\"") : null)>
+                                        <a href="@(Item.HasChildren ? $"javascript: void(0);" : $"{Html.Raw(Item.NavigateUrl)}")" @(Item.HasChildren ? Html.Raw("class=\"has-arrow\"") : null) aria-expanded="@(Item.IsSelected ? Html.Raw("true") : Html.Raw("false"))">
+                                            <i class="@Html.Raw(Item.Icon)"></i>
+                                            <span class="menu-item">@Html.Raw(Item.Caption)</span>
+                                        </a>
+                                        @if (Item.HasChildren)
+                                        {
+                                            <ul class="sub-menu mm-collapse @(Item.IsSelected ? Html.Raw("mm-show") : null)" aria-expanded="@(Item.IsSelected ? Html.Raw("true") : Html.Raw("false"))">
+                                                @foreach (var SubItem in Item.Children)
+                                                {
+                                                    <li @(SubItem.IsSelected ? Html.Raw("class=\"mm-active\"") : null)>
+                                                        <a @(SubItem.IsSelected ? Html.Raw("class=\"active\"") : null) href="@Html.Raw(SubItem.NavigateUrl)">@Html.Raw(SubItem.Caption)</a>
+                                                    </li>
+                                                }
+                                            </ul>
+                                        }
+                                    </li>
+                                }
+                            }
+                        </ul>
+                    </div>                
+            </div>
+            </div>
+            <div class="sidebar-footer">
+                <p class="mb-0">
+                    Developed by <a href="http://63bits.com/" target="_blank">
+                        <img src="/images/63bits.svg" alt="63BITS" height="13" />
+                    </a>
+                </p>
+            </div>
+        </div>
+                        
+        <div class="main-content js-app-main-content">
+
+            <div class="page-content">
+                <div class="container-fluid">
+                    @if (Model.ShowBreadCrumbs)
+                    {
+                        <div class="card justify-content-start ps-2">
+                            <ol class="breadcrumb mb-0 p-2">
+                                @foreach (var Item in Model.Breadcrumbs.Items)
+                                {
+                                    if (Item.IsLastItem)
+                                    {
+                                        <li class="breadcrumb-item active">@Html.Raw(Item.Title)</li>
+                                    }
+                                    else if (Item.HasNavigateUrl)
+                                    {
+                                        <li class="breadcrumb-item">
+                                            <a href="@Html.Raw(Item.NavigateUrl)">@Html.Raw(Item.Title)</a>
+                                        </li>
+                                    }
+                                    else
+                                    {
+                                        <li class="breadcrumb-item">@Html.Raw(Item.Title)</li>
+                                    }
+                                }
+                            </ol>
+                        </div>
+                    }
+                @RenderBody()
+                </div> 
+            </div>                
+            @*<footer class="footer">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <span class="d-none d-md-inline">@DateTime.Now.Year &copy; @Html.Raw(Model.ProjectName).</span>
+                            Design & Develop by <a href="http://63bits.com/" target="_blank"><img src="/images/63bits.svg" alt="63BITS" height="13" /></a>
+
+                        </div>
+                    </div>
+                </div>
+            </footer>*@
+            
+        </div>
+    </div>
+                                   
+
+    @await Html.PartialAsync(ViewNames.Admin.Shared.SuccessErrorToastPartialView, Model.SuccessErrorPartialViewModel)
+
+    @await Html.PartialAsync(ViewNames.Shared.PluginsClient.Footer, Model.PluginsClient)
+
+    <script src="/js/global.js"></script>
+    <script src="/js/admin/layout.js"></script>
+    <script>
+        globals.textError = '@Html.Raw(Model.TextError)';
+        globals.textSuccess = '@Html.Raw(Model.TextSuccess)';
+        layoutModel.sidebarStatusCookieKey = '@Model.SidebarStatusCookieKey';
+    </script>
+    @RenderSection(Model.FooterSectionName, false)
+</body>
+</html>

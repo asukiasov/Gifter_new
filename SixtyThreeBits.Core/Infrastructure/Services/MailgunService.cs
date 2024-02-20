@@ -1,9 +1,9 @@
 ﻿using Newtonsoft.Json;
 using RestSharp;
 using RestSharp.Authenticators;
-using SixtyThreeBits.Core.Infrastructure.Base;
-using SixtyThreeBits.Core.Infrastructure.DTO;
-using SixtyThreeBits.Core.Infrastructure.Utilities;
+using SixtyThreeBits.Core.DTO;
+using SixtyThreeBits.Core.Infrastructure.Services.Base;
+using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries.Extensions;
 using System.Collections.Generic;
 using System.Linq;

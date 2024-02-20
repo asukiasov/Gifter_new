@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using SixtyThreeBits.Core.Infrastructure.Base;
+using SixtyThreeBits.Core.DTO;
 using SixtyThreeBits.Core.Infrastructure.Database;
-using SixtyThreeBits.Core.Infrastructure.Database.Core;
-using SixtyThreeBits.Core.Infrastructure.DTO;
-using SixtyThreeBits.Core.Infrastructure.Utilities;
+using SixtyThreeBits.Core.Infrastructure.Factories;
+using SixtyThreeBits.Core.Infrastructure.Repositories.Base;
+using SixtyThreeBits.Core.Utilities;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;

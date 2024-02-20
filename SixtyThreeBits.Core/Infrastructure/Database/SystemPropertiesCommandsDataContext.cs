@@ -1,5 +1,4 @@
-﻿using SixtyThreeBits.Core.Infrastructure.Database.Core;
-using System.Data;
+﻿using System.Data;
 using System.Threading.Tasks;
 
 namespace SixtyThreeBits.Core.Infrastructure.Database

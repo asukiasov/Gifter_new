@@ -1,5 +1,4 @@
-﻿using SixtyThreeBits.Core.Infrastructure.Database.Core;
-using SixtyThreeBits.Core.Infrastructure.Utilities;
+﻿using SixtyThreeBits.Core.Utilities;
 using System;
 using System.Data;
 using System.Threading.Tasks;
@@ -32,7 +31,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
             );
             await sqb.ExecuteCommand();
             blogPostID = sqb.GetNextOutputParameterValue<int?>();
-            return blogPostID;
+            return blogPostID;            
         }
         #endregion
     }

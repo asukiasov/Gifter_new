@@ -1,0 +1,28 @@
+﻿@model PermissionsModel.PageViewModel
+<div class="card">
+    <div class="card-body">
+        <div class="row">
+            <div class="col">
+                @if (Model.ShowAddNewButton)
+                {
+                    @await Html.PartialAsync(ViewNames.Admin.Shared.ButtonAddNew, new ButtonAddNewViewModel())
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card">
+    <div class="card-body">        
+        <div class="row">
+            <div class="col">
+                @Model.Tree.Render(Html)
+            </div>
+        </div>
+    </div>
+</div>
+@section FooterSection{
+    <script src="/js/admin/permissions/permissions.js"></script>
+    <script>
+    permissionsModel.urlUpdate = '@Model.UrlUpdate';
+    </script>
+}

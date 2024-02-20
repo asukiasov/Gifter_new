@@ -1,5 +1,5 @@
-﻿using SixtyThreeBits.Core.Infrastructure.Utilities;
-using SixtyThreeBits.Core.Properties;
+﻿using SixtyThreeBits.Core.Properties;
+using SixtyThreeBits.Core.Utilities;
 
 namespace SixtyThreeBits.Web.Domain.SharedViewModels
 {
@@ -10,6 +10,7 @@ namespace SixtyThreeBits.Web.Domain.SharedViewModels
         public bool Is63BitsFileUploaderEnabled { get; private set; }
         public bool Is63BitsFormsEnabled { get; private set; }
         public bool Is63BitsFontsEnabled { get; private set; }
+        public bool Is63BitsSuccessErrorToastEnabled { get; private set; }
         public bool IsAdminThemeEnabled { get; private set; }
         public bool IsBootstrapEnabled { get; private set; }
         public bool IsDevextremeEnabled { get; private set; }
@@ -34,7 +35,7 @@ namespace SixtyThreeBits.Web.Domain.SharedViewModels
         public bool IsPreloaderEnabled { get; private set; }
         public bool IsSlickSliderEnabled { get; private set; }
         public bool IsSortableJSEnabled { get; private set; }
-        public bool IsSuccessErrorMessageEnabled { get; private set; }
+        
         public bool IsTemplate7Enabled { get; private set; }
         public bool IsTinyMceEnabled { get; private set; }
         public bool IsUtilsEnabled { get; private set; }
@@ -229,9 +230,9 @@ namespace SixtyThreeBits.Web.Domain.SharedViewModels
             return this;
         }
 
-        public PluginsClient EnableSuccessErrorMessage(bool value)
+        public PluginsClient Enable63BitsSuccessErrorToast(bool value)
         {
-            IsSuccessErrorMessageEnabled = value;
+            Is63BitsSuccessErrorToastEnabled = value;
             return this;
         }
 

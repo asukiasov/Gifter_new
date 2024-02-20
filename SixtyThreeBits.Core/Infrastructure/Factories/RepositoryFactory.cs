@@ -1,5 +1,4 @@
-﻿using SixtyThreeBits.Core.Infrastructure.Database.Core;
-using SixtyThreeBits.Core.Infrastructure.Repositories;
+﻿using SixtyThreeBits.Core.Infrastructure.Repositories;
 
 namespace SixtyThreeBits.Core.Infrastructure.Factories
 {
@@ -17,9 +16,9 @@ namespace SixtyThreeBits.Core.Infrastructure.Factories
         #endregion
 
         #region Methods
-        public BlogRepository GetBlogRepository()
+        public BlogPostsRepository GetBlogRepository()
         {
-            return new BlogRepository(_connectionFactory);
+            return new BlogPostsRepository(_connectionFactory);
         }
 
         public BrandsRepository GetBrandsRepository()
@@ -65,7 +64,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Factories
         public ProductsRepository GetProductsRepository()
         {
             return new ProductsRepository(_connectionFactory);
-        }        
+        }
 
         public RedirectsRepository GetRedirectsRepository()
         {
