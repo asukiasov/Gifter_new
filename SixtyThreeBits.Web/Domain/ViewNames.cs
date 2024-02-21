@@ -175,8 +175,7 @@
             public static class Shared
             {
                 #region Properties
-                public const string Layout = "~/Views/Admin/Shared/Layout.cshtml";
-                public const string NotFound = "~/Views/Admin/Shared/NotFound.cshtml";
+                public const string Layout = "~/Views/Admin/Shared/Layout.cshtml";                
                 public const string PopupLayout = "~/Views/Admin/Shared/PopupLayout.cshtml";
                 public const string Tabs = "~/Views/Admin/Shared/Tabs.cshtml";
                 public const string SuccessErrorToastPartialView = "~/Views/Admin/Shared/SuccessErrorToastPartialView.cshtml";

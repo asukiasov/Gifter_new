@@ -85,10 +85,11 @@ namespace SixtyThreeBits.Web.Models.Shared
             var viewModel = new NotFoundViewModel();
             PluginsClient.EnableAdminTheme(true);
             viewModel.PluginsClient = PluginsClient;
+            viewModel.UrlLogout = Url.RouteUrl(ControllerActionRouteNames.Admin.Auth.Logout);
 
             return new ViewResult
             {
-                ViewName = ViewNames.Admin.Shared.NotFound,
+                ViewName = ViewNames.Admin.NotFound.Page,
                 ViewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary())
                 {
                     Model = viewModel
