@@ -97,7 +97,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         [Route("properties", Name = ControllerActionRouteNames.Admin.Partners.Partner.Properties)]
         public IActionResult Properties()
         {
-            Model.PluginsClient.Enable63BitsForms(true).EnableTinyMce(true).EnableFancybox(true);
+            Model.PluginsClient.Enable63BitsForms(true).EnableTinyMce(true).EnableFancybox(true).Enable63BitsSuccessErrorToast(true);
             var viewModel = Model.GetPageViewModel(viewModel: null);
             return View(ViewNames.Admin.Partners.Partner, viewModel);
         }
@@ -106,7 +106,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         [Route("properties")]
         public async Task<IActionResult> Properties(PartnerPropertiesModel.PageViewModel SubmitModel)
         {
-            Model.PluginsClient.Enable63BitsForms(true).EnableFancybox(true).EnableDevextreme(true).EnableTinyMce(true);
+            Model.PluginsClient.Enable63BitsForms(true).EnableFancybox(true).EnableDevextreme(true).EnableTinyMce(true).Enable63BitsSuccessErrorToast(true);
             var viewModel = Model.GetPageViewModel(viewModel: SubmitModel);
             var result = default(IActionResult);
             Model.ValidatePageViewModel(viewModel: SubmitModel);

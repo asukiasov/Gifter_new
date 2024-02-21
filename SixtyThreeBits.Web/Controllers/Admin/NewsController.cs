@@ -102,7 +102,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         [Route("properties", Name = ControllerActionRouteNames.Admin.News.NewsItem)]
         public IActionResult Properties()
         {
-            Model.PluginsClient.Enable63BitsForms(true).EnableFancybox(true).EnableTinyMce(true).EnableDevextreme(true);
+            Model.PluginsClient.Enable63BitsForms(true).EnableFancybox(true).EnableTinyMce(true).EnableDevextreme(true).Enable63BitsSuccessErrorToast(true);
             var viewModel = Model.GetPageViewModel(viewModel: null);
             return View(ViewNames.Admin.News.NewsProperties, viewModel);
         }
@@ -112,7 +112,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         public async Task<IActionResult> Properties(NewsPropertiesModel.PageViewModel submitModel)
         {
             var result = default(IActionResult);
-            Model.PluginsClient.Enable63BitsForms(true).EnableFancybox(true).EnableTinyMce(true).EnableDevextreme(true);
+            Model.PluginsClient.Enable63BitsForms(true).EnableFancybox(true).EnableTinyMce(true).EnableDevextreme(true).Enable63BitsSuccessErrorToast(true);
             var viewModel = Model.GetPageViewModel(viewModel: submitModel);
 
             await Model.ValidatePageViewModel(viewModel);

@@ -101,7 +101,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         [Route("", Name = ControllerActionRouteNames.Admin.Brands.Brand.Properties)]
         public IActionResult Properties()
         {
-            Model.PluginsClient.Enable63BitsForms(true).EnableFancybox(true);
+            Model.PluginsClient.Enable63BitsForms(true).EnableFancybox(true).Enable63BitsSuccessErrorToast(true);
             var viewModel = Model.GetPageViewModel(viewModel: null);
             return View(ViewNames.Admin.Brands.BrandProperties, viewModel);
         }
@@ -111,7 +111,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         public async Task<IActionResult> Properties(BrandsPropertiesModel.PageViewModel submitModel)
         {
             var result = default(IActionResult);
-            Model.PluginsClient.Enable63BitsForms(true).EnableFancybox(true);
+            Model.PluginsClient.Enable63BitsForms(true).EnableFancybox(true).Enable63BitsSuccessErrorToast(true);
             var viewModel = Model.GetPageViewModel(submitModel);
             Model.ValidatePageViewModel(viewModel);
             if (viewModel.IsValid)

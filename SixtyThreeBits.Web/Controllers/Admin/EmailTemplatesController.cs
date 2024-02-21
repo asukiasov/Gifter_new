@@ -16,7 +16,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         }
         #endregion
 
-        #region Methods
+        #region Actions
         [HttpGet]
         [Route("", Name = ControllerActionRouteNames.Admin.EmailTemplates.Page)]
         public IActionResult EmailTemplates()
@@ -45,7 +45,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         }
         #endregion
 
-        #region Methods
+        #region Actions
         [HttpGet]
         [Route("", Name = ControllerActionRouteNames.Admin.EmailTemplates.EmailTemplate.Properties)]
         public async Task<IActionResult> EmailTemplateProperties(int? emailTemplateID)
@@ -58,7 +58,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
             }
             else
             {
-                Model.PluginsClient.EnableTinyMce(true).Enable63BitsForms(true);
+                Model.PluginsClient.EnableTinyMce(true).Enable63BitsForms(true).Enable63BitsSuccessErrorToast(true);
                 Model.PageTitle.Set(viewModel.EmailTemplateName);
                 Model.Breadcrumbs.RenameLastItem(viewModel.EmailTemplateName);
                 result = View(ViewNames.Admin.EmailTemplates.EmailTemplate.Properties, viewModel);
@@ -78,7 +78,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
             }
             else
             {
-                Model.PluginsClient.EnableTinyMce(true).Enable63BitsForms(true);
+                Model.PluginsClient.EnableTinyMce(true).Enable63BitsForms(true).Enable63BitsSuccessErrorToast(true);
                 Model.PageTitle.Set(viewModel.EmailTemplateName);
                 Model.Breadcrumbs.RenameLastItem(viewModel.EmailTemplateName);
 

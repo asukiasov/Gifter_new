@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using SixtyThreeBits.Core.DTO;
-using SixtyThreeBits.Core.Infrastructure.Repositories;
 using SixtyThreeBits.Core.Libraries;
 using SixtyThreeBits.Core.Libraries.FileStorages;
 using SixtyThreeBits.Core.Properties;
@@ -170,8 +169,7 @@ namespace SixtyThreeBits.Web.Models.Admin
                 viewModel.BlogPostShortText = DBItem.BlogPostShortText;
                 viewModel.BlogPostText = DBItem.BlogPostText;
                 viewModel.BlogPostAuthorName = DBItem.BlogPostAuthorName;
-                viewModel.BlogPostDate = DBItem.BlogPostDate;
-                viewModel.BlogPostDateString = Utilities.FormatDate(DBItem.BlogPostDate, Utilities.CultureInvariant);
+                viewModel.BlogPostDate = DBItem.BlogPostDate;                
             }
 
             viewModel.BlogPostImageFilename = DBItem.BlogPostImageFilename;
@@ -261,8 +259,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             public string BlogPostShortText { get; set; }
             public string BlogPostText { get; set; }
             public string BlogPostAuthorName { get; set; }
-            public DateTime? BlogPostDate { get; set; }
-            public string BlogPostDateString { get; set; }
+            public DateTime? BlogPostDate { get; set; }            
             public string BlogPostImageFilename { get; set; }
             public string BlogPostImageHttpPath { get; set; }
             public bool HasBlogPostImage => !string.IsNullOrWhiteSpace(BlogPostImageFilename);
@@ -278,6 +275,8 @@ namespace SixtyThreeBits.Web.Models.Admin
             public readonly string TextDate = Resources.TextDate;
             public readonly string TextDescriptionShort = Resources.TextDescriptionShort;
             public readonly string TextDescription = Resources.TextDescription;
+
+            public readonly string FormatDate = Constants.Formats.Date;
             #endregion
         }
         #endregion

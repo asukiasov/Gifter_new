@@ -117,7 +117,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         [Route("", Name = ControllerActionRouteNames.Admin.Products.Product.Properties)]
         public async Task<IActionResult> Properties()
         {
-            Model.PluginsClient.Enable63BitsForms(true).Enable63BitsFileUploader(true).EnableFancybox(true).EnableTinyMce(true).EnableJQueryNumericInput(true).EnableTemplate7(true).EnableSortableJS(true);
+            Model.PluginsClient.Enable63BitsForms(true).Enable63BitsFileUploader(true).EnableFancybox(true).EnableTinyMce(true).EnableJQueryNumericInput(true).EnableTemplate7(true).EnableSortableJS(true).Enable63BitsSuccessErrorToast(true);
             var viewModel = await Model.GetPageViewModel();
             return View(ViewNames.Admin.Products.ProductProperties, viewModel);
 
@@ -128,7 +128,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         public async Task<IActionResult> Properties(ProductPropertiesModel.ProductsPropertiesViewModel submitModel)
         {
             var result = default(IActionResult);
-            Model.PluginsClient.Enable63BitsForms(true).Enable63BitsFileUploader(true).EnableFancybox(true).EnableTinyMce(true).EnableJQueryNumericInput(true).EnableTemplate7(true).EnableSortableJS(true);
+            Model.PluginsClient.Enable63BitsForms(true).Enable63BitsFileUploader(true).EnableFancybox(true).EnableTinyMce(true).EnableJQueryNumericInput(true).EnableTemplate7(true).EnableSortableJS(true).Enable63BitsSuccessErrorToast(true);
             var viewModel = await Model.GetPageViewModel(submitModel);
             Model.ValidatePageViewModel(viewModel);
             if (viewModel.IsValid)

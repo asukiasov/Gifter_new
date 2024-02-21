@@ -60,11 +60,11 @@ namespace SixtyThreeBits.Web.Models.Admin
                 dictionaryParentID: submitModel.DictionaryParentID,
                 dictionaryCaption: submitModel.DictionaryCaption,
                 dictionaryCaptionEng: submitModel.DictionaryCaptionEng,
-                dictionaryStringCode: submitModel.DictionaryStringCode,
-                dictionaryIntCode: submitModel.DictionaryIntCode,
-                dictionaryDecimalValue: submitModel.DictionaryDecimalValue,
+                dictionaryStringCode: submitModel.DictionaryStringCode ?? Constants.NullValueFor.String,
+                dictionaryIntCode: submitModel.DictionaryIntCode ?? Constants.NullValueFor.Numeric,
+                dictionaryDecimalValue: submitModel.DictionaryDecimalValue ?? Constants.NullValueFor.Numeric,
                 dictionaryCode: submitModel.DictionaryCode,
-                dictionarySortIndex: submitModel.DictionarySortIndex
+                dictionarySortIndex: submitModel.DictionarySortIndex ?? Constants.NullValueFor.Numeric
             );
 
             if (repository.IsError)

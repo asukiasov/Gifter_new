@@ -67,7 +67,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         [Route("", Name = ControllerActionRouteNames.Admin.ProductCategories.ProductCategory.Properties)]
         public IActionResult Properties()
         {
-            Model.PluginsClient.Enable63BitsForms(true).EnableFancybox(true).EnableTinyMce(true);
+            Model.PluginsClient.Enable63BitsForms(true).EnableFancybox(true).EnableTinyMce(true).Enable63BitsSuccessErrorToast(true);
             var viewModel = Model.GetPageViewModel(viewModel: null);
             if (viewModel == null)
             {
@@ -84,7 +84,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         public async Task<IActionResult> Properties(ProductCategoryPropertiesModel.ProductCategoryPropertiesViewModel submitModel)
         {
             var result = default(IActionResult);
-            Model.PluginsClient.Enable63BitsForms(true).EnableFancybox(true).EnableDevextreme(true).EnableTinyMce(true);
+            Model.PluginsClient.Enable63BitsForms(true).EnableFancybox(true).EnableDevextreme(true).EnableTinyMce(true).Enable63BitsSuccessErrorToast(true);
             var viewModel = Model.GetPageViewModel(submitModel);
             Model.ValidatePageViewModel(viewModel);
             if (viewModel.IsValid)

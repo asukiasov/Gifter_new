@@ -219,7 +219,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             await repository.UsersIUD(
                 databaseAction: Enums.DatabaseActions.UPDATE,
                 userID: dbItem.UserID,
-                roleID: viewModel.RoleID ?? Constants.NullValueFor.Int,
+                roleID: viewModel.RoleID ?? Constants.NullValueFor.Numeric,
                 userEmail: viewModel.UserEmail,
                 userPassword: viewModel.UserPassword,
                 userFirstname: viewModel.UserFirstname,

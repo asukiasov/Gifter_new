@@ -1,7 +1,7 @@
 ﻿@model PluginsClient
 @if (Model.IsJsClientEnabled)
 {
-    <script src="/plugins/jsClient/jsClient.min.js"></script>
+    <script src="/plugins/js-client/js-client.min.js"></script>
 }
 @if (Model.IsBootstrapEnabled)
 {
@@ -25,11 +25,11 @@
 }
 @if (Model.IsPageBuilderEnabled)
 {
-    <script src="/plugins/63bits-pageBuilder/js/template63.js"></script>
+    <script src="/plugins/63bits-page-builder/js/template63.js"></script>
 }
 @if (Model.IsPageBuilderEditorEnabled)
 {
-    <script src="/plugins/63bits-pageBuilder/js/page-builder.js"></script>
+    <script src="/plugins/63bits-page-builder/js/page-builder.js"></script>
 }
 @if (Model.IsPreloaderEnabled)
 {

@@ -73,12 +73,12 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         }
         #endregion
 
-        #region Methods
+        #region Actions
         [HttpGet]
         [Route("", Name = ControllerActionRouteNames.Admin.Pages.Page.Properties)]
         public IActionResult PageProperties()
         {
-            Model.PluginsClient.Enable63BitsForms(true).EnableFancybox(true);
+            Model.PluginsClient.Enable63BitsForms(true).EnableFancybox(true).Enable63BitsSuccessErrorToast(true);
             var viewModel = Model.GetPageViewModel(viewModel: null);
             return View(ViewNames.Admin.Pages.Page.Properties, viewModel);
         }
@@ -87,7 +87,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         [Route("")]
         public async Task<IActionResult> PageProperties(PagePropertiesModel.PageViewModel SubmitModel)
         {
-            Model.PluginsClient.Enable63BitsForms(true).EnableFancybox(true);
+            Model.PluginsClient.Enable63BitsForms(true).EnableFancybox(true).Enable63BitsSuccessErrorToast(true);
             var viewModel = Model.GetPageViewModel(viewModel: SubmitModel);
 
             Model.ValidatePageViewModel(viewModel);

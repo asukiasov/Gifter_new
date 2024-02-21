@@ -382,7 +382,7 @@ var PageBuilderModel = {
             image: {
                 isActive: true,
                 hasControls: false,
-                url: '/plugins/63bits-pageBuilder/images/demo/slide1.jpg'
+                url: '/plugins/63bits-page-builder/images/demo/slide1.jpg'
             },
 
             icon: {
@@ -406,8 +406,8 @@ var PageBuilderModel = {
             jwPlayer: {
                 isActive: true,
 
-                videoUrl: '/plugins/63bits-pageBuilder/video/demo.mp4',
-                coverUrl: '/plugins/63bits-pageBuilder/video/cover.jpg',
+                videoUrl: '/plugins/63bits-page-builder/video/demo.mp4',
+                coverUrl: '/plugins/63bits-page-builder/video/cover.jpg',
                 markersUrl: null,
                 subTitlesUrl: null,
 
@@ -419,14 +419,14 @@ var PageBuilderModel = {
                 isActive: true,
                 isImage: true,
                 image: {
-                    url: '/plugins/63bits-pageBuilder/images/demo/slide1.jpg'
+                    url: '/plugins/63bits-page-builder/images/demo/slide1.jpg'
                 },
                 video: {
                     controls: true,
                     muted: false,
                     loop: false,
                     autoplay: false,
-                    url: '/plugins/63bits-pageBuilder/video/demo.mp4',
+                    url: '/plugins/63bits-page-builder/video/demo.mp4',
                 }
             },
 
@@ -471,7 +471,7 @@ var PageBuilderModel = {
                     isTargetBlank: null
                 },
                 image: {
-                    url: '/plugins/63bits-pageBuilder/images/demo/grid_img.jpg'
+                    url: '/plugins/63bits-page-builder/images/demo/grid_img.jpg'
                 },
             },
 
@@ -603,7 +603,7 @@ var PageBuilderModel = {
                         },
                         image: {
                             ...PageBuilderModel.settings.components.image,
-                            url: '/plugins/63bits-pageBuilder/images/demo/no_avatar.jpg',
+                            url: '/plugins/63bits-page-builder/images/demo/no_avatar.jpg',
                             hasControls: true
                         },
                         author: {
@@ -676,7 +676,7 @@ var PageBuilderModel = {
                         fontAwesomeIcon: PageBuilderModel.settings.components.fontAwesomeIcon,
                         //image: {
                         //    ...PageBuilderModel.settings.components.image,
-                        //    url: '/plugins/63bits-pageBuilder/images/demo/services_item.svg',
+                        //    url: '/plugins/63bits-page-builder/images/demo/services_item.svg',
                         //    hasControls: true
                         //},
                         button: PageBuilderModel.settings.components.button,
@@ -756,7 +756,7 @@ var PageBuilderModel = {
                         image: {
                             ...PageBuilderModel.settings.components.image,
                             hasControls: true,
-                            url: '/plugins/63bits-pageBuilder/images/demo/grid_img.jpg'
+                            url: '/plugins/63bits-page-builder/images/demo/grid_img.jpg'
                         }
                     }
                 };
@@ -833,7 +833,7 @@ var PageBuilderModel = {
                         image: {
                             ...PageBuilderModel.settings.components.image,
                             hasControls: true,
-                            url: '/plugins/63bits-pageBuilder/images/demo/book_cover.jpg'
+                            url: '/plugins/63bits-page-builder/images/demo/book_cover.jpg'
                         }
                     }
                 };
@@ -1432,7 +1432,7 @@ var PageBuilderModel = {
                         button: PageBuilderModel.settings.components.button,
                         image: {
                             ...PageBuilderModel.settings.components.image,
-                            url: '/plugins/63bits-pageBuilder/images/demo/car.png'
+                            url: '/plugins/63bits-page-builder/images/demo/car.png'
                         }
                     }
                 };
@@ -1708,11 +1708,11 @@ var PageBuilderModel = {
                         text: PageBuilderModel.settings.components.text,
                         bgImage: {
                             ...PageBuilderModel.settings.components.image,
-                            url: '/plugins/63bits-pageBuilder/images/demo/signing_of_declaration.jpg'
+                            url: '/plugins/63bits-page-builder/images/demo/signing_of_declaration.jpg'
                         },
                         image: {
                             ...PageBuilderModel.settings.components.image,
-                            url: '/plugins/63bits-pageBuilder/images/demo/john_adams.jpg'
+                            url: '/plugins/63bits-page-builder/images/demo/john_adams.jpg'
                         }
                     },
                 }
@@ -1791,7 +1791,7 @@ var PageBuilderModel = {
                         ...sections.article2ColWithImg().components,
                         image: {
                             ...sections.article2ColWithImg().components.image,
-                            url: '/plugins/63bits-pageBuilder/images/demo/01.jpg'
+                            url: '/plugins/63bits-page-builder/images/demo/01.jpg'
                         },
                     },
                 },
@@ -1805,7 +1805,7 @@ var PageBuilderModel = {
                         ...sections.article2ColWithImg().components,
                         image: {
                             ...sections.article2ColWithImg().components.image,
-                            url: '/plugins/63bits-pageBuilder/images/demo/03.png'
+                            url: '/plugins/63bits-page-builder/images/demo/03.png'
                         },
                     },
                 },
@@ -1820,7 +1820,7 @@ var PageBuilderModel = {
                         ...sections.article2ColWithImg().components,
                         image: {
                             ...sections.article2ColWithImg().components.image,
-                            url: '/plugins/63bits-pageBuilder/images/demo/03.png'
+                            url: '/plugins/63bits-page-builder/images/demo/03.png'
                         },
                     },
                 },
@@ -1834,7 +1834,7 @@ var PageBuilderModel = {
                         ...sections.article2ColWithImg().components,
                         image: {
                             ...sections.article2ColWithImg().components.image,
-                            url: '/plugins/63bits-pageBuilder/images/demo/04.png'
+                            url: '/plugins/63bits-page-builder/images/demo/04.png'
                         },
                     },
                 },*/
@@ -3096,7 +3096,7 @@ var PageBuilderModel = {
                     partial:
                         `{{#each components.attachements}}
 						<li class="file-item js-t63-section--container{{#if ../animations}} t63-invisible js-animate{{/if}}" data-container="file" data-animation="{{../animations}}">
-							<img class="icon" src="/plugins/63bits-pageBuilder/images/icons/file.svg" alt="file icon">
+							<img class="icon" src="/plugins/63bits-page-builder/images/icons/file.svg" alt="file icon">
 							<div class="name">
 								<a class="link js-t63-file-name" href="{{url}}" download>{{name}}</a>
 								{{> "fileControlsPartial"}}
@@ -3437,7 +3437,7 @@ var PageBuilderModel = {
                             {{videoHepler components.video ../../actionButtons.video}}
                             {{actionButtonsHepler ../actionButtons.videoGridItem}}
 							{{> "videoGridItemControlsPartial"}}
-                            <i class="t63-sortable-handle js-t63-sortable-handle js-t63-additional-action-buttons"><img src="/plugins/63bits-pageBuilder/images/icons/drug.svg" alt="drag icon"></i>
+                            <i class="t63-sortable-handle js-t63-sortable-handle js-t63-additional-action-buttons"><img src="/plugins/63bits-page-builder/images/icons/drug.svg" alt="drag icon"></i>
 						</div>
 					</div>
 					{{/each}}`,
@@ -3498,7 +3498,7 @@ var PageBuilderModel = {
                             {{jwPlayerHepler components.jwPlayer ../../actionButtons.jwPlayer}}
                             {{actionButtonsHepler ../actionButtons.jwPlayerGridItem}}
 							{{> "jwPlayerGridItemControlsPartial"}}
-                            <i class="t63-sortable-handle js-t63-sortable-handle js-t63-additional-action-buttons"><img src="/plugins/63bits-pageBuilder/images/icons/drug.svg" alt="drag icon"></i>
+                            <i class="t63-sortable-handle js-t63-sortable-handle js-t63-additional-action-buttons"><img src="/plugins/63bits-page-builder/images/icons/drug.svg" alt="drag icon"></i>
 						</div>
 					</div>
 					{{/each}}`,
@@ -3608,7 +3608,7 @@ var PageBuilderModel = {
 								{{buttonHepler components.button ../actionButtons.button}}
                             </div>
 							{{actionButtonsHepler ../actionButtons.articlesGridItem}}
-                            <i class="t63-sortable-handle js-t63-sortable-handle js-t63-additional-action-buttons"><img src="/plugins/63bits-pageBuilder/images/icons/drug.svg" alt="drag icon"></i>
+                            <i class="t63-sortable-handle js-t63-sortable-handle js-t63-additional-action-buttons"><img src="/plugins/63bits-page-builder/images/icons/drug.svg" alt="drag icon"></i>
                         </div>
                     </div>
 					{{/each}}`,
@@ -3658,7 +3658,7 @@ var PageBuilderModel = {
 							{{buttonHepler components.button ../actionButtons.button}}
                         </div>
 						{{actionButtonsHepler ../actionButtons.articlesListItem}}
-                        <i class="t63-sortable-handle js-t63-sortable-handle js-t63-additional-action-buttons"><img src="/plugins/63bits-pageBuilder/images/icons/drug.svg" alt="drag icon"></i>
+                        <i class="t63-sortable-handle js-t63-sortable-handle js-t63-additional-action-buttons"><img src="/plugins/63bits-page-builder/images/icons/drug.svg" alt="drag icon"></i>
                     </div>
 					{{/each}}`,
 
@@ -3704,7 +3704,7 @@ var PageBuilderModel = {
                 partial:
                     `{{#each items}}
 					<article class="accordion-item js-t63-section--container js-t63-accordion-item{{#if ../animations}} t63-invisible js-animate{{/if}}" data-container="accordionItem" data-animation="{{../animations}}" data-children-animation="false">
-                        <i class="handle js-t63-sortable-handle js-t63-additional-action-buttons"><img src="/plugins/63bits-pageBuilder/images/icons/drug.svg" alt="drag icon"></i>
+                        <i class="handle js-t63-sortable-handle js-t63-additional-action-buttons"><img src="/plugins/63bits-page-builder/images/icons/drug.svg" alt="drag icon"></i>
 						<div class="accordion-item-head js-t63-accordion-item-head">
                             {{fontAwesomeIconHepler components.fontAwesomeIcon ../actionButtons.fontAwesomeIcon}}
                             {{titleHepler components.title}}
@@ -3873,7 +3873,7 @@ var PageBuilderModel = {
                             </div>
 							{{actionButtonsHepler ../actionButtons.packagesGridItem}}
                             {{> "packagesGridItemControlsPartial"}}
-                            <i class="t63-sortable-handle js-t63-sortable-handle js-t63-additional-action-buttons"><img src="/plugins/63bits-pageBuilder/images/icons/drug.svg" alt="drag icon"></i>
+                            <i class="t63-sortable-handle js-t63-sortable-handle js-t63-additional-action-buttons"><img src="/plugins/63bits-page-builder/images/icons/drug.svg" alt="drag icon"></i>
                         </div>
                     </div>
 					{{/each}}`,
@@ -3928,7 +3928,7 @@ var PageBuilderModel = {
                             </div>
 							{{actionButtonsHepler ../actionButtons.servicesGridItem}}
                             {{> "servicesGridItemControlsPartial"}}
-                            <i class="t63-sortable-handle js-t63-sortable-handle js-t63-additional-action-buttons"><img src="/plugins/63bits-pageBuilder/images/icons/drug.svg" alt="drag icon"></i>
+                            <i class="t63-sortable-handle js-t63-sortable-handle js-t63-additional-action-buttons"><img src="/plugins/63bits-page-builder/images/icons/drug.svg" alt="drag icon"></i>
                         </div>
                     </div>
 					{{/each}}`,
@@ -4041,7 +4041,7 @@ var PageBuilderModel = {
                             </div>
 							{{actionButtonsHepler ../actionButtons.mediaObjectsGridItem}}
                             {{> "mediaObjectsGridItemControlsPartial"}}
-                            <i class="t63-sortable-handle js-t63-sortable-handle js-t63-additional-action-buttons"><img src="/plugins/63bits-pageBuilder/images/icons/drug.svg" alt="drag icon"></i>
+                            <i class="t63-sortable-handle js-t63-sortable-handle js-t63-additional-action-buttons"><img src="/plugins/63bits-page-builder/images/icons/drug.svg" alt="drag icon"></i>
                         </div>
                     </div>
 					{{/each}}`,
@@ -4094,7 +4094,7 @@ var PageBuilderModel = {
 							{{textHepler components.text false false}}
 							{{actionButtonsHepler ../actionButtons.cardsGridItem}}
                             {{> "cardsGridItemControlsPartial"}}
-                            <i class="t63-sortable-handle js-t63-sortable-handle js-t63-additional-action-buttons"><img src="/plugins/63bits-pageBuilder/images/icons/drug.svg" alt="drag icon"></i>
+                            <i class="t63-sortable-handle js-t63-sortable-handle js-t63-additional-action-buttons"><img src="/plugins/63bits-page-builder/images/icons/drug.svg" alt="drag icon"></i>
                         </div>
                     </div>
 					{{/each}}`,
@@ -4158,7 +4158,7 @@ var PageBuilderModel = {
                             </div>
                             {{actionButtonsHepler ../actionButtons.flipCardsGridItem}}
                             {{> "flipCardsGridItemControlsPartial"}}
-                            <i class="t63-sortable-handle js-t63-sortable-handle js-t63-additional-action-buttons"><img src="/plugins/63bits-pageBuilder/images/icons/drug.svg" alt="drag icon"></i>
+                            <i class="t63-sortable-handle js-t63-sortable-handle js-t63-additional-action-buttons"><img src="/plugins/63bits-page-builder/images/icons/drug.svg" alt="drag icon"></i>
                         </div>
                     </div>
 					{{/each}}`,
@@ -4211,7 +4211,7 @@ var PageBuilderModel = {
                             </div>
 							{{actionButtonsHepler ../actionButtons.postCardsGridItem}}
                             {{> "postCardsGridItemControlsPartial"}}
-                            <i class="t63-sortable-handle js-t63-sortable-handle js-t63-additional-action-buttons"><img src="/plugins/63bits-pageBuilder/images/icons/drug.svg" alt="drag icon"></i>
+                            <i class="t63-sortable-handle js-t63-sortable-handle js-t63-additional-action-buttons"><img src="/plugins/63bits-page-builder/images/icons/drug.svg" alt="drag icon"></i>
                         </div>
                     </div>
 					{{/each}}`,
@@ -4264,7 +4264,7 @@ var PageBuilderModel = {
                             </div>
 							{{actionButtonsHepler ../actionButtons.peopleGridItem}}
                             {{> "peopleGridItemControlsPartial"}}
-                            <i class="t63-sortable-handle js-t63-sortable-handle js-t63-additional-action-buttons"><img src="/plugins/63bits-pageBuilder/images/icons/drug.svg" alt="drag icon"></i>
+                            <i class="t63-sortable-handle js-t63-sortable-handle js-t63-additional-action-buttons"><img src="/plugins/63bits-page-builder/images/icons/drug.svg" alt="drag icon"></i>
                         </div>
                     </div>
 					{{/each}}`,
@@ -4318,7 +4318,7 @@ var PageBuilderModel = {
                             </div>
 							{{actionButtonsHepler ../actionButtons.booksGridItem}}
                             {{> "booksGridItemControlsPartial"}}
-                            <i class="t63-sortable-handle js-t63-sortable-handle js-t63-additional-action-buttons"><img src="/plugins/63bits-pageBuilder/images/icons/drug.svg" alt="drag icon"></i>
+                            <i class="t63-sortable-handle js-t63-sortable-handle js-t63-additional-action-buttons"><img src="/plugins/63bits-page-builder/images/icons/drug.svg" alt="drag icon"></i>
                         </div>
                     </div>
 					{{/each}}`,
@@ -4879,39 +4879,39 @@ var PageBuilderModel = {
 						<div>
 							<label>
 								<input class="js-t63-alignment-input" type="radio" name="alignment-{{id}}" value="topLeft" {{#js_if "this.contentAlignment === 'topLeft' "}}checked{{/js_if}}>
-								<span><img src="/plugins/63bits-pageBuilder/images/icons/alignment/1_1.svg" /></span>
+								<span><img src="/plugins/63bits-page-builder/images/icons/alignment/1_1.svg" /></span>
 							</label>
 							<label>
 								<input class="js-t63-alignment-input" type="radio" name="alignment-{{id}}" value="topCenter" {{#js_if "this.contentAlignment === 'topCenter' "}}checked{{/js_if}}>
-								<span><img src="/plugins/63bits-pageBuilder/images/icons/alignment/1_2.svg" /></span>
+								<span><img src="/plugins/63bits-page-builder/images/icons/alignment/1_2.svg" /></span>
 							</label>
 							<label>
 								<input class="js-t63-alignment-input" type="radio" name="alignment-{{id}}" value="topRight" {{#js_if "this.contentAlignment === 'topRight' "}}checked{{/js_if}}>
-								<span><img src="/plugins/63bits-pageBuilder/images/icons/alignment/1_3.svg" /></span>
+								<span><img src="/plugins/63bits-page-builder/images/icons/alignment/1_3.svg" /></span>
 							</label>
 							<label>
 								<input class="js-t63-alignment-input" type="radio" name="alignment-{{id}}" value="centerLeft" {{#js_if "this.contentAlignment === 'centerLeft' "}}checked{{/js_if}}>
-								<span><img src="/plugins/63bits-pageBuilder/images/icons/alignment/2_1.svg" /></span>
+								<span><img src="/plugins/63bits-page-builder/images/icons/alignment/2_1.svg" /></span>
 							</label>
 							<label>
 								<input class="js-t63-alignment-input" type="radio" name="alignment-{{id}}" value="center" {{#js_if "this.contentAlignment === 'center' "}}checked{{/js_if}}>
-								<span><img src="/plugins/63bits-pageBuilder/images/icons/alignment/2_2.svg" /></span>
+								<span><img src="/plugins/63bits-page-builder/images/icons/alignment/2_2.svg" /></span>
 							</label>
 							<label>
 								<input class="js-t63-alignment-input" type="radio" name="alignment-{{id}}" value="centerRight" {{#js_if "this.contentAlignment === 'centerRight' "}}checked{{/js_if}}>
-								<span><img src="/plugins/63bits-pageBuilder/images/icons/alignment/2_3.svg" /></span>
+								<span><img src="/plugins/63bits-page-builder/images/icons/alignment/2_3.svg" /></span>
 							</label>
 							<label>
 								<input class="js-t63-alignment-input" type="radio" name="alignment-{{id}}" value="bottomLeft" {{#js_if "this.contentAlignment === 'bottomLeft' "}}checked{{/js_if}}>
-								<span><img src="/plugins/63bits-pageBuilder/images/icons/alignment/3_1.svg" /></span>
+								<span><img src="/plugins/63bits-page-builder/images/icons/alignment/3_1.svg" /></span>
 							</label>
 							<label>
 								<input class="js-t63-alignment-input" type="radio" name="alignment-{{id}}" value="bottomCenter" {{#js_if "this.contentAlignment === 'bottomCenter' "}}checked{{/js_if}}>
-								<span><img src="/plugins/63bits-pageBuilder/images/icons/alignment/3_2.svg" /></span>
+								<span><img src="/plugins/63bits-page-builder/images/icons/alignment/3_2.svg" /></span>
 							</label>
 							<label>
 								<input class="js-t63-alignment-input" type="radio" name="alignment-{{id}}" value="bottomRight" {{#js_if "this.contentAlignment === 'bottomRight' "}}checked{{/js_if}}>
-								<span><img src="/plugins/63bits-pageBuilder/images/icons/alignment/3_3.svg" /></span>
+								<span><img src="/plugins/63bits-page-builder/images/icons/alignment/3_3.svg" /></span>
 							</label>
 						</div>
 					</div>`,
@@ -6784,7 +6784,7 @@ var PageBuilderModel = {
                         </div>
                     </div>
                 </div>
-                <button class="editor-btn-rounded js-t63-flip-card-item-rotate-btn js-t63-additional-action-buttons"><img src="/plugins/63bits-pageBuilder/images/icons/rotate.svg" alt="settings"></button>`,
+                <button class="editor-btn-rounded js-t63-flip-card-item-rotate-btn js-t63-additional-action-buttons"><img src="/plugins/63bits-page-builder/images/icons/rotate.svg" alt="settings"></button>`,
 
             applyChanges: function (container) {
                 var itemSize = +container.find('.js-t63-size-input:checked').val();
@@ -7355,8 +7355,8 @@ var PageBuilderModel = {
             partial:
                 `{{#each items}}
                     <li class="file-item" data-url="{{url}}" data-name="{{name}}" data-extension="{{extension}}">
-                        <i class="handle js-t63-page-script-item-handle"><img src="/plugins/63bits-pageBuilder/images/icons/drug.svg" alt="drag icon"></i>
-                        <img class="icon" src="/plugins/63bits-pageBuilder/images/icons/{{extension}}.svg" alt="file icon">
+                        <i class="handle js-t63-page-script-item-handle"><img src="/plugins/63bits-page-builder/images/icons/drug.svg" alt="drag icon"></i>
+                        <img class="icon" src="/plugins/63bits-page-builder/images/icons/{{extension}}.svg" alt="file icon">
                         <div class="name">
                             <a class="link js-t63-file-name" href="{{url}}" target="blank">{{name}}</a>
                         </div>

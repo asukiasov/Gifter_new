@@ -1,4 +1,4 @@
-﻿@model PagePropertiesModel.PageViewModel    
+﻿@model PagePropertiesModel.PageViewModel
 @section HeaderSection{
 }
 
@@ -33,7 +33,7 @@
             </label>
         </div>
         <div class="form-group col-lg-6">                    
-            <label>@Html.Raw(Model.TextUploadImage)</label>
+            <label>@Html.Raw(Model.TextUploadImage) <a href="#" class="js-short-description-and-image-info"><i class="fa-solid fa-circle-info"></i></a></label>
             <div class="input-group custom-file-group js-custom-file-upload">
                 <div class="form-control">
                     <a class="js-custom-file-upload-attachment" data-type="image" href="@Model.PageImageHttpPath">@Model.PageImageFilename</a>
@@ -49,6 +49,18 @@
                     <input type="file" name="@nameof(Model.PageImageFile)" accept="image/*" />
                 </span>                
             </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group col-lg-6">
+            <label>@Html.Raw(Model.TextTitle) *</label>
+            <input type="text" name="@nameof(Model.PageTitle)" class="form-control js-title-input" value="@Html.Raw(Model.PageTitle)" />
+            <div class="invalid-feedback"></div>
+        </div>
+        <div class="form-group col-lg-6">
+            <label>@Html.Raw(Model.TextTitleEng)</label>
+            <input type="text" name="@nameof(Model.PageTitleEng)" class="form-control" value="@Html.Raw(Model.PageTitleEng)" />
+            <div class="invalid-feedback"></div>
         </div>
     </div>
     <div class="row">
@@ -71,34 +83,24 @@
             <input type="text" name="@nameof(Model.PageExternalUrl)" class="form-control js-external-url-input" value="@Html.Raw(Model.PageExternalUrl)" />
             <div class="invalid-feedback"></div>
         </div>
-    </div>
+    </div>    
     <div class="row">
         <div class="form-group col-lg-6">
-            <label>@Html.Raw(Model.TextTitle) *</label>
-            <input type="text" name="@nameof(Model.PageTitle)" class="form-control js-title-input" value="@Html.Raw(Model.PageTitle)" />
-            <div class="invalid-feedback"></div>
-        </div>
-        <div class="form-group col-lg-6">
-            <label>@Html.Raw(Model.TextTitleEng)</label>
-            <input type="text" name="@nameof(Model.PageTitleEng)" class="form-control" value="@Html.Raw(Model.PageTitleEng)" />
-            <div class="invalid-feedback"></div>
-        </div>        
-    </div>
-    <div class="row">
-        <div class="form-group col-lg-6">
-            <label>@Html.Raw(Model.TextDescriptionShort)</label>
+            <label>@Html.Raw(Model.TextDescriptionShort) <a href="#" class="js-short-description-and-image-info"><i class="fa-solid fa-circle-info"></i></a> </label>
             <textarea name="@nameof(Model.PageShortDescription)" class="form-control" maxlength="200">@Html.Raw(Model.PageShortDescription)</textarea>
         </div>
         <div class="form-group col-lg-6">
-            <label>@Html.Raw(Model.TextDescriptionShortEng)</label>
+            <label>@Html.Raw(Model.TextDescriptionShortEng) <a href="#" class="js-short-description-and-image-info"><i class="fa-solid fa-circle-info"></i></a> </label>
             <textarea name="@nameof(Model.PageShortDescriptionEng)" class="form-control" maxlength="200">@Html.Raw(Model.PageShortDescriptionEng)</textarea>
         </div>        
     </div>             
 </form>
-    
 
 @section FooterSection{
-    <script src="/js/admin/Pages/Page/PageProperties.js"></script>    
+    <script src="/js/admin/pages/page/pageProperties.js"></script>    
+    <script>
+        pagePropertiesModel.textPageShortDescriptionAndImageInfo = '@Html.Raw(Model.TextPageShortDescriptionAndImageInfo)';
+    </script>
     @if (Model.HasErrors)
     {
         <script>
@@ -107,5 +109,4 @@
         });
         </script>
     }
-
 }

@@ -283,7 +283,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             public string TeamMemberLongDescription { get; set; }
             public string TeamMemberImageFilename { get; set; }
             public bool TeamMemberIsPublished { get; set; }
-            public int TeamMemberCategoryID { get; set; }
+            public int? TeamMemberCategoryID { get; set; }
             public bool HasTeamMemberCategories => TeamMemberCategories?.Count > 0;
             public List<KeyValueSelectedTuple<int?, string>> TeamMemberCategories { get; set; }
             public string TeamMemberImageHttpPath { get; set; }
@@ -291,7 +291,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             public string UrlDeleteImage { get; set; }
             public IFormFile TeamMemberImageFile { get; set; }
 
-            public readonly int NullValueForInt = NullValueFor.Int;
+            public readonly int NullValueForInt = NullValueFor.Numeric;
 
             public readonly string TextPublished = Resources.TextPublished;
             public readonly string TextFirstname = Resources.TextFirstname;

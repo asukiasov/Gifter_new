@@ -155,18 +155,16 @@ namespace SixtyThreeBits.Web.Models.Admin
             public List<TreeNodeItem> Pages { get; set; }
             public bool ShowAddNewButton { get; set; }
 
-            #region Urls
             public string UrlCreateNew { get; set; }
             public string UrlUpdate { get; set; }
             public string UrlSyncParentsAndSortIndexes { get; set; }
             public string UrlDelete { get; set; }
-            #endregion
 
-            #region Texts
             public readonly string TextConfirmDeleteRecord = Resources.TextConfirmDelete;
             public readonly string TextConfirmDeleteRecursive = Resources.TextConfirmDeleteRecursive;
             public readonly string ValidationRequired = Resources.ValidationRequired;
-            #endregion
+            public readonly string TextAdd = Resources.TextAdd;
+            public readonly string TextTitle = Resources.TextTitle;
             #endregion
         }
 
@@ -315,6 +313,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             public readonly string TextExternalPage = Resources.TextExternalPage;
             public readonly string TextDescriptionShort = Resources.TextDescriptionShort;
             public readonly string TextDescriptionShortEng = Resources.TextDescriptionShortEng;
+            public readonly string TextPageShortDescriptionAndImageInfo = Resources.TextPageShortDescriptionAndImageInfo;
             #endregion
         }
         #endregion

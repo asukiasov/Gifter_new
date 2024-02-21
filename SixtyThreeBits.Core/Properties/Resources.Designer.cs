@@ -601,6 +601,15 @@ namespace SixtyThreeBits.Core.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Short description and image is used for sharing on social platforms and google search results..
+        /// </summary>
+        public static string TextPageShortDescriptionAndImageInfo {
+            get {
+                return ResourceManager.GetString("TextPageShortDescriptionAndImageInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Page Url.
         /// </summary>
         public static string TextPageUrl {

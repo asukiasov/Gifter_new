@@ -73,14 +73,14 @@
             <div class="row">
                 <div class="col-lg-12 form-group">
                     <label>@Html.Raw(Model.TextDescriptionShort)</label>
-                    <textarea name="@nameof(Model.TeamMemberShortDescription)" class="form-control">@Model.TeamMemberShortDescription</textarea>
+                    <textarea name="@nameof(Model.TeamMemberShortDescription)" class="form-control">@Html.Raw(Model.TeamMemberShortDescription)</textarea>
                 </div>
                 <span class="help-block"></span>
             </div>
             <div class="row">
                 <div class="col-lg-12 form-group">
                     <label>@Html.Raw(Model.TextDescription)</label>
-                    <textarea name="@nameof(Model.TeamMemberLongDescription)" class="form-control js-apply-tinymce">@Model.TeamMemberLongDescription</textarea>
+                    <textarea name="@nameof(Model.TeamMemberLongDescription)" class="form-control js-apply-tinymce">@Html.Raw(Model.TeamMemberLongDescription)</textarea>
                 </div>
             </div>
         </form>

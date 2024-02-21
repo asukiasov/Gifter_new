@@ -221,7 +221,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             sp.ScriptsBodyEnd = submitModel.ScriptsBodyEnd ?? Constants.NullValueFor.String;
             sp.IsEmailSmtpEnabled = submitModel.EmailTypesSelectedOption == nameof(submitModel.IsEmailSmtpEnabled);
             sp.SmtpAddress = submitModel.SmtpAddress ?? Constants.NullValueFor.String;
-            sp.SmtpPort = submitModel.SmtpPort ?? Constants.NullValueFor.Int;
+            sp.SmtpPort = submitModel.SmtpPort ?? Constants.NullValueFor.Numeric;
             sp.SmtpUsername = submitModel.SmtpUsername ?? Constants.NullValueFor.String;
             sp.SmtpPassword = submitModel.SmtpPassword ?? Constants.NullValueFor.String;
             sp.SmtpUseSsl = submitModel.SmtpUseSsl;

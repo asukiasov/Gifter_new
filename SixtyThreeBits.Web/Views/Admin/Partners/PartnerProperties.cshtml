@@ -33,26 +33,6 @@
             </div>
             <div class="row">
                 <div class="col-lg-6 form-group">
-                    <label>@Html.Raw(Model.TextDescriptionShort)</label>
-                    <textarea name="@nameof(Model.PartnerShortDescription)" class="form-control js-partner-short-description">@Model.PartnerShortDescription</textarea>
-                </div>
-                <div class="col-lg-6 form-group">
-                    <label>@Html.Raw(Model.TextDescriptionShortEng)</label>
-                    <textarea name="@nameof(Model.PartnerShortDescriptionEng)" class="form-control js-partner-short-description-eng">@Model.PartnerShortDescriptionEng</textarea>
-                </div>                
-            </div>
-            <div class="row">
-                <div class="col-lg-6 form-group">
-                    <label>@Html.Raw(Model.TextDescription)</label>
-                    <textarea name="@nameof(Model.PartnerFullDescription)" class="form-control js-partner-full-description">@Model.PartnerFullDescription</textarea>
-                </div>
-                <div class="col-lg-6 form-group">
-                    <label>@Html.Raw(Model.TextDescriptionEng)</label>
-                    <textarea name="@nameof(Model.PartnerFullDescriptionEng)" class="form-control js-partner-full-description-eng">@Model.PartnerFullDescriptionEng</textarea>
-                </div>                
-            </div>
-            <div class="row">
-                <div class="col-lg-6 form-group">
                     <label>@Html.Raw(Model.TextPageUrl)</label>
                     <input name="@nameof(Model.PartnerWebSite)" value="@Model.PartnerWebSite" type="text" class="form-control js-partner-website-url" />
                 </div>
@@ -72,9 +52,30 @@
                             <i class="fas fa-folder-open"></i>
                             <input type="file" name="@nameof(Model.PartnerImageFile)" accept="image/*" />
                         </span>
-                    </div>                    
+                    </div>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-lg-6 form-group">
+                    <label>@Html.Raw(Model.TextDescriptionShort)</label>
+                    <textarea name="@nameof(Model.PartnerShortDescription)" class="form-control">@Model.PartnerShortDescription</textarea>
+                </div>
+                <div class="col-lg-6 form-group">
+                    <label>@Html.Raw(Model.TextDescriptionShortEng)</label>
+                    <textarea name="@nameof(Model.PartnerShortDescriptionEng)" class="form-control">@Model.PartnerShortDescriptionEng</textarea>
+                </div>                
+            </div>
+            <div class="row">
+                <div class="col-lg-6 form-group">
+                    <label>@Html.Raw(Model.TextDescription)</label>
+                    <textarea name="@nameof(Model.PartnerFullDescription)" class="form-control js-apply-tinymce">@Model.PartnerFullDescription</textarea>
+                </div>
+                <div class="col-lg-6 form-group">
+                    <label>@Html.Raw(Model.TextDescriptionEng)</label>
+                    <textarea name="@nameof(Model.PartnerFullDescriptionEng)" class="form-control js-apply-tinymce">@Model.PartnerFullDescriptionEng</textarea>
+                </div>                
+            </div>
+            
         </form>
     </div>
 </div>

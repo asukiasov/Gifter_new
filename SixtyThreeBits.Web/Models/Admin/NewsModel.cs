@@ -260,11 +260,11 @@ namespace SixtyThreeBits.Web.Models.Admin
 
             public readonly string FormatDate = Constants.Formats.Date;
 
+            public readonly string TextPublished = Resources.TextPublished;
             public readonly string TextTitle = Resources.TextTitle;
             public readonly string TextTitleEng = Resources.TextTitleEng;
             public readonly string TextSlug = Resources.TextSlug;
             public readonly string TextGenerateFromTitle = Resources.TextGenerateFromTitle;
-            public readonly string TextPublished = Resources.TextPublished;
             public readonly string TextDate = Resources.TextDate;
             public readonly string TextUploadImage = Resources.TextUploadImage;
             public readonly string TextDescriptionShort = Resources.TextDescriptionShort;

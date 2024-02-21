@@ -60,7 +60,17 @@
                 </div>
                 <div class="col-lg-6 form-group">
                     <label>@Html.Raw(Model.TextDate)</label>
-                    <input type="text" name="@nameof(Model.BlogPostDate)" class="form-control js-date-picker" value="@Html.Raw(Model.BlogPostDateString)" />
+                    <label>@Html.Raw(Model.TextDate)</label>
+                    <div class="form-control">
+                        @(Html.DevExtreme()
+                            .DateBox()
+                            .Name(nameof(Model.BlogPostDate))
+                            .Value(Model.BlogPostDate)
+                            .DisplayFormat(Model.FormatDate)
+                            .ElementAttr("class", "border-0")
+                            .OpenOnFieldClick(true)
+                            )
+                    </div>                    
                 </div>                
             </div>
             <div class="row">

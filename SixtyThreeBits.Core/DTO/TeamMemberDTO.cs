@@ -12,7 +12,7 @@
         public string TeamMemberLongDescription { get; set; }
         public string TeamMemberImageFilename { get; set; }
         public bool TeamMemberIsPublished { get; set; }
-        public int TeamMemberCategoryID { get; set; }
+        public int? TeamMemberCategoryID { get; set; }
         public int? TeamMemberSortIndex { get; set; }
         #endregion
     }

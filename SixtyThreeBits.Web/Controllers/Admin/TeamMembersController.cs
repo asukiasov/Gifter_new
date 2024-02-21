@@ -109,7 +109,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         [Route("properties", Name = ControllerActionRouteNames.Admin.TeamMembers.TeamMember.Properties)]
         public async Task<IActionResult> Properties()
         {
-            Model.PluginsClient.EnableTinyMce(true).Enable63BitsForms(true).EnableFancybox(true);
+            Model.PluginsClient.EnableTinyMce(true).Enable63BitsForms(true).EnableFancybox(true).Enable63BitsSuccessErrorToast(true);
             var viewModel = await Model.GetTeamMembersPropertiesViewModel(viewModel: null);
             Model.PageTitle.Set($"{Model.DBItem.TeamMemberFirstname} {Model.DBItem.TeamMemberLastname}");
             return View(ViewNames.Admin.TeamMembers.TeamMemberProperties, viewModel);
@@ -120,7 +120,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         public async Task<IActionResult> Properties(TeamMemberPropertiesModel.PageViewModel SubmitModel)
         {
             var result = default(IActionResult);
-            Model.PluginsClient.Enable63BitsForms(true).EnableFancybox(true).EnableTinyMce(true);
+            Model.PluginsClient.Enable63BitsForms(true).EnableFancybox(true).EnableTinyMce(true).Enable63BitsSuccessErrorToast(true);
             var viewModel = await Model.GetTeamMembersPropertiesViewModel(viewModel: SubmitModel);
 
             Model.PageTitle.Set($"{Model.DBItem.TeamMemberFirstname} {Model.DBItem.TeamMemberLastname}");

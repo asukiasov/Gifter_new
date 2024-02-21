@@ -116,7 +116,7 @@
     },
     syncParentsAndSortIndexesWithTimeout: function () {
         if (pagesTreeModel.sortTimeout) {
-            clearTimeout(PagesTreeModel.SortTimeout);
+            clearTimeout(pagesTreeModel.SortTimeout);
         }
         pagesTreeModel.sortTimeout = setTimeout(function () {
             pagesTreeModel.syncParentsAndSortIndexes();

@@ -297,6 +297,9 @@
   <data name="TextPageNotFoundMessage2" xml:space="preserve">
     <value>The resource you were looking for is not found</value>
   </data>
+  <data name="TextPageShortDescriptionAndImageInfo" xml:space="preserve">
+    <value>Short description and image is used for sharing on social platforms and google search results.</value>
+  </data>
   <data name="TextPageUrl" xml:space="preserve">
     <value>Page Url</value>
   </data>

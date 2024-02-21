@@ -294,6 +294,9 @@
   <data name="TextPageNotFoundMessage2" xml:space="preserve">
     <value>რესურსი რომელიც თქვენ მოითხოვეთ ვერ მოიძებნა</value>
   </data>
+  <data name="TextPageShortDescriptionAndImageInfo" xml:space="preserve">
+    <value>სურათი და მოკლე აღწერა გამოიყენება სოც. ქსელებში გაზიარებასა და Google - ის საძიებო სისტემაში გამოსაჩენად.</value>
+  </data>
   <data name="TextPageUrl" xml:space="preserve">
     <value>გვერდის მისამართი</value>
   </data>

@@ -101,7 +101,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         [Route("properties", Name = ControllerActionRouteNames.Admin.Blog.PostProperties)]
         public IActionResult Properties()
         {
-            Model.PluginsClient.Enable63BitsForms(true).EnableFancybox(true).EnableTinyMce(true).EnableFlatPickr(true);
+            Model.PluginsClient.Enable63BitsForms(true).EnableFancybox(true).EnableTinyMce(true).EnableDevextreme(true).Enable63BitsSuccessErrorToast(true);
             var viewModel = Model.GetBlogPropertiesViewModel(viewModel: null);
             Model.PageTitle.Set(Model.DBItem.BlogPostTitle);
             Model.Breadcrumbs.RenameLastItem(Model.DBItem.BlogPostTitle);
@@ -113,7 +113,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         public async Task<IActionResult> Properties(BlogPropertiesModel.BlogPropertiesViewModel submitModel)
         {
             var result = default(IActionResult);
-            Model.PluginsClient.Enable63BitsForms(true).EnableFancybox(true).EnableDevextreme(true).EnableTinyMce(true).EnableFlatPickr(true);
+            Model.PluginsClient.Enable63BitsForms(true).EnableFancybox(true).EnableTinyMce(true).EnableDevextreme(true).Enable63BitsSuccessErrorToast(true);
             var viewModel = Model.GetBlogPropertiesViewModel(viewModel: submitModel);
 
             Model.PageTitle.Set(Model.DBItem.BlogPostTitle);

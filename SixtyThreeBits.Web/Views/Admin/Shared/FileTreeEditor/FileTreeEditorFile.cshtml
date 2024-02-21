@@ -2,14 +2,16 @@
 <li data-id="@Model.NodeID" class="tree-item file js-file-tree-editor-item is-open @(Model.IsNoNestingEnabled ? Html.Raw("js-no-nesting") : null)">
     <div class="handle @(Model.IsDisabled?Html.Raw("disabled"):null)">
         <div class="left-col">
-            <span class="drag"><i class="fas fa-arrows-alt"></i></span>
+            <span class="drag">
+                <i class="fa-solid fa-arrows-up-down-left-right"></i>
+            </span>
             @if (Model.IsFolder)
             {
-                <i class="fas fa-folder-open"></i>
+                <i class="fa-solid fa-folder-open"></i>
             }
             else
             {
-                <i class="fas fa-file-alt"></i>
+                <i class="fa-solid fa-file-lines"></i>
             }
             <div class="name">
                 <a class="js-file-tree-editor-item-caption" @(Model.HasNavigateUrl ? Html.Raw($"href=\"{Model.NavigateUrl}\"") : null) @(Model.IsTargetBlank ? Html.Raw("target =\"_blank\"") : null)>
@@ -46,31 +48,31 @@
             @if (Model.ShowCustomButton && Model.ShowCustomButtonFirst)
             {
                 <a href="#" class="js-file-tree-editor-item-custom-button">
-                    <i class="fa @Html.Raw(Model.CustomButtonIcon)"></i>
+                    <i class="@Html.Raw(Model.CustomButtonIcon)"></i>
                 </a>
             }
             @if (Model.ShowAddNewButton)
             {
                 <a href="#" class="js-file-tree-editor-item-add-new-button">
-                    <i class="fas fa-plus"></i>
+                    <i class="fa-solid fa-plus"></i>
                 </a>
             }
             @if (Model.ShowEditButton)
             {
                 <a href="#" class="js-file-tree-editor-item-add-edit-button">
-                    <i class="fas fa-pencil-alt"></i>
+                    <i class="fa-solid fa-pencil"></i>
                 </a>
             }
             @if (Model.ShowDeleteButton)
             {
                 <a href="#" class="js-file-tree-editor-item-delete-button">
-                    <i class="fas fa-trash-alt"></i>
+                    <i class="fa-light fa-trash-can"></i>
                 </a>
             }
             @if (Model.ShowCustomButton && Model.ShowCustomButtonLast)
             {
                 <a href="#" class="js-file-tree-editor-item-custom-button">
-                    <i class="fa @Html.Raw(Model.CustomButtonIcon)"></i>
+                    <i class="@Html.Raw(Model.CustomButtonIcon)"></i>
                 </a>
             }
         </div>

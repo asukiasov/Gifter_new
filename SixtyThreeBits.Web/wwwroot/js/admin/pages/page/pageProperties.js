@@ -1,4 +1,5 @@
-﻿const pageModel = {
+﻿const pagePropertiesModel = {
+    textPageShortDescriptionAndImageInfo: null,
     initExternalUrlInput: function () {
         const isExternalUrl = $('.js-is-external-url-checkbox').is(':checked');
         if (isExternalUrl) {
@@ -11,9 +12,14 @@
 };
 
 $(function () {
-    pageModel.initExternalUrlInput();
+    pagePropertiesModel.initExternalUrlInput();
 
     $('.js-is-external-url-checkbox').change(function () {
-        pageModel.initExternalUrlInput();
+        pagePropertiesModel.initExternalUrlInput();
+    });
+
+    $('.js-short-description-and-image-info').click(function (e) {
+        e.preventDefault();
+        components63Bits.dialog.alert({ textAlert: pagePropertiesModel.textPageShortDescriptionAndImageInfo });
     });
 });

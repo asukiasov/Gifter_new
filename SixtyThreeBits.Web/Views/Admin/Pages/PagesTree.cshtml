@@ -29,13 +29,13 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">გვერდის დამატება</h4>
+                <h4 class="modal-title">@Html.Raw(Model.TextAdd)</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
                 <div class="row">
                     <div class="col form-group">
-                        <label>გვერდის დასახელება</label>
+                        <label>@Html.Raw(Model.TextTitle)</label>
                         <input type="text" class="form-control js-create-new-page-modal-page-title-input" />                        
                         <input type="hidden" class="js-create-new-page-modal-parent-page-id-hf" />
                     </div>
@@ -53,7 +53,7 @@
 @section FooterSection{
     
 
-    <script src="/js/admin/Pages/PagesTree.js"></script>    
+    <script src="/js/admin/pages/pagesTree.js"></script>    
     <script>
     pagesTreeModel.urlCreateNew = '@Model.UrlCreateNew';
     pagesTreeModel.urlUpdate = '@Model.UrlUpdate';

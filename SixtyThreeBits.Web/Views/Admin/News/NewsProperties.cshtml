@@ -13,7 +13,7 @@
         <form id="form" method="post" enctype="multipart/form-data">
             <div class="row">
                 <div class="col-lg-6 form-group">
-                    <label>Published?</label>
+                    <label>@Html.Raw(Model.TextPublished)</label>
                     <label class="toggler toggler-lg">
                         <input type="checkbox" name="@nameof(Model.NewsIsPublished)" value="true" @(Model.NewsIsPublished ? Html.Raw("checked") : null) />
                         <i></i>
