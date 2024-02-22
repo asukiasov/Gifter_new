@@ -19,7 +19,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         {
             _mapper = new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<DBQueriesDataContext.BrandsListEntity, BrandDTO>();
+                cfg.CreateMap<DbContextQueries.BrandsListEntity, BrandDTO>();
             }).CreateMapper();
         }
         #endregion
@@ -29,7 +29,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         {
             return await TryToReturnAsyncTask($"{nameof(BrandsGetSingleByID)}({nameof(brandID)} = {brandID})", async () =>
             {
-                using (var db = _connectionFactory.GetDBQueriesDataContext())
+                using (var db = _connectionFactory.GetDbContextQueries())
                 {
                     var Result = await db.BrandsGetSingleByID(brandID);
                     return Result?.DeserializeJsonTo<BrandDTO>();
@@ -41,7 +41,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         {
             return await TryToReturnAsyncTask($"{nameof(BrandsIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(brandID)} = {brandID}, {nameof(brandName)} = {brandName}, {nameof(brandNameEng)} = {brandNameEng})", async () =>
             {
-                using (var db = _connectionFactory.GetDBCommandsDataContext())
+                using (var db = _connectionFactory.GetDbContextCommands())
                 {
                     brandID = await db.BrandsIUD(databaseAction, brandID, brandName, brandNameEng, brandImageFilename);
                     return brandID;
@@ -53,7 +53,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         {
             return await TryToReturnAsyncTask($"{nameof(BrandsList)}()", async () =>
             {
-                using (var db = _connectionFactory.GetDBQueriesDataContext())
+                using (var db = _connectionFactory.GetDbContextQueries())
                 {
                     return (await db.BrandsList().OrderByDescending(item => item.BrandDateCreated).ToListAsync())?.Select(item => _mapper.Map<BrandDTO>(item)).ToList();
                 }

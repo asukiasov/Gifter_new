@@ -20,7 +20,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         {
             _mapper = new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<DBQueriesDataContext.BlogPostListEntity, BlogPostDTO>();
+                cfg.CreateMap<DbContextQueries.BlogPostListEntity, BlogPostDTO>();
             }).CreateMapper();
         }
         #endregion
@@ -30,7 +30,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         {
             return await TryToReturnAsyncTask($"{nameof(BlogPostGetSingleByID)}({nameof(blogPostID)} = {blogPostID})", async () =>
             {
-                using (var db = _connectionFactory.GetDBQueriesDataContext())
+                using (var db = _connectionFactory.GetDbContextQueries())
                 {
                     var Result = await db.BlogPostGetSingleByID(blogPostID);
                     return Result?.DeserializeJsonTo<BlogPostDTO>();
@@ -42,7 +42,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         {
             return await TryToReturnAsyncTask($"{nameof(BlogPostIsSlugUniq)}({nameof(blogPostSlug)} = {blogPostSlug}, {nameof(blogPostID)} = {blogPostID})", async () =>
             {
-                using (var db = _connectionFactory.GetDBQueriesDataContext())
+                using (var db = _connectionFactory.GetDbContextQueries())
                 {
                     return await db.BlogPostIsSlugUniq(blogPostSlug, blogPostID);
                 }
@@ -53,7 +53,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         {
             return await TryToReturnAsyncTask($"{nameof(BlogIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(blogPostID)} = {blogPostID}, {nameof(blogPostSlug)} = {blogPostSlug}, {nameof(blogPostTitle)} = {blogPostTitle}, {nameof(blogPostShortText)} = {blogPostShortText}, {nameof(blogPostText)} = {blogPostText}, {nameof(blogPostAuthorName)} = {blogPostAuthorName}, {nameof(blogPostImageFilename)} = {blogPostImageFilename}, {nameof(blogPostDate)} = {blogPostDate}, {nameof(blogPostIsPublished)} = {blogPostIsPublished})", async () =>
             {
-                using (var db = _connectionFactory.GetDBCommandsDataContext())
+                using (var db = _connectionFactory.GetDbContextCommands())
                 {
                     blogPostID = await db.BlogIUD(databaseAction, blogPostID, blogPostSlug, blogPostTitle, blogPostShortText, blogPostText, blogPostAuthorName, blogPostImageFilename, blogPostDate, blogPostIsPublished);
                     return blogPostID;
@@ -65,7 +65,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         {
             return await TryToReturn($"{nameof(BlogPostList)}()", async () =>
             {
-                using (var db = _connectionFactory.GetDBQueriesDataContext())
+                using (var db = _connectionFactory.GetDbContextQueries())
                 {
                     return (await db.BlogPostList().OrderByDescending(item => item.BlogPostDateCreated).ToListAsync())?.Select(item => _mapper.Map<BlogPostDTO>(item)).ToList();                    
                 }

@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace SixtyThreeBits.Core.Infrastructure.Database
 {
-    public partial class DBCommandsDataContext
+    public partial class DbContextCommands
     {
         public async Task DictionariesDeleteRecursive(int? dictionaryID)
         {

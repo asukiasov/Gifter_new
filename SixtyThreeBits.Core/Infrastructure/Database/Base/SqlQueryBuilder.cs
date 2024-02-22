@@ -69,7 +69,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
         void BuildScalarValuedFunction()
         {
             //FunctionResult<T> - providing object to generic type doesn't play any role. In this case, class is used only for grabbing name of it's Value property.
-            SqlQuery = $"SELECT dbo.{_databaseObjectName}({_parametersString}) as {nameof(DBQueriesDataContext.ScalarFunctionResultEntity<object>.Value)}";
+            SqlQuery = $"SELECT dbo.{_databaseObjectName}({_parametersString}) as {nameof(DbContextQueries.ScalarFunctionResultEntity<object>.Value)}";
         }
 
         void BuildStoredProcedure()
@@ -117,7 +117,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
 
         public async Task<T> ExecuteQueryScalar<T>()
         {
-            var queryResult = ExecuteQuery<DBQueriesDataContext.ScalarFunctionResultEntity<T>>();
+            var queryResult = ExecuteQuery<DbContextQueries.ScalarFunctionResultEntity<T>>();
             var firstOrDefault = await queryResult.FirstOrDefaultAsync();
             var result = firstOrDefault.Value;
             return result;

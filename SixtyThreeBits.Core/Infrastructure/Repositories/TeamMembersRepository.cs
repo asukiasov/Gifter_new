@@ -19,7 +19,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         {
             _mapper = new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<DBQueriesDataContext.TeamMembersListEntity, TeamMemberDTO>();
+                cfg.CreateMap<DbContextQueries.TeamMembersListEntity, TeamMemberDTO>();
             }).CreateMapper();
         }
         #endregion
@@ -29,7 +29,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         {
             return await TryToReturnAsyncTask($"{nameof(TeamMembersGetSingleByID)}({nameof(TeamMemberID)} = {TeamMemberID})", async () =>
             {
-                using (var db = _connectionFactory.GetDBQueriesDataContext())
+                using (var db = _connectionFactory.GetDbContextQueries())
                 {
                     var Result = await db.TeamMembersGetSingleByID(TeamMemberID);
                     return Result?.DeserializeJsonTo<TeamMemberDTO>();
@@ -41,7 +41,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         {
             return await TryToReturnAsyncTask($"{nameof(TeamMembersIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(teamMemberID)} = {teamMemberID}, {nameof(teamMemberFirstname)} = {teamMemberFirstname}, {nameof(teamMemberLastName)} = {teamMemberLastName}, {nameof(teamMemberPosition)} = {teamMemberPosition}), {nameof(teamMemberShortDescription)} = {teamMemberShortDescription}, {nameof(teamMemberLongDescription)} = {teamMemberLongDescription},{nameof(teamMemberImageFilename)} = {teamMemberImageFilename},{nameof(teamMemberIsPublished)} = {teamMemberIsPublished}, {nameof(teamMemberCategoryID)} = {teamMemberCategoryID}", async () =>
             {
-                using (var db = _connectionFactory.GetDBCommandsDataContext())
+                using (var db = _connectionFactory.GetDbContextCommands())
                 {
                     teamMemberID = await db.TeamMembersIUD(databaseAction, teamMemberID, teamMemberFirstname, teamMemberLastName, teamMemberPosition, teamMemberShortDescription, teamMemberLongDescription, teamMemberImageFilename, teamMemberIsPublished, teamMemberCategoryID);
                     return teamMemberID;
@@ -53,7 +53,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         {
             return await TryToReturnAsyncTask($"{nameof(TeamMembersList)}()", async () =>
             {
-                using (var db = _connectionFactory.GetDBQueriesDataContext())
+                using (var db = _connectionFactory.GetDbContextQueries())
                 {
                     return (await db.TeamMembersList().OrderByDescending(item => item.TeamMemberDateCreated).ToListAsync())?.Select(item => _mapper.Map<TeamMemberDTO>(item)).ToList();
                 }
@@ -65,7 +65,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
             var SortIndexesJson = sortIndexes.ToJson();
             await TryExecuteAsyncTask($"{nameof(TeamMembersSyncSortIndexes)}({nameof(sortIndexes)} = {SortIndexesJson})", async () =>
             {
-                using (var db = _connectionFactory.GetDBCommandsDataContext())
+                using (var db = _connectionFactory.GetDbContextCommands())
                 {
                     await db.TeamMembersSyncSortIndexes(SortIndexesJson);
                 }

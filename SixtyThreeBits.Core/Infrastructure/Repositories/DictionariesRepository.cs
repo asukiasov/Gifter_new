@@ -19,8 +19,8 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         {
             _mapper = new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<DBQueriesDataContext.DictionariesListEntity, DictionariesDTO>();
-                cfg.CreateMap<DBQueriesDataContext.DictionariesListByLevelAndCodeAndIsVisibleEntity, DictionariesDTO>();
+                cfg.CreateMap<DbContextQueries.DictionariesListEntity, DictionariesDTO>();
+                cfg.CreateMap<DbContextQueries.DictionariesListByLevelAndCodeAndIsVisibleEntity, DictionariesDTO>();
             }).CreateMapper();
         }
         #endregion
@@ -30,7 +30,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         {
             await TryExecuteAsyncTask($"{nameof(DictionariesDeleteRecursive)}({nameof(dictionaryID)} = {dictionaryID})", async () =>
             {
-                using (var db = _connectionFactory.GetDBCommandsDataContext())
+                using (var db = _connectionFactory.GetDbContextCommands())
                 {
                     await db.DictionariesDeleteRecursive(dictionaryID);
                 }
@@ -41,7 +41,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         {
             return await TryToReturnAsyncTask($"{nameof(DictionariesIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(dictionaryID)} = {dictionaryID}, {nameof(dictionaryCaption)} = {dictionaryCaption}, {nameof(dictionaryCaptionEng)} = {dictionaryCaptionEng}, {nameof(dictionaryParentID)} = {dictionaryParentID}, {nameof(dictionaryStringCode)} = {dictionaryStringCode}, {nameof(dictionaryIntCode)} = {dictionaryIntCode}, {nameof(dictionaryDecimalValue)} = {dictionaryDecimalValue}, {nameof(dictionaryCode)} = {dictionaryCode}, {nameof(dictionaryIsDefault)} = {dictionaryIsDefault}, {nameof(dictionaryIsVisible)} = {dictionaryIsVisible}, {nameof(dictionarySortIndex)} = {dictionarySortIndex})", async () =>
             {
-                using (var db = _connectionFactory.GetDBCommandsDataContext())
+                using (var db = _connectionFactory.GetDbContextCommands())
                 {
                     dictionaryID = await db.DictionariesIUD(databaseAction, dictionaryID, dictionaryCaption, dictionaryCaptionEng, dictionaryParentID, dictionaryStringCode, dictionaryIntCode, dictionaryDecimalValue, dictionaryCode, dictionaryIsDefault, dictionaryIsVisible, dictionarySortIndex);
                     return dictionaryID;
@@ -53,7 +53,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         {
             return await TryToReturnAsyncTask($"{nameof(DictionariesList)}()", async () =>
             {
-                using (var db = _connectionFactory.GetDBQueriesDataContext())
+                using (var db = _connectionFactory.GetDbContextQueries())
                 {
                     return (
                     await db.DictionariesList()
@@ -71,7 +71,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         {
             return await TryToReturnAsyncTask($"{nameof(DictionariesList)}()", async () =>
             {
-                using (var db = _connectionFactory.GetDBQueriesDataContext())
+                using (var db = _connectionFactory.GetDbContextQueries())
                 {
                     return (
                     await db.DictionariesListByLevelAndCodeAndIsVisible(dictionaryLevel, dictionaryCode, dictionaryIsVisible)
@@ -89,7 +89,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         {
             return await TryToReturnAsyncTask($"{nameof(DictionariesListAsKeyValueSelectedTuple)}({nameof(dictionaryCode)} = {dictionaryCode}, {nameof(isDictionaryIntCodeAsKey)} = {isDictionaryIntCodeAsKey})", async () =>
             {
-                using (var db = _connectionFactory.GetDBQueriesDataContext())
+                using (var db = _connectionFactory.GetDbContextQueries())
                 {
                     var Result = await DictionariesListByLevelAndCodeAndIsVisible(dictionaryLevel: 1, dictionaryCode: dictionaryCode, dictionaryIsVisible: null);
                     return Result?.Select(item => new KeyValueSelectedTuple<int?, string>
@@ -106,7 +106,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         {
             return await TryToReturnAsyncTask($"{nameof(DictionariesListAsKeyValueTuple)}({nameof(dictionaryCode)} = {dictionaryCode}, {nameof(dictionaryCodeAsKey)} = {dictionaryCodeAsKey})", async () =>
             {
-                using (var db = _connectionFactory.GetDBQueriesDataContext())
+                using (var db = _connectionFactory.GetDbContextQueries())
                 {
                     var Result = await DictionariesListByLevelAndCodeAndIsVisible(dictionaryLevel: 1, dictionaryCode: dictionaryCode, dictionaryIsVisible: null);
                     return Result?.Select(item => new KeyValueTuple<int?, string>

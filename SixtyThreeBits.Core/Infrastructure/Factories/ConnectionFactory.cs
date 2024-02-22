@@ -19,18 +19,18 @@ namespace SixtyThreeBits.Core.Infrastructure.Factories
         #endregion
 
         #region Methods
-        public DBCommandsDataContext GetDBCommandsDataContext()
+        public DbContextCommands GetDbContextCommands()
         {
-            var optionsBuilder = new DbContextOptionsBuilder<DBCommandsDataContext>();
+            var optionsBuilder = new DbContextOptionsBuilder<DbContextCommands>();
             optionsBuilder.UseSqlServer(_dbCommandsConnectionString);
-            return new DBCommandsDataContext(optionsBuilder.Options);
+            return new DbContextCommands(optionsBuilder.Options);
         }
 
-        public DBQueriesDataContext GetDBQueriesDataContext()
+        public DbContextQueries GetDbContextQueries()
         {
-            var optionsBuilder = new DbContextOptionsBuilder<DBQueriesDataContext>();
+            var optionsBuilder = new DbContextOptionsBuilder<DbContextQueries>();
             optionsBuilder.UseSqlServer(_dbQueriesConnectionString);
-            return new DBQueriesDataContext(optionsBuilder.Options);
+            return new DbContextQueries(optionsBuilder.Options);
         }
         #endregion        
     }

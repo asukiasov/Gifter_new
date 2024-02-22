@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace SixtyThreeBits.Core.Infrastructure.Database
 {
-    public partial class DBQueriesDataContext
+    public partial class DbContextQueries
     {
         #region PartnersGetSingleByID        
         public async Task<string> PartnersGetSingleByID(int? partnerID)

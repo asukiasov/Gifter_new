@@ -21,7 +21,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         {
             return await TryToReturnAsyncTask($"{nameof(CountriesListAsSimpleKeyValue)}({nameof(SelectedCountryID)} = {SelectedCountryID})", async () =>
             {
-                using (var db = _connectionFactory.GetDBQueriesDataContext())
+                using (var db = _connectionFactory.GetDbContextQueries())
                 {
                     return (await db.CountriesList().OrderBy(item => item.CountryName).ToListAsync()).Select(item => new KeyValueSelectedTuple<int?, string>
                     {

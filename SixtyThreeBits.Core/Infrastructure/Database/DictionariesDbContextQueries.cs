@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace SixtyThreeBits.Core.Infrastructure.Database
 {
-    public partial class DBQueriesDataContext
+    public partial class DbContextQueries
     {
         #region DictionariesList
         public record DictionariesListEntity

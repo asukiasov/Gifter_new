@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace SixtyThreeBits.Core.Infrastructure.Database
 {
-    public partial class DBQueriesDataContext
+    public partial class DbContextQueries
     {
         #region PagesGetSingleByID        
         public async Task<string> PagesGetSingleByID(int? pageID, bool? pageIsPublished)

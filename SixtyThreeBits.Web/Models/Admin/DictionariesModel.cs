@@ -104,6 +104,7 @@ namespace SixtyThreeBits.Web.Models.Admin
                     tree
                     .ID("DictionariesTree")
                     .OnInitialized("dictionariesModel.onTreeInit")
+                    .OnRowUpdating("dictionariesModel.onRowUpdating")
                     .AutoExpandAll(false)
                     .Pager(options =>
                     {

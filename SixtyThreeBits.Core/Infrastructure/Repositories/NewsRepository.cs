@@ -20,7 +20,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         {
             _mapper = new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<DBQueriesDataContext.NewsListEntity, NewsDTO>();
+                cfg.CreateMap<DbContextQueries.NewsListEntity, NewsDTO>();
             }).CreateMapper();
         }
         #endregion
@@ -30,7 +30,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         {
             return await TryToReturnAsyncTask($"{nameof(NewsGetSingleByID)}({nameof(newsID)} = {newsID})", async () =>
             {
-                using (var db = _connectionFactory.GetDBQueriesDataContext())
+                using (var db = _connectionFactory.GetDbContextQueries())
                 {
                     var Result = await db.NewsGetSingleByID(newsID);
                     return Result?.DeserializeJsonTo<NewsDTO>();
@@ -42,7 +42,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         {
             return await TryToReturnAsyncTask($"{nameof(NewsIsSlugUniq)}({nameof(newsSlug)} = {newsSlug}, {nameof(newsID)} = {newsID})", async () =>
             {
-                using (var db = _connectionFactory.GetDBQueriesDataContext())
+                using (var db = _connectionFactory.GetDbContextQueries())
                 {
                     return await db.NewsIsSlugUniq(newsSlug, newsID);
                 }
@@ -53,7 +53,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         {
             return await TryToReturnAsyncTask($"{nameof(NewsIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(newsID)} = {newsID}, {nameof(newsSlug)} = {newsSlug}, {nameof(newsTitle)} = {newsTitle}, {nameof(newsTitleEng)} = {newsTitleEng}, {nameof(newsText)} = {newsText}, {nameof(newsTextEng)} = {newsTextEng}, {nameof(newsShortDescription)} = {newsShortDescription}, {nameof(newsShortDescriptionEng)} = {newsShortDescriptionEng}, {nameof(newsImageFilename)} = {newsImageFilename}, {nameof(newsDatePublished)} = {newsDatePublished})", async () =>
             {
-                using (var db = _connectionFactory.GetDBCommandsDataContext())
+                using (var db = _connectionFactory.GetDbContextCommands())
                 {
                     newsID = await db.NewsIUD(databaseAction, newsID, newsSlug, newsTitle, newsTitleEng, newsText, newsTextEng, newsShortDescription, newsShortDescriptionEng, newsImageFilename, newsDatePublished, newsIsPublished);
                     return newsID;
@@ -65,7 +65,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         {
             return await TryToReturnAsyncTask($"{nameof(NewsList)}()", async () =>
             {
-                using (var db = _connectionFactory.GetDBQueriesDataContext())
+                using (var db = _connectionFactory.GetDbContextQueries())
                 {
                     return (await db.NewsList().OrderByDescending(item => item.NewsDateCreated).ToListAsync())?.Select(item => _mapper.Map<NewsDTO>(item)).ToList();
                 }

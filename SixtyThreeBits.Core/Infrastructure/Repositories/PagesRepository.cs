@@ -19,7 +19,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         {
             _mapper = new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<DBQueriesDataContext.PagesListEntity, PagesListDTO>();
+                cfg.CreateMap<DbContextQueries.PagesListEntity, PagesListDTO>();
             }).CreateMapper();
         }
         #endregion
@@ -29,7 +29,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         {
             await TryExecuteAsyncTask($"{nameof(PagesDeleteRecursive)}({nameof(pageID)} = {pageID})", async () =>
             {
-                using (var db = _connectionFactory.GetDBCommandsDataContext())
+                using (var db = _connectionFactory.GetDbContextCommands())
                 {
                     await db.PagesDeleteRecursive(pageID);
                 }
@@ -40,7 +40,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         {
             return await TryToReturnAsyncTask($"{nameof(PagesGetSingleByID)}({nameof(pageID)} = {pageID}, {nameof(pageIsPublished)} = {pageIsPublished})", async () =>
             {
-                using (var db = _connectionFactory.GetDBQueriesDataContext())
+                using (var db = _connectionFactory.GetDbContextQueries())
                 {
                     var Result = await db.PagesGetSingleByID(pageID, pageIsPublished);
                     return Result?.DeserializeJsonTo<PageDTO>();
@@ -52,7 +52,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         {
             return await TryToReturnAsyncTask($"{nameof(PagesGetSingleBySlugHierarchy)}({nameof(pageSlug)} = {pageSlug}, {nameof(pageIsPublished)} = {pageIsPublished})", async () =>
             {
-                using (var db = _connectionFactory.GetDBQueriesDataContext())
+                using (var db = _connectionFactory.GetDbContextQueries())
                 {
                     var Result = await db.PagesGetSingleBySlugHierarchy(pageSlug, pageIsPublished);
                     return Result?.DeserializeJsonTo<PageDTO>();
@@ -64,7 +64,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         {
             return await TryToReturnAsyncTask($"{nameof(PagesIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(pageID)} = {pageID}, {nameof(pageParentID)} = {pageParentID}, {nameof(pageSlug)} = {pageSlug}, {nameof(pageTitle)} = {pageTitle}, {nameof(pageTitleEng)} = {pageTitleEng}, {nameof(pageText)} = {pageText}, {nameof(pageTextEng)} = {pageTextEng}, {nameof(pageTextHeaderHtml)} = {pageTextHeaderHtml}, {nameof(pageTextHeaderHtmlEng)} = {pageTextHeaderHtmlEng}, {nameof(pageTextFooterHtml)} = {pageTextFooterHtml}, {nameof(pageTextFooterHtmlEng)} = {pageTextFooterHtmlEng}, {nameof(pageData)} = {pageData}, {nameof(pageDataEng)} = {pageDataEng}, {nameof(pageShortDescription)} = {pageShortDescription}, {nameof(pageShortDescriptionEng)} = {pageShortDescriptionEng}, {nameof(pageImageFilename)} = {pageImageFilename}, {nameof(pageIsPublished)} = {pageIsPublished}, {nameof(pageSortIndex)} = {pageSortIndex}, {nameof(pageIsMenuItem)} = {pageIsMenuItem}, {nameof(pageIsFooterItem)} = {pageIsFooterItem}, {nameof(pageIsExternalUrl)} = {pageIsExternalUrl}, {nameof(pageExternalUrl)} = {pageExternalUrl})", async () =>
             {
-                using (var db = _connectionFactory.GetDBCommandsDataContext())
+                using (var db = _connectionFactory.GetDbContextCommands())
                 {
                     pageID = await db.PagesIUD(databaseAction, pageID, pageParentID, pageSlug, pageTitle, pageTitleEng, pageText, pageTextEng, pageTextHeaderHtml, pageTextHeaderHtmlEng, pageTextFooterHtml, pageTextFooterHtmlEng, pageData, pageDataEng, pageShortDescription, pageShortDescriptionEng, pageImageFilename, pageIsPublished, pageSortIndex, pageIsMenuItem, pageIsFooterItem, pageIsExternalUrl, pageExternalUrl);
                     return pageID;
@@ -76,7 +76,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         {
             return await TryToReturnAsyncTask($"{nameof(PagesList)}({nameof(pageIsPublished)} = {pageIsPublished}, {nameof(pageIsMenuItem)} = {pageIsMenuItem})", async () =>
             {
-                using (var db = _connectionFactory.GetDBQueriesDataContext())
+                using (var db = _connectionFactory.GetDbContextQueries())
                 {
                     return (await db.PagesList(pageIsPublished, pageIsMenuItem).OrderBy(item => item.PageSortIndex).ToListAsync())?.Select(item => _mapper.Map<PagesListDTO>(item)).ToList();
                 }
@@ -88,7 +88,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
             var sortIndexesJson = sortIndexes.ToJson();
             await TryExecuteAsyncTask($"{nameof(PagesSyncParentsAndSortIndexes)}({nameof(sortIndexes)} = {sortIndexesJson})", async () =>
             {
-                using (var db = _connectionFactory.GetDBCommandsDataContext())
+                using (var db = _connectionFactory.GetDbContextCommands())
                 {
                     await db.PagesSyncParentsAndSortIndexes(sortIndexesJson);
                 }

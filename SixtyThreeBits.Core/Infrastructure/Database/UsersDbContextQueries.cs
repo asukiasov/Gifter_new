@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace SixtyThreeBits.Core.Infrastructure.Database
 {
-    public partial class DBQueriesDataContext
+    public partial class DbContextQueries
     {
         #region UsersGetSingleUserByUserID        
         public async Task<string> UsersGetSingleUserByUserID(int? userID)

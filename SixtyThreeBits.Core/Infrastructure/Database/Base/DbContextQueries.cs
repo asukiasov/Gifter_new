@@ -2,10 +2,10 @@
 
 namespace SixtyThreeBits.Core.Infrastructure.Database
 {
-    public partial class DBQueriesDataContext : DbContext
+    public partial class DbContextQueries : DbContext
     {
         #region Constructors
-        public DBQueriesDataContext(DbContextOptions<DBQueriesDataContext> options) : base(options)
+        public DbContextQueries(DbContextOptions<DbContextQueries> options) : base(options)
         {
         }
         #endregion

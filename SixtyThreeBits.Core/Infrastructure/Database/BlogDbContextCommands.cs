@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace SixtyThreeBits.Core.Infrastructure.Database
 {
-    public partial class DBCommandsDataContext
+    public partial class DbContextCommands
     {
         #region Methods
         public async Task<int?> BlogIUD(Enums.DatabaseActions iud, int? blogPostID, string blogPostlug, string blogPostTitle, string blogPostShortText, string blogPostText, string blogPostAuthorName, string blogPostImageFilename, DateTime? blogPostDate, bool? blogPostIsPublished)

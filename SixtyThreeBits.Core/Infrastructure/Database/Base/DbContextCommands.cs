@@ -2,10 +2,10 @@
 
 namespace SixtyThreeBits.Core.Infrastructure.Database
 {
-    public partial class DBCommandsDataContext : DbContext
+    public partial class DbContextCommands : DbContext
     {
         #region Constructors
-        public DBCommandsDataContext(DbContextOptions<DBCommandsDataContext> options) : base(options)
+        public DbContextCommands(DbContextOptions<DbContextCommands> options) : base(options)
         {
         }
         #endregion        

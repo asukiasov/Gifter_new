@@ -19,7 +19,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         {
             _mapper = new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<DBQueriesDataContext.PartnersListEntity, PartnersListDTO>();
+                cfg.CreateMap<DbContextQueries.PartnersListEntity, PartnersListDTO>();
             }).CreateMapper();
         }
         #endregion
@@ -29,7 +29,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         {
             return await TryToReturnAsyncTask($"{nameof(PartnersGetSingleByID)}({nameof(partnerID)} = {partnerID})", async () =>
             {
-                using (var db = _connectionFactory.GetDBQueriesDataContext())
+                using (var db = _connectionFactory.GetDbContextQueries())
                 {
                     var Result = await db.PartnersGetSingleByID(partnerID);
                     return Result?.DeserializeJsonTo<PartnerDTO>();
@@ -41,7 +41,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         {
             return await TryToReturnAsyncTask($"{nameof(PartnersIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(partnerID)} = {partnerID}, {nameof(partnerName)} = {partnerName}, {nameof(partnerNameEng)} = {partnerNameEng}, {nameof(partnerShortDescription)} = {partnerShortDescription}, {nameof(partnerShortDescriptionEng)} = {partnerShortDescriptionEng}, {nameof(partnerFullDescription)} = {partnerFullDescription}, {nameof(partnerFullDescriptionEng)} = {partnerFullDescriptionEng}, {nameof(partnerWebSite)} = {partnerWebSite}, {nameof(partnerImageFilename)} = {partnerImageFilename}, {nameof(partnerIsPublished)} = {partnerIsPublished})", async () =>
             {
-                using (var db = _connectionFactory.GetDBCommandsDataContext())
+                using (var db = _connectionFactory.GetDbContextCommands())
                 {
                     partnerID = await db.PartnersIUD(databaseAction, partnerID, partnerName, partnerNameEng, partnerShortDescription, partnerShortDescriptionEng, partnerFullDescription, partnerFullDescriptionEng, partnerWebSite, partnerImageFilename, partnerIsPublished);
                     return partnerID;
@@ -53,7 +53,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         {
             return await TryToReturnAsyncTask($"{nameof(PartnersList)}()", async () =>
             {
-                using (var db = _connectionFactory.GetDBQueriesDataContext())
+                using (var db = _connectionFactory.GetDbContextQueries())
                 {
                     return (await db.PartnersList().OrderByDescending(item => item.PartnerDateCreated).ToListAsync())?.Select(item => _mapper.Map<PartnersListDTO>(item)).ToList();
                 }

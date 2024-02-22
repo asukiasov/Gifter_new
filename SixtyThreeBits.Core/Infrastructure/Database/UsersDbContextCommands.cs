@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace SixtyThreeBits.Core.Infrastructure.Database
 {
-    public partial class DBCommandsDataContext
+    public partial class DbContextCommands
     {
         #region Methods
         public async Task<int?> UsersIUD(Enums.DatabaseActions databaseAction, int? userID, int? roleID, string userEmail, string userPassword, string userFirstname, string userLastname, DateTime? userBirthdate, string userPhoneNumberMobile, string userPersonalNumber, string userAvatarFilename, bool? userIsActive)

@@ -20,9 +20,9 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         {
             _mapper = new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<DBQueriesDataContext.ProductCategoriesListEntity, ProductCategoryDTO>();
-                cfg.CreateMap<DBQueriesDataContext.ProductCategoriesListForDeleteRecursiveEntity, ProductCategoriesListForDeleteRecursiveDTO>();
-                cfg.CreateMap<DBQueriesDataContext.ProductsListEntity, ProductsListDTO>();
+                cfg.CreateMap<DbContextQueries.ProductCategoriesListEntity, ProductCategoryDTO>();
+                cfg.CreateMap<DbContextQueries.ProductCategoriesListForDeleteRecursiveEntity, ProductCategoriesListForDeleteRecursiveDTO>();
+                cfg.CreateMap<DbContextQueries.ProductsListEntity, ProductsListDTO>();
             }).CreateMapper();
         }
         #endregion
@@ -32,7 +32,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         {
             await TryExecuteAsyncTask($"{nameof(ProductCategoriesDeleteRecursive)}({nameof(productCategoryID)} = {productCategoryID})", async () =>
             {
-                using (var db = _connectionFactory.GetDBCommandsDataContext())
+                using (var db = _connectionFactory.GetDbContextCommands())
                 {
                     await db.ProductCategoriesDeleteRecursive(productCategoryID);
                 }
@@ -43,7 +43,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         {
             return await TryToReturnAsyncTask($"{nameof(ProductCategoriesGetSingleByID)}({nameof(productCategoryID)} = {productCategoryID})", async () =>
             {
-                using (var db = _connectionFactory.GetDBQueriesDataContext())
+                using (var db = _connectionFactory.GetDbContextQueries())
                 {
                     var Result = await db.ProductCategoriesGetSingleByID(productCategoryID);
                     return Result?.DeserializeJsonTo<ProductCategoryDTO>();
@@ -55,7 +55,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         {
             return await TryToReturnAsyncTask($"{nameof(ProductCategoriesGetSingleBySlug)}({nameof(productCategorySlug)} = {productCategorySlug})", async () =>
             {
-                using (var db = _connectionFactory.GetDBQueriesDataContext())
+                using (var db = _connectionFactory.GetDbContextQueries())
                 {
                     var Result = await db.ProductCategoriesGetSingleBySlug(productCategorySlug);
                     return Result?.DeserializeJsonTo<ProductCategoryDTO>();
@@ -67,7 +67,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         {
             return await TryToReturnAsyncTask($"{nameof(ProductCategoriesIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(productCategoryID)} = {productCategoryID}, {nameof(productCategoryParentID)} = {productCategoryParentID}, {nameof(productCategoryName)} = {productCategoryName}, {nameof(productCategoryNameEng)} = {productCategoryNameEng}, {nameof(productCategoryImageFilename)} = {productCategoryImageFilename}, {nameof(productCategoryDescriptionShort)} = {productCategoryDescriptionShort}, {nameof(productCategoryDescriptionShortEng)} = {productCategoryDescriptionShortEng})", async () =>
             {
-                using (var db = _connectionFactory.GetDBCommandsDataContext())
+                using (var db = _connectionFactory.GetDbContextCommands())
                 {
                     productCategoryID = await db.ProductCategoriesIUD(databaseAction, productCategoryID, productCategoryParentID, productCategoryName, productCategoryNameEng, productCategoryImageFilename, productCategoryDescriptionShort, productCategoryDescriptionShortEng);
                     return productCategoryID;
@@ -79,7 +79,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         {
             return await TryToReturnAsyncTask($"{nameof(ProductCategoriesList)}({nameof(productCategoryParentID)} = {productCategoryParentID})", async () =>
             {
-                using (var db = _connectionFactory.GetDBQueriesDataContext())
+                using (var db = _connectionFactory.GetDbContextQueries())
                 {
                     return (await db.ProductCategoriesList(productCategoryParentID).OrderBy(item => item.ProductCategorySortIndex).ToListAsync())?.Select(item => _mapper.Map<ProductCategoryDTO>(item)).ToList();
                 }
@@ -90,7 +90,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         {
             return await TryToReturnAsyncTask($"{nameof(ProductCategoriesListForDeleteRecursive)}({nameof(productCategoryID)} = {productCategoryID})", async () =>
             {
-                using (var db = _connectionFactory.GetDBQueriesDataContext())
+                using (var db = _connectionFactory.GetDbContextQueries())
                 {
                     return (await db.ProductCategoriesListForDeleteRecursive(productCategoryID).ToListAsync())?.Select(item => _mapper.Map<ProductCategoriesListForDeleteRecursiveDTO>(item)).ToList();
                 }
@@ -139,7 +139,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
             var SortIndexesJson = sortIndexes.ToJson();
             await TryExecuteAsyncTask($"{nameof(ProductCategoriesSyncParentsAndSortIndexes)}({nameof(sortIndexes)} = {SortIndexesJson})", async () =>
             {
-                using (var db = _connectionFactory.GetDBCommandsDataContext())
+                using (var db = _connectionFactory.GetDbContextCommands())
                 {
                     await db.ProductCategoriesSyncParentsAndSortIndexes(SortIndexesJson);
                 }
@@ -150,7 +150,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         {
             return await TryToReturnAsyncTask($"{nameof(ProductsGetSingleByID)}({nameof(productID)} = {productID})", async () =>
             {
-                using (var db = _connectionFactory.GetDBQueriesDataContext())
+                using (var db = _connectionFactory.GetDbContextQueries())
                 {
                     var Result = await db.ProductsGetSingleByID(productID);
                     return Result?.DeserializeJsonTo<ProductDTO>();
@@ -162,7 +162,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         {
             return await TryToReturnAsyncTask($"{nameof(ProductsGetsingleBySlug)}({nameof(productSlug)} = {productSlug})", async () =>
             {
-                using (var db = _connectionFactory.GetDBQueriesDataContext())
+                using (var db = _connectionFactory.GetDbContextQueries())
                 {
                     var Result = await db.ProductsGetsingleBySlug(productSlug);
                     return Result?.DeserializeJsonTo<ProductDTO>();
@@ -174,7 +174,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         {
             return await TryToReturnAsyncTask($"{nameof(ProductsIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(productID)} = {productID}, {nameof(productCategoryID)} = {productCategoryID}, {nameof(countryIDProducer)} = {countryIDProducer}, {nameof(brandID)} = {brandID}, {nameof(productName)} = {productName}, {nameof(productNameEng)} = {productNameEng}, {nameof(productSlug)} = {productSlug}, {nameof(productSlugEng)} = {productSlugEng}, {nameof(productPrice)} = {productPrice}, {nameof(productPriceOld)} = {productPriceOld}, {nameof(productRemainder)} = {productRemainder}, {nameof(productImageFilename)} = {productImageFilename}, {nameof(productDescriptionShort)} = {productDescriptionShort}, {nameof(productDescriptionShortEng)} = {productDescriptionShortEng}, {nameof(productDescription)} = {productDescription}, {nameof(productDescriptionEng)} = {productDescriptionEng}, {nameof(productIsPublished)} = {productIsPublished}, {nameof(productIsFeatured)} = {productIsFeatured}, {nameof(productSKU)} = {productSKU}, {nameof(productIDExternal)} = {productIDExternal})", async () =>
             {
-                using (var db = _connectionFactory.GetDBCommandsDataContext())
+                using (var db = _connectionFactory.GetDbContextCommands())
                 {
                     productID = await db.ProductsIUD(databaseAction, productID, productCategoryID, countryIDProducer, brandID, productName, productNameEng, productSlug, productSlugEng, productPrice, productPriceOld, productRemainder, productImageFilename, productDescriptionShort, productDescriptionShortEng, productDescription, productDescriptionEng, productIsPublished, productIsFeatured, productSKU, productIDExternal);
                     return productID;
@@ -186,7 +186,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         {
             return await TryToReturnAsyncTask($"{nameof(ProductsImagesIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(productImageID)} = {productImageID}, {nameof(productID)} = {productID}, {nameof(productImageFilename)} = {productImageFilename}, {nameof(productImageSyncSortIndex)} = {productImageSyncSortIndex})", async () =>
             {
-                using (var db = _connectionFactory.GetDBCommandsDataContext())
+                using (var db = _connectionFactory.GetDbContextCommands())
                 {
                     productImageID = await db.ProductsImagesIUD(databaseAction, productImageID, productID, productImageFilename, productImageSyncSortIndex);
                     return productImageID;
@@ -198,7 +198,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         {
             return await TryToReturnAsyncTask($"{nameof(ProductsList)}()", async () =>
             {
-                using (var db = _connectionFactory.GetDBQueriesDataContext())
+                using (var db = _connectionFactory.GetDbContextQueries())
                 {
                     return (await db.ProductsList().OrderByDescending(item => item.ProductDateCreated).ToListAsync())?.Select(item => _mapper.Map<ProductsListDTO>(item)).ToList();
                 }
@@ -210,7 +210,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
             var SortIndexesJson = sortIndexes.ToJson();
             await TryExecuteAsyncTask($"{nameof(ProductsImagesSyncSortIndex)}({nameof(productID)} = {productID}, {nameof(sortIndexes)} = {SortIndexesJson})", async () =>
             {
-                using (var db = _connectionFactory.GetDBCommandsDataContext())
+                using (var db = _connectionFactory.GetDbContextCommands())
                 {
                     await db.ProductsImagesSyncSortIndex(productID, SortIndexesJson);
                 }

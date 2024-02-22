@@ -18,7 +18,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         {
             _mapper = new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<DBQueriesDataContext.PermissionsListEntity, PermissionDTO>();
+                cfg.CreateMap<DbContextQueries.PermissionsListEntity, PermissionDTO>();
             }).CreateMapper();
         }
         #endregion
@@ -28,7 +28,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         {
             await TryExecuteAsyncTask($"{nameof(PermissionsDeleteRecursive)}({nameof(permissionID)} = {permissionID})", async () =>
             {
-                using (var db = _connectionFactory.GetDBCommandsDataContext())
+                using (var db = _connectionFactory.GetDbContextCommands())
                 {
                     await db.PermissionsDeleteRecursive(permissionID);
                 }
@@ -39,7 +39,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         {
             return await TryToReturnAsyncTask($"{nameof(PermissionsIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(permissionID)} = {permissionID}, {nameof(permissionParentID)} = {permissionParentID}, {nameof(permissionCaption)} = {permissionCaption}, {nameof(permissionCaptionEng)} = {permissionCaptionEng}, {nameof(permissionPagePath)} = {permissionPagePath}, {nameof(permissionCodeName)} = {permissionCodeName}, {nameof(permissionCode)} = {permissionCode}, {nameof(permissionSortIndex)} = {permissionSortIndex}, {nameof(permissionIsMenuItem)} = {permissionIsMenuItem}, {nameof(permissionMenuIcon)} = {permissionMenuIcon}, {nameof(permissionMenuTitle)} = {permissionMenuTitle}, {nameof(permissionMenuTitleEng)} = {permissionMenuTitleEng})", async () =>
             {
-                using (var db = _connectionFactory.GetDBCommandsDataContext())
+                using (var db = _connectionFactory.GetDbContextCommands())
                 {
                     permissionID = await db.PermissionsIUD(databaseAction, permissionID, permissionParentID, permissionCaption, permissionCaptionEng, permissionPagePath, permissionCodeName, permissionCode, permissionIsMenuItem, permissionMenuIcon, permissionMenuTitle, permissionMenuTitleEng, permissionSortIndex);
                     return permissionID;
@@ -51,7 +51,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         {
             return await TryToReturnAsyncTask($"{nameof(PermissionsList)}()", async () =>
             {
-                using (var db = _connectionFactory.GetDBQueriesDataContext())
+                using (var db = _connectionFactory.GetDbContextQueries())
                 {
                     return (await db.PermissionsList().OrderBy(P => P.PermissionSortIndex).ToListAsync())?.Select(item=>_mapper.Map<PermissionDTO>(item)).ToList();
                 }
@@ -62,7 +62,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         {
             return await TryToReturnAsyncTask($"{nameof(PermissionsListByRoleID)}({nameof(roleID)} = {roleID}", async () =>
             {
-                using (var db = _connectionFactory.GetDBQueriesDataContext())
+                using (var db = _connectionFactory.GetDbContextQueries())
                 {
                     return await db.PermissionsListByRoleID(roleID).Select(item => item.PermissionID).ToListAsync();
                 }

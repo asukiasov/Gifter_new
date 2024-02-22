@@ -19,7 +19,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         {
             _mapper = new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<DBQueriesDataContext.EmailTemplatesListEntity, EmailTemplateDTO>();
+                cfg.CreateMap<DbContextQueries.EmailTemplatesListEntity, EmailTemplateDTO>();
             }).CreateMapper();
         }
         #endregion
@@ -29,7 +29,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         {
             return await TryToReturnAsyncTask($"{nameof(EmailTemplatesGetSingleByID)}({nameof(emailTemplateID)} = {emailTemplateID})", async () =>
             {
-                using (var db = _connectionFactory.GetDBQueriesDataContext())
+                using (var db = _connectionFactory.GetDbContextQueries())
                 {
                     return (await db.EmailTemplatesGetSingleByID(emailTemplateID)).DeserializeJsonTo<EmailTemplateDTO>();
                 }
@@ -40,7 +40,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         {
             return await TryToReturnAsyncTask($"{nameof(EmailTemplatesIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(emailTemplateID)} = {emailTemplateID}, {nameof(emailTemplateName)} = {emailTemplateName}, {nameof(emailTemplateSubject)} = {emailTemplateSubject}, {nameof(emailTemplateSubjectEng)} = {emailTemplateSubjectEng}, {nameof(emailTemplateBody)} = {emailTemplateBody}, {nameof(emailTemplateBodyEng)} = {emailTemplateBodyEng})", async () =>
             {
-                using (var db = _connectionFactory.GetDBCommandsDataContext())
+                using (var db = _connectionFactory.GetDbContextCommands())
                 {
                     await db.EmailTemplatesIUD(databaseAction, emailTemplateID, emailTemplateName, emailTemplateSubject, emailTemplateSubjectEng, emailTemplateBody, emailTemplateBodyEng);
                     return emailTemplateID;
@@ -52,7 +52,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         {
             return await TryToReturnAsyncTask($"{nameof(EmailTemplatesList)}", async () =>
             {
-                using (var db = _connectionFactory.GetDBQueriesDataContext())
+                using (var db = _connectionFactory.GetDbContextQueries())
                 {
                     return (await db.EmailTemplatesList().ToListAsync())?.Select(item => _mapper.Map<EmailTemplateDTO>(item)).ToList();
                 }
@@ -63,7 +63,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         {
             return await TryToReturnAsyncTask($"{nameof(EmailTemplatesWrapInLayout)}({nameof(websiteHttpPath)} = {websiteHttpPath}, {nameof(languageCultureCode)} = {languageCultureCode}, {nameof(bodyText)} = {bodyText}, {nameof(urlUnsubscribe)} = {urlUnsubscribe})", async () =>
             {
-                using (var db = _connectionFactory.GetDBQueriesDataContext())
+                using (var db = _connectionFactory.GetDbContextQueries())
                 {
                     return await db.EmailTemplatesWrapInLayout(websiteHttpPath, languageCultureCode, bodyText, urlUnsubscribe);
                 }

@@ -18,7 +18,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         {
             _mapper = new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<DBQueriesDataContext.RedirectsListEntity, RedirectDTO>();
+                cfg.CreateMap<DbContextQueries.RedirectsListEntity, RedirectDTO>();
             }).CreateMapper();
         }
         #endregion
@@ -28,7 +28,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         {
             return await TryToReturnAsyncTask($"{nameof(RedirectsIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(redirectID)} = {redirectID}, {nameof(redirectFrom)} = {redirectFrom}, {nameof(redirectTo)} = {redirectTo})", async () =>
             {
-                using (var db = _connectionFactory.GetDBCommandsDataContext())
+                using (var db = _connectionFactory.GetDbContextCommands())
                 {
                     await db.RedirectsIUD(databaseAction, redirectID, redirectFrom, redirectTo);
                     return redirectID;
@@ -40,7 +40,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         {
             return await TryToReturnAsyncTask($"{nameof(RedirectsList)}()", async () =>
             {
-                using (var db = _connectionFactory.GetDBQueriesDataContext())
+                using (var db = _connectionFactory.GetDbContextQueries())
                 {
                     return (await db.RedirectsList().OrderByDescending(item => item.RedirectDateCreated).ToListAsync())?.Select(item => _mapper.Map<RedirectDTO>(item)).ToList();
                 }

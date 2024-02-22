@@ -2,7 +2,7 @@
 
 namespace SixtyThreeBits.Core.Infrastructure.Database
 {
-    public partial class DBQueriesDataContext
+    public partial class DbContextQueries
     {
         #region SystemPropertiesGet        
         public async Task<string> SystemPropertiesGet()

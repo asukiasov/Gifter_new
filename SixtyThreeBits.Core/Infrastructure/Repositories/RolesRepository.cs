@@ -20,7 +20,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         {
             _mapper = new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<DBQueriesDataContext.RolesListEntity, RoleDTO>();
+                cfg.CreateMap<DbContextQueries.RolesListEntity, RoleDTO>();
             }).CreateMapper();
         }
         #endregion
@@ -30,7 +30,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         {
             return await TryToReturnAsyncTask($"{nameof(RolesIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(roleID)} = {roleID}, {nameof(roleName)} = {roleName}, {nameof(roleCode)} = {roleCode})", async () =>
             {
-                using (var db = _connectionFactory.GetDBCommandsDataContext())
+                using (var db = _connectionFactory.GetDbContextCommands())
                 {
                     roleID = await db.RolesIUD(databaseAction, roleID, roleName, roleCode);
                     return roleID;
@@ -42,7 +42,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         {
             return await TryToReturnAsyncTask($"{nameof(RolesList)}()", async () =>
             {
-                using (var db = _connectionFactory.GetDBQueriesDataContext())
+                using (var db = _connectionFactory.GetDbContextQueries())
                 {
                     return (await db.RolesList().OrderBy(item => item.RoleCode).ToListAsync())?.Select(item => _mapper.Map<RoleDTO>(item)).ToList();
                 }
@@ -53,7 +53,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         {
             return await TryToReturnAsyncTask($"{nameof(RolesListAsKeyValueTuple)}()", async () =>
             {
-                using (var db = _connectionFactory.GetDBQueriesDataContext())
+                using (var db = _connectionFactory.GetDbContextQueries())
                 {
                     return (await db.RolesList().OrderBy(item => item.RoleCode).ToListAsync())?.Select(item => new KeyValueTuple<int?, string>
                     {
@@ -68,7 +68,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         {
             return await TryToReturnAsyncTask($"{nameof(RolesListAsKeyValueTuple)}()", async () =>
             {
-                using (var db = _connectionFactory.GetDBQueriesDataContext())
+                using (var db = _connectionFactory.GetDbContextQueries())
                 {
                     return (await db.RolesList().OrderBy(item => item.RoleCode).ToListAsync())?.Select(item => new KeyValueSelectedTuple<int?, string>
                     {
@@ -85,7 +85,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
             var PermissionIDsJson = permissionIDs.ToJson();
             await TryExecuteAsyncTask($"{nameof(RolesPermissionsUpdate)}({nameof(roleID)} = {roleID}, {nameof(permissionIDs)} = {PermissionIDsJson})", async () =>
             {
-                using (var db = _connectionFactory.GetDBCommandsDataContext())
+                using (var db = _connectionFactory.GetDbContextCommands())
                 {
                     await db.RolesPermissionsUpdate(roleID, PermissionIDsJson);
                 }
