@@ -17,7 +17,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
                 sqlParameters:
                 [
                     databaseAction.ToSqlParameter(nameof(databaseAction),SqlDbType.TinyInt),
-                    roleID.ToSqlParameter(nameof(roleID),SqlDbType.Int,true),
+                    roleID.ToSqlOutputParameter(nameof(roleID),SqlDbType.Int),
                     roleName.ToSqlParameter(nameof(roleName),SqlDbType.NVarChar),
                     roleCode.ToSqlParameter(nameof(roleCode),SqlDbType.Int),
                 ]

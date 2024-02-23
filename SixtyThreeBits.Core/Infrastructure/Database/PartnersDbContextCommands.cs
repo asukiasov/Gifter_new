@@ -17,7 +17,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
                 sqlParameters:
                 [
                     databaseAction.ToSqlParameter(nameof(databaseAction),SqlDbType.TinyInt),
-                    partnerID.ToSqlParameter(nameof(partnerID),SqlDbType.Int,true),
+                    partnerID.ToSqlOutputParameter(nameof(partnerID),SqlDbType.Int),
                     partnerName.ToSqlParameter(nameof(partnerName),SqlDbType.NVarChar),
                     partnerNameEng.ToSqlParameter(nameof(partnerNameEng),SqlDbType.NVarChar),
                     partnerShortDescription.ToSqlParameter(nameof(partnerShortDescription),SqlDbType.NVarChar),

@@ -17,7 +17,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
                 sqlParameters:
                 [
                     databaseAction.ToSqlParameter(nameof(databaseAction),SqlDbType.TinyInt),
-                    emailTemplateID.ToSqlParameter(nameof(emailTemplateID),SqlDbType.Int, true),
+                    emailTemplateID.ToSqlOutputParameter(nameof(emailTemplateID),SqlDbType.Int),
                     emailTemplateName.ToSqlParameter(nameof(emailTemplateName),SqlDbType.NVarChar),
                     emailTemplateSubject.ToSqlParameter(nameof(emailTemplateSubject),SqlDbType.NVarChar),
                     emailTemplateSubjectEng.ToSqlParameter(nameof(emailTemplateSubjectEng),SqlDbType.NVarChar),

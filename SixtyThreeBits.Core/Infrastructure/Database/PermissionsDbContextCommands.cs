@@ -33,7 +33,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
                 sqlParameters:
                 [
                     databaseAction.ToSqlParameter(nameof(databaseAction),SqlDbType.TinyInt),
-                    permissionID.ToSqlParameter(nameof(permissionID),SqlDbType.Int,true),
+                    permissionID.ToSqlOutputParameter(nameof(permissionID),SqlDbType.Int),
                     permissionParentID.ToSqlParameter(nameof(permissionParentID),SqlDbType.Int),
                     permissionCaption.ToSqlParameter(nameof(permissionCaption),SqlDbType.NVarChar),
                     permissionCaptionEng.ToSqlParameter(nameof(permissionCaptionEng),SqlDbType.NVarChar),

@@ -32,7 +32,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
                 sqlParameters:
                 [
                     databaseAction.ToSqlParameter(nameof(databaseAction),SqlDbType.TinyInt),
-                    dictionaryID.ToSqlParameter(nameof(dictionaryID),SqlDbType.Int, true),
+                    dictionaryID.ToSqlOutputParameter(nameof(dictionaryID),SqlDbType.Int),
                     dictionaryCaption.ToSqlParameter(nameof(dictionaryCaption),SqlDbType.NVarChar),
                     dictionaryCaptionEng.ToSqlParameter(nameof(dictionaryCaptionEng),SqlDbType.NVarChar),
                     dictionaryParentID.ToSqlParameter(nameof(dictionaryParentID),SqlDbType.Int),

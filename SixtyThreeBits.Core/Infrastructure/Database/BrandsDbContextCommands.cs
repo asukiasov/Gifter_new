@@ -17,7 +17,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
                 sqlParameters:
                 [
                      databaseAction.ToSqlParameter(nameof(databaseAction),SqlDbType.TinyInt),
-                     brandID.ToSqlParameter(nameof(brandID),SqlDbType.Int,true),
+                     brandID.ToSqlOutputParameter(nameof(brandID),SqlDbType.Int),
                      brandName.ToSqlParameter(nameof(brandName),SqlDbType.NVarChar),
                      brandNameEng.ToSqlParameter(nameof(brandNameEng),SqlDbType.NVarChar),
                      brandImageFilename.ToSqlParameter(nameof(brandImageFilename),SqlDbType.NVarChar)

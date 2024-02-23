@@ -18,7 +18,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
                 sqlParameters:
                 [
                     databaseAction.ToSqlParameter(nameof(databaseAction),SqlDbType.TinyInt),
-                    newsID.ToSqlParameter(nameof(newsID),SqlDbType.Int,true),
+                    newsID.ToSqlOutputParameter(nameof(newsID),SqlDbType.Int),
                     newsSlug.ToSqlParameter(nameof(newsSlug),SqlDbType.NVarChar),
                     newsTitle.ToSqlParameter(nameof(newsTitle),SqlDbType.NVarChar),
                     newsTitleEng.ToSqlParameter(nameof(newsTitleEng),SqlDbType.NVarChar),

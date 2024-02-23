@@ -19,7 +19,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
                 [
                     databaseAction.ToSqlParameter(nameof(databaseAction),SqlDbType.TinyInt),
                     roleID.ToSqlParameter(nameof(roleID),SqlDbType.Int),
-                    userID.ToSqlParameter(nameof(userID),SqlDbType.Int,true),
+                    userID.ToSqlOutputParameter(nameof(userID),SqlDbType.Int),
                     userEmail.ToSqlParameter(nameof(userEmail),SqlDbType.VarChar),
                     userPassword.ToSqlParameter(nameof(userPassword),SqlDbType.NVarChar),
                     userFirstname.ToSqlParameter(nameof(userFirstname),SqlDbType.NVarChar),

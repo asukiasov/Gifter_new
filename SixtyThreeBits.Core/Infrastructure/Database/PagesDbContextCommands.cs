@@ -33,7 +33,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
                 sqlParameters:
                 [
                     databaseAction.ToSqlParameter(nameof(databaseAction),SqlDbType.TinyInt),
-                    pageID.ToSqlParameter(nameof(pageID),SqlDbType.Int, true),
+                    pageID.ToSqlOutputParameter(nameof(pageID),SqlDbType.Int),
                     pageParentID.ToSqlParameter(nameof(pageParentID),SqlDbType.Int),
                     pageSlug.ToSqlParameter(nameof(pageSlug),SqlDbType.VarChar),
                     pageTitle.ToSqlParameter(nameof(pageTitle),SqlDbType.NVarChar),

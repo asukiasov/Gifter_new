@@ -18,7 +18,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
                 sqlParameters:
                 [
                      iud.ToSqlParameter(nameof(iud),SqlDbType.TinyInt),
-                     blogPostID.ToSqlParameter(nameof(blogPostID),SqlDbType.Int,true),
+                     blogPostID.ToSqlOutputParameter(nameof(blogPostID),SqlDbType.Int),
                      blogPostlug.ToSqlParameter(nameof(blogPostlug),SqlDbType.NVarChar),
                      blogPostTitle.ToSqlParameter(nameof(blogPostTitle),SqlDbType.NVarChar),
                      blogPostShortText.ToSqlParameter(nameof(blogPostShortText),SqlDbType.NVarChar),

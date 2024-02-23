@@ -33,7 +33,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
                 sqlParameters:
                 [
                     databaseAction.ToSqlParameter(nameof(databaseAction),SqlDbType.TinyInt),
-                    productCategoryID.ToSqlParameter(nameof(productCategoryID),SqlDbType.Int, true),
+                    productCategoryID.ToSqlOutputParameter(nameof(productCategoryID),SqlDbType.Int),
                     productCategoryParentID.ToSqlParameter(nameof(productCategoryParentID),SqlDbType.Int),
                     productCategoryName.ToSqlParameter(nameof(productCategoryName),SqlDbType.NVarChar),
                     productCategoryNameEng.ToSqlParameter(nameof(productCategoryNameEng),SqlDbType.NVarChar),
@@ -74,7 +74,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
                 sqlParameters:
                 [
                     databaseAction.ToSqlParameter(nameof(databaseAction),SqlDbType.TinyInt),
-                    productID.ToSqlParameter(nameof(productID),SqlDbType.Int, true),
+                    productID.ToSqlOutputParameter(nameof(productID),SqlDbType.Int),
                     productCategoryID.ToSqlParameter(nameof(productCategoryID),SqlDbType.Int),
                     countryIDProducer.ToSqlParameter(nameof(countryIDProducer),SqlDbType.Int),
                     brandID.ToSqlParameter(nameof(brandID),SqlDbType.Int),
@@ -110,7 +110,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
                 sqlParameters:
                 [
                     databaseAction.ToSqlParameter(nameof(databaseAction),SqlDbType.TinyInt),
-                    productImageID.ToSqlParameter(nameof(productImageID),SqlDbType.Int, true),
+                    productImageID.ToSqlOutputParameter(nameof(productImageID),SqlDbType.Int),
                     productID.ToSqlParameter(nameof(productID), SqlDbType.Int),
                     productImageFilename.ToSqlParameter(nameof(productImageFilename),SqlDbType.NVarChar),
                     productImageSortIndex.ToSqlParameter(nameof(productImageSortIndex),SqlDbType.Int)

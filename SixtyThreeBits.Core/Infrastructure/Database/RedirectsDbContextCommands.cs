@@ -17,7 +17,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
                 sqlParameters:
                 [
                     databaseAction.ToSqlParameter(nameof(databaseAction),SqlDbType.TinyInt),
-                    redirectID.ToSqlParameter(nameof(redirectID),SqlDbType.Int,true),
+                    redirectID.ToSqlOutputParameter(nameof(redirectID),SqlDbType.Int),
                     redirectFrom.ToSqlParameter(nameof(redirectFrom),SqlDbType.NVarChar),
                     redirectTo.ToSqlParameter(nameof(redirectTo),SqlDbType.NVarChar),
                 ]

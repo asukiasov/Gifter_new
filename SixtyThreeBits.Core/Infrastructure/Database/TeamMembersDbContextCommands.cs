@@ -17,7 +17,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
                 sqlParameters:
                 [
                     databaseAction.ToSqlParameter(nameof(databaseAction), SqlDbType.TinyInt),
-                    teamMemberID.ToSqlParameter(nameof(teamMemberID), SqlDbType.Int, true),
+                    teamMemberID.ToSqlOutputParameter(nameof(teamMemberID), SqlDbType.Int),
                     teamMemberFirstName.ToSqlParameter(nameof(teamMemberFirstName), SqlDbType.NVarChar),
                     teamMemberLastName.ToSqlParameter(nameof(teamMemberLastName), SqlDbType.NVarChar),
                     teamMemberPosition.ToSqlParameter(nameof(teamMemberPosition), SqlDbType.NVarChar),
