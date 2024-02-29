@@ -28,54 +28,66 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         #region Methods
         public async Task<NewsDTO> NewsGetSingleByID(int? newsID)
         {
-            var result = await TryToReturnAsyncTask($"{nameof(NewsGetSingleByID)}({nameof(newsID)} = {newsID})", async () =>
-            {
-                using (var db = _connectionFactory.GetDbContextQueries())
+            var result = await TryToReturnAsyncTask(
+                logString: $"{nameof(NewsGetSingleByID)}({nameof(newsID)} = {newsID})", 
+                asyncFuncToTry: async () =>
                 {
-                    var resultJson = await db.NewsGetSingleByID(newsID);
-                    var result = resultJson?.DeserializeJsonTo<NewsDTO>();
-                    return result;
+                    using (var db = _connectionFactory.GetDbContextQueries())
+                    {
+                        var resultJson = await db.NewsGetSingleByID(newsID);
+                        var result = resultJson?.DeserializeJsonTo<NewsDTO>();
+                        return result;
+                    }
                 }
-            });
+            );
             return result;
         }
 
         public async Task<bool> NewsIsSlugUniq(string newsSlug, int? newsID = null)
         {
-            var result = await TryToReturnAsyncTask($"{nameof(NewsIsSlugUniq)}({nameof(newsSlug)} = {newsSlug}, {nameof(newsID)} = {newsID})", async () =>
-            {
-                using (var db = _connectionFactory.GetDbContextQueries())
+            var result = await TryToReturnAsyncTask(
+                logString: $"{nameof(NewsIsSlugUniq)}({nameof(newsSlug)} = {newsSlug}, {nameof(newsID)} = {newsID})", 
+                asyncFuncToTry: async () =>
                 {
-                    var result = await db.NewsIsSlugUniq(newsSlug, newsID);
-                    return result;
+                    using (var db = _connectionFactory.GetDbContextQueries())
+                    {
+                        var result = await db.NewsIsSlugUniq(newsSlug, newsID);
+                        return result;
+                    }
                 }
-            });
+            );
             return result;
         }
 
         public async Task<int?> NewsIUD(Enums.DatabaseActions databaseAction, int? newsID = null, string newsSlug = null, string newsTitle = null, string newsTitleEng = null, string newsText = null, string newsTextEng = null, string newsShortDescription = null, string newsShortDescriptionEng = null, string newsImageFilename = null, DateTime? newsDatePublished = null, bool? newsIsPublished = null)
         {
-            newsID = await TryToReturnAsyncTask($"{nameof(NewsIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(newsID)} = {newsID}, {nameof(newsSlug)} = {newsSlug}, {nameof(newsTitle)} = {newsTitle}, {nameof(newsTitleEng)} = {newsTitleEng}, {nameof(newsText)} = {newsText}, {nameof(newsTextEng)} = {newsTextEng}, {nameof(newsShortDescription)} = {newsShortDescription}, {nameof(newsShortDescriptionEng)} = {newsShortDescriptionEng}, {nameof(newsImageFilename)} = {newsImageFilename}, {nameof(newsDatePublished)} = {newsDatePublished})", async () =>
-            {
-                using (var db = _connectionFactory.GetDbContextCommands())
+            newsID = await TryToReturnAsyncTask(
+                logString: $"{nameof(NewsIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(newsID)} = {newsID}, {nameof(newsSlug)} = {newsSlug}, {nameof(newsTitle)} = {newsTitle}, {nameof(newsTitleEng)} = {newsTitleEng}, {nameof(newsText)} = {newsText}, {nameof(newsTextEng)} = {newsTextEng}, {nameof(newsShortDescription)} = {newsShortDescription}, {nameof(newsShortDescriptionEng)} = {newsShortDescriptionEng}, {nameof(newsImageFilename)} = {newsImageFilename}, {nameof(newsDatePublished)} = {newsDatePublished})", 
+                asyncFuncToTry: async () =>
                 {
-                    newsID = await db.NewsIUD(databaseAction, newsID, newsSlug, newsTitle, newsTitleEng, newsText, newsTextEng, newsShortDescription, newsShortDescriptionEng, newsImageFilename, newsDatePublished, newsIsPublished);
-                    return newsID;
+                    using (var db = _connectionFactory.GetDbContextCommands())
+                    {
+                        newsID = await db.NewsIUD(databaseAction, newsID, newsSlug, newsTitle, newsTitleEng, newsText, newsTextEng, newsShortDescription, newsShortDescriptionEng, newsImageFilename, newsDatePublished, newsIsPublished);
+                        return newsID;
+                    }
                 }
-            });
+            );
             return newsID;
         }
 
         public async Task<List<NewsDTO>> NewsList()
         {
-            var result = await TryToReturnAsyncTask($"{nameof(NewsList)}()", async () =>
-            {
-                using (var db = _connectionFactory.GetDbContextQueries())
+            var result = await TryToReturnAsyncTask(
+                logString: $"{nameof(NewsList)}()", 
+                asyncFuncToTry: async () =>
                 {
-                    var result = (await db.NewsList().OrderByDescending(item => item.NewsDateCreated).ToListAsync())?.Select(item => _mapper.Map<NewsDTO>(item)).ToList();
-                    return result;
+                    using (var db = _connectionFactory.GetDbContextQueries())
+                    {
+                        var result = (await db.NewsList().OrderByDescending(item => item.NewsDateCreated).ToListAsync())?.Select(item => _mapper.Map<NewsDTO>(item)).ToList();
+                        return result;
+                    }
                 }
-            });
+            );
             return result;
         }
         #endregion

@@ -30,79 +30,97 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         #region Methods
         public async Task ProductCategoriesDeleteRecursive(int? productCategoryID)
         {
-            await TryExecuteAsyncTask($"{nameof(ProductCategoriesDeleteRecursive)}({nameof(productCategoryID)} = {productCategoryID})", async () =>
-            {
-                using (var db = _connectionFactory.GetDbContextCommands())
+            await TryExecuteAsyncTask(
+                logString: $"{nameof(ProductCategoriesDeleteRecursive)}({nameof(productCategoryID)} = {productCategoryID})", 
+                asyncFuncToTry: async () =>
                 {
-                    await db.ProductCategoriesDeleteRecursive(productCategoryID);
+                    using (var db = _connectionFactory.GetDbContextCommands())
+                    {
+                        await db.ProductCategoriesDeleteRecursive(productCategoryID);
+                    }
                 }
-            });
+            );
         }
 
         public async Task<ProductCategoryDTO> ProductCategoriesGetSingleByID(int? productCategoryID)
         {
-            var result = await TryToReturnAsyncTask($"{nameof(ProductCategoriesGetSingleByID)}({nameof(productCategoryID)} = {productCategoryID})", async () =>
-            {
-                using (var db = _connectionFactory.GetDbContextQueries())
+            var result = await TryToReturnAsyncTask(
+                logString: $"{nameof(ProductCategoriesGetSingleByID)}({nameof(productCategoryID)} = {productCategoryID})", 
+                asyncFuncToTry: async () =>
                 {
-                    var resultJson = await db.ProductCategoriesGetSingleByID(productCategoryID);
-                    var result = resultJson?.DeserializeJsonTo<ProductCategoryDTO>();
-                    return result;
+                    using (var db = _connectionFactory.GetDbContextQueries())
+                    {
+                        var resultJson = await db.ProductCategoriesGetSingleByID(productCategoryID);
+                        var result = resultJson?.DeserializeJsonTo<ProductCategoryDTO>();
+                        return result;
+                    }
                 }
-            });
+            );
             return result;
         }
 
         public async Task<ProductCategoryDTO> ProductCategoriesGetSingleBySlug(string productCategorySlug)
         {
-            var result = await TryToReturnAsyncTask($"{nameof(ProductCategoriesGetSingleBySlug)}({nameof(productCategorySlug)} = {productCategorySlug})", async () =>
-            {
-                using (var db = _connectionFactory.GetDbContextQueries())
+            var result = await TryToReturnAsyncTask(
+                logString: $"{nameof(ProductCategoriesGetSingleBySlug)}({nameof(productCategorySlug)} = {productCategorySlug})", 
+                asyncFuncToTry: async () =>
                 {
-                    var resultJson = await db.ProductCategoriesGetSingleBySlug(productCategorySlug);
-                    var result = resultJson?.DeserializeJsonTo<ProductCategoryDTO>();
-                    return result;
+                    using (var db = _connectionFactory.GetDbContextQueries())
+                    {
+                        var resultJson = await db.ProductCategoriesGetSingleBySlug(productCategorySlug);
+                        var result = resultJson?.DeserializeJsonTo<ProductCategoryDTO>();
+                        return result;
+                    }
                 }
-            });
+            );
             return result;
         }
 
         public async Task<int?> ProductCategoriesIUD(Enums.DatabaseActions databaseAction, int? productCategoryID = null, int? productCategoryParentID = null, string productCategoryName = null, string productCategoryNameEng = null, string productCategoryImageFilename = null, string productCategoryDescriptionShort = null, string productCategoryDescriptionShortEng = null)
         {
-            productCategoryID = await TryToReturnAsyncTask($"{nameof(ProductCategoriesIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(productCategoryID)} = {productCategoryID}, {nameof(productCategoryParentID)} = {productCategoryParentID}, {nameof(productCategoryName)} = {productCategoryName}, {nameof(productCategoryNameEng)} = {productCategoryNameEng}, {nameof(productCategoryImageFilename)} = {productCategoryImageFilename}, {nameof(productCategoryDescriptionShort)} = {productCategoryDescriptionShort}, {nameof(productCategoryDescriptionShortEng)} = {productCategoryDescriptionShortEng})", async () =>
-            {
-                using (var db = _connectionFactory.GetDbContextCommands())
+            productCategoryID = await TryToReturnAsyncTask(
+                logString: $"{nameof(ProductCategoriesIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(productCategoryID)} = {productCategoryID}, {nameof(productCategoryParentID)} = {productCategoryParentID}, {nameof(productCategoryName)} = {productCategoryName}, {nameof(productCategoryNameEng)} = {productCategoryNameEng}, {nameof(productCategoryImageFilename)} = {productCategoryImageFilename}, {nameof(productCategoryDescriptionShort)} = {productCategoryDescriptionShort}, {nameof(productCategoryDescriptionShortEng)} = {productCategoryDescriptionShortEng})", 
+                asyncFuncToTry: async () =>
                 {
-                    productCategoryID = await db.ProductCategoriesIUD(databaseAction, productCategoryID, productCategoryParentID, productCategoryName, productCategoryNameEng, productCategoryImageFilename, productCategoryDescriptionShort, productCategoryDescriptionShortEng);
-                    return productCategoryID;
+                    using (var db = _connectionFactory.GetDbContextCommands())
+                    {
+                        productCategoryID = await db.ProductCategoriesIUD(databaseAction, productCategoryID, productCategoryParentID, productCategoryName, productCategoryNameEng, productCategoryImageFilename, productCategoryDescriptionShort, productCategoryDescriptionShortEng);
+                        return productCategoryID;
+                    }
                 }
-            });
+            );
             return productCategoryID;
         }
 
         public async Task<List<ProductCategoryDTO>> ProductCategoriesList(int? productCategoryParentID = null)
         {
-            var result = await TryToReturnAsyncTask($"{nameof(ProductCategoriesList)}({nameof(productCategoryParentID)} = {productCategoryParentID})", async () =>
-            {
-                using (var db = _connectionFactory.GetDbContextQueries())
+            var result = await TryToReturnAsyncTask(
+                logString: $"{nameof(ProductCategoriesList)}({nameof(productCategoryParentID)} = {productCategoryParentID})",
+                asyncFuncToTry: async () =>
                 {
-                    var result = (await db.ProductCategoriesList(productCategoryParentID).OrderBy(item => item.ProductCategorySortIndex).ToListAsync())?.Select(item => _mapper.Map<ProductCategoryDTO>(item)).ToList();
-                    return result;
+                    using (var db = _connectionFactory.GetDbContextQueries())
+                    {
+                        var result = (await db.ProductCategoriesList(productCategoryParentID).OrderBy(item => item.ProductCategorySortIndex).ToListAsync())?.Select(item => _mapper.Map<ProductCategoryDTO>(item)).ToList();
+                        return result;
+                    }
                 }
-            });
+            );
             return result;
         }
 
         public async Task<List<ProductCategoriesListForDeleteRecursiveDTO>> ProductCategoriesListForDeleteRecursive(int? productCategoryID)
         {
-            var result = await TryToReturnAsyncTask($"{nameof(ProductCategoriesListForDeleteRecursive)}({nameof(productCategoryID)} = {productCategoryID})", async () =>
-            {
-                using (var db = _connectionFactory.GetDbContextQueries())
+            var result = await TryToReturnAsyncTask(
+                logString: $"{nameof(ProductCategoriesListForDeleteRecursive)}({nameof(productCategoryID)} = {productCategoryID})", 
+                asyncFuncToTry: async () =>
                 {
-                    var result = (await db.ProductCategoriesListForDeleteRecursive(productCategoryID).ToListAsync())?.Select(item => _mapper.Map<ProductCategoriesListForDeleteRecursiveDTO>(item)).ToList();
-                    return result;
+                    using (var db = _connectionFactory.GetDbContextQueries())
+                    {
+                        var result = (await db.ProductCategoriesListForDeleteRecursive(productCategoryID).ToListAsync())?.Select(item => _mapper.Map<ProductCategoriesListForDeleteRecursiveDTO>(item)).ToList();
+                        return result;
+                    }
                 }
-            });
+            );
             return result;
         }
 
@@ -146,92 +164,113 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         public async Task ProductCategoriesSyncParentsAndSortIndexes(List<SyncSortIndexesDTO> sortIndexes)
         {
             var sortIndexesJson = sortIndexes.ToJson();
-            await TryExecuteAsyncTask($"{nameof(ProductCategoriesSyncParentsAndSortIndexes)}({nameof(sortIndexes)} = {sortIndexesJson})", async () =>
-            {
-                using (var db = _connectionFactory.GetDbContextCommands())
+            await TryExecuteAsyncTask(
+                logString: $"{nameof(ProductCategoriesSyncParentsAndSortIndexes)}({nameof(sortIndexes)} = {sortIndexesJson})", 
+                asyncFuncToTry: async () =>
                 {
-                    await db.ProductCategoriesSyncParentsAndSortIndexes(sortIndexesJson);
+                    using (var db = _connectionFactory.GetDbContextCommands())
+                    {
+                        await db.ProductCategoriesSyncParentsAndSortIndexes(sortIndexesJson);
+                    }
                 }
-            });
+            );
         }
 
         public async Task<ProductDTO> ProductsGetSingleByID(int? productID)
         {
-            var result = await TryToReturnAsyncTask($"{nameof(ProductsGetSingleByID)}({nameof(productID)} = {productID})", async () =>
-            {
-                using (var db = _connectionFactory.GetDbContextQueries())
+            var result = await TryToReturnAsyncTask(
+                logString: $"{nameof(ProductsGetSingleByID)}({nameof(productID)} = {productID})", 
+                asyncFuncToTry: async () =>
                 {
-                    var resultJson = await db.ProductsGetSingleByID(productID);
-                    var result = resultJson?.DeserializeJsonTo<ProductDTO>();
-                    return result;
+                    using (var db = _connectionFactory.GetDbContextQueries())
+                    {
+                        var resultJson = await db.ProductsGetSingleByID(productID);
+                        var result = resultJson?.DeserializeJsonTo<ProductDTO>();
+                        return result;
+                    }
                 }
-            });
+            );
             return result;
         }
 
         public async Task<ProductDTO> ProductsGetsingleBySlug(string productSlug)
         {
-            var result = await TryToReturnAsyncTask($"{nameof(ProductsGetsingleBySlug)}({nameof(productSlug)} = {productSlug})", async () =>
-            {
-                using (var db = _connectionFactory.GetDbContextQueries())
+            var result = await TryToReturnAsyncTask(
+                logString: $"{nameof(ProductsGetsingleBySlug)}({nameof(productSlug)} = {productSlug})", 
+                asyncFuncToTry: async () =>
                 {
-                    var resultJson = await db.ProductsGetsingleBySlug(productSlug);
-                    var result = resultJson?.DeserializeJsonTo<ProductDTO>();
-                    return result;
+                    using (var db = _connectionFactory.GetDbContextQueries())
+                    {
+                        var resultJson = await db.ProductsGetsingleBySlug(productSlug);
+                        var result = resultJson?.DeserializeJsonTo<ProductDTO>();
+                        return result;
+                    }
                 }
-            });
+            );
             return result;
         }
 
         public async Task<int?> ProductsIUD(Enums.DatabaseActions databaseAction, int? productID = null, int? productCategoryID = null, int? countryIDProducer = null, int? brandID = null, string productName = null, string productNameEng = null, string productSlug = null, string productSlugEng = null, decimal? productPrice = null, decimal? productPriceOld = null, decimal? productRemainder = null, string productImageFilename = null, string productDescriptionShort = null, string productDescriptionShortEng = null, string productDescription = null, string productDescriptionEng = null, bool? productIsPublished = null, bool? productIsFeatured = null, string productSKU = null, string productIDExternal = null)
         {
-            var result = await TryToReturnAsyncTask($"{nameof(ProductsIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(productID)} = {productID}, {nameof(productCategoryID)} = {productCategoryID}, {nameof(countryIDProducer)} = {countryIDProducer}, {nameof(brandID)} = {brandID}, {nameof(productName)} = {productName}, {nameof(productNameEng)} = {productNameEng}, {nameof(productSlug)} = {productSlug}, {nameof(productSlugEng)} = {productSlugEng}, {nameof(productPrice)} = {productPrice}, {nameof(productPriceOld)} = {productPriceOld}, {nameof(productRemainder)} = {productRemainder}, {nameof(productImageFilename)} = {productImageFilename}, {nameof(productDescriptionShort)} = {productDescriptionShort}, {nameof(productDescriptionShortEng)} = {productDescriptionShortEng}, {nameof(productDescription)} = {productDescription}, {nameof(productDescriptionEng)} = {productDescriptionEng}, {nameof(productIsPublished)} = {productIsPublished}, {nameof(productIsFeatured)} = {productIsFeatured}, {nameof(productSKU)} = {productSKU}, {nameof(productIDExternal)} = {productIDExternal})", async () =>
-            {
-                using (var db = _connectionFactory.GetDbContextCommands())
+            var result = await TryToReturnAsyncTask(
+                logString: $"{nameof(ProductsIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(productID)} = {productID}, {nameof(productCategoryID)} = {productCategoryID}, {nameof(countryIDProducer)} = {countryIDProducer}, {nameof(brandID)} = {brandID}, {nameof(productName)} = {productName}, {nameof(productNameEng)} = {productNameEng}, {nameof(productSlug)} = {productSlug}, {nameof(productSlugEng)} = {productSlugEng}, {nameof(productPrice)} = {productPrice}, {nameof(productPriceOld)} = {productPriceOld}, {nameof(productRemainder)} = {productRemainder}, {nameof(productImageFilename)} = {productImageFilename}, {nameof(productDescriptionShort)} = {productDescriptionShort}, {nameof(productDescriptionShortEng)} = {productDescriptionShortEng}, {nameof(productDescription)} = {productDescription}, {nameof(productDescriptionEng)} = {productDescriptionEng}, {nameof(productIsPublished)} = {productIsPublished}, {nameof(productIsFeatured)} = {productIsFeatured}, {nameof(productSKU)} = {productSKU}, {nameof(productIDExternal)} = {productIDExternal})", 
+                asyncFuncToTry: async () =>
                 {
-                    productID = await db.ProductsIUD(databaseAction, productID, productCategoryID, countryIDProducer, brandID, productName, productNameEng, productSlug, productSlugEng, productPrice, productPriceOld, productRemainder, productImageFilename, productDescriptionShort, productDescriptionShortEng, productDescription, productDescriptionEng, productIsPublished, productIsFeatured, productSKU, productIDExternal);
-                    return productID;
+                    using (var db = _connectionFactory.GetDbContextCommands())
+                    {
+                        productID = await db.ProductsIUD(databaseAction, productID, productCategoryID, countryIDProducer, brandID, productName, productNameEng, productSlug, productSlugEng, productPrice, productPriceOld, productRemainder, productImageFilename, productDescriptionShort, productDescriptionShortEng, productDescription, productDescriptionEng, productIsPublished, productIsFeatured, productSKU, productIDExternal);
+                        return productID;
+                    }
                 }
-            });
+            );
             return result;
         }
 
         public async Task<int?> ProductsImagesIUD(Enums.DatabaseActions databaseAction, int? productImageID = null, int? productID = null, string productImageFilename = null, int? productImageSyncSortIndex = null)
         {
-            var result = await TryToReturnAsyncTask($"{nameof(ProductsImagesIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(productImageID)} = {productImageID}, {nameof(productID)} = {productID}, {nameof(productImageFilename)} = {productImageFilename}, {nameof(productImageSyncSortIndex)} = {productImageSyncSortIndex})", async () =>
-            {
-                using (var db = _connectionFactory.GetDbContextCommands())
+            var result = await TryToReturnAsyncTask(
+                logString: $"{nameof(ProductsImagesIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(productImageID)} = {productImageID}, {nameof(productID)} = {productID}, {nameof(productImageFilename)} = {productImageFilename}, {nameof(productImageSyncSortIndex)} = {productImageSyncSortIndex})", 
+                asyncFuncToTry: async () =>
                 {
-                    productImageID = await db.ProductsImagesIUD(databaseAction, productImageID, productID, productImageFilename, productImageSyncSortIndex);
-                    return productImageID;
+                    using (var db = _connectionFactory.GetDbContextCommands())
+                    {
+                        productImageID = await db.ProductsImagesIUD(databaseAction, productImageID, productID, productImageFilename, productImageSyncSortIndex);
+                        return productImageID;
+                    }
                 }
-            });
+            );
             return result;
         }
 
         public async Task<List<ProductsListDTO>> ProductsList()
         {
-            var result = await TryToReturnAsyncTask($"{nameof(ProductsList)}()", async () =>
-            {
-                using (var db = _connectionFactory.GetDbContextQueries())
+            var result = await TryToReturnAsyncTask(
+                logString: $"{nameof(ProductsList)}()", 
+                asyncFuncToTry: async () =>
                 {
-                    var result = (await db.ProductsList().OrderByDescending(item => item.ProductDateCreated).ToListAsync())?.Select(item => _mapper.Map<ProductsListDTO>(item)).ToList();
-                    return result;
+                    using (var db = _connectionFactory.GetDbContextQueries())
+                    {
+                        var result = (await db.ProductsList().OrderByDescending(item => item.ProductDateCreated).ToListAsync())?.Select(item => _mapper.Map<ProductsListDTO>(item)).ToList();
+                        return result;
+                    }
                 }
-            });
+            );
             return result;
         }
 
         public async Task ProductsImagesSyncSortIndex(int? productID, List<SyncSortIndexesDTO> sortIndexes)
         {
             var sortIndexesJson = sortIndexes.ToJson();
-            await TryExecuteAsyncTask($"{nameof(ProductsImagesSyncSortIndex)}({nameof(productID)} = {productID}, {nameof(sortIndexes)} = {sortIndexesJson})", async () =>
-            {
-                using (var db = _connectionFactory.GetDbContextCommands())
+            await TryExecuteAsyncTask(
+                logString: $"{nameof(ProductsImagesSyncSortIndex)}({nameof(productID)} = {productID}, {nameof(sortIndexes)} = {sortIndexesJson})", 
+                asyncFuncToTry: async () =>
                 {
-                    await db.ProductsImagesSyncSortIndex(productID, sortIndexesJson);
+                    using (var db = _connectionFactory.GetDbContextCommands())
+                    {
+                        await db.ProductsImagesSyncSortIndex(productID, sortIndexesJson);
+                    }
                 }
-            });
+            );
         }
         #endregion
     }

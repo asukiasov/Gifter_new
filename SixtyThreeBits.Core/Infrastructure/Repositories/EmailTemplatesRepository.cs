@@ -27,53 +27,65 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         #region Methods        
         public async Task<EmailTemplateDTO> EmailTemplatesGetSingleByID(int? emailTemplateID)
         {
-            var result = await TryToReturnAsyncTask($"{nameof(EmailTemplatesGetSingleByID)}({nameof(emailTemplateID)} = {emailTemplateID})", async () =>
-            {
-                using (var db = _connectionFactory.GetDbContextQueries())
+            var result = await TryToReturnAsyncTask(
+                logString: $"{nameof(EmailTemplatesGetSingleByID)}({nameof(emailTemplateID)} = {emailTemplateID})", 
+                asyncFuncToTry: async () =>
                 {
-                    var result = (await db.EmailTemplatesGetSingleByID(emailTemplateID)).DeserializeJsonTo<EmailTemplateDTO>();
-                    return result;
+                    using (var db = _connectionFactory.GetDbContextQueries())
+                    {
+                        var result = (await db.EmailTemplatesGetSingleByID(emailTemplateID)).DeserializeJsonTo<EmailTemplateDTO>();
+                        return result;
+                    }
                 }
-            });
+            );
             return result;
         }
 
         public async Task<int?> EmailTemplatesIUD(Enums.DatabaseActions databaseAction, int? emailTemplateID = null, string emailTemplateName = null, string emailTemplateSubject = null, string emailTemplateSubjectEng = null, string emailTemplateBody = null, string emailTemplateBodyEng = null)
         {
-            emailTemplateID = await TryToReturnAsyncTask($"{nameof(EmailTemplatesIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(emailTemplateID)} = {emailTemplateID}, {nameof(emailTemplateName)} = {emailTemplateName}, {nameof(emailTemplateSubject)} = {emailTemplateSubject}, {nameof(emailTemplateSubjectEng)} = {emailTemplateSubjectEng}, {nameof(emailTemplateBody)} = {emailTemplateBody}, {nameof(emailTemplateBodyEng)} = {emailTemplateBodyEng})", async () =>
-            {
-                using (var db = _connectionFactory.GetDbContextCommands())
+            emailTemplateID = await TryToReturnAsyncTask(
+                logString: $"{nameof(EmailTemplatesIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(emailTemplateID)} = {emailTemplateID}, {nameof(emailTemplateName)} = {emailTemplateName}, {nameof(emailTemplateSubject)} = {emailTemplateSubject}, {nameof(emailTemplateSubjectEng)} = {emailTemplateSubjectEng}, {nameof(emailTemplateBody)} = {emailTemplateBody}, {nameof(emailTemplateBodyEng)} = {emailTemplateBodyEng})", 
+                asyncFuncToTry: async () =>
                 {
-                    emailTemplateID = await db.EmailTemplatesIUD(databaseAction, emailTemplateID, emailTemplateName, emailTemplateSubject, emailTemplateSubjectEng, emailTemplateBody, emailTemplateBodyEng);
-                    return emailTemplateID;
+                    using (var db = _connectionFactory.GetDbContextCommands())
+                    {
+                        emailTemplateID = await db.EmailTemplatesIUD(databaseAction, emailTemplateID, emailTemplateName, emailTemplateSubject, emailTemplateSubjectEng, emailTemplateBody, emailTemplateBodyEng);
+                        return emailTemplateID;
+                    }
                 }
-            });
+            );
             return emailTemplateID;
         }
 
         public async Task<List<EmailTemplateDTO>> EmailTemplatesList()
         {
-            var result = await TryToReturnAsyncTask($"{nameof(EmailTemplatesList)}", async () =>
-            {
-                using (var db = _connectionFactory.GetDbContextQueries())
+            var result = await TryToReturnAsyncTask(
+                logString: $"{nameof(EmailTemplatesList)}()", 
+                asyncFuncToTry: async () =>
                 {
-                    var result = (await db.EmailTemplatesList().ToListAsync())?.Select(item => _mapper.Map<EmailTemplateDTO>(item)).ToList();
-                    return result;
+                    using (var db = _connectionFactory.GetDbContextQueries())
+                    {
+                        var result = (await db.EmailTemplatesList().ToListAsync())?.Select(item => _mapper.Map<EmailTemplateDTO>(item)).ToList();
+                        return result;
+                    }
                 }
-            });
+            );
             return result;
         }
 
         public async Task<string> EmailTemplatesWrapInLayout(string websiteHttpPath, string languageCultureCode, string bodyText, string urlUnsubscribe = null)
         {
-            var result = await TryToReturnAsyncTask($"{nameof(EmailTemplatesWrapInLayout)}({nameof(websiteHttpPath)} = {websiteHttpPath}, {nameof(languageCultureCode)} = {languageCultureCode}, {nameof(bodyText)} = {bodyText}, {nameof(urlUnsubscribe)} = {urlUnsubscribe})", async () =>
-            {
-                using (var db = _connectionFactory.GetDbContextQueries())
+            var result = await TryToReturnAsyncTask(
+                logString: $"{nameof(EmailTemplatesWrapInLayout)}({nameof(websiteHttpPath)} = {websiteHttpPath}, {nameof(languageCultureCode)} = {languageCultureCode}, {nameof(bodyText)} = {bodyText}, {nameof(urlUnsubscribe)} = {urlUnsubscribe})", 
+                asyncFuncToTry: async () =>
                 {
-                    var result = await db.EmailTemplatesWrapInLayout(websiteHttpPath, languageCultureCode, bodyText, urlUnsubscribe);
-                    return result;
+                    using (var db = _connectionFactory.GetDbContextQueries())
+                    {
+                        var result = await db.EmailTemplatesWrapInLayout(websiteHttpPath, languageCultureCode, bodyText, urlUnsubscribe);
+                        return result;
+                    }
                 }
-            });
+            );
             return result;
         }
         #endregion

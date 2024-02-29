@@ -26,27 +26,33 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         #region Methods
         public async Task<int?> RedirectsIUD(Enums.DatabaseActions databaseAction, int? redirectID = null, string redirectFrom = null, string redirectTo = null)
         {
-            redirectID = await TryToReturnAsyncTask($"{nameof(RedirectsIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(redirectID)} = {redirectID}, {nameof(redirectFrom)} = {redirectFrom}, {nameof(redirectTo)} = {redirectTo})", async () =>
-            {
-                using (var db = _connectionFactory.GetDbContextCommands())
+            redirectID = await TryToReturnAsyncTask(
+                logString: $"{nameof(RedirectsIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(redirectID)} = {redirectID}, {nameof(redirectFrom)} = {redirectFrom}, {nameof(redirectTo)} = {redirectTo})", 
+                asyncFuncToTry: async () =>
                 {
-                    redirectID = await db.RedirectsIUD(databaseAction, redirectID, redirectFrom, redirectTo);
-                    return redirectID;
+                    using (var db = _connectionFactory.GetDbContextCommands())
+                    {
+                        redirectID = await db.RedirectsIUD(databaseAction, redirectID, redirectFrom, redirectTo);
+                        return redirectID;
+                    }
                 }
-            });
+            );
             return redirectID;
         }
 
         public async Task<List<RedirectDTO>> RedirectsList()
         {
-            var result = await TryToReturnAsyncTask($"{nameof(RedirectsList)}()", async () =>
-            {
-                using (var db = _connectionFactory.GetDbContextQueries())
+            var result = await TryToReturnAsyncTask(
+                logString: $"{nameof(RedirectsList)}()", 
+                asyncFuncToTry: async () =>
                 {
-                    var result = (await db.RedirectsList().OrderByDescending(item => item.RedirectDateCreated).ToListAsync())?.Select(item => _mapper.Map<RedirectDTO>(item)).ToList();
-                    return result;
+                    using (var db = _connectionFactory.GetDbContextQueries())
+                    {
+                        var result = (await db.RedirectsList().OrderByDescending(item => item.RedirectDateCreated).ToListAsync())?.Select(item => _mapper.Map<RedirectDTO>(item)).ToList();
+                        return result;
+                    }
                 }
-            });
+            );
             return result;
         }
         #endregion

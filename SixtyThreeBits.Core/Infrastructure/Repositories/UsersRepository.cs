@@ -28,68 +28,83 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         #region Methods                
         public async Task<UserDTO> UsersGetSingleUserByUserID(int? userID)
         {
-            var result = await TryToReturnAsyncTask($"{nameof(UsersGetSingleUserByUserID)}({nameof(userID)} = {userID})", async () =>
-            {
-                using (var db = _connectionFactory.GetDbContextQueries())
+            var result = await TryToReturnAsyncTask(
+                logString: $"{nameof(UsersGetSingleUserByUserID)}({nameof(userID)} = {userID})", 
+                asyncFuncToTry: async () =>
                 {
-                    var resultJson = await db.UsersGetSingleUserByUserID(userID);
-                    var result = resultJson?.DeserializeJsonTo<UserDTO>();
-                    return result;
+                    using (var db = _connectionFactory.GetDbContextQueries())
+                    {
+                        var resultJson = await db.UsersGetSingleUserByUserID(userID);
+                        var result = resultJson?.DeserializeJsonTo<UserDTO>();
+                        return result;
+                    }
                 }
-            });
+            );
             return result;
         }
 
         public async Task<UserDTO> UsersGetSingleUserByEmailAndPassword(string userEmail, string userPassword)
         {
-            var result = await TryToReturnAsyncTask($"{nameof(UsersGetSingleUserByEmailAndPassword)}({nameof(userEmail)} = {userEmail}, {nameof(userPassword)} = {userPassword})", async () =>
-            {
-                using (var db = _connectionFactory.GetDbContextQueries())
+            var result = await TryToReturnAsyncTask(
+                logString: $"{nameof(UsersGetSingleUserByEmailAndPassword)}({nameof(userEmail)} = {userEmail}, {nameof(userPassword)} = {userPassword})", 
+                asyncFuncToTry: async () =>
                 {
-                    var resultJson = await db.UsersGetSingleUserByEmailAndPassword(userEmail, userPassword);
-                    var result = resultJson.DeserializeJsonTo<UserDTO>();
-                    return result;
+                    using (var db = _connectionFactory.GetDbContextQueries())
+                    {
+                        var resultJson = await db.UsersGetSingleUserByEmailAndPassword(userEmail, userPassword);
+                        var result = resultJson.DeserializeJsonTo<UserDTO>();
+                        return result;
+                    }
                 }
-            });
+            );
             return result;
         }
 
         public async Task<bool> UsersIsEmailUnique(string userEmail, int? userID = null)
         {
-            var result = await TryToReturn($"{nameof(UsersIsEmailUnique)}({nameof(userEmail)} = {userEmail}, {nameof(userID)} = {userID})", async () =>
-            {
-                using (var db = _connectionFactory.GetDbContextQueries())
+            var result = await TryToReturn(
+                logString: $"{nameof(UsersIsEmailUnique)}({nameof(userEmail)} = {userEmail}, {nameof(userID)} = {userID})", 
+                funcToTry: async () =>
                 {
-                    var result = await db.UsersIsEmailUnique(userEmail, userID);
-                    return result;
+                    using (var db = _connectionFactory.GetDbContextQueries())
+                    {
+                        var result = await db.UsersIsEmailUnique(userEmail, userID);
+                        return result;
+                    }
                 }
-            });
+            );
             return result;
         }
 
         public async Task<int?> UsersIUD(Enums.DatabaseActions databaseAction, int? roleID = null, int? userID = null, string userEmail = null, string userPassword = null, string userFirstname = null, string userLastname = null, DateTime? userBirthdate = null, string userPhoneNumberMobile = null, string userPersonalNumber = null, string userAvatarFilename = null, bool? userIsActive = null)
         {
-            userID = await TryToReturnAsyncTask($"{nameof(UsersIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(roleID)} = {roleID}, {nameof(userID)} = {userID}, {nameof(userEmail)} = {userEmail}, {nameof(userPassword)} = {userPassword}, {nameof(userFirstname)} = {userFirstname}, {nameof(userLastname)} = {userLastname}, {nameof(userBirthdate)} = {userBirthdate}, {nameof(userPhoneNumberMobile)} = {userPhoneNumberMobile}, {nameof(userPersonalNumber)} = {userPersonalNumber}, {nameof(userAvatarFilename)} = {userAvatarFilename}, {nameof(userIsActive)} = {userIsActive})", async () =>
-            {
-                using (var db = _connectionFactory.GetDbContextCommands())
+            userID = await TryToReturnAsyncTask(
+                logString: $"{nameof(UsersIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(roleID)} = {roleID}, {nameof(userID)} = {userID}, {nameof(userEmail)} = {userEmail}, {nameof(userPassword)} = {userPassword}, {nameof(userFirstname)} = {userFirstname}, {nameof(userLastname)} = {userLastname}, {nameof(userBirthdate)} = {userBirthdate}, {nameof(userPhoneNumberMobile)} = {userPhoneNumberMobile}, {nameof(userPersonalNumber)} = {userPersonalNumber}, {nameof(userAvatarFilename)} = {userAvatarFilename}, {nameof(userIsActive)} = {userIsActive})", 
+                asyncFuncToTry: async () =>
                 {
-                    userID = await db.UsersIUD(databaseAction, userID, roleID, userEmail, userPassword, userFirstname, userLastname, userBirthdate, userPhoneNumberMobile, userPersonalNumber, userAvatarFilename, userIsActive);
-                    return userID;
+                    using (var db = _connectionFactory.GetDbContextCommands())
+                    {
+                        userID = await db.UsersIUD(databaseAction, userID, roleID, userEmail, userPassword, userFirstname, userLastname, userBirthdate, userPhoneNumberMobile, userPersonalNumber, userAvatarFilename, userIsActive);
+                        return userID;
+                    }
                 }
-            });
+            );
             return userID;
         }
 
         public async Task<List<UsersListDTO>> UsersList()
         {
-            var result = await TryToReturnAsyncTask($"{nameof(UsersList)}()", async () =>
-            {
-                using (var db = _connectionFactory.GetDbContextQueries())
+            var result = await TryToReturnAsyncTask(
+                logString: $"{nameof(UsersList)}()", 
+                asyncFuncToTry: async () =>
                 {
-                    var result = (await db.UsersList().OrderByDescending(item => item.UserDateCreated).ToListAsync())?.Select(item => _mapper.Map<UsersListDTO>(item)).ToList();
-                    return result;
+                    using (var db = _connectionFactory.GetDbContextQueries())
+                    {
+                        var result = (await db.UsersList().OrderByDescending(item => item.UserDateCreated).ToListAsync())?.Select(item => _mapper.Map<UsersListDTO>(item)).ToList();
+                        return result;
+                    }
                 }
-            });
+            );
             return result;
         }
         #endregion Methods

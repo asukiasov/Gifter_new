@@ -18,115 +18,137 @@ namespace SixtyThreeBits.Core.Libraries
         #endregion
 
         #region Methods
-        protected void TryExecute(string Logger = null, Action ActionToTry = null, Action ActionForCatch = null, [CallerFilePath] string CallerFilePath = "", [CallerLineNumber] int CallerLineNumber = 0)
+        protected void TryExecute(string logString, Action actionToTry, Action actionForCatch = null, [CallerFilePath] string callerFilePath = "", [CallerLineNumber] int callerLineNumber = 0)
         {
             try
             {
                 IsError = false;
-                ActionToTry();
+                actionToTry();
             }
             catch (Exception ex)
             {
-                if (ActionForCatch == null)
+                if (actionForCatch == null)
                 {
-                    ProcessException(Logger, ex, CallerFilePath, CallerLineNumber);
+                    processException(
+                        logString: logString,
+                        ex: ex,
+                        callerFilePath: callerFilePath,
+                        callerLineNumber: callerLineNumber
+                    );
                 }
                 else
                 {
                     ExceptionObject = ex;
-                    ActionForCatch.Invoke();
+                    actionForCatch.Invoke();
                 }
             }
         }
 
-        protected async Task TryExecuteAsyncTask(string Logger, Func<Task> AsyncActionToTry, Func<Task> AsyncActionForCatch = null, Action ActionForCatch = null, [CallerFilePath] string CallerFilePath = "", [CallerLineNumber] int CallerLineNumber = 0)
+        protected async Task TryExecuteAsyncTask(string logString, Func<Task> asyncFuncToTry, Func<Task> asyncFuncForCatch = null, Action actionForCatch = null, [CallerFilePath] string callerFilePath = "", [CallerLineNumber] int callerLineNumber = 0)
         {
             try
             {
                 IsError = false;
-                await AsyncActionToTry();
+                await asyncFuncToTry();
             }
             catch (Exception ex)
             {
-                if (ActionForCatch == null)
+                if (actionForCatch == null)
                 {
-                    ProcessException(Logger, ex, CallerFilePath, CallerLineNumber);
+                    processException(
+                        logString: logString,
+                        ex: ex,
+                        callerFilePath: callerFilePath,
+                        callerLineNumber: callerLineNumber
+                    );
                 }
-                else if (AsyncActionForCatch != null)
+                else if (asyncFuncForCatch != null)
                 {
-                    await AsyncActionForCatch();
+                    await asyncFuncForCatch();
                 }
                 else
                 {
-                    ActionForCatch();
+                    actionForCatch();
                 }
             }
         }
 
-        protected T TryToReturn<T>(string Logger = null, Func<T> ActionToTry = null, Func<T> ActionForCatch = null, [CallerFilePath] string CallerFilePath = "", [CallerLineNumber] int CallerLineNumber = 0)
+        protected T TryToReturn<T>(string logString, Func<T> funcToTry, Func<T> funcForCatch = null, [CallerFilePath] string callerFilePath = "", [CallerLineNumber] int callerLineNumber = 0)
         {
+            var result = default(T);
             try
             {
                 IsError = false;
-                return ActionToTry();
+                result = funcToTry();
             }
             catch (Exception ex)
             {
-                if (ActionForCatch == null)
+                if (funcForCatch == null)
                 {
-                    ProcessException(Logger, ex, CallerFilePath, CallerLineNumber);
+                    processException(
+                        logString: logString,
+                        ex: ex,
+                        callerFilePath: callerFilePath,
+                        callerLineNumber: callerLineNumber
+                    );
                 }
                 else
                 {
                     ExceptionObject = ex;
-                    return ActionForCatch();
-                }
-                return default;
+                    result = funcForCatch();
+                }                
             }
+            return result;
         }
 
-        protected async Task<T> TryToReturnAsyncTask<T>(string Logger = null, Func<Task<T>> AsyncActionToTry = null, Func<Task<T>> AsyncActionForCatch = null, Func<T> ActionForCatch = null, [CallerFilePath] string CallerFilePath = "", [CallerLineNumber] int CallerLineNumber = 0)
+        protected async Task<T> TryToReturnAsyncTask<T>(string logString = null, Func<Task<T>> asyncFuncToTry = null, Func<Task<T>> asyncFuncForCatch = null, Func<T> funcForCatch = null, [CallerFilePath] string callerFilePath = "", [CallerLineNumber] int callerLineNumber = 0)
         {
+            var result = default(T);
             try
             {
                 IsError = false;
-                return await AsyncActionToTry();
+                result = await asyncFuncToTry();
             }
             catch (Exception ex)
             {
                 ExceptionObject = ex;
 
-                if (AsyncActionForCatch == null && ActionForCatch == null)
+                if (asyncFuncForCatch == null && funcForCatch == null)
                 {
-                    ProcessException(Logger, ex, CallerFilePath, CallerLineNumber);
-                    return default;
+                    processException(
+                        logString: logString,
+                        ex: ex,
+                        callerFilePath: callerFilePath,
+                        callerLineNumber: callerLineNumber
+                    );                    
                 }
-                else if (AsyncActionForCatch != null)
+                else if (asyncFuncForCatch != null)
                 {
-                    return await AsyncActionForCatch();
+                    result = await asyncFuncForCatch();
                 }
                 else
                 {
-                    return ActionForCatch();
+                    result = funcForCatch();
                 }
             }
+            return result;
         }
 
-        void ProcessException(string Logger, Exception ex, [CallerFilePath] string CallerFilePath = "", [CallerLineNumber] int CallerLineNumber = 0)
+        void processException(string logString, Exception ex, [CallerFilePath] string callerFilePath = "", [CallerLineNumber] int callerLineNumber = 0)
         {
             IsError = true;
 
             if (ex is SqlException)
             {
-                ProcessSqlException(Logger, (SqlException)ex, CallerFilePath, CallerLineNumber);
+                processSqlException(logString, (SqlException)ex, callerFilePath, callerLineNumber);
             }
             else
             {
-                ProcessRegularException(Logger, ex, CallerFilePath, CallerLineNumber);
+                processSystemException(logString, ex, callerFilePath, callerLineNumber);
             }
         }
 
-        void ProcessRegularException(string Logger, Exception ex, string CallerFilePath, int CallerLineNumber)
+        void processSystemException(string logString, Exception ex, string callerFilePath, int callerLineNumber)
         {
             if (ex.InnerException == null)
             {
@@ -136,14 +158,14 @@ namespace SixtyThreeBits.Core.Libraries
             {
                 ErrorMessage = $"Exception: {ex.Message}{Environment.NewLine}InnerException: {ex.InnerException.Message}{Environment.NewLine}";
             }
-            ErrorMessageExtended = string.Format("Source File - {0}{4}Line Number - {1}{4}{2} --- {3}{4}", CallerFilePath, CallerLineNumber, Logger, ErrorMessage, Environment.NewLine);
+            ErrorMessageExtended = string.Format("Source File - {0}{4}Line Number - {1}{4}{2} --- {3}", callerFilePath, callerLineNumber, logString, ErrorMessage, Environment.NewLine);
             if (!IsCustomDatabaseMessage)
             {
                 ErrorMessageExtended.LogString();
             }
         }
 
-        void ProcessSqlException(string Logger, SqlException ex, string CallerFilePath, int CallerLineNumber)
+        void processSqlException(string logString, SqlException ex, string callerFilePath, int callerLineNumber)
         {
             var sb = new StringBuilder();
             for (int i = 0; i < ex.Errors.Count; i++)
@@ -159,7 +181,7 @@ namespace SixtyThreeBits.Core.Libraries
                 }
             }
             ErrorMessage = sb.ToString();
-            ErrorMessageExtended = string.Format("Source File - {0}{4}Line Number - {1}{4}{2} --- {3}{4}", CallerFilePath, CallerLineNumber, Logger, ErrorMessage, Environment.NewLine);
+            ErrorMessageExtended = string.Format("Source File - {0}{4}Line Number - {1}{4}{2} --- {3}", callerFilePath, callerLineNumber, logString, ErrorMessage, Environment.NewLine);
             if (!IsCustomDatabaseMessage)
             {
                 ErrorMessageExtended.LogString();

@@ -27,41 +27,50 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         #region Methods
         public async Task<BrandDTO> BrandsGetSingleByID(int? brandID)
         {
-            var result = await TryToReturnAsyncTask($"{nameof(BrandsGetSingleByID)}({nameof(brandID)} = {brandID})", async () =>
-            {
-                using (var db = _connectionFactory.GetDbContextQueries())
+            var result = await TryToReturnAsyncTask(
+                logString: $"{nameof(BrandsGetSingleByID)}({nameof(brandID)} = {brandID})", 
+                asyncFuncToTry: async () =>
                 {
-                    var resultJson = await db.BrandsGetSingleByID(brandID);
-                    var result = resultJson?.DeserializeJsonTo<BrandDTO>();
-                    return result;
+                    using (var db = _connectionFactory.GetDbContextQueries())
+                    {
+                        var resultJson = await db.BrandsGetSingleByID(brandID);
+                        var result = resultJson?.DeserializeJsonTo<BrandDTO>();
+                        return result;
+                    }
                 }
-            });
+            );
             return result;
         }
 
         public async Task<int?> BrandsIUD(Enums.DatabaseActions databaseAction, int? brandID = null, string brandName = null, string brandNameEng = null, string brandImageFilename = null)
         {
-            brandID = await TryToReturnAsyncTask($"{nameof(BrandsIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(brandID)} = {brandID}, {nameof(brandName)} = {brandName}, {nameof(brandNameEng)} = {brandNameEng})", async () =>
-            {
-                using (var db = _connectionFactory.GetDbContextCommands())
+            brandID = await TryToReturnAsyncTask(
+                logString: $"{nameof(BrandsIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(brandID)} = {brandID}, {nameof(brandName)} = {brandName}, {nameof(brandNameEng)} = {brandNameEng})", 
+                asyncFuncToTry: async () =>
                 {
-                    brandID = await db.BrandsIUD(databaseAction, brandID, brandName, brandNameEng, brandImageFilename);
-                    return brandID;
+                    using (var db = _connectionFactory.GetDbContextCommands())
+                    {
+                        brandID = await db.BrandsIUD(databaseAction, brandID, brandName, brandNameEng, brandImageFilename);
+                        return brandID;
+                    }
                 }
-            });
+            );
             return brandID;
         }
 
         public async Task<List<BrandDTO>> BrandsList()
         {
-            var result = await TryToReturnAsyncTask($"{nameof(BrandsList)}()", async () =>
-            {
-                using (var db = _connectionFactory.GetDbContextQueries())
+            var result = await TryToReturnAsyncTask(
+                logString: $"{nameof(BrandsList)}()", 
+                asyncFuncToTry: async () =>
                 {
-                    var result = (await db.BrandsList().OrderByDescending(item => item.BrandDateCreated).ToListAsync())?.Select(item => _mapper.Map<BrandDTO>(item)).ToList();
-                    return result;
+                    using (var db = _connectionFactory.GetDbContextQueries())
+                    {
+                        var result = (await db.BrandsList().OrderByDescending(item => item.BrandDateCreated).ToListAsync())?.Select(item => _mapper.Map<BrandDTO>(item)).ToList();
+                        return result;
+                    }
                 }
-            });
+            );
             return result;
         }
         #endregion
