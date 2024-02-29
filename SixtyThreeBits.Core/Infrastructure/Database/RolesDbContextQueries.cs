@@ -17,9 +17,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
         {
             var sqb = new SqlQueryBuilder(
                 dbContext: this,
-                databaseObjectType: DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
-                databaseObjectName: nameof(RolesList),
-                itemType: typeof(RolesListEntity)
+                databaseObjectName: nameof(RolesList)
             );
             var result = sqb.ExecuteQuery<RolesListEntity>();
             return result;

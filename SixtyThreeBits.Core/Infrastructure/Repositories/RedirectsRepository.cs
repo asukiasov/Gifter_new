@@ -26,25 +26,28 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         #region Methods
         public async Task<int?> RedirectsIUD(Enums.DatabaseActions databaseAction, int? redirectID = null, string redirectFrom = null, string redirectTo = null)
         {
-            return await TryToReturnAsyncTask($"{nameof(RedirectsIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(redirectID)} = {redirectID}, {nameof(redirectFrom)} = {redirectFrom}, {nameof(redirectTo)} = {redirectTo})", async () =>
+            redirectID = await TryToReturnAsyncTask($"{nameof(RedirectsIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(redirectID)} = {redirectID}, {nameof(redirectFrom)} = {redirectFrom}, {nameof(redirectTo)} = {redirectTo})", async () =>
             {
                 using (var db = _connectionFactory.GetDbContextCommands())
                 {
-                    await db.RedirectsIUD(databaseAction, redirectID, redirectFrom, redirectTo);
+                    redirectID = await db.RedirectsIUD(databaseAction, redirectID, redirectFrom, redirectTo);
                     return redirectID;
                 }
             });
+            return redirectID;
         }
 
         public async Task<List<RedirectDTO>> RedirectsList()
         {
-            return await TryToReturnAsyncTask($"{nameof(RedirectsList)}()", async () =>
+            var result = await TryToReturnAsyncTask($"{nameof(RedirectsList)}()", async () =>
             {
                 using (var db = _connectionFactory.GetDbContextQueries())
                 {
-                    return (await db.RedirectsList().OrderByDescending(item => item.RedirectDateCreated).ToListAsync())?.Select(item => _mapper.Map<RedirectDTO>(item)).ToList();
+                    var result = (await db.RedirectsList().OrderByDescending(item => item.RedirectDateCreated).ToListAsync())?.Select(item => _mapper.Map<RedirectDTO>(item)).ToList();
+                    return result;
                 }
             });
+            return result;
         }
         #endregion
     }

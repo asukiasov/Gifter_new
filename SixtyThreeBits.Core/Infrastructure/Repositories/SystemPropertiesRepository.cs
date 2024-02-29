@@ -18,7 +18,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         #region Methods
         public async Task<SystemPropertiesDTO> SystemPropertiesGet()
         {
-            var Result = await TryToReturnAsyncTask($"{nameof(SystemPropertiesGet)}()", async () =>
+            var result = await TryToReturnAsyncTask($"{nameof(SystemPropertiesGet)}()", async () =>
             {
                 using (var db = _connectionFactory.GetDbContextQueries())
                 {
@@ -26,7 +26,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                     return DBResult?.DeserializeJsonTo<SystemPropertiesDTO>();
                 }
             });
-            return Result ?? new SystemPropertiesDTO();
+            return result ?? new SystemPropertiesDTO();
         }
 
         public async Task SystemPropertiesUpdate(SystemPropertiesDTO systemProperties)

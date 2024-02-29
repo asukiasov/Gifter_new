@@ -27,19 +27,21 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         #region Methods
         public async Task<TeamMemberDTO> TeamMembersGetSingleByID(int? TeamMemberID)
         {
-            return await TryToReturnAsyncTask($"{nameof(TeamMembersGetSingleByID)}({nameof(TeamMemberID)} = {TeamMemberID})", async () =>
+            var result = await TryToReturnAsyncTask($"{nameof(TeamMembersGetSingleByID)}({nameof(TeamMemberID)} = {TeamMemberID})", async () =>
             {
                 using (var db = _connectionFactory.GetDbContextQueries())
                 {
-                    var Result = await db.TeamMembersGetSingleByID(TeamMemberID);
-                    return Result?.DeserializeJsonTo<TeamMemberDTO>();
+                    var resultJson = await db.TeamMembersGetSingleByID(TeamMemberID);
+                    var result = resultJson?.DeserializeJsonTo<TeamMemberDTO>();
+                    return result;
                 }
             });
+            return result;
         }
 
         public async Task<int?> TeamMembersIUD(Enums.DatabaseActions databaseAction, int? teamMemberID = null, string teamMemberFirstname = null, string teamMemberLastName = null, string teamMemberPosition = null, string teamMemberShortDescription = null, string teamMemberLongDescription = null, string teamMemberImageFilename = null, bool? teamMemberIsPublished = null, int? teamMemberCategoryID = null)
         {
-            return await TryToReturnAsyncTask($"{nameof(TeamMembersIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(teamMemberID)} = {teamMemberID}, {nameof(teamMemberFirstname)} = {teamMemberFirstname}, {nameof(teamMemberLastName)} = {teamMemberLastName}, {nameof(teamMemberPosition)} = {teamMemberPosition}), {nameof(teamMemberShortDescription)} = {teamMemberShortDescription}, {nameof(teamMemberLongDescription)} = {teamMemberLongDescription},{nameof(teamMemberImageFilename)} = {teamMemberImageFilename},{nameof(teamMemberIsPublished)} = {teamMemberIsPublished}, {nameof(teamMemberCategoryID)} = {teamMemberCategoryID}", async () =>
+            teamMemberID = await TryToReturnAsyncTask($"{nameof(TeamMembersIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(teamMemberID)} = {teamMemberID}, {nameof(teamMemberFirstname)} = {teamMemberFirstname}, {nameof(teamMemberLastName)} = {teamMemberLastName}, {nameof(teamMemberPosition)} = {teamMemberPosition}), {nameof(teamMemberShortDescription)} = {teamMemberShortDescription}, {nameof(teamMemberLongDescription)} = {teamMemberLongDescription},{nameof(teamMemberImageFilename)} = {teamMemberImageFilename},{nameof(teamMemberIsPublished)} = {teamMemberIsPublished}, {nameof(teamMemberCategoryID)} = {teamMemberCategoryID}", async () =>
             {
                 using (var db = _connectionFactory.GetDbContextCommands())
                 {
@@ -47,17 +49,20 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                     return teamMemberID;
                 }
             });
+            return teamMemberID;
         }
 
         public async Task<List<TeamMemberDTO>> TeamMembersList()
         {
-            return await TryToReturnAsyncTask($"{nameof(TeamMembersList)}()", async () =>
+            var result = await TryToReturnAsyncTask($"{nameof(TeamMembersList)}()", async () =>
             {
                 using (var db = _connectionFactory.GetDbContextQueries())
                 {
-                    return (await db.TeamMembersList().OrderByDescending(item => item.TeamMemberDateCreated).ToListAsync())?.Select(item => _mapper.Map<TeamMemberDTO>(item)).ToList();
+                    var result = (await db.TeamMembersList().OrderByDescending(item => item.TeamMemberDateCreated).ToListAsync())?.Select(item => _mapper.Map<TeamMemberDTO>(item)).ToList();
+                    return result;
                 }
             });
+            return result;
         }
 
         public async Task TeamMembersSyncSortIndexes(List<SyncSortIndexesDTO> sortIndexes)

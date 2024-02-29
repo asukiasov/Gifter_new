@@ -23,9 +23,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
         {
             var sqb = new SqlQueryBuilder(
                 dbContext: this,
-                databaseObjectType: DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
-                databaseObjectName: nameof(BlogPostList),
-                itemType: typeof(BlogPostListEntity)
+                databaseObjectName: nameof(BlogPostList)
             );
             var result = sqb.ExecuteQuery<BlogPostListEntity>();
             return result;
@@ -37,9 +35,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
         {
             var sqb = new SqlQueryBuilder(
                 dbContext: this,
-                databaseObjectType: DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
                 databaseObjectName: nameof(BlogPostGetSingleByID),
-                itemType: typeof(ScalarFunctionResultEntity<string>),
                 sqlParameters:
                 [
                     blogPostID.ToSqlParameter(nameof(blogPostID), SqlDbType.Int),
@@ -55,9 +51,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
         {
             var sqb = new SqlQueryBuilder(
                 dbContext: this,
-                databaseObjectType: DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
                 databaseObjectName: nameof(BlogPostIsSlugUniq),
-                itemType: typeof(ScalarFunctionResultEntity<string>),
                 sqlParameters:
                 [
                     bBlogPostSlug.ToSqlParameter(nameof(bBlogPostSlug), SqlDbType.NVarChar),

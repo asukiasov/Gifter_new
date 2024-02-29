@@ -11,9 +11,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
         {
             var sqb = new SqlQueryBuilder(
                 dbContext: this,
-                databaseObjectType: DatabaseObjectTypes.STORED_PROCEDURE,
                 databaseObjectName: nameof(TeamMembersIUD),
-                itemType: null,
                 sqlParameters:
                 [
                     databaseAction.ToSqlParameter(nameof(databaseAction), SqlDbType.TinyInt),
@@ -38,9 +36,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
         {
             var sqb = new SqlQueryBuilder(
                 dbContext: this,
-                databaseObjectType: DatabaseObjectTypes.STORED_PROCEDURE,
                 databaseObjectName: nameof(TeamMembersSyncSortIndexes),
-                itemType: null,
                 sqlParameters:
                 [
                     teamMembersSyncSortIndexesJson.ToSqlParameter(nameof(teamMembersSyncSortIndexesJson), SqlDbType.NVarChar)

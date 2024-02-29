@@ -17,9 +17,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
         {
             var sqb = new SqlQueryBuilder(
                 dbContext: this,
-                databaseObjectType: DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
-                databaseObjectName: nameof(RedirectsList),
-                itemType: typeof(RedirectsListEntity)
+                databaseObjectName: nameof(RedirectsList)
             );
             var result = sqb.ExecuteQuery<RedirectsListEntity>();
             return result;

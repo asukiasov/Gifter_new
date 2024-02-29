@@ -28,7 +28,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         #region Methods
         public async Task<int?> RolesIUD(Enums.DatabaseActions databaseAction, int? roleID = null, string roleName = null, int? roleCode = null)
         {
-            return await TryToReturnAsyncTask($"{nameof(RolesIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(roleID)} = {roleID}, {nameof(roleName)} = {roleName}, {nameof(roleCode)} = {roleCode})", async () =>
+            roleID = await TryToReturnAsyncTask($"{nameof(RolesIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(roleID)} = {roleID}, {nameof(roleName)} = {roleName}, {nameof(roleCode)} = {roleCode})", async () =>
             {
                 using (var db = _connectionFactory.GetDbContextCommands())
                 {
@@ -36,48 +36,55 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                     return roleID;
                 }
             });
+            return roleID;
         }
 
         public async Task<List<RoleDTO>> RolesList()
         {
-            return await TryToReturnAsyncTask($"{nameof(RolesList)}()", async () =>
+            var result = await TryToReturnAsyncTask($"{nameof(RolesList)}()", async () =>
             {
                 using (var db = _connectionFactory.GetDbContextQueries())
                 {
-                    return (await db.RolesList().OrderBy(item => item.RoleCode).ToListAsync())?.Select(item => _mapper.Map<RoleDTO>(item)).ToList();
+                    var result = (await db.RolesList().OrderBy(item => item.RoleCode).ToListAsync())?.Select(item => _mapper.Map<RoleDTO>(item)).ToList();
+                    return result;
                 }
             });
+            return result;
         }
 
         public async Task<List<KeyValueTuple<int?,string>>> RolesListAsKeyValueTuple(bool IsRoleCodeAsKey = false)
         {
-            return await TryToReturnAsyncTask($"{nameof(RolesListAsKeyValueTuple)}()", async () =>
+            var result = await TryToReturnAsyncTask($"{nameof(RolesListAsKeyValueTuple)}()", async () =>
             {
                 using (var db = _connectionFactory.GetDbContextQueries())
                 {
-                    return (await db.RolesList().OrderBy(item => item.RoleCode).ToListAsync())?.Select(item => new KeyValueTuple<int?, string>
+                    var result = (await db.RolesList().OrderBy(item => item.RoleCode).ToListAsync())?.Select(item => new KeyValueTuple<int?, string>
                     {
                         Key = IsRoleCodeAsKey ? item.RoleCode : item.RoleID,
                         Value = item.RoleName
                     }).ToList();
+                    return result;
                 }
             });
+            return result;
         }
 
         public async Task<List<KeyValueSelectedTuple<int?, string>>> RolesListAsKeyValueSelectedTuple(int? SelectedValue, bool IsRoleCodeAsKey = false)
         {
-            return await TryToReturnAsyncTask($"{nameof(RolesListAsKeyValueTuple)}()", async () =>
+            var result = await TryToReturnAsyncTask($"{nameof(RolesListAsKeyValueTuple)}()", async () =>
             {
                 using (var db = _connectionFactory.GetDbContextQueries())
                 {
-                    return (await db.RolesList().OrderBy(item => item.RoleCode).ToListAsync())?.Select(item => new KeyValueSelectedTuple<int?, string>
+                    var result = (await db.RolesList().OrderBy(item => item.RoleCode).ToListAsync())?.Select(item => new KeyValueSelectedTuple<int?, string>
                     {
                         Key = IsRoleCodeAsKey ? item.RoleCode : item.RoleID,
                         Value = item.RoleName,
                         IsSelected = (IsRoleCodeAsKey ? (item.RoleCode == SelectedValue) : (item.RoleID == SelectedValue))
                     }).ToList();
+                    return result;
                 }
             });
+            return result;
         }
 
         public async Task RolesPermissionsUpdate(int? roleID, List<int?> permissionIDs)

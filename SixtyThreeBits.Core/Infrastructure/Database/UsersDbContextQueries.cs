@@ -12,9 +12,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
         {
             var sqb = new SqlQueryBuilder(
                 dbContext: this,
-                databaseObjectType: DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
                 databaseObjectName: nameof(UsersGetSingleUserByUserID),
-                itemType: typeof(ScalarFunctionResultEntity<string>),
                 sqlParameters:
                 [
                     userID.ToSqlParameter(nameof(userID), SqlDbType.Int)
@@ -30,9 +28,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
         {
             var sqb = new SqlQueryBuilder(
                 dbContext: this,
-                databaseObjectType: DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
                 databaseObjectName: nameof(UsersGetSingleUserByEmailAndPassword),
-                itemType: typeof(ScalarFunctionResultEntity<string>),
                 sqlParameters:
                 [
                     userEmail.ToSqlParameter(nameof(userEmail), SqlDbType.VarChar),
@@ -65,9 +61,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
         {
             var sqb = new SqlQueryBuilder(
                 dbContext: this,
-                databaseObjectType: DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
-                databaseObjectName: nameof(UsersList),
-                itemType: typeof(UsersListEntity)
+                databaseObjectName: nameof(UsersList)
             );
             var result = sqb.ExecuteQuery<UsersListEntity>();
             return result;
@@ -79,9 +73,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
         {
             var sqb = new SqlQueryBuilder(
                 dbContext: this,
-                databaseObjectType: DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
                 databaseObjectName: nameof(UsersIsEmailUnique),
-                itemType: typeof(ScalarFunctionResultEntity<bool>),
                 sqlParameters:
                 [
                     userEmail.ToSqlParameter(nameof(userEmail), SqlDbType.NVarChar),

@@ -17,9 +17,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
         {
             var sqb = new SqlQueryBuilder(
                 dbContext: this,
-                databaseObjectType: DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
-                databaseObjectName: nameof(EmailTemplatesList),
-                itemType: typeof(EmailTemplatesListEntity)
+                databaseObjectName: nameof(EmailTemplatesList)
             );
             var result = sqb.ExecuteQuery<EmailTemplatesListEntity>();
             return result;
@@ -31,9 +29,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
         {
             var sqb = new SqlQueryBuilder(
                 dbContext: this,
-                databaseObjectType: DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
                 databaseObjectName: nameof(EmailTemplatesGetSingleByID),
-                itemType: typeof(ScalarFunctionResultEntity<string>),
                 sqlParameters:
                 [
                     emailTemplatesID.ToSqlParameter(nameof(emailTemplatesID), SqlDbType.Int)
@@ -49,9 +45,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
         {
             var sqb = new SqlQueryBuilder(
                 dbContext: this,
-                databaseObjectType: DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
                 databaseObjectName: nameof(EmailTemplatesWrapInLayout),
-                itemType: typeof(ScalarFunctionResultEntity<string>),
                 sqlParameters:
                 [
                     websiteHttpPath.ToSqlParameter(nameof(websiteHttpPath), SqlDbType.NVarChar),

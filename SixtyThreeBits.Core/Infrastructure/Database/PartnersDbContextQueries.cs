@@ -12,9 +12,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
         {
             var sqb = new SqlQueryBuilder(
                 dbContext: this,
-                databaseObjectType: DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
                 databaseObjectName: nameof(PartnersGetSingleByID),
-                itemType: typeof(ScalarFunctionResultEntity<string>),
                 sqlParameters:
                 [
                     partnerID.ToSqlParameter(nameof(partnerID),SqlDbType.Int)
@@ -39,9 +37,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
         {
             var sqb = new SqlQueryBuilder(
                 dbContext: this,
-                databaseObjectType: DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
-                databaseObjectName: nameof(PartnersList),
-                itemType: typeof(PartnersListEntity)
+                databaseObjectName: nameof(PartnersList)
             );
             var result = sqb.ExecuteQuery<PartnersListEntity>();
             return result;

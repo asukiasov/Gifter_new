@@ -32,14 +32,14 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
             {
                 using (var db = _connectionFactory.GetDbContextCommands())
                 {
-                    await db.DictionariesDeleteRecursive(dictionaryID);
+                    await db.DictionariesDeleteRecursive(dictionaryID);                    
                 }
-            });
+            });            
         }
 
         public async Task<int?> DictionariesIUD(Enums.DatabaseActions databaseAction, int? dictionaryID = null, string dictionaryCaption = null, string dictionaryCaptionEng = null, int? dictionaryParentID = null, string dictionaryStringCode = null, int? dictionaryIntCode = null, decimal? dictionaryDecimalValue = null, int? dictionaryCode = null, bool? dictionaryIsDefault = null, bool? dictionaryIsVisible = null, int? dictionarySortIndex = null)
         {
-            return await TryToReturnAsyncTask($"{nameof(DictionariesIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(dictionaryID)} = {dictionaryID}, {nameof(dictionaryCaption)} = {dictionaryCaption}, {nameof(dictionaryCaptionEng)} = {dictionaryCaptionEng}, {nameof(dictionaryParentID)} = {dictionaryParentID}, {nameof(dictionaryStringCode)} = {dictionaryStringCode}, {nameof(dictionaryIntCode)} = {dictionaryIntCode}, {nameof(dictionaryDecimalValue)} = {dictionaryDecimalValue}, {nameof(dictionaryCode)} = {dictionaryCode}, {nameof(dictionaryIsDefault)} = {dictionaryIsDefault}, {nameof(dictionaryIsVisible)} = {dictionaryIsVisible}, {nameof(dictionarySortIndex)} = {dictionarySortIndex})", async () =>
+            dictionaryID = await TryToReturnAsyncTask($"{nameof(DictionariesIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(dictionaryID)} = {dictionaryID}, {nameof(dictionaryCaption)} = {dictionaryCaption}, {nameof(dictionaryCaptionEng)} = {dictionaryCaptionEng}, {nameof(dictionaryParentID)} = {dictionaryParentID}, {nameof(dictionaryStringCode)} = {dictionaryStringCode}, {nameof(dictionaryIntCode)} = {dictionaryIntCode}, {nameof(dictionaryDecimalValue)} = {dictionaryDecimalValue}, {nameof(dictionaryCode)} = {dictionaryCode}, {nameof(dictionaryIsDefault)} = {dictionaryIsDefault}, {nameof(dictionaryIsVisible)} = {dictionaryIsVisible}, {nameof(dictionarySortIndex)} = {dictionarySortIndex})", async () =>
             {
                 using (var db = _connectionFactory.GetDbContextCommands())
                 {
@@ -47,76 +47,81 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                     return dictionaryID;
                 }
             });
+            return dictionaryID;
         }
 
         public async Task<List<DictionariesDTO>> DictionariesList()
         {
-            return await TryToReturnAsyncTask($"{nameof(DictionariesList)}()", async () =>
+            var result = await TryToReturnAsyncTask($"{nameof(DictionariesList)}()", async () =>
             {
                 using (var db = _connectionFactory.GetDbContextQueries())
                 {
-                    return (
-                    await db.DictionariesList()
-                    .OrderByDescending(item => item.DictionaryIsDefault)
-                    .ThenBy(item => item.DictionarySortIndex)
-                    .ThenBy(item => item.DictionaryCaption)
-                    .ToListAsync()
-                    )
-                    .Select(item=>_mapper.Map<DictionariesDTO>(item)).ToList();
+                    var result = (await db.DictionariesList()
+                        .OrderByDescending(item => item.DictionaryIsDefault)
+                        .ThenBy(item => item.DictionarySortIndex)
+                        .ThenBy(item => item.DictionaryCaption)
+                        .ToListAsync()
+                    ).Select(item => _mapper.Map<DictionariesDTO>(item)).ToList();
+                    return result;
                 }
             });
+            return result;
         }
 
         public async Task<List<DictionariesDTO>> DictionariesListByLevelAndCodeAndIsVisible(int? dictionaryLevel, int? dictionaryCode, bool? dictionaryIsVisible = null)
         {
-            return await TryToReturnAsyncTask($"{nameof(DictionariesList)}()", async () =>
+            var result = await TryToReturnAsyncTask($"{nameof(DictionariesList)}()", async () =>
             {
                 using (var db = _connectionFactory.GetDbContextQueries())
                 {
-                    return (
-                    await db.DictionariesListByLevelAndCodeAndIsVisible(dictionaryLevel, dictionaryCode, dictionaryIsVisible)
-                    .OrderByDescending(item => item.DictionaryIsDefault)
-                    .ThenBy(item => item.DictionarySortIndex)
-                    .ThenBy(item => item.DictionaryCaption)
-                    .ToListAsync()
-                    )
-                    .Select(item => _mapper.Map<DictionariesDTO>(item)).ToList();
+                    var result = (await db.DictionariesListByLevelAndCodeAndIsVisible(dictionaryLevel, dictionaryCode, dictionaryIsVisible)
+                        .OrderByDescending(item => item.DictionaryIsDefault)
+                        .ThenBy(item => item.DictionarySortIndex)
+                        .ThenBy(item => item.DictionaryCaption)
+                        .ToListAsync()
+                    ).Select(item => _mapper.Map<DictionariesDTO>(item)).ToList();
+                    return result;
                 }
             });
+            return result;
         }
 
         public async Task<List<KeyValueSelectedTuple<int?, string>>> DictionariesListAsKeyValueSelectedTuple(int? dictionaryCode, int? selectedValue, bool isDictionaryIntCodeAsKey = false)
         {
-            return await TryToReturnAsyncTask($"{nameof(DictionariesListAsKeyValueSelectedTuple)}({nameof(dictionaryCode)} = {dictionaryCode}, {nameof(isDictionaryIntCodeAsKey)} = {isDictionaryIntCodeAsKey})", async () =>
+            var result = await TryToReturnAsyncTask($"{nameof(DictionariesListAsKeyValueSelectedTuple)}({nameof(dictionaryCode)} = {dictionaryCode}, {nameof(isDictionaryIntCodeAsKey)} = {isDictionaryIntCodeAsKey})", async () =>
             {
                 using (var db = _connectionFactory.GetDbContextQueries())
                 {
-                    var Result = await DictionariesListByLevelAndCodeAndIsVisible(dictionaryLevel: 1, dictionaryCode: dictionaryCode, dictionaryIsVisible: null);
-                    return Result?.Select(item => new KeyValueSelectedTuple<int?, string>
+                    var dictionaries = (await DictionariesListByLevelAndCodeAndIsVisible(dictionaryLevel: 1, dictionaryCode: dictionaryCode, dictionaryIsVisible: null));
+                    var result = dictionaries?.Select(item => new KeyValueSelectedTuple<int?, string>
                     {
                         Key = isDictionaryIntCodeAsKey ? item.DictionaryIntCode : item.DictionaryID,
                         Value = item.DictionaryCaption,
-                        IsSelected = isDictionaryIntCodeAsKey ? (item.DictionaryIntCode == selectedValue) :(item.DictionaryID == selectedValue)
+                        IsSelected = isDictionaryIntCodeAsKey ? (item.DictionaryIntCode == selectedValue) : (item.DictionaryID == selectedValue)
                     }).ToList();
+                    return result;
                 }
             });
+            return result;
         }
 
         public async Task<List<KeyValueTuple<int?, string>>> DictionariesListAsKeyValueTuple(int? dictionaryCode, bool dictionaryCodeAsKey = false)
         {
-            return await TryToReturnAsyncTask($"{nameof(DictionariesListAsKeyValueTuple)}({nameof(dictionaryCode)} = {dictionaryCode}, {nameof(dictionaryCodeAsKey)} = {dictionaryCodeAsKey})", async () =>
+            var result = await TryToReturnAsyncTask($"{nameof(DictionariesListAsKeyValueTuple)}({nameof(dictionaryCode)} = {dictionaryCode}, {nameof(dictionaryCodeAsKey)} = {dictionaryCodeAsKey})", async () =>
             {
                 using (var db = _connectionFactory.GetDbContextQueries())
                 {
-                    var Result = await DictionariesListByLevelAndCodeAndIsVisible(dictionaryLevel: 1, dictionaryCode: dictionaryCode, dictionaryIsVisible: null);
-                    return Result?.Select(item => new KeyValueTuple<int?, string>
+                    var dictionaries = await DictionariesListByLevelAndCodeAndIsVisible(dictionaryLevel: 1, dictionaryCode: dictionaryCode, dictionaryIsVisible: null);
+                    var result = dictionaries?.Select(item => new KeyValueTuple<int?, string>
                     {
                         Key = dictionaryCodeAsKey ? item.DictionaryCode : item.DictionaryID,
                         Value = item.DictionaryCaption
                     }).ToList();
+                    return result;
                 }
             });
+            return result;
         }
         #endregion
-    }    
+    }
 }

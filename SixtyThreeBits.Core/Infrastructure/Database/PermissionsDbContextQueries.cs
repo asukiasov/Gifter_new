@@ -27,9 +27,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
         {
             var sqb = new SqlQueryBuilder(
                 dbContext: this,
-                databaseObjectType: DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
-                databaseObjectName: nameof(PermissionsList),
-                itemType: typeof(PermissionsListEntity)
+                databaseObjectName: nameof(PermissionsList)
             );
             var result = sqb.ExecuteQuery<PermissionsListEntity>();
             return result;
@@ -47,9 +45,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
         {
             var sqb = new SqlQueryBuilder(
                 dbContext: this,
-                databaseObjectType: DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
                 databaseObjectName: nameof(PermissionsListByRoleID),
-                itemType: typeof(PermissionsListByRoleIDItem),
                 sqlParameters:
                 [
                     roleID.ToSqlParameter(nameof(roleID), SqlDbType.Int)

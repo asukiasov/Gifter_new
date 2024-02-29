@@ -9,9 +9,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
         {
             var sqb = new SqlQueryBuilder(
                 dbContext: this,
-                databaseObjectType: DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
-                databaseObjectName: nameof(SystemPropertiesGet),
-                itemType: typeof(ScalarFunctionResultEntity<string>)
+                databaseObjectName: nameof(SystemPropertiesGet)
             );
             var result = await sqb.ExecuteQueryScalar<string>();
             return result;

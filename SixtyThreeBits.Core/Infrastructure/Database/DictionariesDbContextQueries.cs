@@ -27,9 +27,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
         {
             var sqb = new SqlQueryBuilder(
                 dbContext: this,
-                databaseObjectType: DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
-                databaseObjectName: nameof(DictionariesList),
-                itemType: typeof(DictionariesListEntity)
+                databaseObjectName: nameof(DictionariesList)
             );
             var result = sqb.ExecuteQuery<DictionariesListEntity>();
             return result;
@@ -57,9 +55,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
         {
             var sqb = new SqlQueryBuilder(
                 dbContext: this,
-                databaseObjectType: DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
                 databaseObjectName: nameof(DictionariesList),
-                itemType: typeof(DictionariesListByLevelAndCodeAndIsVisibleEntity),
                 sqlParameters:
                 [
                     dictionaryLevel.ToSqlParameter(nameof(dictionaryLevel), SqlDbType.Int),

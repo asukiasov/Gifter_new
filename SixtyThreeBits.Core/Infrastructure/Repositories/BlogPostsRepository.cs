@@ -28,30 +28,34 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         #region Methods
         public async Task<BlogPostDTO> BlogPostGetSingleByID(int? blogPostID)
         {
-            return await TryToReturnAsyncTask($"{nameof(BlogPostGetSingleByID)}({nameof(blogPostID)} = {blogPostID})", async () =>
+            var result = await TryToReturnAsyncTask($"{nameof(BlogPostGetSingleByID)}({nameof(blogPostID)} = {blogPostID})", async () =>
             {
                 using (var db = _connectionFactory.GetDbContextQueries())
                 {
-                    var Result = await db.BlogPostGetSingleByID(blogPostID);
-                    return Result?.DeserializeJsonTo<BlogPostDTO>();
+                    var resultJson = await db.BlogPostGetSingleByID(blogPostID);
+                    var result = resultJson?.DeserializeJsonTo<BlogPostDTO>();
+                    return result;
                 }
             });
+            return result;
         }
 
         public async Task<bool> BlogPostIsSlugUniq(string blogPostSlug, int? blogPostID = null)
         {
-            return await TryToReturnAsyncTask($"{nameof(BlogPostIsSlugUniq)}({nameof(blogPostSlug)} = {blogPostSlug}, {nameof(blogPostID)} = {blogPostID})", async () =>
+            var result = await TryToReturnAsyncTask($"{nameof(BlogPostIsSlugUniq)}({nameof(blogPostSlug)} = {blogPostSlug}, {nameof(blogPostID)} = {blogPostID})", async () =>
             {
                 using (var db = _connectionFactory.GetDbContextQueries())
                 {
-                    return await db.BlogPostIsSlugUniq(blogPostSlug, blogPostID);
+                    var result = await db.BlogPostIsSlugUniq(blogPostSlug, blogPostID);
+                    return result;
                 }
             });
+            return result;
         }
 
         public async Task<int?> BlogIUD(Enums.DatabaseActions databaseAction, int? blogPostID = null, string blogPostSlug = null, string blogPostTitle = null, string blogPostShortText = null, string blogPostText = null, string blogPostAuthorName = null, string blogPostImageFilename = null, DateTime? blogPostDate = null, bool? blogPostIsPublished = null)
         {
-            return await TryToReturnAsyncTask($"{nameof(BlogIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(blogPostID)} = {blogPostID}, {nameof(blogPostSlug)} = {blogPostSlug}, {nameof(blogPostTitle)} = {blogPostTitle}, {nameof(blogPostShortText)} = {blogPostShortText}, {nameof(blogPostText)} = {blogPostText}, {nameof(blogPostAuthorName)} = {blogPostAuthorName}, {nameof(blogPostImageFilename)} = {blogPostImageFilename}, {nameof(blogPostDate)} = {blogPostDate}, {nameof(blogPostIsPublished)} = {blogPostIsPublished})", async () =>
+            blogPostID = await TryToReturnAsyncTask($"{nameof(BlogIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(blogPostID)} = {blogPostID}, {nameof(blogPostSlug)} = {blogPostSlug}, {nameof(blogPostTitle)} = {blogPostTitle}, {nameof(blogPostShortText)} = {blogPostShortText}, {nameof(blogPostText)} = {blogPostText}, {nameof(blogPostAuthorName)} = {blogPostAuthorName}, {nameof(blogPostImageFilename)} = {blogPostImageFilename}, {nameof(blogPostDate)} = {blogPostDate}, {nameof(blogPostIsPublished)} = {blogPostIsPublished})", async () =>
             {
                 using (var db = _connectionFactory.GetDbContextCommands())
                 {
@@ -59,17 +63,20 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                     return blogPostID;
                 }
             });
+            return blogPostID;
         }
 
         public async Task<List<BlogPostDTO>> BlogPostList()
         {
-            return await TryToReturn($"{nameof(BlogPostList)}()", async () =>
+            var result = await TryToReturn($"{nameof(BlogPostList)}()", async () =>
             {
                 using (var db = _connectionFactory.GetDbContextQueries())
                 {
-                    return (await db.BlogPostList().OrderByDescending(item => item.BlogPostDateCreated).ToListAsync())?.Select(item => _mapper.Map<BlogPostDTO>(item)).ToList();                    
+                    var result = (await db.BlogPostList().OrderByDescending(item => item.BlogPostDateCreated).ToListAsync())?.Select(item => _mapper.Map<BlogPostDTO>(item)).ToList();
+                    return result;
                 }
             });
+            return result;
         }
         #endregion
     }        

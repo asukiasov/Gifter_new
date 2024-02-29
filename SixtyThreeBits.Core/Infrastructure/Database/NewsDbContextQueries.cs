@@ -27,9 +27,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
         {
             var sqb = new SqlQueryBuilder(
                 dbContext: this,
-                databaseObjectType: DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
-                databaseObjectName: nameof(NewsList),
-                itemType: typeof(NewsListEntity)
+                databaseObjectName: nameof(NewsList)
             );
             var result = sqb.ExecuteQuery<NewsListEntity>();
             return result;
@@ -41,9 +39,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
         {
             var sqb = new SqlQueryBuilder(
                 dbContext: this,
-                databaseObjectType: DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
                 databaseObjectName: nameof(NewsGetSingleByID),
-                itemType: typeof(ScalarFunctionResultEntity<string>),
                 sqlParameters:
                 [
                     newsID.ToSqlParameter(nameof(newsID), SqlDbType.Int)
@@ -59,9 +55,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
         {
             var sqb = new SqlQueryBuilder(
                 dbContext: this,
-                databaseObjectType: DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
                 databaseObjectName: nameof(NewsIsSlugUniq),
-                itemType: typeof(ScalarFunctionResultEntity<string>),
                 sqlParameters:
                 [
                     newsSlug.ToSqlParameter(nameof(newsSlug), SqlDbType.NVarChar),

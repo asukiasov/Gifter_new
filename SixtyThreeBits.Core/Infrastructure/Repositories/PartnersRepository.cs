@@ -27,19 +27,21 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         #region Methods
         public async Task<PartnerDTO> PartnersGetSingleByID(int? partnerID)
         {
-            return await TryToReturnAsyncTask($"{nameof(PartnersGetSingleByID)}({nameof(partnerID)} = {partnerID})", async () =>
+            var result = await TryToReturnAsyncTask($"{nameof(PartnersGetSingleByID)}({nameof(partnerID)} = {partnerID})", async () =>
             {
                 using (var db = _connectionFactory.GetDbContextQueries())
                 {
-                    var Result = await db.PartnersGetSingleByID(partnerID);
-                    return Result?.DeserializeJsonTo<PartnerDTO>();
+                    var resultJson = await db.PartnersGetSingleByID(partnerID);
+                    var result = resultJson?.DeserializeJsonTo<PartnerDTO>();
+                    return result;
                 }
             });
+            return result;
         }
 
         public async Task<int?> PartnersIUD(Enums.DatabaseActions databaseAction, int? partnerID = null, string partnerName = null, string partnerNameEng = null, string partnerShortDescription = null, string partnerShortDescriptionEng = null, string partnerFullDescription = null, string partnerFullDescriptionEng = null, string partnerWebSite = null, string partnerImageFilename = null, bool? partnerIsPublished = null)
         {
-            return await TryToReturnAsyncTask($"{nameof(PartnersIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(partnerID)} = {partnerID}, {nameof(partnerName)} = {partnerName}, {nameof(partnerNameEng)} = {partnerNameEng}, {nameof(partnerShortDescription)} = {partnerShortDescription}, {nameof(partnerShortDescriptionEng)} = {partnerShortDescriptionEng}, {nameof(partnerFullDescription)} = {partnerFullDescription}, {nameof(partnerFullDescriptionEng)} = {partnerFullDescriptionEng}, {nameof(partnerWebSite)} = {partnerWebSite}, {nameof(partnerImageFilename)} = {partnerImageFilename}, {nameof(partnerIsPublished)} = {partnerIsPublished})", async () =>
+            partnerID = await TryToReturnAsyncTask($"{nameof(PartnersIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(partnerID)} = {partnerID}, {nameof(partnerName)} = {partnerName}, {nameof(partnerNameEng)} = {partnerNameEng}, {nameof(partnerShortDescription)} = {partnerShortDescription}, {nameof(partnerShortDescriptionEng)} = {partnerShortDescriptionEng}, {nameof(partnerFullDescription)} = {partnerFullDescription}, {nameof(partnerFullDescriptionEng)} = {partnerFullDescriptionEng}, {nameof(partnerWebSite)} = {partnerWebSite}, {nameof(partnerImageFilename)} = {partnerImageFilename}, {nameof(partnerIsPublished)} = {partnerIsPublished})", async () =>
             {
                 using (var db = _connectionFactory.GetDbContextCommands())
                 {
@@ -47,17 +49,20 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                     return partnerID;
                 }
             });
+            return partnerID;
         }
 
         public async Task<List<PartnersListDTO>> PartnersList()
         {
-            return await TryToReturnAsyncTask($"{nameof(PartnersList)}()", async () =>
+            var result = await TryToReturnAsyncTask($"{nameof(PartnersList)}()", async () =>
             {
                 using (var db = _connectionFactory.GetDbContextQueries())
                 {
-                    return (await db.PartnersList().OrderByDescending(item => item.PartnerDateCreated).ToListAsync())?.Select(item => _mapper.Map<PartnersListDTO>(item)).ToList();
+                    var result = (await db.PartnersList().OrderByDescending(item => item.PartnerDateCreated).ToListAsync())?.Select(item => _mapper.Map<PartnersListDTO>(item)).ToList();
+                    return result;
                 }
             });
+            return result;
         }
         #endregion
     }    

@@ -17,9 +17,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
         {
             var sqb = new SqlQueryBuilder(
                 dbContext: this,
-                databaseObjectType: DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
-                databaseObjectName: nameof(CountriesList),
-                itemType: typeof(CountriesListEntity)
+                databaseObjectName: nameof(CountriesList)
             );
             var result = sqb.ExecuteQuery<CountriesListEntity>();
             return result;

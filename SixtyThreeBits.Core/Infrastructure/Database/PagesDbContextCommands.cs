@@ -11,9 +11,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
         {
             var sqb = new SqlQueryBuilder(
                 dbContext: this,
-                databaseObjectType: DatabaseObjectTypes.STORED_PROCEDURE,
                 databaseObjectName: nameof(PagesDeleteRecursive),
-                itemType: null,
                 sqlParameters:
                 [
                     pageID.ToSqlParameter(nameof(pageID),SqlDbType.Int)
@@ -27,9 +25,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
         {
             var sqb = new SqlQueryBuilder(
                 dbContext: this,
-                databaseObjectType: DatabaseObjectTypes.STORED_PROCEDURE,
                 databaseObjectName: nameof(PagesIUD),
-                itemType: null,
                 sqlParameters:
                 [
                     databaseAction.ToSqlParameter(nameof(databaseAction),SqlDbType.TinyInt),
@@ -67,9 +63,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
         {
             var sqb = new SqlQueryBuilder(
                 dbContext: this,
-                databaseObjectType: DatabaseObjectTypes.STORED_PROCEDURE,
                 databaseObjectName: nameof(PagesSyncParentsAndSortIndexes),
-                itemType: null,
                 sqlParameters:
                 [
                     SortIndexesJson.ToSqlParameter(nameof(SortIndexesJson),SqlDbType.NVarChar)

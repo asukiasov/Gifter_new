@@ -3,6 +3,7 @@ using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries.Extensions;
 using SixtyThreeBits.Web.Controllers.Admin.Base;
 using SixtyThreeBits.Web.Domain;
+using SixtyThreeBits.Web.Filters.Admin;
 using SixtyThreeBits.Web.Models.Admin;
 using System.Threading.Tasks;
 
@@ -95,5 +96,59 @@ namespace SixtyThreeBits.Web.Controllers.Admin
             }
         }
         #endregion
-    }    
+    }
+
+    [Route("admin/users/{userID:int}/properties")]
+    [TypeFilter(typeof(BeforeUserPageLoad), Order = 2)]
+    public class UserPropertiesController : AdminControllerBase<UserPropertiesModel>
+    {
+        #region Constructors
+        public UserPropertiesController()
+        {
+            Model = new UserPropertiesModel();
+        }
+        #endregion
+
+        #region Actions
+        [HttpGet]
+        [Route("", Name = ControllerActionRouteNames.Admin.Users.User.Properties)]
+        public async Task<IActionResult> UserProperties()
+        {
+            Model.PluginsClient.Enable63BitsForms(true).EnableDevextreme(true).EnableJQueryMaskedInput(true);
+            var viewModel = await Model.GetPageViewModel();
+            return View(ViewNames.Admin.Users.User.Properties, viewModel);
+        }
+
+        [HttpPost]
+        [Route("")]
+        public async Task<IActionResult> UserPropertiesSave(UserPropertiesModel.PageViewModel submitModel)
+        {
+            var result = default(IActionResult);
+            Model.PluginsClient.Enable63BitsForms(true).EnableDevextreme(true).EnableJQueryMaskedInput(true);
+            var viewModel = await Model.GetPageViewModel(submitModel);
+
+            await Model.ValidatePageViewModel(viewModel);
+            if (viewModel.IsValid)
+            {
+                await Model.Save(viewModel);
+                if (viewModel.IsSaved)
+                {
+                    result = Redirect(Model.UrlCurrentPageWithDomain);
+                    Model.ShowSuccessToastNotification();
+                }
+                else
+                {
+                    result = View(ViewNames.Admin.Users.User.Properties, viewModel);
+                    Model.ShowErrorToastNotification(viewModel.ErrorMessage);
+                }
+            }
+            else
+            {
+                result = View(ViewNames.Admin.Users.User.Properties, viewModel);
+            }
+
+            return result;
+        }
+        #endregion
+    }
 }

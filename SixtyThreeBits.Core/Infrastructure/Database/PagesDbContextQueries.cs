@@ -12,9 +12,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
         {
             var sqb = new SqlQueryBuilder(
                 dbContext: this,
-                databaseObjectType: DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
                 databaseObjectName: nameof(PagesGetSingleByID),
-                itemType: typeof(ScalarFunctionResultEntity<string>),
                 sqlParameters:
                 [
                     pageID.ToSqlParameter(nameof(pageID), SqlDbType.Int),
@@ -31,9 +29,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
         {
             var sqb = new SqlQueryBuilder(
                 dbContext: this,
-                databaseObjectType: DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
                 databaseObjectName: nameof(PagesGetSingleBySlugHierarchy),
-                itemType: typeof(ScalarFunctionResultEntity<string>),
                 sqlParameters:
                 [
                     pageSlug.ToSqlParameter(nameof(pageSlug), SqlDbType.NVarChar),
@@ -68,9 +64,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
         {
             var sqb = new SqlQueryBuilder(
                 dbContext: this,
-                databaseObjectType: DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
                 databaseObjectName: nameof(PagesList),
-                itemType: typeof(PagesListEntity),
                 sqlParameters:
                 [
                     pageIsPublished.ToSqlParameter(nameof(pageIsPublished), SqlDbType.Bit),
@@ -91,9 +85,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
         {
             var sqb = new SqlQueryBuilder(
                 dbContext: this,
-                databaseObjectType: DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
                 databaseObjectName: nameof(PagesListForDeleteRecursive),
-                itemType: typeof(PagesListForDeleteRecursiveEntity),
                 sqlParameters:
                 [
                     pageID.ToSqlParameter(nameof(pageID), SqlDbType.Int),

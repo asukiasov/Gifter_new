@@ -12,15 +12,13 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
     internal class SqlQueryBuilder
     {
         #region Properties
-        public string SqlQuery { get; set; }
-        public SqlParameter[] SqlParameters { get; set; }
-
-        string _parametersString;
-
+        public string SqlQuery { get; set; }        
         readonly DbContext _dbContext;
-        readonly DatabaseObjectTypes _databaseObjectType;
-        readonly string _databaseObjectName;
-        readonly Type _resultType;
+        readonly string _databaseObjectName;        
+        readonly SqlParameter[] _sqlParameters;
+
+        Type _resultType;
+        string _parametersString;
 
         List<SqlParameter> _outputParameters;
         bool hasOutputParameters;
@@ -29,36 +27,15 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
         #endregion
 
         #region Constructors        
-        public SqlQueryBuilder(DbContext dbContext, DatabaseObjectTypes databaseObjectType, string databaseObjectName, Type itemType, params SqlParameter[] sqlParameters)
+        public SqlQueryBuilder(DbContext dbContext, string databaseObjectName, params SqlParameter[] sqlParameters)
         {
             _dbContext = dbContext;
-            _databaseObjectType = databaseObjectType;
             _databaseObjectName = databaseObjectName;
-            _resultType = itemType;
-            SqlParameters = sqlParameters;
+            _sqlParameters = sqlParameters;
 
-            BuildParameters();
-
-            switch (databaseObjectType)
-            {
-                case DatabaseObjectTypes.SCALAR_VALUED_FUNCTION:
-                    {
-                        BuildScalarValuedFunction();
-                        break;
-                    }
-                case DatabaseObjectTypes.STORED_PROCEDURE:
-                    {
-                        BuildStoredProcedure();
-                        break;
-                    }
-                case DatabaseObjectTypes.TABLE_VALUED_FUNCTION:
-                    {
-                        BuildTableValuedFunction();
-                        break;
-                    }
-            }
-
-            if (sqlParameters != null)
+            buildParameters();
+            
+            if (sqlParameters?.Any() == true)
             {
                 _outputParameters = sqlParameters.Where(item => item.Direction == ParameterDirection.Output || item.Direction == ParameterDirection.InputOutput).ToList();
                 outputParametersCount = _outputParameters.Count;
@@ -66,34 +43,31 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
             }
         }
 
-        void BuildScalarValuedFunction()
+        void buildScalarValuedFunctionSqlScript()
         {
-            //FunctionResult<T> - providing object to generic type doesn't play any role. In this case, class is used only for grabbing name of it's Value property.
             SqlQuery = $"SELECT dbo.{_databaseObjectName}({_parametersString}) as {nameof(DbContextQueries.ScalarFunctionResultEntity<object>.Value)}";
         }
 
-        void BuildStoredProcedure()
+        void buildStoredProcedureSqlScript()
         {
             SqlQuery = $"EXEC dbo.{_databaseObjectName} {_parametersString}";
         }
 
-        void BuildTableValuedFunction()
+        void buildTableValuedFunctionSqlScript()
         {
             var propertiesStringBuilder = new StringBuilder();
-
             var propertyNames = _resultType.GetProperties().Select(item => item.Name);
             var propertiesString = string.Join(", ", propertyNames);
-
             SqlQuery = $"SELECT {propertiesString} FROM dbo.{_databaseObjectName}({_parametersString})";
         }
 
-        void BuildParameters()
+        void buildParameters()
         {
             var parametersStringBuilder = new StringBuilder();
 
-            if (SqlParameters.Length > 0)
+            if (_sqlParameters.Length > 0)
             {
-                foreach (var P in SqlParameters)
+                foreach (var P in _sqlParameters)
                 {
                     parametersStringBuilder.Append($", @{P.ParameterName}");
                     if (P.Direction == ParameterDirection.InputOutput)
@@ -105,19 +79,21 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
             }
             _parametersString = parametersStringBuilder.ToString();
         }
-
         #endregion
 
         #region Methods
         public IQueryable<T> ExecuteQuery<T>() where T : class
         {
-            var result = _dbContext.Database.SqlQueryRaw<T>(SqlQuery, SqlParameters);
+            _resultType = typeof(T);
+            buildTableValuedFunctionSqlScript();
+            var result = _dbContext.Database.SqlQueryRaw<T>(SqlQuery, _sqlParameters);
             return result;
         }
 
         public async Task<T> ExecuteQueryScalar<T>()
         {
-            var queryResult = ExecuteQuery<DbContextQueries.ScalarFunctionResultEntity<T>>();
+            buildScalarValuedFunctionSqlScript();
+            var queryResult = _dbContext.Database.SqlQueryRaw<DbContextQueries.ScalarFunctionResultEntity<T>>(SqlQuery, _sqlParameters);
             var firstOrDefault = await queryResult.FirstOrDefaultAsync();
             var result = firstOrDefault.Value;
             return result;
@@ -125,8 +101,9 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
 
         public async Task<ExecuteCommandResult> ExecuteCommand()
         {
+            buildStoredProcedureSqlScript();
             var result = new ExecuteCommandResult();
-            await _dbContext.Database.ExecuteSqlRawAsync(SqlQuery, SqlParameters);
+            await _dbContext.Database.ExecuteSqlRawAsync(SqlQuery, _sqlParameters);
             return result;
         }
 
@@ -154,16 +131,5 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
             #endregion
         }
         #endregion
-    }
-
-    #region Enums
-    internal enum DatabaseObjectTypes
-    {
-        #region Properties
-        STORED_PROCEDURE,
-        TABLE_VALUED_FUNCTION,
-        SCALAR_VALUED_FUNCTION
-        #endregion
-    }
-    #endregion
+    }    
 }

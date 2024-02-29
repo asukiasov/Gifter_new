@@ -27,19 +27,21 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         #region Methods
         public async Task<BrandDTO> BrandsGetSingleByID(int? brandID)
         {
-            return await TryToReturnAsyncTask($"{nameof(BrandsGetSingleByID)}({nameof(brandID)} = {brandID})", async () =>
+            var result = await TryToReturnAsyncTask($"{nameof(BrandsGetSingleByID)}({nameof(brandID)} = {brandID})", async () =>
             {
                 using (var db = _connectionFactory.GetDbContextQueries())
                 {
-                    var Result = await db.BrandsGetSingleByID(brandID);
-                    return Result?.DeserializeJsonTo<BrandDTO>();
+                    var resultJson = await db.BrandsGetSingleByID(brandID);
+                    var result = resultJson?.DeserializeJsonTo<BrandDTO>();
+                    return result;
                 }
             });
+            return result;
         }
 
         public async Task<int?> BrandsIUD(Enums.DatabaseActions databaseAction, int? brandID = null, string brandName = null, string brandNameEng = null, string brandImageFilename = null)
         {
-            return await TryToReturnAsyncTask($"{nameof(BrandsIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(brandID)} = {brandID}, {nameof(brandName)} = {brandName}, {nameof(brandNameEng)} = {brandNameEng})", async () =>
+            brandID = await TryToReturnAsyncTask($"{nameof(BrandsIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(brandID)} = {brandID}, {nameof(brandName)} = {brandName}, {nameof(brandNameEng)} = {brandNameEng})", async () =>
             {
                 using (var db = _connectionFactory.GetDbContextCommands())
                 {
@@ -47,17 +49,20 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                     return brandID;
                 }
             });
+            return brandID;
         }
 
         public async Task<List<BrandDTO>> BrandsList()
         {
-            return await TryToReturnAsyncTask($"{nameof(BrandsList)}()", async () =>
+            var result = await TryToReturnAsyncTask($"{nameof(BrandsList)}()", async () =>
             {
                 using (var db = _connectionFactory.GetDbContextQueries())
                 {
-                    return (await db.BrandsList().OrderByDescending(item => item.BrandDateCreated).ToListAsync())?.Select(item => _mapper.Map<BrandDTO>(item)).ToList();
+                    var result = (await db.BrandsList().OrderByDescending(item => item.BrandDateCreated).ToListAsync())?.Select(item => _mapper.Map<BrandDTO>(item)).ToList();
+                    return result;
                 }
             });
+            return result;
         }
         #endregion
     }        

@@ -12,9 +12,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
         {
             var sqb = new SqlQueryBuilder(
                 dbContext: this,
-                databaseObjectType: DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
                 databaseObjectName: nameof(ProductCategoriesGetSingleByID),
-                itemType: typeof(ScalarFunctionResultEntity<string>),
                 sqlParameters:
                 [
                     productCategoryID.ToSqlParameter(nameof(productCategoryID), SqlDbType.Int)
@@ -30,9 +28,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
         {
             var sqb = new SqlQueryBuilder(
                 dbContext: this,
-                databaseObjectType: DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
                 databaseObjectName: nameof(ProductCategoriesGetSingleBySlug),
-                itemType: typeof(ScalarFunctionResultEntity<string>),
                 sqlParameters:
                 [
                     productCategorySlug.ToSqlParameter(nameof(productCategorySlug), SqlDbType.NVarChar)
@@ -59,9 +55,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
         {
             var sqb = new SqlQueryBuilder(
                 dbContext: this,
-                databaseObjectType: DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
                 databaseObjectName: nameof(ProductCategoriesList),
-                itemType: typeof(ProductCategoriesListEntity),
                 sqlParameters:
                 [
                     productCategoryParentID.ToSqlParameter(nameof(productCategoryParentID), SqlDbType.Int),
@@ -82,9 +76,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
         {
             var sqb = new SqlQueryBuilder(
                 dbContext: this,
-                databaseObjectType: DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
                 databaseObjectName: nameof(ProductCategoriesListForDeleteRecursive),
-                itemType: typeof(ProductCategoriesListForDeleteRecursiveEntity),
                 sqlParameters:
                 [
                     categoryID.ToSqlParameter(nameof(categoryID), SqlDbType.Int),
@@ -100,9 +92,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
         {
             var sqb = new SqlQueryBuilder(
                 dbContext: this,
-                databaseObjectType: DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
                 databaseObjectName: nameof(ProductsGetSingleByID),
-                itemType: typeof(ScalarFunctionResultEntity<string>),
                 sqlParameters:
                 [
                     productID.ToSqlParameter(nameof(productID), SqlDbType.Int)
@@ -118,9 +108,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
         {
             var sqb = new SqlQueryBuilder(
                 dbContext: this,
-                databaseObjectType: DatabaseObjectTypes.SCALAR_VALUED_FUNCTION,
                 databaseObjectName: nameof(ProductsGetsingleBySlug),
-                itemType: typeof(ScalarFunctionResultEntity<string>),
                 sqlParameters:
                 [
                     productSlug.ToSqlParameter(nameof(productSlug), SqlDbType.NVarChar)
@@ -156,9 +144,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
         {
             var sqb = new SqlQueryBuilder(
                 dbContext: this,
-                databaseObjectType: DatabaseObjectTypes.TABLE_VALUED_FUNCTION,
-                databaseObjectName: nameof(ProductsList),
-                itemType: typeof(ProductsListEntity)
+                databaseObjectName: nameof(ProductsList)
             );
             var result = sqb.ExecuteQuery<ProductsListEntity>();
             return result;

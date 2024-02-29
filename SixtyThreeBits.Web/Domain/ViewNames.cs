@@ -220,8 +220,8 @@
                 public static class User
                 {
                     #region Properties
-                    public const string Layout = "~/Views/Admin/UserManagement/User/UserLayout.cshtml";
-                    public const string Properties = "~/Views/Admin/UserManagement/User/UserProperties.cshtml";
+                    public const string Layout = "~/Views/Admin/Users/User/UserLayout.cshtml";
+                    public const string Properties = "~/Views/Admin/Users/User/UserProperties.cshtml";
                     #endregion
                 }
                 #endregion

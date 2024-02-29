@@ -11,9 +11,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
         {
             var sqb = new SqlQueryBuilder(
                 dbContext: this,
-                databaseObjectType: DatabaseObjectTypes.STORED_PROCEDURE,
                 databaseObjectName: nameof(BrandsIUD),
-                itemType: null,
                 sqlParameters:
                 [
                      databaseAction.ToSqlParameter(nameof(databaseAction),SqlDbType.TinyInt),
