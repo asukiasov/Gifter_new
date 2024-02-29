@@ -22,8 +22,9 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
             {
                 using (var db = _connectionFactory.GetDbContextQueries())
                 {
-                    var DBResult = await db.SystemPropertiesGet();
-                    return DBResult?.DeserializeJsonTo<SystemPropertiesDTO>();
+                    var resultJson = await db.SystemPropertiesGet();
+                    var result = resultJson?.DeserializeJsonTo<SystemPropertiesDTO>();
+                    return result;
                 }
             });
             return result ?? new SystemPropertiesDTO();
@@ -31,12 +32,12 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
 
         public async Task SystemPropertiesUpdate(SystemPropertiesDTO systemProperties)
         {
-            var SystemPropertiesJson = systemProperties.ToJson();
-            await TryExecuteAsyncTask($"{nameof(SystemPropertiesUpdate)}({nameof(systemProperties)} = {SystemPropertiesJson})", async () =>
+            var systemPropertiesJson = systemProperties.ToJson();
+            await TryExecuteAsyncTask($"{nameof(SystemPropertiesUpdate)}({nameof(systemProperties)} = {systemPropertiesJson})", async () =>
             {
                 using (var db = _connectionFactory.GetDbContextCommands())
                 {
-                    await db.SystemPropertiesUpdate(SystemPropertiesJson);
+                    await db.SystemPropertiesUpdate(systemPropertiesJson);
                 }
             });
         }
