@@ -160,7 +160,7 @@ namespace SixtyThreeBits.Web.Filters.Admin
         void initSidebar()
         {
             _viewModel.IsSidebarCollapsed = _model.IsSidebarCollapsed = new ValueWrapper<bool>();
-            _model.IsSidebarCollapsed.Value = _model.CookieAssistance.Get<bool>(Key: WebConstants.Cookies.IsAdminSideBarCollapsed);
+            _model.IsSidebarCollapsed.Value = _model.CookieAssistance.Get<bool>(key: WebConstants.Cookies.IsAdminSideBarCollapsed);
         }
 
         void initSuccessErrorMessage()

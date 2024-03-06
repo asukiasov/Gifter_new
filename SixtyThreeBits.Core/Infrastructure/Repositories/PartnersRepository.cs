@@ -33,7 +33,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 {
                     using (var db = _connectionFactory.GetDbContextQueries())
                     {
-                        var resultJson = await db.PartnersGetSingleByID(partnerID);
+                        var resultJson = await db.PartnersGetSingleByID(partnerID: partnerID);
                         var result = resultJson?.DeserializeJsonTo<PartnerDTO>();
                         return result;
                     }
@@ -50,7 +50,19 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 {
                     using (var db = _connectionFactory.GetDbContextCommands())
                     {
-                        partnerID = await db.PartnersIUD(databaseAction, partnerID, partnerName, partnerNameEng, partnerShortDescription, partnerShortDescriptionEng, partnerFullDescription, partnerFullDescriptionEng, partnerWebSite, partnerImageFilename, partnerIsPublished);
+                        partnerID = await db.PartnersIUD(
+                            databaseAction: databaseAction, 
+                            partnerID: partnerID, 
+                            partnerName: partnerName, 
+                            partnerNameEng: partnerNameEng,
+                            partnerShortDescription: partnerShortDescription, 
+                            partnerShortDescriptionEng: partnerShortDescriptionEng, 
+                            partnerFullDescription: partnerFullDescription, 
+                            partnerFullDescriptionEng: partnerFullDescriptionEng, 
+                            partnerWebSite: partnerWebSite, 
+                            partnerImageFilename: partnerImageFilename, 
+                            partnerIsPublished: partnerIsPublished
+                        );
                         return partnerID;
                     }
                 }
@@ -66,7 +78,13 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 {
                     using (var db = _connectionFactory.GetDbContextQueries())
                     {
-                        var result = (await db.PartnersList().OrderByDescending(item => item.PartnerDateCreated).ToListAsync())?.Select(item => _mapper.Map<PartnersListDTO>(item)).ToList();
+                        var result = (
+                            await db.PartnersList()
+                            .OrderByDescending(item => item.PartnerDateCreated)
+                            .ToListAsync()
+                        )
+                        ?.Select(item => _mapper.Map<PartnersListDTO>(item))
+                        .ToList();
                         return result;
                     }
                 }

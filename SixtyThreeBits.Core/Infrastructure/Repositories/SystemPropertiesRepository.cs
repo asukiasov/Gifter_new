@@ -42,7 +42,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 {
                     using (var db = _connectionFactory.GetDbContextCommands())
                     {
-                        await db.SystemPropertiesUpdate(systemPropertiesJson);
+                        await db.SystemPropertiesUpdate(systemPropertiesJson: systemPropertiesJson);
                     }
                 }
             );

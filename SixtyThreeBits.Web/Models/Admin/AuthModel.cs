@@ -24,7 +24,7 @@ namespace SixtyThreeBits.Web.Models.Admin
 
         public bool IsUserLoggedIn()
         {
-            var isLoggedIn = SessionAssistance.Get<UserDTO>(WebConstants.Session.User) != null;
+            var isLoggedIn = SessionAssistance.Get<UserDTO>(key: WebConstants.Session.User) != null;
             return isLoggedIn;
         }
 
@@ -33,7 +33,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             bool isAuthenticated = false;
 
             var repository = RepositoriesFactory.GetUsersRepository();
-            var user = await repository.UsersGetSingleUserByEmailAndPassword(viewModel.Username, viewModel.Password);
+            var user = await repository.UsersGetSingleByEmailAndPassword(userEmail: viewModel.Username, userPassword: viewModel.Password);
             if (user == null)
             {
                 viewModel.IsLoginFailed = true;
@@ -41,10 +41,14 @@ namespace SixtyThreeBits.Web.Models.Admin
             else
             {
                 isAuthenticated = true;
-                SessionAssistance.Set(WebConstants.Session.User, user);
+                SessionAssistance.Set(key: WebConstants.Session.User, value: user);
                 if (viewModel.IsRememberMeChecked)
                 {
-                    CookieAssistance.Set(WebConstants.Cookies.User, user.UserID, DateTime.Now.AddDays(30));
+                    CookieAssistance.Set(
+                        key: WebConstants.Cookies.User, 
+                        value: user.UserID, 
+                        expirationDate: DateTime.Now.AddDays(30)
+                    );
                 }
             }
 
@@ -57,7 +61,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             if (sessionUser != null)
             {
                 var repository = RepositoriesFactory.GetUsersRepository();
-                var user = await repository.UsersGetSingleUserByUserID(sessionUser.UserID);
+                var user = await repository.UsersGetSingleByID(sessionUser.UserID);
                 if (user != null && user.UserIsActive)
                 {
                     SessionAssistance.Set(WebConstants.Session.User, user);

@@ -59,14 +59,14 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
             return pageID;
         }
 
-        public async Task PagesSyncParentsAndSortIndexes(string SortIndexesJson)
+        public async Task PagesSyncParentsAndSortIndexes(string sortIndexesJson)
         {
             var sqb = new SqlQueryBuilder(
                 dbContext: this,
                 databaseObjectName: nameof(PagesSyncParentsAndSortIndexes),
                 sqlParameters:
                 [
-                    SortIndexesJson.ToSqlParameter(nameof(SortIndexesJson),SqlDbType.NVarChar)
+                    sortIndexesJson.ToSqlParameter(nameof(sortIndexesJson),SqlDbType.NVarChar)
                 ]
             );
 

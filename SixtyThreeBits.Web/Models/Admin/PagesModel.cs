@@ -28,7 +28,8 @@ namespace SixtyThreeBits.Web.Models.Admin
             var allowDelete = User.HasPermission(ControllerActionRouteNames.Admin.Pages.Delete);
 
             var repository = RepositoriesFactory.GetPagesRepository();
-            viewModel.Pages = (await repository.PagesList())?.Select(item => new TreeNodeItem
+            viewModel.Pages = (await repository.PagesList())
+            ?.Select(item => new TreeNodeItem
             {
                 NodeID = item.PageID.ToString(),
                 ParentID = item.PageParentID.HasValue ? item.PageParentID.ToString() : null,
@@ -45,7 +46,8 @@ namespace SixtyThreeBits.Web.Models.Admin
                 ShowToggler1 = allowUpdate,
                 ShowToggler2 = allowUpdate,
                 ShowToggler3 = allowUpdate
-            }).ToList();
+            })
+            .ToList();
 
             viewModel.ShowAddNewButton = allowAddNew;
             viewModel.UrlCreateNew = Url.RouteUrl(ControllerActionRouteNames.Admin.Pages.AddNew);

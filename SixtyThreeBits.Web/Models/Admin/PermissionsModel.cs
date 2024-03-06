@@ -36,7 +36,8 @@ namespace SixtyThreeBits.Web.Models.Admin
         public async Task<List<PageViewModel.TreeModel.TreeItem>> GetGridViewModel()
         {
             var repository = RepositoriesFactory.GetPermissionsRepository();
-            var viewModel = (await repository.PermissionsList()).Select(item => new PageViewModel.TreeModel.TreeItem
+            var viewModel = (await repository.PermissionsList())
+            ?.Select(item => new PageViewModel.TreeModel.TreeItem
             {
                 PermissionID = item.PermissionID,
                 PermissionParentID = item.PermissionParentID,
@@ -50,7 +51,8 @@ namespace SixtyThreeBits.Web.Models.Admin
                 PermissionMenuTitle = item.PermissionMenuTitle,
                 PermissionMenuTitleEng = item.PermissionMenuTitleEng,
                 PermissionSortIndex = item.PermissionSortIndex
-            }).ToList();
+            })
+            .ToList();
             return viewModel;
         }
 

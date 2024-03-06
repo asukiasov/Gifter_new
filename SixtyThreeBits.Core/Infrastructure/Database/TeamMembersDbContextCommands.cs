@@ -7,7 +7,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
     public partial class DbContextCommands
     {
         #region Methods
-        public async Task<int?> TeamMembersIUD(Enums.DatabaseActions databaseAction, int? teamMemberID, string teamMemberFirstName, string teamMemberLastName, string teamMemberPosition, string teamMemberShortDescription, string teamMemberLongDescription, string teamMemberImageFilename, bool? teamMemberIsPublished, int? teamMemberCategoryID)
+        public async Task<int?> TeamMembersIUD(Enums.DatabaseActions databaseAction, int? teamMemberID, string teamMemberFirstname, string teamMemberLastName, string teamMemberPosition, string teamMemberShortDescription, string teamMemberLongDescription, string teamMemberImageFilename, bool? teamMemberIsPublished, int? teamMemberCategoryID)
         {
             var sqb = new SqlQueryBuilder(
                 dbContext: this,
@@ -16,7 +16,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
                 [
                     databaseAction.ToSqlParameter(nameof(databaseAction), SqlDbType.TinyInt),
                     teamMemberID.ToSqlOutputParameter(nameof(teamMemberID), SqlDbType.Int),
-                    teamMemberFirstName.ToSqlParameter(nameof(teamMemberFirstName), SqlDbType.NVarChar),
+                    teamMemberFirstname.ToSqlParameter(nameof(teamMemberFirstname), SqlDbType.NVarChar),
                     teamMemberLastName.ToSqlParameter(nameof(teamMemberLastName), SqlDbType.NVarChar),
                     teamMemberPosition.ToSqlParameter(nameof(teamMemberPosition), SqlDbType.NVarChar),
                     teamMemberShortDescription.ToSqlParameter(nameof(teamMemberShortDescription), SqlDbType.NVarChar),
@@ -32,14 +32,14 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
             return teamMemberID;
         }
 
-        public async Task TeamMembersSyncSortIndexes(string teamMembersSyncSortIndexesJson)
+        public async Task TeamMembersSyncSortIndexes(string sortIndexesJson)
         {
             var sqb = new SqlQueryBuilder(
                 dbContext: this,
                 databaseObjectName: nameof(TeamMembersSyncSortIndexes),
                 sqlParameters:
                 [
-                    teamMembersSyncSortIndexesJson.ToSqlParameter(nameof(teamMembersSyncSortIndexesJson), SqlDbType.NVarChar)
+                    sortIndexesJson.ToSqlParameter(nameof(sortIndexesJson), SqlDbType.NVarChar)
                 ]
             );
 

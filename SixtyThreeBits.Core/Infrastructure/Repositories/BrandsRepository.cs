@@ -33,7 +33,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 {
                     using (var db = _connectionFactory.GetDbContextQueries())
                     {
-                        var resultJson = await db.BrandsGetSingleByID(brandID);
+                        var resultJson = await db.BrandsGetSingleByID(brandID: brandID);
                         var result = resultJson?.DeserializeJsonTo<BrandDTO>();
                         return result;
                     }
@@ -50,7 +50,13 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 {
                     using (var db = _connectionFactory.GetDbContextCommands())
                     {
-                        brandID = await db.BrandsIUD(databaseAction, brandID, brandName, brandNameEng, brandImageFilename);
+                        brandID = await db.BrandsIUD(
+                            databaseAction: databaseAction, 
+                            brandID: brandID, 
+                            brandName: brandName, 
+                            brandNameEng: brandNameEng, 
+                            brandImageFilename: brandImageFilename
+                        );
                         return brandID;
                     }
                 }
@@ -66,7 +72,13 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 {
                     using (var db = _connectionFactory.GetDbContextQueries())
                     {
-                        var result = (await db.BrandsList().OrderByDescending(item => item.BrandDateCreated).ToListAsync())?.Select(item => _mapper.Map<BrandDTO>(item)).ToList();
+                        var result = (
+                            await db.BrandsList()
+                            .OrderByDescending(item => item.BrandDateCreated)
+                            .ToListAsync()
+                        )
+                        ?.Select(item => _mapper.Map<BrandDTO>(item))
+                        .ToList();
                         return result;
                     }
                 }

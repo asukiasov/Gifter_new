@@ -32,7 +32,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 {
                     using (var db = _connectionFactory.GetDbContextCommands())
                     {
-                        await db.PermissionsDeleteRecursive(permissionID);
+                        await db.PermissionsDeleteRecursive(permissionID: permissionID);
                     }
                 }
             );
@@ -46,7 +46,21 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 {
                     using (var db = _connectionFactory.GetDbContextCommands())
                     {
-                        permissionID = await db.PermissionsIUD(databaseAction, permissionID, permissionParentID, permissionCaption, permissionCaptionEng, permissionPagePath, permissionCodeName, permissionCode, permissionIsMenuItem, permissionMenuIcon, permissionMenuTitle, permissionMenuTitleEng, permissionSortIndex);
+                        permissionID = await db.PermissionsIUD(
+                            databaseAction: databaseAction, 
+                            permissionID: permissionID, 
+                            permissionParentID: permissionParentID, 
+                            permissionCaption: permissionCaption, 
+                            permissionCaptionEng: permissionCaptionEng, 
+                            permissionPagePath: permissionPagePath, 
+                            permissionCodeName: permissionCodeName, 
+                            permissionCode: permissionCode, 
+                            permissionIsMenuItem: permissionIsMenuItem, 
+                            permissionMenuIcon: permissionMenuIcon, 
+                            permissionMenuTitle: permissionMenuTitle, 
+                            permissionMenuTitleEng: permissionMenuTitleEng, 
+                            permissionSortIndex: permissionSortIndex
+                        );
                         return permissionID;
                     }
                 }
@@ -62,7 +76,13 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 {
                     using (var db = _connectionFactory.GetDbContextQueries())
                     {
-                        var result = (await db.PermissionsList().OrderBy(P => P.PermissionSortIndex).ToListAsync())?.Select(item=>_mapper.Map<PermissionDTO>(item)).ToList();
+                        var result = (
+                            await db.PermissionsList()
+                            .OrderBy(P => P.PermissionSortIndex)
+                            .ToListAsync()
+                        )
+                        ?.Select(item=>_mapper.Map<PermissionDTO>(item))
+                        .ToList();
                         return result;
                     }
                 }
@@ -78,7 +98,9 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 {
                     using (var db = _connectionFactory.GetDbContextQueries())
                     {
-                        var result = await db.PermissionsListByRoleID(roleID).Select(item => item.PermissionID).ToListAsync();
+                        var result = await db.PermissionsListByRoleID(roleID: roleID)
+                        .Select(item => item.PermissionID)
+                        .ToListAsync();
                         return result;
                     }
                 }

@@ -126,8 +126,8 @@ namespace SixtyThreeBits.Web.Models.Admin
             var chunkIndex = Request.Form["ChunkIndex"].ToString().ToInt();
             var chunkCount = Request.Form["ChunkCount"].ToString().ToInt();
 
-            var tempFilePath = Path.Combine(AppSettings.WebRootPath, filename);
-            using (var tempFile = File.Open(tempFilePath, FileMode.Append))
+            var tempFilePath = Path.Combine(path1: AppSettings.WebRootPath, path2: filename);
+            using (var tempFile = File.Open(path: tempFilePath, mode: FileMode.Append))
             {
                 await postedFile.CopyToAsync(tempFile);
             }

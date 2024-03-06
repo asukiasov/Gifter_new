@@ -45,11 +45,13 @@ namespace SixtyThreeBits.Web.Models.Admin
             viewModel.Grid.AllowDelete = User.HasPermission(ControllerActionRouteNames.Admin.Products.GridDelete);
 
             var repository = RepositoriesFactory.GetProductsRepository();
-            viewModel.Grid.Categories = (await repository.ProductCategoriesListWithTitlePaddindHierarchy(padChar: '-')).Select(item => new KeyValueTuple<int?, string>
+            viewModel.Grid.Categories = (await repository.ProductCategoriesListWithTitlePaddindHierarchy(padChar: '-'))
+            ?.Select(item => new KeyValueTuple<int?, string>
             {
                 Key = item.ProductCategoryID,
                 Value = item.ProductCategoryName
-            }).ToList();
+            })
+            .ToList();
 
             return viewModel;
         }
@@ -57,7 +59,8 @@ namespace SixtyThreeBits.Web.Models.Admin
         public async Task<List<PageViewModel.GridModel.GridItem>> GetGridViewModel()
         {
             var repository = RepositoriesFactory.GetProductsRepository();
-            var viewModel = (await repository.ProductsList())?.Select(Item => new PageViewModel.GridModel.GridItem
+            var viewModel = (await repository.ProductsList())
+            ?.Select(Item => new PageViewModel.GridModel.GridItem
             {
                 ProductID = Item.ProductID,
                 ProductName = Item.ProductName,
@@ -68,7 +71,8 @@ namespace SixtyThreeBits.Web.Models.Admin
                 ProductIsFeatured = Item.ProductIsFeatured,
                 ProductCategoryID = Item.ProductCategoryID,
                 UrlProductsProperties = Url.RouteUrl(ControllerActionRouteNames.Admin.Products.Product.Properties, new { Item.ProductID })
-            }).ToList();
+            })
+            .ToList();
             return viewModel;
         }
 
@@ -270,20 +274,24 @@ namespace SixtyThreeBits.Web.Models.Admin
             viewModel.ProductImageHttpPath = FileStorage.GetUploadedFileHttpPath(DBItem.ProductImageFilename, _folderPath);
 
             var repositoryBrands = RepositoriesFactory.GetBrandsRepository();
-            viewModel.Brands = (await repositoryBrands.BrandsList()).Select(item => new KeyValueSelectedTuple<int?, string>
+            viewModel.Brands = (await repositoryBrands.BrandsList())
+            ?.Select(item => new KeyValueSelectedTuple<int?, string>
             {
                 Key = item.BrandID,
                 Value = item.BrandName,
                 IsSelected = item.BrandID == viewModel.BrandID
-            }).ToList();
+            })
+            .ToList();
 
             var repositoryProducts = RepositoriesFactory.GetProductsRepository();
-            viewModel.Categories = (await repositoryProducts.ProductCategoriesListWithTitlePaddindHierarchy('-')).Select(item => new KeyValueSelectedTuple<int?, string>
+            viewModel.Categories = (await repositoryProducts.ProductCategoriesListWithTitlePaddindHierarchy('-'))
+            ?.Select(item => new KeyValueSelectedTuple<int?, string>
             {
                 Key = item.ProductCategoryID,
                 Value = item.ProductCategoryName,
                 IsSelected = item.ProductCategoryID == viewModel.ProductCategoryID
-            }).ToList();
+            })
+            .ToList();
 
             var repositoryCountries = RepositoriesFactory.GetCountriesRepository();
             viewModel.ProductProducerCountries = await repositoryCountries.CountriesListAsSimpleKeyValue(SelectedCountryID: DBItem.CountryIDProducer);
@@ -293,7 +301,8 @@ namespace SixtyThreeBits.Web.Models.Admin
                 ProductImageID = Item.ProductImageID,
                 ProductImageFilename = Item.ProductImageFilename,
                 ProductImageFileHttpPath = FileStorage.GetUploadedFileHttpPath(Item.ProductImageFilename, _folderPath)
-            }).ToList();
+            })
+            .ToList();
 
             viewModel.UrlImageUpload = Url.RouteUrl(ControllerActionRouteNames.Admin.Products.Product.PropertiesImagesUpload, new { productID = DBItem.ProductID });
             viewModel.UrlImageSort = Url.RouteUrl(ControllerActionRouteNames.Admin.Products.Product.PropertiesImagesSort, new { productID = DBItem.ProductID });

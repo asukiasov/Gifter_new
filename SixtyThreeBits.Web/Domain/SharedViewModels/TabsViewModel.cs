@@ -1,8 +1,7 @@
 ﻿using SixtyThreeBits.Web.Domain;
-using SixtyThreeBits.Web.Domain.SharedViewModels;
 using System.Collections.Generic;
 
-namespace SixtyThreeBits.Web.Models.Admin
+namespace SixtyThreeBits.Web.Domain.SharedViewModels
 {
     public class TabsViewModel
     {

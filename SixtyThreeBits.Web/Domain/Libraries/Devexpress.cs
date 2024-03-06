@@ -84,6 +84,10 @@ namespace SixtyThreeBits.Web.Domain.Libraries
                 options.ApplyFilter(GridApplyFilterMode.Auto);
                 options.ShowAllText(Resources.TextAllDevexpressGridFilterRaw);
             })
+            .HeaderFilter(options =>
+            {
+                options.Visible(true);
+            })
             .DataSource(options =>
             {
                 var optionsResult = options.RemoteController();

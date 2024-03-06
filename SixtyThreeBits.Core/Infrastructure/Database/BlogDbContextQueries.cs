@@ -47,14 +47,14 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
         #endregion
 
         #region BlogsIsSlugUniq        
-        public async Task<bool> BlogPostIsSlugUniq(string bBlogPostSlug, int? blogPostID)
+        public async Task<bool> BlogPostIsSlugUniq(string blogPostSlug, int? blogPostID)
         {
             var sqb = new SqlQueryBuilder(
                 dbContext: this,
                 databaseObjectName: nameof(BlogPostIsSlugUniq),
                 sqlParameters:
                 [
-                    bBlogPostSlug.ToSqlParameter(nameof(bBlogPostSlug), SqlDbType.NVarChar),
+                    blogPostSlug.ToSqlParameter(nameof(blogPostSlug), SqlDbType.NVarChar),
                     blogPostID.ToSqlParameter(nameof(blogPostID), SqlDbType.Int)
                 ]
             );

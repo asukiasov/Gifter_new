@@ -44,14 +44,14 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
             return productCategoryID;
         }
 
-        public async Task ProductCategoriesSyncParentsAndSortIndexes(string parentsAndSortIndexesJson)
+        public async Task ProductCategoriesSyncParentsAndSortIndexes(string sortIndexesJson)
         {
             var sqb = new SqlQueryBuilder(
                 dbContext: this,
-                databaseObjectName: nameof(ProductCategoriesSyncParentsAndSortIndexes),
+                databaseObjectName: nameof(sortIndexesJson),
                 sqlParameters:
                 [
-                    parentsAndSortIndexesJson.ToSqlParameter(nameof(parentsAndSortIndexesJson),SqlDbType.NVarChar)
+                    sortIndexesJson.ToSqlParameter(nameof(sortIndexesJson),SqlDbType.NVarChar)
                 ]
            );
 

@@ -40,14 +40,16 @@ namespace SixtyThreeBits.Web.Models.Admin
         public async Task<List<PageViewModel.GridModel.GridItem>> GetGridViewModel()
         {
             var repository = RepositoriesFactory.GetPartnersRepository();
-            var viewModel = (await repository.PartnersList())?.Select(item => new PageViewModel.GridModel.GridItem
+            var viewModel = (await repository.PartnersList())
+            ?.Select(item => new PageViewModel.GridModel.GridItem
             {
                 PartnerID = item.PartnerID,
                 PartnerName = item.PartnerName,
                 PartnerWebSite = item.PartnerWebSite,
                 PartnerIsPublished = item.PartnerIsPublished,
                 UrlPartnerProperties = Url.RouteUrl(ControllerActionRouteNames.Admin.Partners.Partner.Properties, new { partnerID = item.PartnerID })
-            }).ToList();
+            })
+            .ToList();
             return viewModel;
         }
 

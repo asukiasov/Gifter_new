@@ -1,1 +1,30 @@
-﻿
+﻿{
+  "ProductID": 4,
+  "ProductName": "Apple iPhone 15 Pro",
+  "ProductPrice": 1199.0000,
+  "ProductCoverImageFIlename": "iphone_15_cover.jpg",
+  "CategoryID": 1,
+  "ProductIsPublished": true,
+  "ProductDateCreated": "2024-03-02T13:37:43.390",
+  "CategoryName": "Mobile Phones",
+  "ProductImages": [
+    {
+      "ProductImageID": 1,
+      "ProductID": 4,
+      "ProductImageFilename": "apple_iPhone_15_Pro_front.jpg",
+      "ProductImageDateCreated": "2024-03-04T23:48:37.717"
+    },
+    {
+      "ProductImageID": 2,
+      "ProductID": 4,
+      "ProductImageFilename": "apple_iPhone_15_Pro_back.jpg",
+      "ProductImageDateCreated": "2024-03-04T23:49:03.950"
+    },
+    {
+      "ProductImageID": 3,
+      "ProductID": 4,
+      "ProductImageFilename": "apple_iPhone_15_Pro_package.jpg",
+      "ProductImageDateCreated": "2024-03-04T23:49:12.687"
+    }
+  ]
+}

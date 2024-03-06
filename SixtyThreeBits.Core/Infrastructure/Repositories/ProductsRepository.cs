@@ -36,7 +36,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 {
                     using (var db = _connectionFactory.GetDbContextCommands())
                     {
-                        await db.ProductCategoriesDeleteRecursive(productCategoryID);
+                        await db.ProductCategoriesDeleteRecursive(productCategoryID: productCategoryID);
                     }
                 }
             );
@@ -50,7 +50,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 {
                     using (var db = _connectionFactory.GetDbContextQueries())
                     {
-                        var resultJson = await db.ProductCategoriesGetSingleByID(productCategoryID);
+                        var resultJson = await db.ProductCategoriesGetSingleByID(productCategoryID: productCategoryID);
                         var result = resultJson?.DeserializeJsonTo<ProductCategoryDTO>();
                         return result;
                     }
@@ -67,7 +67,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 {
                     using (var db = _connectionFactory.GetDbContextQueries())
                     {
-                        var resultJson = await db.ProductCategoriesGetSingleBySlug(productCategorySlug);
+                        var resultJson = await db.ProductCategoriesGetSingleBySlug(productCategorySlug: productCategorySlug);
                         var result = resultJson?.DeserializeJsonTo<ProductCategoryDTO>();
                         return result;
                     }
@@ -84,7 +84,16 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 {
                     using (var db = _connectionFactory.GetDbContextCommands())
                     {
-                        productCategoryID = await db.ProductCategoriesIUD(databaseAction, productCategoryID, productCategoryParentID, productCategoryName, productCategoryNameEng, productCategoryImageFilename, productCategoryDescriptionShort, productCategoryDescriptionShortEng);
+                        productCategoryID = await db.ProductCategoriesIUD(
+                            databaseAction: databaseAction,
+                            productCategoryID: productCategoryID,
+                            productCategoryParentID: productCategoryParentID,
+                            productCategoryName: productCategoryName,
+                            productCategoryNameEng: productCategoryNameEng,
+                            productCategoryImageFilename: productCategoryImageFilename,
+                            productCategoryDescriptionShort: productCategoryDescriptionShort,
+                            productCategoryDescriptionShortEng: productCategoryDescriptionShortEng
+                        );
                         return productCategoryID;
                     }
                 }
@@ -100,7 +109,12 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 {
                     using (var db = _connectionFactory.GetDbContextQueries())
                     {
-                        var result = (await db.ProductCategoriesList(productCategoryParentID).OrderBy(item => item.ProductCategorySortIndex).ToListAsync())?.Select(item => _mapper.Map<ProductCategoryDTO>(item)).ToList();
+                        var result = (
+                            await db.ProductCategoriesList(productCategoryParentID: productCategoryParentID)
+                            .OrderBy(item => item.ProductCategorySortIndex)
+                            .ToListAsync()
+                        )
+                        ?.Select(item => _mapper.Map<ProductCategoryDTO>(item)).ToList();
                         return result;
                     }
                 }
@@ -116,7 +130,12 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 {
                     using (var db = _connectionFactory.GetDbContextQueries())
                     {
-                        var result = (await db.ProductCategoriesListForDeleteRecursive(productCategoryID).ToListAsync())?.Select(item => _mapper.Map<ProductCategoriesListForDeleteRecursiveDTO>(item)).ToList();
+                        var result = (
+                            await db.ProductCategoriesListForDeleteRecursive(productCategoryID: productCategoryID)
+                            .ToListAsync()
+                        )
+                        ?.Select(item => _mapper.Map<ProductCategoriesListForDeleteRecursiveDTO>(item))
+                        .ToList();
                         return result;
                     }
                 }
@@ -129,32 +148,32 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
             var result = new List<ProductCategoryDTO>();
 
             Action<ProductCategoryDTO, int, List<ProductCategoryDTO>> InitCategoryNameByHierarchy = null;
-            InitCategoryNameByHierarchy = (Parent, PadCount, CategorysList) =>
+            InitCategoryNameByHierarchy = (parent, padCount, categorysList) =>
             {
-                if (PadCount > 0)
+                if (padCount > 0)
                 {
-                    Parent.ProductCategoryName = Parent.ProductCategoryName.PadLeft(Parent.ProductCategoryName.Length + PadCount, padChar);
-                    result.Add(Parent);
+                    parent.ProductCategoryName = parent.ProductCategoryName.PadLeft(parent.ProductCategoryName.Length + padCount, padChar);
+                    result.Add(parent);
                 }
                 else
                 {
-                    result.Add(Parent);
+                    result.Add(parent);
                 }
 
-                var Children = CategorysList.Where(item => item.ProductCategoryParentID == Parent.ProductCategoryID).ToList();
-                foreach (var Category in Children)
+                var children = categorysList.Where(item => item.ProductCategoryParentID == parent.ProductCategoryID).ToList();
+                foreach (var Category in children)
                 {
-                    InitCategoryNameByHierarchy(Category, PadCount + 4, CategorysList);
+                    InitCategoryNameByHierarchy(Category, padCount + 4, categorysList);
                 }
             };
 
-            var Categories = await ProductCategoriesList();
-            if (Categories?.Count > 0)
+            var categories = await ProductCategoriesList();
+            if (categories?.Count > 0)
             {
-                var Parents = Categories.Where(item => item.ProductCategoryParentID == null).OrderBy(item => item.ProductCategorySortIndex).ToList();
-                foreach (var Item in Parents)
+                var Parents = categories.Where(item => item.ProductCategoryParentID == null).OrderBy(item => item.ProductCategorySortIndex).ToList();
+                foreach (var parent in Parents)
                 {
-                    InitCategoryNameByHierarchy(Item, 0, Categories);
+                    InitCategoryNameByHierarchy(parent, 0, categories);
                 }
             }
 
@@ -165,12 +184,12 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         {
             var sortIndexesJson = sortIndexes.ToJson();
             await TryExecuteAsyncTask(
-                logString: $"{nameof(ProductCategoriesSyncParentsAndSortIndexes)}({nameof(sortIndexes)} = {sortIndexesJson})", 
+                logString: $"{nameof(ProductCategoriesSyncParentsAndSortIndexes)}({nameof(sortIndexesJson)} = {sortIndexesJson})", 
                 asyncFuncToTry: async () =>
                 {
                     using (var db = _connectionFactory.GetDbContextCommands())
                     {
-                        await db.ProductCategoriesSyncParentsAndSortIndexes(sortIndexesJson);
+                        await db.ProductCategoriesSyncParentsAndSortIndexes(sortIndexesJson: sortIndexesJson);
                     }
                 }
             );
@@ -184,7 +203,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 {
                     using (var db = _connectionFactory.GetDbContextQueries())
                     {
-                        var resultJson = await db.ProductsGetSingleByID(productID);
+                        var resultJson = await db.ProductsGetSingleByID(productID: productID);
                         var result = resultJson?.DeserializeJsonTo<ProductDTO>();
                         return result;
                     }
@@ -201,7 +220,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 {
                     using (var db = _connectionFactory.GetDbContextQueries())
                     {
-                        var resultJson = await db.ProductsGetsingleBySlug(productSlug);
+                        var resultJson = await db.ProductsGetsingleBySlug(productSlug: productSlug);
                         var result = resultJson?.DeserializeJsonTo<ProductDTO>();
                         return result;
                     }
@@ -218,7 +237,29 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 {
                     using (var db = _connectionFactory.GetDbContextCommands())
                     {
-                        productID = await db.ProductsIUD(databaseAction, productID, productCategoryID, countryIDProducer, brandID, productName, productNameEng, productSlug, productSlugEng, productPrice, productPriceOld, productRemainder, productImageFilename, productDescriptionShort, productDescriptionShortEng, productDescription, productDescriptionEng, productIsPublished, productIsFeatured, productSKU, productIDExternal);
+                        productID = await db.ProductsIUD(
+                            databaseAction: databaseAction,
+                            productID: productID, 
+                            productCategoryID: productCategoryID, 
+                            countryIDProducer: countryIDProducer, 
+                            brandID: brandID, 
+                            productName: productName, 
+                            productNameEng: productNameEng, 
+                            productSlug: productSlug, 
+                            productSlugEng: productSlugEng, 
+                            productPrice: productPrice, 
+                            productPriceOld: productPriceOld, 
+                            productRemainder: productRemainder,
+                            productImageFilename: productImageFilename,
+                            productDescriptionShort: productDescriptionShort,
+                            productDescriptionShortEng:productDescriptionShortEng, 
+                            productDescription: productDescription,
+                            productDescriptionEng: productDescriptionEng,
+                            productIsPublished: productIsPublished,
+                            productIsFeatured: productIsFeatured,
+                            productSKU: productSKU,
+                            productIDExternal: productIDExternal
+                        );
                         return productID;
                     }
                 }
@@ -226,15 +267,21 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
             return result;
         }
 
-        public async Task<int?> ProductsImagesIUD(Enums.DatabaseActions databaseAction, int? productImageID = null, int? productID = null, string productImageFilename = null, int? productImageSyncSortIndex = null)
+        public async Task<int?> ProductsImagesIUD(Enums.DatabaseActions databaseAction, int? productImageID = null, int? productID = null, string productImageFilename = null, int? productImageSortIndex = null)
         {
             var result = await TryToReturnAsyncTask(
-                logString: $"{nameof(ProductsImagesIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(productImageID)} = {productImageID}, {nameof(productID)} = {productID}, {nameof(productImageFilename)} = {productImageFilename}, {nameof(productImageSyncSortIndex)} = {productImageSyncSortIndex})", 
+                logString: $"{nameof(ProductsImagesIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(productImageID)} = {productImageID}, {nameof(productID)} = {productID}, {nameof(productImageFilename)} = {productImageFilename}, {nameof(productImageSortIndex)} = {productImageSortIndex})", 
                 asyncFuncToTry: async () =>
                 {
                     using (var db = _connectionFactory.GetDbContextCommands())
                     {
-                        productImageID = await db.ProductsImagesIUD(databaseAction, productImageID, productID, productImageFilename, productImageSyncSortIndex);
+                        productImageID = await db.ProductsImagesIUD(
+                            databaseAction: databaseAction,
+                            productImageID: productImageID, 
+                            productID: productID, 
+                            productImageFilename: productImageFilename,
+                            productImageSortIndex: productImageSortIndex
+                        );
                         return productImageID;
                     }
                 }
@@ -250,7 +297,12 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 {
                     using (var db = _connectionFactory.GetDbContextQueries())
                     {
-                        var result = (await db.ProductsList().OrderByDescending(item => item.ProductDateCreated).ToListAsync())?.Select(item => _mapper.Map<ProductsListDTO>(item)).ToList();
+                        var result = (
+                            await db.ProductsList()
+                            .OrderByDescending(item => item.ProductDateCreated).ToListAsync()
+                        )
+                        ?.Select(item => _mapper.Map<ProductsListDTO>(item))
+                        .ToList();
                         return result;
                     }
                 }
@@ -267,7 +319,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 {
                     using (var db = _connectionFactory.GetDbContextCommands())
                     {
-                        await db.ProductsImagesSyncSortIndex(productID, sortIndexesJson);
+                        await db.ProductsImagesSyncSortIndex(productID: productID, sortIndexesJson: sortIndexesJson);
                     }
                 }
             );

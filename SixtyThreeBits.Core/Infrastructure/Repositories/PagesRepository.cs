@@ -33,7 +33,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 {
                     using (var db = _connectionFactory.GetDbContextCommands())
                     {
-                        await db.PagesDeleteRecursive(pageID);
+                        await db.PagesDeleteRecursive(pageID: pageID);
                     }
                 }
             );
@@ -47,7 +47,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 {
                     using (var db = _connectionFactory.GetDbContextQueries())
                     {
-                        var resultJson = await db.PagesGetSingleByID(pageID, pageIsPublished);
+                        var resultJson = await db.PagesGetSingleByID(pageID: pageID, pageIsPublished: pageIsPublished);
                         var result = resultJson?.DeserializeJsonTo<PageDTO>();
                         return result;
                     }
@@ -64,7 +64,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 {
                     using (var db = _connectionFactory.GetDbContextQueries())
                     {
-                        var resultJson = await db.PagesGetSingleBySlugHierarchy(pageSlug, pageIsPublished);
+                        var resultJson = await db.PagesGetSingleBySlugHierarchy(pageSlug: pageSlug, pageIsPublished: pageIsPublished);
                         var result = resultJson?.DeserializeJsonTo<PageDTO>();
                         return result;
                     }
@@ -81,7 +81,31 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 {
                     using (var db = _connectionFactory.GetDbContextCommands())
                     {
-                        pageID = await db.PagesIUD(databaseAction, pageID, pageParentID, pageSlug, pageTitle, pageTitleEng, pageText, pageTextEng, pageTextHeaderHtml, pageTextHeaderHtmlEng, pageTextFooterHtml, pageTextFooterHtmlEng, pageData, pageDataEng, pageShortDescription, pageShortDescriptionEng, pageImageFilename, pageIsPublished, pageSortIndex, pageIsMenuItem, pageIsFooterItem, pageIsExternalUrl, pageExternalUrl);
+                        pageID = await db.PagesIUD(
+                            databaseAction: databaseAction,
+                            pageID: pageID, 
+                            pageParentID: pageParentID, 
+                            pageSlug: pageSlug, 
+                            pageTitle: pageTitle, 
+                            pageTitleEng: pageTitleEng, 
+                            pageText: pageText, 
+                            pageTextEng: pageTextEng, 
+                            pageTextHeaderHtml: pageTextHeaderHtml, 
+                            pageTextHeaderHtmlEng: pageTextHeaderHtmlEng, 
+                            pageTextFooterHtml: pageTextFooterHtml, 
+                            pageTextFooterHtmlEng: pageTextFooterHtmlEng, 
+                            pageData: pageData, 
+                            pageDataEng: pageDataEng, 
+                            pageShortDescription: pageShortDescription, 
+                            pageShortDescriptionEng: pageShortDescriptionEng, 
+                            pageImageFilename: pageImageFilename, 
+                            pageIsPublished: pageIsPublished, 
+                            pageSortIndex: pageSortIndex, 
+                            pageIsMenuItem: pageIsMenuItem, 
+                            pageIsFooterItem: pageIsFooterItem, 
+                            pageIsExternalUrl: pageIsExternalUrl,
+                            pageExternalUrl: pageExternalUrl
+                        );
                         return pageID;
                     }
                 }
@@ -97,7 +121,16 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 {
                     using (var db = _connectionFactory.GetDbContextQueries())
                     {
-                        var result = (await db.PagesList(pageIsPublished, pageIsMenuItem).OrderBy(item => item.PageSortIndex).ToListAsync())?.Select(item => _mapper.Map<PagesListDTO>(item)).ToList();
+                        var result = (
+                            await db.PagesList(
+                                pageIsPublished: pageIsPublished, 
+                                pageIsMenuItem: pageIsMenuItem
+                            )
+                            .OrderBy(item => item.PageSortIndex)
+                            .ToListAsync()
+                        )
+                        ?.Select(item => _mapper.Map<PagesListDTO>(item))
+                        .ToList();
                         return result;
                     }
                 }
@@ -114,7 +147,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 {
                     using (var db = _connectionFactory.GetDbContextCommands())
                     {
-                        await db.PagesSyncParentsAndSortIndexes(sortIndexesJson);
+                        await db.PagesSyncParentsAndSortIndexes(sortIndexesJson: sortIndexesJson);
                     }
                 }
             );

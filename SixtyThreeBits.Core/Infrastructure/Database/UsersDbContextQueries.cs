@@ -7,12 +7,12 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
 {
     public partial class DbContextQueries
     {
-        #region UsersGetSingleUserByUserID        
-        public async Task<string> UsersGetSingleUserByUserID(int? userID)
+        #region UsersGetSingleByID        
+        public async Task<string> UsersGetSingleByID(int? userID)
         {
             var sqb = new SqlQueryBuilder(
                 dbContext: this,
-                databaseObjectName: nameof(UsersGetSingleUserByUserID),
+                databaseObjectName: nameof(UsersGetSingleByID),
                 sqlParameters:
                 [
                     userID.ToSqlParameter(nameof(userID), SqlDbType.Int)
@@ -23,12 +23,12 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
         }
         #endregion
 
-        #region UsersGetSingleUserByEmailAndPassword        
-        public async Task<string> UsersGetSingleUserByEmailAndPassword(string userEmail, string userPassword)
+        #region UsersGetSingleByEmailAndPassword        
+        public async Task<string> UsersGetSingleByEmailAndPassword(string userEmail, string userPassword)
         {
             var sqb = new SqlQueryBuilder(
                 dbContext: this,
-                databaseObjectName: nameof(UsersGetSingleUserByEmailAndPassword),
+                databaseObjectName: nameof(UsersGetSingleByEmailAndPassword),
                 sqlParameters:
                 [
                     userEmail.ToSqlParameter(nameof(userEmail), SqlDbType.VarChar),

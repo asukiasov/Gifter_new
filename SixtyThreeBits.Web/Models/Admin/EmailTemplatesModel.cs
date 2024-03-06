@@ -30,12 +30,14 @@ namespace SixtyThreeBits.Web.Models.Admin
         public async Task<List<PageViewModel.GridModel.GridItem>> GetGridModel()
         {
             var repository = RepositoriesFactory.GetEmailTemplatesRepository();
-            var viewModel = (await repository.EmailTemplatesList())?.Select(Item => new PageViewModel.GridModel.GridItem
+            var viewModel = (await repository.EmailTemplatesList())
+            ?.Select(Item => new PageViewModel.GridModel.GridItem
             {
                 EmailTemplateID = Item.EmailTemplateID,
                 EmailTemplateName = Item.EmailTemplateName,
                 UrlEmailTemplate = Url.RouteUrl(ControllerActionRouteNames.Admin.EmailTemplates.EmailTemplate.Properties, new { Item.EmailTemplateID })
-            }).ToList();
+            })
+            .ToList();
             return viewModel;
         }
         #endregion

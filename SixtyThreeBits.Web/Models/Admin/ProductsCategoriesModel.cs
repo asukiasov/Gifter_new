@@ -28,7 +28,8 @@ namespace SixtyThreeBits.Web.Models.Admin
             viewModel.UrlSort = Url.RouteUrl(ControllerActionRouteNames.Admin.ProductCategories.Sort);
 
             var repository = RepositoriesFactory.GetProductsRepository();
-            viewModel.ProductCategories = (await repository.ProductCategoriesList())?.Select(item => new TreeNodeItem
+            viewModel.ProductCategories = (await repository.ProductCategoriesList())
+            ?.Select(item => new TreeNodeItem
             {
                 NodeID = item.ProductCategoryID.ToString(),
                 ParentID = item.ProductCategoryParentID.HasValue ? item.ProductCategoryParentID.ToString() : null,
@@ -36,7 +37,8 @@ namespace SixtyThreeBits.Web.Models.Admin
                 NavigateUrl = Url.RouteUrl(ControllerActionRouteNames.Admin.ProductCategories.ProductCategory.Properties, new { productCategoryID = item.ProductCategoryID }),
                 ShowAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.ProductCategories.Add) && item.ProductCategoryParentID == null,
                 ShowDeleteButton = User.HasPermission(ControllerActionRouteNames.Admin.ProductCategories.Delete)
-            }).ToList();
+            })
+            .ToList();
             if (viewModel.HasCategories)
             {
                 viewModel.ProductCategories.ToRecursive(IDPropertyName: nameof(TreeNodeItem.NodeID), nameof(TreeNodeItem.ParentID), nameof(TreeNodeItem.Children));

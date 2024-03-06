@@ -67,7 +67,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             if (databaseAction == Enums.DatabaseActions.DELETE)
             {
                 var DBItem = await repository.BlogPostGetSingleByID(blogPostID);
-                await DeleteUploadedFile(DBItem.BlogPostImageFilename, folderPath: _folderPath);
+                await DeleteUploadedFile(filename: DBItem.BlogPostImageFilename, folderPath: _folderPath);
             }
 
             await repository.BlogIUD(

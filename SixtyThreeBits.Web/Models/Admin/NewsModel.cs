@@ -44,7 +44,8 @@ namespace SixtyThreeBits.Web.Models.Admin
         public async Task<List<PageViewModel.GridModel.GridItem>> GetGridViewModel()
         {
             var repository = RepositoriesFactory.GetNewsRepository();
-            var viewModel = (await repository.NewsList()).Select(item => new PageViewModel.GridModel.GridItem
+            var viewModel = (await repository.NewsList())
+            ?.Select(item => new PageViewModel.GridModel.GridItem
             {
                 NewsID = item.NewsID,
                 NewsTitle = item.NewsTitle,
@@ -52,7 +53,8 @@ namespace SixtyThreeBits.Web.Models.Admin
                 NewsIsPublished = item.NewsIsPublished,
                 NewsDateCreated = item.NewsDateCreated,
                 UrlNewsProperties = Url.RouteUrl(ControllerActionRouteNames.Admin.News.NewsItem, new { newsID = item.NewsID })
-            }).ToList();
+            })
+            .ToList();
             return viewModel;
         }
 
@@ -224,7 +226,7 @@ namespace SixtyThreeBits.Web.Models.Admin
         {
             var viewModel = new AjaxResponse();
 
-            await DeleteUploadedFile(DBItem.NewsImageFilename, _folderPath);
+            await DeleteUploadedFile(filename: DBItem.NewsImageFilename, folderPath: _folderPath);
 
             var repository = RepositoriesFactory.GetNewsRepository();
             await repository.NewsIUD(

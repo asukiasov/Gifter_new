@@ -34,7 +34,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 {
                     using (var db = _connectionFactory.GetDbContextQueries())
                     {
-                        var resultJson = await db.BlogPostGetSingleByID(blogPostID);
+                        var resultJson = await db.BlogPostGetSingleByID(blogPostID: blogPostID);
                         var result = resultJson?.DeserializeJsonTo<BlogPostDTO>();
                         return result;
                     }
@@ -51,7 +51,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 {
                     using (var db = _connectionFactory.GetDbContextQueries())
                     {
-                        var result = await db.BlogPostIsSlugUniq(blogPostSlug, blogPostID);
+                        var result = await db.BlogPostIsSlugUniq(blogPostSlug: blogPostSlug, blogPostID: blogPostID);
                         return result;
                     }
                 }
@@ -67,7 +67,18 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 {
                     using (var db = _connectionFactory.GetDbContextCommands())
                     {
-                        blogPostID = await db.BlogIUD(databaseAction, blogPostID, blogPostSlug, blogPostTitle, blogPostShortText, blogPostText, blogPostAuthorName, blogPostImageFilename, blogPostDate, blogPostIsPublished);
+                        blogPostID = await db.BlogIUD(
+                            databaseAction: databaseAction, 
+                            blogPostID: blogPostID,
+                            blogPostSlug: blogPostSlug, 
+                            blogPostTitle: blogPostTitle, 
+                            blogPostShortText: blogPostShortText, 
+                            blogPostText: blogPostText, 
+                            blogPostAuthorName: blogPostAuthorName, 
+                            blogPostImageFilename: blogPostImageFilename, 
+                            blogPostDate: blogPostDate, 
+                            blogPostIsPublished: blogPostIsPublished
+                        );
                         return blogPostID;
                     }
                 }
@@ -83,7 +94,13 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 {
                     using (var db = _connectionFactory.GetDbContextQueries())
                     {
-                        var result = (await db.BlogPostList().OrderByDescending(item => item.BlogPostDateCreated).ToListAsync())?.Select(item => _mapper.Map<BlogPostDTO>(item)).ToList();
+                        var result = (
+                            await db.BlogPostList()
+                            .OrderByDescending(item => item.BlogPostDateCreated)
+                            .ToListAsync()
+                        )
+                        ?.Select(item => _mapper.Map<BlogPostDTO>(item))
+                        .ToList();
                         return result;
                     }
                 }

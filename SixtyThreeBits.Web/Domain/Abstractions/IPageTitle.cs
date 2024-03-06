@@ -8,7 +8,7 @@
         #endregion
 
         #region Methods
-        public void Set(string PageTitle);
+        public void Set(string pageTitle);
         public string ToString();
         #endregion
     }

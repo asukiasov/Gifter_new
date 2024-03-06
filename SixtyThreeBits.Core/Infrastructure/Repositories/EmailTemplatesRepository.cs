@@ -33,7 +33,8 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 {
                     using (var db = _connectionFactory.GetDbContextQueries())
                     {
-                        var result = (await db.EmailTemplatesGetSingleByID(emailTemplateID)).DeserializeJsonTo<EmailTemplateDTO>();
+                        var resultJson = await db.EmailTemplatesGetSingleByID(emailTemplateID: emailTemplateID);
+                        var result = resultJson?.DeserializeJsonTo<EmailTemplateDTO>();
                         return result;
                     }
                 }
@@ -49,7 +50,15 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 {
                     using (var db = _connectionFactory.GetDbContextCommands())
                     {
-                        emailTemplateID = await db.EmailTemplatesIUD(databaseAction, emailTemplateID, emailTemplateName, emailTemplateSubject, emailTemplateSubjectEng, emailTemplateBody, emailTemplateBodyEng);
+                        emailTemplateID = await db.EmailTemplatesIUD(
+                            databaseAction: databaseAction, 
+                            emailTemplateID: emailTemplateID, 
+                            emailTemplateName: emailTemplateName, 
+                            emailTemplateSubject: emailTemplateSubject, 
+                            emailTemplateSubjectEng: emailTemplateSubjectEng, 
+                            emailTemplateBody: emailTemplateBody, 
+                            emailTemplateBodyEng: emailTemplateBodyEng
+                        );
                         return emailTemplateID;
                     }
                 }
@@ -65,7 +74,12 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 {
                     using (var db = _connectionFactory.GetDbContextQueries())
                     {
-                        var result = (await db.EmailTemplatesList().ToListAsync())?.Select(item => _mapper.Map<EmailTemplateDTO>(item)).ToList();
+                        var result = (
+                            await db.EmailTemplatesList()
+                            .ToListAsync()
+                        )
+                        ?.Select(item => _mapper.Map<EmailTemplateDTO>(item))
+                        .ToList();
                         return result;
                     }
                 }
@@ -81,7 +95,12 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 {
                     using (var db = _connectionFactory.GetDbContextQueries())
                     {
-                        var result = await db.EmailTemplatesWrapInLayout(websiteHttpPath, languageCultureCode, bodyText, urlUnsubscribe);
+                        var result = await db.EmailTemplatesWrapInLayout(
+                            websiteHttpPath: websiteHttpPath, 
+                            languageCultureCode: languageCultureCode, 
+                            bodyText: bodyText, 
+                            urlUnsubscribe: urlUnsubscribe
+                        );
                         return result;
                     }
                 }

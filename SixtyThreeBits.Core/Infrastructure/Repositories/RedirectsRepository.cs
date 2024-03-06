@@ -32,7 +32,12 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 {
                     using (var db = _connectionFactory.GetDbContextCommands())
                     {
-                        redirectID = await db.RedirectsIUD(databaseAction, redirectID, redirectFrom, redirectTo);
+                        redirectID = await db.RedirectsIUD(
+                            databaseAction: databaseAction, 
+                            redirectID: redirectID, 
+                            redirectFrom: redirectFrom, 
+                            redirectTo: redirectTo
+                        );
                         return redirectID;
                     }
                 }
@@ -48,7 +53,12 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 {
                     using (var db = _connectionFactory.GetDbContextQueries())
                     {
-                        var result = (await db.RedirectsList().OrderByDescending(item => item.RedirectDateCreated).ToListAsync())?.Select(item => _mapper.Map<RedirectDTO>(item)).ToList();
+                        var result = (
+                            await db.RedirectsList()
+                            .OrderByDescending(item => item.RedirectDateCreated).ToListAsync()
+                        )
+                        ?.Select(item => _mapper.Map<RedirectDTO>(item))
+                        .ToList();
                         return result;
                     }
                 }

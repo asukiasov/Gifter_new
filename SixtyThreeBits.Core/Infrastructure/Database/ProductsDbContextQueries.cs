@@ -72,14 +72,14 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
             int? ProductCategoryID,
             string ProductCategoryImageFilename
         );
-        public IQueryable<ProductCategoriesListForDeleteRecursiveEntity> ProductCategoriesListForDeleteRecursive(int? categoryID)
+        public IQueryable<ProductCategoriesListForDeleteRecursiveEntity> ProductCategoriesListForDeleteRecursive(int? productCategoryID)
         {
             var sqb = new SqlQueryBuilder(
                 dbContext: this,
                 databaseObjectName: nameof(ProductCategoriesListForDeleteRecursive),
                 sqlParameters:
                 [
-                    categoryID.ToSqlParameter(nameof(categoryID), SqlDbType.Int),
+                    productCategoryID.ToSqlParameter(nameof(productCategoryID), SqlDbType.Int),
                 ]
             );
             var result = sqb.ExecuteQuery<ProductCategoriesListForDeleteRecursiveEntity>();

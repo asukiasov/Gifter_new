@@ -31,7 +31,7 @@ namespace SixtyThreeBits.Web.Filters.Admin
             var userID = filterContext.RouteData.Values[WebConstants.RouteValues.UserID]?.ToString().ToInt();
 
             var repository = _model.RepositoriesFactory.GetUsersRepository();
-            _model.dbItem = await repository.UsersGetSingleUserByUserID(userID);
+            _model.dbItem = await repository.UsersGetSingleByID(userID);
 
             if (_model.dbItem == null)
             {

@@ -25,15 +25,15 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         #endregion
 
         #region Methods
-        public async Task<TeamMemberDTO> TeamMembersGetSingleByID(int? TeamMemberID)
+        public async Task<TeamMemberDTO> TeamMembersGetSingleByID(int? teamMemberID)
         {
             var result = await TryToReturnAsyncTask(
-                logString: $"{nameof(TeamMembersGetSingleByID)}({nameof(TeamMemberID)} = {TeamMemberID})", 
+                logString: $"{nameof(TeamMembersGetSingleByID)}({nameof(teamMemberID)} = {teamMemberID})", 
                 asyncFuncToTry: async () =>
                 {
                     using (var db = _connectionFactory.GetDbContextQueries())
                     {
-                        var resultJson = await db.TeamMembersGetSingleByID(TeamMemberID);
+                        var resultJson = await db.TeamMembersGetSingleByID(teamMemberID: teamMemberID);
                         var result = resultJson?.DeserializeJsonTo<TeamMemberDTO>();
                         return result;
                     }
@@ -50,7 +50,18 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 {
                     using (var db = _connectionFactory.GetDbContextCommands())
                     {
-                        teamMemberID = await db.TeamMembersIUD(databaseAction, teamMemberID, teamMemberFirstname, teamMemberLastName, teamMemberPosition, teamMemberShortDescription, teamMemberLongDescription, teamMemberImageFilename, teamMemberIsPublished, teamMemberCategoryID);
+                        teamMemberID = await db.TeamMembersIUD(
+                            databaseAction: databaseAction, 
+                            teamMemberID: teamMemberID,
+                            teamMemberFirstname: teamMemberFirstname, 
+                            teamMemberLastName: teamMemberLastName, 
+                            teamMemberPosition: teamMemberPosition, 
+                            teamMemberShortDescription: teamMemberShortDescription, 
+                            teamMemberLongDescription: teamMemberLongDescription, 
+                            teamMemberImageFilename: teamMemberImageFilename, 
+                            teamMemberIsPublished: teamMemberIsPublished, 
+                            teamMemberCategoryID: teamMemberCategoryID
+                        );
                         return teamMemberID;
                     }
                 }
@@ -66,7 +77,13 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 {
                     using (var db = _connectionFactory.GetDbContextQueries())
                     {
-                        var result = (await db.TeamMembersList().OrderByDescending(item => item.TeamMemberDateCreated).ToListAsync())?.Select(item => _mapper.Map<TeamMemberDTO>(item)).ToList();
+                        var result = (
+                            await db.TeamMembersList()
+                            .OrderByDescending(item => item.TeamMemberDateCreated)
+                            .ToListAsync()
+                        )
+                        ?.Select(item => _mapper.Map<TeamMemberDTO>(item))
+                        .ToList();
                         return result;
                     }
                 }
@@ -76,14 +93,14 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
 
         public async Task TeamMembersSyncSortIndexes(List<SyncSortIndexesDTO> sortIndexes)
         {
-            var SortIndexesJson = sortIndexes.ToJson();
+            var sortIndexesJson = sortIndexes.ToJson();
             await TryExecuteAsyncTask(
-                logString: $"{nameof(TeamMembersSyncSortIndexes)}({nameof(sortIndexes)} = {SortIndexesJson})", 
+                logString: $"{nameof(TeamMembersSyncSortIndexes)}({nameof(sortIndexes)} = {sortIndexesJson})", 
                 asyncFuncToTry: async () =>
                 {
                     using (var db = _connectionFactory.GetDbContextCommands())
                     {
-                        await db.TeamMembersSyncSortIndexes(SortIndexesJson);
+                        await db.TeamMembersSyncSortIndexes(sortIndexesJson: sortIndexesJson);
                     }
                 }
             );

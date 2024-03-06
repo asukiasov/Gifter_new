@@ -25,14 +25,14 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
         #endregion
 
         #region EmailTemplatesGetSingleByID        
-        public async Task<string> EmailTemplatesGetSingleByID(int? emailTemplatesID)
+        public async Task<string> EmailTemplatesGetSingleByID(int? emailTemplateID)
         {
             var sqb = new SqlQueryBuilder(
                 dbContext: this,
                 databaseObjectName: nameof(EmailTemplatesGetSingleByID),
                 sqlParameters:
                 [
-                    emailTemplatesID.ToSqlParameter(nameof(emailTemplatesID), SqlDbType.Int)
+                    emailTemplateID.ToSqlParameter(nameof(emailTemplateID), SqlDbType.Int)
                 ]
             );
             var result = await sqb.ExecuteQueryScalar<string>();

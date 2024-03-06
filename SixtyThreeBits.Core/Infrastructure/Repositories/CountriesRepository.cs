@@ -25,12 +25,18 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 {
                     using (var db = _connectionFactory.GetDbContextQueries())
                     {
-                        var result = (await db.CountriesList().OrderBy(item => item.CountryName).ToListAsync()).Select(item => new KeyValueSelectedTuple<int?, string>
+                        var result = (
+                            await db.CountriesList()
+                            .OrderBy(item => item.CountryName)
+                            .ToListAsync()
+                        )
+                        ?.Select(item => new KeyValueSelectedTuple<int?, string>
                         {
                             Key = item.CountryID,
                             Value = item.CountryName,
                             IsSelected = item.CountryID == SelectedCountryID
-                        }).ToList();
+                        })
+                        .ToList();
                         return result;
                     }
                 }

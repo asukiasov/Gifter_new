@@ -28,7 +28,6 @@ namespace SixtyThreeBits.Web.Models.Admin
             viewModel.PermissionsTree = new PageViewModel.PermissionsTreeModel();
             viewModel.PermissionsTree.UrlLoad = Url.RouteUrl(ControllerActionRouteNames.Admin.RolesPermissions.PermissionsTree);
 
-
             return viewModel;
         }
 
@@ -37,31 +36,39 @@ namespace SixtyThreeBits.Web.Models.Admin
             var viewModel = new AjaxResponse();
             var repository = RepositoriesFactory.GetPermissionsRepository();
             var permissions = await repository.PermissionsListByRoleID(roleID);
+
             viewModel.IsSuccess = true;
             viewModel.Data = permissions;
+
             return viewModel;
         }
 
         public async Task<List<PageViewModel.RolesGridModel.GridItem>> GetRolesGridModel()
         {
             var repository = RepositoriesFactory.GetRolesRepository();
-            var viewModel = (await repository.RolesList()).Select(Item => new PageViewModel.RolesGridModel.GridItem
+            var viewModel = (await repository.RolesList())
+            ?.Select(Item => new PageViewModel.RolesGridModel.GridItem
             {
                 RoleID = Item.RoleID,
                 RoleName = Item.RoleName
-            }).ToList();
+            })
+            .ToList();
+
             return viewModel;
         }
 
         public async Task<List<PageViewModel.PermissionsTreeModel.TreeItem>> GetPermissionsTreeModel()
         {
             var repository = RepositoriesFactory.GetPermissionsRepository();
-            var viewModel = (await repository.PermissionsList()).Select(Item => new PageViewModel.PermissionsTreeModel.TreeItem
+            var viewModel = (await repository.PermissionsList())
+            ?.Select(Item => new PageViewModel.PermissionsTreeModel.TreeItem
             {
                 PermissionID = Item.PermissionID,
                 PermissionParentID = Item.PermissionParentID,
                 PermissionCaption = Utilities.GetValuesByLanguage(LanguageCultureCode, Item.PermissionCaption, Item.PermissionCaptionEng)
-            }).ToList();
+            })
+            .ToList();
+
             return viewModel;
         }
 
@@ -69,11 +76,13 @@ namespace SixtyThreeBits.Web.Models.Admin
         {
             var viewModel = new AjaxResponse();
             var repository = RepositoriesFactory.GetRolesRepository();
+
             await repository.RolesPermissionsUpdate(
                 roleID: submitModel.RoleID,
                 permissionIDs: submitModel.PermissionIDs
             );
             viewModel.IsSuccess = !repository.IsError;
+
             return viewModel;
         }
         #endregion

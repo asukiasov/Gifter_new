@@ -73,10 +73,10 @@ namespace SixtyThreeBits.Web.Models.Admin
             }
         }
 
-        public async Task DeleteRecursive(int? DictionaryID)
+        public async Task DeleteRecursive(int? dictionaryID)
         {
             var repository = RepositoriesFactory.GetDictionariesRepository();
-            await repository.DictionariesDeleteRecursive(DictionaryID);
+            await repository.DictionariesDeleteRecursive(dictionaryID);
             if (repository.IsError)
             {
                 Form.AddError(Resources.TextError);

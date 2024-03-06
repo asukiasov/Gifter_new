@@ -36,13 +36,16 @@ namespace SixtyThreeBits.Web.Models.Admin
             viewModel.Grid.UrlDelete = Url.RouteUrl(ControllerActionRouteNames.Admin.Users.GridDelete);
             viewModel.Grid.AllowUpdate = User.HasPermission(ControllerActionRouteNames.Admin.Users.GridUpdate);
             viewModel.Grid.AllowDelete = User.HasPermission(ControllerActionRouteNames.Admin.Users.GridDelete);
+
             return viewModel;
         }
 
         public async Task<List<PageViewModel.GridModel.GridItem>> GetGridViewModel()
         {
             var repository = RepositoriesFactory.GetUsersRepository();
-            var viewModel = (await repository.UsersList())?.Select(Item => new PageViewModel.GridModel.GridItem
+
+            var viewModel = (await repository.UsersList())
+            ?.Select(Item => new PageViewModel.GridModel.GridItem
             {
                 UserID = Item.UserID,
                 UserFirstname = Item.UserFirstname,
@@ -52,7 +55,9 @@ namespace SixtyThreeBits.Web.Models.Admin
                 UserIsActive = Item.UserIsActive,
                 UserDateCreated = Item.UserDateCreated,
                 UrlUserProperties = Url.RouteUrl(ControllerActionRouteNames.Admin.Users.User.Properties, new { userID = Item.UserID }),
-            }).ToList();
+            })
+            .ToList();
+
             return viewModel;
         }
 
@@ -72,7 +77,7 @@ namespace SixtyThreeBits.Web.Models.Admin
 
             if (databaseAction == Enums.DatabaseActions.DELETE)
             {
-                var dbItem = await repository.UsersGetSingleUserByUserID(userID);
+                var dbItem = await repository.UsersGetSingleByID(userID);
                 if (dbItem != null)
                 {
                     await DeleteUploadedFile(dbItem.UserAvatarFilename, folderPath: null);

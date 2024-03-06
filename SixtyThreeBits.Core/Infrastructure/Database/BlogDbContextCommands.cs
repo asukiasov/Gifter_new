@@ -8,16 +8,16 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
     public partial class DbContextCommands
     {
         #region Methods
-        public async Task<int?> BlogIUD(Enums.DatabaseActions iud, int? blogPostID, string blogPostlug, string blogPostTitle, string blogPostShortText, string blogPostText, string blogPostAuthorName, string blogPostImageFilename, DateTime? blogPostDate, bool? blogPostIsPublished)
+        public async Task<int?> BlogIUD(Enums.DatabaseActions databaseAction, int? blogPostID, string blogPostSlug, string blogPostTitle, string blogPostShortText, string blogPostText, string blogPostAuthorName, string blogPostImageFilename, DateTime? blogPostDate, bool? blogPostIsPublished)
         {
             var sqb = new SqlQueryBuilder(
                 dbContext: this,
                 databaseObjectName: nameof(BlogIUD),
                 sqlParameters:
                 [
-                     iud.ToSqlParameter(nameof(iud),SqlDbType.TinyInt),
+                     databaseAction.ToSqlParameter(nameof(databaseAction),SqlDbType.TinyInt),
                      blogPostID.ToSqlOutputParameter(nameof(blogPostID),SqlDbType.Int),
-                     blogPostlug.ToSqlParameter(nameof(blogPostlug),SqlDbType.NVarChar),
+                     blogPostSlug.ToSqlParameter(nameof(blogPostSlug),SqlDbType.NVarChar),
                      blogPostTitle.ToSqlParameter(nameof(blogPostTitle),SqlDbType.NVarChar),
                      blogPostShortText.ToSqlParameter(nameof(blogPostShortText),SqlDbType.NVarChar),
                      blogPostText.ToSqlParameter(nameof(blogPostText),SqlDbType.NVarChar),

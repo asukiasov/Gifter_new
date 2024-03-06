@@ -36,7 +36,8 @@ namespace SixtyThreeBits.Web.Models.Admin
         public async Task<List<PageViewModel.GridModel.GridItem>> GetGridViewModel()
         {
             var repository = RepositoriesFactory.GetRedirectsRepository();
-            var viewModel = (await repository.RedirectsList())?.Select(Item => new PageViewModel.GridModel.GridItem
+            var viewModel = (await repository.RedirectsList())
+            ?.Select(Item => new PageViewModel.GridModel.GridItem
             {
                 RedirectID = Item.RedirectID,
                 RedirectFrom = Item.RedirectFrom,

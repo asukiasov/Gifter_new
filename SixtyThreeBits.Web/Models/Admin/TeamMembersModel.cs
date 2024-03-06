@@ -47,7 +47,8 @@ namespace SixtyThreeBits.Web.Models.Admin
         public async Task<List<PageViewModel.GridModel.GridItem>> GetGridViewModel()
         {
             var repository = RepositoriesFactory.GetTeamMembersRepository();
-            var viewModel = (await repository.TeamMembersList())?.Select(item => new PageViewModel.GridModel.GridItem
+            var viewModel = (await repository.TeamMembersList())
+            ?.Select(item => new PageViewModel.GridModel.GridItem
             {
                 TeamMemberID = item.TeamMemberID,
                 TeamMemberFirstname = item.TeamMemberFirstname,
@@ -57,7 +58,9 @@ namespace SixtyThreeBits.Web.Models.Admin
                 TeamMemberCategoryID = item.TeamMemberCategoryID,
                 TeamMemberSortIndex = item.TeamMemberSortIndex,
                 UrlTeamMemberProperties = Url.RouteUrl(ControllerActionRouteNames.Admin.TeamMembers.TeamMember.Properties, new { teamMemberID = item.TeamMemberID })
-            }).OrderBy(item => item.TeamMemberSortIndex).ToList();
+            })
+            .OrderBy(item => item.TeamMemberSortIndex)
+            .ToList();
 
             return viewModel;
         }

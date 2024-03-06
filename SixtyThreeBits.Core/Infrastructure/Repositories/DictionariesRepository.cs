@@ -48,7 +48,20 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 {
                     using (var db = _connectionFactory.GetDbContextCommands())
                     {
-                        dictionaryID = await db.DictionariesIUD(databaseAction, dictionaryID, dictionaryCaption, dictionaryCaptionEng, dictionaryParentID, dictionaryStringCode, dictionaryIntCode, dictionaryDecimalValue, dictionaryCode, dictionaryIsDefault, dictionaryIsVisible, dictionarySortIndex);
+                        dictionaryID = await db.DictionariesIUD(
+                            databaseAction: databaseAction, 
+                            dictionaryID: dictionaryID,
+                            dictionaryCaption: dictionaryCaption, 
+                            dictionaryCaptionEng: dictionaryCaptionEng, 
+                            dictionaryParentID: dictionaryParentID, 
+                            dictionaryStringCode: dictionaryStringCode, 
+                            dictionaryIntCode: dictionaryIntCode, 
+                            dictionaryDecimalValue: dictionaryDecimalValue, 
+                            dictionaryCode: dictionaryCode, 
+                            dictionaryIsDefault: dictionaryIsDefault, 
+                            dictionaryIsVisible: dictionaryIsVisible, 
+                            dictionarySortIndex: dictionarySortIndex
+                        );
                         return dictionaryID;
                     }
                 }
@@ -69,7 +82,9 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             .ThenBy(item => item.DictionarySortIndex)
                             .ThenBy(item => item.DictionaryCaption)
                             .ToListAsync()
-                        ).Select(item => _mapper.Map<DictionariesDTO>(item)).ToList();
+                        )
+                        ?.Select(item => _mapper.Map<DictionariesDTO>(item))
+                        .ToList();
                         return result;
                     }
                 }
@@ -85,12 +100,18 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 {
                     using (var db = _connectionFactory.GetDbContextQueries())
                     {
-                        var result = (await db.DictionariesListByLevelAndCodeAndIsVisible(dictionaryLevel, dictionaryCode, dictionaryIsVisible)
+                        var result = (await db.DictionariesListByLevelAndCodeAndIsVisible(
+                                dictionaryLevel: dictionaryLevel, 
+                                dictionaryCode: dictionaryCode, 
+                                dictionaryIsVisible: dictionaryIsVisible
+                            )
                             .OrderByDescending(item => item.DictionaryIsDefault)
                             .ThenBy(item => item.DictionarySortIndex)
                             .ThenBy(item => item.DictionaryCaption)
                             .ToListAsync()
-                        ).Select(item => _mapper.Map<DictionariesDTO>(item)).ToList();
+                        )
+                        ?.Select(item => _mapper.Map<DictionariesDTO>(item))
+                        .ToList();
                         return result;
                     }
                 }
@@ -106,7 +127,11 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 {
                     using (var db = _connectionFactory.GetDbContextQueries())
                     {
-                        var dictionaries = (await DictionariesListByLevelAndCodeAndIsVisible(dictionaryLevel: 1, dictionaryCode: dictionaryCode, dictionaryIsVisible: null));
+                        var dictionaries = await DictionariesListByLevelAndCodeAndIsVisible(
+                            dictionaryLevel: 1, 
+                            dictionaryCode: dictionaryCode, 
+                            dictionaryIsVisible: null
+                        );
                         var result = dictionaries?.Select(item => new KeyValueSelectedTuple<int?, string>
                         {
                             Key = isDictionaryIntCodeAsKey ? item.DictionaryIntCode : item.DictionaryID,
@@ -128,7 +153,11 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 {
                     using (var db = _connectionFactory.GetDbContextQueries())
                     {
-                        var dictionaries = await DictionariesListByLevelAndCodeAndIsVisible(dictionaryLevel: 1, dictionaryCode: dictionaryCode, dictionaryIsVisible: null);
+                        var dictionaries = await DictionariesListByLevelAndCodeAndIsVisible(
+                            dictionaryLevel: 1, 
+                            dictionaryCode: dictionaryCode, 
+                            dictionaryIsVisible: null
+                        );
                         var result = dictionaries?.Select(item => new KeyValueTuple<int?, string>
                         {
                             Key = dictionaryCodeAsKey ? item.DictionaryCode : item.DictionaryID,

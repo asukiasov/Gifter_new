@@ -4,11 +4,11 @@
     {
         #region Methods
         void Clear();
-        T Get<T>(string Key);
+        T Get<T>(string key);
         string GetSessionID();
-        bool HasKey(string Key);
-        void Set<T>(string Key, T Value);
-        void Remove(string Key);
+        bool HasKey(string key);
+        void Set<T>(string key, T value);
+        void Remove(string key);
         #endregion
     }
 }

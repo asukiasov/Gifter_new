@@ -71,7 +71,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         [Route("tree/delete", Name = ControllerActionRouteNames.Admin.Dictionaries.DictionariesTreeDelete)]
         public async Task<ActionResult> DictionariesTreeDelete(int? key)
         {
-            await Model.DeleteRecursive(DictionaryID: key);
+            await Model.DeleteRecursive(dictionaryID: key);
             if (Model.Form.HasErrors)
             {
                 return GetDevexpressErrorResult(Model.Form.ErrorMessage);

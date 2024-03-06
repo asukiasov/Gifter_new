@@ -34,7 +34,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 {
                     using (var db = _connectionFactory.GetDbContextQueries())
                     {
-                        var resultJson = await db.NewsGetSingleByID(newsID);
+                        var resultJson = await db.NewsGetSingleByID(newsID: newsID);
                         var result = resultJson?.DeserializeJsonTo<NewsDTO>();
                         return result;
                     }
@@ -51,7 +51,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 {
                     using (var db = _connectionFactory.GetDbContextQueries())
                     {
-                        var result = await db.NewsIsSlugUniq(newsSlug, newsID);
+                        var result = await db.NewsIsSlugUniq(newsSlug: newsSlug, newsID: newsID);
                         return result;
                     }
                 }
@@ -67,7 +67,20 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 {
                     using (var db = _connectionFactory.GetDbContextCommands())
                     {
-                        newsID = await db.NewsIUD(databaseAction, newsID, newsSlug, newsTitle, newsTitleEng, newsText, newsTextEng, newsShortDescription, newsShortDescriptionEng, newsImageFilename, newsDatePublished, newsIsPublished);
+                        newsID = await db.NewsIUD(
+                            databaseAction: databaseAction, 
+                            newsID: newsID, 
+                            newsSlug: newsSlug,
+                            newsTitle: newsTitle, 
+                            newsTitleEng: newsTitleEng,
+                            newsText: newsText, 
+                            newsTextEng: newsTextEng, 
+                            newsShortDescription: newsShortDescription, 
+                            newsShortDescriptionEng: newsShortDescriptionEng, 
+                            newsImageFilename: newsImageFilename, 
+                            newsDatePublished: newsDatePublished,
+                            newsIsPublished: newsIsPublished
+                        );
                         return newsID;
                     }
                 }
@@ -83,7 +96,13 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 {
                     using (var db = _connectionFactory.GetDbContextQueries())
                     {
-                        var result = (await db.NewsList().OrderByDescending(item => item.NewsDateCreated).ToListAsync())?.Select(item => _mapper.Map<NewsDTO>(item)).ToList();
+                        var result = (
+                            await db.NewsList()
+                            .OrderByDescending(item => item.NewsDateCreated)
+                            .ToListAsync()
+                        )
+                        ?.Select(item => _mapper.Map<NewsDTO>(item))
+                        .ToList();
                         return result;
                     }
                 }

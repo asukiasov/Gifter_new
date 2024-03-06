@@ -36,12 +36,15 @@ namespace SixtyThreeBits.Web.Models.Admin
         public async Task<List<PageViewModel.GridModel.GridItem>> GetGridViewModel()
         {
             var repository = RepositoriesFactory.GetRolesRepository();
-            var viewModel = (await repository.RolesList()).Select(Item => new PageViewModel.GridModel.GridItem
+            var viewModel = (await repository.RolesList())
+            ?.Select(Item => new PageViewModel.GridModel.GridItem
             {
                 RoleID = Item.RoleID,
                 RoleName = Item.RoleName,
                 RoleCode = Item.RoleCode
-            }).ToList();
+            })
+            .ToList();
+
             return viewModel;
         }
 

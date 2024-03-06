@@ -5,10 +5,10 @@ namespace SixtyThreeBits.Core.Abstractions.Web
     public interface ICookieAssistance
     {
         #region Methods
-        T Get<T>(string Key);
-        string GetString(string Key);
-        void Set<T>(string Key, T Value, DateTime? ExpirationDate);
-        void Remove(string Key);
+        T Get<T>(string key);
+        string GetString(string key);
+        void Set<T>(string key, T value, DateTime? expirationDate);
+        void Remove(string key);
         #endregion
     }
 }

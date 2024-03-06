@@ -26,15 +26,15 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         #endregion
 
         #region Methods                
-        public async Task<UserDTO> UsersGetSingleUserByUserID(int? userID)
+        public async Task<UserDTO> UsersGetSingleByID(int? userID)
         {
             var result = await TryToReturnAsyncTask(
-                logString: $"{nameof(UsersGetSingleUserByUserID)}({nameof(userID)} = {userID})", 
+                logString: $"{nameof(UsersGetSingleByID)}({nameof(userID)} = {userID})", 
                 asyncFuncToTry: async () =>
                 {
                     using (var db = _connectionFactory.GetDbContextQueries())
                     {
-                        var resultJson = await db.UsersGetSingleUserByUserID(userID);
+                        var resultJson = await db.UsersGetSingleByID(userID: userID);
                         var result = resultJson?.DeserializeJsonTo<UserDTO>();
                         return result;
                     }
@@ -43,16 +43,16 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
             return result;
         }
 
-        public async Task<UserDTO> UsersGetSingleUserByEmailAndPassword(string userEmail, string userPassword)
+        public async Task<UserDTO> UsersGetSingleByEmailAndPassword(string userEmail, string userPassword)
         {
             var result = await TryToReturnAsyncTask(
-                logString: $"{nameof(UsersGetSingleUserByEmailAndPassword)}({nameof(userEmail)} = {userEmail}, {nameof(userPassword)} = {userPassword})", 
+                logString: $"{nameof(UsersGetSingleByEmailAndPassword)}({nameof(userEmail)} = {userEmail}, {nameof(userPassword)} = {userPassword})", 
                 asyncFuncToTry: async () =>
                 {
                     using (var db = _connectionFactory.GetDbContextQueries())
                     {
-                        var resultJson = await db.UsersGetSingleUserByEmailAndPassword(userEmail, userPassword);
-                        var result = resultJson.DeserializeJsonTo<UserDTO>();
+                        var resultJson = await db.UsersGetSingleByEmailAndPassword(userEmail: userEmail, userPassword: userPassword);
+                        var result = resultJson?.DeserializeJsonTo<UserDTO>();
                         return result;
                     }
                 }
@@ -68,7 +68,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 {
                     using (var db = _connectionFactory.GetDbContextQueries())
                     {
-                        var result = await db.UsersIsEmailUnique(userEmail, userID);
+                        var result = await db.UsersIsEmailUnique(userEmail: userEmail, userID: userID);
                         return result;
                     }
                 }
@@ -84,7 +84,20 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 {
                     using (var db = _connectionFactory.GetDbContextCommands())
                     {
-                        userID = await db.UsersIUD(databaseAction, userID, roleID, userEmail, userPassword, userFirstname, userLastname, userBirthdate, userPhoneNumberMobile, userPersonalNumber, userAvatarFilename, userIsActive);
+                        userID = await db.UsersIUD(
+                            databaseAction: databaseAction, 
+                            userID: userID, 
+                            roleID: roleID, 
+                            userEmail: userEmail, 
+                            userPassword: userPassword, 
+                            userFirstname: userFirstname, 
+                            userLastname: userLastname, 
+                            userBirthdate: userBirthdate, 
+                            userPhoneNumberMobile: userPhoneNumberMobile, 
+                            userPersonalNumber: userPersonalNumber, 
+                            userAvatarFilename: userAvatarFilename, 
+                            userIsActive: userIsActive
+                        );
                         return userID;
                     }
                 }
@@ -100,7 +113,13 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 {
                     using (var db = _connectionFactory.GetDbContextQueries())
                     {
-                        var result = (await db.UsersList().OrderByDescending(item => item.UserDateCreated).ToListAsync())?.Select(item => _mapper.Map<UsersListDTO>(item)).ToList();
+                        var result = (
+                            await db.UsersList()
+                            .OrderByDescending(item => item.UserDateCreated)
+                            .ToListAsync()
+                        )
+                        ?.Select(item => _mapper.Map<UsersListDTO>(item))
+                        .ToList();
                         return result;
                     }
                 }
