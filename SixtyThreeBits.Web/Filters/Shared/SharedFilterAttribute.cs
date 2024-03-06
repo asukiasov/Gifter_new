@@ -6,6 +6,7 @@ using SixtyThreeBits.Core.DTO;
 using SixtyThreeBits.Core.Infrastructure.Factories;
 using SixtyThreeBits.Core.Libraries.FileStorages;
 using SixtyThreeBits.Core.Utilities;
+using SixtyThreeBits.Libraries.Extensions;
 using SixtyThreeBits.Web.Domain;
 using SixtyThreeBits.Web.Domain.Libraries;
 using SixtyThreeBits.Web.Domain.SharedViewModels;
@@ -77,7 +78,8 @@ namespace SixtyThreeBits.Web.Filters.Shared
 
             if (_model.User == null)
             {
-                var userID = _model.CookieAssistance.Get<int?>(WebConstants.Cookies.User);
+                var userIDEncrypted = _model.CookieAssistance.Get<string>(WebConstants.Cookies.User);
+                var userID = userIDEncrypted.AesDecryptString().ToInt();
                 if (userID != null)
                 {
                     var repository = _dataAccessFactory.GetUsersRepository();
