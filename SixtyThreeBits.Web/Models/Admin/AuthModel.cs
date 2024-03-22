@@ -1,5 +1,6 @@
 ﻿using SixtyThreeBits.Core.DTO;
 using SixtyThreeBits.Core.Properties;
+using SixtyThreeBits.Libraries.Extensions;
 using SixtyThreeBits.Web.Domain;
 using SixtyThreeBits.Web.Domain.SharedViewModels;
 using SixtyThreeBits.Web.Models.Shared;
@@ -46,7 +47,7 @@ namespace SixtyThreeBits.Web.Models.Admin
                 {
                     CookieAssistance.Set(
                         key: WebConstants.Cookies.User, 
-                        value: user.UserID, 
+                        value: user.UserID.ToString().AesEncryptString(), 
                         expirationDate: DateTime.Now.AddDays(30)
                     );
                 }
