@@ -1419,6 +1419,7 @@ var PageBuilderModel = {
                     ...PageBuilderModel.settings.defaults,
                     name: 'card2ColWithImg',
 
+                    hasCardToggler: true,
                     hasReverseToggler: true,
 
                     isCard: true,
