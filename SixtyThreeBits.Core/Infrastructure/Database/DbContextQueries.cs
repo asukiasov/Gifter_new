@@ -15,15 +15,6 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
         {
            
         }
-        #endregion
-
-        #region Nested Classes
-        public record ScalarFunctionResultEntity<T>
-        {
-            #region Properties
-            public T Value { get; init; }
-            #endregion
-        }
-        #endregion
+        #endregion        
     }
 }

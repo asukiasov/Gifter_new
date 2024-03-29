@@ -49,6 +49,7 @@ namespace SixtyThreeBits.Web.Filters.Shared
                 _model.UrlCurrentPageWithDomain = $"{_model.WebsiteDomain}{c.Request.Path}";
 
                 _model.IsHttps = c.Request.IsHttps;
+                _model.IsAjaxRequest = c.Request.Headers["X-Requested-With"] == "XMLHttpRequest";
                 _model.IP = WebUtilities.GetClientIP(c.Request);
 
                 _model.SessionAssistance = new SessionAssistance(c.HttpContext.Session);

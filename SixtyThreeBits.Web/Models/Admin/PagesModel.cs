@@ -139,11 +139,11 @@ namespace SixtyThreeBits.Web.Models.Admin
             return viewModel;
         }
 
-        public async Task<AjaxResponse> SyncParentsAndSortIndexes(SyncSortIndexesSubmitModel SubmitModel)
+        public async Task<AjaxResponse> SyncParentsAndSortIndexes(SyncSortIndexesSubmitModel submitModel)
         {
             var viewModel = new AjaxResponse();
             var repository = RepositoriesFactory.GetPagesRepository();
-            await repository.PagesSyncParentsAndSortIndexes(SubmitModel.SortIndexes);
+            await repository.PagesSyncParentsAndSortIndexes(submitModel.SortIndexes);
             viewModel.IsSuccess = !repository.IsError;
             return viewModel;
         }

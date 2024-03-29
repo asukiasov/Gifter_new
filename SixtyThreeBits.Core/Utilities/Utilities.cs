@@ -12,6 +12,8 @@ namespace SixtyThreeBits.Core.Utilities
     public class UtilityCollection
     {
         #region Properties
+        public readonly string ContentRootPath;
+        public readonly string WebRootPath;
         public readonly CultureInfo CultureInvariant;
         public readonly CultureInfo CultureKA;
         public readonly CultureInfo CultureUS;
@@ -24,8 +26,10 @@ namespace SixtyThreeBits.Core.Utilities
         #endregion
 
         #region Constructors
-        public UtilityCollection()
+        public UtilityCollection(string contentRootPath, string webRootPath)
         {
+            ContentRootPath = contentRootPath;
+            WebRootPath = webRootPath;
             CultureInvariant = CultureInfo.InvariantCulture;
             CultureKA = new CultureInfo(Enums.Languages.GEORGIAN) { NumberFormat = new NumberFormatInfo { CurrencyDecimalSeparator = "." } };
             CultureUS = new CultureInfo(Enums.Languages.ENGLISH);

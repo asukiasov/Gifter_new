@@ -5,13 +5,13 @@ namespace SixtyThreeBits.Core.Infrastructure.Factories
     public class RepositoryFactory
     {
         #region Properties                
-        readonly ConnectionFactory _connectionFactory;
+        readonly DbContextFactory _connectionFactory;
         #endregion
 
         #region Constructors
-        public RepositoryFactory(string commandsConnectionString, string ConnectionString)
+        public RepositoryFactory(string dbConnectionString)
         {
-            _connectionFactory = new ConnectionFactory(commandsConnectionString, ConnectionString);
+            _connectionFactory = new DbContextFactory(dbConnectionString);
         }
         #endregion
 

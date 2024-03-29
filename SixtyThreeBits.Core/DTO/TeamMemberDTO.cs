@@ -1,4 +1,6 @@
-﻿namespace SixtyThreeBits.Core.DTO
+﻿using System;
+
+namespace SixtyThreeBits.Core.DTO
 {
     public class TeamMemberDTO
     {
@@ -14,6 +16,7 @@
         public bool TeamMemberIsPublished { get; set; }
         public int? TeamMemberCategoryID { get; set; }
         public int? TeamMemberSortIndex { get; set; }
+        public DateTime? TeamMemberDateCreated { get; set; }
         #endregion
     }
 }

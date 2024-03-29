@@ -35,12 +35,15 @@ namespace SixtyThreeBits.Web.Filters.Website
             else
             {
                 await initStartUp(filterContext);
-                initClientPlugins();
-                initPageTitle();
-                await initMenu();
-                initLanguageSwitch();
+                if (!_model.IsAjaxRequest)
+                {
+                    initClientPlugins();
+                    initPageTitle();
+                    await initMenu();
+                    initLanguageSwitch();
 
-                WebUtilities.SetLayoutViewModel(viewData: c.ViewData, viewModel: _viewModel, key: WebConstants.ViewData.LayoutViewModel);
+                    WebUtilities.SetLayoutViewModel(viewData: c.ViewData, viewModel: _viewModel, key: WebConstants.ViewData.LayoutViewModel);
+                }
                 await next();
             }
         }

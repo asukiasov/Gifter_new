@@ -35,10 +35,12 @@ namespace SixtyThreeBits.Web.Models.Admin
         {
             var viewModel = new AjaxResponse();
             var repository = RepositoriesFactory.GetPermissionsRepository();
-            var permissions = await repository.PermissionsListByRoleID(roleID);
+            var permissionIDs = (await repository.PermissionsListByRoleID(roleID))
+                ?.Select(item => item.PermissionID)
+                .ToList();
 
             viewModel.IsSuccess = true;
-            viewModel.Data = permissions;
+            viewModel.Data = permissionIDs;
 
             return viewModel;
         }

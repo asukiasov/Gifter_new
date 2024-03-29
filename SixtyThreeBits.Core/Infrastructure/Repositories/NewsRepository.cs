@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using SixtyThreeBits.Core.DTO;
 using SixtyThreeBits.Core.Infrastructure.Database;
 using SixtyThreeBits.Core.Infrastructure.Factories;
@@ -8,6 +7,7 @@ using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -16,12 +16,8 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
     public class NewsRepository : RepositoryBase
     {
         #region Constructors
-        public NewsRepository(ConnectionFactory connectionFactory) : base(connectionFactory)
-        {
-            _mapper = new MapperConfiguration(cfg =>
-            {
-                cfg.CreateMap<DbContextQueries.NewsListEntity, NewsDTO>();
-            }).CreateMapper();
+        public NewsRepository(DbContextFactory connectionFactory) : base(connectionFactory)
+        {            
         }
         #endregion
 
@@ -32,10 +28,20 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 logString: $"{nameof(NewsGetSingleByID)}({nameof(newsID)} = {newsID})", 
                 asyncFuncToTry: async () =>
                 {
-                    using (var db = _connectionFactory.GetDbContextQueries())
+                    using (var dbContext = _dbContextFactory.GetDbContext())
                     {
-                        var resultJson = await db.NewsGetSingleByID(newsID: newsID);
-                        var result = resultJson?.DeserializeJsonTo<NewsDTO>();
+                        var sqb = new SqlQueryBuilder(
+                            dbContext: dbContext,
+                            databaseObjectName: nameof(NewsGetSingleByID),
+                            sqlParameters:
+                            [
+                                newsID.ToSqlParameter(nameof(newsID), SqlDbType.Int)
+                            ]
+                        );
+
+                        var resultJson = await sqb.ExecuteScalarValuedFunction<string>();
+                        var result = resultJson.DeserializeJsonTo<NewsDTO>();
+                        
                         return result;
                     }
                 }
@@ -49,9 +55,18 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 logString: $"{nameof(NewsIsSlugUniq)}({nameof(newsSlug)} = {newsSlug}, {nameof(newsID)} = {newsID})", 
                 asyncFuncToTry: async () =>
                 {
-                    using (var db = _connectionFactory.GetDbContextQueries())
+                    using (var dbContext = _dbContextFactory.GetDbContext())
                     {
-                        var result = await db.NewsIsSlugUniq(newsSlug: newsSlug, newsID: newsID);
+                        var sqb = new SqlQueryBuilder(
+                            dbContext: dbContext,
+                            databaseObjectName: nameof(NewsIsSlugUniq),
+                            sqlParameters:
+                            [
+                                newsSlug.ToSqlParameter(nameof(newsSlug), SqlDbType.NVarChar),
+                                newsID.ToSqlParameter(nameof(newsID), SqlDbType.Int)
+                            ]
+                        );
+                        var result = await sqb.ExecuteScalarValuedFunction<bool>();                        
                         return result;
                     }
                 }
@@ -65,23 +80,32 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 logString: $"{nameof(NewsIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(newsID)} = {newsID}, {nameof(newsSlug)} = {newsSlug}, {nameof(newsTitle)} = {newsTitle}, {nameof(newsTitleEng)} = {newsTitleEng}, {nameof(newsText)} = {newsText}, {nameof(newsTextEng)} = {newsTextEng}, {nameof(newsShortDescription)} = {newsShortDescription}, {nameof(newsShortDescriptionEng)} = {newsShortDescriptionEng}, {nameof(newsImageFilename)} = {newsImageFilename}, {nameof(newsDatePublished)} = {newsDatePublished})", 
                 asyncFuncToTry: async () =>
                 {
-                    using (var db = _connectionFactory.GetDbContextCommands())
+                    using (var dbContext = _dbContextFactory.GetDbContext())
                     {
-                        newsID = await db.NewsIUD(
-                            databaseAction: databaseAction, 
-                            newsID: newsID, 
-                            newsSlug: newsSlug,
-                            newsTitle: newsTitle, 
-                            newsTitleEng: newsTitleEng,
-                            newsText: newsText, 
-                            newsTextEng: newsTextEng, 
-                            newsShortDescription: newsShortDescription, 
-                            newsShortDescriptionEng: newsShortDescriptionEng, 
-                            newsImageFilename: newsImageFilename, 
-                            newsDatePublished: newsDatePublished,
-                            newsIsPublished: newsIsPublished
+                        var sqb = new SqlQueryBuilder(
+                            dbContext: dbContext,
+                            databaseObjectName: nameof(NewsIUD),
+                            sqlParameters:
+                            [
+                                databaseAction.ToSqlParameter(nameof(databaseAction),SqlDbType.TinyInt),
+                                newsID.ToSqlOutputParameter(nameof(newsID),SqlDbType.Int),
+                                newsSlug.ToSqlParameter(nameof(newsSlug),SqlDbType.NVarChar),
+                                newsTitle.ToSqlParameter(nameof(newsTitle),SqlDbType.NVarChar),
+                                newsTitleEng.ToSqlParameter(nameof(newsTitleEng),SqlDbType.NVarChar),
+                                newsText.ToSqlParameter(nameof(newsText),SqlDbType.NVarChar),
+                                newsTextEng.ToSqlParameter(nameof(newsTextEng),SqlDbType.NVarChar),
+                                newsShortDescription.ToSqlParameter(nameof(newsShortDescription),SqlDbType.NVarChar),
+                                newsShortDescriptionEng.ToSqlParameter(nameof(newsShortDescriptionEng),SqlDbType.NVarChar),
+                                newsImageFilename.ToSqlParameter(nameof(newsImageFilename),SqlDbType.NVarChar),
+                                newsDatePublished.ToSqlParameter(nameof(newsDatePublished),SqlDbType.DateTime),
+                                newsIsPublished.ToSqlParameter(nameof(newsIsPublished),SqlDbType.Bit)
+                            ]
                         );
-                        return newsID;
+
+                        await sqb.ExecuteStoredProcedure();
+                        newsID = sqb.GetNextOutputParameterValue<int?>();
+
+                        return newsID;                        
                     }
                 }
             );
@@ -94,15 +118,17 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 logString: $"{nameof(NewsList)}()", 
                 asyncFuncToTry: async () =>
                 {
-                    using (var db = _connectionFactory.GetDbContextQueries())
+                    using (var dbContext = _dbContextFactory.GetDbContext())
                     {
-                        var result = (
-                            await db.NewsList()
-                            .OrderByDescending(item => item.NewsDateCreated)
-                            .ToListAsync()
-                        )
-                        ?.Select(item => _mapper.Map<NewsDTO>(item))
-                        .ToList();
+                        var sqb = new SqlQueryBuilder(
+                            dbContext: dbContext,
+                            databaseObjectName: nameof(NewsList)
+                        );
+
+                        var resultQueryable = sqb.ExecuteTableValuedFunction<NewsDTO>();
+                        resultQueryable = resultQueryable.OrderByDescending(item => item.NewsDateCreated);
+                        var result = await resultQueryable.ToListAsync();
+                        
                         return result;
                     }
                 }

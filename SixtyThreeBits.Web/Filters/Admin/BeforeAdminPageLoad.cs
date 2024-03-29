@@ -31,16 +31,19 @@ namespace SixtyThreeBits.Web.Filters.Admin
                 var hasPermission = hasUserPermission();
                 if (hasPermission)
                 {
-                    initStartUp();
-                    initLanguage();
-                    initClientPlugins();
-                    initMenu();
-                    initBreadCrumbs();
-                    initTabs();
-                    initPageTitle();
-                    initSuccessErrorMessage();
-                    initSidebar();
-                    WebUtilities.SetLayoutViewModel(viewData: c.ViewData, viewModel: _viewModel, key: WebConstants.ViewData.LayoutViewModel);
+                    if (!_model.IsAjaxRequest)
+                    {
+                        initStartUp();
+                        initLanguage();
+                        initClientPlugins();
+                        initMenu();
+                        initBreadCrumbs();
+                        initTabs();
+                        initPageTitle();
+                        initSuccessErrorMessage();
+                        initSidebar();
+                        WebUtilities.SetLayoutViewModel(viewData: c.ViewData, viewModel: _viewModel, key: WebConstants.ViewData.LayoutViewModel);
+                    }
                     await next();
                 }
                 else

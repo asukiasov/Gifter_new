@@ -31,6 +31,7 @@ namespace SixtyThreeBits.Web.Models.Shared
         public string WebsiteHttpPath => $"{WebsiteDomain}/";
         public string IP { get; set; }
         public bool IsHttps { get; set; }
+        public bool IsAjaxRequest { get; set; }
         public RepositoryFactory RepositoriesFactory { get; set; }
         public AppSettingsCollection AppSettings { get; set; }
         public UtilityCollection Utilities { get; set; }

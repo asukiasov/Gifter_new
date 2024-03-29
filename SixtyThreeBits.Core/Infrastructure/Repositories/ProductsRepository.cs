@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using SixtyThreeBits.Core.DTO;
 using SixtyThreeBits.Core.Infrastructure.Database;
 using SixtyThreeBits.Core.Infrastructure.Factories;
@@ -8,6 +7,7 @@ using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -16,14 +16,8 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
     public class ProductsRepository : RepositoryBase
     {
         #region Constructors
-        public ProductsRepository(ConnectionFactory connectionFactory) : base(connectionFactory)
-        {
-            _mapper = new MapperConfiguration(cfg =>
-            {
-                cfg.CreateMap<DbContextQueries.ProductCategoriesListEntity, ProductCategoryDTO>();
-                cfg.CreateMap<DbContextQueries.ProductCategoriesListForDeleteRecursiveEntity, ProductCategoriesListForDeleteRecursiveDTO>();
-                cfg.CreateMap<DbContextQueries.ProductsListEntity, ProductsListDTO>();
-            }).CreateMapper();
+        public ProductsRepository(DbContextFactory connectionFactory) : base(connectionFactory)
+        {            
         }
         #endregion
 
@@ -34,9 +28,17 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 logString: $"{nameof(ProductCategoriesDeleteRecursive)}({nameof(productCategoryID)} = {productCategoryID})", 
                 asyncFuncToTry: async () =>
                 {
-                    using (var db = _connectionFactory.GetDbContextCommands())
+                    using (var dbContext = _dbContextFactory.GetDbContext())
                     {
-                        await db.ProductCategoriesDeleteRecursive(productCategoryID: productCategoryID);
+                        var sqb = new SqlQueryBuilder(
+                            dbContext: dbContext,
+                            databaseObjectName: nameof(ProductCategoriesDeleteRecursive),
+                            sqlParameters:
+                            [
+                                productCategoryID.ToSqlParameter(nameof(productCategoryID), SqlDbType.Int)
+                            ]
+                        );
+                        await sqb.ExecuteStoredProcedure();                        
                     }
                 }
             );
@@ -48,10 +50,20 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 logString: $"{nameof(ProductCategoriesGetSingleByID)}({nameof(productCategoryID)} = {productCategoryID})", 
                 asyncFuncToTry: async () =>
                 {
-                    using (var db = _connectionFactory.GetDbContextQueries())
+                    using (var dbContext = _dbContextFactory.GetDbContext())
                     {
-                        var resultJson = await db.ProductCategoriesGetSingleByID(productCategoryID: productCategoryID);
-                        var result = resultJson?.DeserializeJsonTo<ProductCategoryDTO>();
+                        var sqb = new SqlQueryBuilder(
+                            dbContext: dbContext,
+                            databaseObjectName: nameof(ProductCategoriesGetSingleByID),
+                            sqlParameters:
+                            [
+                                productCategoryID.ToSqlParameter(nameof(productCategoryID), SqlDbType.Int)
+                            ]
+                         );
+
+                        var resultJson = await sqb.ExecuteScalarValuedFunction<string>();                        
+                        var result = resultJson.DeserializeJsonTo<ProductCategoryDTO>();
+
                         return result;
                     }
                 }
@@ -65,10 +77,20 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 logString: $"{nameof(ProductCategoriesGetSingleBySlug)}({nameof(productCategorySlug)} = {productCategorySlug})", 
                 asyncFuncToTry: async () =>
                 {
-                    using (var db = _connectionFactory.GetDbContextQueries())
+                    using (var dbContext = _dbContextFactory.GetDbContext())
                     {
-                        var resultJson = await db.ProductCategoriesGetSingleBySlug(productCategorySlug: productCategorySlug);
-                        var result = resultJson?.DeserializeJsonTo<ProductCategoryDTO>();
+                        var sqb = new SqlQueryBuilder(
+                            dbContext: dbContext,
+                            databaseObjectName: nameof(ProductCategoriesGetSingleBySlug),
+                            sqlParameters:
+                            [
+                                productCategorySlug.ToSqlParameter(nameof(productCategorySlug), SqlDbType.NVarChar)
+                            ]
+                        );
+
+                        var resultJson = await sqb.ExecuteScalarValuedFunction<string>();                        
+                        var result = resultJson.DeserializeJsonTo<ProductCategoryDTO>();
+
                         return result;
                     }
                 }
@@ -82,18 +104,26 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 logString: $"{nameof(ProductCategoriesIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(productCategoryID)} = {productCategoryID}, {nameof(productCategoryParentID)} = {productCategoryParentID}, {nameof(productCategoryName)} = {productCategoryName}, {nameof(productCategoryNameEng)} = {productCategoryNameEng}, {nameof(productCategoryImageFilename)} = {productCategoryImageFilename}, {nameof(productCategoryDescriptionShort)} = {productCategoryDescriptionShort}, {nameof(productCategoryDescriptionShortEng)} = {productCategoryDescriptionShortEng})", 
                 asyncFuncToTry: async () =>
                 {
-                    using (var db = _connectionFactory.GetDbContextCommands())
+                    using (var dbContext = _dbContextFactory.GetDbContext())
                     {
-                        productCategoryID = await db.ProductCategoriesIUD(
-                            databaseAction: databaseAction,
-                            productCategoryID: productCategoryID,
-                            productCategoryParentID: productCategoryParentID,
-                            productCategoryName: productCategoryName,
-                            productCategoryNameEng: productCategoryNameEng,
-                            productCategoryImageFilename: productCategoryImageFilename,
-                            productCategoryDescriptionShort: productCategoryDescriptionShort,
-                            productCategoryDescriptionShortEng: productCategoryDescriptionShortEng
+                        var sqb = new SqlQueryBuilder(
+                            dbContext: dbContext,
+                            databaseObjectName: nameof(ProductCategoriesIUD),
+                            sqlParameters:
+                            [
+                                databaseAction.ToSqlParameter(nameof(databaseAction),SqlDbType.TinyInt),
+                                productCategoryID.ToSqlOutputParameter(nameof(productCategoryID),SqlDbType.Int),
+                                productCategoryParentID.ToSqlParameter(nameof(productCategoryParentID),SqlDbType.Int),
+                                productCategoryName.ToSqlParameter(nameof(productCategoryName),SqlDbType.NVarChar),
+                                productCategoryNameEng.ToSqlParameter(nameof(productCategoryNameEng),SqlDbType.NVarChar),
+                                productCategoryImageFilename.ToSqlParameter(nameof(productCategoryImageFilename),SqlDbType.NVarChar),
+                                productCategoryDescriptionShort.ToSqlParameter(nameof(productCategoryDescriptionShort),SqlDbType.NVarChar),
+                                productCategoryDescriptionShortEng.ToSqlParameter(nameof(productCategoryDescriptionShortEng),SqlDbType.NVarChar)
+                            ]
                         );
+
+                        await sqb.ExecuteStoredProcedure();
+                        productCategoryID = sqb.GetNextOutputParameterValue<int?>();
                         return productCategoryID;
                     }
                 }
@@ -107,14 +137,21 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 logString: $"{nameof(ProductCategoriesList)}({nameof(productCategoryParentID)} = {productCategoryParentID})",
                 asyncFuncToTry: async () =>
                 {
-                    using (var db = _connectionFactory.GetDbContextQueries())
+                    using (var dbContext = _dbContextFactory.GetDbContext())
                     {
-                        var result = (
-                            await db.ProductCategoriesList(productCategoryParentID: productCategoryParentID)
-                            .OrderBy(item => item.ProductCategorySortIndex)
-                            .ToListAsync()
-                        )
-                        ?.Select(item => _mapper.Map<ProductCategoryDTO>(item)).ToList();
+                        var sqb = new SqlQueryBuilder(
+                            dbContext: dbContext,
+                            databaseObjectName: nameof(ProductCategoriesList),
+                            sqlParameters:
+                            [
+                                productCategoryParentID.ToSqlParameter(nameof(productCategoryParentID), SqlDbType.Int),
+                            ]
+                        );
+
+                        var resultQueryable = sqb.ExecuteTableValuedFunction<ProductCategoryDTO>();
+                        resultQueryable = resultQueryable.OrderBy(item => item.ProductCategorySortIndex);
+                        var result = await resultQueryable.ToListAsync();
+                        
                         return result;
                     }
                 }
@@ -128,14 +165,20 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 logString: $"{nameof(ProductCategoriesListForDeleteRecursive)}({nameof(productCategoryID)} = {productCategoryID})", 
                 asyncFuncToTry: async () =>
                 {
-                    using (var db = _connectionFactory.GetDbContextQueries())
+                    using (var dbContext = _dbContextFactory.GetDbContext())
                     {
-                        var result = (
-                            await db.ProductCategoriesListForDeleteRecursive(productCategoryID: productCategoryID)
-                            .ToListAsync()
-                        )
-                        ?.Select(item => _mapper.Map<ProductCategoriesListForDeleteRecursiveDTO>(item))
-                        .ToList();
+                        var sqb = new SqlQueryBuilder(
+                            dbContext: dbContext,
+                            databaseObjectName: nameof(ProductCategoriesListForDeleteRecursive),
+                            sqlParameters:
+                            [
+                                productCategoryID.ToSqlParameter(nameof(productCategoryID), SqlDbType.Int),
+                            ]
+                        );
+
+                        var resultQueryable = sqb.ExecuteTableValuedFunction<ProductCategoriesListForDeleteRecursiveDTO>();
+                        var result = await resultQueryable.ToListAsync();
+
                         return result;
                     }
                 }
@@ -187,9 +230,17 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 logString: $"{nameof(ProductCategoriesSyncParentsAndSortIndexes)}({nameof(sortIndexesJson)} = {sortIndexesJson})", 
                 asyncFuncToTry: async () =>
                 {
-                    using (var db = _connectionFactory.GetDbContextCommands())
+                    using (var dbContext = _dbContextFactory.GetDbContext())
                     {
-                        await db.ProductCategoriesSyncParentsAndSortIndexes(sortIndexesJson: sortIndexesJson);
+                        var sqb = new SqlQueryBuilder(
+                            dbContext: dbContext,
+                            databaseObjectName: nameof(sortIndexesJson),
+                            sqlParameters:
+                            [
+                                sortIndexesJson.ToSqlParameter(nameof(sortIndexesJson),SqlDbType.NVarChar)
+                            ]
+                        );
+                        await sqb.ExecuteStoredProcedure();                        
                     }
                 }
             );
@@ -201,10 +252,20 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 logString: $"{nameof(ProductsGetSingleByID)}({nameof(productID)} = {productID})", 
                 asyncFuncToTry: async () =>
                 {
-                    using (var db = _connectionFactory.GetDbContextQueries())
+                    using (var dbContext = _dbContextFactory.GetDbContext())
                     {
-                        var resultJson = await db.ProductsGetSingleByID(productID: productID);
-                        var result = resultJson?.DeserializeJsonTo<ProductDTO>();
+                        var sqb = new SqlQueryBuilder(
+                            dbContext: dbContext,
+                            databaseObjectName: nameof(ProductsGetSingleByID),
+                            sqlParameters:
+                            [
+                                productID.ToSqlParameter(nameof(productID), SqlDbType.Int)
+                            ]
+                        );
+
+                        var resultJson = await sqb.ExecuteScalarValuedFunction<string>();
+                        var result = resultJson.DeserializeJsonTo<ProductDTO>();
+
                         return result;
                     }
                 }
@@ -218,10 +279,20 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 logString: $"{nameof(ProductsGetsingleBySlug)}({nameof(productSlug)} = {productSlug})", 
                 asyncFuncToTry: async () =>
                 {
-                    using (var db = _connectionFactory.GetDbContextQueries())
+                    using (var dbContext = _dbContextFactory.GetDbContext())
                     {
-                        var resultJson = await db.ProductsGetsingleBySlug(productSlug: productSlug);
-                        var result = resultJson?.DeserializeJsonTo<ProductDTO>();
+                        var sqb = new SqlQueryBuilder(
+                            dbContext: dbContext,
+                            databaseObjectName: nameof(ProductsGetsingleBySlug),
+                            sqlParameters:
+                            [
+                                productSlug.ToSqlParameter(nameof(productSlug), SqlDbType.NVarChar)
+                            ]
+                        );
+
+                        var resultJson = await sqb.ExecuteScalarValuedFunction<string>();                        
+                        var result = resultJson.DeserializeJsonTo<ProductDTO>();
+
                         return result;
                     }
                 }
@@ -235,31 +306,37 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 logString: $"{nameof(ProductsIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(productID)} = {productID}, {nameof(productCategoryID)} = {productCategoryID}, {nameof(countryIDProducer)} = {countryIDProducer}, {nameof(brandID)} = {brandID}, {nameof(productName)} = {productName}, {nameof(productNameEng)} = {productNameEng}, {nameof(productSlug)} = {productSlug}, {nameof(productSlugEng)} = {productSlugEng}, {nameof(productPrice)} = {productPrice}, {nameof(productPriceOld)} = {productPriceOld}, {nameof(productRemainder)} = {productRemainder}, {nameof(productImageFilename)} = {productImageFilename}, {nameof(productDescriptionShort)} = {productDescriptionShort}, {nameof(productDescriptionShortEng)} = {productDescriptionShortEng}, {nameof(productDescription)} = {productDescription}, {nameof(productDescriptionEng)} = {productDescriptionEng}, {nameof(productIsPublished)} = {productIsPublished}, {nameof(productIsFeatured)} = {productIsFeatured}, {nameof(productSKU)} = {productSKU}, {nameof(productIDExternal)} = {productIDExternal})", 
                 asyncFuncToTry: async () =>
                 {
-                    using (var db = _connectionFactory.GetDbContextCommands())
+                    using (var dbContext = _dbContextFactory.GetDbContext())
                     {
-                        productID = await db.ProductsIUD(
-                            databaseAction: databaseAction,
-                            productID: productID, 
-                            productCategoryID: productCategoryID, 
-                            countryIDProducer: countryIDProducer, 
-                            brandID: brandID, 
-                            productName: productName, 
-                            productNameEng: productNameEng, 
-                            productSlug: productSlug, 
-                            productSlugEng: productSlugEng, 
-                            productPrice: productPrice, 
-                            productPriceOld: productPriceOld, 
-                            productRemainder: productRemainder,
-                            productImageFilename: productImageFilename,
-                            productDescriptionShort: productDescriptionShort,
-                            productDescriptionShortEng:productDescriptionShortEng, 
-                            productDescription: productDescription,
-                            productDescriptionEng: productDescriptionEng,
-                            productIsPublished: productIsPublished,
-                            productIsFeatured: productIsFeatured,
-                            productSKU: productSKU,
-                            productIDExternal: productIDExternal
+                        var sqb = new SqlQueryBuilder(
+                            dbContext: dbContext,
+                            databaseObjectName: nameof(ProductsIUD),
+                            sqlParameters:
+                            [
+                                databaseAction.ToSqlParameter(nameof(databaseAction),SqlDbType.TinyInt),
+                                productID.ToSqlOutputParameter(nameof(productID),SqlDbType.Int),
+                                productCategoryID.ToSqlParameter(nameof(productCategoryID),SqlDbType.Int),
+                                countryIDProducer.ToSqlParameter(nameof(countryIDProducer),SqlDbType.Int),
+                                brandID.ToSqlParameter(nameof(brandID),SqlDbType.Int),
+                                productName.ToSqlParameter(nameof(productName),SqlDbType.NVarChar),
+                                productNameEng.ToSqlParameter(nameof(productNameEng),SqlDbType.NVarChar),
+                                productPrice.ToSqlParameter(nameof(productPrice),SqlDbType.Money),
+                                productPriceOld.ToSqlParameter(nameof(productPriceOld),SqlDbType.Money),
+                                productRemainder.ToSqlParameter(nameof(productRemainder),SqlDbType.Decimal),
+                                productImageFilename.ToSqlParameter(nameof(productImageFilename),SqlDbType.NVarChar),
+                                productDescriptionShort.ToSqlParameter(nameof(productDescriptionShort),SqlDbType.NVarChar),
+                                productDescriptionShortEng.ToSqlParameter(nameof(productDescriptionShortEng),SqlDbType.NVarChar),
+                                productDescription.ToSqlParameter(nameof(productDescription),SqlDbType.NVarChar),
+                                productDescriptionEng.ToSqlParameter(nameof(productDescriptionEng),SqlDbType.NVarChar),
+                                productIsPublished.ToSqlParameter(nameof(productIsPublished),SqlDbType.Bit),
+                                productIsFeatured.ToSqlParameter(nameof(productIsFeatured),SqlDbType.Bit),
+                                productSKU.ToSqlParameter(nameof(productSKU),SqlDbType.NVarChar),
+                                productIDExternal.ToSqlParameter(nameof(productIDExternal),SqlDbType.NVarChar)
+                            ]
                         );
+
+                        await sqb.ExecuteStoredProcedure();
+                        productID = sqb.GetNextOutputParameterValue<int?>();
                         return productID;
                     }
                 }
@@ -273,15 +350,23 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 logString: $"{nameof(ProductsImagesIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(productImageID)} = {productImageID}, {nameof(productID)} = {productID}, {nameof(productImageFilename)} = {productImageFilename}, {nameof(productImageSortIndex)} = {productImageSortIndex})", 
                 asyncFuncToTry: async () =>
                 {
-                    using (var db = _connectionFactory.GetDbContextCommands())
+                    using (var dbContext = _dbContextFactory.GetDbContext())
                     {
-                        productImageID = await db.ProductsImagesIUD(
-                            databaseAction: databaseAction,
-                            productImageID: productImageID, 
-                            productID: productID, 
-                            productImageFilename: productImageFilename,
-                            productImageSortIndex: productImageSortIndex
+                        var sqb = new SqlQueryBuilder(
+                            dbContext: dbContext,
+                            databaseObjectName: nameof(ProductsImagesIUD),
+                            sqlParameters:
+                            [
+                                databaseAction.ToSqlParameter(nameof(databaseAction),SqlDbType.TinyInt),
+                                productImageID.ToSqlOutputParameter(nameof(productImageID),SqlDbType.Int),
+                                productID.ToSqlParameter(nameof(productID), SqlDbType.Int),
+                                productImageFilename.ToSqlParameter(nameof(productImageFilename),SqlDbType.NVarChar),
+                                productImageSortIndex.ToSqlParameter(nameof(productImageSortIndex),SqlDbType.Int)
+                            ]
                         );
+
+                        await sqb.ExecuteStoredProcedure();
+                        productImageID = sqb.GetNextOutputParameterValue<int?>();
                         return productImageID;
                     }
                 }
@@ -295,14 +380,17 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 logString: $"{nameof(ProductsList)}()", 
                 asyncFuncToTry: async () =>
                 {
-                    using (var db = _connectionFactory.GetDbContextQueries())
+                    using (var dbContext = _dbContextFactory.GetDbContext())
                     {
-                        var result = (
-                            await db.ProductsList()
-                            .OrderByDescending(item => item.ProductDateCreated).ToListAsync()
-                        )
-                        ?.Select(item => _mapper.Map<ProductsListDTO>(item))
-                        .ToList();
+                        var sqb = new SqlQueryBuilder(
+                            dbContext: dbContext,
+                            databaseObjectName: nameof(ProductsList)
+                        );
+
+                        var resultQueryable = sqb.ExecuteTableValuedFunction<ProductsListDTO>();
+                        resultQueryable = resultQueryable.OrderByDescending(item => item.ProductDateCreated);
+                        var result = await resultQueryable.ToListAsync();
+                        
                         return result;
                     }
                 }
@@ -317,9 +405,18 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 logString: $"{nameof(ProductsImagesSyncSortIndex)}({nameof(productID)} = {productID}, {nameof(sortIndexes)} = {sortIndexesJson})", 
                 asyncFuncToTry: async () =>
                 {
-                    using (var db = _connectionFactory.GetDbContextCommands())
+                    using (var dbContext = _dbContextFactory.GetDbContext())
                     {
-                        await db.ProductsImagesSyncSortIndex(productID: productID, sortIndexesJson: sortIndexesJson);
+                        var sqb = new SqlQueryBuilder(
+                            dbContext: dbContext,
+                            databaseObjectName: nameof(ProductsImagesSyncSortIndex),
+                            sqlParameters:
+                            [
+                                productID.ToSqlParameter(nameof(productID), SqlDbType.Int),
+                                sortIndexesJson.ToSqlParameter(nameof(sortIndexesJson),SqlDbType.NVarChar)
+                            ]
+                        );
+                        await sqb.ExecuteStoredProcedure();                        
                     }
                 }
             );

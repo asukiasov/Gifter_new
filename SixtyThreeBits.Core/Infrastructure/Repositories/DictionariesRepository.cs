@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using SixtyThreeBits.Core.DTO;
 using SixtyThreeBits.Core.Infrastructure.Database;
 using SixtyThreeBits.Core.Infrastructure.Factories;
@@ -7,6 +6,7 @@ using SixtyThreeBits.Core.Infrastructure.Repositories.Base;
 using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -15,13 +15,8 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
     public class DictionariesRepository : RepositoryBase
     {
         #region Contructors
-        public DictionariesRepository(ConnectionFactory connectionFactory) : base(connectionFactory)
-        {
-            _mapper = new MapperConfiguration(cfg =>
-            {
-                cfg.CreateMap<DbContextQueries.DictionariesListEntity, DictionariesDTO>();
-                cfg.CreateMap<DbContextQueries.DictionariesListByLevelAndCodeAndIsVisibleEntity, DictionariesDTO>();
-            }).CreateMapper();
+        public DictionariesRepository(DbContextFactory connectionFactory) : base(connectionFactory)
+        {            
         }
         #endregion
 
@@ -32,9 +27,18 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 logString: $"{nameof(DictionariesDeleteRecursive)}({nameof(dictionaryID)} = {dictionaryID})", 
                 asyncFuncToTry: async () =>
                 {
-                    using (var db = _connectionFactory.GetDbContextCommands())
+                    using (var dbContext = _dbContextFactory.GetDbContext())
                     {
-                        await db.DictionariesDeleteRecursive(dictionaryID);                    
+                        var sqb = new SqlQueryBuilder(
+                            dbContext: dbContext,
+                            databaseObjectName: nameof(DictionariesDeleteRecursive),
+                            sqlParameters:
+                            [
+                                dictionaryID.ToSqlParameter(nameof(dictionaryID),SqlDbType.Int)
+                            ]
+                        );
+
+                        await sqb.ExecuteStoredProcedure();
                     }
                 }
             );
@@ -46,22 +50,30 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 logString: $"{nameof(DictionariesIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(dictionaryID)} = {dictionaryID}, {nameof(dictionaryCaption)} = {dictionaryCaption}, {nameof(dictionaryCaptionEng)} = {dictionaryCaptionEng}, {nameof(dictionaryParentID)} = {dictionaryParentID}, {nameof(dictionaryStringCode)} = {dictionaryStringCode}, {nameof(dictionaryIntCode)} = {dictionaryIntCode}, {nameof(dictionaryDecimalValue)} = {dictionaryDecimalValue}, {nameof(dictionaryCode)} = {dictionaryCode}, {nameof(dictionaryIsDefault)} = {dictionaryIsDefault}, {nameof(dictionaryIsVisible)} = {dictionaryIsVisible}, {nameof(dictionarySortIndex)} = {dictionarySortIndex})", 
                 asyncFuncToTry: async () =>
                 {
-                    using (var db = _connectionFactory.GetDbContextCommands())
+                    using (var dbContext = _dbContextFactory.GetDbContext())
                     {
-                        dictionaryID = await db.DictionariesIUD(
-                            databaseAction: databaseAction, 
-                            dictionaryID: dictionaryID,
-                            dictionaryCaption: dictionaryCaption, 
-                            dictionaryCaptionEng: dictionaryCaptionEng, 
-                            dictionaryParentID: dictionaryParentID, 
-                            dictionaryStringCode: dictionaryStringCode, 
-                            dictionaryIntCode: dictionaryIntCode, 
-                            dictionaryDecimalValue: dictionaryDecimalValue, 
-                            dictionaryCode: dictionaryCode, 
-                            dictionaryIsDefault: dictionaryIsDefault, 
-                            dictionaryIsVisible: dictionaryIsVisible, 
-                            dictionarySortIndex: dictionarySortIndex
+                        var sqb = new SqlQueryBuilder(
+                            dbContext: dbContext,
+                            databaseObjectName: nameof(DictionariesIUD),
+                            sqlParameters:
+                            [
+                                databaseAction.ToSqlParameter(nameof(databaseAction),SqlDbType.TinyInt),
+                                dictionaryID.ToSqlOutputParameter(nameof(dictionaryID),SqlDbType.Int),
+                                dictionaryCaption.ToSqlParameter(nameof(dictionaryCaption),SqlDbType.NVarChar),
+                                dictionaryCaptionEng.ToSqlParameter(nameof(dictionaryCaptionEng),SqlDbType.NVarChar),
+                                dictionaryParentID.ToSqlParameter(nameof(dictionaryParentID),SqlDbType.Int),
+                                dictionaryStringCode.ToSqlParameter(nameof(dictionaryStringCode),SqlDbType.NVarChar),
+                                dictionaryIntCode.ToSqlParameter(nameof(dictionaryIntCode),SqlDbType.Int),
+                                dictionaryDecimalValue.ToSqlParameter(nameof(dictionaryDecimalValue),SqlDbType.Money),
+                                dictionaryCode.ToSqlParameter(nameof(dictionaryCode),SqlDbType.Int),
+                                dictionaryIsDefault.ToSqlParameter(nameof(dictionaryIsDefault),SqlDbType.Bit),
+                                dictionaryIsVisible.ToSqlParameter(nameof(dictionaryIsVisible),SqlDbType.Bit),
+                                dictionarySortIndex.ToSqlParameter(nameof(dictionarySortIndex),SqlDbType.Int),
+                            ]
                         );
+
+                        await sqb.ExecuteStoredProcedure();
+                        dictionaryID = sqb.GetNextOutputParameterValue<int?>();
                         return dictionaryID;
                     }
                 }
@@ -75,16 +87,22 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 logString: $"{nameof(DictionariesList)}()", 
                 asyncFuncToTry: async () =>
                 {
-                    using (var db = _connectionFactory.GetDbContextQueries())
+                    using (var dbContext = _dbContextFactory.GetDbContext())
                     {
-                        var result = (await db.DictionariesList()
+                        var sqb = new SqlQueryBuilder(
+                            dbContext: dbContext,
+                            databaseObjectName: nameof(DictionariesList)
+                        );
+
+                        var resultQueryable = sqb.ExecuteTableValuedFunction<DictionariesDTO>();
+                        resultQueryable = resultQueryable
                             .OrderByDescending(item => item.DictionaryIsDefault)
                             .ThenBy(item => item.DictionarySortIndex)
-                            .ThenBy(item => item.DictionaryCaption)
-                            .ToListAsync()
-                        )
-                        ?.Select(item => _mapper.Map<DictionariesDTO>(item))
-                        .ToList();
+                            .ThenBy(item => item.DictionaryCaption).OrderByDescending(item => item.DictionaryIsDefault)
+                            .ThenBy(item => item.DictionarySortIndex)
+                            .ThenBy(item => item.DictionaryCaption);
+                        var result = await resultQueryable.ToListAsync();
+                        
                         return result;
                     }
                 }
@@ -92,83 +110,61 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
             return result;
         }
 
-        public async Task<List<DictionariesDTO>> DictionariesListByLevelAndCodeAndIsVisible(int? dictionaryLevel, int? dictionaryCode, bool? dictionaryIsVisible = null)
+        public async Task<List<DictionariesDTO>> DictionariesListByLevelCodeIsVisible(int? dictionaryLevel, int? dictionaryCode, bool? dictionaryIsVisible = null)
         {
             var result = await TryToReturnAsyncTask(
-                logString: $"{nameof(DictionariesListByLevelAndCodeAndIsVisible)}({nameof(dictionaryLevel)} = {dictionaryLevel}, {nameof(dictionaryCode)} = {dictionaryCode}, {nameof(dictionaryIsVisible)} = {dictionaryIsVisible})",
+                logString: $"{nameof(DictionariesListByLevelCodeIsVisible)}({nameof(dictionaryLevel)} = {dictionaryLevel}, {nameof(dictionaryCode)} = {dictionaryCode}, {nameof(dictionaryIsVisible)} = {dictionaryIsVisible})",
                 asyncFuncToTry: async () =>
                 {
-                    using (var db = _connectionFactory.GetDbContextQueries())
+                    using (var dbContext = _dbContextFactory.GetDbContext())
                     {
-                        var result = (await db.DictionariesListByLevelAndCodeAndIsVisible(
-                                dictionaryLevel: dictionaryLevel, 
-                                dictionaryCode: dictionaryCode, 
-                                dictionaryIsVisible: dictionaryIsVisible
-                            )
+                        var sqb = new SqlQueryBuilder(
+                            dbContext: dbContext,
+                            databaseObjectName: nameof(DictionariesListByLevelCodeIsVisible),
+                            sqlParameters:
+                            [
+                                dictionaryLevel.ToSqlParameter(nameof(dictionaryLevel), SqlDbType.Int),
+                                dictionaryCode.ToSqlParameter(nameof(dictionaryCode), SqlDbType.Int),
+                                dictionaryIsVisible.ToSqlParameter(nameof(dictionaryIsVisible), SqlDbType.Bit)
+                            ]
+                        );
+
+                        var resultQueryable = sqb.ExecuteTableValuedFunction<DictionariesDTO>();
+                        resultQueryable = resultQueryable
                             .OrderByDescending(item => item.DictionaryIsDefault)
                             .ThenBy(item => item.DictionarySortIndex)
-                            .ThenBy(item => item.DictionaryCaption)
-                            .ToListAsync()
-                        )
-                        ?.Select(item => _mapper.Map<DictionariesDTO>(item))
-                        .ToList();
+                            .ThenBy(item => item.DictionaryCaption);
+                        var result = await resultQueryable.ToListAsync();                        
+
                         return result;
                     }
                 }
             );
+            return result;
+        }
+
+        public async Task<List<KeyValueTuple<int?, string>>> DictionariesListAsKeyValueTuple(int? dictionaryCode, bool isDictionaryIntCodeAsKey = false)
+        {
+            var result = (await DictionariesListByLevelCodeIsVisible(dictionaryLevel: 1, dictionaryCode: dictionaryCode))
+                ?.Select(item => new KeyValueTuple<int?, string>
+                {
+                    Key = isDictionaryIntCodeAsKey ? item.DictionaryIntCode : item.DictionaryID,
+                    Value = item.DictionaryCaption
+                }).ToList();
             return result;
         }
 
         public async Task<List<KeyValueSelectedTuple<int?, string>>> DictionariesListAsKeyValueSelectedTuple(int? dictionaryCode, int? selectedValue, bool isDictionaryIntCodeAsKey = false)
         {
-            var result = await TryToReturnAsyncTask(
-                logString: $"{nameof(DictionariesListAsKeyValueSelectedTuple)}({nameof(dictionaryCode)} = {dictionaryCode}, {nameof(isDictionaryIntCodeAsKey)} = {isDictionaryIntCodeAsKey})", 
-                asyncFuncToTry: async () =>
+            var result = (await DictionariesListByLevelCodeIsVisible(dictionaryLevel: 1, dictionaryCode: dictionaryCode))
+                ?.Select(item => new KeyValueSelectedTuple<int?, string>
                 {
-                    using (var db = _connectionFactory.GetDbContextQueries())
-                    {
-                        var dictionaries = await DictionariesListByLevelAndCodeAndIsVisible(
-                            dictionaryLevel: 1, 
-                            dictionaryCode: dictionaryCode, 
-                            dictionaryIsVisible: null
-                        );
-                        var result = dictionaries?.Select(item => new KeyValueSelectedTuple<int?, string>
-                        {
-                            Key = isDictionaryIntCodeAsKey ? item.DictionaryIntCode : item.DictionaryID,
-                            Value = item.DictionaryCaption,
-                            IsSelected = isDictionaryIntCodeAsKey ? (item.DictionaryIntCode == selectedValue) : (item.DictionaryID == selectedValue)
-                        }).ToList();
-                        return result;
-                    }
-                }
-            );
+                    Key = isDictionaryIntCodeAsKey ? item.DictionaryIntCode : item.DictionaryID,
+                    Value = item.DictionaryCaption,
+                    IsSelected = isDictionaryIntCodeAsKey ? (item.DictionaryIntCode == selectedValue) : (item.DictionaryID == selectedValue)
+                }).ToList();            
             return result;
-        }
-
-        public async Task<List<KeyValueTuple<int?, string>>> DictionariesListAsKeyValueTuple(int? dictionaryCode, bool dictionaryCodeAsKey = false)
-        {
-            var result = await TryToReturnAsyncTask(
-                logString: $"{nameof(DictionariesListAsKeyValueTuple)}({nameof(dictionaryCode)} = {dictionaryCode}, {nameof(dictionaryCodeAsKey)} = {dictionaryCodeAsKey})", 
-                asyncFuncToTry: async () =>
-                {
-                    using (var db = _connectionFactory.GetDbContextQueries())
-                    {
-                        var dictionaries = await DictionariesListByLevelAndCodeAndIsVisible(
-                            dictionaryLevel: 1, 
-                            dictionaryCode: dictionaryCode, 
-                            dictionaryIsVisible: null
-                        );
-                        var result = dictionaries?.Select(item => new KeyValueTuple<int?, string>
-                        {
-                            Key = dictionaryCodeAsKey ? item.DictionaryCode : item.DictionaryID,
-                            Value = item.DictionaryCaption
-                        }).ToList();
-                        return result;
-                    }
-                }
-            );
-            return result;
-        }
+        }        
         #endregion
     }
 }

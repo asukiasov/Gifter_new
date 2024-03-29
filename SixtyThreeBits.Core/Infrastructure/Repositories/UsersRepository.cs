@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Imageflow.Bindings;
 using Microsoft.EntityFrameworkCore;
 using SixtyThreeBits.Core.DTO;
 using SixtyThreeBits.Core.Infrastructure.Database;
@@ -8,20 +9,18 @@ using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using static SixtyThreeBits.Core.Infrastructure.Database.DbContextQueries;
 
 namespace SixtyThreeBits.Core.Infrastructure.Repositories
 {
     public class UsersRepository : RepositoryBase
     {
         #region Contructors
-        public UsersRepository(ConnectionFactory connectionFactory) : base(connectionFactory)
-        {
-            _mapper = new MapperConfiguration(cfg =>
-            {
-                cfg.CreateMap<DbContextQueries.UsersListEntity, UsersListDTO>();
-            }).CreateMapper();
+        public UsersRepository(DbContextFactory connectionFactory) : base(connectionFactory)
+        {            
         }
         #endregion
 
@@ -32,10 +31,18 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 logString: $"{nameof(UsersGetSingleByID)}({nameof(userID)} = {userID})", 
                 asyncFuncToTry: async () =>
                 {
-                    using (var db = _connectionFactory.GetDbContextQueries())
+                    using (var dbContext = _dbContextFactory.GetDbContext())
                     {
-                        var resultJson = await db.UsersGetSingleByID(userID: userID);
-                        var result = resultJson?.DeserializeJsonTo<UserDTO>();
+                        var sqb = new SqlQueryBuilder(
+                            dbContext: dbContext,
+                            databaseObjectName: nameof(UsersGetSingleByID),
+                            sqlParameters:
+                            [
+                                userID.ToSqlParameter(nameof(userID), SqlDbType.Int)
+                            ]
+                        );
+                        var resultJson = await sqb.ExecuteScalarValuedFunction<string>();
+                        var result = resultJson.DeserializeJsonTo<UserDTO>();                                                
                         return result;
                     }
                 }
@@ -49,10 +56,21 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 logString: $"{nameof(UsersGetSingleByEmailAndPassword)}({nameof(userEmail)} = {userEmail}, {nameof(userPassword)} = {userPassword})", 
                 asyncFuncToTry: async () =>
                 {
-                    using (var db = _connectionFactory.GetDbContextQueries())
+                    using (var dbContext = _dbContextFactory.GetDbContext())
                     {
-                        var resultJson = await db.UsersGetSingleByEmailAndPassword(userEmail: userEmail, userPassword: userPassword);
-                        var result = resultJson?.DeserializeJsonTo<UserDTO>();
+                        var sqb = new SqlQueryBuilder(
+                            dbContext: dbContext,
+                            databaseObjectName: nameof(UsersGetSingleByEmailAndPassword),
+                            sqlParameters:
+                            [
+                                userEmail.ToSqlParameter(nameof(userEmail), SqlDbType.VarChar),
+                                userPassword.ToSqlParameter(nameof(userPassword), SqlDbType.NVarChar)
+                            ]
+                        );
+
+                        var resultJson = await sqb.ExecuteScalarValuedFunction<string>();                        
+                        var result = resultJson.DeserializeJsonTo<UserDTO>();
+
                         return result;
                     }
                 }
@@ -66,9 +84,18 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 logString: $"{nameof(UsersIsEmailUnique)}({nameof(userEmail)} = {userEmail}, {nameof(userID)} = {userID})", 
                 funcToTry: async () =>
                 {
-                    using (var db = _connectionFactory.GetDbContextQueries())
+                    using (var dbContext = _dbContextFactory.GetDbContext())
                     {
-                        var result = await db.UsersIsEmailUnique(userEmail: userEmail, userID: userID);
+                        var sqb = new SqlQueryBuilder(
+                            dbContext: dbContext,
+                            databaseObjectName: nameof(UsersIsEmailUnique),
+                            sqlParameters:
+                            [
+                                userEmail.ToSqlParameter(nameof(userEmail), SqlDbType.NVarChar),
+                                userID.ToSqlParameter(nameof(userID), SqlDbType.Int)
+                            ]
+                        );
+                        var result = await sqb.ExecuteScalarValuedFunction<bool>();                        
                         return result;
                     }
                 }
@@ -82,22 +109,30 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 logString: $"{nameof(UsersIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(roleID)} = {roleID}, {nameof(userID)} = {userID}, {nameof(userEmail)} = {userEmail}, {nameof(userPassword)} = {userPassword}, {nameof(userFirstname)} = {userFirstname}, {nameof(userLastname)} = {userLastname}, {nameof(userBirthdate)} = {userBirthdate}, {nameof(userPhoneNumberMobile)} = {userPhoneNumberMobile}, {nameof(userPersonalNumber)} = {userPersonalNumber}, {nameof(userAvatarFilename)} = {userAvatarFilename}, {nameof(userIsActive)} = {userIsActive})", 
                 asyncFuncToTry: async () =>
                 {
-                    using (var db = _connectionFactory.GetDbContextCommands())
+                    using (var dbContext = _dbContextFactory.GetDbContext())
                     {
-                        userID = await db.UsersIUD(
-                            databaseAction: databaseAction, 
-                            userID: userID, 
-                            roleID: roleID, 
-                            userEmail: userEmail, 
-                            userPassword: userPassword, 
-                            userFirstname: userFirstname, 
-                            userLastname: userLastname, 
-                            userBirthdate: userBirthdate, 
-                            userPhoneNumberMobile: userPhoneNumberMobile, 
-                            userPersonalNumber: userPersonalNumber, 
-                            userAvatarFilename: userAvatarFilename, 
-                            userIsActive: userIsActive
+                        var sqb = new SqlQueryBuilder(
+                            dbContext: dbContext,
+                            databaseObjectName: nameof(UsersIUD),
+                            sqlParameters:
+                            [
+                                databaseAction.ToSqlParameter(nameof(databaseAction),SqlDbType.TinyInt),
+                                roleID.ToSqlParameter(nameof(roleID),SqlDbType.Int),
+                                userID.ToSqlOutputParameter(nameof(userID),SqlDbType.Int),
+                                userEmail.ToSqlParameter(nameof(userEmail),SqlDbType.VarChar),
+                                userPassword.ToSqlParameter(nameof(userPassword),SqlDbType.NVarChar),
+                                userFirstname.ToSqlParameter(nameof(userFirstname),SqlDbType.NVarChar),
+                                userLastname.ToSqlParameter(nameof(userLastname),SqlDbType.NVarChar),
+                                userBirthdate.ToSqlParameter(nameof(userBirthdate),SqlDbType.Date),
+                                userPhoneNumberMobile.ToSqlParameter(nameof(userPhoneNumberMobile),SqlDbType.VarChar),
+                                userPersonalNumber.ToSqlParameter(nameof(userPersonalNumber),SqlDbType.VarChar),
+                                userAvatarFilename.ToSqlParameter(nameof(userAvatarFilename),SqlDbType.NVarChar),
+                                userIsActive.ToSqlParameter(nameof(userIsActive),SqlDbType.Bit)
+                            ]
                         );
+
+                        await sqb.ExecuteStoredProcedure();
+                        userID = sqb.GetNextOutputParameterValue<int?>();
                         return userID;
                     }
                 }
@@ -111,15 +146,17 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 logString: $"{nameof(UsersList)}()", 
                 asyncFuncToTry: async () =>
                 {
-                    using (var db = _connectionFactory.GetDbContextQueries())
+                    using (var dbContext = _dbContextFactory.GetDbContext())
                     {
-                        var result = (
-                            await db.UsersList()
-                            .OrderByDescending(item => item.UserDateCreated)
-                            .ToListAsync()
-                        )
-                        ?.Select(item => _mapper.Map<UsersListDTO>(item))
-                        .ToList();
+                        var sqb = new SqlQueryBuilder(
+                            dbContext: dbContext,
+                            databaseObjectName: nameof(UsersList)
+                        );
+
+                        var resultQueryable = sqb.ExecuteTableValuedFunction<UsersListDTO>();
+                        resultQueryable = resultQueryable.OrderByDescending(item => item.UserDateCreated);
+                        var result = await resultQueryable.ToListAsync();
+                        
                         return result;
                     }
                 }

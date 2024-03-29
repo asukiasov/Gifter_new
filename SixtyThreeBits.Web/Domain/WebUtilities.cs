@@ -1,10 +1,14 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Web.Domain.Libraries;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace SixtyThreeBits.Web.Domain
 {
@@ -72,6 +76,37 @@ namespace SixtyThreeBits.Web.Domain
 
             var websiteDomain = $"{request.Scheme}://{hostString}{portString}";
             return websiteDomain;
+        }
+
+        public static async Task<string> RenderViewAsync<TModel>(Controller controller, string contentRootPath, string viewName, TModel model, bool isPartialView = true)
+        {
+            var result = default(string);
+            controller.ViewData.Model = model;
+
+            using (var writer = new StringWriter())
+            {
+                IViewEngine viewEngine = controller.HttpContext.RequestServices.GetService(typeof(ICompositeViewEngine)) as ICompositeViewEngine;
+                ViewEngineResult viewResult = viewEngine.GetView(contentRootPath, viewName, !isPartialView);
+
+
+                if (viewResult.Success)
+                {
+                    ViewContext viewContext = new ViewContext(
+                        controller.ControllerContext,
+                        viewResult.View,
+                        controller.ViewData,
+                        controller.TempData,
+                        writer,
+                        new HtmlHelperOptions()
+                    );
+
+                    await viewResult.View.RenderAsync(viewContext);
+
+                    result = writer.GetStringBuilder().ToString();
+                }
+            }
+
+            return result;
         }
 
         public static void SetLayoutViewModel<T>(ViewDataDictionary viewData, T viewModel, string key)

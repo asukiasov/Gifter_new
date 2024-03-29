@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using SixtyThreeBits.Core.DTO;
 using SixtyThreeBits.Core.Infrastructure.Database;
 using SixtyThreeBits.Core.Infrastructure.Factories;
@@ -7,6 +6,7 @@ using SixtyThreeBits.Core.Infrastructure.Repositories.Base;
 using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries.Extensions;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -15,12 +15,8 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
     public class PartnersRepository : RepositoryBase
     {
         #region Constructors
-        public PartnersRepository(ConnectionFactory connectionFactory) : base(connectionFactory)
+        public PartnersRepository(DbContextFactory connectionFactory) : base(connectionFactory)
         {
-            _mapper = new MapperConfiguration(cfg =>
-            {
-                cfg.CreateMap<DbContextQueries.PartnersListEntity, PartnersListDTO>();
-            }).CreateMapper();
         }
         #endregion
 
@@ -31,10 +27,20 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 logString: $"{nameof(PartnersGetSingleByID)}({nameof(partnerID)} = {partnerID})", 
                 asyncFuncToTry: async () =>
                 {
-                    using (var db = _connectionFactory.GetDbContextQueries())
+                    using (var dbContext = _dbContextFactory.GetDbContext())
                     {
-                        var resultJson = await db.PartnersGetSingleByID(partnerID: partnerID);
-                        var result = resultJson?.DeserializeJsonTo<PartnerDTO>();
+                        var sqb = new SqlQueryBuilder(
+                            dbContext: dbContext,
+                            databaseObjectName: nameof(PartnersGetSingleByID),
+                            sqlParameters:
+                            [
+                                partnerID.ToSqlParameter(nameof(partnerID),SqlDbType.Int)
+                            ]
+                        );
+
+                        var resultJson = await sqb.ExecuteScalarValuedFunction<string>();                        
+                        var result = resultJson.DeserializeJsonTo<PartnerDTO>();
+
                         return result;
                     }
                 }
@@ -48,21 +54,29 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 logString: $"{nameof(PartnersIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(partnerID)} = {partnerID}, {nameof(partnerName)} = {partnerName}, {nameof(partnerNameEng)} = {partnerNameEng}, {nameof(partnerShortDescription)} = {partnerShortDescription}, {nameof(partnerShortDescriptionEng)} = {partnerShortDescriptionEng}, {nameof(partnerFullDescription)} = {partnerFullDescription}, {nameof(partnerFullDescriptionEng)} = {partnerFullDescriptionEng}, {nameof(partnerWebSite)} = {partnerWebSite}, {nameof(partnerImageFilename)} = {partnerImageFilename}, {nameof(partnerIsPublished)} = {partnerIsPublished})", 
                 asyncFuncToTry: async () =>
                 {
-                    using (var db = _connectionFactory.GetDbContextCommands())
+                    using (var dbContext = _dbContextFactory.GetDbContext())
                     {
-                        partnerID = await db.PartnersIUD(
-                            databaseAction: databaseAction, 
-                            partnerID: partnerID, 
-                            partnerName: partnerName, 
-                            partnerNameEng: partnerNameEng,
-                            partnerShortDescription: partnerShortDescription, 
-                            partnerShortDescriptionEng: partnerShortDescriptionEng, 
-                            partnerFullDescription: partnerFullDescription, 
-                            partnerFullDescriptionEng: partnerFullDescriptionEng, 
-                            partnerWebSite: partnerWebSite, 
-                            partnerImageFilename: partnerImageFilename, 
-                            partnerIsPublished: partnerIsPublished
+                        var sqb = new SqlQueryBuilder(
+                            dbContext: dbContext,
+                            databaseObjectName: nameof(PartnersIUD),
+                            sqlParameters:
+                            [
+                                databaseAction.ToSqlParameter(nameof(databaseAction),SqlDbType.TinyInt),
+                                partnerID.ToSqlOutputParameter(nameof(partnerID),SqlDbType.Int),
+                                partnerName.ToSqlParameter(nameof(partnerName),SqlDbType.NVarChar),
+                                partnerNameEng.ToSqlParameter(nameof(partnerNameEng),SqlDbType.NVarChar),
+                                partnerShortDescription.ToSqlParameter(nameof(partnerShortDescription),SqlDbType.NVarChar),
+                                partnerShortDescriptionEng.ToSqlParameter(nameof(partnerShortDescriptionEng),SqlDbType.NVarChar),
+                                partnerFullDescription.ToSqlParameter(nameof(partnerFullDescription),SqlDbType.NVarChar),
+                                partnerFullDescriptionEng.ToSqlParameter(nameof(partnerFullDescriptionEng),SqlDbType.NVarChar),
+                                partnerWebSite.ToSqlParameter(nameof(partnerWebSite),SqlDbType.NVarChar),
+                                partnerImageFilename.ToSqlParameter(nameof(partnerImageFilename),SqlDbType.NVarChar),
+                                partnerIsPublished.ToSqlParameter(nameof(partnerIsPublished),SqlDbType.Bit),
+                            ]
                         );
+
+                        await sqb.ExecuteStoredProcedure();
+                        partnerID = sqb.GetNextOutputParameterValue<int?>();
                         return partnerID;
                     }
                 }
@@ -76,15 +90,17 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 logString: $"{nameof(PartnersList)}()", 
                 asyncFuncToTry: async () =>
                 {
-                    using (var db = _connectionFactory.GetDbContextQueries())
+                    using (var dbContext = _dbContextFactory.GetDbContext())
                     {
-                        var result = (
-                            await db.PartnersList()
-                            .OrderByDescending(item => item.PartnerDateCreated)
-                            .ToListAsync()
-                        )
-                        ?.Select(item => _mapper.Map<PartnersListDTO>(item))
-                        .ToList();
+                        var sqb = new SqlQueryBuilder(
+                            dbContext: dbContext,
+                            databaseObjectName: nameof(PartnersList)
+                        );
+
+                        var resultQueryable = sqb.ExecuteTableValuedFunction<PartnersListDTO>();
+                        resultQueryable = resultQueryable.OrderByDescending(item => item.PartnerDateCreated);
+                        var result = await resultQueryable.ToListAsync();                        
+
                         return result;
                     }
                 }

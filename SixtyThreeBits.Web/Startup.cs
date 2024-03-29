@@ -40,8 +40,8 @@ namespace SixtyThreeBits.Web
                 #endif
             }
             _appSettings = new AppSettingsCollection(env.WebRootPath, appSettingsConfiguration);
-            _utilities = new UtilityCollection();
-            _repositoryFactory = new RepositoryFactory(_appSettings.ConnectionStrings.CommandsConnectionString, _appSettings.ConnectionStrings.QueriesConnectionString);            
+            _utilities = new UtilityCollection(env.ContentRootPath, env.WebRootPath);
+            _repositoryFactory = new RepositoryFactory(_appSettings.ConnectionStrings.DbConnectionString);
         }
 
         public void ConfigureServices(IServiceCollection services)
