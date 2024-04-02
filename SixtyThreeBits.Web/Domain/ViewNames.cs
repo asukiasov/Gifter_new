@@ -92,34 +92,47 @@
             public static class NotFound
             {
                 #region Properties
-                public const string Page = "~/Views/Website/NotFound/NotFound.cshtml";
+                public const string Page = "~/Views/Admin/NotFound/NotFound.cshtml";
                 #endregion
             }
 
-            public static class Pages
+            public static class PagesManagement
             {
-                #region Properties
-                public const string Tree = "~/Views/Admin/Pages/PagesTree.cshtml";
-                #endregion
-
                 #region Nested Classes
-                public static class Page
+                public static class MenuHeader
                 {
                     #region Properties
-                    public const string Properties = "~/Views/Admin/Pages/Page/PageProperties.cshtml";
-                    public const string Builder = "~/Views/Admin/Pages/Page/PageBuilder.cshtml";
+                    public const string Page = "~/Views/Admin/MenuHeader/MenuHeader.cshtml";
+                    public const string MenuHeaderTreeNodePartialView = "~/Views/Admin/MenuHeader/MenuHeaderTreeNodePartialView.cshtml";
+                    #endregion
+                }
+
+                public static class MenuFooter
+                {
+                    #region Properties
+                    public const string Page = "~/Views/Admin/MenuFooter/MenuFooter.cshtml";
+                    public const string MenuFooterTreeNodePartialView = "~/Views/Admin/MenuFooter/MenuFooterTreeNodePartialView.cshtml";
+                    #endregion
+                }
+
+                public static class Pages
+                {
+                    #region Properties
+                    public const string GridPage = "~/Views/Admin/Pages/Pages.cshtml";
+                    #endregion
+
+                    #region Nested Classes
+                    public static class Page
+                    {
+                        #region Properties
+                        public const string Properties = "~/Views/Admin/Pages/Page/PageProperties.cshtml";
+                        public const string Builder = "~/Views/Admin/Pages/Page/PageBuilder.cshtml";
+                        #endregion
+                    }
                     #endregion
                 }
                 #endregion
-            }
-
-            public static class Partners
-            {
-                #region Properties
-                public const string Page = "Views/Admin/Partners/Partners.cshtml";
-                public const string Partner = "Views/Admin/Partners/PartnerProperties.cshtml";
-                #endregion
-            }
+            }            
 
             public static class ProductCategories
             {

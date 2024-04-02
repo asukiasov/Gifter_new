@@ -41,6 +41,7 @@ namespace SixtyThreeBits.Web.Filters.Shared
 
                 var ActionDescriptor = filterContext.ActionDescriptor as ControllerActionDescriptor;
 
+                _model.Controller = c;
                 _model.ActionName = ActionDescriptor.ActionName;
                 _model.ControllerName = ActionDescriptor.ControllerTypeInfo.Name;
 
@@ -79,7 +80,7 @@ namespace SixtyThreeBits.Web.Filters.Shared
 
             if (_model.User == null)
             {
-                var userIDEncrypted = _model.CookieAssistance.Get<string>(WebConstants.Cookies.User);
+                var userIDEncrypted = _model.CookieAssistance.Get(WebConstants.Cookies.User);
                 var userID = userIDEncrypted.AesDecryptString().ToInt();
                 if (userID != null)
                 {

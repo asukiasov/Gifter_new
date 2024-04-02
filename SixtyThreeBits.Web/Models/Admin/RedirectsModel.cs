@@ -2,6 +2,7 @@
 using DevExtreme.AspNet.Mvc.Builders;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using SixtyThreeBits.Core.DTO;
 using SixtyThreeBits.Core.Properties;
 using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Web.Domain;
@@ -10,6 +11,7 @@ using SixtyThreeBits.Web.Models.Shared;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static SixtyThreeBits.Web.Domain.ViewNames.Admin;
 
 namespace SixtyThreeBits.Web.Models.Admin
 {
@@ -52,13 +54,16 @@ namespace SixtyThreeBits.Web.Models.Admin
             await repository.RedirectsIUD(
                 databaseAction: databaseAction,
                 redirectID: redirectID,
-                redirectFrom: submitModel.RedirectFrom,
-                redirectTo: submitModel.RedirectTo
+                redirect: new RedirectIudDTO
+                {
+                    RedirectFrom = submitModel.RedirectFrom,
+                    RedirectTo = submitModel.RedirectTo
+                }                
             );
 
             if (repository.IsError)
             {
-                Form.AddError(Resources.TextError);
+                Form.AddError(repository.ErrorMessage);
             }
         }
         #endregion

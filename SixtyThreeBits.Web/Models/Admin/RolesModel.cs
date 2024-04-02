@@ -1,7 +1,9 @@
-﻿using DevExtreme.AspNet.Mvc;
+﻿using DevExpress.XtraRichEdit.Layout.Engine;
+using DevExtreme.AspNet.Mvc;
 using DevExtreme.AspNet.Mvc.Builders;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using SixtyThreeBits.Core.DTO;
 using SixtyThreeBits.Core.Properties;
 using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Web.Domain;
@@ -54,13 +56,16 @@ namespace SixtyThreeBits.Web.Models.Admin
             await repository.RolesIUD(
                 databaseAction: databaseAction,
                 roleID: roleID,
-                roleName: submitModel.RoleName,
-                roleCode: submitModel.RoleCode
+                role: new RoleIudDTO
+                {
+                    RoleName = submitModel.RoleName,
+                    RoleCode = submitModel.RoleCode
+                }                
             );
 
             if (repository.IsError)
             {
-                Form.AddError(Resources.TextError);
+                Form.AddError(repository.ErrorMessage);
             }
         }
         #endregion

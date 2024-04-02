@@ -98,10 +98,12 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
             return result;
         }
 
-        public async Task<int?> ProductCategoriesIUD(Enums.DatabaseActions databaseAction, int? productCategoryID = null, int? productCategoryParentID = null, string productCategoryName = null, string productCategoryNameEng = null, string productCategoryImageFilename = null, string productCategoryDescriptionShort = null, string productCategoryDescriptionShortEng = null)
+        public async Task<int?> ProductCategoriesIUD(Enums.DatabaseActions databaseAction, int? productCategoryID, ProductCategoryIudDTO productCategory)
         {
+            var productCategoryJson = productCategory.ToJson();
+
             productCategoryID = await TryToReturnAsyncTask(
-                logString: $"{nameof(ProductCategoriesIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(productCategoryID)} = {productCategoryID}, {nameof(productCategoryParentID)} = {productCategoryParentID}, {nameof(productCategoryName)} = {productCategoryName}, {nameof(productCategoryNameEng)} = {productCategoryNameEng}, {nameof(productCategoryImageFilename)} = {productCategoryImageFilename}, {nameof(productCategoryDescriptionShort)} = {productCategoryDescriptionShort}, {nameof(productCategoryDescriptionShortEng)} = {productCategoryDescriptionShortEng})", 
+                logString: $"{nameof(ProductCategoriesIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(productCategoryID)} = {productCategoryID}, {nameof(productCategory)} = {productCategoryJson})", 
                 asyncFuncToTry: async () =>
                 {
                     using (var dbContext = _dbContextFactory.GetDbContext())
@@ -113,12 +115,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             [
                                 databaseAction.ToSqlParameter(nameof(databaseAction),SqlDbType.TinyInt),
                                 productCategoryID.ToSqlOutputParameter(nameof(productCategoryID),SqlDbType.Int),
-                                productCategoryParentID.ToSqlParameter(nameof(productCategoryParentID),SqlDbType.Int),
-                                productCategoryName.ToSqlParameter(nameof(productCategoryName),SqlDbType.NVarChar),
-                                productCategoryNameEng.ToSqlParameter(nameof(productCategoryNameEng),SqlDbType.NVarChar),
-                                productCategoryImageFilename.ToSqlParameter(nameof(productCategoryImageFilename),SqlDbType.NVarChar),
-                                productCategoryDescriptionShort.ToSqlParameter(nameof(productCategoryDescriptionShort),SqlDbType.NVarChar),
-                                productCategoryDescriptionShortEng.ToSqlParameter(nameof(productCategoryDescriptionShortEng),SqlDbType.NVarChar)
+                                productCategoryJson.ToSqlParameter(nameof(productCategoryJson),SqlDbType.NVarChar)
                             ]
                         );
 
@@ -131,7 +128,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
             return productCategoryID;
         }
 
-        public async Task<List<ProductCategoryDTO>> ProductCategoriesList(int? productCategoryParentID = null)
+        public async Task<List<ProductCategoriesListDTO>> ProductCategoriesList(int? productCategoryParentID = null)
         {
             var result = await TryToReturnAsyncTask(
                 logString: $"{nameof(ProductCategoriesList)}({nameof(productCategoryParentID)} = {productCategoryParentID})",
@@ -148,7 +145,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             ]
                         );
 
-                        var resultQueryable = sqb.ExecuteTableValuedFunction<ProductCategoryDTO>();
+                        var resultQueryable = sqb.ExecuteTableValuedFunction<ProductCategoriesListDTO>();
                         resultQueryable = resultQueryable.OrderBy(item => item.ProductCategorySortIndex);
                         var result = await resultQueryable.ToListAsync();
                         
@@ -186,11 +183,11 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
             return result;
         }
 
-        public async Task<List<ProductCategoryDTO>> ProductCategoriesListWithTitlePaddindHierarchy(char padChar = ' ')
+        public async Task<List<ProductCategoriesListDTO>> ProductCategoriesListWithTitlePaddindHierarchy(char padChar = ' ')
         {
-            var result = new List<ProductCategoryDTO>();
+            var result = new List<ProductCategoriesListDTO>();
 
-            Action<ProductCategoryDTO, int, List<ProductCategoryDTO>> InitCategoryNameByHierarchy = null;
+            Action<ProductCategoriesListDTO, int, List<ProductCategoriesListDTO>> InitCategoryNameByHierarchy = null;
             InitCategoryNameByHierarchy = (parent, padCount, categorysList) =>
             {
                 if (padCount > 0)
@@ -234,7 +231,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                     {
                         var sqb = new SqlQueryBuilder(
                             dbContext: dbContext,
-                            databaseObjectName: nameof(sortIndexesJson),
+                            databaseObjectName: nameof(ProductCategoriesSyncParentsAndSortIndexes),
                             sqlParameters:
                             [
                                 sortIndexesJson.ToSqlParameter(nameof(sortIndexesJson),SqlDbType.NVarChar)
@@ -300,10 +297,12 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
             return result;
         }
 
-        public async Task<int?> ProductsIUD(Enums.DatabaseActions databaseAction, int? productID = null, int? productCategoryID = null, int? countryIDProducer = null, int? brandID = null, string productName = null, string productNameEng = null, string productSlug = null, string productSlugEng = null, decimal? productPrice = null, decimal? productPriceOld = null, decimal? productRemainder = null, string productImageFilename = null, string productDescriptionShort = null, string productDescriptionShortEng = null, string productDescription = null, string productDescriptionEng = null, bool? productIsPublished = null, bool? productIsFeatured = null, string productSKU = null, string productIDExternal = null)
+        public async Task<int?> ProductsIUD(Enums.DatabaseActions databaseAction, int? productID, ProductIudDTO product)
         {
+            var productJson = product.ToJson();
+
             var result = await TryToReturnAsyncTask(
-                logString: $"{nameof(ProductsIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(productID)} = {productID}, {nameof(productCategoryID)} = {productCategoryID}, {nameof(countryIDProducer)} = {countryIDProducer}, {nameof(brandID)} = {brandID}, {nameof(productName)} = {productName}, {nameof(productNameEng)} = {productNameEng}, {nameof(productSlug)} = {productSlug}, {nameof(productSlugEng)} = {productSlugEng}, {nameof(productPrice)} = {productPrice}, {nameof(productPriceOld)} = {productPriceOld}, {nameof(productRemainder)} = {productRemainder}, {nameof(productImageFilename)} = {productImageFilename}, {nameof(productDescriptionShort)} = {productDescriptionShort}, {nameof(productDescriptionShortEng)} = {productDescriptionShortEng}, {nameof(productDescription)} = {productDescription}, {nameof(productDescriptionEng)} = {productDescriptionEng}, {nameof(productIsPublished)} = {productIsPublished}, {nameof(productIsFeatured)} = {productIsFeatured}, {nameof(productSKU)} = {productSKU}, {nameof(productIDExternal)} = {productIDExternal})", 
+                logString: $"{nameof(ProductsIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(productID)} = {productID})", 
                 asyncFuncToTry: async () =>
                 {
                     using (var dbContext = _dbContextFactory.GetDbContext())
@@ -315,23 +314,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             [
                                 databaseAction.ToSqlParameter(nameof(databaseAction),SqlDbType.TinyInt),
                                 productID.ToSqlOutputParameter(nameof(productID),SqlDbType.Int),
-                                productCategoryID.ToSqlParameter(nameof(productCategoryID),SqlDbType.Int),
-                                countryIDProducer.ToSqlParameter(nameof(countryIDProducer),SqlDbType.Int),
-                                brandID.ToSqlParameter(nameof(brandID),SqlDbType.Int),
-                                productName.ToSqlParameter(nameof(productName),SqlDbType.NVarChar),
-                                productNameEng.ToSqlParameter(nameof(productNameEng),SqlDbType.NVarChar),
-                                productPrice.ToSqlParameter(nameof(productPrice),SqlDbType.Money),
-                                productPriceOld.ToSqlParameter(nameof(productPriceOld),SqlDbType.Money),
-                                productRemainder.ToSqlParameter(nameof(productRemainder),SqlDbType.Decimal),
-                                productImageFilename.ToSqlParameter(nameof(productImageFilename),SqlDbType.NVarChar),
-                                productDescriptionShort.ToSqlParameter(nameof(productDescriptionShort),SqlDbType.NVarChar),
-                                productDescriptionShortEng.ToSqlParameter(nameof(productDescriptionShortEng),SqlDbType.NVarChar),
-                                productDescription.ToSqlParameter(nameof(productDescription),SqlDbType.NVarChar),
-                                productDescriptionEng.ToSqlParameter(nameof(productDescriptionEng),SqlDbType.NVarChar),
-                                productIsPublished.ToSqlParameter(nameof(productIsPublished),SqlDbType.Bit),
-                                productIsFeatured.ToSqlParameter(nameof(productIsFeatured),SqlDbType.Bit),
-                                productSKU.ToSqlParameter(nameof(productSKU),SqlDbType.NVarChar),
-                                productIDExternal.ToSqlParameter(nameof(productIDExternal),SqlDbType.NVarChar)
+                                productJson.ToSqlParameter(nameof(productJson),SqlDbType.NVarChar)                                
                             ]
                         );
 
@@ -344,10 +327,12 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
             return result;
         }
 
-        public async Task<int?> ProductsImagesIUD(Enums.DatabaseActions databaseAction, int? productImageID = null, int? productID = null, string productImageFilename = null, int? productImageSortIndex = null)
+        public async Task<int?> ProductsImagesIUD(Enums.DatabaseActions databaseAction, int? productImageID, ProductImageIudDTO productImage)
         {
+            var productImageJson = productImage.ToJson();
+
             var result = await TryToReturnAsyncTask(
-                logString: $"{nameof(ProductsImagesIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(productImageID)} = {productImageID}, {nameof(productID)} = {productID}, {nameof(productImageFilename)} = {productImageFilename}, {nameof(productImageSortIndex)} = {productImageSortIndex})", 
+                logString: $"{nameof(ProductsImagesIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(productImageID)} = {productImageID}, {nameof(productImage)} = {productImageJson})", 
                 asyncFuncToTry: async () =>
                 {
                     using (var dbContext = _dbContextFactory.GetDbContext())
@@ -359,9 +344,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             [
                                 databaseAction.ToSqlParameter(nameof(databaseAction),SqlDbType.TinyInt),
                                 productImageID.ToSqlOutputParameter(nameof(productImageID),SqlDbType.Int),
-                                productID.ToSqlParameter(nameof(productID), SqlDbType.Int),
-                                productImageFilename.ToSqlParameter(nameof(productImageFilename),SqlDbType.NVarChar),
-                                productImageSortIndex.ToSqlParameter(nameof(productImageSortIndex),SqlDbType.Int)
+                                productImageJson.ToSqlParameter(nameof(productImageJson),SqlDbType.NVarChar)                                
                             ]
                         );
 

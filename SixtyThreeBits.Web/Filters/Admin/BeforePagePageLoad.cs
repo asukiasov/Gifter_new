@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries.Extensions;
 using SixtyThreeBits.Web.Domain;
 using SixtyThreeBits.Web.Domain.SharedViewModels;
@@ -11,14 +10,14 @@ using System.Threading.Tasks;
 
 namespace SixtyThreeBits.Web.Filters.Admin
 {
-    public class BeforePagesPageLoad : IAsyncActionFilter
+    public class BeforePagePageLoad : IAsyncActionFilter
     {
         #region Properties
         PageModelBase _model;
         #endregion
 
         #region Methods
-        public BeforePagesPageLoad()
+        public BeforePagePageLoad()
         {
         }
 
@@ -35,8 +34,11 @@ namespace SixtyThreeBits.Web.Filters.Admin
             }
             else
             {
-                reinitBreadCrumbs();
-                initTabs();
+                if (!_model.IsAjaxRequest)
+                {
+                    reinitBreadCrumbs();
+                    initTabs();
+                }
                 await next();
             }
         }
@@ -44,12 +46,13 @@ namespace SixtyThreeBits.Web.Filters.Admin
         void reinitBreadCrumbs()
         {
             _model.Breadcrumbs.DeleteLastItem();
+            _model.Breadcrumbs.RemoveAt(1);
             _model.Breadcrumbs.RenameLastItem(_model.DBItem.PageTitle);
         }
 
         void initTabs()
         {
-            var tabsParentID = _model.User.Permissions.FindLast(Item => Item.PermissionCodeName == ControllerActionRouteNames.Admin.Pages.Page.Root)?.PermissionID;
+            var tabsParentID = _model.User.Permissions.FindLast(Item => Item.PermissionCodeName == ControllerActionRouteNames.Admin.PagesManagemet.Pages.Page.Root)?.PermissionID;
 
             if (tabsParentID != null)
             {

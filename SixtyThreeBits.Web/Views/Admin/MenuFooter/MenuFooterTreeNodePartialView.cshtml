@@ -1,0 +1,31 @@
+﻿@model MenuFooterModel.PageViewModel.MenuListItem
+<li data-id="@Model.MenuFooterID" class="tree-item file js-tree-node">
+    <div class="handle">
+        <div class="left-col">
+            <span class="drag js-tree-node-drag">
+                <i class="fa-solid fa-arrows-up-down-left-right"></i>
+            </span>
+            <i class="fa-solid fa-file-lines"></i>
+            <div class="name">
+                <div class="name">
+                    <a href="#" target="_blank" class="js-tree-node-title">@Html.Raw(Model.MenuFooterTitle)</a>
+                </div>
+                
+            </div>            
+        </div>
+        <div class="right-col">            
+            @if (Model.ShowUpdateButton)
+            {
+                <a href="#" class="js-tree-node-edit-button">
+                    <i class="fa-solid fa-pencil"></i>
+                </a>
+            }
+            @if (Model.ShowDeleteButton)
+            {
+                <a href="#" class="js-tree-node-delete-button">
+                    <i class="fa-light fa-trash-can"></i>
+                </a>
+            }            
+        </div>
+    </div>    
+</li>

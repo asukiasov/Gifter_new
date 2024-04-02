@@ -29,7 +29,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             return isLoggedIn;
         }
 
-        public async Task<bool> AuthenticateUser(PageViewModel viewModel)
+        public async Task<bool> AuthenticateUser(PageViewModel viewModel) 
         {
             bool isAuthenticated = false;
 

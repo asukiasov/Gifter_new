@@ -1,5 +1,4 @@
-﻿using Imageflow.Bindings;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using SixtyThreeBits.Core.DTO;
 using SixtyThreeBits.Core.Infrastructure.Database;
 using SixtyThreeBits.Core.Infrastructure.Factories;
@@ -42,9 +41,10 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
             return result ?? new SystemPropertiesDTO();
         }
 
-        public async Task SystemPropertiesUpdate(SystemPropertiesDTO systemProperties)
+        public async Task SystemPropertiesUpdate(SystemPropertiesIudDTO systemProperties)
         {
             var systemPropertiesJson = systemProperties.ToJson();
+
             await TryExecuteAsyncTask(
                 logString: $"{nameof(SystemPropertiesUpdate)}({nameof(systemProperties)} = {systemPropertiesJson})", 
                 asyncFuncToTry: async () =>

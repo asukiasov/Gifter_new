@@ -27,8 +27,11 @@ namespace SixtyThreeBits.Web.Filters.Admin
             }
             else
             {
-                initPageTitle();
-                reinitBreadCrumbs();
+                if (!_model.IsAjaxRequest)
+                {
+                    initPageTitle();
+                    reinitBreadCrumbs();
+                }
                 await next();
             }
         }

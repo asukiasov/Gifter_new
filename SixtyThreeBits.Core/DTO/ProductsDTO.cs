@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace SixtyThreeBits.Core.DTO
 {
-    public class ProductCategoryDTO
+    public record ProductCategoryDTO
     {
         #region Properties
         public int? ProductCategoryID { get; set; }
@@ -26,73 +26,127 @@ namespace SixtyThreeBits.Core.DTO
         #endregion
     }
 
-    public class ProductCategoriesListForDeleteRecursiveDTO
+    public class ProductCategoriesListDTO
     {
         #region Properties
         public int? ProductCategoryID { get; set; }
-        public string ProductCategoryImageFilename { get; set; }
+        public int? ProductCategoryParentID { get; set; }        
+        public string ProductCategoryName { get; set; }        
+        public int? ProductCategorySortIndex { get; set; }        
+        public DateTime? ProductCategoryDateCreated { get; set; }
+        #endregion        
+    }
+
+    public record ProductCategoryIudDTO
+    {
+        #region Properties
+        public int? ProductCategoryID { get; init; }
+        public int? ProductCategoryParentID { get; init; }
+        public string ProductCategorySlug { get; init; }
+        public string ProductCategoryName { get; init; }
+        public string ProductCategoryNameEng { get; init; }
+        public string ProductCategoryDescriptionShort { get; init; }
+        public string ProductCategoryDescriptionShortEng { get; init; }
+        public string ProductCategoryImageFilename { get; init; }
+        public int? ProductCategorySortIndex { get; init; }
+        public string ProductCategoryExternalID { get; init; }
         #endregion
     }
 
-    public class ProductDTO
+    public record ProductCategoriesListForDeleteRecursiveDTO
     {
         #region Properties
-        public int? ProductID { get; set; }
-        public int? ProductCategoryID { get; set; }
-        public int? CountryIDProducer { get; set; }
-        public int? BrandID { get; set; }
-        public string ProductName { get; set; }
-        public string ProductNameEng { get; set; }
-        public string ProductSlug { get; set; }
-        public string ProductSlugEng { get; set; }
-        public decimal? ProductPrice { get; set; }
-        public decimal? ProductPriceOld { get; set; }
-        public decimal? ProductRemainder { get; set; }
-        public string ProductImageFilename { get; set; }
-        public string ProductDescriptionShort { get; set; }
-        public string ProductDescriptionShortEng { get; set; }
-        public string ProductDescription { get; set; }
-        public string ProductDescriptionEng { get; set; }
-        public bool ProductIsPublished { get; set; }
-        public bool ProductIsFeatured { get; set; }
-        public string ProductSKU { get; set; }
-        public string ProductIDExternal { get; set; }
-        public DateTime? ProductDateCreated { get; set; }
+        public int? ProductCategoryID { get; init; }
+        public string ProductCategoryImageFilename { get; init; }
+        #endregion
+    }
 
-        public List<ProductImage> ProductImages { get; set; }
+    public record ProductDTO
+    {
+        #region Properties
+        public int? ProductID { get; init; }
+        public int? ProductCategoryID { get; init; }
+        public int? CountryIDProducer { get; init; }
+        public int? BrandID { get; init; }
+        public string ProductName { get; init; }
+        public string ProductNameEng { get; init; }
+        public string ProductSlug { get; init; }
+        public string ProductSlugEng { get; init; }
+        public decimal? ProductPrice { get; init; }
+        public decimal? ProductPriceOld { get; init; }
+        public decimal? ProductRemainder { get; init; }
+        public string ProductImageFilename { get; init; }
+        public string ProductDescriptionShort { get; init; }
+        public string ProductDescriptionShortEng { get; init; }
+        public string ProductDescription { get; init; }
+        public string ProductDescriptionEng { get; init; }
+        public bool ProductIsPublished { get; init; }
+        public bool ProductIsFeatured { get; init; }
+        public string ProductSKU { get; init; }
+        public string ProductIDExternal { get; init; }
+        public DateTime? ProductDateCreated { get; init; }
+
+        public List<ProductImage> ProductImages { get; init; }
         #endregion
 
         #region Nested Classes
         public class ProductImage
         {
             #region Properties
-            public int? ProductImageID { get; set; }
-            public string ProductImageFilename { get; set; }
+            public int? ProductImageID { get; init; }
+            public string ProductImageFilename { get; init; }
             #endregion
         }
+        #endregion
+    }
+
+    public record ProductIudDTO
+    {
+        #region Properties
+        public int? ProductID { get; init; }
+        public int? ProductCategoryID { get; init; }
+        public int? CountryIDProducer { get; init; }
+        public int? BrandID { get; init; }
+        public string ProductName { get; init; }
+        public string ProductNameEng { get; init; }
+        public string ProductSlug { get; init; }
+        public decimal? ProductPrice { get; init; }
+        public decimal? ProductPriceOld { get; init; }
+        public decimal? ProductRemainder { get; init; }
+        public string ProductImageFilename { get; init; }
+        public string ProductDescriptionShort { get; init; }
+        public string ProductDescriptionShortEng { get; init; }
+        public string ProductDescription { get; init; }
+        public string ProductDescriptionEng { get; init; }
+        public bool? ProductIsPublished { get; init; }
+        public bool? ProductIsFeatured { get; init; }
+        public string ProductSKU { get; init; }
+        public string ProductIDExternal { get; init; }
         #endregion
     }
 
     public record ProductsListDTO
     {
         #region Properties
-        public int? ProductID { get; set; }
-        public int? ProductCategoryID { get; set; }
-        public int? CountryIDProducer { get; set; }
-        public int? BrandID { get; set; }
-        public string ProductName { get; set; }
-        public string ProductNameEng { get; set; }
-        public string ProductSlug { get; set; }
-        public string ProductSlugEng { get; set; }
-        public decimal? ProductPrice { get; set; }
-        public decimal? ProductPriceOld { get; set; }
-        public decimal? ProductRemainder { get; set; }
-        public string ProductImageFilename { get; set; }
-        public bool ProductIsPublished { get; set; }
-        public bool ProductIsFeatured { get; set; }
-        public string ProductSKU { get; set; }
-        public string ProductIDExternal { get; set; }
-        public DateTime? ProductDateCreated { get; set; }
+        public int? ProductID { get; init; }
+        public int? ProductCategoryID { get; init; }
+        public string ProductName { get; init; }
+        public decimal? ProductPrice { get; init; }
+        public decimal? ProductPriceOld { get; init; }
+        public decimal? ProductRemainder { get; init; }
+        public bool ProductIsPublished { get; init; }
+        public bool ProductIsFeatured { get; init; }
+        public DateTime? ProductDateCreated { get; init; }
+        #endregion
+    }
+
+    public record ProductImageIudDTO
+    {
+        #region Properties
+        public int? ProductImageID { get; init; }
+        public int? ProductID { get; init; }
+        public string ProductImageFilename { get; init; }
+        public int? ProductImageSortIndex { get; init; }
         #endregion
     }
 }

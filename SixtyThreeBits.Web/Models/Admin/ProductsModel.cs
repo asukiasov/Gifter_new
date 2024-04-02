@@ -95,18 +95,21 @@ namespace SixtyThreeBits.Web.Models.Admin
             await repository.ProductsIUD(
                 databaseAction: databaseAction,
                 productID: productID,
-                productCategoryID: submitModel.ProductCategoryID,
-                productName: submitModel.ProductName,
-                productIsPublished: submitModel.ProductIsPublished,
-                productPrice: submitModel.ProductPrice,
-                productPriceOld: submitModel.ProductPriceOld,
-                productRemainder: submitModel.ProductRemainder,
-                productIsFeatured: submitModel.ProductIsFeatured
+                product: new ProductIudDTO
+                {
+                    ProductCategoryID = submitModel.ProductCategoryID,
+                    ProductName = submitModel.ProductName,
+                    ProductIsPublished = submitModel.ProductIsPublished,
+                    ProductPrice = submitModel.ProductPrice,
+                    ProductPriceOld = submitModel.ProductPriceOld,
+                    ProductRemainder = submitModel.ProductRemainder,
+                    ProductIsFeatured = submitModel.ProductIsFeatured
+                }                
             );
 
             if (repository.IsError)
             {
-                Form.AddError(Resources.TextError);
+                Form.AddError(repository.ErrorMessage);
             }
         }
 
@@ -196,8 +199,8 @@ namespace SixtyThreeBits.Web.Models.Admin
                        columns.AddFor(m => m.ProductCategoryID).Caption(Resources.TextCategory).Width(250).InitLookupColumn(data: Categories, isRequired: true);
                        columns.AddFor(m => m.ProductPrice).Caption(Resources.TextPrice).Width(100).Alignment(HorizontalAlignment.Right).DataType(GridColumnDataType.Number);
                        columns.AddFor(m => m.ProductPriceOld).Caption(Resources.TextPriceOld).Width(100).Alignment(HorizontalAlignment.Right).DataType(GridColumnDataType.Number);
-                       columns.AddFor(m => m.ProductRemainder).Caption(Resources.TextRemainder).Width(100).Alignment(HorizontalAlignment.Right).DataType(GridColumnDataType.Number);
-                       columns.AddFor(m => m.ProductIsPublished).Caption(Resources.TextPublished).Width(80).InitCheckboxColumn();
+                       columns.AddFor(m => m.ProductRemainder).Caption(Resources.TextRemainder).Width(120).Alignment(HorizontalAlignment.Right).DataType(GridColumnDataType.Number);
+                       columns.AddFor(m => m.ProductIsPublished).Caption(Resources.TextPublished).Width(120).InitCheckboxColumn();
                        columns.AddFor(m => m.ProductIsFeatured).Caption(Resources.TextFeatured).Width(120).InitCheckboxColumn();
                        columns.Add();
                    });
@@ -216,7 +219,7 @@ namespace SixtyThreeBits.Web.Models.Admin
                     public decimal? ProductPrice { get; set; }
                     public decimal? ProductPriceOld { get; set; }
                     public decimal? ProductRemainder { get; set; }
-                    public bool ProductIsFeatured { get; set; }
+                    public bool? ProductIsFeatured { get; set; }
                     public int? ProductCategoryID { get; set; }
                     public string UrlProductsProperties { get; set; }
                     #endregion
@@ -321,7 +324,11 @@ namespace SixtyThreeBits.Web.Models.Admin
             await repository.ProductsIUD(
                 databaseAction: Enums.DatabaseActions.UPDATE,
                 productID: DBItem.ProductID,
-                productImageFilename: Constants.NullValueFor.String
+                product: new ProductIudDTO
+                {
+                    ProductImageFilename = Constants.NullValueFor.String
+                }
+                
             );
 
             viewModel.IsSuccess = !repository.IsError;
@@ -340,21 +347,24 @@ namespace SixtyThreeBits.Web.Models.Admin
             await repository.ProductsIUD(
                 databaseAction: Enums.DatabaseActions.UPDATE,
                 productID: DBItem.ProductID,
-                productCategoryID: viewModel.ProductCategoryID ?? Constants.NullValueFor.Numeric,
-                countryIDProducer: viewModel.CountryIDProducer ?? Constants.NullValueFor.Numeric,
-                brandID: viewModel.BrandID ?? Constants.NullValueFor.Numeric,
-                productName: viewModel.ProductName,
-                productPrice: viewModel.ProductPrice.ToDecimal() ?? Constants.NullValueFor.Numeric,
-                productPriceOld: viewModel.ProductPriceOld.ToDecimal() ?? Constants.NullValueFor.Numeric,
-                productRemainder: viewModel.ProductRemainder.ToDecimal() ?? Constants.NullValueFor.Numeric,
-                productNameEng: viewModel.ProductNameEng ?? Constants.NullValueFor.String,
-                productDescriptionShort: viewModel.ProductDescriptionShort ?? Constants.NullValueFor.String,
-                productDescriptionShortEng: viewModel.ProductDescriptionShortEng ?? Constants.NullValueFor.String,
-                productDescription: viewModel.ProductDescription ?? Constants.NullValueFor.String,
-                productDescriptionEng: viewModel.ProductDescriptionEng ?? Constants.NullValueFor.String,
-                productIsPublished: viewModel.ProductIsPublished,
-                productIsFeatured: viewModel.ProductIsFeatured,
-                productSKU: viewModel.ProductSKU ?? Constants.NullValueFor.String
+                product: new ProductIudDTO
+                {
+                    ProductCategoryID = viewModel.ProductCategoryID ?? Constants.NullValueFor.Numeric,
+                    CountryIDProducer = viewModel.CountryIDProducer ?? Constants.NullValueFor.Numeric,
+                    BrandID = viewModel.BrandID ?? Constants.NullValueFor.Numeric,
+                    ProductName = viewModel.ProductName,
+                    ProductPrice = viewModel.ProductPrice.ToDecimal() ?? Constants.NullValueFor.Numeric,
+                    ProductPriceOld = viewModel.ProductPriceOld.ToDecimal() ?? Constants.NullValueFor.Numeric,
+                    ProductRemainder = viewModel.ProductRemainder.ToDecimal() ?? Constants.NullValueFor.Numeric,
+                    ProductNameEng = viewModel.ProductNameEng ?? Constants.NullValueFor.String,
+                    ProductDescriptionShort = viewModel.ProductDescriptionShort ?? Constants.NullValueFor.String,
+                    ProductDescriptionShortEng = viewModel.ProductDescriptionShortEng ?? Constants.NullValueFor.String,
+                    ProductDescription = viewModel.ProductDescription ?? Constants.NullValueFor.String,
+                    ProductDescriptionEng = viewModel.ProductDescriptionEng ?? Constants.NullValueFor.String,
+                    ProductIsPublished = viewModel.ProductIsPublished,
+                    ProductIsFeatured = viewModel.ProductIsFeatured,
+                    ProductSKU = viewModel.ProductSKU ?? Constants.NullValueFor.String
+                }                
             );
             viewModel.IsSaved = !repository.IsError;
         }
@@ -370,8 +380,12 @@ namespace SixtyThreeBits.Web.Models.Admin
             var repository = RepositoriesFactory.GetProductsRepository();
             var productImageID = await repository.ProductsImagesIUD(
                 databaseAction: Enums.DatabaseActions.CREATE,
-                productID: DBItem.ProductID,
-                productImageFilename: productImageFilename
+                productImageID: null,
+                productImage: new ProductImageIudDTO
+                {
+                    ProductID = DBItem.ProductID,
+                    ProductImageFilename = productImageFilename
+                }
             );
 
             if (productImageID > 0)
@@ -402,7 +416,8 @@ namespace SixtyThreeBits.Web.Models.Admin
                 var repository = RepositoriesFactory.GetProductsRepository();
                 await repository.ProductsImagesIUD(
                     databaseAction: Enums.DatabaseActions.DELETE,
-                    productImageID: submitModel.ProductImageID
+                    productImageID: submitModel.ProductImageID,
+                    productImage: null
                 );
                 viewModel.IsSuccess = !repository.IsError;
             }

@@ -8,6 +8,7 @@ namespace SixtyThreeBits.Web.Domain.SharedViewModels
     public class LayoutViewModelBase
     {
         #region Properties
+        public string ProjectName { get; set; }
         public IPageTitle PageTitle { get; set; }
         public SuccessErrorPartialViewModel SuccessErrorPartialViewModel { get; set; }
         public List<ProjectMenuItem> Menu { get; set; }

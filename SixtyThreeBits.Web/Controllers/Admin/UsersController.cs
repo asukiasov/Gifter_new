@@ -49,7 +49,14 @@ namespace SixtyThreeBits.Web.Controllers.Admin
             else
             {
                 await Model.CRUD(databaseAction: Enums.DatabaseActions.CREATE, userID: key, submitModel: submitModel);
-                return GetDevexpressSuccessResult();
+                if (Model.Form.HasErrors)
+                {
+                    return GetDevexpressErrorResult(Model.Form.ErrorMessage);
+                }
+                else
+                {
+                    return GetDevexpressSuccessResult();
+                }
             }
         }
 
@@ -114,7 +121,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         [Route("", Name = ControllerActionRouteNames.Admin.Users.User.Properties)]
         public async Task<IActionResult> UserProperties()
         {
-            Model.PluginsClient.Enable63BitsForms(true).EnableDevextreme(true).EnableJQueryMaskedInput(true);
+            Model.PluginsClient.Enable63BitsForms(true).Enable63BitsSuccessErrorToast(true).EnableDevextreme(true).EnableJQueryMaskedInput(true);
             var viewModel = await Model.GetPageViewModel();
             return View(ViewNames.Admin.Users.User.Properties, viewModel);
         }
@@ -124,7 +131,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         public async Task<IActionResult> UserPropertiesSave(UserPropertiesModel.PageViewModel submitModel)
         {
             var result = default(IActionResult);
-            Model.PluginsClient.Enable63BitsForms(true).EnableDevextreme(true).EnableJQueryMaskedInput(true);
+            Model.PluginsClient.Enable63BitsForms(true).Enable63BitsSuccessErrorToast(true).EnableDevextreme(true).EnableJQueryMaskedInput(true);
             var viewModel = await Model.GetPageViewModel(submitModel);
 
             await Model.ValidatePageViewModel(viewModel);
@@ -133,13 +140,13 @@ namespace SixtyThreeBits.Web.Controllers.Admin
                 await Model.Save(viewModel);
                 if (viewModel.IsSaved)
                 {
-                    result = Redirect(Model.UrlCurrentPageWithDomain);
                     Model.ShowSuccessToastNotification();
+                    result = Redirect(Model.UrlCurrentPageWithDomain);                    
                 }
                 else
                 {
-                    result = View(ViewNames.Admin.Users.User.Properties, viewModel);
                     Model.ShowErrorToastNotification(viewModel.ErrorMessage);
+                    result = View(ViewNames.Admin.Users.User.Properties, viewModel);                    
                 }
             }
             else

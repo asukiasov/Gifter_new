@@ -74,10 +74,12 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
             return result;
         }
 
-        public async Task<int?> NewsIUD(Enums.DatabaseActions databaseAction, int? newsID = null, string newsSlug = null, string newsTitle = null, string newsTitleEng = null, string newsText = null, string newsTextEng = null, string newsShortDescription = null, string newsShortDescriptionEng = null, string newsImageFilename = null, DateTime? newsDatePublished = null, bool? newsIsPublished = null)
+        public async Task<int?> NewsIUD(Enums.DatabaseActions databaseAction, int? newsID, NewsIudDTO news)
         {
+            var newsJson = news.ToJson();
+
             newsID = await TryToReturnAsyncTask(
-                logString: $"{nameof(NewsIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(newsID)} = {newsID}, {nameof(newsSlug)} = {newsSlug}, {nameof(newsTitle)} = {newsTitle}, {nameof(newsTitleEng)} = {newsTitleEng}, {nameof(newsText)} = {newsText}, {nameof(newsTextEng)} = {newsTextEng}, {nameof(newsShortDescription)} = {newsShortDescription}, {nameof(newsShortDescriptionEng)} = {newsShortDescriptionEng}, {nameof(newsImageFilename)} = {newsImageFilename}, {nameof(newsDatePublished)} = {newsDatePublished})", 
+                logString: $"{nameof(NewsIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(newsID)} = {newsID}, {nameof(news)} = {newsJson})", 
                 asyncFuncToTry: async () =>
                 {
                     using (var dbContext = _dbContextFactory.GetDbContext())
@@ -89,16 +91,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             [
                                 databaseAction.ToSqlParameter(nameof(databaseAction),SqlDbType.TinyInt),
                                 newsID.ToSqlOutputParameter(nameof(newsID),SqlDbType.Int),
-                                newsSlug.ToSqlParameter(nameof(newsSlug),SqlDbType.NVarChar),
-                                newsTitle.ToSqlParameter(nameof(newsTitle),SqlDbType.NVarChar),
-                                newsTitleEng.ToSqlParameter(nameof(newsTitleEng),SqlDbType.NVarChar),
-                                newsText.ToSqlParameter(nameof(newsText),SqlDbType.NVarChar),
-                                newsTextEng.ToSqlParameter(nameof(newsTextEng),SqlDbType.NVarChar),
-                                newsShortDescription.ToSqlParameter(nameof(newsShortDescription),SqlDbType.NVarChar),
-                                newsShortDescriptionEng.ToSqlParameter(nameof(newsShortDescriptionEng),SqlDbType.NVarChar),
-                                newsImageFilename.ToSqlParameter(nameof(newsImageFilename),SqlDbType.NVarChar),
-                                newsDatePublished.ToSqlParameter(nameof(newsDatePublished),SqlDbType.DateTime),
-                                newsIsPublished.ToSqlParameter(nameof(newsIsPublished),SqlDbType.Bit)
+                                newsJson.ToSqlParameter(nameof(newsJson),SqlDbType.NVarChar)
                             ]
                         );
 
@@ -112,7 +105,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
             return newsID;
         }
 
-        public async Task<List<NewsDTO>> NewsList()
+        public async Task<List<NewsListDTO>> NewsList()
         {
             var result = await TryToReturnAsyncTask(
                 logString: $"{nameof(NewsList)}()", 
@@ -125,7 +118,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             databaseObjectName: nameof(NewsList)
                         );
 
-                        var resultQueryable = sqb.ExecuteTableValuedFunction<NewsDTO>();
+                        var resultQueryable = sqb.ExecuteTableValuedFunction<NewsListDTO>();
                         resultQueryable = resultQueryable.OrderByDescending(item => item.NewsDateCreated);
                         var result = await resultQueryable.ToListAsync();
                         

@@ -1,11 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries.Extensions;
 using SixtyThreeBits.Web.Domain;
 using SixtyThreeBits.Web.Domain.SharedViewModels;
 using SixtyThreeBits.Web.Models.Admin;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -39,11 +37,14 @@ namespace SixtyThreeBits.Web.Filters.Admin
             }
             else
             {
-                InitStartup();
-                InitPageTitle();
-                ReinitBreadCrumbs();
-                InitTabs();
-                WebUtilities.SetLayoutViewModel(viewData: c.ViewData, viewModel: _viewModel, key: WebConstants.ViewData.UserLayoutViewModel);
+                if (!_model.IsAjaxRequest)
+                {
+                    InitStartup();
+                    InitPageTitle();
+                    ReinitBreadCrumbs();
+                    InitTabs();
+                    WebUtilities.SetLayoutViewModel(viewData: c.ViewData, viewModel: _viewModel, key: WebConstants.ViewData.UserLayoutViewModel);
+                }
                 await next();
             }
         }

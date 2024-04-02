@@ -1,4 +1,5 @@
-﻿using SixtyThreeBits.Web.Models.Shared;
+﻿using SixtyThreeBits.Core.Utilities;
+using SixtyThreeBits.Web.Models.Shared;
 using System.Threading.Tasks;
 
 namespace SixtyThreeBits.Web.Models.Website
@@ -10,8 +11,8 @@ namespace SixtyThreeBits.Web.Models.Website
         {
             var viewModel = default(PageViewModel);
             var repository = RepositoriesFactory.GetPagesRepository(); ;
-            var dbItem = await repository.PagesGetSingleBySlugHierarchy(pageSlug: PageSlug?.Trim('/'));
-            if (dbItem != null && (dbItem.PageIsPublished || User?.UserIsSuperAdmin == true))
+            var dbItem = await repository.PagesGetSingleBySlug(pageSlug: PageSlug?.Trim('/'));
+            if (dbItem != null && (dbItem.PageIsPublished || User?.RoleCode == Enums.RolesCodes.Administrator))
             {
                 viewModel = new PageViewModel();
                 viewModel.PageTitle = Utilities.GetValuesByLanguage(LanguageCultureCode, dbItem.PageTitle, dbItem.PageTitleEng);

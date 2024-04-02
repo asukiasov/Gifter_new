@@ -1,5 +1,6 @@
 ﻿using ExcelDataReader;
 using OfficeOpenXml;
+using SixtyThreeBits.Core.DTO;
 using SixtyThreeBits.Core.Infrastructure.Factories;
 using SixtyThreeBits.Core.Properties;
 using SixtyThreeBits.Core.Utilities;
@@ -229,7 +230,11 @@ namespace SixtyThreeBits.Core.BusinessLogics
 					{
 						excelItem.ProductID = await repository.ProductsIUD(
 							databaseAction: Enums.DatabaseActions.CREATE,
-							productName: excelItem.ProductName
+							productID: null,
+							product: new ProductIudDTO
+							{
+                                ProductName = excelItem.ProductName
+                            }							
 						);
 						if (repository.IsError)
 						{
@@ -250,8 +255,11 @@ namespace SixtyThreeBits.Core.BusinessLogics
 					await command.ProductsIUD(
 						databaseAction: Enums.DatabaseActions.UPDATE,
 						productID: ExcelItem.ProductID,
-						productPrice: ExcelItem.ProductPrice,
-						productRemainder: ExcelItem.ProductRemainder
+						product: new ProductIudDTO
+						{
+							ProductPrice = ExcelItem.ProductPrice,
+							ProductRemainder = ExcelItem.ProductRemainder
+						}        
 					);
 					if (command.IsError)
 					{
@@ -283,6 +291,7 @@ namespace SixtyThreeBits.Core.BusinessLogics
                 }
                 #endregion
             }
+
             public class SyncProductPricesAndRemaindersResult : BusinessLogicResultBase
 			{
 				#region Properties

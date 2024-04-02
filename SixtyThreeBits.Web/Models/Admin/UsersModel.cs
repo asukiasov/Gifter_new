@@ -87,17 +87,20 @@ namespace SixtyThreeBits.Web.Models.Admin
             await repository.UsersIUD(
                 databaseAction: databaseAction,
                 userID: userID,
-                roleID: submitModel.RoleID,
-                userEmail: submitModel.UserEmail,
-                userPassword: submitModel.UserPassword,
-                userFirstname: submitModel.UserFirstname,
-                userLastname: submitModel.UserLastname,
-                userIsActive: submitModel.UserIsActive
+                user: new UserIudDTO
+                {
+                    RoleID = submitModel.RoleID ?? Constants.NullValueFor.Numeric,
+                    UserEmail = submitModel.UserEmail,
+                    UserPassword = submitModel.UserPassword,
+                    UserFirstname = submitModel.UserFirstname,
+                    UserLastname = submitModel.UserLastname,
+                    UserIsActive = submitModel.UserIsActive
+                }
             );
 
             if (repository.IsError)
             {
-                Form.AddError(Resources.TextError);
+                Form.AddError(repository.ErrorMessage);
             }
         }
         #endregion
@@ -139,7 +142,7 @@ namespace SixtyThreeBits.Web.Models.Admin
                             //Options.AddEmail();
                         });
                         columns.AddFor(m => m.UserPassword).Caption(Resources.TextPassword).Width(150);
-                        columns.AddFor(m => m.RoleID).Caption(Resources.TextRole).Width(150).InitLookupColumn(data: Roles);
+                        columns.AddFor(m => m.RoleID).Caption(Resources.TextRole).Width(150).InitLookupColumn(data: Roles, allowNull: true);
                         columns.AddFor(m => m.UserIsActive).Caption(Resources.TextActive).Width(80).InitCheckboxColumn();
                         columns.AddFor(m => m.UserDateCreated).Caption(Resources.TextDateCreated).DataType(GridColumnDataType.DateTime).Width(140).InitDateColumn(true).AllowEditing(false);
                         columns.Add();
@@ -224,16 +227,18 @@ namespace SixtyThreeBits.Web.Models.Admin
             await repository.UsersIUD(
                 databaseAction: Enums.DatabaseActions.UPDATE,
                 userID: dbItem.UserID,
-                roleID: viewModel.RoleID ?? Constants.NullValueFor.Numeric,
-                userEmail: viewModel.UserEmail,
-                userPassword: viewModel.UserPassword,
-                userFirstname: viewModel.UserFirstname,
-                userLastname: viewModel.UserLastname,
-                userBirthdate: viewModel.UserBirthdate ?? Constants.NullValueFor.Date,
-                userPhoneNumberMobile: viewModel.UserPhoneNumberMobile ?? Constants.NullValueFor.String,
-                userPersonalNumber: null,
-                userAvatarFilename: null,
-                userIsActive: viewModel.UserIsActive
+                user: new UserIudDTO
+                {
+                    RoleID = viewModel.RoleID ?? Constants.NullValueFor.Numeric,
+                    UserEmail = viewModel.UserEmail,
+                    UserPassword = viewModel.UserPassword,
+                    UserFirstname = viewModel.UserFirstname,
+                    UserLastname = viewModel.UserLastname,
+                    UserBirthdate = viewModel.UserBirthdate ?? Constants.NullValueFor.Date,
+                    UserPhoneNumberMobile = viewModel.UserPhoneNumberMobile ?? Constants.NullValueFor.String,
+                    UserIsActive = viewModel.UserIsActive
+                }
+
             );
             viewModel.IsSaved = !repository.IsError;
             viewModel.AddError(repository.ErrorMessage);

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using SixtyThreeBits.Core.Utilities;
+using SixtyThreeBits.Libraries.Extensions;
 using SixtyThreeBits.Web.Domain;
 using SixtyThreeBits.Web.Domain.Libraries;
 using SixtyThreeBits.Web.Domain.SharedViewModels;
@@ -40,7 +41,7 @@ namespace SixtyThreeBits.Web.Filters.Admin
                         initBreadCrumbs();
                         initTabs();
                         initPageTitle();
-                        initSuccessErrorMessage();
+                        initSuccessErrorToast();
                         initSidebar();
                         WebUtilities.SetLayoutViewModel(viewData: c.ViewData, viewModel: _viewModel, key: WebConstants.ViewData.LayoutViewModel);
                     }
@@ -88,6 +89,7 @@ namespace SixtyThreeBits.Web.Filters.Admin
             .EnablePreloader(true)
             .Enable63BitsComponents(true)
             .EnableMetisMenu(true)
+            .Enable63BitsAnalogClock(true)
             .EnableUtils(true);
 
             _viewModel.PluginsClient = _model.PluginsClient;
@@ -163,10 +165,10 @@ namespace SixtyThreeBits.Web.Filters.Admin
         void initSidebar()
         {
             _viewModel.IsSidebarCollapsed = _model.IsSidebarCollapsed = new ValueWrapper<bool>();
-            _model.IsSidebarCollapsed.Value = _model.CookieAssistance.Get<bool>(key: WebConstants.Cookies.IsAdminSideBarCollapsed);
+            _model.IsSidebarCollapsed.Value = _model.CookieAssistance.Get(key: WebConstants.Cookies.IsAdminSideBarCollapsed).ToBooleanValue();
         }
 
-        void initSuccessErrorMessage()
+        void initSuccessErrorToast()
         {
             _model.InitSuccessErrorToastNotificationPartialViewModel();
             _viewModel.SuccessErrorPartialViewModel = _model.SuccessErrorPartialViewModel;

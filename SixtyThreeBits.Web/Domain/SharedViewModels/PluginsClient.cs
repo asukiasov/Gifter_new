@@ -6,12 +6,13 @@ namespace SixtyThreeBits.Web.Domain.SharedViewModels
     public class PluginsClient
     {
         #region Properties        
+        public bool Is63BitsAnalogClockEnabled { get; private set; }
         public bool Is63BitsComponentsEnabled { get; private set; }
         public bool Is63BitsFileUploaderEnabled { get; private set; }
         public bool Is63BitsFormsEnabled { get; private set; }
         public bool Is63BitsFontsEnabled { get; private set; }
         public bool Is63BitsSuccessErrorToastEnabled { get; private set; }
-        public bool IsAdminThemeEnabled { get; private set; }
+        public bool IsAdminThemeEnabled { get; private set; }        
         public bool IsBootstrapEnabled { get; private set; }
         public bool IsDevextremeEnabled { get; private set; }
         public bool IsDevextremeExportExcelLibrariesEnabled { get; private set; }
@@ -61,6 +62,12 @@ namespace SixtyThreeBits.Web.Domain.SharedViewModels
         #endregion
 
         #region Methods
+        public PluginsClient Enable63BitsAnalogClock(bool value)
+        {
+            Is63BitsAnalogClockEnabled = value;
+            return this;
+        }
+
         public PluginsClient Enable63BitsComponents(bool value)
         {
             Is63BitsComponentsEnabled = value;
@@ -83,7 +90,7 @@ namespace SixtyThreeBits.Web.Domain.SharedViewModels
         {
             Is63BitsFontsEnabled = value;
             return this;
-        }
+        }        
 
         public PluginsClient EnableAdminTheme(bool value)
         {

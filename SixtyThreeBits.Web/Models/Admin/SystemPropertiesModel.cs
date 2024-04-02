@@ -203,61 +203,51 @@ namespace SixtyThreeBits.Web.Models.Admin
             if (submitModel.GoogleMapsIFrame != null && submitModel.GoogleMapsIFrame.Contains("<iframe") && !submitModel.GoogleMapsIFrame.Contains("width=\"100%\""))
             {
                 submitModel.GoogleMapsIFrame = Regex.Replace(submitModel.GoogleMapsIFrame, "width=\"\\d+\"", "width=\"100%\"").Trim();
-            }
-
-            var sp = new SystemPropertiesDTO();
-            sp.ProjectName = submitModel.ProjectName;
-            sp.ContactEmail = submitModel.ContactEmail ?? Constants.NullValueFor.String;
-            sp.ContactPhone = submitModel.ContactPhone ?? Constants.NullValueFor.String;
-            sp.ContactAddress = submitModel.ContactAddress ?? Constants.NullValueFor.String;
-            sp.FacebookUrl = submitModel.FacebookUrl ?? Constants.NullValueFor.String;
-            sp.TwitterUrl = submitModel.TwitterUrl ?? Constants.NullValueFor.String;
-            sp.InstagramUrl = submitModel.InstagramUrl ?? Constants.NullValueFor.String;
-            sp.YoutubeUrl = submitModel.YoutubeUrl ?? Constants.NullValueFor.String;
-            sp.LinkedInUrl = submitModel.LinkedInUrl ?? Constants.NullValueFor.String;
-            sp.GoogleMapsIFrame = submitModel.GoogleMapsIFrame ?? Constants.NullValueFor.String;
-            sp.ScriptsHeader = submitModel.ScriptsHeader ?? Constants.NullValueFor.String;
-            sp.ScriptsBodyStart = submitModel.ScriptsBodyStart ?? Constants.NullValueFor.String;
-            sp.ScriptsBodyEnd = submitModel.ScriptsBodyEnd ?? Constants.NullValueFor.String;
-            sp.IsEmailSmtpEnabled = submitModel.EmailTypesSelectedOption == nameof(submitModel.IsEmailSmtpEnabled);
-            sp.SmtpAddress = submitModel.SmtpAddress ?? Constants.NullValueFor.String;
-            sp.SmtpPort = submitModel.SmtpPort ?? Constants.NullValueFor.Numeric;
-            sp.SmtpUsername = submitModel.SmtpUsername ?? Constants.NullValueFor.String;
-            sp.SmtpPassword = submitModel.SmtpPassword ?? Constants.NullValueFor.String;
-            sp.SmtpUseSsl = submitModel.SmtpUseSsl;
-            sp.SmtpFrom = submitModel.SmtpFrom ?? Constants.NullValueFor.String;
-            sp.IsEmailMailgunEnabled = submitModel.EmailTypesSelectedOption == nameof(submitModel.IsEmailMailgunEnabled);
-            sp.MailgunBaseUrl = submitModel.MailgunBaseUrl ?? Constants.NullValueFor.String;
-            sp.MailgunApiKey = submitModel.MailgunApiKey ?? Constants.NullValueFor.String;
-            sp.MailgunDomain = submitModel.MailgunDomain ?? Constants.NullValueFor.String;
-            sp.MailgunFrom = submitModel.MailgunFrom ?? Constants.NullValueFor.String;
-            sp.MailgunWebhookWebhookSigningKey = submitModel.MailgunWebhookWebhookSigningKey ?? Constants.NullValueFor.String;
-            sp.IsEmailOffice365Enabled = submitModel.EmailTypesSelectedOption == nameof(submitModel.IsEmailOffice365Enabled);
-            sp.MicrosoftGraphServiceTenant = submitModel.MicrosoftGraphServiceTenant ?? Constants.NullValueFor.String;
-            sp.MicrosoftGraphServiceClientID = submitModel.MicrosoftGraphServiceClientID ?? Constants.NullValueFor.String;
-            sp.MicrosoftGraphServiceClientSecret = submitModel.MicrosoftGraphServiceClientSecret ?? Constants.NullValueFor.String;
-            sp.MicrosoftGraphServiceUserID = submitModel.MicrosoftGraphServiceUserID ?? Constants.NullValueFor.String;
-            sp.AwsAccessKeyID = submitModel.AwsAccessKeyID ?? Constants.NullValueFor.String;
-            sp.AwsSecretAccessKey = submitModel.AwsSecretAccessKey ?? Constants.NullValueFor.String;
-            sp.AwsS3RegionSystemName = submitModel.AwsS3RegionSystemName ?? Constants.NullValueFor.String;
-            sp.AwsS3BucketNamePublic = submitModel.AwsS3BucketNamePublic ?? Constants.NullValueFor.String;
-            sp.AzureConnectionString = submitModel.AzureConnectionString ?? Constants.NullValueFor.String;
-            sp.AzureBlobStorageContainerName = submitModel.AzureBlobStorageContainerName ?? Constants.NullValueFor.String;
-            sp.IsEmailOffice365Enabled = submitModel.EmailTypesSelectedOption == nameof(submitModel.IsEmailOffice365Enabled);
-            sp.MicrosoftGraphServiceTenant = submitModel.MicrosoftGraphServiceTenant ?? Constants.NullValueFor.String;
-            sp.MicrosoftGraphServiceClientID = submitModel.MicrosoftGraphServiceClientID ?? Constants.NullValueFor.String;
-            sp.MicrosoftGraphServiceClientSecret = submitModel.MicrosoftGraphServiceClientSecret ?? Constants.NullValueFor.String;
-            sp.MicrosoftGraphServiceUserID = submitModel.MicrosoftGraphServiceUserID ?? Constants.NullValueFor.String;
-            sp.IsEmailMailgunEnabled = submitModel.EmailTypesSelectedOption == nameof(submitModel.IsEmailMailgunEnabled);
-            sp.AwsAccessKeyID = submitModel.AwsAccessKeyID ?? Constants.NullValueFor.String;
-            sp.AwsSecretAccessKey = submitModel.AwsSecretAccessKey ?? Constants.NullValueFor.String;
-            sp.AwsS3RegionSystemName = submitModel.AwsS3RegionSystemName ?? Constants.NullValueFor.String;
-            sp.AwsS3BucketNamePublic = submitModel.AwsS3BucketNamePublic ?? Constants.NullValueFor.String;
-            sp.AzureConnectionString = submitModel.AzureConnectionString ?? Constants.NullValueFor.String;
-            sp.AzureBlobStorageContainerName = submitModel.AzureBlobStorageContainerName ?? Constants.NullValueFor.String;
+            }            
 
             var repository = RepositoriesFactory.GetSystemPropertiesRepository();
-            await repository.SystemPropertiesUpdate(sp);
+            await repository.SystemPropertiesUpdate(
+                systemProperties: new SystemPropertiesIudDTO
+                {
+                    ProjectName = submitModel.ProjectName,
+                    ContactEmail = submitModel.ContactEmail ?? Constants.NullValueFor.String,
+                    ContactPhone = submitModel.ContactPhone ?? Constants.NullValueFor.String,
+                    ContactAddress = submitModel.ContactAddress ?? Constants.NullValueFor.String,
+                    FacebookUrl = submitModel.FacebookUrl ?? Constants.NullValueFor.String,
+                    TwitterUrl = submitModel.TwitterUrl ?? Constants.NullValueFor.String,
+                    InstagramUrl = submitModel.InstagramUrl ?? Constants.NullValueFor.String,
+                    YoutubeUrl = submitModel.YoutubeUrl ?? Constants.NullValueFor.String,
+                    LinkedInUrl = submitModel.LinkedInUrl ?? Constants.NullValueFor.String,
+                    GoogleMapsIFrame = submitModel.GoogleMapsIFrame ?? Constants.NullValueFor.String,
+                    ScriptsHeader = submitModel.ScriptsHeader ?? Constants.NullValueFor.String,
+                    ScriptsBodyStart = submitModel.ScriptsBodyStart ?? Constants.NullValueFor.String,
+                    ScriptsBodyEnd = submitModel.ScriptsBodyEnd ?? Constants.NullValueFor.String,
+                    IsEmailSmtpEnabled = submitModel.EmailTypesSelectedOption == nameof(submitModel.IsEmailSmtpEnabled),
+                    SmtpAddress = submitModel.SmtpAddress ?? Constants.NullValueFor.String,
+                    SmtpPort = submitModel.SmtpPort ?? Constants.NullValueFor.Numeric,
+                    SmtpUsername = submitModel.SmtpUsername ?? Constants.NullValueFor.String,
+                    SmtpPassword = submitModel.SmtpPassword ?? Constants.NullValueFor.String,
+                    SmtpUseSsl = submitModel.SmtpUseSsl,
+                    SmtpFrom = submitModel.SmtpFrom ?? Constants.NullValueFor.String,
+                    IsEmailMailgunEnabled = submitModel.EmailTypesSelectedOption == nameof(submitModel.IsEmailMailgunEnabled),
+                    MailgunBaseUrl = submitModel.MailgunBaseUrl ?? Constants.NullValueFor.String,
+                    MailgunApiKey = submitModel.MailgunApiKey ?? Constants.NullValueFor.String,
+                    MailgunDomain = submitModel.MailgunDomain ?? Constants.NullValueFor.String,
+                    MailgunFrom = submitModel.MailgunFrom ?? Constants.NullValueFor.String,
+                    MailgunWebhookWebhookSigningKey = submitModel.MailgunWebhookWebhookSigningKey ?? Constants.NullValueFor.String,
+                    IsEmailOffice365Enabled = submitModel.EmailTypesSelectedOption == nameof(submitModel.IsEmailOffice365Enabled),
+                    MicrosoftGraphServiceTenant = submitModel.MicrosoftGraphServiceTenant ?? Constants.NullValueFor.String,
+                    MicrosoftGraphServiceClientID = submitModel.MicrosoftGraphServiceClientID ?? Constants.NullValueFor.String,
+                    MicrosoftGraphServiceClientSecret = submitModel.MicrosoftGraphServiceClientSecret ?? Constants.NullValueFor.String,
+                    MicrosoftGraphServiceUserID = submitModel.MicrosoftGraphServiceUserID ?? Constants.NullValueFor.String,
+                    AwsAccessKeyID = submitModel.AwsAccessKeyID ?? Constants.NullValueFor.String,
+                    AwsSecretAccessKey = submitModel.AwsSecretAccessKey ?? Constants.NullValueFor.String,
+                    AwsS3RegionSystemName = submitModel.AwsS3RegionSystemName ?? Constants.NullValueFor.String,
+                    AwsS3BucketNamePublic = submitModel.AwsS3BucketNamePublic ?? Constants.NullValueFor.String,
+                    AzureConnectionString = submitModel.AzureConnectionString ?? Constants.NullValueFor.String,
+                    AzureBlobStorageContainerName = submitModel.AzureBlobStorageContainerName ?? Constants.NullValueFor.String
+                }
+            );
 
             var viewModel = submitModel;
             viewModel.IsSaved = !repository.IsError;

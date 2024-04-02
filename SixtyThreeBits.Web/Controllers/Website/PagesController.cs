@@ -14,12 +14,12 @@ namespace SixtyThreeBits.Web.Controllers.Website
         }
 
         //https://docs.microsoft.com/en-us/aspnet/core/fundamentals/routing?view=aspnetcore-5.0#rtr        
-        [Route("{*PageSlugHierarchy}", Name = ControllerActionRouteNames.Website.Pages.Page, Order = 9999)]
-        [Route("{Culture:regex(en|ka)}/{*PageSlugHierarchy}", Name = ControllerActionRouteNames.Website.Pages.PageCulture, Order = 10000)]
-        public async Task<IActionResult> Page(string PageSlugHierarchy)
+        [Route("{*pageSlug}", Name = ControllerActionRouteNames.Website.Pages.Page, Order = 9999)]
+        [Route("{Culture:regex(en|ka)}/{*pageSlug}", Name = ControllerActionRouteNames.Website.Pages.PageCulture, Order = 10000)]        
+        public async Task<IActionResult> Page(string pageSlug)
         {
             Model.PluginsClient.EnablePageBuilder(true).EnableSlickSlider(true).EnableJQueryAppear(true).EnableJWPlayer(true);
-            var viewModel = await Model.GetPageViewModel(PageSlugHierarchy);
+            var viewModel = await Model.GetPageViewModel(pageSlug);
             if (viewModel == null)
             {
                 return NotFound();

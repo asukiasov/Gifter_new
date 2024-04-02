@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using SixtyThreeBits.Core.DTO;
-using SixtyThreeBits.Core.Infrastructure.Repositories;
 using SixtyThreeBits.Core.Libraries;
 using SixtyThreeBits.Core.Libraries.FileStorages;
 using SixtyThreeBits.Core.Properties;
@@ -64,13 +63,16 @@ namespace SixtyThreeBits.Web.Models.Admin
             await repository.NewsIUD(
                 databaseAction: databaseAction,
                 newsID: newsID,
-                newsTitle: submitModel.NewsTitle,
-                newsDatePublished: submitModel.NewsDatePublished,
-                newsIsPublished: submitModel.NewsIsPublished
+                news: new NewsIudDTO
+                {
+                    NewsTitle = submitModel.NewsTitle,
+                    NewsDatePublished = submitModel.NewsDatePublished,
+                    NewsIsPublished = submitModel.NewsIsPublished
+                }                
             );
             if (repository.IsError)
             {
-                Form.AddError(Resources.TextError);
+                Form.AddError(repository.ErrorMessage);
             }
         }
         #endregion
@@ -117,7 +119,7 @@ namespace SixtyThreeBits.Web.Models.Admin
                     public int? NewsID { get; set; }
                     public string NewsTitle { get; set; }
                     public DateTime? NewsDatePublished { get; set; }
-                    public bool NewsIsPublished { get; set; }
+                    public bool? NewsIsPublished { get; set; }
                     public DateTime? NewsDateCreated { get; set; }
                     public string UrlNewsProperties { get; set; }
                     #endregion
@@ -200,16 +202,19 @@ namespace SixtyThreeBits.Web.Models.Admin
             await repository.NewsIUD(
                 databaseAction: Enums.DatabaseActions.UPDATE,
                 newsID: DBItem.NewsID,
-                newsSlug: viewModel.NewsSlug,
-                newsTitle: viewModel.NewsTitle,
-                newsTitleEng: viewModel.NewsTitleEng ?? Constants.NullValueFor.String,
-                newsShortDescription: viewModel.NewsShortDescription ?? Constants.NullValueFor.String,
-                newsShortDescriptionEng: viewModel.NewsShortDescriptionEng ?? Constants.NullValueFor.String,
-                newsText: viewModel.NewsText ?? Constants.NullValueFor.String,
-                newsTextEng: viewModel.NewsTextEng ?? Constants.NullValueFor.String,
-                newsImageFilename: newsImageFilename,
-                newsDatePublished: viewModel.NewsDatePublished,
-                newsIsPublished: viewModel.NewsIsPublished
+                news: new NewsIudDTO
+                {
+                    NewsSlug = viewModel.NewsSlug,
+                    NewsTitle = viewModel.NewsTitle,
+                    NewsTitleEng = viewModel.NewsTitleEng ?? Constants.NullValueFor.String,
+                    NewsShortDescription = viewModel.NewsShortDescription ?? Constants.NullValueFor.String,
+                    NewsShortDescriptionEng = viewModel.NewsShortDescriptionEng ?? Constants.NullValueFor.String,
+                    NewsText = viewModel.NewsText ?? Constants.NullValueFor.String,
+                    NewsTextEng = viewModel.NewsTextEng ?? Constants.NullValueFor.String,
+                    NewsImageFilename = newsImageFilename,
+                    NewsDatePublished = viewModel.NewsDatePublished,
+                    NewsIsPublished = viewModel.NewsIsPublished
+                }
             );
 
             if (!repository.IsError)
@@ -232,7 +237,11 @@ namespace SixtyThreeBits.Web.Models.Admin
             await repository.NewsIUD(
                 databaseAction: Enums.DatabaseActions.UPDATE,
                 newsID: DBItem.NewsID,
-                newsImageFilename: Constants.NullValueFor.String
+                news: new NewsIudDTO
+                {
+                    NewsImageFilename = Constants.NullValueFor.String
+                }
+                
             );
             viewModel.IsSuccess = !repository.IsError;
             return viewModel;

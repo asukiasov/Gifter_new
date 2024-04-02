@@ -47,10 +47,12 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
             return result;
         }
 
-        public async Task<int?> EmailTemplatesIUD(Enums.DatabaseActions databaseAction, int? emailTemplateID = null, string emailTemplateName = null, string emailTemplateSubject = null, string emailTemplateSubjectEng = null, string emailTemplateBody = null, string emailTemplateBodyEng = null)
+        public async Task<int?> EmailTemplatesIUD(Enums.DatabaseActions databaseAction, int? emailTemplateID, EmailTemplateIudDTO emailTemplate)
         {
+            var emailTemplateJson = emailTemplate.ToJson();
+
             emailTemplateID = await TryToReturnAsyncTask(
-                logString: $"{nameof(EmailTemplatesIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(emailTemplateID)} = {emailTemplateID}, {nameof(emailTemplateName)} = {emailTemplateName}, {nameof(emailTemplateSubject)} = {emailTemplateSubject}, {nameof(emailTemplateSubjectEng)} = {emailTemplateSubjectEng}, {nameof(emailTemplateBody)} = {emailTemplateBody}, {nameof(emailTemplateBodyEng)} = {emailTemplateBodyEng})", 
+                logString: $"{nameof(EmailTemplatesIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(emailTemplateID)} = {emailTemplateID}, {nameof(emailTemplate)} = {emailTemplateJson})", 
                 asyncFuncToTry: async () =>
                 {
                     using (var dbContext = _dbContextFactory.GetDbContext())
@@ -62,11 +64,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             [
                                 databaseAction.ToSqlParameter(nameof(databaseAction),SqlDbType.TinyInt),
                                 emailTemplateID.ToSqlOutputParameter(nameof(emailTemplateID),SqlDbType.Int),
-                                emailTemplateName.ToSqlParameter(nameof(emailTemplateName),SqlDbType.NVarChar),
-                                emailTemplateSubject.ToSqlParameter(nameof(emailTemplateSubject),SqlDbType.NVarChar),
-                                emailTemplateSubjectEng.ToSqlParameter(nameof(emailTemplateSubjectEng),SqlDbType.NVarChar),
-                                emailTemplateBody.ToSqlParameter(nameof(emailTemplateBody),SqlDbType.NVarChar),
-                                emailTemplateBodyEng.ToSqlParameter(nameof(emailTemplateBodyEng),SqlDbType.NVarChar)
+                                emailTemplateJson.ToSqlParameter(nameof(emailTemplateJson),SqlDbType.NVarChar)
                             ]
                         );
 
@@ -79,7 +77,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
             return emailTemplateID;
         }
 
-        public async Task<List<EmailTemplateDTO>> EmailTemplatesList()
+        public async Task<List<EmailTemplatesListDTO>> EmailTemplatesList()
         {
             var result = await TryToReturnAsyncTask(
                 logString: $"{nameof(EmailTemplatesList)}()", 
@@ -92,7 +90,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             databaseObjectName: nameof(EmailTemplatesList)
                         );
 
-                        var resultQueryable = sqb.ExecuteTableValuedFunction<EmailTemplateDTO>();
+                        var resultQueryable = sqb.ExecuteTableValuedFunction<EmailTemplatesListDTO>();
                         var result = await resultQueryable.ToListAsync();
                         
                         return result;

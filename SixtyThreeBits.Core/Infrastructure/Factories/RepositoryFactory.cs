@@ -41,6 +41,16 @@ namespace SixtyThreeBits.Core.Infrastructure.Factories
             return new EmailTemplatesRepository(_connectionFactory);
         }
 
+        public MenuFooterRepository GetMenuFooterRepository()
+        {
+            return new MenuFooterRepository(_connectionFactory);
+        }
+
+        public MenuHeaderRepository GetMenuHeaderRepository()
+        {
+            return new MenuHeaderRepository(_connectionFactory);
+        }
+
         public NewsRepository GetNewsRepository()
         {
             return new NewsRepository(_connectionFactory);
@@ -49,12 +59,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Factories
         public PagesRepository GetPagesRepository()
         {
             return new PagesRepository(_connectionFactory);
-        }
-
-        public PartnersRepository GetPartnersRepository()
-        {
-            return new PartnersRepository(_connectionFactory);
-        }
+        }        
 
         public PermissionsRepository GetPermissionsRepository()
         {

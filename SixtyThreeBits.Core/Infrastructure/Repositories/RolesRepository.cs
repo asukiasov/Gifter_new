@@ -22,10 +22,12 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         #endregion
 
         #region Methods
-        public async Task<int?> RolesIUD(Enums.DatabaseActions databaseAction, int? roleID = null, string roleName = null, int? roleCode = null)
+        public async Task<int?> RolesIUD(Enums.DatabaseActions databaseAction, int? roleID, RoleIudDTO role)
         {
+            var roleJson = role.ToJson();
+
             roleID = await TryToReturnAsyncTask(
-                logString: $"{nameof(RolesIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(roleID)} = {roleID}, {nameof(roleName)} = {roleName}, {nameof(roleCode)} = {roleCode})", 
+                logString: $"{nameof(RolesIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(roleID)} = {roleID}, {nameof(role)} = {roleJson})", 
                 asyncFuncToTry: async () =>
                 {
                     using (var dbContext = _dbContextFactory.GetDbContext())
@@ -37,8 +39,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             [
                                 databaseAction.ToSqlParameter(nameof(databaseAction),SqlDbType.TinyInt),
                                 roleID.ToSqlOutputParameter(nameof(roleID),SqlDbType.Int),
-                                roleName.ToSqlParameter(nameof(roleName),SqlDbType.NVarChar),
-                                roleCode.ToSqlParameter(nameof(roleCode),SqlDbType.Int),
+                                roleJson.ToSqlParameter(nameof(roleJson),SqlDbType.NVarChar)
                             ]
                          );
 

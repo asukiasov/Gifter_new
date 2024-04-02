@@ -2,6 +2,7 @@
 using DevExtreme.AspNet.Mvc.Builders;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using SixtyThreeBits.Core.DTO;
 using SixtyThreeBits.Core.Libraries;
 using SixtyThreeBits.Core.Properties;
 using SixtyThreeBits.Core.Utilities;
@@ -131,11 +132,14 @@ namespace SixtyThreeBits.Web.Models.Admin
             await repository.EmailTemplatesIUD(
                 databaseAction: Enums.DatabaseActions.UPDATE,
                 emailTemplateID: emailTemplateID,
-                emailTemplateName: viewModel.EmailTemplateName,
-                emailTemplateSubject: viewModel.EmailTemplateSubject,
-                emailTemplateSubjectEng: viewModel.EmailTemplateSubjectEng,
-                emailTemplateBody: viewModel.EmailTemplateBody,
-                emailTemplateBodyEng: viewModel.EmailTemplateBodyEng
+                emailTemplate: new EmailTemplateIudDTO
+                {
+                    EmailTemplateName = viewModel.EmailTemplateName,
+                    EmailTemplateSubject = viewModel.EmailTemplateSubject,
+                    EmailTemplateSubjectEng = viewModel.EmailTemplateSubjectEng,
+                    EmailTemplateBody = viewModel.EmailTemplateBody,
+                    EmailTemplateBodyEng = viewModel.EmailTemplateBodyEng
+                }                
             );
             if (repository.IsError)
             {

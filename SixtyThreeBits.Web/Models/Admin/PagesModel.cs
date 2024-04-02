@@ -1,150 +1,134 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using DevExtreme.AspNet.Mvc;
+using DevExtreme.AspNet.Mvc.Builders;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using SixtyThreeBits.Core.DTO;
 using SixtyThreeBits.Core.Libraries;
 using SixtyThreeBits.Core.Libraries.FileStorages;
 using SixtyThreeBits.Core.Properties;
 using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries;
-using SixtyThreeBits.Libraries.Extensions;
 using SixtyThreeBits.Web.Domain;
+using SixtyThreeBits.Web.Domain.Libraries;
 using SixtyThreeBits.Web.Domain.SharedViewModels;
 using SixtyThreeBits.Web.Models.Shared;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace SixtyThreeBits.Web.Models.Admin
 {
-    public class PagesTreeModel : ModelBase
+    public class PagesManagementModule : ModelBase
     {
         #region Methods
-        public async Task<PageViewModel> GetPageViewModel()
+        public string GetRedirectUrl()
+        {
+            var redirectUrl = default(string);
+            var permissionIDParent = User.Permissions.FindLast(Item => Item.PermissionCodeName == ControllerActionRouteNames.Admin.PagesManagemet.Root)?.PermissionID;
+            if (permissionIDParent.HasValue)
+            {
+                var firstPermission = User.Permissions.FirstOrDefault(item => item.PermissionParentID == permissionIDParent);
+                redirectUrl = firstPermission.PermissionPagePath;
+            }
+            return redirectUrl;
+        } 
+        #endregion
+    }
+
+    public class PagesModel : ModelBase
+    {
+        #region Methods
+        public PageViewModel GetPageViewModel()
         {
             var viewModel = new PageViewModel();
+            viewModel.ShowAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.PagesManagemet.Pages.GridAdd);
+            viewModel.Grid = new PageViewModel.GridModel();            
+            viewModel.Grid.UrlLoad = Url.RouteUrl(ControllerActionRouteNames.Admin.PagesManagemet.Pages.Grid);
+            viewModel.Grid.UrlAddNew = Url.RouteUrl(ControllerActionRouteNames.Admin.PagesManagemet.Pages.GridAdd);
+            viewModel.Grid.UrlUpdate = Url.RouteUrl(ControllerActionRouteNames.Admin.PagesManagemet.Pages.GridUpdate);
+            viewModel.Grid.UrlDelete = Url.RouteUrl(ControllerActionRouteNames.Admin.PagesManagemet.Pages.GridDelete);
+            viewModel.Grid.AllowUpdate = User.HasPermission(ControllerActionRouteNames.Admin.PagesManagemet.Pages.GridUpdate);
+            viewModel.Grid.AllowDelete = User.HasPermission(ControllerActionRouteNames.Admin.PagesManagemet.Pages.GridDelete);
+            return viewModel;
+        }
 
-            var allowUpdate = User.HasPermission(ControllerActionRouteNames.Admin.Pages.Update);
-            var allowAddNew = User.HasPermission(ControllerActionRouteNames.Admin.Pages.AddNew);
-            var allowDelete = User.HasPermission(ControllerActionRouteNames.Admin.Pages.Delete);
-
+        public async Task<List<PageViewModel.GridModel.GridItem>> GetGridViewModel()
+        {
             var repository = RepositoriesFactory.GetPagesRepository();
-            viewModel.Pages = (await repository.PagesList())
-            ?.Select(item => new TreeNodeItem
+
+            var viewModel = (await repository.PagesList())
+            ?.Select(item => new PageViewModel.GridModel.GridItem
             {
-                NodeID = item.PageID.ToString(),
-                ParentID = item.PageParentID.HasValue ? item.PageParentID.ToString() : null,
-                NavigateUrl = Url.RouteUrl(ControllerActionRouteNames.Admin.Pages.Page.Properties, new { item.PageID }),
-                Caption = item.PageTitle,
-                IsToggler1Checked = item.PageIsPublished,
-                IsToggler2Checked = item.PageIsMenuItem,
-                IsToggler3Checked = item.PageIsFooterItem,
-                TextToggler1 = Resources.TextPublished,
-                TextToggler2 = Resources.TextMenu,
-                TextToggler3 = Resources.TextFooter,
-                ShowAddNewButton = allowAddNew,
-                ShowDeleteButton = allowDelete,
-                ShowToggler1 = allowUpdate,
-                ShowToggler2 = allowUpdate,
-                ShowToggler3 = allowUpdate
+                PageID = item.PageID,
+                PageTitle = item.PageTitle,
+                PageTitleEng = item.PageTitleEng,
+                PageIsPublished = item.PageIsPublished,
+                PageDateCreated = item.PageDateCreated,
+                UrlProperties = Url.RouteUrl(ControllerActionRouteNames.Admin.PagesManagemet.Pages.Page.Properties, new { pageID = item.PageID })
             })
             .ToList();
 
-            viewModel.ShowAddNewButton = allowAddNew;
-            viewModel.UrlCreateNew = Url.RouteUrl(ControllerActionRouteNames.Admin.Pages.AddNew);
-            viewModel.UrlUpdate = Url.RouteUrl(ControllerActionRouteNames.Admin.Pages.Update);
-            viewModel.UrlSyncParentsAndSortIndexes = Url.RouteUrl(ControllerActionRouteNames.Admin.Pages.SyncParentsAndSortIndexes);
-            viewModel.UrlDelete = Url.RouteUrl(ControllerActionRouteNames.Admin.Pages.Delete);
-            if (viewModel.HasPages)
-            {
-                viewModel.Pages.ToRecursive(IDPropertyName: nameof(TreeNodeItem.NodeID), nameof(TreeNodeItem.ParentID), nameof(TreeNodeItem.Children));
-            }
-
             return viewModel;
         }
 
-        public async Task<AjaxResponse> CreatePage(SubmitModel submitModel)
+        public async Task CRUD(Enums.DatabaseActions databaseAction, int? pageID, PageViewModel.GridModel.GridItem submitModel)
         {
-            var viewModel = new AjaxResponse();
-
-            var allowUpdate = User.HasPermission(ControllerActionRouteNames.Admin.Pages.Update);
-            var allowAddNew = User.HasPermission(ControllerActionRouteNames.Admin.Pages.AddNew);
-            var allowDelete = User.HasPermission(ControllerActionRouteNames.Admin.Pages.Delete);
-
-            TreeNodeItem node = null;
-
             var repository = RepositoriesFactory.GetPagesRepository();
-            var pageID = await repository.PagesIUD(
-                databaseAction: Enums.DatabaseActions.CREATE,
-                pageParentID: submitModel.PageParentID,
-                pageSlug: System.Guid.NewGuid().ToString(),
-                pageTitle: submitModel.PageTitle,
-                pageIsMenuItem: false,
-                pageIsPublished: false,
-                pageIsFooterItem: false
-            );
 
-            if (pageID > 0)
-            {
-                var DBItem = await repository.PagesGetSingleByID(pageID);
-                node = new TreeNodeItem();
-                if (DBItem != null)
-                {
-                    node.NodeID = pageID.ToString();
-                    node.ParentID = submitModel.PageParentID.HasValue ? submitModel.PageParentID.ToString() : null;
-                    node.Caption = DBItem.PageTitle;
-                    node.ShowToggler1 = allowUpdate;
-                    node.ShowToggler2 = allowUpdate;
-                    node.ShowToggler3 = allowUpdate;
-                    node.TextToggler1 = Resources.TextPublished;
-                    node.TextToggler2 = Resources.TextMenu;
-                    node.TextToggler3 = Resources.TextFooter;
-                    node.NavigateUrl = Url.RouteUrl(ControllerActionRouteNames.Admin.Pages.Page.Properties, new { PageID = pageID });
-                    node.ShowAddNewButton = allowAddNew;
-                    node.ShowDeleteButton = allowDelete;
-                }
-            }
-
-            if (node != null)
-            {
-                viewModel.IsSuccess = true;
-                viewModel.Data = node;
-            }
-
-            return viewModel;
-        }
-
-        public async Task<AjaxResponse> DeleteRecursive(int? pageID)
-        {
-            var viewModel = new AjaxResponse();
-            var repository = RepositoriesFactory.GetPagesRepository();
-            await repository.PagesDeleteRecursive(pageID);
-            viewModel.IsSuccess = !repository.IsError;
-            return viewModel;
-        }
-
-        public async Task<AjaxResponse> UpdatePage(SubmitModel submitModel)
-        {
-            var viewModel = new AjaxResponse();
-            var repository = RepositoriesFactory.GetPagesRepository();
             await repository.PagesIUD(
-                databaseAction: Enums.DatabaseActions.UPDATE,
-                pageID: submitModel.PageID,
-                pageTitle: submitModel.PageTitle,
-                pageIsPublished: submitModel.PageIsPublished,
-                pageIsMenuItem: submitModel.PageIsMenuItem,
-                pageIsFooterItem: submitModel.PageIsFooterItem
+                databaseAction: databaseAction,
+                pageID: pageID,
+                page: new PageIudDTO
+                {
+                    PageTitle = submitModel.PageTitle,
+                    PageTitleEng = submitModel.PageTitleEng,
+                    PageIsPublished = submitModel.PageIsPublished
+                }
             );
-            viewModel.IsSuccess = !repository.IsError;
 
-            return viewModel;
+            if (repository.IsError)
+            {
+                Form.AddError(repository.ErrorMessage);
+            }
         }
 
-        public async Task<AjaxResponse> SyncParentsAndSortIndexes(SyncSortIndexesSubmitModel submitModel)
+        public async Task Delete(int? pageID)
+        {
+            var repository = RepositoriesFactory.GetPagesRepository();
+
+            var dbItem = await repository.PagesGetSingleByID(pageID);
+            if (dbItem != null)
+            {
+                await DeleteUploadedFile(dbItem.PageImageFilename, folderPath: null);
+            }
+
+            await repository.PagesDelete(pageID: pageID);
+
+            if (repository.IsError)
+            {
+                Form.AddError(repository.ErrorMessage);
+            }
+        }
+
+        public async Task<AjaxResponse> GetPagesData()
         {
             var viewModel = new AjaxResponse();
             var repository = RepositoriesFactory.GetPagesRepository();
-            await repository.PagesSyncParentsAndSortIndexes(submitModel.SortIndexes);
-            viewModel.IsSuccess = !repository.IsError;
+
+            var pages = (await repository.PagesList())?
+            .OrderBy(item => item.PageTitle)
+            .Select(item => new KeyValueTuple<int?, string>
+            {
+                Key = item.PageID,
+                Value = $"{string.Join(" | ", item.PageTitle, item.PageTitleEng)}"
+            })
+            .ToList();
+
+            viewModel.Data = pages;
+            viewModel.IsSuccess = true;
+
             return viewModel;
         }
         #endregion
@@ -153,32 +137,54 @@ namespace SixtyThreeBits.Web.Models.Admin
         public class PageViewModel
         {
             #region Properties
-            public bool HasPages => Pages != null && Pages.Count > 0;
-            public List<TreeNodeItem> Pages { get; set; }
             public bool ShowAddNewButton { get; set; }
-
-            public string UrlCreateNew { get; set; }
-            public string UrlUpdate { get; set; }
-            public string UrlSyncParentsAndSortIndexes { get; set; }
-            public string UrlDelete { get; set; }
-
-            public readonly string TextConfirmDeleteRecord = Resources.TextConfirmDelete;
-            public readonly string TextConfirmDeleteRecursive = Resources.TextConfirmDeleteRecursive;
-            public readonly string ValidationRequired = Resources.ValidationRequired;
-            public readonly string TextAdd = Resources.TextAdd;
-            public readonly string TextTitle = Resources.TextTitle;
+            public GridModel Grid { get; set; }
             #endregion
-        }
 
-        public class SubmitModel
-        {
-            #region Properties
-            public int? PageID { get; set; }
-            public int? PageParentID { get; set; }
-            public string PageTitle { get; set; }
-            public bool? PageIsPublished { get; set; }
-            public bool? PageIsMenuItem { get; set; }
-            public bool? PageIsFooterItem { get; set; }
+            #region Nested Classes
+            public class GridModel : DevExtremeGridViewModelBase, IDevExtremeGridModel<GridModel.GridItem>
+            {
+                #region Methods
+                public DataGridBuilder<GridItem> Render(IHtmlHelper html)
+                {
+                    var grid = GetGridWithStartupValues<GridItem>(html: html, keyFieldName: nameof(GridItem.PageID));
+
+                    grid
+                    .ID("PagesGrid")
+                    .OnInitialized("pagesModel.onGridInit")
+                    .Columns(columns =>
+                    {
+                        columns.Add().Width(30).Caption(" ").InitDetailsUrlCellTemplate(nameof(GridItem.UrlProperties));
+                        columns.AddFor(m => m.PageTitle).Caption(Resources.TextTitle).Width(300).ValidationRules(options =>
+                        {
+                            options.AddRequired();
+                        });
+                        columns.AddFor(m => m.PageTitleEng).Caption(Resources.TextTitleEng).Width(300);                        
+                        columns.AddFor(m => m.PageIsPublished).Caption(Resources.TextPublished).Width(100).InitCheckboxColumn();
+                        columns.AddFor(m => m.PageDateCreated).Caption(Resources.TextDateCreated).DataType(GridColumnDataType.DateTime).Width(140).InitDateColumn(true).AllowEditing(false);
+                        columns.Add();
+                    });
+
+
+                    return grid;
+                }
+                #endregion
+
+                #region Nested Classes
+                public record GridItem
+                {
+                    #region Properties
+                    public int? PageID { get; init; }
+                    public string PageSlug { get; init; }
+                    public string PageTitle { get; init; }
+                    public string PageTitleEng { get; init; }                    
+                    public bool? PageIsPublished { get; init; }
+                    public DateTime? PageDateCreated { get; init; }
+                    public string UrlProperties { get; init; }                    
+                    #endregion
+                }
+                #endregion
+            }
             #endregion
         }
         #endregion
@@ -188,6 +194,26 @@ namespace SixtyThreeBits.Web.Models.Admin
     {
         #region Properties
         public PageDTO DBItem { get; set; }
+        #endregion
+    }
+
+    public class PageDataModel : PageModelBase
+    {
+        #region Methods
+        public AjaxResponse GetPageData()
+        {
+            var viewModel = new AjaxResponse();
+            viewModel.IsSuccess = true;
+            viewModel.Data = new
+            {
+                PageID = DBItem.PageID,
+                PageTitle = DBItem.PageTitle,
+                PageTitleEng = DBItem.PageTitleEng,
+                PageSlug = DBItem.PageSlug,
+                PageIsPublished = DBItem.PageIsPublished
+            };
+            return viewModel;
+        }
         #endregion
     }
 
@@ -204,10 +230,6 @@ namespace SixtyThreeBits.Web.Models.Admin
             {
                 viewModel = new PageViewModel();
                 viewModel.PageIsPublished = DBItem.PageIsPublished;
-                viewModel.PageIsMenuItem = DBItem.PageIsMenuItem;
-                viewModel.PageIsFooterItem = DBItem.PageIsFooterItem;
-                viewModel.PageIsExternalUrl = DBItem.PageIsExternalUrl;
-                viewModel.PageExternalUrl = DBItem.PageExternalUrl;
                 viewModel.PageSlug = DBItem.PageSlug;
                 viewModel.PageTitle = DBItem.PageTitle;
                 viewModel.PageTitleEng = DBItem.PageTitleEng;
@@ -218,15 +240,29 @@ namespace SixtyThreeBits.Web.Models.Admin
             viewModel.PageImageFilename = DBItem.PageImageFilename;
             viewModel.PageImageHttpPath = FileStorage.GetUploadedFileHttpPath(DBItem.PageImageFilename, _folderPath);
 
-            viewModel.UrlDeleteImage = Url.RouteUrl(ControllerActionRouteNames.Admin.Pages.Page.DeleteImage, values: new { pageID = DBItem.PageID });
+            viewModel.UrlPreview = GetUrlPages(pageSlug:DBItem.PageSlug);
+            viewModel.UrlDeleteImage = Url.RouteUrl(ControllerActionRouteNames.Admin.PagesManagemet.Pages.Page.PropertiesDeleteImage, values: new { pageID = DBItem.PageID });
 
             return viewModel;
         }
 
-        public void ValidatePageViewModel(PageViewModel viewModel)
+        public async Task ValidatePageViewModel(PageViewModel viewModel)
         {
             viewModel.AddError(Validation.ValidateRequired(errorKey: Validation.GetJQueryNameSelectorFor(nameof(viewModel.PageTitle)), valueToValidate: viewModel.PageTitle));
             viewModel.AddError(Validation.ValidateRequired(errorKey: Validation.GetJQueryNameSelectorFor(nameof(viewModel.PageSlug)), valueToValidate: viewModel.PageSlug));
+            viewModel.AddError(
+                await Validation.ValidateAsync(
+                        errorAction: async () =>
+                        {
+                            var repository = RepositoriesFactory.GetPagesRepository();
+                            var isUniq = await repository.PagesIsSlugUniq(pageSlug: viewModel.PageSlug, pageID: DBItem.PageID);
+                            var isError = !isUniq;
+                            return isError;
+                        },
+                        errorKey: Validation.GetJQueryNameSelectorFor(nameof(viewModel.PageSlug)),
+                        errorMessage: Resources.ValidationPagesSlugNotUniq
+                    )
+            );
         }
 
         public async Task Save(PageViewModel viewModel)
@@ -242,17 +278,16 @@ namespace SixtyThreeBits.Web.Models.Admin
             await repository.PagesIUD(
                 databaseAction: Enums.DatabaseActions.UPDATE,
                 pageID: DBItem.PageID,
-                pageSlug: viewModel.PageSlug,
-                pageTitle: viewModel.PageTitle,
-                pageTitleEng: viewModel.PageTitleEng,
-                pageShortDescription: viewModel.PageShortDescription,
-                pageShortDescriptionEng: viewModel.PageShortDescriptionEng,
-                pageImageFilename: pageImageFilename,
-                pageIsPublished: viewModel.PageIsPublished,
-                pageIsMenuItem: viewModel.PageIsMenuItem,
-                pageIsFooterItem: viewModel.PageIsFooterItem,
-                pageIsExternalUrl: viewModel.PageIsExternalUrl,
-                pageExternalUrl: viewModel.PageExternalUrl
+                page: new PageIudDTO
+                {
+                    PageSlug = viewModel.PageSlug,
+                    PageTitle = viewModel.PageTitle,
+                    PageTitleEng = viewModel.PageTitleEng ?? Constants.NullValueFor.String,
+                    PageShortDescription = viewModel.PageShortDescription ?? Constants.NullValueFor.String,
+                    PageShortDescriptionEng = viewModel.PageShortDescriptionEng ?? Constants.NullValueFor.String,
+                    PageImageFilename = pageImageFilename,
+                    PageIsPublished = viewModel.PageIsPublished
+                }
             );
 
             if (!repository.IsError)
@@ -275,7 +310,10 @@ namespace SixtyThreeBits.Web.Models.Admin
             await repository.PagesIUD(
                 databaseAction: Enums.DatabaseActions.UPDATE,
                 pageID: DBItem.PageID,
-                pageImageFilename: Constants.NullValueFor.String
+                page: new PageIudDTO
+                {
+                    PageImageFilename = Constants.NullValueFor.String
+                }
             );
             viewModel.IsSuccess = !repository.IsError;
             return viewModel;
@@ -296,23 +334,18 @@ namespace SixtyThreeBits.Web.Models.Admin
             public bool HasPageImage => !string.IsNullOrWhiteSpace(PageImageFilename);
 
             public bool PageIsPublished { get; set; }
-            public bool PageIsMenuItem { get; set; }
-            public bool PageIsFooterItem { get; set; }
-            public bool PageIsExternalUrl { get; set; }
-            public string PageExternalUrl { get; set; }
             public IFormFile PageImageFile { get; set; }
             public string UrlDeleteImage { get; set; }
+            public string UrlPreview { get; set; }
 
+            public readonly string TextPreview = Resources.TextPreview;
             public readonly string TextGenerateFromTitle = Resources.TextGenerateFromTitle;
             public readonly string TextPublished = Resources.TextPublished;
-            public readonly string TextMenu = Resources.TextMenu;
-            public readonly string TextFooter = Resources.TextFooter;
             public readonly string TextUploadImage = Resources.TextUploadImage;
             public readonly string TextTitle = Resources.TextTitle;
-            public readonly string TextTitleEng = Resources.TextTitleEng;
-            public readonly string TextSlug = Resources.TextSlug;
+            public readonly string TextTitleEng = Resources.TextTitleEng;            
+            public readonly string TextSlug = Resources.TextSlug;            
             public readonly string TextPageUrl = Resources.TextPageUrl;
-            public readonly string TextExternalPage = Resources.TextExternalPage;
             public readonly string TextDescriptionShort = Resources.TextDescriptionShort;
             public readonly string TextDescriptionShortEng = Resources.TextDescriptionShortEng;
             public readonly string TextPageShortDescriptionAndImageInfo = Resources.TextPageShortDescriptionAndImageInfo;
@@ -333,22 +366,22 @@ namespace SixtyThreeBits.Web.Models.Admin
 
             var viewModel = new PageViewModel();
             viewModel.PageTitle = Utilities.GetValuesByLanguage(languageCultureCode, DBItem.PageTitle, DBItem.PageTitleEng);
-            viewModel.PageSlug = DBItem.PageSlug;
             viewModel.PageText = Utilities.GetValuesByLanguage(languageCultureCode, DBItem.PageText, DBItem.PageTextEng);
             viewModel.PageData = Utilities.GetValuesByLanguage(languageCultureCode, DBItem.PageData, DBItem.PageDataEng) ?? "[]";
             viewModel.IsPublished = DBItem.PageIsPublished;
             viewModel.Language = languageCultureCode;
-            viewModel.UrlBack = Url.RouteUrl(ControllerActionRouteNames.Admin.Pages.Page.Properties, new { pageID = DBItem.PageID });
-            viewModel.UrlPreview = Url.RouteUrl(ControllerActionRouteNames.Website.Pages.Page, new { pageSlugHierarchy = DBItem.PageSlugHierarchy });
+            viewModel.UrlBack = Url.RouteUrl(ControllerActionRouteNames.Admin.PagesManagemet.Pages.Page.Properties, new { pageID = DBItem.PageID });
+            viewModel.UrlPreview = GetRouteByName(ControllerActionRouteNames.Website.Pages.Page, new { pageSlug = DBItem.PageSlug });
             viewModel.UrlSave = UrlCurrentPageWithDomain;
             viewModel.UrlFileManager = Url.RouteUrl(ControllerActionRouteNames.Admin.FileManager.Page, new { moduleName = Enums.FileManagerModules.Pages });
-            viewModel.UrlPdfViewer = Url.RouteUrl(ControllerActionRouteNames.Website.FileViewer.Pdf);
+
+            
 
             viewModel.SelectedLanguage = Utilities.GetValuesByLanguage(languageCultureCode, Enums.Languages.GEORGIAN, Enums.Languages.ENGLISH);
             viewModel.LanguageOptions =
             [
-                new() { Key = nameof(Enums.Languages.GEORGIAN), Value = Url.RouteUrl(ControllerActionRouteNames.Admin.Pages.Page.BuilderLanguage, new { pageID, Language = Enums.Languages.GEORGIAN }), IsSelected = languageCultureCode == Enums.Languages.GEORGIAN },
-                new() { Key = nameof(Enums.Languages.ENGLISH), Value = Url.RouteUrl(ControllerActionRouteNames.Admin.Pages.Page.BuilderLanguage, new { pageID, Language = Enums.Languages.ENGLISH }), IsSelected = languageCultureCode == Enums.Languages.ENGLISH },
+                new() { Key = nameof(Enums.Languages.GEORGIAN), Value = Url.RouteUrl(ControllerActionRouteNames.Admin.PagesManagemet.Pages.Page.BuilderLanguage, new { pageID, Language = Enums.Languages.GEORGIAN }), IsSelected = languageCultureCode == Enums.Languages.GEORGIAN },
+                new() { Key = nameof(Enums.Languages.ENGLISH), Value = Url.RouteUrl(ControllerActionRouteNames.Admin.PagesManagemet.Pages.Page.BuilderLanguage, new { pageID, Language = Enums.Languages.ENGLISH }), IsSelected = languageCultureCode == Enums.Languages.ENGLISH },                
             ];
 
             viewModel.PluginsClient = new PluginsClient();
@@ -374,11 +407,13 @@ namespace SixtyThreeBits.Web.Models.Admin
                         await repository.PagesIUD(
                             databaseAction: Enums.DatabaseActions.UPDATE,
                             pageID: DBItem.PageID,
-                            pageTitle: submitModel.PageTitle ?? Constants.NullValueFor.String,
-                            pageText: submitModel.PageText ?? Constants.NullValueFor.String,
-                            pageTextHeaderHtml: submitModel.HeaderSectionHtml ?? Constants.NullValueFor.String,
-                            pageTextFooterHtml: submitModel.FooterSectionHtml ?? Constants.NullValueFor.String,
-                            pageData: submitModel.PageData ?? Constants.NullValueFor.String
+                            page: new PageIudDTO
+                            {
+                                PageText = submitModel.PageText ?? Constants.NullValueFor.String,
+                                PageTextHeaderHtml = submitModel.HeaderSectionHtml ?? Constants.NullValueFor.String,
+                                PageTextFooterHtml = submitModel.FooterSectionHtml ?? Constants.NullValueFor.String,
+                                PageData = submitModel.PageData ?? Constants.NullValueFor.String
+                            }
                         );
                         break;
                     }
@@ -387,14 +422,17 @@ namespace SixtyThreeBits.Web.Models.Admin
                         await repository.PagesIUD(
                             databaseAction: Enums.DatabaseActions.UPDATE,
                             pageID: DBItem.PageID,
-                            pageTitleEng: submitModel.PageTitle ?? Constants.NullValueFor.String,
-                            pageTextEng: submitModel.PageText ?? Constants.NullValueFor.String,
-                            pageTextHeaderHtmlEng: submitModel.HeaderSectionHtml ?? Constants.NullValueFor.String,
-                            pageTextFooterHtmlEng: submitModel.FooterSectionHtml ?? Constants.NullValueFor.String,
-                            pageDataEng: submitModel.PageData ?? Constants.NullValueFor.String
+                            page: new PageIudDTO
+                            {
+                                PageTextEng = submitModel.PageText ?? Constants.NullValueFor.String,
+                                PageTextHeaderHtmlEng = submitModel.HeaderSectionHtml ?? Constants.NullValueFor.String,
+                                PageTextFooterHtmlEng = submitModel.FooterSectionHtml ?? Constants.NullValueFor.String,
+                                PageDataEng = submitModel.PageData ?? Constants.NullValueFor.String
+                            }
+                            
                         );
                         break;
-                    }
+                    }                
             }
             viewModel.IsSuccess = !repository.IsError;
 
@@ -408,7 +446,6 @@ namespace SixtyThreeBits.Web.Models.Admin
             #region Properties
             public PluginsClient PluginsClient { get; set; }
             public string PageTitle { get; set; }
-            public string PageSlug { get; set; }
             public string PageText { get; set; }
             public bool IsPublished { get; set; }
             public string Language { get; set; }
@@ -416,8 +453,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             public string UrlBack { get; set; }
             public string UrlPreview { get; set; }
             public string UrlSave { get; set; }
-            public string UrlFileManager { get; set; }
-            public string UrlPdfViewer { get; set; }
+            public string UrlFileManager { get; set; }            
             public string SelectedLanguage { get; set; }
             public List<KeyValueSelectedTuple<string, string>> LanguageOptions { get; set; }
             public bool HasLanguageOptions => LanguageOptions?.Count > 0;

@@ -454,6 +454,13 @@
             #endregion
         }
 
+        public static class RolesCodes
+        {
+            #region Properties
+            public const int Administrator = 1;
+            #endregion
+        }
+
         public enum TimeUnitCodes : byte
         {
             #region Properties

@@ -177,6 +177,9 @@
   <data name="TextConfirmDeleteRecursive" xml:space="preserve">
     <value>Deleting this item will also delete all child items. Do you really want to continue?</value>
   </data>
+  <data name="TextConfirmDeleteRecursiveWithTypeDelete" xml:space="preserve">
+    <value>Do you really want to delete this parent record with all its children? Please type word "delete" to confirm.</value>
+  </data>
   <data name="TextContactAddress" xml:space="preserve">
     <value>Contact Address</value>
   </data>
@@ -288,6 +291,18 @@
   <data name="TextNo" xml:space="preserve">
     <value>No</value>
   </data>
+  <data name="TextOpenInNewTab" xml:space="preserve">
+    <value>Open in new tab</value>
+  </data>
+  <data name="TextPageExternalUrl" xml:space="preserve">
+    <value>Page External Url</value>
+  </data>
+  <data name="TextPageInternal" xml:space="preserve">
+    <value>Internal Page</value>
+  </data>
+  <data name="TextPageIsExternal" xml:space="preserve">
+    <value>External Page</value>
+  </data>
   <data name="TextPageNotFound" xml:space="preserve">
     <value>404 - Page Not Found</value>
   </data>
@@ -323,6 +338,9 @@
   </data>
   <data name="TextPrev" xml:space="preserve">
     <value>Next</value>
+  </data>
+  <data name="TextPreview" xml:space="preserve">
+    <value>Preview</value>
   </data>
   <data name="TextPrice" xml:space="preserve">
     <value>Price</value>
@@ -413,6 +431,9 @@
   </data>
   <data name="ValidationExcelDuplicateItemFound" xml:space="preserve">
     <value>Duplicate item found. Row {0}</value>
+  </data>
+  <data name="ValidationPagesSlugNotUniq" xml:space="preserve">
+    <value>Page slug is not unique</value>
   </data>
   <data name="ValidationPasswordLength" xml:space="preserve">
     <value>Password length must be more then 8 symbols</value>

@@ -4,6 +4,7 @@ using SixtyThreeBits.Core.Infrastructure.Database;
 using SixtyThreeBits.Core.Infrastructure.Factories;
 using SixtyThreeBits.Core.Infrastructure.Repositories.Base;
 using SixtyThreeBits.Core.Utilities;
+using SixtyThreeBits.Libraries.Extensions;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -42,10 +43,12 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
             );
         }
 
-        public async Task<int?> PermissionsIUD(Enums.DatabaseActions databaseAction, int? permissionID = null, int? permissionParentID = null, string permissionCaption = null, string permissionCaptionEng = null, string permissionPagePath = null, string permissionCodeName = null, string permissionCode = null, int? permissionSortIndex = null, bool? permissionIsMenuItem = null, string permissionMenuIcon = null, string permissionMenuTitle = null, string permissionMenuTitleEng = null)
+        public async Task<int?> PermissionsIUD(Enums.DatabaseActions databaseAction, int? permissionID, PermissionIudDTO permission)
         {
+            var permissionJson = permission.ToJson();
+
             permissionID = await TryToReturnAsyncTask(
-                logString: $"{nameof(PermissionsIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(permissionID)} = {permissionID}, {nameof(permissionParentID)} = {permissionParentID}, {nameof(permissionCaption)} = {permissionCaption}, {nameof(permissionCaptionEng)} = {permissionCaptionEng}, {nameof(permissionPagePath)} = {permissionPagePath}, {nameof(permissionCodeName)} = {permissionCodeName}, {nameof(permissionCode)} = {permissionCode}, {nameof(permissionSortIndex)} = {permissionSortIndex}, {nameof(permissionIsMenuItem)} = {permissionIsMenuItem}, {nameof(permissionMenuIcon)} = {permissionMenuIcon}, {nameof(permissionMenuTitle)} = {permissionMenuTitle}, {nameof(permissionMenuTitleEng)} = {permissionMenuTitleEng})", 
+                logString: $"{nameof(PermissionsIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(permissionID)} = {permissionID}, {nameof(permission)} = {permissionJson})", 
                 asyncFuncToTry: async () =>
                 {
                     using (var dbContext = _dbContextFactory.GetDbContext())
@@ -57,17 +60,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             [
                                 databaseAction.ToSqlParameter(nameof(databaseAction),SqlDbType.TinyInt),
                                 permissionID.ToSqlOutputParameter(nameof(permissionID),SqlDbType.Int),
-                                permissionParentID.ToSqlParameter(nameof(permissionParentID),SqlDbType.Int),
-                                permissionCaption.ToSqlParameter(nameof(permissionCaption),SqlDbType.NVarChar),
-                                permissionCaptionEng.ToSqlParameter(nameof(permissionCaptionEng),SqlDbType.NVarChar),
-                                permissionPagePath.ToSqlParameter(nameof(permissionPagePath),SqlDbType.NVarChar),
-                                permissionCodeName.ToSqlParameter(nameof(permissionCodeName),SqlDbType.NVarChar),
-                                permissionCode.ToSqlParameter(nameof(permissionCode),SqlDbType.VarChar),
-                                permissionIsMenuItem.ToSqlParameter(nameof(permissionIsMenuItem),SqlDbType.Bit),
-                                permissionMenuIcon.ToSqlParameter(nameof(permissionMenuIcon),SqlDbType.NVarChar),
-                                permissionMenuTitle.ToSqlParameter(nameof(permissionMenuTitle),SqlDbType.NVarChar),
-                                permissionMenuTitleEng.ToSqlParameter(nameof(permissionMenuTitleEng),SqlDbType.NVarChar),
-                                permissionSortIndex.ToSqlParameter(nameof(permissionSortIndex),SqlDbType.Int)
+                                permissionJson.ToSqlParameter(nameof(permissionJson),SqlDbType.NVarChar)                                
                             ]
                         );
 
@@ -80,7 +73,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
             return permissionID;
         }
 
-        public async Task<List<PermissionDTO>> PermissionsList()
+        public async Task<List<PermissionsListDTO>> PermissionsList()
         {
             var result = await TryToReturnAsyncTask(
                 logString: $"{nameof(PermissionsList)}()", 
@@ -93,7 +86,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             databaseObjectName: nameof(PermissionsList)
                         );
 
-                        var resultQueryable = sqb.ExecuteTableValuedFunction<PermissionDTO>();
+                        var resultQueryable = sqb.ExecuteTableValuedFunction<PermissionsListDTO>();
                         resultQueryable = resultQueryable.OrderBy(P => P.PermissionSortIndex);
                         var result = await resultQueryable.ToListAsync();
                         

@@ -48,12 +48,12 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
 
         public async Task<int?> MenuFooterIUD(Enums.DatabaseActions databaseAction, int? menuFooterID, MenuFooterIudDTO menuFooter)
         {
-            menuFooterID = await TryToReturnAsyncTask(
-                logString: $"{nameof(MenuFooterIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(menuFooterID)} = {menuFooterID}, {nameof(menuFooter)} = {menuFooter})",
-                asyncFuncToTry: async () =>
-                {
-                    var menuFooterJson = menuFooter.ToJson();
+            var menuFooterJson = menuFooter.ToJson();
 
+            menuFooterID = await TryToReturnAsyncTask(
+                logString: $"{nameof(MenuFooterIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(menuFooterID)} = {menuFooterID}, {nameof(menuFooter)} = {menuFooterJson})",
+                asyncFuncToTry: async () =>
+                {                    
                     using (var dbContext = _dbContextFactory.GetDbContext())
                     {
                         var sqb = new SqlQueryBuilder(

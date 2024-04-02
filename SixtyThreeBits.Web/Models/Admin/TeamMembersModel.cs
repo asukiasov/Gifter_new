@@ -76,18 +76,21 @@ namespace SixtyThreeBits.Web.Models.Admin
             }
 
             await repository.TeamMembersIUD(
-                databaseAction: databaseAction,
+                databaseAction: databaseAction,                
                 teamMemberID: teamMemberID,
-                teamMemberFirstname: submitModel.TeamMemberFirstname,
-                teamMemberLastName: submitModel.TeamMemberLastname,
-                teamMemberPosition: submitModel.TeamMemberPosition,
-                teamMemberIsPublished: submitModel.TeamMemberIsPublished,
-                teamMemberCategoryID: submitModel.TeamMemberCategoryID
+                teamMember: new TeamMemberIudDTO
+                {
+                    TeamMemberFirstname = submitModel.TeamMemberFirstname,
+                    TeamMemberLastname = submitModel.TeamMemberLastname,
+                    TeamMemberPosition = submitModel.TeamMemberPosition,
+                    TeamMemberIsPublished = submitModel.TeamMemberIsPublished,
+                    TeamMemberCategoryID = submitModel.TeamMemberCategoryID
+                }                
             );
 
             if (repository.IsError)
             {
-                Form.AddError(Resources.TextError);
+                Form.AddError(repository.ErrorMessage);
             }
         }
 
@@ -239,14 +242,17 @@ namespace SixtyThreeBits.Web.Models.Admin
             await repository.TeamMembersIUD(
                 databaseAction: Enums.DatabaseActions.UPDATE,
                 teamMemberID: DBItem.TeamMemberID,
-                teamMemberFirstname: viewModel.TeamMemberFirstname,
-                teamMemberLastName: viewModel.TeamMemberLastname,
-                teamMemberPosition: viewModel.TeamMemberPosition ?? NullValueFor.String,
-                teamMemberShortDescription: viewModel.TeamMemberShortDescription ?? NullValueFor.String,
-                teamMemberLongDescription: viewModel.TeamMemberLongDescription ?? NullValueFor.String,
-                teamMemberImageFilename: teamMemberImageFilename,
-                teamMemberIsPublished: viewModel.TeamMemberIsPublished,
-                teamMemberCategoryID: viewModel.TeamMemberCategoryID
+                teamMember: new TeamMemberIudDTO
+                {
+                    TeamMemberFirstname = viewModel.TeamMemberFirstname,
+                    TeamMemberLastname = viewModel.TeamMemberLastname,
+                    TeamMemberPosition = viewModel.TeamMemberPosition ?? NullValueFor.String,
+                    TeamMemberShortDescription = viewModel.TeamMemberShortDescription ?? NullValueFor.String,
+                    TeamMemberLongDescription = viewModel.TeamMemberLongDescription ?? NullValueFor.String,
+                    TeamMemberImageFilename = teamMemberImageFilename,
+                    TeamMemberIsPublished = viewModel.TeamMemberIsPublished,
+                    TeamMemberCategoryID = viewModel.TeamMemberCategoryID
+                }
             );
 
             if (!repository.IsError)
@@ -267,7 +273,10 @@ namespace SixtyThreeBits.Web.Models.Admin
             await repository.TeamMembersIUD(
                 databaseAction: Enums.DatabaseActions.UPDATE,
                 teamMemberID: DBItem.TeamMemberID,
-                teamMemberImageFilename: NullValueFor.String
+                teamMember: new TeamMemberIudDTO
+                {
+                    TeamMemberImageFilename = NullValueFor.String
+                }
             );
             viewModel.IsSuccess = !repository.IsError;
             return viewModel;

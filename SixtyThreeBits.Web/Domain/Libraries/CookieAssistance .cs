@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
 using SixtyThreeBits.Core.Abstractions.Web;
-using SixtyThreeBits.Libraries.Extensions;
 using System;
 
 namespace SixtyThreeBits.Web.Domain.Libraries
@@ -21,12 +20,12 @@ namespace SixtyThreeBits.Web.Domain.Libraries
         #endregion
 
         #region Methods        
-        public T Get<T>(string key)
+        public string Get(string key)
         {
-            var result = default(T);
+            var result = default(string);
             if (_request.Cookies.ContainsKey(key))
             {
-                result = _request.Cookies[key].DeserializeJsonTo<T>();
+                result = _request.Cookies[key];
             }
 
             return result;
@@ -43,20 +42,13 @@ namespace SixtyThreeBits.Web.Domain.Libraries
             return Result;
         }
 
-        public void Set<T>(string key, T value, DateTime? expirationDate = null)
+        public void Set(string key, string value, DateTime? expirationDate = null)
         {
             if (!string.IsNullOrWhiteSpace(key))
             {
                 var options = new CookieOptions();
                 options.Expires = expirationDate ?? DateTime.Now.AddDays(1);
-                if (typeof(T) == typeof(string) || typeof(T).IsValueType)
-                {
-                    _response.Cookies.Append(key, value.ToString());
-                }
-                else
-                {
-                    _response.Cookies.Append(key, value.ToJson());
-                }
+                _response.Cookies.Append(key, value, options);
             }
         }
 

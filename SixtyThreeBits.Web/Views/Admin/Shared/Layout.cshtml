@@ -105,7 +105,9 @@
             </button>
             <div class="sidebar-menu-wrapper js-app-sidebar-menu-wrapper">
                 <div data-simplebar class="sidebar-menu-scroll">
-
+                    <div class="analog-clock">
+                        <canvas id="analog-clock" width="110" height="110"></canvas>
+                    </div>
                     <div id="sidebar-menu">
                         <ul class="metismenu list-unstyled js-side-menu" id="side-menu">
                             <li class="menu-title">Menu</li>
@@ -202,7 +204,7 @@
     <script>
         globals.textError = '@Html.Raw(Model.TextError)';
         globals.textSuccess = '@Html.Raw(Model.TextSuccess)';
-        layoutModel.sidebarStatusCookieKey = '@Model.SidebarStatusCookieKey';
+        layoutModel.sidebarStatusCookieKey = '@Model.SidebarStatusCookieKey';        
     </script>
     @RenderSection(Model.FooterSectionName, false)
 </body>

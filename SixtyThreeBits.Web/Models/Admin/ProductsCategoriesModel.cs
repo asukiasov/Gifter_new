@@ -62,8 +62,12 @@ namespace SixtyThreeBits.Web.Models.Admin
             var repository = RepositoriesFactory.GetProductsRepository();
             var productCategoryID = await repository.ProductCategoriesIUD(
                 databaseAction: Enums.DatabaseActions.CREATE,
-                productCategoryParentID: submitModel.ProductCategoryParentID,
-                productCategoryName: submitModel.ProductCategoryName
+                productCategoryID: null,
+                productCategory: new ProductCategoryIudDTO
+                {
+                    ProductCategoryParentID = submitModel.ProductCategoryParentID,
+                    ProductCategoryName = submitModel.ProductCategoryName
+                }                
             );
 
             if (productCategoryID > 0)
@@ -174,14 +178,17 @@ namespace SixtyThreeBits.Web.Models.Admin
 
             var repository = RepositoriesFactory.GetProductsRepository();
             await repository.ProductCategoriesIUD(
-                databaseAction: Enums.DatabaseActions.UPDATE,
+                databaseAction: Enums.DatabaseActions.UPDATE,                
                 productCategoryID: DBItem.ProductCategoryID,
-                productCategoryParentID: viewModel.ProductCategoryParentID,
-                productCategoryName: viewModel.ProductCategoryName,
-                productCategoryNameEng: viewModel.ProductCategoryNameEng ?? Constants.NullValueFor.String,
-                productCategoryImageFilename: categoryImageFilename,
-                productCategoryDescriptionShort: viewModel.ProductCategoryDescriptionShort ?? Constants.NullValueFor.String,
-                productCategoryDescriptionShortEng: viewModel.ProductCategoryDescriptionShortEng ?? Constants.NullValueFor.String
+                productCategory: new ProductCategoryIudDTO
+                {
+                    ProductCategoryParentID = viewModel.ProductCategoryParentID,
+                    ProductCategoryName = viewModel.ProductCategoryName,
+                    ProductCategoryNameEng = viewModel.ProductCategoryNameEng ?? Constants.NullValueFor.String,
+                    ProductCategoryImageFilename = categoryImageFilename,
+                    ProductCategoryDescriptionShort = viewModel.ProductCategoryDescriptionShort ?? Constants.NullValueFor.String,
+                    ProductCategoryDescriptionShortEng = viewModel.ProductCategoryDescriptionShortEng ?? Constants.NullValueFor.String
+                }                
             );
 
             if (!repository.IsError)
@@ -209,7 +216,10 @@ namespace SixtyThreeBits.Web.Models.Admin
             await repository.ProductCategoriesIUD(
                 databaseAction: Enums.DatabaseActions.UPDATE,
                 productCategoryID: DBItem.ProductCategoryID,
-                productCategoryImageFilename: Constants.NullValueFor.String
+                productCategory: new ProductCategoryIudDTO
+                {
+                    ProductCategoryImageFilename = Constants.NullValueFor.String
+                }                
             );
 
             viewModel.IsSuccess = !repository.IsError;

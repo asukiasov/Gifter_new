@@ -2,21 +2,49 @@
 
 namespace SixtyThreeBits.Core.DTO
 {
-    public class NewsDTO
+    public record NewsDTO
     {
         #region Properties
-        public int? NewsID { get; set; }
-        public string NewsSlug { get; set; }
-        public string NewsTitle { get; set; }
-        public string NewsTitleEng { get; set; }
-        public string NewsText { get; set; }
-        public string NewsTextEng { get; set; }
-        public string NewsShortDescription { get; set; }
-        public string NewsShortDescriptionEng { get; set; }
-        public string NewsImageFilename { get; set; }
-        public DateTime? NewsDatePublished { get; set; }
-        public bool NewsIsPublished { get; set; }
-        public DateTime? NewsDateCreated { get; set; }
+        public int? NewsID { get; init; }
+        public string NewsSlug { get; init; }
+        public string NewsTitle { get; init; }
+        public string NewsTitleEng { get; init; }
+        public string NewsText { get; init; }
+        public string NewsTextEng { get; init; }
+        public string NewsShortDescription { get; init; }
+        public string NewsShortDescriptionEng { get; init; }
+        public string NewsImageFilename { get; init; }
+        public DateTime? NewsDatePublished { get; init; }
+        public bool NewsIsPublished { get; init; }
+        public DateTime? NewsDateCreated { get; init; }
         #endregion        
+    }
+
+    public record NewsListDTO
+    {
+        #region Properties
+        public int? NewsID { get; init; }
+        public string NewsTitle { get; init; }
+        public DateTime? NewsDatePublished { get; init; }
+        public bool NewsIsPublished { get; init; }
+        public DateTime? NewsDateCreated { get; init; }
+        #endregion        
+    }
+
+    public record NewsIudDTO
+    {
+        #region Properties
+        public int? NewsID { get; init; }
+        public string NewsSlug { get; init; }
+        public string NewsTitle { get; init; }
+        public string NewsTitleEng { get; init; }
+        public string NewsShortDescription { get; init; }
+        public string NewsShortDescriptionEng { get; init; }
+        public string NewsText { get; init; }
+        public string NewsTextEng { get; init; }
+        public DateTime? NewsDatePublished { get; init; }
+        public string NewsImageFilename { get; init; }
+        public bool? NewsIsPublished { get; init; }
+        #endregion
     }
 }

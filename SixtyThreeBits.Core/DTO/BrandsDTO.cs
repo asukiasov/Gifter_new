@@ -1,19 +1,36 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SixtyThreeBits.Core.DTO
 {
-    public class BrandDTO
+    public record BrandDTO
     {
         #region Properties
-        public int? BrandID { get; set; }
-        public string BrandName { get; set; }
-        public string BrandNameEng { get; set; }
-        public string BrandImageFilename { get; set; }
-        public DateTime? BrandDateCreated { get; set; }
+        public int? BrandID { get; init; }
+        public string BrandName { get; init; }
+        public string BrandNameEng { get; init; }
+        public string BrandImageFilename { get; init; }
+        public DateTime? BrandDateCreated { get; init; }
+        #endregion
+    }
+
+    public record BrandListDTO
+    {
+        #region Properties
+        public int? BrandID { get; init; }
+        public string BrandName { get; init; }
+        public string BrandNameEng { get; init; }
+        public DateTime? BrandDateCreated { get; init; }
+        #endregion
+    }
+
+    public record BrandIudDTO
+    {
+        #region Properties
+        public int? BrandID { get; init; }
+        public string BrandSlug { get; init; }
+        public string BrandName { get; init; }
+        public string BrandNameEng { get; init; }
+        public string BrandImageFilename { get; init; }
         #endregion
     }
 }

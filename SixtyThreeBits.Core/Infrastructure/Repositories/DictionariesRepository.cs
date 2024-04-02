@@ -5,6 +5,7 @@ using SixtyThreeBits.Core.Infrastructure.Factories;
 using SixtyThreeBits.Core.Infrastructure.Repositories.Base;
 using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries;
+using SixtyThreeBits.Libraries.Extensions;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -44,10 +45,12 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
             );
         }
 
-        public async Task<int?> DictionariesIUD(Enums.DatabaseActions databaseAction, int? dictionaryID = null, string dictionaryCaption = null, string dictionaryCaptionEng = null, int? dictionaryParentID = null, string dictionaryStringCode = null, int? dictionaryIntCode = null, decimal? dictionaryDecimalValue = null, int? dictionaryCode = null, bool? dictionaryIsDefault = null, bool? dictionaryIsVisible = null, int? dictionarySortIndex = null)
+        public async Task<int?> DictionariesIUD(Enums.DatabaseActions databaseAction, int? dictionaryID, DictionarieIudDTO dictionary)
         {
+            var dictionaryJson = dictionary.ToJson();
+
             dictionaryID = await TryToReturnAsyncTask(
-                logString: $"{nameof(DictionariesIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(dictionaryID)} = {dictionaryID}, {nameof(dictionaryCaption)} = {dictionaryCaption}, {nameof(dictionaryCaptionEng)} = {dictionaryCaptionEng}, {nameof(dictionaryParentID)} = {dictionaryParentID}, {nameof(dictionaryStringCode)} = {dictionaryStringCode}, {nameof(dictionaryIntCode)} = {dictionaryIntCode}, {nameof(dictionaryDecimalValue)} = {dictionaryDecimalValue}, {nameof(dictionaryCode)} = {dictionaryCode}, {nameof(dictionaryIsDefault)} = {dictionaryIsDefault}, {nameof(dictionaryIsVisible)} = {dictionaryIsVisible}, {nameof(dictionarySortIndex)} = {dictionarySortIndex})", 
+                logString: $"{nameof(DictionariesIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(dictionaryID)} = {dictionaryID}, {nameof(dictionary)} = {dictionaryJson})", 
                 asyncFuncToTry: async () =>
                 {
                     using (var dbContext = _dbContextFactory.GetDbContext())
@@ -59,16 +62,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             [
                                 databaseAction.ToSqlParameter(nameof(databaseAction),SqlDbType.TinyInt),
                                 dictionaryID.ToSqlOutputParameter(nameof(dictionaryID),SqlDbType.Int),
-                                dictionaryCaption.ToSqlParameter(nameof(dictionaryCaption),SqlDbType.NVarChar),
-                                dictionaryCaptionEng.ToSqlParameter(nameof(dictionaryCaptionEng),SqlDbType.NVarChar),
-                                dictionaryParentID.ToSqlParameter(nameof(dictionaryParentID),SqlDbType.Int),
-                                dictionaryStringCode.ToSqlParameter(nameof(dictionaryStringCode),SqlDbType.NVarChar),
-                                dictionaryIntCode.ToSqlParameter(nameof(dictionaryIntCode),SqlDbType.Int),
-                                dictionaryDecimalValue.ToSqlParameter(nameof(dictionaryDecimalValue),SqlDbType.Money),
-                                dictionaryCode.ToSqlParameter(nameof(dictionaryCode),SqlDbType.Int),
-                                dictionaryIsDefault.ToSqlParameter(nameof(dictionaryIsDefault),SqlDbType.Bit),
-                                dictionaryIsVisible.ToSqlParameter(nameof(dictionaryIsVisible),SqlDbType.Bit),
-                                dictionarySortIndex.ToSqlParameter(nameof(dictionarySortIndex),SqlDbType.Int),
+                                dictionaryJson.ToSqlParameter(nameof(dictionaryJson),SqlDbType.NVarChar)
                             ]
                         );
 

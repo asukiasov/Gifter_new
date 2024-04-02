@@ -47,7 +47,8 @@ namespace SixtyThreeBits.Web.Models.Admin
         public async Task<List<PageViewModel.GridModel.GridItem>> GetGridViewModel()
         {
             var repository = RepositoriesFactory.GetBlogRepository();
-            var viewModel = (await repository.BlogPostList())?.Select(item => new PageViewModel.GridModel.GridItem
+            var viewModel = (await repository.BlogPostList())
+            ?.Select(item => new PageViewModel.GridModel.GridItem
             {
                 BlogPostID = item.BlogPostID,
                 BlogPostTitle = item.BlogPostTitle,
@@ -70,18 +71,21 @@ namespace SixtyThreeBits.Web.Models.Admin
                 await DeleteUploadedFile(filename: DBItem.BlogPostImageFilename, folderPath: _folderPath);
             }
 
-            await repository.BlogIUD(
+            await repository.BlogPostsIUD(
                 databaseAction: databaseAction,
                 blogPostID: blogPostID,
-                blogPostTitle: submitModel.BlogPostTitle,
-                blogPostAuthorName: submitModel.BlogPostAuthorName,
-                blogPostDate: submitModel.BlogPostDate,
-                blogPostIsPublished: submitModel.BlogPostIsPublished
+                blogPost: new BlogPostIudDTO
+                {
+                    BlogPostTitle = submitModel.BlogPostTitle,
+                    BlogPostAuthorName = submitModel.BlogPostAuthorName,
+                    BlogPostDate = submitModel.BlogPostDate,
+                    BlogPostIsPublished = submitModel.BlogPostIsPublished
+                }                
             );
 
             if (repository.IsError)
             {
-                Form.AddError(Resources.TextError);
+                Form.AddError(repository.ErrorMessage);
             }
         }
         #endregion
@@ -133,7 +137,7 @@ namespace SixtyThreeBits.Web.Models.Admin
                     public string BlogPostAuthorName { get; set; }
                     public DateTime? BlogPostDate { get; set; }
                     public DateTime? BlogPostDateCreated { get; set; }
-                    public bool BlogPostIsPublished { get; set; }
+                    public bool? BlogPostIsPublished { get; set; }
                     public string UrlBlogPost { get; set; }
                     #endregion
                 }
@@ -207,17 +211,20 @@ namespace SixtyThreeBits.Web.Models.Admin
             }
 
             var repository = RepositoriesFactory.GetBlogRepository();
-            await repository.BlogIUD(
+            await repository.BlogPostsIUD(
                 databaseAction: Enums.DatabaseActions.UPDATE,
                 blogPostID: DBItem.BlogPostID,
-                blogPostSlug: viewModel.BlogPostSlug,
-                blogPostTitle: viewModel.BlogPostTitle,
-                blogPostShortText: viewModel.BlogPostShortText,
-                blogPostText: viewModel.BlogPostText,
-                blogPostAuthorName: viewModel.BlogPostAuthorName,
-                blogPostImageFilename: blogPostImageFilename,
-                blogPostDate: viewModel.BlogPostDate,
-                blogPostIsPublished: viewModel.BlogPostIsPublished
+                blogPost: new BlogPostIudDTO
+                {
+                    BlogPostSlug = viewModel.BlogPostSlug,
+                    BlogPostTitle = viewModel.BlogPostTitle,
+                    BlogPostShortText = viewModel.BlogPostShortText,
+                    BlogPostText = viewModel.BlogPostText,
+                    BlogPostAuthorName = viewModel.BlogPostAuthorName,
+                    BlogPostImageFilename = blogPostImageFilename,
+                    BlogPostDate = viewModel.BlogPostDate,
+                    BlogPostIsPublished = viewModel.BlogPostIsPublished
+                }                
             );
 
             if (!repository.IsError)
@@ -236,10 +243,13 @@ namespace SixtyThreeBits.Web.Models.Admin
             await DeleteUploadedFile(DBItem.BlogPostImageFilename, _folderPath);
 
             var repository = RepositoriesFactory.GetBlogRepository();
-            await repository.BlogIUD(
+            await repository.BlogPostsIUD(
                 databaseAction: Enums.DatabaseActions.UPDATE,
                 blogPostID: DBItem.BlogPostID,
-                blogPostImageFilename: Constants.NullValueFor.String
+                blogPost: new BlogPostIudDTO
+                {
+                    BlogPostImageFilename = Constants.NullValueFor.String
+                }                
             );
 
             viewModel.IsSuccess = !repository.IsError;

@@ -1,11 +1,11 @@
 ﻿namespace SixtyThreeBits.Core.DTO
 {
-    public class SyncSortIndexesDTO
+    public record SyncSortIndexesDTO
     {
         #region Properties
-        public int? ID { get; set; }
-        public int? ParentID { get; set; }
-        public int? SortIndex { get; set; }
+        public int? ID { get; init; }
+        public int? ParentID { get; init; }
+        public int? SortIndex { get; init; }
         #endregion        
     }
 }

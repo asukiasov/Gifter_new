@@ -19,7 +19,8 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         [Route("", Name = ControllerActionRouteNames.Admin.Home.Page)]
         public IActionResult Index()
         {
-            return View(ViewNames.Admin.Home.Index);
+            var viewModel = Model.GetPageViewModel();
+            return View(ViewNames.Admin.Home.Index, viewModel);
         }
     }
 }

@@ -12,7 +12,7 @@
     <EmbeddedResource Remove="wwwroot\upload\**" />
     <None Remove="App_Data\**" />
     <None Remove="wwwroot\upload\**" />
-  </ItemGroup>
+  </ItemGroup>  
   <ItemGroup>
     <PackageReference Include="63BITS.Libraries.DotNetCore" Version="1.0.7" />
     <PackageReference Include="DevExpress.AspNetCore.Reporting" Version="23.2.4" />

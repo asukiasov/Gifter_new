@@ -37,6 +37,10 @@
 {
     <link href="/plugins/utils/utils.css" rel="stylesheet" />
 }
+@if (Model.Is63BitsAnalogClockEnabled)
+{
+    <link href="/plugins/63bits-analog-clock/63bits-analog-clock.css" rel="stylesheet" />    
+}
 @if (Model.Is63BitsFormsEnabled)
 {
     <link href="/plugins/63bits-bsforms/63bits-bsforms.css" rel="stylesheet" />

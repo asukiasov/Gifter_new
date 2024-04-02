@@ -37,6 +37,7 @@ namespace SixtyThreeBits.Web.Models.Shared
         public UtilityCollection Utilities { get; set; }
         public ISessionAssistance SessionAssistance { get; set; }
         public ICookieAssistance CookieAssistance { get; set; }
+        public Controller Controller { get; set; }
         public IUrlHelper Url { get; set; }
         public HttpRequest Request { get; set; }
         public HttpResponse Response { get; set; }
@@ -98,19 +99,30 @@ namespace SixtyThreeBits.Web.Models.Shared
             };
         }
 
-        public string GetRouteByName(string routeName, object routeValues = null)
+        public string GetRouteByName(string routeName, object routeValues = null, string languageCultureCode = null)
         {
-            var Result = Url.RouteUrl(routeName, routeValues);
-            if (LanguageCultureCode != Constants.Languages.ENGLISH)
+            if (string.IsNullOrWhiteSpace(languageCultureCode))
             {
-                Result = $"{WebsiteHttpPath}{Result.TrimStart('/')}";
+                languageCultureCode = LanguageCultureCode;
+            }
+
+            var result = Url.RouteUrl(routeName, routeValues);
+            if (languageCultureCode == Utilities.LanguageDefault.LanguageCultureCode)
+            {
+                result = $"{WebsiteHttpPath}{result.TrimStart('/')}";
             }
             else
             {
-                Result = $"{WebsiteHttpPath}{LanguageCultureCode}{Result}";
+                result = $"{WebsiteHttpPath}{languageCultureCode}{result}";
             }
-            return Result;
+            return result;
 
+        }
+
+        public string GetUrlPages(string pageSlug, string languageCultureCode = null)
+        {
+            var url = GetRouteByName(routeName: ControllerActionRouteNames.Website.Pages.Page, new { pageSlug = pageSlug }, languageCultureCode: languageCultureCode);
+            return url;
         }
 
         public async Task SaveUploadedFile(IFormFile postedFile, string filename, string folderPath)

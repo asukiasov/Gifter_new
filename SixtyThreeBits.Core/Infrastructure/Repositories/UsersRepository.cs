@@ -1,18 +1,14 @@
-﻿using AutoMapper;
-using Imageflow.Bindings;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using SixtyThreeBits.Core.DTO;
 using SixtyThreeBits.Core.Infrastructure.Database;
 using SixtyThreeBits.Core.Infrastructure.Factories;
 using SixtyThreeBits.Core.Infrastructure.Repositories.Base;
 using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries.Extensions;
-using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
-using static SixtyThreeBits.Core.Infrastructure.Database.DbContextQueries;
 
 namespace SixtyThreeBits.Core.Infrastructure.Repositories
 {
@@ -103,10 +99,12 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
             return result;
         }
 
-        public async Task<int?> UsersIUD(Enums.DatabaseActions databaseAction, int? roleID = null, int? userID = null, string userEmail = null, string userPassword = null, string userFirstname = null, string userLastname = null, DateTime? userBirthdate = null, string userPhoneNumberMobile = null, string userPersonalNumber = null, string userAvatarFilename = null, bool? userIsActive = null)
+        public async Task<int?> UsersIUD(Enums.DatabaseActions databaseAction, int? userID, UserIudDTO user)
         {
+            var userJson = user.ToJson();
+
             userID = await TryToReturnAsyncTask(
-                logString: $"{nameof(UsersIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(roleID)} = {roleID}, {nameof(userID)} = {userID}, {nameof(userEmail)} = {userEmail}, {nameof(userPassword)} = {userPassword}, {nameof(userFirstname)} = {userFirstname}, {nameof(userLastname)} = {userLastname}, {nameof(userBirthdate)} = {userBirthdate}, {nameof(userPhoneNumberMobile)} = {userPhoneNumberMobile}, {nameof(userPersonalNumber)} = {userPersonalNumber}, {nameof(userAvatarFilename)} = {userAvatarFilename}, {nameof(userIsActive)} = {userIsActive})", 
+                logString: $"{nameof(UsersIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(userID)} = {user}, {nameof(userJson)} = {userJson})", 
                 asyncFuncToTry: async () =>
                 {
                     using (var dbContext = _dbContextFactory.GetDbContext())
@@ -117,17 +115,8 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             sqlParameters:
                             [
                                 databaseAction.ToSqlParameter(nameof(databaseAction),SqlDbType.TinyInt),
-                                roleID.ToSqlParameter(nameof(roleID),SqlDbType.Int),
                                 userID.ToSqlOutputParameter(nameof(userID),SqlDbType.Int),
-                                userEmail.ToSqlParameter(nameof(userEmail),SqlDbType.VarChar),
-                                userPassword.ToSqlParameter(nameof(userPassword),SqlDbType.NVarChar),
-                                userFirstname.ToSqlParameter(nameof(userFirstname),SqlDbType.NVarChar),
-                                userLastname.ToSqlParameter(nameof(userLastname),SqlDbType.NVarChar),
-                                userBirthdate.ToSqlParameter(nameof(userBirthdate),SqlDbType.Date),
-                                userPhoneNumberMobile.ToSqlParameter(nameof(userPhoneNumberMobile),SqlDbType.VarChar),
-                                userPersonalNumber.ToSqlParameter(nameof(userPersonalNumber),SqlDbType.VarChar),
-                                userAvatarFilename.ToSqlParameter(nameof(userAvatarFilename),SqlDbType.NVarChar),
-                                userIsActive.ToSqlParameter(nameof(userIsActive),SqlDbType.Bit)
+                                userJson.ToSqlParameter(nameof(userJson),SqlDbType.NVarChar),
                             ]
                         );
 

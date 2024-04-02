@@ -136,51 +136,65 @@
                 #endregion
             }
 
-            public static class Pages
+            public static class PagesManagemet
             {
                 #region Properties
-                public const string Index = "AdminPages";
-                public const string AddNew = "AdminPagesAddNew";
-                public const string Update = "AdminPagesUpdate";
-                public const string Delete = "AdminPagesDelete";
-                public const string SyncParentsAndSortIndexes = "AdminPagesSyncParentsAndSortIndexes";
+                public const string Root = "AdminPagesManagement";
                 #endregion
 
                 #region Nested Classes
-                public static class Page
+                public static class Pages
                 {
                     #region Properties
-                    public const string Root = "AdminPagesPage";
-                    public const string Properties = "AdminPagesPageProperties";
-                    public const string DeleteImage = "AdminPagesPagePropertiesDeleteImage";
+                    public const string Index = "AdminPages";
+                    public const string Data = "AdminPagesData";
+                    public const string Grid = "AdminPagesGrid";
+                    public const string GridAdd = "AdminPagesGridAdd";
+                    public const string GridUpdate = "AdminPagesGridUpdate";
+                    public const string GridDelete = "AdminPagesGridDelete";
+                    #endregion
 
-                    public const string Builder = "AdminPagesPageBuilder";
-                    public const string BuilderLanguage = "AdminPagesPageBuilderLanguage";
+                    #region Nested Classes
+                    public static class Page
+                    {
+                        #region Properties
+                        public const string Root = "AdminPagesPage";
+                        public const string Data = "AdminPagesPageData";
+                        public const string Properties = "AdminPagesPageProperties";
+                        public const string PropertiesDeleteImage = "AdminPagesPagePropertiesDeleteImage";
+
+                        public const string Builder = "AdminPagesPageBuilder";
+                        public const string BuilderLanguage = "AdminPagesPageBuilderLanguage";
+                        #endregion
+                    }
+                    #endregion
+                }
+
+                public static class MenuHeader
+                {
+                    #region Properties
+                    public const string Page = "AdminMenuHeader";
+                    public const string Add = "AdminMenuHeaderAdd";
+                    public const string Update = "AdminMenuHeaderUpdate";
+                    public const string Delete = "AdminMenuHeaderDelete";
+                    public const string Sort = "AdminMenuHeaderSort";
+                    public const string Get = "AdminMenuHeaderGet";
+                    #endregion
+                }
+
+                public static class MenuFooter
+                {
+                    #region Properties
+                    public const string Page = "AdminMenuFooter";
+                    public const string Add = "AdminMenuFooterAdd";
+                    public const string Update = "AdminMenuFooterUpdate";
+                    public const string Delete = "AdminMenuFooterDelete";
+                    public const string Sort = "AdminMenuFooterSort";
+                    public const string Get = "AdminMenuFooterGet";
                     #endregion
                 }
                 #endregion
-            }
-
-            public static class Partners
-            {
-                #region Properties
-                public const string Page = "AdminPartners";
-                public const string PartnersGrid = "AdminPartnersGrid";
-                public const string PartnersGridAdd = "AdminParnersGridAdd";
-                public const string PartnersGridUpdate = "AdminPartnersGridUpdate";
-                public const string PartnersGridDelete = "AdminPartnersGridDelete";
-                #endregion
-
-                #region Nested Classes
-                public static class Partner
-                {
-                    #region Properties
-                    public const string Properties = "AdminPartnersPartner";
-                    public const string PropertiesDeleteImage = "AdminPartnersPartnerDeleteImage";
-                    #endregion
-                }
-                #endregion
-            }
+            }            
 
             public static class Permissions
             {

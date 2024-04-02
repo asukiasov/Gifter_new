@@ -66,13 +66,16 @@ namespace SixtyThreeBits.Web.Models.Admin
             await repository.BrandsIUD(
                 databaseAction: DatabaseAction,
                 brandID: brandID,
-                brandName: submitModel.BrandName,
-                brandNameEng: submitModel.BrandNameEng ?? Constants.NullValueFor.String
+                brand: new BrandIudDTO
+                {
+                    BrandName = submitModel.BrandName,
+                    BrandNameEng = submitModel.BrandNameEng ?? Constants.NullValueFor.String
+                }
             );
 
             if (repository.IsError)
             {
-                Form.AddError(Resources.TextError);
+                Form.AddError(repository.ErrorMessage);
             }
         }
         #endregion
@@ -168,10 +171,12 @@ namespace SixtyThreeBits.Web.Models.Admin
             await repository.BrandsIUD(
                 databaseAction: Enums.DatabaseActions.UPDATE,
                 brandID: DBItem.BrandID,
-                brandName: viewModel.BrandName,
-                brandNameEng: viewModel.BrandNameEng,
-                brandImageFilename: brandImageFilename
-
+                brand: new BrandIudDTO
+                {
+                    BrandName = viewModel.BrandName,
+                    BrandNameEng = viewModel.BrandNameEng,
+                    BrandImageFilename = brandImageFilename
+                }                
             );
 
             if (!repository.IsError)
@@ -198,8 +203,12 @@ namespace SixtyThreeBits.Web.Models.Admin
 
             await repository.BrandsIUD(
                 databaseAction: Enums.DatabaseActions.UPDATE,
-                brandID: DBItem.BrandID,
-                brandImageFilename: Constants.NullValueFor.String
+                brandID: null,
+                brand: new BrandIudDTO
+                {
+                    BrandID = DBItem.BrandID,
+                    BrandImageFilename = Constants.NullValueFor.String
+                }                
             );
 
             viewModel.IsSuccess = !repository.IsError;

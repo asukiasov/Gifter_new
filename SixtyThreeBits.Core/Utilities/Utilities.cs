@@ -13,10 +13,10 @@ namespace SixtyThreeBits.Core.Utilities
     {
         #region Properties
         public readonly string ContentRootPath;
-        public readonly string WebRootPath;
+        public readonly string WebRootPath;        
         public readonly CultureInfo CultureInvariant;
         public readonly CultureInfo CultureKA;
-        public readonly CultureInfo CultureUS;
+        public readonly CultureInfo CultureUS;        
 
         public readonly ReadOnlyCollection<Language> SupportedLanguages;
         public readonly ReadOnlyCollection<CultureInfo> SupportedCultures;

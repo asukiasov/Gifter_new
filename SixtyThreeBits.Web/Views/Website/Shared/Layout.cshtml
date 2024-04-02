@@ -10,7 +10,7 @@
     <link rel="icon" type="image/png" href="/images/favicon.png">
     <title>@Html.Raw(Model.PageTitle.TitleHead)</title>
     @await Html.PartialAsync(ViewNames.Shared.PluginsClient.Header, Model.PluginsClient)    
-    <link href="/css/style.css" rel="stylesheet" />
+    <link href="/css/website/style.css" rel="stylesheet" />
     
     @RenderSection("HeaderSection", false)
     @Html.Raw(Model.ScriptsHeader)
@@ -56,9 +56,8 @@
         <footer class="app-page">
         </footer>
     </div>
-    <script src="~/plugins/jsClient/jsClient.min.js"></script>
     @await Html.PartialAsync(ViewNames.Shared.PluginsClient.Footer, Model.PluginsClient)
-    <script src="/js/Layout.js"></script>
+    <script src="/js/website/layout.js"></script>
     @RenderSection("FooterSection", false)
     @Html.Raw(Model.ScriptsBodyEnd)
 </body>

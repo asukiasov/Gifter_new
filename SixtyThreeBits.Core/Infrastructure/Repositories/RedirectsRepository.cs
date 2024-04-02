@@ -1,16 +1,14 @@
-﻿using AutoMapper;
-using Imageflow.Bindings;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using SixtyThreeBits.Core.DTO;
 using SixtyThreeBits.Core.Infrastructure.Database;
 using SixtyThreeBits.Core.Infrastructure.Factories;
 using SixtyThreeBits.Core.Infrastructure.Repositories.Base;
 using SixtyThreeBits.Core.Utilities;
+using SixtyThreeBits.Libraries.Extensions;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
-using static SixtyThreeBits.Core.Infrastructure.Database.DbContextQueries;
 
 namespace SixtyThreeBits.Core.Infrastructure.Repositories
 {
@@ -23,10 +21,12 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         #endregion
 
         #region Methods
-        public async Task<int?> RedirectsIUD(Enums.DatabaseActions databaseAction, int? redirectID = null, string redirectFrom = null, string redirectTo = null)
+        public async Task<int?> RedirectsIUD(Enums.DatabaseActions databaseAction, int? redirectID, RedirectIudDTO redirect)
         {
+            var redirectJson = redirect.ToJson();
+
             redirectID = await TryToReturnAsyncTask(
-                logString: $"{nameof(RedirectsIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(redirectID)} = {redirectID}, {nameof(redirectFrom)} = {redirectFrom}, {nameof(redirectTo)} = {redirectTo})", 
+                logString: $"{nameof(RedirectsIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(redirectID)} = {redirectID}, {nameof(redirect)} = {redirectJson})", 
                 asyncFuncToTry: async () =>
                 {
                     using (var dbContext = _dbContextFactory.GetDbContext())
@@ -38,8 +38,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             [
                                 databaseAction.ToSqlParameter(nameof(databaseAction),SqlDbType.TinyInt),
                                 redirectID.ToSqlOutputParameter(nameof(redirectID),SqlDbType.Int),
-                                redirectFrom.ToSqlParameter(nameof(redirectFrom),SqlDbType.NVarChar),
-                                redirectTo.ToSqlParameter(nameof(redirectTo),SqlDbType.NVarChar),
+                                redirectJson.ToSqlParameter(nameof(redirectJson),SqlDbType.NVarChar)
                             ]
                          );
 

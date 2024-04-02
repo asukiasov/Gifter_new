@@ -47,10 +47,12 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
             return result;
         }
 
-        public async Task<int?> TeamMembersIUD(Enums.DatabaseActions databaseAction, int? teamMemberID = null, string teamMemberFirstname = null, string teamMemberLastName = null, string teamMemberPosition = null, string teamMemberShortDescription = null, string teamMemberLongDescription = null, string teamMemberImageFilename = null, bool? teamMemberIsPublished = null, int? teamMemberCategoryID = null)
+        public async Task<int?> TeamMembersIUD(Enums.DatabaseActions databaseAction, int? teamMemberID, TeamMemberIudDTO teamMember)
         {
+            var teamMemberJson = teamMember.ToJson();
+
             teamMemberID = await TryToReturnAsyncTask(
-                logString: $"{nameof(TeamMembersIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(teamMemberID)} = {teamMemberID}, {nameof(teamMemberFirstname)} = {teamMemberFirstname}, {nameof(teamMemberLastName)} = {teamMemberLastName}, {nameof(teamMemberPosition)} = {teamMemberPosition}), {nameof(teamMemberShortDescription)} = {teamMemberShortDescription}, {nameof(teamMemberLongDescription)} = {teamMemberLongDescription},{nameof(teamMemberImageFilename)} = {teamMemberImageFilename},{nameof(teamMemberIsPublished)} = {teamMemberIsPublished}, {nameof(teamMemberCategoryID)} = {teamMemberCategoryID}", 
+                logString: $"{nameof(TeamMembersIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(teamMemberID)} = {teamMemberID}, {nameof(teamMemberJson)} = {teamMemberJson})", 
                 asyncFuncToTry: async () =>
                 {
                     using (var dbContext = _dbContextFactory.GetDbContext())
@@ -62,14 +64,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             [
                                 databaseAction.ToSqlParameter(nameof(databaseAction), SqlDbType.TinyInt),
                                 teamMemberID.ToSqlOutputParameter(nameof(teamMemberID), SqlDbType.Int),
-                                teamMemberFirstname.ToSqlParameter(nameof(teamMemberFirstname), SqlDbType.NVarChar),
-                                teamMemberLastName.ToSqlParameter(nameof(teamMemberLastName), SqlDbType.NVarChar),
-                                teamMemberPosition.ToSqlParameter(nameof(teamMemberPosition), SqlDbType.NVarChar),
-                                teamMemberShortDescription.ToSqlParameter(nameof(teamMemberShortDescription), SqlDbType.NVarChar),
-                                teamMemberLongDescription.ToSqlParameter(nameof(teamMemberLongDescription), SqlDbType.NVarChar),
-                                teamMemberImageFilename.ToSqlParameter(nameof(teamMemberImageFilename), SqlDbType.NVarChar),
-                                teamMemberIsPublished.ToSqlParameter(nameof(teamMemberIsPublished), SqlDbType.Bit),
-                                teamMemberCategoryID.ToSqlParameter(nameof(teamMemberCategoryID), SqlDbType.Int),
+                                teamMemberJson.ToSqlParameter(nameof(teamMemberJson), SqlDbType.NVarChar)                                
                             ]
                         );
 
@@ -82,7 +77,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
             return teamMemberID;
         }
 
-        public async Task<List<TeamMemberDTO>> TeamMembersList()
+        public async Task<List<TeamMembersListDTO>> TeamMembersList()
         {
             var result = await TryToReturnAsyncTask(
                 logString: $"{nameof(TeamMembersList)}()", 
@@ -95,7 +90,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             databaseObjectName: nameof(TeamMembersList)
                         );
 
-                        var resultQueryable = sqb.ExecuteTableValuedFunction<TeamMemberDTO>();
+                        var resultQueryable = sqb.ExecuteTableValuedFunction<TeamMembersListDTO>();
                         resultQueryable = resultQueryable.OrderByDescending(item => item.TeamMemberDateCreated);
                         var result = await resultQueryable.ToListAsync();
                         

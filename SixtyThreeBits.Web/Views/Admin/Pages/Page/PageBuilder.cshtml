@@ -36,7 +36,7 @@
         <div class="d-flex align-items-center right-col">
 
             <div class="editor-lang-wrap dropdown">
-                <button class="editor-btn-rounded" data-toggle="dropdown" data-display="static" aria-expanded="false"><span class="js-t63-current-lang-short-name">@Model.SelectedLanguage</span></button>
+                <button class="editor-btn-rounded" data-bs-toggle="dropdown" data-display="static" aria-expanded="false"><span class="js-t63-current-lang-short-name">@Model.SelectedLanguage</span></button>
                 <div class="dropdown-menu">
                     @if (Model.HasLanguageOptions)
                     {
@@ -67,9 +67,9 @@
                 <img class="js-t63-success-img hidden" src="/plugins/63bits-page-builder/images/icons/done_white.svg" alt="success icon">
             </button>
 
-            <button class="editor-btn-rounded js-t63-editor-sidebar-toggle-btn">
+            @*<button class="editor-btn-rounded js-t63-editor-sidebar-toggle-btn">
                 <span class="hamburger"><span></span></span>
-            </button>
+            </button>*@
         </div>
     </header>
 
@@ -606,7 +606,6 @@
         PageBuilderModel.textError = '@Model.TextError';
         PageBuilderModel.language = '@Model.Language';
         PageBuilderModel.plugins.fileManager.url = '@Html.Raw(Model.UrlFileManager)';
-        PageBuilderModel.plugins.pdfViewer.url = '@Html.Raw(Model.UrlPdfViewer)';
         PageBuilderModel.data.fromServer = @Html.Raw(Model.PageData);
     </script>
 </body>

@@ -49,10 +49,12 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
             return result;
         }
 
-        public async Task<int?> BrandsIUD(Enums.DatabaseActions databaseAction, int? brandID = null, string brandName = null, string brandNameEng = null, string brandImageFilename = null)
+        public async Task<int?> BrandsIUD(Enums.DatabaseActions databaseAction, int? brandID, BrandIudDTO brand)
         {
+            var brandJson = brand.ToJson();
+
             brandID = await TryToReturnAsyncTask(
-                logString: $"{nameof(BrandsIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(brandID)} = {brandID}, {nameof(brandName)} = {brandName}, {nameof(brandNameEng)} = {brandNameEng})", 
+                logString: $"{nameof(BrandsIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(brandID)} = {brandID}, {nameof(brand)} = {brandJson})", 
                 asyncFuncToTry: async () =>
                 {
                     using (var dbContext = _dbContextFactory.GetDbContext())
@@ -64,9 +66,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             [
                                  databaseAction.ToSqlParameter(nameof(databaseAction),SqlDbType.TinyInt),
                                  brandID.ToSqlOutputParameter(nameof(brandID),SqlDbType.Int),
-                                 brandName.ToSqlParameter(nameof(brandName),SqlDbType.NVarChar),
-                                 brandNameEng.ToSqlParameter(nameof(brandNameEng),SqlDbType.NVarChar),
-                                 brandImageFilename.ToSqlParameter(nameof(brandImageFilename),SqlDbType.NVarChar)
+                                 brandJson.ToSqlParameter(nameof(brandJson),SqlDbType.NVarChar)
                             ]
                         );
 
@@ -79,7 +79,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
             return brandID;
         }
 
-        public async Task<List<BrandDTO>> BrandsList()
+        public async Task<List<BrandListDTO>> BrandsList()
         {
             var result = await TryToReturnAsyncTask(
                 logString: $"{nameof(BrandsList)}()", 
@@ -92,7 +92,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             databaseObjectName: nameof(BrandsList)
                         );
 
-                        var resultQueryable = sqb.ExecuteTableValuedFunction<BrandDTO>();
+                        var resultQueryable = sqb.ExecuteTableValuedFunction<BrandListDTO>();
                         var result = await resultQueryable
                             .OrderByDescending(item => item.BrandDateCreated)
                             .ToListAsync();

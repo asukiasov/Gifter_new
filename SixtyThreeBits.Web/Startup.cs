@@ -153,7 +153,7 @@ namespace SixtyThreeBits.Web
             {
                 string culture;
                 var path = context.Request.Path.ToString() ?? string.Empty;
-                if (path.StartsWith("/admin/"))
+                if (path.StartsWith("/admin/") || path == "/admin")
                 {
                     var languageCultureCode = context.Request.Cookies[WebConstants.Cookies.AdminLanguageCultureCode]?.ToString();
                     var language = _utilities.GetSupportedLanguageOrDefault(languageCultureCode);

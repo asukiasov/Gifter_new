@@ -241,6 +241,15 @@ namespace SixtyThreeBits.Core.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Do you really want to delete this parent record with all its children? Please type word &quot;delete&quot; to confirm..
+        /// </summary>
+        public static string TextConfirmDeleteRecursiveWithTypeDelete {
+            get {
+                return ResourceManager.GetString("TextConfirmDeleteRecursiveWithTypeDelete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Contact Address.
         /// </summary>
         public static string TextContactAddress {
@@ -574,6 +583,42 @@ namespace SixtyThreeBits.Core.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Open in new tab.
+        /// </summary>
+        public static string TextOpenInNewTab {
+            get {
+                return ResourceManager.GetString("TextOpenInNewTab", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Page External Url.
+        /// </summary>
+        public static string TextPageExternalUrl {
+            get {
+                return ResourceManager.GetString("TextPageExternalUrl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Internal Page.
+        /// </summary>
+        public static string TextPageInternal {
+            get {
+                return ResourceManager.GetString("TextPageInternal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to External Page.
+        /// </summary>
+        public static string TextPageIsExternal {
+            get {
+                return ResourceManager.GetString("TextPageIsExternal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 404 - Page Not Found.
         /// </summary>
         public static string TextPageNotFound {
@@ -678,6 +723,15 @@ namespace SixtyThreeBits.Core.Properties {
         public static string TextPrev {
             get {
                 return ResourceManager.GetString("TextPrev", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Preview.
+        /// </summary>
+        public static string TextPreview {
+            get {
+                return ResourceManager.GetString("TextPreview", resourceCulture);
             }
         }
         
@@ -948,6 +1002,15 @@ namespace SixtyThreeBits.Core.Properties {
         public static string ValidationExcelDuplicateItemFound {
             get {
                 return ResourceManager.GetString("ValidationExcelDuplicateItemFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Page slug is not unique.
+        /// </summary>
+        public static string ValidationPagesSlugNotUniq {
+            get {
+                return ResourceManager.GetString("ValidationPagesSlugNotUniq", resourceCulture);
             }
         }
         

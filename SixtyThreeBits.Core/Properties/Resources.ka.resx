@@ -177,6 +177,9 @@
   <data name="TextConfirmDeleteRecursive" xml:space="preserve">
     <value>ჩანაწერის წაშლა აგრეთვე გამოიწვევს ყველა ქვე-ჩანაწერების წაშლას (ასეთების არსებობის შემთხვევაში). ნამდვილად გსურთ გაგრძელება?</value>
   </data>
+  <data name="TextConfirmDeleteRecursiveWithTypeDelete" xml:space="preserve">
+    <value>ნამდვილად გნებავთ მთავარი ჩანაწერისა და ყველა მისი ქვე-ჩანაწერების წაშლა? გთხოვთ დასტურის მიზნად შეიტანოთ სიტყვა "delete".</value>
+  </data>
   <data name="TextContactAddress" xml:space="preserve">
     <value>საკონტაქტო მისამართი</value>
   </data>
@@ -285,6 +288,18 @@
   <data name="TextNo" xml:space="preserve">
     <value>არა</value>
   </data>
+  <data name="TextOpenInNewTab" xml:space="preserve">
+    <value>ახალ ტაბში გახსნა</value>
+  </data>
+  <data name="TextPageExternalUrl" xml:space="preserve">
+    <value>გარე გვერდის მისამართი</value>
+  </data>
+  <data name="TextPageInternal" xml:space="preserve">
+    <value>შიდა გვერდი</value>
+  </data>
+  <data name="TextPageIsExternal" xml:space="preserve">
+    <value>გარე გვერდი</value>
+  </data>
   <data name="TextPageNotFound" xml:space="preserve">
     <value>404 - გვერდი ვერ მოიძებნა</value>
   </data>
@@ -320,6 +335,9 @@
   </data>
   <data name="TextPrev" xml:space="preserve">
     <value>შემდეგი</value>
+  </data>
+  <data name="TextPreview" xml:space="preserve">
+    <value>ნახვა</value>
   </data>
   <data name="TextPrice" xml:space="preserve">
     <value>ფასი</value>
@@ -416,6 +434,9 @@
   </data>
   <data name="ValidationExcelDuplicateItemFound" xml:space="preserve">
     <value>ჩანაწერი დუბლირებულია. ხაზი {0}</value>
+  </data>
+  <data name="ValidationPagesSlugNotUniq" xml:space="preserve">
+    <value>გვერდის სლაგი არ არის უნიკალური</value>
   </data>
   <data name="ValidationPasswordLength" xml:space="preserve">
     <value>პაროლი უნდა შეიცავდეს მინიმუმ 8 სიმბოლოს</value>
