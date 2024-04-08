@@ -1,4 +1,4 @@
-﻿using SixtyThreeBits.Web.Models.Shared;
+﻿using SixtyThreeBits.Web.Models.Base;
 
 namespace SixtyThreeBits.Web.Models.Admin
 {

@@ -17,7 +17,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace SixtyThreeBits.Web.Models.Shared
+namespace SixtyThreeBits.Web.Models.Base
 {
     public class ModelBase
     {

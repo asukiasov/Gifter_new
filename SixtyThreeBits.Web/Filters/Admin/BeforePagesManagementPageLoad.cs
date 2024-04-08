@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Filters;
 using SixtyThreeBits.Web.Domain.Utilities;
 using SixtyThreeBits.Web.Domain.ViewModels.Shared;
-using SixtyThreeBits.Web.Models.Shared;
+using SixtyThreeBits.Web.Models.Base;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;

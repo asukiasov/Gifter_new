@@ -1,5 +1,5 @@
 ﻿using SixtyThreeBits.Web.Domain.Utilities;
-using SixtyThreeBits.Web.Models.Shared;
+using SixtyThreeBits.Web.Models.Base;
 using System;
 
 namespace SixtyThreeBits.Web.Models.Admin

@@ -1,5 +1,5 @@
 ﻿using SixtyThreeBits.Core.Utilities;
-using SixtyThreeBits.Web.Models.Shared;
+using SixtyThreeBits.Web.Models.Base;
 using System.Threading.Tasks;
 
 namespace SixtyThreeBits.Web.Models.Website
