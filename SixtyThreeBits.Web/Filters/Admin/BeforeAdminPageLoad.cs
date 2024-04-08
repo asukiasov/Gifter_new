@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using SixtyThreeBits.Core.Utilities;
+using SixtyThreeBits.Core.Libraries;
 using SixtyThreeBits.Libraries.Extensions;
 using SixtyThreeBits.Web.Domain.Libraries;
-using SixtyThreeBits.Web.Domain.SharedViewModels;
 using SixtyThreeBits.Web.Domain.Utilities;
-using SixtyThreeBits.Web.Models.Admin;
+using SixtyThreeBits.Web.Domain.ViewModels.Admin;
+using SixtyThreeBits.Web.Domain.ViewModels.Shared;
 using SixtyThreeBits.Web.Models.Shared;
 using System.Linq;
 using System.Threading.Tasks;
@@ -101,13 +101,13 @@ namespace SixtyThreeBits.Web.Filters.Admin
             {
                 _viewModel.Menu = _model.User.Permissions
                 .Where(item => item.PermissionIsMenuItem && item.PermissionParentID == null)
-                .Select(item => new ProjectMenuItem
+                .Select(item => new ProjectMenuViewItem
                 {
                     Caption = _model.Utilities.GetValuesByLanguage(_model.LanguageCultureCode, item.HasPermissionMenuTitle ? item.PermissionMenuTitle : item.PermissionCaption, item.HasPermissionMenuTitleEng ? item.PermissionMenuTitleEng : item.PermissionCaptionEng),
                     NavigateUrl = string.IsNullOrWhiteSpace(item.PermissionPagePath) ? item.PermissionCode : item.PermissionPagePath,
                     Icon = item.PermissionMenuIcon,
                     IsSelected = item.PermissionPagePath == _model.UrlCurrentPageWithoutDomain,
-                    Children = _model.User.Permissions.Where(subItem => subItem.PermissionIsMenuItem && subItem.PermissionParentID == item.PermissionID).Select(SubItem => new ProjectMenuItem
+                    Children = _model.User.Permissions.Where(subItem => subItem.PermissionIsMenuItem && subItem.PermissionParentID == item.PermissionID).Select(SubItem => new ProjectMenuViewItem
                     {
                         Caption = _model.Utilities.GetValuesByLanguage(_model.LanguageCultureCode, SubItem.HasPermissionMenuTitle ? SubItem.PermissionMenuTitle : SubItem.PermissionCaption, SubItem.HasPermissionMenuTitleEng ? SubItem.PermissionMenuTitleEng : SubItem.PermissionCaptionEng),
                         NavigateUrl = SubItem.PermissionPagePath,

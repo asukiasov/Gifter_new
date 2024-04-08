@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using SixtyThreeBits.Web.Domain.SharedViewModels;
 using SixtyThreeBits.Web.Domain.Utilities;
+using SixtyThreeBits.Web.Domain.ViewModels.Shared;
 using SixtyThreeBits.Web.Models.Shared;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -45,7 +45,7 @@ namespace SixtyThreeBits.Web.Filters.Admin
                 var tabs = _model.User.Permissions
                 .Where(item => item.PermissionIsMenuItem && item.PermissionParentID == tabsParentID)
                 .OrderBy(item => item.PermissionSortIndex)
-                .Select(item => new ProjectMenuItem
+                .Select(item => new ProjectMenuViewItem
                 {
                     Caption = _model.Utilities.GetValuesByLanguage(_model.LanguageCultureCode, item.PermissionMenuTitleOrCaption, item.PermissionMenuTitleOrCaptionEng),
                     NavigateUrl = _model.Url.RouteUrl(item.PermissionCodeName),

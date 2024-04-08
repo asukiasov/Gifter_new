@@ -1,11 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Web.Domain.Libraries;
-using SixtyThreeBits.Web.Domain.SharedViewModels;
 using SixtyThreeBits.Web.Domain.Utilities;
+using SixtyThreeBits.Web.Domain.ViewModels.Shared;
+using SixtyThreeBits.Web.Domain.ViewModels.Website;
 using SixtyThreeBits.Web.Models.Shared;
-using SixtyThreeBits.Web.Models.Website;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -100,11 +99,11 @@ namespace SixtyThreeBits.Web.Filters.Website
 
             if(menuHeader!= null)
             {
-                _viewModel.Menu = new List<ProjectMenuItem>();
+                _viewModel.Menu = new List<ProjectMenuViewItem>();
                 var parents = menuHeader.Where(item => item.MenuHeaderParentID == null);
                 foreach (var parent in parents)
                 {
-                    var parentItem = new ProjectMenuItem();
+                    var parentItem = new ProjectMenuViewItem();
                     if(parent.MenuHeaderIsExternalPage)
                     {
                         parentItem.Caption = _model.Utilities.GetValuesByLanguage(_model.LanguageCultureCode, parent.MenuHeaderTitle, parent.MenuHeaderTitleEng);
@@ -119,11 +118,11 @@ namespace SixtyThreeBits.Web.Filters.Website
                     var children = menuHeader.Where(item => item.MenuHeaderParentID == parent.MenuHeaderID);
                     if (children.Any())
                     {
-                        parentItem.Children = new List<ProjectMenuItem>();
+                        parentItem.Children = new List<ProjectMenuViewItem>();
 
                         foreach (var child in children)
                         {
-                            var childItem = new ProjectMenuItem();
+                            var childItem = new ProjectMenuViewItem();
                             if (child.MenuHeaderIsExternalPage)
                             {
                                 childItem.Caption = _model.Utilities.GetValuesByLanguage(_model.LanguageCultureCode, child.MenuHeaderTitle, child.MenuHeaderTitleEng);
@@ -151,7 +150,7 @@ namespace SixtyThreeBits.Web.Filters.Website
                 var menuFooterColumn2 = menuFooter.Skip(4).Take(4);
                 _viewModel.FooterMenu1 = menuFooterColumn1.Select((item) => 
                 {
-                    var footerItem = new ProjectMenuItem();
+                    var footerItem = new ProjectMenuViewItem();
                     if (item.MenuFooterIsExternalPage)
                     {
                         footerItem.Caption = _model.Utilities.GetValuesByLanguage(_model.LanguageCultureCode, item.MenuFooterTitle, item.MenuFooterTitleEng);
@@ -166,7 +165,7 @@ namespace SixtyThreeBits.Web.Filters.Website
                 }).ToList();
                 _viewModel.FooterMenu2 = menuFooterColumn2.Select((item) =>
                 {
-                    var footerItem = new ProjectMenuItem();
+                    var footerItem = new ProjectMenuViewItem();
                     if (item.MenuFooterIsExternalPage)
                     {
                         footerItem.Caption = _model.Utilities.GetValuesByLanguage(_model.LanguageCultureCode, item.MenuFooterTitle, item.MenuFooterTitleEng);
