@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries.Extensions;
 using SixtyThreeBits.Web.Controllers.Admin.Base;
-using SixtyThreeBits.Web.Domain;
+using SixtyThreeBits.Web.Domain.Utilities;
 using SixtyThreeBits.Web.Models.Admin;
 using System.Threading.Tasks;
 

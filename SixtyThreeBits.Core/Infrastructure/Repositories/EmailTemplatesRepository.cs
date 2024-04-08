@@ -1,8 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SixtyThreeBits.Core.DTO;
 using SixtyThreeBits.Core.Infrastructure.Database;
-using SixtyThreeBits.Core.Infrastructure.Factories;
-using SixtyThreeBits.Core.Infrastructure.Repositories.Base;
 using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries.Extensions;
 using System.Collections.Generic;
@@ -14,7 +12,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
     public class EmailTemplatesRepository : RepositoryBase
     {
         #region Constructors
-        public EmailTemplatesRepository(DbContextFactory connectionFactory) : base(connectionFactory)
+        public EmailTemplatesRepository(DbContextFactory dbContextFactory) : base(dbContextFactory)
         {            
         }
         #endregion

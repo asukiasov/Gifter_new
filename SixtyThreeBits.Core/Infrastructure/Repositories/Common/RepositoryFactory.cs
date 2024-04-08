@@ -1,99 +1,99 @@
-﻿using SixtyThreeBits.Core.Infrastructure.Repositories;
+﻿using SixtyThreeBits.Core.Infrastructure.Database;
 
-namespace SixtyThreeBits.Core.Infrastructure.Factories
+namespace SixtyThreeBits.Core.Infrastructure.Repositories
 {
     public class RepositoryFactory
     {
         #region Properties                
-        readonly DbContextFactory _connectionFactory;
+        readonly DbContextFactory _dbContextFactory;
         #endregion
 
         #region Constructors
         public RepositoryFactory(string dbConnectionString)
         {
-            _connectionFactory = new DbContextFactory(dbConnectionString);
+            _dbContextFactory = new DbContextFactory(dbConnectionString);
         }
         #endregion
 
         #region Methods
         public BlogPostsRepository GetBlogRepository()
         {
-            return new BlogPostsRepository(_connectionFactory);
+            return new BlogPostsRepository(_dbContextFactory);
         }
 
         public BrandsRepository GetBrandsRepository()
         {
-            return new BrandsRepository(_connectionFactory);
+            return new BrandsRepository(_dbContextFactory);
         }
 
         public CountriesRepository GetCountriesRepository()
         {
-            return new CountriesRepository(_connectionFactory);
+            return new CountriesRepository(_dbContextFactory);
         }
 
         public DictionariesRepository GetDictionariesRepository()
         {
-            return new DictionariesRepository(_connectionFactory);
+            return new DictionariesRepository(_dbContextFactory);
         }
 
         public EmailTemplatesRepository GetEmailTemplatesRepository()
         {
-            return new EmailTemplatesRepository(_connectionFactory);
+            return new EmailTemplatesRepository(_dbContextFactory);
         }
 
         public MenuFooterRepository GetMenuFooterRepository()
         {
-            return new MenuFooterRepository(_connectionFactory);
+            return new MenuFooterRepository(_dbContextFactory);
         }
 
         public MenuHeaderRepository GetMenuHeaderRepository()
         {
-            return new MenuHeaderRepository(_connectionFactory);
+            return new MenuHeaderRepository(_dbContextFactory);
         }
 
         public NewsRepository GetNewsRepository()
         {
-            return new NewsRepository(_connectionFactory);
+            return new NewsRepository(_dbContextFactory);
         }
 
         public PagesRepository GetPagesRepository()
         {
-            return new PagesRepository(_connectionFactory);
-        }        
+            return new PagesRepository(_dbContextFactory);
+        }
 
         public PermissionsRepository GetPermissionsRepository()
         {
-            return new PermissionsRepository(_connectionFactory);
+            return new PermissionsRepository(_dbContextFactory);
         }
 
         public ProductsRepository GetProductsRepository()
         {
-            return new ProductsRepository(_connectionFactory);
+            return new ProductsRepository(_dbContextFactory);
         }
 
         public RedirectsRepository GetRedirectsRepository()
         {
-            return new RedirectsRepository(_connectionFactory);
+            return new RedirectsRepository(_dbContextFactory);
         }
 
         public RolesRepository GetRolesRepository()
         {
-            return new RolesRepository(_connectionFactory);
+            return new RolesRepository(_dbContextFactory);
         }
 
         public SystemPropertiesRepository GetSystemPropertiesRepository()
         {
-            return new SystemPropertiesRepository(_connectionFactory);
+            return new SystemPropertiesRepository(_dbContextFactory);
         }
 
         public TeamMembersRepository GetTeamMembersRepository()
         {
-            return new TeamMembersRepository(_connectionFactory);
+            return new TeamMembersRepository(_dbContextFactory);
         }
 
         public UsersRepository GetUsersRepository()
         {
-            return new UsersRepository(_connectionFactory);
+            return new UsersRepository(_dbContextFactory);
         }
         #endregion        
     }

@@ -1,4 +1,4 @@
-﻿namespace SixtyThreeBits.Web.Domain
+﻿namespace SixtyThreeBits.Web.Domain.Utilities
 {
     public static class WebConstants
     {

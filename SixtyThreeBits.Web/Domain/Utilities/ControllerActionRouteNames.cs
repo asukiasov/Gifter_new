@@ -1,4 +1,4 @@
-﻿namespace SixtyThreeBits.Web.Domain
+﻿namespace SixtyThreeBits.Web.Domain.Utilities
 {
     public static class ControllerActionRouteNames
     {
@@ -194,7 +194,7 @@
                     #endregion
                 }
                 #endregion
-            }            
+            }
 
             public static class Permissions
             {
@@ -204,7 +204,7 @@
                 public const string TreeAdd = "AdminPermissionsTreeAdd";
                 public const string TreeUpdate = "AdminPermissionsTreeUpdate";
                 public const string TreeDelete = "AdminPermissionsTreeDelete";
-                public const string TreeUpdateParent = "AdminPermissionsTreeUpdateParent"; 
+                public const string TreeUpdateParent = "AdminPermissionsTreeUpdateParent";
                 #endregion
             }
 
@@ -284,8 +284,8 @@
                 public const string Page = "AdminRolesPermissions";
                 public const string RolesGrid = "AdminRolesPermissionsRolesGrid";
                 public const string PermissionsTree = "AdminRolesPermissionsPermissionsTree";
-                public const string PermissionsGetByRole = "AdminRolesPermissionsPermissionsGetByRole";                
-                public const string Save = "AdminRolesPermissionsSave"; 
+                public const string PermissionsGetByRole = "AdminRolesPermissionsPermissionsGetByRole";
+                public const string Save = "AdminRolesPermissionsSave";
                 #endregion
             }
 
@@ -337,7 +337,7 @@
                 public const string Grid = "AdminUsersGrid";
                 public const string GridAdd = "AdminUsersGridAdd";
                 public const string GridUpdate = "AdminUsersGridUpdate";
-                public const string GridDelete = "AdminUsersGridDelete";                                                
+                public const string GridDelete = "AdminUsersGridDelete";
                 #endregion
 
                 #region Nested Classes

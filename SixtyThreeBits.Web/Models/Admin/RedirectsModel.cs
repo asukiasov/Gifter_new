@@ -5,13 +5,13 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using SixtyThreeBits.Core.DTO;
 using SixtyThreeBits.Core.Properties;
 using SixtyThreeBits.Core.Utilities;
-using SixtyThreeBits.Web.Domain;
 using SixtyThreeBits.Web.Domain.Libraries;
+using SixtyThreeBits.Web.Domain.Utilities;
 using SixtyThreeBits.Web.Models.Shared;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using static SixtyThreeBits.Web.Domain.ViewNames.Admin;
+using static SixtyThreeBits.Web.Domain.Utilities.ViewNames.Admin;
 
 namespace SixtyThreeBits.Web.Models.Admin
 {

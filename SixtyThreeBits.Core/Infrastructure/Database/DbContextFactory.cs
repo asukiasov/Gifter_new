@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace SixtyThreeBits.Core.Infrastructure.Factories
+namespace SixtyThreeBits.Core.Infrastructure.Database
 {
     public class DbContextFactory
     {
@@ -11,7 +11,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Factories
         #region Constructors
         public DbContextFactory(string dbConnectionString)
         {
-            _dbConnectionString = dbConnectionString;            
+            _dbConnectionString = dbConnectionString;
         }
         #endregion
 

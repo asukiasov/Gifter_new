@@ -1,8 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SixtyThreeBits.Core.DTO;
 using SixtyThreeBits.Core.Infrastructure.Database;
-using SixtyThreeBits.Core.Infrastructure.Factories;
-using SixtyThreeBits.Core.Infrastructure.Repositories.Base;
 using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries.Extensions;
 using System;
@@ -16,7 +14,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
     public class ProductsRepository : RepositoryBase
     {
         #region Constructors
-        public ProductsRepository(DbContextFactory connectionFactory) : base(connectionFactory)
+        public ProductsRepository(DbContextFactory dbContextFactory) : base(dbContextFactory)
         {            
         }
         #endregion

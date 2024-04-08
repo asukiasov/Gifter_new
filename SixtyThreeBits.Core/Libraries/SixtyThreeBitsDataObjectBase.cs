@@ -10,9 +10,10 @@ namespace SixtyThreeBits.Core.Libraries
     public class SixtyThreeBitsDataObjectBase
     {
         #region Properties
+        string _errorMessageForLog;
+
         public bool IsError { private set; get; }
-        public string ErrorMessage { private set; get; }
-        public string ErrorMessageExtended { private set; get; }
+        public string ErrorMessage { private set; get; }        
         public Exception ExceptionObject { private set; get; }
         public bool IsCustomDatabaseMessage { private set; get; }
         #endregion
@@ -158,10 +159,10 @@ namespace SixtyThreeBits.Core.Libraries
             {
                 ErrorMessage = $"Exception: {ex.Message}{Environment.NewLine}InnerException: {ex.InnerException.Message}{Environment.NewLine}";
             }
-            ErrorMessageExtended = string.Format("Source File - {0}{4}Line Number - {1}{4}{2} --- {3}", callerFilePath, callerLineNumber, logString, ErrorMessage, Environment.NewLine);
+            _errorMessageForLog = string.Format("Source File - {0}{4}Line Number - {1}{4}{2} --- {3}", callerFilePath, callerLineNumber, logString, ErrorMessage, Environment.NewLine);
             if (!IsCustomDatabaseMessage)
             {
-                ErrorMessageExtended.LogString();
+                _errorMessageForLog.LogString();
             }
         }
 
@@ -181,10 +182,10 @@ namespace SixtyThreeBits.Core.Libraries
                 }
             }
             ErrorMessage = sb.ToString();
-            ErrorMessageExtended = string.Format("Source File - {0}{4}Line Number - {1}{4}{2} --- {3}", callerFilePath, callerLineNumber, logString, ErrorMessage, Environment.NewLine);
+            _errorMessageForLog = string.Format("Source File - {0}{4}Line Number - {1}{4}{2} --- {3}", callerFilePath, callerLineNumber, logString, ErrorMessage, Environment.NewLine);
             if (!IsCustomDatabaseMessage)
             {
-                ErrorMessageExtended.LogString();
+                _errorMessageForLog.LogString();
             }
         }
         #endregion

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SixtyThreeBits.Core.Libraries.FileStorages.Core
+namespace SixtyThreeBits.Core.Libraries.FileStorages.Common
 {
     public record FileStorageItem
     (

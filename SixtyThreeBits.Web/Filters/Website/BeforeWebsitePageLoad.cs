@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using SixtyThreeBits.Core.Utilities;
-using SixtyThreeBits.Web.Domain;
 using SixtyThreeBits.Web.Domain.Libraries;
 using SixtyThreeBits.Web.Domain.SharedViewModels;
+using SixtyThreeBits.Web.Domain.Utilities;
 using SixtyThreeBits.Web.Models.Shared;
 using SixtyThreeBits.Web.Models.Website;
 using System.Collections.Generic;
@@ -50,7 +50,7 @@ namespace SixtyThreeBits.Web.Filters.Website
 
         void initStartUp(ActionExecutingContext filterContext)
         {
-            _model.LanguageCultureCode = filterContext.RouteData.Values[WebConstants.RouteValues.Culture]?.ToString() ?? Enums.Languages.GEORGIAN;
+            _model.LanguageCultureCode = filterContext.RouteData.Values[WebConstants.RouteValues.Culture]?.ToString() ?? _model.Utilities.LanguageDefault.LanguageCultureCode;
         }
 
         void initViewModel()

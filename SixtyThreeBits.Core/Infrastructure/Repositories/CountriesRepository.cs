@@ -1,8 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SixtyThreeBits.Core.DTO;
 using SixtyThreeBits.Core.Infrastructure.Database;
-using SixtyThreeBits.Core.Infrastructure.Factories;
-using SixtyThreeBits.Core.Infrastructure.Repositories.Base;
 using SixtyThreeBits.Libraries;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +11,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
     public class CountriesRepository : RepositoryBase
     {
         #region Contructors
-        public CountriesRepository(DbContextFactory connectionFactory) : base(connectionFactory)
+        public CountriesRepository(DbContextFactory dbContextFactory) : base(dbContextFactory)
         {
         }
         #endregion

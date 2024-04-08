@@ -1,7 +1,7 @@
-﻿using SixtyThreeBits.Core.Infrastructure.Factories;
+﻿using SixtyThreeBits.Core.Infrastructure.Database;
 using SixtyThreeBits.Core.Libraries;
 
-namespace SixtyThreeBits.Core.Infrastructure.Repositories.Base
+namespace SixtyThreeBits.Core.Infrastructure.Repositories
 {
     public class RepositoryBase : SixtyThreeBitsDataObjectBase
     {

@@ -1,4 +1,4 @@
-﻿namespace SixtyThreeBits.Web.Domain
+﻿namespace SixtyThreeBits.Web.Domain.Utilities
 {
     public static class ViewNames
     {
@@ -36,7 +36,7 @@
                 public const string CarouselItem = "~/Views/Admin/Carousel/CarouselItem.cshtml";
                 #endregion               
             }
-            
+
             public static class Dictionaries
             {
                 #region Properties
@@ -132,7 +132,7 @@
                     #endregion
                 }
                 #endregion
-            }            
+            }
 
             public static class ProductCategories
             {
@@ -148,7 +148,7 @@
                 public const string Page = "~/Views/Admin/Products/Products.cshtml";
                 public const string ProductProperties = "~/Views/Admin/Products/ProductProperties.cshtml";
                 #endregion                
-            }            
+            }
 
             public static class Permissions
             {
@@ -188,7 +188,7 @@
             public static class Shared
             {
                 #region Properties
-                public const string Layout = "~/Views/Admin/Shared/Layout.cshtml";                
+                public const string Layout = "~/Views/Admin/Shared/Layout.cshtml";
                 public const string PopupLayout = "~/Views/Admin/Shared/PopupLayout.cshtml";
                 public const string Tabs = "~/Views/Admin/Shared/Tabs.cshtml";
                 public const string SuccessErrorToastPartialView = "~/Views/Admin/Shared/SuccessErrorToastPartialView.cshtml";
@@ -226,7 +226,7 @@
             public static class Users
             {
                 #region Properties
-                public const string Page = "~/Views/Admin/Users/Users.cshtml";                
+                public const string Page = "~/Views/Admin/Users/Users.cshtml";
                 #endregion
 
                 #region Nested Classes
@@ -298,7 +298,7 @@
         }
 
         public static class Shared
-        {            
+        {
             #region Nested Classes            
             public static class FileTree
             {

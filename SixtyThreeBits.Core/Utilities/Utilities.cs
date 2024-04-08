@@ -1,6 +1,4 @@
-﻿using SixtyThreeBits.Core.Infrastructure.Repositories.Base;
-using SixtyThreeBits.Core.Properties;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
@@ -161,27 +159,6 @@ namespace SixtyThreeBits.Core.Utilities
         public string FormatQuantityValue(object value)
         {
             return string.Format("{0:#.#}", value);
-        }
-
-        public string GetDatabaseErrorMessage(RepositoryBase repository)
-        {
-            string errorMessage = null;
-            if (repository != null)
-            {
-                if (repository.IsError)
-                {
-                    if (repository.IsCustomDatabaseMessage)
-                    {
-                        errorMessage = repository.ErrorMessage;
-                    }
-                    else
-                    {
-                        errorMessage = Resources.TextError;
-                    }
-                }
-            }
-
-            return errorMessage;
         }
 
         public Language GetSupportedLanguageOrDefault(string languageCultureCode)

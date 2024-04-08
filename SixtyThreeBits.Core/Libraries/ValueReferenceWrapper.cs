@@ -1,4 +1,4 @@
-﻿namespace SixtyThreeBits.Core.Utilities
+﻿namespace SixtyThreeBits.Core.Libraries
 {
     public class ValueWrapper<T> where T : struct
     {

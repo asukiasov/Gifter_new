@@ -1,11 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SixtyThreeBits.Core.DTO;
 using SixtyThreeBits.Core.Infrastructure.Database;
-using SixtyThreeBits.Core.Infrastructure.Factories;
-using SixtyThreeBits.Core.Infrastructure.Repositories.Base;
 using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries.Extensions;
-using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -16,7 +13,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
     public class NewsRepository : RepositoryBase
     {
         #region Constructors
-        public NewsRepository(DbContextFactory connectionFactory) : base(connectionFactory)
+        public NewsRepository(DbContextFactory dbContextFactory) : base(dbContextFactory)
         {            
         }
         #endregion

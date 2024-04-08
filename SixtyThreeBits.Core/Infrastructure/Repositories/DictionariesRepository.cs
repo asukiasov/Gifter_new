@@ -1,8 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SixtyThreeBits.Core.DTO;
 using SixtyThreeBits.Core.Infrastructure.Database;
-using SixtyThreeBits.Core.Infrastructure.Factories;
-using SixtyThreeBits.Core.Infrastructure.Repositories.Base;
 using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries;
 using SixtyThreeBits.Libraries.Extensions;
@@ -16,7 +14,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
     public class DictionariesRepository : RepositoryBase
     {
         #region Contructors
-        public DictionariesRepository(DbContextFactory connectionFactory) : base(connectionFactory)
+        public DictionariesRepository(DbContextFactory dbContextFactory) : base(dbContextFactory)
         {            
         }
         #endregion

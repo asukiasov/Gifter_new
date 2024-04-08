@@ -1,7 +1,7 @@
 ﻿using ExcelDataReader;
 using OfficeOpenXml;
 using SixtyThreeBits.Core.DTO;
-using SixtyThreeBits.Core.Infrastructure.Factories;
+using SixtyThreeBits.Core.Infrastructure.Repositories;
 using SixtyThreeBits.Core.Properties;
 using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries.Extensions;

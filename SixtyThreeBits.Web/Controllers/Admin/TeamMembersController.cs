@@ -2,8 +2,8 @@
 using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries.Extensions;
 using SixtyThreeBits.Web.Controllers.Admin.Base;
-using SixtyThreeBits.Web.Domain;
 using SixtyThreeBits.Web.Domain.SharedViewModels;
+using SixtyThreeBits.Web.Domain.Utilities;
 using SixtyThreeBits.Web.Filters.Admin;
 using SixtyThreeBits.Web.Models.Admin;
 using System.Threading.Tasks;

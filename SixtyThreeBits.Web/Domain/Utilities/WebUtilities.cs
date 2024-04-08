@@ -10,7 +10,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace SixtyThreeBits.Web.Domain
+namespace SixtyThreeBits.Web.Domain.Utilities
 {
     public class WebUtilities
     {
