@@ -69,6 +69,7 @@ namespace SixtyThreeBits.Web.Domain.Libraries
             .FocusedRowEnabled(true)
             .FocusedRowIndex(0)
             .SyncLookupFilterValues(false)
+            .AllowColumnResizing(true)
             .Toolbar(options =>
             {
                 options.Visible(false);
