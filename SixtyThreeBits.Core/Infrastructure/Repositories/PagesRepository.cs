@@ -161,7 +161,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             databaseObjectName: nameof(PagesList)
                         );
                         var resultQueryable = sqb.ExecuteTableValuedFunction<PagesListDTO>();
-                        resultQueryable = resultQueryable.OrderBy(item => item.PageTitle);
+                        resultQueryable = resultQueryable.OrderByDescending(item => item.PageDateCreated);
                         var result = await resultQueryable.ToListAsync();
                                                 
                         return result;

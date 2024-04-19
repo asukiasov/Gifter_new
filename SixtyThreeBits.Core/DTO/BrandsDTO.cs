@@ -26,8 +26,6 @@ namespace SixtyThreeBits.Core.DTO
     public record BrandIudDTO
     {
         #region Properties
-        public int? BrandID { get; init; }
-        public string BrandSlug { get; init; }
         public string BrandName { get; init; }
         public string BrandNameEng { get; init; }
         public string BrandImageFilename { get; init; }

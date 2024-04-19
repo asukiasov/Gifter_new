@@ -11,7 +11,7 @@ using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries;
 using SixtyThreeBits.Web.Domain.Libraries;
 using SixtyThreeBits.Web.Domain.Utilities;
-using SixtyThreeBits.Web.Domain.ViewModels.Shared;
+using SixtyThreeBits.Web.Domain.ViewModels.Base;
 using SixtyThreeBits.Web.Models.Base;
 using System;
 using System.Collections.Generic;
@@ -23,41 +23,41 @@ namespace SixtyThreeBits.Web.Models.Admin
     public class NewsModel : ModelBase
     {
         #region Methods
-        public PageViewModel GetPageViewModel()
+        public ViewModel GetViewModel()
         {
-            var viewModel = new PageViewModel();
-            viewModel.ShowAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.News.GridAdd);
+            var viewModel = new ViewModel();
+            viewModel.ShowAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.NewsController.GridAdd);
 
-            viewModel.Grid = new PageViewModel.GridModel();
-            viewModel.Grid.AllowAdd = User.HasPermission(ControllerActionRouteNames.Admin.News.GridAdd);
-            viewModel.Grid.AllowUpdate = User.HasPermission(ControllerActionRouteNames.Admin.News.GridUpdate);
-            viewModel.Grid.AllowDelete = User.HasPermission(ControllerActionRouteNames.Admin.News.GridDelete);
-            viewModel.Grid.UrlLoad = Url.RouteUrl(ControllerActionRouteNames.Admin.News.Grid);
-            viewModel.Grid.UrlAddNew = Url.RouteUrl(ControllerActionRouteNames.Admin.News.GridAdd);
-            viewModel.Grid.UrlUpdate = Url.RouteUrl(ControllerActionRouteNames.Admin.News.GridUpdate);
-            viewModel.Grid.UrlDelete = Url.RouteUrl(ControllerActionRouteNames.Admin.News.GridDelete);
+            viewModel.Grid = new ViewModel.GridViewModel();
+            viewModel.Grid.AllowAdd = User.HasPermission(ControllerActionRouteNames.Admin.NewsController.GridAdd);
+            viewModel.Grid.AllowUpdate = User.HasPermission(ControllerActionRouteNames.Admin.NewsController.GridUpdate);
+            viewModel.Grid.AllowDelete = User.HasPermission(ControllerActionRouteNames.Admin.NewsController.GridDelete);
+            viewModel.Grid.UrlLoad = Url.RouteUrl(ControllerActionRouteNames.Admin.NewsController.Grid);
+            viewModel.Grid.UrlAddNew = Url.RouteUrl(ControllerActionRouteNames.Admin.NewsController.GridAdd);
+            viewModel.Grid.UrlUpdate = Url.RouteUrl(ControllerActionRouteNames.Admin.NewsController.GridUpdate);
+            viewModel.Grid.UrlDelete = Url.RouteUrl(ControllerActionRouteNames.Admin.NewsController.GridDelete);
 
             return viewModel;
         }
 
-        public async Task<List<PageViewModel.GridModel.GridItem>> GetGridViewModel()
+        public async Task<List<ViewModel.GridViewModel.GridItem>> ListGridItems()
         {
             var repository = RepositoriesFactory.GetNewsRepository();
             var viewModel = (await repository.NewsList())
-            ?.Select(item => new PageViewModel.GridModel.GridItem
+            ?.Select(item => new ViewModel.GridViewModel.GridItem
             {
                 NewsID = item.NewsID,
                 NewsTitle = item.NewsTitle,
                 NewsDatePublished = item.NewsDatePublished,
                 NewsIsPublished = item.NewsIsPublished,
                 NewsDateCreated = item.NewsDateCreated,
-                UrlNewsProperties = Url.RouteUrl(ControllerActionRouteNames.Admin.News.NewsItem, new { newsID = item.NewsID })
+                UrlNewsProperties = Url.RouteUrl(ControllerActionRouteNames.Admin.NewsPropertiesController.Properties, new { newsID = item.NewsID })
             })
             .ToList();
             return viewModel;
         }
 
-        public async Task CRUD(Enums.DatabaseActions databaseAction, int? newsID, PageViewModel.GridModel.GridItem submitModel)
+        public async Task IUD(Enums.DatabaseActions databaseAction, int? newsID, ViewModel.GridViewModel.GridItem submitModel)
         {
             var repository = RepositoriesFactory.GetNewsRepository();
             await repository.NewsIUD(
@@ -78,20 +78,20 @@ namespace SixtyThreeBits.Web.Models.Admin
         #endregion
 
         #region Nested Classes
-        public class PageViewModel
+        public class ViewModel
         {
             #region Properties
             public bool ShowAddNewButton { get; set; }
-            public GridModel Grid { get; set; }
+            public GridViewModel Grid { get; set; }
             #endregion
 
             #region Nested Classes
-            public class GridModel : DevExtremeGridViewModelBase, IDevExtremeGridModel<GridModel.GridItem>
+            public class GridViewModel : DevExtremeGridViewModelBase<GridViewModel.GridItem>
             {
                 #region Methods
-                public DataGridBuilder<GridItem> Render(IHtmlHelper html)
+                public override DataGridBuilder<GridItem> Render(IHtmlHelper html)
                 {
-                    var grid = GetGridWithStartupValues<GridItem>(html: html, keyFieldName: nameof(GridItem.NewsID));
+                    var grid = CreateGridWithStartupValues(html: html, keyFieldName: nameof(GridItem.NewsID));
                     grid
                     .ID("NewsGrid")
                     .OnInitialized("newsModel.onGridInit")
@@ -163,9 +163,9 @@ namespace SixtyThreeBits.Web.Models.Admin
 
             viewModel.NewsImageFilename = DBItem.NewsImageFilename;
             viewModel.NewsImageHttpPath = FileStorage.GetUploadedFileHttpPath(DBItem.NewsImageFilename, _folderPath);
-            viewModel.UrlDeleteImage = Url.RouteUrl(ControllerActionRouteNames.Admin.News.NewsItemDeleteImage, new { newsID = DBItem.NewsID });
+            viewModel.UrlDeleteImage = Url.RouteUrl(ControllerActionRouteNames.Admin.NewsPropertiesController.DeleteImage, new { newsID = DBItem.NewsID });
 
-            var urlFileManager = Url.RouteUrl(ControllerActionRouteNames.Admin.FileManager.Page, new { ModuleName = Enums.FileManagerModules.News });
+            var urlFileManager = Url.RouteUrl(ControllerActionRouteNames.Admin.FileManagerController.FileManager, new { ModuleName = Enums.FileManagerModules.News });
             viewModel.UrlFileManager = urlFileManager;
 
             return viewModel;
@@ -217,9 +217,12 @@ namespace SixtyThreeBits.Web.Models.Admin
                 }
             );
 
-            if (!repository.IsError)
+            if (repository.IsError)
             {
-                viewModel.IsSaved = true;
+                viewModel.AddError(repository.ErrorMessage);
+            }
+            else
+            {
                 if (hasNewsImage)
                 {
                     await SaveUploadedFile(viewModel.NewsImageFile, newsImageFilename, _folderPath);
@@ -240,8 +243,7 @@ namespace SixtyThreeBits.Web.Models.Admin
                 news: new NewsIudDTO
                 {
                     NewsImageFilename = Constants.NullValueFor.String
-                }
-                
+                }                
             );
             viewModel.IsSuccess = !repository.IsError;
             return viewModel;

@@ -21,27 +21,27 @@ namespace SixtyThreeBits.Web.Controllers.Admin
 
         #region Actions
         [HttpGet]
-        [Route("", Name = ControllerActionRouteNames.Admin.Brands.Index)]
+        [Route("", Name = ControllerActionRouteNames.Admin.BrandsController.Brands)]
         public ActionResult Brands()
         {
             Model.PluginsClient.EnableDevextreme(true);
-            var viewModel = Model.GetPageViewModel();
-            return View(ViewNames.Admin.Brands.Page, viewModel);
+            var viewModel = Model.GetViewModel();
+            return View(ViewNames.Admin.Brands.BrandsView, viewModel);
         }
 
-        [Route("grid", Name = ControllerActionRouteNames.Admin.Brands.BrandsGrid)]
-        public async Task<ActionResult> BrandsGrid()
+        [Route("grid", Name = ControllerActionRouteNames.Admin.BrandsController.Grid)]
+        public async Task<ActionResult> Grid()
         {
-            var viewModel = await Model.GetGridViewModel();
+            var viewModel = await Model.ListGridItems();
             return Json(viewModel);
         }
 
         [HttpPost]
-        [Route("grid/add", Name = ControllerActionRouteNames.Admin.Brands.BrandsGridAdd)]
-        public async Task<ActionResult> BrandsGridAdd(int? key, string values)
+        [Route("grid/add", Name = ControllerActionRouteNames.Admin.BrandsController.GridAdd)]
+        public async Task<ActionResult> GridAdd(int? key, string values)
         {
-            var submitModel = values.DeserializeJsonTo<BrandsModel.PageViewModel.GridModel.GridItem>() ?? new BrandsModel.PageViewModel.GridModel.GridItem();
-            await Model.CRUD(DatabaseAction: Enums.DatabaseActions.CREATE, brandID: key, submitModel: submitModel);
+            var submitModel = values.DeserializeJsonTo<BrandsModel.ViewModel.GridViewModel.GridItem>() ?? new BrandsModel.ViewModel.GridViewModel.GridItem();
+            await Model.IUD(DatabaseAction: Enums.DatabaseActions.CREATE, brandID: key, submitModel: submitModel);
             if (Model.Form.HasErrors)
             {
                 return GetDevexpressErrorResult(Model.Form.ErrorMessage);
@@ -53,11 +53,11 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         }
 
         [HttpPut]
-        [Route("grid/update", Name = ControllerActionRouteNames.Admin.Brands.BrandsGridUpdate)]
-        public async Task<ActionResult> BrandsGridUpdate(int? key, string values)
+        [Route("grid/update", Name = ControllerActionRouteNames.Admin.BrandsController.GridUpdate)]
+        public async Task<ActionResult> GridUpdate(int? key, string values)
         {
-            var submitModel = values.DeserializeJsonTo<BrandsModel.PageViewModel.GridModel.GridItem>() ?? new BrandsModel.PageViewModel.GridModel.GridItem();
-            await Model.CRUD(DatabaseAction: Enums.DatabaseActions.UPDATE, brandID: key, submitModel: submitModel);
+            var submitModel = values.DeserializeJsonTo<BrandsModel.ViewModel.GridViewModel.GridItem>() ?? new BrandsModel.ViewModel.GridViewModel.GridItem();
+            await Model.IUD(DatabaseAction: Enums.DatabaseActions.UPDATE, brandID: key, submitModel: submitModel);
             if (Model.Form.HasErrors)
             {
                 return GetDevexpressErrorResult(Model.Form.ErrorMessage);
@@ -69,10 +69,10 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         }
 
         [HttpDelete]
-        [Route("grid/delete", Name = ControllerActionRouteNames.Admin.Brands.BrandsGridDelete)]
-        public async Task<ActionResult> BrandsGridDelete(int? key)
+        [Route("grid/delete", Name = ControllerActionRouteNames.Admin.BrandsController.GridDelete)]
+        public async Task<ActionResult> GridDelete(int? key)
         {
-            await Model.CRUD(DatabaseAction: Enums.DatabaseActions.DELETE, brandID: key, submitModel: new BrandsModel.PageViewModel.GridModel.GridItem());
+            await Model.IUD(DatabaseAction: Enums.DatabaseActions.DELETE, brandID: key, submitModel: new BrandsModel.ViewModel.GridViewModel.GridItem());
             if (Model.Form.HasErrors)
             {
                 return GetDevexpressErrorResult(Model.Form.ErrorMessage);
@@ -98,46 +98,46 @@ namespace SixtyThreeBits.Web.Controllers.Admin
 
         #region Actions
         [HttpGet]
-        [Route("", Name = ControllerActionRouteNames.Admin.Brands.Brand.Properties)]
+        [Route("", Name = ControllerActionRouteNames.Admin.BrandPropertiesController.Properties)]
         public IActionResult Properties()
         {
             Model.PluginsClient.Enable63BitsForms(true).EnableFancybox(true).Enable63BitsSuccessErrorToast(true);
-            var viewModel = Model.GetPageViewModel(viewModel: null);
-            return View(ViewNames.Admin.Brands.BrandProperties, viewModel);
+            var viewModel = Model.GetViewModel(viewModel: null);
+            return View(ViewNames.Admin.Brands.BrandPropertiesView, viewModel);
         }
 
         [HttpPost]
         [Route("")]
-        public async Task<IActionResult> Properties(BrandsPropertiesModel.PageViewModel submitModel)
+        public async Task<IActionResult> Properties(BrandsPropertiesModel.ViewModel submitModel)
         {
             var result = default(IActionResult);
             Model.PluginsClient.Enable63BitsForms(true).EnableFancybox(true).Enable63BitsSuccessErrorToast(true);
-            var viewModel = Model.GetPageViewModel(submitModel);
-            Model.ValidatePageViewModel(viewModel);
+            var viewModel = Model.GetViewModel(submitModel);
+            Model.Validate(viewModel);
             if (viewModel.IsValid)
             {
                 await Model.Save(viewModel);
-                if (viewModel.IsSaved)
+                if (viewModel.IsValid)
                 {
                     Model.ShowSuccessToastNotification();
-                    result = Redirect(Url.RouteUrl(ControllerActionRouteNames.Admin.Brands.Brand.Properties, new { brandID = Model.DBItem.BrandID }));
+                    result = Redirect(Url.RouteUrl(ControllerActionRouteNames.Admin.BrandPropertiesController.Properties, new { brandID = Model.DBItem.BrandID }));
                 }
                 else
                 {
                     Model.ShowErrorToastNotification();
-                    result = View(ViewNames.Admin.Brands.BrandProperties, viewModel);
+                    result = View(ViewNames.Admin.Brands.BrandPropertiesView, viewModel);
                 }
             }
             else
             {
-                result = View(ViewNames.Admin.Brands.BrandProperties, viewModel);
+                result = View(ViewNames.Admin.Brands.BrandPropertiesView, viewModel);
             }
             return result;
         }
 
         [HttpPost]
-        [Route("delete-image", Name = ControllerActionRouteNames.Admin.Brands.Brand.DeleteCoverImage)]
-        public async Task<IActionResult> DeleteCoverImage()
+        [Route("delete-image", Name = ControllerActionRouteNames.Admin.BrandPropertiesController.DeleteImage)]
+        public async Task<IActionResult> DeleteImage()
         {
             var viewModel = await Model.DeleteImage();
             return Json(viewModel);

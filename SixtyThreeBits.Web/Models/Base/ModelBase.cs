@@ -12,6 +12,7 @@ using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries.Extensions;
 using SixtyThreeBits.Web.Domain.Libraries;
 using SixtyThreeBits.Web.Domain.Utilities;
+using SixtyThreeBits.Web.Domain.ViewModels.Base;
 using SixtyThreeBits.Web.Domain.ViewModels.Shared;
 using System.Collections.Generic;
 using System.IO;
@@ -71,11 +72,11 @@ namespace SixtyThreeBits.Web.Models.Base
             var viewModel = new NotFoundViewModel();
             PluginsClient.EnableAdminTheme(true);
             viewModel.PluginsClient = PluginsClient;
-            viewModel.UrlLogout = Url.RouteUrl(ControllerActionRouteNames.Admin.Auth.Logout);
+            viewModel.UrlLogout = Url.RouteUrl(ControllerActionRouteNames.Admin.AuthController.Logout);
 
             return new ViewResult
             {
-                ViewName = ViewNames.Website.NotFound.Page,
+                ViewName = ViewNames.Website.Errors.NotFoundView,
                 ViewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary())
                 {
                     Model = viewModel
@@ -88,11 +89,11 @@ namespace SixtyThreeBits.Web.Models.Base
             var viewModel = new NotFoundViewModel();
             PluginsClient.EnableAdminTheme(true);
             viewModel.PluginsClient = PluginsClient;
-            viewModel.UrlLogout = Url.RouteUrl(ControllerActionRouteNames.Admin.Auth.Logout);
+            viewModel.UrlLogout = Url.RouteUrl(ControllerActionRouteNames.Admin.AuthController.Logout);
 
             return new ViewResult
             {
-                ViewName = ViewNames.Admin.NotFound.Page,
+                ViewName = ViewNames.Admin.Errors.NotFoundView,
                 ViewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary())
                 {
                     Model = viewModel
@@ -122,11 +123,11 @@ namespace SixtyThreeBits.Web.Models.Base
 
         public string GetUrlPages(string pageSlug, string languageCultureCode = null)
         {
-            var url = GetRouteByName(routeName: ControllerActionRouteNames.Website.Pages.Page, new { pageSlug = pageSlug }, languageCultureCode: languageCultureCode);
+            var url = GetRouteByName(routeName: ControllerActionRouteNames.Website.PagesController.Page, new { pageSlug = pageSlug }, languageCultureCode: languageCultureCode);
             return url;
         }
 
-        public async Task SaveUploadedFile(IFormFile postedFile, string filename, string folderPath)
+        public async Task SaveUploadedFile(IFormFile postedFile, string filename, string folderPath = null)
         {
             using (var MS = new MemoryStream())
             {
@@ -135,7 +136,7 @@ namespace SixtyThreeBits.Web.Models.Base
             }
         }
 
-        public async Task DeleteUploadedFile(string filename, string folderPath)
+        public async Task DeleteUploadedFile(string filename, string folderPath = null)
         {
             await FileStorage.DeleteFile(filename, folderPath);
         }

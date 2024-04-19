@@ -1,6 +1,6 @@
-﻿@model PagesModel.PageViewModel
+﻿@model PagesModel.ViewModel
 @{
-    Layout = ViewNames.Admin.Shared.Tabs;
+    Layout = ViewNames.Admin.Shared.TabsView;
 }
 
 <div class="card">
@@ -9,7 +9,7 @@
             <div class="col">
                 @if (Model.ShowAddNewButton)
                 {
-                    @await Html.PartialAsync(ViewNames.Admin.Shared.ButtonAddNew, new ButtonAddNewViewModel())
+                    @await Html.PartialAsync(ViewNames.Admin.Shared.ButtonAddNewPartialView, new ButtonAddNewViewModel())
                 }
             </div>
         </div>

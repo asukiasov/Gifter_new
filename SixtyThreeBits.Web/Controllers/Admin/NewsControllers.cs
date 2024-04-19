@@ -21,27 +21,27 @@ namespace SixtyThreeBits.Web.Controllers.Admin
 
         #region Actions
         [HttpGet]
-        [Route("", Name = ControllerActionRouteNames.Admin.News.Page)]
+        [Route("", Name = ControllerActionRouteNames.Admin.NewsController.News)]
         public ActionResult News()
         {
             Model.PluginsClient.EnableDevextreme(true);
-            var viewModel = Model.GetPageViewModel();
-            return View(ViewNames.Admin.News.Page, viewModel);
+            var viewModel = Model.GetViewModel();
+            return View(ViewNames.Admin.News.NewsView, viewModel);
         }
 
-        [Route("grid", Name = ControllerActionRouteNames.Admin.News.Grid)]
-        public async Task<ActionResult> NewsGrid()
+        [Route("grid", Name = ControllerActionRouteNames.Admin.NewsController.Grid)]
+        public async Task<ActionResult> Grid()
         {
-            var viewModel = await Model.GetGridViewModel();
+            var viewModel = await Model.ListGridItems();
             return Json(viewModel);
         }
 
         [HttpPost]
-        [Route("grid/add", Name = ControllerActionRouteNames.Admin.News.GridAdd)]
-        public async Task<ActionResult> NewsGridAdd(int? key, string values)
+        [Route("grid/add", Name = ControllerActionRouteNames.Admin.NewsController.GridAdd)]
+        public async Task<ActionResult> GridAdd(int? key, string values)
         {
-            var submitModel = values.DeserializeJsonTo<NewsModel.PageViewModel.GridModel.GridItem>() ?? new NewsModel.PageViewModel.GridModel.GridItem();
-            await Model.CRUD(databaseAction: Enums.DatabaseActions.CREATE, newsID: key, submitModel: submitModel);
+            var submitModel = values.DeserializeJsonTo<NewsModel.ViewModel.GridViewModel.GridItem>() ?? new NewsModel.ViewModel.GridViewModel.GridItem();
+            await Model.IUD(databaseAction: Enums.DatabaseActions.CREATE, newsID: key, submitModel: submitModel);
             if (Model.Form.HasErrors)
             {
                 return GetDevexpressErrorResult(Model.Form.ErrorMessage);
@@ -53,11 +53,11 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         }
 
         [HttpPut]
-        [Route("grid/update", Name = ControllerActionRouteNames.Admin.News.GridUpdate)]
-        public async Task<ActionResult> NewsGridUpdate(int? key, string values)
+        [Route("grid/update", Name = ControllerActionRouteNames.Admin.NewsController.GridUpdate)]
+        public async Task<ActionResult> GridUpdate(int? key, string values)
         {
-            var submitModel = values.DeserializeJsonTo<NewsModel.PageViewModel.GridModel.GridItem>() ?? new NewsModel.PageViewModel.GridModel.GridItem();
-            await Model.CRUD(databaseAction: Enums.DatabaseActions.UPDATE, newsID: key, submitModel: submitModel);
+            var submitModel = values.DeserializeJsonTo<NewsModel.ViewModel.GridViewModel.GridItem>() ?? new NewsModel.ViewModel.GridViewModel.GridItem();
+            await Model.IUD(databaseAction: Enums.DatabaseActions.UPDATE, newsID: key, submitModel: submitModel);
             if (Model.Form.HasErrors)
             {
                 return GetDevexpressErrorResult(Model.Form.ErrorMessage);
@@ -69,10 +69,10 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         }
 
         [HttpDelete]
-        [Route("grid/delete", Name = ControllerActionRouteNames.Admin.News.GridDelete)]
-        public async Task<ActionResult> NewsGridDelete(int? key)
+        [Route("grid/delete", Name = ControllerActionRouteNames.Admin.NewsController.GridDelete)]
+        public async Task<ActionResult> GridDelete(int? key)
         {
-            await Model.CRUD(databaseAction: Enums.DatabaseActions.DELETE, newsID: key, submitModel: new NewsModel.PageViewModel.GridModel.GridItem());
+            await Model.IUD(databaseAction: Enums.DatabaseActions.DELETE, newsID: key, submitModel: new NewsModel.ViewModel.GridViewModel.GridItem());
             if (Model.Form.HasErrors)
             {
                 return GetDevexpressErrorResult(Model.Form.ErrorMessage);
@@ -99,12 +99,12 @@ namespace SixtyThreeBits.Web.Controllers.Admin
 
         #region Actions
         [HttpGet]
-        [Route("properties", Name = ControllerActionRouteNames.Admin.News.NewsItem)]
+        [Route("properties", Name = ControllerActionRouteNames.Admin.NewsPropertiesController.Properties)]
         public IActionResult Properties()
         {
             Model.PluginsClient.Enable63BitsForms(true).EnableFancybox(true).EnableTinyMce(true).EnableDevextreme(true).Enable63BitsSuccessErrorToast(true);
             var viewModel = Model.GetPageViewModel(viewModel: null);
-            return View(ViewNames.Admin.News.NewsProperties, viewModel);
+            return View(ViewNames.Admin.News.NewsPropertiesView, viewModel);
         }
 
         [HttpPost]
@@ -119,28 +119,28 @@ namespace SixtyThreeBits.Web.Controllers.Admin
             if (viewModel.IsValid)
             {
                 await Model.Save(viewModel);
-                if (viewModel.IsSaved)
+                if (viewModel.IsValid)
                 {
                     Model.ShowSuccessToastNotification();
-                    result = Redirect(Url.RouteUrl(ControllerActionRouteNames.Admin.News.NewsItem, new { Model.DBItem.NewsID }));
+                    result = Redirect(Url.RouteUrl(ControllerActionRouteNames.Admin.NewsPropertiesController.Properties, new { newdID = Model.DBItem.NewsID }));
                 }
                 else
                 {
                     Model.ShowErrorToastNotification();
-                    result = View(ViewNames.Admin.News.NewsProperties, viewModel);
+                    result = View(ViewNames.Admin.News.NewsPropertiesView, viewModel);
                 }
             }
             else
             {
-                result = View(ViewNames.Admin.News.NewsProperties, viewModel);
+                result = View(ViewNames.Admin.News.NewsPropertiesView, viewModel);
             }
 
             return result;
         }
 
         [HttpPost]
-        [Route("properties/delete-image", Name = ControllerActionRouteNames.Admin.News.NewsItemDeleteImage)]
-        public async Task<IActionResult> NewsItemDeleteImage()
+        [Route("properties/delete-image", Name = ControllerActionRouteNames.Admin.NewsPropertiesController.DeleteImage)]
+        public async Task<IActionResult> DeleteImage()
         {
             var viewModel = await Model.DeleteImage();
             return Json(viewModel);

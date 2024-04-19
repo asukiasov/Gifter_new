@@ -112,7 +112,7 @@ namespace SixtyThreeBits.Web.Filters.Website
                     else
                     {
                         parentItem.Caption = _model.Utilities.GetValuesByLanguage(_model.LanguageCultureCode, parent.PageTitle, parent.PageTitleEng);
-                        parentItem.NavigateUrl = _model.GetRouteByName(ControllerActionRouteNames.Website.Pages.Page, new { pageSlug = parent.PageSlug });
+                        parentItem.NavigateUrl = _model.GetRouteByName(ControllerActionRouteNames.Website.PagesController.Page, new { pageSlug = parent.PageSlug });
                     }
 
                     var children = menuHeader.Where(item => item.MenuHeaderParentID == parent.MenuHeaderID);
@@ -131,7 +131,7 @@ namespace SixtyThreeBits.Web.Filters.Website
                             else
                             {
                                 childItem.Caption = _model.Utilities.GetValuesByLanguage(_model.LanguageCultureCode, child.PageTitle, child.PageTitleEng);
-                                childItem.NavigateUrl = _model.GetRouteByName(ControllerActionRouteNames.Website.Pages.Page, new { pageSlug = child.PageSlug });
+                                childItem.NavigateUrl = _model.GetRouteByName(ControllerActionRouteNames.Website.PagesController.Page, new { pageSlug = child.PageSlug });
                             }
 
                             _viewModel.Menu.Add(childItem);
@@ -159,7 +159,7 @@ namespace SixtyThreeBits.Web.Filters.Website
                     else
                     {
                         footerItem.Caption = _model.Utilities.GetValuesByLanguage(_model.LanguageCultureCode, item.PageTitle, item.PageTitleEng);
-                        footerItem.NavigateUrl = _model.GetRouteByName(ControllerActionRouteNames.Website.Pages.Page, new { pageSlug = item.PageSlug });
+                        footerItem.NavigateUrl = _model.GetRouteByName(ControllerActionRouteNames.Website.PagesController.Page, new { pageSlug = item.PageSlug });
                     }
                     return footerItem;
                 }).ToList();
@@ -174,7 +174,7 @@ namespace SixtyThreeBits.Web.Filters.Website
                     else
                     {
                         footerItem.Caption = _model.Utilities.GetValuesByLanguage(_model.LanguageCultureCode, item.PageTitle, item.PageTitleEng);
-                        footerItem.NavigateUrl = _model.GetRouteByName(ControllerActionRouteNames.Website.Pages.Page, new { pageSlug = item.PageSlug });
+                        footerItem.NavigateUrl = _model.GetRouteByName(ControllerActionRouteNames.Website.PagesController.Page, new { pageSlug = item.PageSlug });
                     }
                     return footerItem;
                 }).ToList();

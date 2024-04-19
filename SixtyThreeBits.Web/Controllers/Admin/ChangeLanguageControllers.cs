@@ -16,7 +16,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         #endregion
 
         [HttpGet]
-        [Route("{culture:length(2)}", Name = ControllerActionRouteNames.Admin.ChangeLanguage.Page)]
+        [Route("{culture:length(2)}", Name = ControllerActionRouteNames.Admin.ChangeLanguageController.ChangeLanguage)]
 
         public IActionResult ChangeLanguage(string culture)
         {

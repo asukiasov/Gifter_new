@@ -20,27 +20,27 @@ namespace SixtyThreeBits.Web.Controllers.Admin
 
         #region Methods
         [HttpGet]
-        [Route("", Name = ControllerActionRouteNames.Admin.Dictionaries.Page)]
+        [Route("", Name = ControllerActionRouteNames.Admin.DictionariesController.Dictionaries)]
         public ActionResult Dictionaries()
         {
             Model.PluginsClient.EnableDevextreme(true);
-            var viewModel = Model.GetPageViewModel();
-            return View(ViewNames.Admin.Dictionaries.Page, viewModel);
+            var viewModel = Model.GetViewModel();
+            return View(ViewNames.Admin.Dictionaries.DictionariesView, viewModel);
         }
 
-        [Route("tree", Name = ControllerActionRouteNames.Admin.Dictionaries.DictionariesTree)]
-        public async Task<ActionResult> DictionariesTree()
+        [Route("tree", Name = ControllerActionRouteNames.Admin.DictionariesController.Tree)]
+        public async Task<ActionResult> Tree()
         {
-            var viewModel = await Model.GetTreeModel();
+            var viewModel = await Model.ListTreeItems();
             return Json(viewModel);
         }
 
         [HttpPost]
-        [Route("tree/add", Name = ControllerActionRouteNames.Admin.Dictionaries.DictionariesTreeAdd)]
-        public async Task<ActionResult> DictionariesTreeAdd(int? key, string values)
+        [Route("tree/add", Name = ControllerActionRouteNames.Admin.DictionariesController.TreeAdd)]
+        public async Task<ActionResult> TreeAdd(int? key, string values)
         {
-            var submitModel = values.DeserializeJsonTo<DictionariesModel.PageViewModel.TreeModel.TreeItem>() ?? new DictionariesModel.PageViewModel.TreeModel.TreeItem();
-            await Model.CRUD(DatabaseAction: Enums.DatabaseActions.CREATE, dictionaryID: key, submitModel: submitModel);
+            var submitModel = values.DeserializeJsonTo<DictionariesModel.ViewModel.TreeViewModel.TreeItem>() ?? new DictionariesModel.ViewModel.TreeViewModel.TreeItem();
+            await Model.IUD(DatabaseAction: Enums.DatabaseActions.CREATE, dictionaryID: key, submitModel: submitModel);
             if (Model.Form.HasErrors)
             {
                 return GetDevexpressErrorResult(Model.Form.ErrorMessage);
@@ -52,11 +52,11 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         }
 
         [HttpPut]
-        [Route("tree/update", Name = ControllerActionRouteNames.Admin.Dictionaries.DictionariesTreeUpdate)]
-        public async Task<ActionResult> DictionariesTreeUpdate(int? key, string values)
+        [Route("tree/update", Name = ControllerActionRouteNames.Admin.DictionariesController.TreeUpdate)]
+        public async Task<ActionResult> TreeUpdate(int? key, string values)
         {
-            var submitModel = values.DeserializeJsonTo<DictionariesModel.PageViewModel.TreeModel.TreeItem>() ?? new DictionariesModel.PageViewModel.TreeModel.TreeItem();
-            await Model.CRUD(DatabaseAction: Enums.DatabaseActions.UPDATE, dictionaryID: key, submitModel: submitModel);
+            var submitModel = values.DeserializeJsonTo<DictionariesModel.ViewModel.TreeViewModel.TreeItem>() ?? new DictionariesModel.ViewModel.TreeViewModel.TreeItem();
+            await Model.IUD(DatabaseAction: Enums.DatabaseActions.UPDATE, dictionaryID: key, submitModel: submitModel);
             if (Model.Form.HasErrors)
             {
                 return GetDevexpressErrorResult(Model.Form.ErrorMessage);
@@ -68,8 +68,8 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         }
 
         [HttpDelete]
-        [Route("tree/delete", Name = ControllerActionRouteNames.Admin.Dictionaries.DictionariesTreeDelete)]
-        public async Task<ActionResult> DictionariesTreeDelete(int? key)
+        [Route("tree/delete", Name = ControllerActionRouteNames.Admin.DictionariesController.TreeDelete)]
+        public async Task<ActionResult> TreeDelete(int? key)
         {
             await Model.DeleteRecursive(dictionaryID: key);
             if (Model.Form.HasErrors)

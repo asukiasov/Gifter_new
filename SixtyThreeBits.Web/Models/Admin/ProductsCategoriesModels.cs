@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using DevExpress.Pdf.Native;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SixtyThreeBits.Core.DTO;
 using SixtyThreeBits.Core.Libraries;
@@ -8,6 +9,7 @@ using SixtyThreeBits.Libraries;
 using SixtyThreeBits.Libraries.Extensions;
 using SixtyThreeBits.Web.Domain.Utilities;
 using SixtyThreeBits.Web.Domain.ViewModels.Admin;
+using SixtyThreeBits.Web.Domain.ViewModels.Base;
 using SixtyThreeBits.Web.Domain.ViewModels.Shared;
 using SixtyThreeBits.Web.Models.Base;
 using System.Collections.Generic;
@@ -19,14 +21,14 @@ namespace SixtyThreeBits.Web.Models.Admin
     public class ProductsCategoriesModel : ModelBase
     {
         #region Methods
-        public async Task<PageViewModel> GetPageViewModel()
+        public async Task<ViewModel> GetViewModel()
         {
-            var viewModel = new PageViewModel();
+            var viewModel = new ViewModel();
 
-            viewModel.ShowAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.ProductCategories.Add);
-            viewModel.UrlAddNew = Url.RouteUrl(ControllerActionRouteNames.Admin.ProductCategories.Add);
-            viewModel.UrlDelete = Url.RouteUrl(ControllerActionRouteNames.Admin.ProductCategories.Delete);
-            viewModel.UrlSort = Url.RouteUrl(ControllerActionRouteNames.Admin.ProductCategories.Sort);
+            viewModel.ShowAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.ProductCategoriesController.Add);
+            viewModel.UrlAddNew = Url.RouteUrl(ControllerActionRouteNames.Admin.ProductCategoriesController.Add);
+            viewModel.UrlDelete = Url.RouteUrl(ControllerActionRouteNames.Admin.ProductCategoriesController.Delete);
+            viewModel.UrlSort = Url.RouteUrl(ControllerActionRouteNames.Admin.ProductCategoriesController.Sort);
 
             var repository = RepositoriesFactory.GetProductsRepository();
             viewModel.ProductCategories = (await repository.ProductCategoriesList())
@@ -35,9 +37,9 @@ namespace SixtyThreeBits.Web.Models.Admin
                 NodeID = item.ProductCategoryID.ToString(),
                 ParentID = item.ProductCategoryParentID.HasValue ? item.ProductCategoryParentID.ToString() : null,
                 Caption = item.ProductCategoryName,
-                NavigateUrl = Url.RouteUrl(ControllerActionRouteNames.Admin.ProductCategories.ProductCategory.Properties, new { productCategoryID = item.ProductCategoryID }),
-                ShowAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.ProductCategories.Add) && item.ProductCategoryParentID == null,
-                ShowDeleteButton = User.HasPermission(ControllerActionRouteNames.Admin.ProductCategories.Delete)
+                NavigateUrl = Url.RouteUrl(ControllerActionRouteNames.Admin.ProductCategoryPropertiesController.Properties, new { productCategoryID = item.ProductCategoryID }),
+                ShowAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.ProductCategoriesController.Add) && item.ProductCategoryParentID == null,
+                ShowDeleteButton = User.HasPermission(ControllerActionRouteNames.Admin.ProductCategoriesController.Delete)
             })
             .ToList();
             if (viewModel.HasCategories)
@@ -52,7 +54,15 @@ namespace SixtyThreeBits.Web.Models.Admin
             var viewModel = new AjaxResponse();
             var repository = RepositoriesFactory.GetProductsRepository();
             await repository.ProductCategoriesDeleteRecursive(submitModel.ProductCategoryID);
-            viewModel.IsSuccess = !repository.IsError;
+            if(repository.IsError)
+            {
+                viewModel.Data = repository.ErrorMessage;
+            }
+            else
+            {
+                viewModel.IsSuccess = true;
+            }
+            
             return viewModel;
         }
 
@@ -77,9 +87,9 @@ namespace SixtyThreeBits.Web.Models.Admin
                 node.NodeID = productCategoryID.ToString();
                 node.ParentID = submitModel.ProductCategoryParentID.HasValue ? submitModel.ProductCategoryParentID.ToString() : null;
                 node.Caption = submitModel.ProductCategoryName;
-                node.NavigateUrl = Url.RouteUrl(ControllerActionRouteNames.Admin.ProductCategories.ProductCategory.Properties, new { productCategoryID });
-                node.ShowAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.ProductCategories.Add) && submitModel.ProductCategoryParentID is null;
-                node.ShowDeleteButton = User.HasPermission(ControllerActionRouteNames.Admin.ProductCategories.Delete);
+                node.NavigateUrl = Url.RouteUrl(ControllerActionRouteNames.Admin.ProductCategoryPropertiesController.Properties, new { productCategoryID = productCategoryID });
+                node.ShowAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.ProductCategoriesController.Add) && submitModel.ProductCategoryParentID is null;
+                node.ShowDeleteButton = User.HasPermission(ControllerActionRouteNames.Admin.ProductCategoriesController.Delete);
             }
 
             var viewModel = new AjaxResponse();
@@ -104,7 +114,7 @@ namespace SixtyThreeBits.Web.Models.Admin
         #endregion
 
         #region Nested Classes
-        public class PageViewModel
+        public class ViewModel
         {
             #region Properties
             public bool HasCategories => ProductCategories != null && ProductCategories.Count > 0;
@@ -147,11 +157,11 @@ namespace SixtyThreeBits.Web.Models.Admin
     public class ProductCategoryPropertiesModel : ProductsCategoriesModelBase
     {
         #region Methods
-        public ProductCategoryPropertiesViewModel GetPageViewModel(ProductCategoryPropertiesViewModel viewModel)
+        public ViewModel GetViewModel(ViewModel viewModel)
         {
             if (viewModel == null)
             {
-                viewModel = new ProductCategoryPropertiesViewModel();
+                viewModel = new ViewModel();
 
                 viewModel.ProductCategoryParentID = DBItem.ProductCategoryParentID;
                 viewModel.ProductCategoryName = DBItem.ProductCategoryName;
@@ -162,19 +172,19 @@ namespace SixtyThreeBits.Web.Models.Admin
             }
             viewModel.ProductCategoryImageFilename = DBItem.ProductCategoryImageFilename;
             viewModel.ProductCategoryImageHttpPath = FileStorage.GetUploadedFileHttpPath(DBItem.ProductCategoryImageFilename);
-            viewModel.UrlDeleteImage = Url.RouteUrl(ControllerActionRouteNames.Admin.ProductCategories.ProductCategory.ImageDelete, new { productCategoryID = DBItem.ProductCategoryID });
+            viewModel.UrlDeleteImage = Url.RouteUrl(ControllerActionRouteNames.Admin.ProductCategoryPropertiesController.DeleteImage, new { productCategoryID = DBItem.ProductCategoryID });
 
             return viewModel;
         }
 
-        public async Task Save(ProductCategoryPropertiesViewModel viewModel)
+        public async Task Save(ViewModel viewModel)
         {
             var hasCategoryImage = viewModel.ProductCategoryImageFile?.Length > 0;
             var categoryImageFilename = hasCategoryImage ? GetFilenameFromUploadedFile(viewModel.ProductCategoryImageFile) : null;
 
             if (hasCategoryImage)
             {
-                await DeleteUploadedFile(viewModel.ProductCategoryImageFilename, folderPath: null);
+                await DeleteUploadedFile(viewModel.ProductCategoryImageFilename);
             }
 
             var repository = RepositoriesFactory.GetProductsRepository();
@@ -189,20 +199,23 @@ namespace SixtyThreeBits.Web.Models.Admin
                     ProductCategoryImageFilename = categoryImageFilename,
                     ProductCategoryDescriptionShort = viewModel.ProductCategoryDescriptionShort ?? Constants.NullValueFor.String,
                     ProductCategoryDescriptionShortEng = viewModel.ProductCategoryDescriptionShortEng ?? Constants.NullValueFor.String
-                }                
+                }
             );
 
-            if (!repository.IsError)
+            if (repository.IsError)
             {
-                viewModel.IsSaved = true;
+                viewModel.AddError(repository.ErrorMessage);
+            }
+            else
+            {
                 if (hasCategoryImage)
                 {
-                    await SaveUploadedFile(viewModel.ProductCategoryImageFile, categoryImageFilename, folderPath: null);
+                    await SaveUploadedFile(viewModel.ProductCategoryImageFile, categoryImageFilename);
                 }
             }
         }
 
-        public void ValidatePageViewModel(ProductCategoryPropertiesViewModel viewModel)
+        public void Validate(ViewModel viewModel)
         {
             viewModel.AddError(Validation.ValidateRequired(errorKey: Validation.GetJQueryNameSelectorFor(nameof(viewModel.ProductCategoryName)), valueToValidate: viewModel.ProductCategoryName));
         }
@@ -211,7 +224,7 @@ namespace SixtyThreeBits.Web.Models.Admin
         {
             var viewModel = new AjaxResponse();
 
-            await DeleteUploadedFile(DBItem.ProductCategoryImageFilename, folderPath: null);
+            await DeleteUploadedFile(DBItem.ProductCategoryImageFilename);
 
             var repository = RepositoriesFactory.GetProductsRepository();
             await repository.ProductCategoriesIUD(
@@ -230,7 +243,7 @@ namespace SixtyThreeBits.Web.Models.Admin
         #endregion
 
         #region Nested Classes
-        public class ProductCategoryPropertiesViewModel : FormViewModelBase
+        public class ViewModel : FormViewModelBase
         {
             #region Properties
             public int? ProductCategoryID { get; set; }

@@ -7,7 +7,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <title>@Html.Raw(Model.PageTitle)</title>
-    @await Html.PartialAsync(ViewNames.Shared.PluginsClient.Header, Model.PluginsClient)
+    @await Html.PartialAsync(ViewNames.Shared.PluginsClient.PluginsClientHeader, Model.PluginsClient)
 </head>
 
 <body>
@@ -29,6 +29,6 @@
             </div>
         </div>
     </div>
-    @await Html.PartialAsync(ViewNames.Shared.PluginsClient.Footer, Model.PluginsClient)
+    @await Html.PartialAsync(ViewNames.Shared.PluginsClient.PluginsClientFooter, Model.PluginsClient)
 </body>
 </html>

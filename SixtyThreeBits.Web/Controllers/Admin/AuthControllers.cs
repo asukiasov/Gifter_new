@@ -7,76 +7,63 @@ using System.Threading.Tasks;
 namespace SixtyThreeBits.Web.Controllers.Admin
 {
     [Route("admin")]
-    public class LoginController : ControllerBase<LoginModel>
+    public class AuthController : ControllerBase<AuthModel>
     {
         #region Constructors
-        public LoginController()
+        public AuthController()
         {
-            Model = new LoginModel();
+            Model = new AuthModel();
         }
         #endregion
 
         #region Actions
         [HttpGet]
-        [Route("login", Name = ControllerActionRouteNames.Admin.Auth.Login)]
+        [Route("login", Name = ControllerActionRouteNames.Admin.AuthController.Login)]
         public IActionResult Login()
         {
             if (Model.IsUserLoggedIn())
             {
-                return Redirect(Url.RouteUrl(ControllerActionRouteNames.Admin.Home.Page));
+                return Redirect(Url.RouteUrl(ControllerActionRouteNames.Admin.HomeController.Index));
             }
             else
             {
                 Model.PluginsClient.EnableAdminTheme(true).EnableFontAwesome(true).Enable63BitsFonts(true);
-                var viewModel = Model.GetPageViewModel();
-                return View(ViewNames.Admin.Auth.Login, viewModel);
+                var viewModel = Model.GetViewModel();
+                return View(ViewNames.Admin.Auth.LoginView, viewModel);
             }
         }
 
         [HttpPost]
         [Route("login")]
-        public async Task<IActionResult> Login(LoginModel.PageViewModel submitModel)
+        public async Task<IActionResult> Login(AuthModel.ViewModel submitModel)
         {
             Model.PluginsClient.EnableAdminTheme(true).EnableFontAwesome(true).Enable63BitsFonts(true);
-            var viewModel = Model.GetPageViewModel(submitModel);
+            var viewModel = Model.GetViewModel(submitModel);
             var isAuthenticated = await Model.AuthenticateUser(viewModel: viewModel);
             if (isAuthenticated)
             {
-                var urlHome = Url.RouteUrl(ControllerActionRouteNames.Admin.Home.Page);
+                var urlHome = Url.RouteUrl(ControllerActionRouteNames.Admin.HomeController.Index);
                 return Redirect(urlHome);
             }
             else
             {
-                return View(ViewNames.Admin.Auth.Login, viewModel);
+                return View(ViewNames.Admin.Auth.LoginView, viewModel);
             }
         }
 
-        [Route("relogin", Name = ControllerActionRouteNames.Admin.Auth.Relogin)]
+        [Route("relogin", Name = ControllerActionRouteNames.Admin.AuthController.Relogin)]
         public async Task<IActionResult> Relogin()
         {
             await Model.ReloginUser();
             return Redirect(Model.UrlPreviousPage);
         }
-        #endregion
-    }
 
-    [Route("admin")]
-    public class LogoutController : ControllerBase<LogoutModel>
-    {
-        #region Constructors
-        public LogoutController()
-        {
-            Model = new LogoutModel();
-        }
-        #endregion
-
-        #region Actions
-        [Route("logout", Name = ControllerActionRouteNames.Admin.Auth.Logout)]
+        [Route("logout", Name = ControllerActionRouteNames.Admin.AuthController.Logout)]
         public IActionResult Logout()
         {
             Model.Logout();
-            return Redirect(Url.RouteUrl(ControllerActionRouteNames.Admin.Auth.Login));
+            return Redirect(Url.RouteUrl(ControllerActionRouteNames.Admin.AuthController.Login));
         }
         #endregion
-    }
+    }    
 }

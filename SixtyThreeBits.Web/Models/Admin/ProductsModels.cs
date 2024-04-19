@@ -12,6 +12,7 @@ using SixtyThreeBits.Libraries;
 using SixtyThreeBits.Libraries.Extensions;
 using SixtyThreeBits.Web.Domain.Libraries;
 using SixtyThreeBits.Web.Domain.Utilities;
+using SixtyThreeBits.Web.Domain.ViewModels.Base;
 using SixtyThreeBits.Web.Domain.ViewModels.Shared;
 using SixtyThreeBits.Web.Models.Base;
 using System.Collections.Generic;
@@ -27,22 +28,22 @@ namespace SixtyThreeBits.Web.Models.Admin
         #endregion
 
         #region Methods
-        public async Task<PageViewModel> GetPageViewModel()
+        public async Task<ViewModel> GetViewModel()
         {
-            var viewModel = new PageViewModel();
-            viewModel.ShowAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.Products.GridAdd);
-            viewModel.ShowExcelUploadButton = User.HasPermission(ControllerActionRouteNames.Admin.Products.ExcelUpload) && User.HasPermission(ControllerActionRouteNames.Admin.Products.ExcelDownload);
-            viewModel.UrlExcelUpload = Url.RouteUrl(ControllerActionRouteNames.Admin.Products.ExcelUpload);
-            viewModel.UrlExcelDownload = Url.RouteUrl(ControllerActionRouteNames.Admin.Products.ExcelDownload);
+            var viewModel = new ViewModel();
+            viewModel.ShowAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.ProductsController.GridAdd);
+            viewModel.ShowExcelUploadButton = User.HasPermission(ControllerActionRouteNames.Admin.ProductsController.ExcelUpload) && User.HasPermission(ControllerActionRouteNames.Admin.ProductsController.ExcelDownload);
+            viewModel.UrlExcelUpload = Url.RouteUrl(ControllerActionRouteNames.Admin.ProductsController.ExcelUpload);
+            viewModel.UrlExcelDownload = Url.RouteUrl(ControllerActionRouteNames.Admin.ProductsController.ExcelDownload);
 
-            viewModel.Grid = new PageViewModel.GridModel();
-            viewModel.Grid.UrlLoad = Url.RouteUrl(ControllerActionRouteNames.Admin.Products.Grid);
-            viewModel.Grid.UrlAddNew = Url.RouteUrl(ControllerActionRouteNames.Admin.Products.GridAdd);
-            viewModel.Grid.UrlUpdate = Url.RouteUrl(ControllerActionRouteNames.Admin.Products.GridUpdate);
-            viewModel.Grid.UrlDelete = Url.RouteUrl(ControllerActionRouteNames.Admin.Products.GridDelete);
-            viewModel.Grid.AllowAdd = User.HasPermission(ControllerActionRouteNames.Admin.Products.GridAdd);
-            viewModel.Grid.AllowUpdate = User.HasPermission(ControllerActionRouteNames.Admin.Products.GridUpdate);
-            viewModel.Grid.AllowDelete = User.HasPermission(ControllerActionRouteNames.Admin.Products.GridDelete);
+            viewModel.Grid = new ViewModel.GridViewModel();
+            viewModel.Grid.UrlLoad = Url.RouteUrl(ControllerActionRouteNames.Admin.ProductsController.Grid);
+            viewModel.Grid.UrlAddNew = Url.RouteUrl(ControllerActionRouteNames.Admin.ProductsController.GridAdd);
+            viewModel.Grid.UrlUpdate = Url.RouteUrl(ControllerActionRouteNames.Admin.ProductsController.GridUpdate);
+            viewModel.Grid.UrlDelete = Url.RouteUrl(ControllerActionRouteNames.Admin.ProductsController.GridDelete);
+            viewModel.Grid.AllowAdd = User.HasPermission(ControllerActionRouteNames.Admin.ProductsController.GridAdd);
+            viewModel.Grid.AllowUpdate = User.HasPermission(ControllerActionRouteNames.Admin.ProductsController.GridUpdate);
+            viewModel.Grid.AllowDelete = User.HasPermission(ControllerActionRouteNames.Admin.ProductsController.GridDelete);
 
             var repository = RepositoriesFactory.GetProductsRepository();
             viewModel.Grid.Categories = (await repository.ProductCategoriesListWithTitlePaddindHierarchy(padChar: '-'))
@@ -56,11 +57,11 @@ namespace SixtyThreeBits.Web.Models.Admin
             return viewModel;
         }
 
-        public async Task<List<PageViewModel.GridModel.GridItem>> GetGridViewModel()
+        public async Task<List<ViewModel.GridViewModel.GridItem>> ListGridItems()
         {
             var repository = RepositoriesFactory.GetProductsRepository();
             var viewModel = (await repository.ProductsList())
-            ?.Select(Item => new PageViewModel.GridModel.GridItem
+            ?.Select(Item => new ViewModel.GridViewModel.GridItem
             {
                 ProductID = Item.ProductID,
                 ProductName = Item.ProductName,
@@ -70,13 +71,13 @@ namespace SixtyThreeBits.Web.Models.Admin
                 ProductRemainder = Item.ProductRemainder,
                 ProductIsFeatured = Item.ProductIsFeatured,
                 ProductCategoryID = Item.ProductCategoryID,
-                UrlProductsProperties = Url.RouteUrl(ControllerActionRouteNames.Admin.Products.Product.Properties, new { Item.ProductID })
+                UrlProductsProperties = Url.RouteUrl(ControllerActionRouteNames.Admin.ProductsPropertiesController.Properties, new { productID = Item.ProductID })
             })
             .ToList();
             return viewModel;
         }
 
-        public async Task CRUD(Enums.DatabaseActions databaseAction, int? productID, PageViewModel.GridModel.GridItem submitModel)
+        public async Task IUD(Enums.DatabaseActions databaseAction, int? productID, ViewModel.GridViewModel.GridItem submitModel)
         {
             var repository = RepositoriesFactory.GetProductsRepository();
 
@@ -159,14 +160,14 @@ namespace SixtyThreeBits.Web.Models.Admin
         #endregion
 
         #region Nested Classes
-        public class PageViewModel
+        public class ViewModel
         {
             #region Properties
             public bool ShowAddNewButton { get; set; }
             public bool ShowExcelUploadButton { get; set; }
             public string UrlExcelDownload { get; set; }
             public string UrlExcelUpload { get; set; }
-            public GridModel Grid { get; set; }
+            public GridViewModel Grid { get; set; }
             public readonly string TextRemainderUpload = Resources.TextRemainderUpload;
             public readonly string TextExcelUpload = Resources.TextExcelUpload;
             public readonly string TextExcelDownloadTemplate = Resources.TextExcelDownloadTemplate;
@@ -175,16 +176,16 @@ namespace SixtyThreeBits.Web.Models.Admin
             #endregion
 
             #region Nested Classes
-            public class GridModel : DevExtremeGridViewModelBase, IDevExtremeGridModel<GridModel.GridItem>
+            public class GridViewModel : DevExtremeGridViewModelBase<GridViewModel.GridItem>
             {
                 #region Properties
                 public List<KeyValueTuple<int?, string>> Categories { get; set; }
                 #endregion
 
                 #region Methods
-                public DataGridBuilder<GridItem> Render(IHtmlHelper html)
+                public override DataGridBuilder<GridItem> Render(IHtmlHelper html)
                 {
-                    var grid = GetGridWithStartupValues<GridItem>(html: html, keyFieldName: nameof(GridItem.ProductID));
+                    var grid = CreateGridWithStartupValues(html: html, keyFieldName: nameof(GridItem.ProductID));
 
                     grid
                    .ID("ProductsGrid")
@@ -253,11 +254,11 @@ namespace SixtyThreeBits.Web.Models.Admin
         #endregion
 
         #region Methods        
-        public async Task<ProductsPropertiesViewModel> GetPageViewModel(ProductsPropertiesViewModel viewModel = null)
+        public async Task<ViewModel> GetViewModel(ViewModel viewModel = null)
         {
             if (viewModel == null)
             {
-                viewModel = new ProductsPropertiesViewModel();
+                viewModel = new ViewModel();
                 viewModel.ProductIsPublished = DBItem.ProductIsPublished;
                 viewModel.ProductIsFeatured = DBItem.ProductIsFeatured;
                 viewModel.BrandID = DBItem.BrandID;
@@ -299,7 +300,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             var repositoryCountries = RepositoriesFactory.GetCountriesRepository();
             viewModel.ProductProducerCountries = await repositoryCountries.CountriesListAsSimpleKeyValue(SelectedCountryID: DBItem.CountryIDProducer);
 
-            viewModel.ProductImages = DBItem.ProductImages?.Select(Item => new ProductsPropertiesViewModel.ProductImage
+            viewModel.ProductImages = DBItem.ProductImages?.Select(Item => new ViewModel.ProductImage
             {
                 ProductImageID = Item.ProductImageID,
                 ProductImageFilename = Item.ProductImageFilename,
@@ -307,41 +308,19 @@ namespace SixtyThreeBits.Web.Models.Admin
             })
             .ToList();
 
-            viewModel.UrlImageUpload = Url.RouteUrl(ControllerActionRouteNames.Admin.Products.Product.PropertiesImagesUpload, new { productID = DBItem.ProductID });
-            viewModel.UrlImageSort = Url.RouteUrl(ControllerActionRouteNames.Admin.Products.Product.PropertiesImagesSort, new { productID = DBItem.ProductID });
-            viewModel.UrlImageDelete = Url.RouteUrl(ControllerActionRouteNames.Admin.Products.Product.PropertiesImagesDelete, new { productID = DBItem.ProductID });
+            viewModel.UrlImageUpload = Url.RouteUrl(ControllerActionRouteNames.Admin.ProductsPropertiesController.ProductImagesUpload, new { productID = DBItem.ProductID });
+            viewModel.UrlImageSort = Url.RouteUrl(ControllerActionRouteNames.Admin.ProductsPropertiesController.ProductImagesSort, new { productID = DBItem.ProductID });
+            viewModel.UrlImageDelete = Url.RouteUrl(ControllerActionRouteNames.Admin.ProductsPropertiesController.ProductImagesDelete, new { productID = DBItem.ProductID });
 
             return viewModel;
         }
 
-        public async Task<AjaxResponse> DeleteImage()
-        {
-            var viewModel = new AjaxResponse();
-
-            await DeleteUploadedFile(DBItem.ProductImageFilename, _folderPath);
-
-            var repository = RepositoriesFactory.GetProductsRepository();
-            await repository.ProductsIUD(
-                databaseAction: Enums.DatabaseActions.UPDATE,
-                productID: DBItem.ProductID,
-                product: new ProductIudDTO
-                {
-                    ProductImageFilename = Constants.NullValueFor.String
-                }
-                
-            );
-
-            viewModel.IsSuccess = !repository.IsError;
-
-            return viewModel;
-        }
-
-        public void ValidatePageViewModel(ProductsPropertiesViewModel viewModel)
+        public void Validate(ViewModel viewModel)
         {
             viewModel.AddError(Validation.ValidateRequired(errorKey: Validation.GetJQueryNameSelectorFor(nameof(viewModel.ProductName)), valueToValidate: viewModel.ProductName));
         }
-
-        public async Task Save(ProductsPropertiesViewModel viewModel)
+                
+        public async Task Save(ViewModel viewModel)
         {
             var repository = RepositoriesFactory.GetProductsRepository();
             await repository.ProductsIUD(
@@ -366,10 +345,36 @@ namespace SixtyThreeBits.Web.Models.Admin
                     ProductSKU = viewModel.ProductSKU ?? Constants.NullValueFor.String
                 }                
             );
-            viewModel.IsSaved = !repository.IsError;
+
+            if(repository.IsError)
+            {
+                viewModel.AddError(repository.ErrorMessage);
+            }            
         }
 
-        public async Task<AjaxResponse> UploadImages()
+        public async Task<AjaxResponse> DeleteImage()
+        {
+            var viewModel = new AjaxResponse();
+
+            await DeleteUploadedFile(DBItem.ProductImageFilename, _folderPath);
+
+            var repository = RepositoriesFactory.GetProductsRepository();
+            await repository.ProductsIUD(
+                databaseAction: Enums.DatabaseActions.UPDATE,
+                productID: DBItem.ProductID,
+                product: new ProductIudDTO
+                {
+                    ProductImageFilename = Constants.NullValueFor.String
+                }
+
+            );
+
+            viewModel.IsSuccess = !repository.IsError;
+
+            return viewModel;
+        }
+
+        public async Task<AjaxResponse> UploadProductImages()
         {
             var viewModel = new AjaxResponse();
 
@@ -392,7 +397,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             {
                 await SaveUploadedFile(postedFile: postedFile, filename: productImageFilename, folderPath: _folderPath);
 
-                viewModel.Data = new ProductsPropertiesViewModel.ProductImage
+                viewModel.Data = new ViewModel.ProductImage
                 {
                     ProductImageID = productImageID,
                     ProductImageFilename = productImageFilenameOriginal,
@@ -404,7 +409,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             return viewModel;
         }
 
-        public async Task<AjaxResponse> DeleteImage(DeleteImageSubmitModel submitModel)
+        public async Task<AjaxResponse> DeleteProductImages(DeleteProductImageSubmitModel submitModel)
         {
             var viewModel = new AjaxResponse();
 
@@ -424,7 +429,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             return viewModel;
         }
 
-        public async Task<AjaxResponse> SortImages(SyncSortIndexesSubmitModel SubmitModel)
+        public async Task<AjaxResponse> SortProductImages(SyncSortIndexesSubmitModel SubmitModel)
         {
             var viewModel = new AjaxResponse();
             var repository = RepositoriesFactory.GetProductsRepository();
@@ -435,7 +440,7 @@ namespace SixtyThreeBits.Web.Models.Admin
         #endregion
 
         #region Nested Classes
-        public class ProductsPropertiesViewModel : FormViewModelBase
+        public class ViewModel : FormViewModelBase
         {
             #region Properties
             public int? BrandID { get; set; }
@@ -504,7 +509,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             #endregion
         }
 
-        public class DeleteImageSubmitModel
+        public class DeleteProductImageSubmitModel
         {
             #region Properties
             public int? ProductImageID { get; set; }

@@ -11,35 +11,34 @@ using SixtyThreeBits.Web.Models.Base;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using static SixtyThreeBits.Web.Domain.Utilities.ViewNames.Admin;
 
 namespace SixtyThreeBits.Web.Models.Admin
 {
     public class RedirectsModel : ModelBase
     {
         #region Methods
-        public PageViewModel GetPageViewModel()
+        public ViewModel GetViewModel()
         {
-            var viewModel = new PageViewModel();
-            viewModel.ShowAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.Redirects.GridAdd);
+            var viewModel = new ViewModel();
+            viewModel.ShowAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.RedirectsController.GridAdd);
 
-            viewModel.Grid = new PageViewModel.GridModel();
-            viewModel.Grid.UrlLoad = Url.RouteUrl(ControllerActionRouteNames.Admin.Redirects.Grid);
-            viewModel.Grid.UrlAddNew = Url.RouteUrl(ControllerActionRouteNames.Admin.Redirects.GridAdd);
-            viewModel.Grid.UrlUpdate = Url.RouteUrl(ControllerActionRouteNames.Admin.Redirects.GridUpdate);
-            viewModel.Grid.UrlDelete = Url.RouteUrl(ControllerActionRouteNames.Admin.Redirects.GridDelete);
-            viewModel.Grid.AllowAdd = User.HasPermission(ControllerActionRouteNames.Admin.Redirects.GridAdd);
-            viewModel.Grid.AllowUpdate = User.HasPermission(ControllerActionRouteNames.Admin.Redirects.GridUpdate);
-            viewModel.Grid.AllowDelete = User.HasPermission(ControllerActionRouteNames.Admin.Redirects.GridDelete);
+            viewModel.Grid = new ViewModel.GridViewModel();
+            viewModel.Grid.UrlLoad = Url.RouteUrl(ControllerActionRouteNames.Admin.RedirectsController.Grid);
+            viewModel.Grid.UrlAddNew = Url.RouteUrl(ControllerActionRouteNames.Admin.RedirectsController.GridAdd);
+            viewModel.Grid.UrlUpdate = Url.RouteUrl(ControllerActionRouteNames.Admin.RedirectsController.GridUpdate);
+            viewModel.Grid.UrlDelete = Url.RouteUrl(ControllerActionRouteNames.Admin.RedirectsController.GridDelete);
+            viewModel.Grid.AllowAdd = User.HasPermission(ControllerActionRouteNames.Admin.RedirectsController.GridAdd);
+            viewModel.Grid.AllowUpdate = User.HasPermission(ControllerActionRouteNames.Admin.RedirectsController.GridUpdate);
+            viewModel.Grid.AllowDelete = User.HasPermission(ControllerActionRouteNames.Admin.RedirectsController.GridDelete);
 
             return viewModel;
         }
 
-        public async Task<List<PageViewModel.GridModel.GridItem>> GetGridViewModel()
+        public async Task<List<ViewModel.GridViewModel.GridItem>> ListGridItems()
         {
             var repository = RepositoriesFactory.GetRedirectsRepository();
             var viewModel = (await repository.RedirectsList())
-            ?.Select(Item => new PageViewModel.GridModel.GridItem
+            ?.Select(Item => new ViewModel.GridViewModel.GridItem
             {
                 RedirectID = Item.RedirectID,
                 RedirectFrom = Item.RedirectFrom,
@@ -48,7 +47,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             return viewModel;
         }
 
-        public async Task CRUD(Enums.DatabaseActions databaseAction, int? redirectID, PageViewModel.GridModel.GridItem submitModel)
+        public async Task CRUD(Enums.DatabaseActions databaseAction, int? redirectID, ViewModel.GridViewModel.GridItem submitModel)
         {
             var repository = RepositoriesFactory.GetRedirectsRepository();
             await repository.RedirectsIUD(
@@ -69,20 +68,20 @@ namespace SixtyThreeBits.Web.Models.Admin
         #endregion
 
         #region Nested Classes
-        public class PageViewModel
+        public class ViewModel
         {
             #region Properties
             public bool ShowAddNewButton { get; set; }
-            public GridModel Grid { get; set; }
+            public GridViewModel Grid { get; set; }
             #endregion
 
             #region Nested Classes
-            public class GridModel : DevExtremeGridViewModelBase, IDevExtremeGridModel<GridModel.GridItem>
+            public class GridViewModel : DevExtremeGridViewModelBase<GridViewModel.GridItem>
             {
                 #region Methods
-                public DataGridBuilder<GridItem> Render(IHtmlHelper html)
+                public override DataGridBuilder<GridItem> Render(IHtmlHelper html)
                 {
-                    var grid = GetGridWithStartupValues<GridItem>(html: html, keyFieldName: nameof(GridItem.RedirectID));
+                    var grid = CreateGridWithStartupValues(html: html, keyFieldName: nameof(GridItem.RedirectID));
 
                     grid
                    .ID("RedirectsGrid")

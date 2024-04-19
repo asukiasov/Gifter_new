@@ -1,11 +1,11 @@
-﻿@model SystemPropertiesModel.PageViewModel
+﻿@model SystemPropertiesModel.ViewModel
 @section HeaderSection{
 }
 <div class="card">
     <div class="card-body">
         <div class="row">
             <div class="col">
-                @await Html.PartialAsync(ViewNames.Admin.Shared.ButtonSave, new ButtonSaveViewModel { FormID = "form", CssClass = "js-show-preloader" })
+                @await Html.PartialAsync(ViewNames.Admin.Shared.ButtonSavePartialView, new ButtonSaveViewModel { FormID = "form", CssClass = "js-show-preloader" })
             </div>
         </div>       
     </div>

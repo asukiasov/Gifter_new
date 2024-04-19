@@ -2,7 +2,7 @@
 using SixtyThreeBits.Core.Properties;
 using System.Linq;
 
-namespace SixtyThreeBits.Web.Domain.ViewModels.Shared
+namespace SixtyThreeBits.Web.Domain.ViewModels.Base
 {
     public class FormViewModelBase
     {
@@ -13,9 +13,7 @@ namespace SixtyThreeBits.Web.Domain.ViewModels.Shared
         public bool HasErrors => _errors?.Count > 0;
         public bool IsValid => !HasErrors;
         public string ErrorsJson => _errors.ErrorsJson;
-
-
-        public bool IsSaved { get; set; }
+        
         public readonly string TextConfirmDelete = Resources.TextConfirmDelete;
         #endregion
 

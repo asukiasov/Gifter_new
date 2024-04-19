@@ -17,27 +17,27 @@ namespace SixtyThreeBits.Web.Models.Admin
     public class DictionariesModel : ModelBase
     {
         #region Methods
-        public PageViewModel GetPageViewModel()
+        public ViewModel GetViewModel()
         {
-            var viewModel = new PageViewModel();
-            viewModel.ShowAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.Dictionaries.DictionariesTreeAdd);
+            var viewModel = new ViewModel();
+            viewModel.ShowAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.DictionariesController.TreeAdd);
 
-            viewModel.Tree = new PageViewModel.TreeModel();
-            viewModel.Tree.AllowAdd = User.HasPermission(ControllerActionRouteNames.Admin.Dictionaries.DictionariesTreeAdd);
-            viewModel.Tree.AllowUpdate = User.HasPermission(ControllerActionRouteNames.Admin.Dictionaries.DictionariesTreeUpdate);
-            viewModel.Tree.AllowDelete = User.HasPermission(ControllerActionRouteNames.Admin.Dictionaries.DictionariesTreeDelete);
-            viewModel.Tree.UrlLoad = Url.RouteUrl(ControllerActionRouteNames.Admin.Dictionaries.DictionariesTree);
-            viewModel.Tree.UrlAddNew = Url.RouteUrl(ControllerActionRouteNames.Admin.Dictionaries.DictionariesTreeAdd);
-            viewModel.Tree.UrlUpdate = viewModel.UrlUpdate = Url.RouteUrl(ControllerActionRouteNames.Admin.Dictionaries.DictionariesTreeUpdate);
-            viewModel.Tree.UrlDelete = Url.RouteUrl(ControllerActionRouteNames.Admin.Dictionaries.DictionariesTreeDelete);
+            viewModel.Tree = new ViewModel.TreeViewModel();
+            viewModel.Tree.AllowAdd = User.HasPermission(ControllerActionRouteNames.Admin.DictionariesController.TreeAdd);
+            viewModel.Tree.AllowUpdate = User.HasPermission(ControllerActionRouteNames.Admin.DictionariesController.TreeUpdate);
+            viewModel.Tree.AllowDelete = User.HasPermission(ControllerActionRouteNames.Admin.DictionariesController.TreeDelete);
+            viewModel.Tree.UrlLoad = Url.RouteUrl(ControllerActionRouteNames.Admin.DictionariesController.Tree);
+            viewModel.Tree.UrlAddNew = Url.RouteUrl(ControllerActionRouteNames.Admin.DictionariesController.TreeAdd);
+            viewModel.Tree.UrlUpdate = viewModel.UrlUpdate = Url.RouteUrl(ControllerActionRouteNames.Admin.DictionariesController.TreeUpdate);
+            viewModel.Tree.UrlDelete = Url.RouteUrl(ControllerActionRouteNames.Admin.DictionariesController.TreeDelete);
 
             return viewModel;
         }
 
-        public async Task<List<PageViewModel.TreeModel.TreeItem>> GetTreeModel()
+        public async Task<List<ViewModel.TreeViewModel.TreeItem>> ListTreeItems()
         {
             var repository = RepositoriesFactory.GetDictionariesRepository();
-            var viewModel = (await repository.DictionariesList()).Select(Item => new PageViewModel.TreeModel.TreeItem
+            var viewModel = (await repository.DictionariesList()).Select(Item => new ViewModel.TreeViewModel.TreeItem
             {
                 DictionaryID = Item.DictionaryID,
                 DictionaryParentID = Item.DictionaryParentID,
@@ -52,7 +52,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             return viewModel;
         }
 
-        public async Task CRUD(Enums.DatabaseActions DatabaseAction, int? dictionaryID, PageViewModel.TreeModel.TreeItem submitModel)
+        public async Task IUD(Enums.DatabaseActions DatabaseAction, int? dictionaryID, ViewModel.TreeViewModel.TreeItem submitModel)
         {
             var repository = RepositoriesFactory.GetDictionariesRepository();
             await repository.DictionariesIUD(
@@ -89,21 +89,21 @@ namespace SixtyThreeBits.Web.Models.Admin
         #endregion
 
         #region Nested Classes
-        public class PageViewModel
+        public class ViewModel
         {
             #region Properties
             public bool ShowAddNewButton { get; set; }
-            public TreeModel Tree { get; set; }
+            public TreeViewModel Tree { get; set; }
             public string UrlUpdate { get; set; }
             #endregion
 
             #region Nested Classes
-            public class TreeModel : DevExtremeGridViewModelBase, IDevExtremeTreeModel<TreeModel.TreeItem>
+            public class TreeViewModel : DevExtremeTreeViewModelBase<TreeViewModel.TreeItem>
             {
                 #region Methods
-                public TreeListBuilder<TreeItem> Render(IHtmlHelper html)
+                public override TreeListBuilder<TreeItem> Render(IHtmlHelper html)
                 {
-                    var tree = GetTreeWithStartupValues<TreeItem>(html: html, keyFieldName: nameof(TreeItem.DictionaryID), parentFieldName: nameof(TreeItem.DictionaryParentID));
+                    var tree = CreateTreeWithStartupValues(html: html, keyFieldName: nameof(TreeItem.DictionaryID), parentFieldName: nameof(TreeItem.DictionaryParentID));
 
                     tree
                     .ID("DictionariesTree")

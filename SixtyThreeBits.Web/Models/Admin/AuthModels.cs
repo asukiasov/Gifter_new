@@ -9,14 +9,14 @@ using System.Threading.Tasks;
 
 namespace SixtyThreeBits.Web.Models.Admin
 {
-    public class LoginModel : ModelBase
+    public class AuthModel : ModelBase
     {
         #region Methods
-        public PageViewModel GetPageViewModel(PageViewModel viewModel = null)
+        public ViewModel GetViewModel(ViewModel viewModel = null)
         {
             if (viewModel == null)
             {
-                viewModel = new PageViewModel();
+                viewModel = new ViewModel();
             }
             viewModel.PluginsClient = PluginsClient;
             viewModel.ProjectName = SystemProperties.ProjectName;
@@ -29,7 +29,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             return isLoggedIn;
         }
 
-        public async Task<bool> AuthenticateUser(PageViewModel viewModel) 
+        public async Task<bool> AuthenticateUser(ViewModel viewModel) 
         {
             bool isAuthenticated = false;
 
@@ -69,33 +69,7 @@ namespace SixtyThreeBits.Web.Models.Admin
                 }
             }
         }
-        #endregion
 
-        #region Nested Classes
-        public class PageViewModel
-        {
-            #region Properties         
-            public PluginsClientViewModel PluginsClient { get; set; }
-            public string ProjectName { get; set; }
-            public string Username { get; set; }
-            public string Password { get; set; }
-            public bool IsRememberMeChecked { get; set; }
-            public bool IsLoginFailed { get; set; }
-            public readonly string TextAdminWelcomeTitle = Resources.TextAdminWelcomeTitle;
-            public readonly string TextAdminWelcomeSubTitle = Resources.TextAdminWelcomeSubTitle;
-            public readonly string TextUsername = Resources.TextUsername;
-            public readonly string TextPassword = Resources.TextPassword;
-            public readonly string TextRememberMe = Resources.TextRememberMe;
-            public readonly string TextLogin = Resources.TextLogin;
-            public readonly string ValidationUserInvalidUsernameOrPassword = Resources.ValidationUserInvalidUsernameOrPassword;
-            #endregion
-        }
-        #endregion
-    }
-
-    public class LogoutModel : ModelBase
-    {
-        #region Methods
         public void Logout()
         {
             SessionAssistance.Clear();
@@ -104,7 +78,7 @@ namespace SixtyThreeBits.Web.Models.Admin
         #endregion
 
         #region Nested Classes
-        public class PageViewModel
+        public class ViewModel
         {
             #region Properties         
             public PluginsClientViewModel PluginsClient { get; set; }
@@ -113,6 +87,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             public string Password { get; set; }
             public bool IsRememberMeChecked { get; set; }
             public bool IsLoginFailed { get; set; }
+
             public readonly string TextAdminWelcomeTitle = Resources.TextAdminWelcomeTitle;
             public readonly string TextAdminWelcomeSubTitle = Resources.TextAdminWelcomeSubTitle;
             public readonly string TextUsername = Resources.TextUsername;
@@ -123,5 +98,5 @@ namespace SixtyThreeBits.Web.Models.Admin
             #endregion
         }
         #endregion
-    }
+    }    
 }

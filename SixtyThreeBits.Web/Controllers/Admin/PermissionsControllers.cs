@@ -20,26 +20,26 @@ namespace SixtyThreeBits.Web.Controllers.Admin
 
         #region Methods
         [HttpGet]
-        [Route("", Name = ControllerActionRouteNames.Admin.Permissions.Page)]
+        [Route("", Name = ControllerActionRouteNames.Admin.PermissionsController.Permissions)]
         public ActionResult Permissions()
         {
             Model.PluginsClient.EnableDevextreme(true);
-            var viewModel = Model.GetPageViewModel();
-            return View(ViewNames.Admin.Permissions.Page, viewModel);
+            var viewModel = Model.GetViewModel();
+            return View(ViewNames.Admin.Permissions.PermissionsView, viewModel);
         }
 
-        [Route("tree", Name = ControllerActionRouteNames.Admin.Permissions.Tree)]
-        public async Task<ActionResult> PermissionsTree()
+        [Route("tree", Name = ControllerActionRouteNames.Admin.PermissionsController.Tree)]
+        public async Task<ActionResult> Tree()
         {
-            var viewModel = await Model.GetGridViewModel();
+            var viewModel = await Model.ListTreeItems();
             return Json(viewModel);
         }
 
         [HttpPost]
-        [Route("tree/add", Name = ControllerActionRouteNames.Admin.Permissions.TreeAdd)]
-        public async Task<ActionResult> PermissionsTreeAdd(int? key, string values)
+        [Route("tree/add", Name = ControllerActionRouteNames.Admin.PermissionsController.TreeAdd)]
+        public async Task<ActionResult> TreeAdd(int? key, string values)
         {
-            var submitModel = values.DeserializeJsonTo<PermissionsModel.PageViewModel.TreeModel.TreeItem>() ?? new PermissionsModel.PageViewModel.TreeModel.TreeItem();
+            var submitModel = values.DeserializeJsonTo<PermissionsModel.ViewModel.TreeViewModel.TreeItem>() ?? new PermissionsModel.ViewModel.TreeViewModel.TreeItem();
             await Model.CRUD(databaseAction: Enums.DatabaseActions.CREATE, permissionID: key, submitModel: submitModel);
             if (Model.Form.HasErrors)
             {
@@ -52,10 +52,10 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         }
 
         [HttpPut]
-        [Route("tree/update", Name = ControllerActionRouteNames.Admin.Permissions.TreeUpdate)]
-        public async Task<ActionResult> PermissionsTreeUpdate(int? key, string values)
+        [Route("tree/update", Name = ControllerActionRouteNames.Admin.PermissionsController.TreeUpdate)]
+        public async Task<ActionResult> TreeUpdate(int? key, string values)
         {
-            var submitModel = values.DeserializeJsonTo<PermissionsModel.PageViewModel.TreeModel.TreeItem>() ?? new PermissionsModel.PageViewModel.TreeModel.TreeItem();
+            var submitModel = values.DeserializeJsonTo<PermissionsModel.ViewModel.TreeViewModel.TreeItem>() ?? new PermissionsModel.ViewModel.TreeViewModel.TreeItem();
             await Model.CRUD(databaseAction: Enums.DatabaseActions.UPDATE, permissionID: key, submitModel: submitModel);
             if (Model.Form.HasErrors)
             {
@@ -68,8 +68,8 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         }
 
         [HttpDelete]
-        [Route("tree/delete", Name = ControllerActionRouteNames.Admin.Permissions.TreeDelete)]
-        public async Task<ActionResult> PermissionsTreeDelete(int? key)
+        [Route("tree/delete", Name = ControllerActionRouteNames.Admin.PermissionsController.TreeDelete)]
+        public async Task<ActionResult> TreeDelete(int? key)
         {
             await Model.DeleteRecursive(permissionID: key);
             if (Model.Form.HasErrors)

@@ -2,9 +2,10 @@
 using SixtyThreeBits.Core.Properties;
 using SixtyThreeBits.Web.Domain.Libraries;
 using SixtyThreeBits.Web.Domain.Utilities;
+using SixtyThreeBits.Web.Domain.ViewModels.Shared;
 using System.Collections.Generic;
 
-namespace SixtyThreeBits.Web.Domain.ViewModels.Shared
+namespace SixtyThreeBits.Web.Domain.ViewModels.Base
 {
     public class LayoutViewModelBase
     {
@@ -18,7 +19,7 @@ namespace SixtyThreeBits.Web.Domain.ViewModels.Shared
         public bool ShowBreadCrumbs { get; set; }
         public List<ProjectMenuViewItem> Tabs { get; set; }
         public bool HasTabs => Tabs?.Count > 0;
-        public string TabsLayoutViewName { get; set; } = ViewNames.Admin.Shared.Layout;
+        public string TabsLayoutViewName { get; set; } = ViewNames.Admin.Shared.LayoutView;
         public string UrlLogout { get; set; }
         public PluginsClientViewModel PluginsClient { get; set; }
         public readonly string TextError = Resources.TextError;

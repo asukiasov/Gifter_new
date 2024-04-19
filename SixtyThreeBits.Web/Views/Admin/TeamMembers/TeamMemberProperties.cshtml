@@ -1,9 +1,9 @@
-﻿@model TeamMemberPropertiesModel.PageViewModel
+﻿@model TeamMemberPropertiesModel.ViewModel
 <div class="card">
     <div class="card-body">
         <div class="row">
             <div class="col">
-                @await Html.PartialAsync(ViewNames.Admin.Shared.ButtonSave, new ButtonSaveViewModel { FormID = "form" })
+                @await Html.PartialAsync(ViewNames.Admin.Shared.ButtonSavePartialView, new ButtonSaveViewModel { FormID = "form" })
             </div>
         </div>
     </div>

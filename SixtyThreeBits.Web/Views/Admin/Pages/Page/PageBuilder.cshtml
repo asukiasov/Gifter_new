@@ -1,4 +1,4 @@
-﻿@model PageBuilderModel.PageViewModel
+﻿@model PageBuilderModel.ViewModel
 @{ Layout = null; }
 <!doctype html>
 <html>
@@ -10,7 +10,7 @@
     <meta name="msapplication-TileColor" content="#da532c">
     <meta name="theme-color" content="#ffffff">
     <title>@Model.PageTitle | Editor</title>
-    @await Html.PartialAsync(ViewNames.Shared.PluginsClient.Header, Model.PluginsClient)
+    @await Html.PartialAsync(ViewNames.Shared.PluginsClient.PluginsClientHeader, Model.PluginsClient)
 </head>
 
 <body>
@@ -595,7 +595,7 @@
         </div>
     </div>
     
-    @await Html.PartialAsync(ViewNames.Shared.PluginsClient.Footer, Model.PluginsClient)
+    @await Html.PartialAsync(ViewNames.Shared.PluginsClient.PluginsClientFooter, Model.PluginsClient)
 
     <script>
         PageBuilderModel.queryStringKeys.fileManagerAllowedExtensions = '@Model.FileManagerAllowedExtensions';

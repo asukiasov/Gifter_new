@@ -4,16 +4,16 @@ namespace SixtyThreeBits.Web.Models.Admin
 {
     public class HomeModel : ModelBase
     {
-        public PageViewModel GetPageViewModel()
+        public ViewModel GetViewModel()
         {
-            var viewModel = new PageViewModel();
+            var viewModel = new ViewModel();
             viewModel.UserFullname = User.UserFullname;
             viewModel.RoleName = User.RoleName;
             return viewModel;
         }
 
         #region Nested Classes
-        public class PageViewModel
+        public class ViewModel
         {
             #region properties
             public string UserFullname { get; set; }

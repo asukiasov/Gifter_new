@@ -22,27 +22,27 @@ namespace SixtyThreeBits.Web.Controllers.Admin
 
         #region Actions
         [HttpGet]
-        [Route("", Name = ControllerActionRouteNames.Admin.Products.Index)]
+        [Route("", Name = ControllerActionRouteNames.Admin.ProductsController.Products)]
         public async Task<ActionResult> Products()
         {
             Model.PluginsClient.EnableDevextreme(true).EnableDevextremeExportExcelLibraries(true).Enable63BitsForms(true).EnableTemplate7(true);
-            var viewModel = await Model.GetPageViewModel();
-            return View(ViewNames.Admin.Products.Page, viewModel);
+            var viewModel = await Model.GetViewModel();
+            return View(ViewNames.Admin.Products.ProductsView, viewModel);
         }
 
-        [Route("grid", Name = ControllerActionRouteNames.Admin.Products.Grid)]
-        public async Task<ActionResult> ProductsGrid()
+        [Route("grid", Name = ControllerActionRouteNames.Admin.ProductsController.Grid)]
+        public async Task<ActionResult> Grid()
         {
-            var viewModel = await Model.GetGridViewModel();
+            var viewModel = await Model.ListGridItems();
             return Json(viewModel);
         }
 
         [HttpPost]
-        [Route("grid/add", Name = ControllerActionRouteNames.Admin.Products.GridAdd)]
-        public async Task<ActionResult> ProductsGridAdd(int? key, string values)
+        [Route("grid/add", Name = ControllerActionRouteNames.Admin.ProductsController.GridAdd)]
+        public async Task<ActionResult> GridAdd(int? key, string values)
         {
-            var submitModel = values.DeserializeJsonTo<ProductsModel.PageViewModel.GridModel.GridItem>() ?? new ProductsModel.PageViewModel.GridModel.GridItem();
-            await Model.CRUD(databaseAction: Enums.DatabaseActions.CREATE, productID: key, submitModel: submitModel);
+            var submitModel = values.DeserializeJsonTo<ProductsModel.ViewModel.GridViewModel.GridItem>() ?? new ProductsModel.ViewModel.GridViewModel.GridItem();
+            await Model.IUD(databaseAction: Enums.DatabaseActions.CREATE, productID: key, submitModel: submitModel);
             if (Model.Form.HasErrors)
             {
                 return GetDevexpressErrorResult(Model.Form.ErrorMessage);
@@ -54,11 +54,11 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         }
 
         [HttpPut]
-        [Route("grid/update", Name = ControllerActionRouteNames.Admin.Products.GridUpdate)]
-        public async Task<ActionResult> ProductsGridUpdate(int? key, string values)
+        [Route("grid/update", Name = ControllerActionRouteNames.Admin.ProductsController.GridUpdate)]
+        public async Task<ActionResult> GridUpdate(int? key, string values)
         {
-            var submitModel = values.DeserializeJsonTo<ProductsModel.PageViewModel.GridModel.GridItem>() ?? new ProductsModel.PageViewModel.GridModel.GridItem();
-            await Model.CRUD(databaseAction: Enums.DatabaseActions.UPDATE, productID: key, submitModel: submitModel);
+            var submitModel = values.DeserializeJsonTo<ProductsModel.ViewModel.GridViewModel.GridItem>() ?? new ProductsModel.ViewModel.GridViewModel.GridItem();
+            await Model.IUD(databaseAction: Enums.DatabaseActions.UPDATE, productID: key, submitModel: submitModel);
             if (Model.Form.HasErrors)
             {
                 return GetDevexpressErrorResult(Model.Form.ErrorMessage);
@@ -70,10 +70,10 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         }
 
         [HttpDelete]
-        [Route("grid/delete", Name = ControllerActionRouteNames.Admin.Products.GridDelete)]
-        public async Task<ActionResult> ProductsGridDelete(int? key)
+        [Route("grid/delete", Name = ControllerActionRouteNames.Admin.ProductsController.GridDelete)]
+        public async Task<ActionResult> GridDelete(int? key)
         {
-            await Model.CRUD(databaseAction: Enums.DatabaseActions.DELETE, productID: key, submitModel: new ProductsModel.PageViewModel.GridModel.GridItem());
+            await Model.IUD(databaseAction: Enums.DatabaseActions.DELETE, productID: key, submitModel: new ProductsModel.ViewModel.GridViewModel.GridItem());
             if (Model.Form.HasErrors)
             {
                 return GetDevexpressErrorResult(Model.Form.ErrorMessage);
@@ -84,7 +84,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
             }
         }
 
-        [Route("excel/download", Name = ControllerActionRouteNames.Admin.Products.ExcelDownload)]
+        [Route("excel/download", Name = ControllerActionRouteNames.Admin.ProductsController.ExcelDownload)]
         public async Task<IActionResult> ExcelDownload()
         {
             var excelFileBytes = await Model.GetProductsSyncExcelFileBytes();
@@ -92,8 +92,8 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         }
 
         [HttpPost]
-        [Route("excel/upload", Name = ControllerActionRouteNames.Admin.Products.ExcelUpload)]
-        public async Task<IActionResult> ExcelSync(ProductsModel.ExcelUploadSubmitModel submitModel)
+        [Route("excel/upload", Name = ControllerActionRouteNames.Admin.ProductsController.ExcelUpload)]
+        public async Task<IActionResult> ExcelUpload(ProductsModel.ExcelUploadSubmitModel submitModel)
         {
             var viewModel = await Model.SyncExcel(submitModel);
             return Json(viewModel);
@@ -114,65 +114,65 @@ namespace SixtyThreeBits.Web.Controllers.Admin
 
         #region Actions
         [HttpGet]
-        [Route("", Name = ControllerActionRouteNames.Admin.Products.Product.Properties)]
+        [Route("", Name = ControllerActionRouteNames.Admin.ProductsPropertiesController.Properties)]
         public async Task<IActionResult> Properties()
         {
             Model.PluginsClient.Enable63BitsForms(true).Enable63BitsFileUploader(true).EnableFancybox(true).EnableTinyMce(true).EnableJQueryNumericInput(true).EnableTemplate7(true).EnableSortableJS(true).Enable63BitsSuccessErrorToast(true);
-            var viewModel = await Model.GetPageViewModel();
-            return View(ViewNames.Admin.Products.ProductProperties, viewModel);
+            var viewModel = await Model.GetViewModel();
+            return View(ViewNames.Admin.Products.ProductPropertiesView, viewModel);
 
         }
 
         [HttpPost]
         [Route("")]
-        public async Task<IActionResult> Properties(ProductPropertiesModel.ProductsPropertiesViewModel submitModel)
+        public async Task<IActionResult> Properties(ProductPropertiesModel.ViewModel submitModel)
         {
             var result = default(IActionResult);
             Model.PluginsClient.Enable63BitsForms(true).Enable63BitsFileUploader(true).EnableFancybox(true).EnableTinyMce(true).EnableJQueryNumericInput(true).EnableTemplate7(true).EnableSortableJS(true).Enable63BitsSuccessErrorToast(true);
-            var viewModel = await Model.GetPageViewModel(submitModel);
-            Model.ValidatePageViewModel(viewModel);
+            var viewModel = await Model.GetViewModel(submitModel);
+            Model.Validate(viewModel);
             if (viewModel.IsValid)
             {
                 await Model.Save(viewModel);
-                if (viewModel.IsSaved)
+                if (viewModel.IsValid)
                 {
                     Model.ShowSuccessToastNotification();
-                    result = Redirect(Url.RouteUrl(ControllerActionRouteNames.Admin.Products.Product.Properties, new { Model.DBItem.ProductID }));
+                    result = Redirect(Url.RouteUrl(ControllerActionRouteNames.Admin.ProductsPropertiesController.Properties, new { productID = Model.DBItem.ProductID }));
                 }
                 else
                 {
                     Model.ShowErrorToastNotification();
-                    result = View(ViewNames.Admin.Products.ProductProperties, viewModel);
+                    result = View(ViewNames.Admin.Products.ProductPropertiesView, viewModel);
                 }
             }
             else
             {
-                result = View(ViewNames.Admin.Products.ProductProperties, viewModel);
+                result = View(ViewNames.Admin.Products.ProductPropertiesView, viewModel);
             }
             return result;
         }
 
         [HttpPost]
-        [Route("images/upload", Name = ControllerActionRouteNames.Admin.Products.Product.PropertiesImagesUpload)]
+        [Route("images/upload", Name = ControllerActionRouteNames.Admin.ProductsPropertiesController.ProductImagesUpload)]
         public async Task<IActionResult> PropertiesImagesUpload()
         {
-            var viewModel = await Model.UploadImages();
+            var viewModel = await Model.UploadProductImages();
             return Json(viewModel);
         }
 
         [HttpPost]
-        [Route("images/sort", Name = ControllerActionRouteNames.Admin.Products.Product.PropertiesImagesSort)]
+        [Route("images/sort", Name = ControllerActionRouteNames.Admin.ProductsPropertiesController.ProductImagesSort)]
         public async Task<IActionResult> PropertiesImagesSort(SyncSortIndexesSubmitModel submitModel)
         {
-            var viewModel = await Model.SortImages(submitModel);
+            var viewModel = await Model.SortProductImages(submitModel);
             return Json(viewModel);
         }
 
         [HttpPost]
-        [Route("images/delete", Name = ControllerActionRouteNames.Admin.Products.Product.PropertiesImagesDelete)]
-        public async Task<IActionResult> PropertiesImagesDelete(ProductPropertiesModel.DeleteImageSubmitModel submitModel)
+        [Route("images/delete", Name = ControllerActionRouteNames.Admin.ProductsPropertiesController.ProductImagesDelete)]
+        public async Task<IActionResult> PropertiesImagesDelete(ProductPropertiesModel.DeleteProductImageSubmitModel submitModel)
         {
-            var viewModel = await Model.DeleteImage(submitModel);
+            var viewModel = await Model.DeleteProductImages(submitModel);
             return Json(viewModel);
         }
         #endregion

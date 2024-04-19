@@ -16,11 +16,11 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         #endregion
 
         [HttpGet]
-        [Route("", Name = ControllerActionRouteNames.Admin.Home.Page)]
+        [Route("", Name = ControllerActionRouteNames.Admin.HomeController.Index)]
         public IActionResult Index()
         {
-            var viewModel = Model.GetPageViewModel();
-            return View(ViewNames.Admin.Home.Index, viewModel);
+            var viewModel = Model.GetViewModel();
+            return View(ViewNames.Admin.Home.IndexView, viewModel);
         }
     }
 }

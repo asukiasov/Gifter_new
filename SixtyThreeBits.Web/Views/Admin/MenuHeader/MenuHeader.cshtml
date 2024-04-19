@@ -1,6 +1,6 @@
-﻿@model MenuHeaderModel.PageViewModel
+﻿@model MenuHeaderModel.ViewModel
 @{
-    Layout = ViewNames.Admin.Shared.Tabs;
+    Layout = ViewNames.Admin.Shared.TabsView;
 }
 @section HeaderSection{
     <link href="/css/admin/SortableTree.css" rel="stylesheet" />
@@ -11,7 +11,7 @@
             <div class="col">
                 @if (Model.ShowAddNewButton)
                 {
-                    @await Html.PartialAsync(ViewNames.Admin.Shared.ButtonAddNew, new ButtonAddNewViewModel())
+                    @await Html.PartialAsync(ViewNames.Admin.Shared.ButtonAddNewPartialView, new ButtonAddNewViewModel())
                 }
             </div>
         </div>
@@ -27,7 +27,7 @@
                         {
                             foreach (var item in Model.MenuItems)
                             {
-                                @await Html.PartialAsync(ViewNames.Admin.PagesManagement.MenuHeader.MenuHeaderTreeNodePartialView, item)
+                                @await Html.PartialAsync(ViewNames.Admin.MenuHeader.MenuHeaderTreeNodePartialView, item)
                             }
                         }
                     </ul>
@@ -137,7 +137,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                @await Html.PartialAsync(ViewNames.Admin.Shared.ButtonSave, new ButtonSaveViewModel { JsSelector = "js-modal-save-button"})
+                @await Html.PartialAsync(ViewNames.Admin.Shared.ButtonSavePartialView, new ButtonSaveViewModel { JsSelector = "js-modal-save-button"})
             </div>
 
         </div>

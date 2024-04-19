@@ -1,4 +1,4 @@
-﻿@model ProductsCategoriesModel.PageViewModel
+﻿@model ProductsCategoriesModel.ViewModel
 
 @section HeaderSection{
     <link href="/css/admin/SortableTree.css" rel="stylesheet" />
@@ -9,7 +9,7 @@
             <div class="col">
                 @if (Model.ShowAddNewButton)
                 {
-                    @await Html.PartialAsync(ViewNames.Admin.Shared.ButtonAddNew, new ButtonAddNewViewModel { JsSelector = "js-show-create-new-page-modal-button" })
+                    @await Html.PartialAsync(ViewNames.Admin.Shared.ButtonAddNewPartialView, new ButtonAddNewViewModel { JsSelector = "js-show-create-new-page-modal-button" })
                 }
             </div>
         </div>
@@ -42,7 +42,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                @await Html.PartialAsync(ViewNames.Admin.Shared.ButtonSave, new ButtonSaveViewModel { JsSelector = "js-create-new-category-modal-save-button"})                
+                @await Html.PartialAsync(ViewNames.Admin.Shared.ButtonSavePartialView, new ButtonSaveViewModel { JsSelector = "js-create-new-category-modal-save-button"})                
             </div>
 
         </div>

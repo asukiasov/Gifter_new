@@ -38,7 +38,7 @@ namespace SixtyThreeBits.Web.Filters.Admin
 
         void initTabs()
         {
-            var tabsParentID = _model.User.Permissions.FirstOrDefault(Item => Item.PermissionCodeName == ControllerActionRouteNames.Admin.PagesManagemet.Root)?.PermissionID;
+            var tabsParentID = _model.User.Permissions.FirstOrDefault(Item => Item.PermissionCodeName == ControllerActionRouteNames.Admin.PagesManagementController.RedirectToChild)?.PermissionID;
 
             if (tabsParentID != null)
             {

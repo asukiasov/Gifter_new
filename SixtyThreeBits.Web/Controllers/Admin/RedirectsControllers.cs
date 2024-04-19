@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 
 namespace SixtyThreeBits.Web.Controllers.Admin
 {
-
     [Route("admin/redirects")]
     public class RedirectsController : AdminControllerBase<RedirectsModel>
     {
@@ -21,26 +20,26 @@ namespace SixtyThreeBits.Web.Controllers.Admin
 
         #region Actions
         [HttpGet]
-        [Route("", Name = ControllerActionRouteNames.Admin.Redirects.Index)]
+        [Route("", Name = ControllerActionRouteNames.Admin.RedirectsController.Redirects)]
         public ActionResult Redirects()
         {
             Model.PluginsClient.EnableDevextreme(true).Enable63BitsForms(true).EnableTemplate7(true);
-            var viewModel = Model.GetPageViewModel();
-            return View(ViewNames.Admin.Redirects.Page, viewModel);
+            var viewModel = Model.GetViewModel();
+            return View(ViewNames.Admin.Redirects.RedirectsView, viewModel);
         }
 
-        [Route("grid", Name = ControllerActionRouteNames.Admin.Redirects.Grid)]
-        public async Task<ActionResult> RedirectsGrid()
+        [Route("grid", Name = ControllerActionRouteNames.Admin.RedirectsController.Grid)]
+        public async Task<ActionResult> Grid()
         {
-            var viewModel = await Model.GetGridViewModel();
+            var viewModel = await Model.ListGridItems();
             return Json(viewModel);
         }
 
         [HttpPost]
-        [Route("grid/add", Name = ControllerActionRouteNames.Admin.Redirects.GridAdd)]
-        public async Task<ActionResult> RedirectsGridAdd(int? key, string values)
+        [Route("grid/add", Name = ControllerActionRouteNames.Admin.RedirectsController.GridAdd)]
+        public async Task<ActionResult> GridAdd(int? key, string values)
         {
-            var submitModel = values.DeserializeJsonTo<RedirectsModel.PageViewModel.GridModel.GridItem>() ?? new RedirectsModel.PageViewModel.GridModel.GridItem();
+            var submitModel = values.DeserializeJsonTo<RedirectsModel.ViewModel.GridViewModel.GridItem>() ?? new RedirectsModel.ViewModel.GridViewModel.GridItem();
             await Model.CRUD(databaseAction: Enums.DatabaseActions.CREATE, redirectID: key, submitModel: submitModel);
             if (Model.Form.HasErrors)
             {
@@ -53,10 +52,10 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         }
 
         [HttpPut]
-        [Route("grid/update", Name = ControllerActionRouteNames.Admin.Redirects.GridUpdate)]
-        public async Task<ActionResult> RedirectsGridUpdate(int? key, string values)
+        [Route("grid/update", Name = ControllerActionRouteNames.Admin.RedirectsController.GridUpdate)]
+        public async Task<ActionResult> GridUpdate(int? key, string values)
         {
-            var submitModel = values.DeserializeJsonTo<RedirectsModel.PageViewModel.GridModel.GridItem>() ?? new RedirectsModel.PageViewModel.GridModel.GridItem();
+            var submitModel = values.DeserializeJsonTo<RedirectsModel.ViewModel.GridViewModel.GridItem>() ?? new RedirectsModel.ViewModel.GridViewModel.GridItem();
             await Model.CRUD(databaseAction: Enums.DatabaseActions.UPDATE, redirectID: key, submitModel: submitModel);
             if (Model.Form.HasErrors)
             {
@@ -69,10 +68,10 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         }
 
         [HttpDelete]
-        [Route("grid/delete", Name = ControllerActionRouteNames.Admin.Redirects.GridDelete)]
-        public async Task<ActionResult> RedirectsGridDelete(int? key)
+        [Route("grid/delete", Name = ControllerActionRouteNames.Admin.RedirectsController.GridDelete)]
+        public async Task<ActionResult> GridDelete(int? key)
         {
-            await Model.CRUD(databaseAction: Enums.DatabaseActions.DELETE, redirectID: key, submitModel: new RedirectsModel.PageViewModel.GridModel.GridItem());
+            await Model.CRUD(databaseAction: Enums.DatabaseActions.DELETE, redirectID: key, submitModel: new RedirectsModel.ViewModel.GridViewModel.GridItem());
             if (Model.Form.HasErrors)
             {
                 return GetDevexpressErrorResult(Model.Form.ErrorMessage);

@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <link rel="icon" type="image/png" href="/images/favicon.png">
     <title>@Html.Raw(Model.PageTitle.TitleHead)</title>
-    @await Html.PartialAsync(ViewNames.Shared.PluginsClient.Header, Model.PluginsClient)    
+    @await Html.PartialAsync(ViewNames.Shared.PluginsClient.PluginsClientHeader, Model.PluginsClient)    
     <link href="/css/website/style.css" rel="stylesheet" />
     
     @RenderSection("HeaderSection", false)
@@ -56,7 +56,7 @@
         <footer class="app-page">
         </footer>
     </div>
-    @await Html.PartialAsync(ViewNames.Shared.PluginsClient.Footer, Model.PluginsClient)
+    @await Html.PartialAsync(ViewNames.Shared.PluginsClient.PluginsClientFooter, Model.PluginsClient)
     <script src="/js/website/layout.js"></script>
     @RenderSection("FooterSection", false)
     @Html.Raw(Model.ScriptsBodyEnd)

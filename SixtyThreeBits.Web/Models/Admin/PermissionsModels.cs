@@ -17,28 +17,28 @@ namespace SixtyThreeBits.Web.Models.Admin
     public class PermissionsModel : ModelBase
     {
         #region Methods
-        public PageViewModel GetPageViewModel()
+        public ViewModel GetViewModel()
         {
-            var viewModel = new PageViewModel();
-            viewModel.ShowAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.Permissions.TreeAdd);
+            var viewModel = new ViewModel();
+            viewModel.ShowAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.PermissionsController.TreeAdd);
 
-            viewModel.Tree = new PageViewModel.TreeModel();
-            viewModel.Tree.AllowAdd = User.HasPermission(ControllerActionRouteNames.Admin.Permissions.TreeAdd);
-            viewModel.Tree.AllowUpdate = User.HasPermission(ControllerActionRouteNames.Admin.Permissions.TreeUpdate);
-            viewModel.Tree.AllowDelete = User.HasPermission(ControllerActionRouteNames.Admin.Permissions.TreeDelete);
-            viewModel.Tree.UrlLoad = Url.RouteUrl(ControllerActionRouteNames.Admin.Permissions.Tree);
-            viewModel.Tree.UrlAddNew = Url.RouteUrl(ControllerActionRouteNames.Admin.Permissions.TreeAdd);
-            viewModel.Tree.UrlUpdate = viewModel.UrlUpdate = Url.RouteUrl(ControllerActionRouteNames.Admin.Permissions.TreeUpdate);
-            viewModel.Tree.UrlDelete = Url.RouteUrl(ControllerActionRouteNames.Admin.Permissions.TreeDelete);
+            viewModel.Tree = new ViewModel.TreeViewModel();
+            viewModel.Tree.AllowAdd = User.HasPermission(ControllerActionRouteNames.Admin.PermissionsController.TreeAdd);
+            viewModel.Tree.AllowUpdate = User.HasPermission(ControllerActionRouteNames.Admin.PermissionsController.TreeUpdate);
+            viewModel.Tree.AllowDelete = User.HasPermission(ControllerActionRouteNames.Admin.PermissionsController.TreeDelete);
+            viewModel.Tree.UrlLoad = Url.RouteUrl(ControllerActionRouteNames.Admin.PermissionsController.Tree);
+            viewModel.Tree.UrlAddNew = Url.RouteUrl(ControllerActionRouteNames.Admin.PermissionsController.TreeAdd);
+            viewModel.Tree.UrlUpdate = viewModel.UrlUpdate = Url.RouteUrl(ControllerActionRouteNames.Admin.PermissionsController.TreeUpdate);
+            viewModel.Tree.UrlDelete = Url.RouteUrl(ControllerActionRouteNames.Admin.PermissionsController.TreeDelete);
 
             return viewModel;
         }
 
-        public async Task<List<PageViewModel.TreeModel.TreeItem>> GetGridViewModel()
+        public async Task<List<ViewModel.TreeViewModel.TreeItem>> ListTreeItems()
         {
             var repository = RepositoriesFactory.GetPermissionsRepository();
             var viewModel = (await repository.PermissionsList())
-            ?.Select(item => new PageViewModel.TreeModel.TreeItem
+            ?.Select(item => new ViewModel.TreeViewModel.TreeItem
             {
                 PermissionID = item.PermissionID,
                 PermissionParentID = item.PermissionParentID,
@@ -57,7 +57,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             return viewModel;
         }
 
-        public async Task CRUD(Enums.DatabaseActions databaseAction, int? permissionID, PageViewModel.TreeModel.TreeItem submitModel)
+        public async Task CRUD(Enums.DatabaseActions databaseAction, int? permissionID, ViewModel.TreeViewModel.TreeItem submitModel)
         {
             var repository = RepositoriesFactory.GetPermissionsRepository();
             await repository.PermissionsIUD(
@@ -97,23 +97,23 @@ namespace SixtyThreeBits.Web.Models.Admin
         #endregion
 
         #region Nested Classes
-        public class PageViewModel
+        public class ViewModel
         {
             #region Properties
             public bool ShowAddNewButton { get; set; }
-            public TreeModel Tree { get; set; }
+            public TreeViewModel Tree { get; set; }
             public string UrlUpdate { get; set; }
             #endregion
 
             #region Nested Classes
-            public class TreeModel : DevExtremeGridViewModelBase, IDevExtremeTreeModel<TreeModel.TreeItem>
+            public class TreeViewModel : DevExtremeTreeViewModelBase<TreeViewModel.TreeItem>
             {
                 #region Methods
-                public TreeListBuilder<TreeItem> Render(IHtmlHelper Html)
+                public override TreeListBuilder<TreeItem> Render(IHtmlHelper Html)
                 {
-                    var Tree = GetTreeWithStartupValues<TreeItem>(html: Html, keyFieldName: nameof(TreeItem.PermissionID), parentFieldName: nameof(TreeItem.PermissionParentID));
+                    var tree = CreateTreeWithStartupValues(html: Html, keyFieldName: nameof(TreeItem.PermissionID), parentFieldName: nameof(TreeItem.PermissionParentID));
 
-                    Tree
+                    tree
                     .ID("PermissionsTree")
                     .OnInitialized("permissionsModel.onTreeInit")
                     .OnInitNewRow("permissionsModel.onTreeInitNewRow")
@@ -155,7 +155,7 @@ namespace SixtyThreeBits.Web.Models.Admin
 
                     });
 
-                    return Tree;
+                    return tree;
                 }
                 #endregion
 

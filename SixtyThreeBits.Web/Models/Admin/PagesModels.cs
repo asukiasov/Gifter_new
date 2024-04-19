@@ -11,6 +11,7 @@ using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries;
 using SixtyThreeBits.Web.Domain.Libraries;
 using SixtyThreeBits.Web.Domain.Utilities;
+using SixtyThreeBits.Web.Domain.ViewModels.Base;
 using SixtyThreeBits.Web.Domain.ViewModels.Shared;
 using SixtyThreeBits.Web.Models.Base;
 using System;
@@ -26,7 +27,7 @@ namespace SixtyThreeBits.Web.Models.Admin
         public string GetRedirectUrl()
         {
             var redirectUrl = default(string);
-            var permissionIDParent = User.Permissions.FindLast(Item => Item.PermissionCodeName == ControllerActionRouteNames.Admin.PagesManagemet.Root)?.PermissionID;
+            var permissionIDParent = User.Permissions.FindLast(Item => Item.PermissionCodeName == ControllerActionRouteNames.Admin.PagesManagementController.RedirectToChild)?.PermissionID;
             if (permissionIDParent.HasValue)
             {
                 var firstPermission = User.Permissions.FirstOrDefault(item => item.PermissionParentID == permissionIDParent);
@@ -40,40 +41,40 @@ namespace SixtyThreeBits.Web.Models.Admin
     public class PagesModel : ModelBase
     {
         #region Methods
-        public PageViewModel GetPageViewModel()
+        public ViewModel GetViewModel()
         {
-            var viewModel = new PageViewModel();
-            viewModel.ShowAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.PagesManagemet.Pages.GridAdd);
-            viewModel.Grid = new PageViewModel.GridModel();            
-            viewModel.Grid.UrlLoad = Url.RouteUrl(ControllerActionRouteNames.Admin.PagesManagemet.Pages.Grid);
-            viewModel.Grid.UrlAddNew = Url.RouteUrl(ControllerActionRouteNames.Admin.PagesManagemet.Pages.GridAdd);
-            viewModel.Grid.UrlUpdate = Url.RouteUrl(ControllerActionRouteNames.Admin.PagesManagemet.Pages.GridUpdate);
-            viewModel.Grid.UrlDelete = Url.RouteUrl(ControllerActionRouteNames.Admin.PagesManagemet.Pages.GridDelete);
-            viewModel.Grid.AllowUpdate = User.HasPermission(ControllerActionRouteNames.Admin.PagesManagemet.Pages.GridUpdate);
-            viewModel.Grid.AllowDelete = User.HasPermission(ControllerActionRouteNames.Admin.PagesManagemet.Pages.GridDelete);
+            var viewModel = new ViewModel();
+            viewModel.ShowAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.PagesController.GridAdd);
+            viewModel.Grid = new ViewModel.GridViewModel();            
+            viewModel.Grid.UrlLoad = Url.RouteUrl(ControllerActionRouteNames.Admin.PagesController.Grid);
+            viewModel.Grid.UrlAddNew = Url.RouteUrl(ControllerActionRouteNames.Admin.PagesController.GridAdd);
+            viewModel.Grid.UrlUpdate = Url.RouteUrl(ControllerActionRouteNames.Admin.PagesController.GridUpdate);
+            viewModel.Grid.UrlDelete = Url.RouteUrl(ControllerActionRouteNames.Admin.PagesController.GridDelete);
+            viewModel.Grid.AllowUpdate = User.HasPermission(ControllerActionRouteNames.Admin.PagesController.GridUpdate);
+            viewModel.Grid.AllowDelete = User.HasPermission(ControllerActionRouteNames.Admin.PagesController.GridDelete);
             return viewModel;
         }
 
-        public async Task<List<PageViewModel.GridModel.GridItem>> GetGridViewModel()
+        public async Task<List<ViewModel.GridViewModel.GridItem>> ListGridItems()
         {
             var repository = RepositoriesFactory.GetPagesRepository();
 
             var viewModel = (await repository.PagesList())
-            ?.Select(item => new PageViewModel.GridModel.GridItem
+            ?.Select(item => new ViewModel.GridViewModel.GridItem
             {
                 PageID = item.PageID,
                 PageTitle = item.PageTitle,
                 PageTitleEng = item.PageTitleEng,
                 PageIsPublished = item.PageIsPublished,
                 PageDateCreated = item.PageDateCreated,
-                UrlProperties = Url.RouteUrl(ControllerActionRouteNames.Admin.PagesManagemet.Pages.Page.Properties, new { pageID = item.PageID })
+                UrlProperties = Url.RouteUrl(ControllerActionRouteNames.Admin.PagePropertiesController.Properties, new { pageID = item.PageID })
             })
             .ToList();
 
             return viewModel;
         }
 
-        public async Task CRUD(Enums.DatabaseActions databaseAction, int? pageID, PageViewModel.GridModel.GridItem submitModel)
+        public async Task IUD(Enums.DatabaseActions databaseAction, int? pageID, ViewModel.GridViewModel.GridItem submitModel)
         {
             var repository = RepositoriesFactory.GetPagesRepository();
 
@@ -101,7 +102,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             var dbItem = await repository.PagesGetSingleByID(pageID);
             if (dbItem != null)
             {
-                await DeleteUploadedFile(dbItem.PageImageFilename, folderPath: null);
+                await DeleteUploadedFile(dbItem.PageImageFilename);
             }
 
             await repository.PagesDelete(pageID: pageID);
@@ -134,20 +135,20 @@ namespace SixtyThreeBits.Web.Models.Admin
         #endregion
 
         #region Nested Classes
-        public class PageViewModel
+        public class ViewModel
         {
             #region Properties
             public bool ShowAddNewButton { get; set; }
-            public GridModel Grid { get; set; }
+            public GridViewModel Grid { get; set; }
             #endregion
 
             #region Nested Classes
-            public class GridModel : DevExtremeGridViewModelBase, IDevExtremeGridModel<GridModel.GridItem>
+            public class GridViewModel : DevExtremeGridViewModelBase<GridViewModel.GridItem>
             {
                 #region Methods
-                public DataGridBuilder<GridItem> Render(IHtmlHelper html)
+                public override DataGridBuilder<GridItem> Render(IHtmlHelper html)
                 {
-                    var grid = GetGridWithStartupValues<GridItem>(html: html, keyFieldName: nameof(GridItem.PageID));
+                    var grid = CreateGridWithStartupValues(html: html, keyFieldName: nameof(GridItem.PageID));
 
                     grid
                     .ID("PagesGrid")
@@ -241,7 +242,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             viewModel.PageImageHttpPath = FileStorage.GetUploadedFileHttpPath(DBItem.PageImageFilename, _folderPath);
 
             viewModel.UrlPreview = GetUrlPages(pageSlug:DBItem.PageSlug);
-            viewModel.UrlDeleteImage = Url.RouteUrl(ControllerActionRouteNames.Admin.PagesManagemet.Pages.Page.PropertiesDeleteImage, values: new { pageID = DBItem.PageID });
+            viewModel.UrlDeleteImage = Url.RouteUrl(ControllerActionRouteNames.Admin.PagePropertiesController.DeleteImage, values: new { pageID = DBItem.PageID });
 
             return viewModel;
         }
@@ -290,9 +291,12 @@ namespace SixtyThreeBits.Web.Models.Admin
                 }
             );
 
-            if (!repository.IsError)
+            if (repository.IsError)
             {
-                viewModel.IsSaved = true;
+                viewModel.AddError(repository.ErrorMessage);
+            }
+            else
+            {
                 if (hasPageImage)
                 {
                     await SaveUploadedFile(viewModel.PageImageFile, pageImageFilename, _folderPath);
@@ -357,38 +361,36 @@ namespace SixtyThreeBits.Web.Models.Admin
     public class PageBuilderModel : PageModelBase
     {
         #region Methods
-        public PageViewModel GetPageViewModel(int? pageID, string languageCultureCode)
+        public ViewModel GetViewModel(int? pageID, string languageCultureCode)
         {
             if (string.IsNullOrWhiteSpace(languageCultureCode))
             {
                 languageCultureCode = Enums.Languages.GEORGIAN;
             }
 
-            var viewModel = new PageViewModel();
+            var viewModel = new ViewModel();
             viewModel.PageTitle = Utilities.GetValuesByLanguage(languageCultureCode, DBItem.PageTitle, DBItem.PageTitleEng);
             viewModel.PageText = Utilities.GetValuesByLanguage(languageCultureCode, DBItem.PageText, DBItem.PageTextEng);
             viewModel.PageData = Utilities.GetValuesByLanguage(languageCultureCode, DBItem.PageData, DBItem.PageDataEng) ?? "[]";
             viewModel.IsPublished = DBItem.PageIsPublished;
             viewModel.Language = languageCultureCode;
-            viewModel.UrlBack = Url.RouteUrl(ControllerActionRouteNames.Admin.PagesManagemet.Pages.Page.Properties, new { pageID = DBItem.PageID });
-            viewModel.UrlPreview = GetRouteByName(ControllerActionRouteNames.Website.Pages.Page, new { pageSlug = DBItem.PageSlug });
+            viewModel.UrlBack = Url.RouteUrl(ControllerActionRouteNames.Admin.PagePropertiesController.Properties, new { pageID = DBItem.PageID });
+            viewModel.UrlPreview = GetRouteByName(ControllerActionRouteNames.Website.PagesController.Page, new { pageSlug = DBItem.PageSlug });
             viewModel.UrlSave = UrlCurrentPageWithDomain;
-            viewModel.UrlFileManager = Url.RouteUrl(ControllerActionRouteNames.Admin.FileManager.Page, new { moduleName = Enums.FileManagerModules.Pages });
-
-            
+            viewModel.UrlFileManager = Url.RouteUrl(ControllerActionRouteNames.Admin.FileManagerController.FileManager, new { moduleName = Enums.FileManagerModules.Pages });
 
             viewModel.SelectedLanguage = Utilities.GetValuesByLanguage(languageCultureCode, Enums.Languages.GEORGIAN, Enums.Languages.ENGLISH);
             viewModel.LanguageOptions =
             [
-                new() { Key = nameof(Enums.Languages.GEORGIAN), Value = Url.RouteUrl(ControllerActionRouteNames.Admin.PagesManagemet.Pages.Page.BuilderLanguage, new { pageID, Language = Enums.Languages.GEORGIAN }), IsSelected = languageCultureCode == Enums.Languages.GEORGIAN },
-                new() { Key = nameof(Enums.Languages.ENGLISH), Value = Url.RouteUrl(ControllerActionRouteNames.Admin.PagesManagemet.Pages.Page.BuilderLanguage, new { pageID, Language = Enums.Languages.ENGLISH }), IsSelected = languageCultureCode == Enums.Languages.ENGLISH },                
+                new() { Key = nameof(Enums.Languages.GEORGIAN), Value = Url.RouteUrl(ControllerActionRouteNames.Admin.PageBuilderController.BuilderLanguage, new { pageID, Language = Enums.Languages.GEORGIAN }), IsSelected = languageCultureCode == Enums.Languages.GEORGIAN },
+                new() { Key = nameof(Enums.Languages.ENGLISH), Value = Url.RouteUrl(ControllerActionRouteNames.Admin.PageBuilderController.BuilderLanguage, new { pageID, Language = Enums.Languages.ENGLISH }), IsSelected = languageCultureCode == Enums.Languages.ENGLISH },                
             ];
 
             viewModel.PluginsClient = new PluginsClientViewModel();
             return viewModel;
         }
 
-        public Errors ValidatePageViewModel(SubmitModel submitModel)
+        public Errors Validate(SubmitModel submitModel)
         {
             var errors = new Errors();
             errors.AddError(Validation.ValidateRequired(errorKey: Validation.GetJQueryNameSelectorFor(nameof(submitModel.PageTitle)), valueToValidate: submitModel.PageTitle));
@@ -441,7 +443,7 @@ namespace SixtyThreeBits.Web.Models.Admin
         #endregion
 
         #region Nested Classes
-        public class PageViewModel
+        public class ViewModel
         {
             #region Properties
             public PluginsClientViewModel PluginsClient { get; set; }

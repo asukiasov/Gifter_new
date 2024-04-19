@@ -17,16 +17,16 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         #endregion
 
         [HttpGet]
-        [Route("", Name = ControllerActionRouteNames.Admin.SystemProperties.Page)]
+        [Route("", Name = ControllerActionRouteNames.Admin.SystemPropertiesController.SystemProperies)]
         public async Task<IActionResult> SystemProperies()
         {
             Model.PluginsClient.Enable63BitsForms(true).EnableFancybox(true).Enable63BitsSuccessErrorToast(true);
-            var viewModel = await Model.GetPageViewModel();
-            return View(ViewNames.Admin.SystemProperties.Page, viewModel);
+            var viewModel = await Model.GetViewModel();
+            return View(ViewNames.Admin.SystemProperties.SystemPropertiesView, viewModel);
         }
 
         [HttpPost]
-        [Route("test-email-smtp", Name = ControllerActionRouteNames.Admin.SystemProperties.TestEmailSmtp)]
+        [Route("test-email-smtp", Name = ControllerActionRouteNames.Admin.SystemPropertiesController.TestEmailSmtp)]
         public async Task<IActionResult> TestEmailSmtp(SystemPropertiesModel.EmailSmtpTestModel SubmitModel)
         {
             var viewModel = await Model.TestEmailSmtp(SubmitModel);
@@ -34,7 +34,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         }
 
         [HttpPost]
-        [Route("test-email-mailgun", Name = ControllerActionRouteNames.Admin.SystemProperties.TestEmailMailgun)]
+        [Route("test-email-mailgun", Name = ControllerActionRouteNames.Admin.SystemPropertiesController.TestEmailMailgun)]
         public async Task<IActionResult> TestEmailMailgun(SystemPropertiesModel.EmailMailgunTestModel SubmitModel)
         {
             var viewModel = await Model.TestEmailMailgun(SubmitModel);
@@ -42,7 +42,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         }
 
         [HttpPost]
-        [Route("test-email-office365", Name = ControllerActionRouteNames.Admin.SystemProperties.TestEmailOffice365)]
+        [Route("test-email-office365", Name = ControllerActionRouteNames.Admin.SystemPropertiesController.TestEmailOffice365)]
         public async Task<IActionResult> TestEmailOffice365(SystemPropertiesModel.EmailOffice365TestModel SubmitModel)
         {
             var viewModel = await Model.TestEmailOffice365(SubmitModel);
@@ -50,7 +50,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         }
 
         [HttpPost]
-        [Route("test-aws", Name = ControllerActionRouteNames.Admin.SystemProperties.TestAws)]
+        [Route("test-aws", Name = ControllerActionRouteNames.Admin.SystemPropertiesController.TestAws)]
         public async Task<IActionResult> TestAws()
         {
             var viewModel = await Model.TestAws();
@@ -59,19 +59,19 @@ namespace SixtyThreeBits.Web.Controllers.Admin
 
         [HttpPost]
         [Route("")]
-        public async Task<IActionResult> UpdateSystemProperies(SystemPropertiesModel.PageViewModel SubmitModel)
+        public async Task<IActionResult> UpdateSystemProperies(SystemPropertiesModel.ViewModel SubmitModel)
         {
             Model.PluginsClient.Enable63BitsForms(true);
-            var viewModel = await Model.UpdateSystemProperties(SubmitModel);
-            if (viewModel.IsSaved)
+            var viewModel = await Model.Save(SubmitModel);
+            if (viewModel.IsValid)
             {
                 Model.ShowSuccessToastNotification();
-                return Redirect(Url.RouteUrl(ControllerActionRouteNames.Admin.SystemProperties.Page));
+                return Redirect(Url.RouteUrl(ControllerActionRouteNames.Admin.SystemPropertiesController.SystemProperies));
             }
             else
             {
                 Model.ShowErrorToastNotification();
-                return View(ViewNames.Admin.SystemProperties.Page, viewModel);
+                return View(ViewNames.Admin.SystemProperties.SystemPropertiesView, viewModel);
             }
         }
 

@@ -8,20 +8,6 @@ using System.Collections.Generic;
 
 namespace SixtyThreeBits.Web.Domain.Libraries
 {
-    public interface IDevExtremeGridModel<T> where T : class
-    {
-        #region Properties
-        DataGridBuilder<T> Render(IHtmlHelper Html);
-        #endregion
-    }
-
-    public interface IDevExtremeTreeModel<T> where T : class
-    {
-        #region Properties
-        TreeListBuilder<T> Render(IHtmlHelper Html);
-        #endregion
-    }
-
     public class DevExtremeGridFilterItem
     {
         #region Properties
@@ -39,7 +25,7 @@ namespace SixtyThreeBits.Web.Domain.Libraries
         #endregion
     }
 
-    public class DevExtremeGridViewModelBase
+    public abstract class DevExtremeGridViewModelBase<T> where T : class
     {
         #region Properties        
         public bool AllowAdd { get; set; }
@@ -60,7 +46,7 @@ namespace SixtyThreeBits.Web.Domain.Libraries
         #endregion
 
         #region Methods
-        public DataGridBuilder<T> GetGridWithStartupValues<T>(IHtmlHelper html, string keyFieldName)
+        public DataGridBuilder<T> CreateGridWithStartupValues(IHtmlHelper html, string keyFieldName)
         {
             return html.DevExtreme().DataGrid<T>()
             .Width("100%")
@@ -166,7 +152,32 @@ namespace SixtyThreeBits.Web.Domain.Libraries
             });
         }
 
-        public TreeListBuilder<T> GetTreeWithStartupValues<T>(IHtmlHelper html, string keyFieldName, string parentFieldName)
+        public abstract DataGridBuilder<T> Render(IHtmlHelper Html);
+        #endregion
+    }
+
+    public abstract class DevExtremeTreeViewModelBase<T> where T : class
+    {
+        #region Properties        
+        public bool AllowAdd { get; set; }
+        public bool AllowUpdate { get; set; }
+        public bool AllowDelete { get; set; }
+
+        public string UrlLoad { get; set; }
+        public object LoadParams { get; set; }
+        public string UrlAddNew { get; set; }
+        public string UrlUpdate { get; set; }
+        public string UrlDelete { get; set; }
+
+        public string BeforeSendJSFunction { get; set; }
+
+        public bool IsError => !string.IsNullOrWhiteSpace(ErrorMessage);
+        public string ErrorMessage { get; set; }
+        public string TextConfirmDelete { get; set; } = Resources.TextConfirmDelete;
+        #endregion
+
+        #region Methods
+        public TreeListBuilder<T> CreateTreeWithStartupValues(IHtmlHelper html, string keyFieldName, string parentFieldName)
         {
             return html.DevExtreme().TreeList<T>()
             .KeyExpr(keyFieldName)
@@ -228,7 +239,7 @@ namespace SixtyThreeBits.Web.Domain.Libraries
                 options.PageSize(30);
             })
             .Columns(Columns =>
-            {   
+            {
                 if (AllowAdd || AllowUpdate || AllowDelete)
                 {
                     var isAllowedAddOrUpdate = AllowAdd || AllowUpdate;
@@ -241,9 +252,9 @@ namespace SixtyThreeBits.Web.Domain.Libraries
                         .Alignment(HorizontalAlignment.Center)
                         .Buttons(b =>
                         {
-                            if(AllowAdd)
+                            if (AllowAdd)
                             {
-                                b.Add().Name(TreeListColumnButtonName.Add).Icon("fa-solid fa-plus").Text(Resources.TextAdd);                                
+                                b.Add().Name(TreeListColumnButtonName.Add).Icon("fa-solid fa-plus").Text(Resources.TextAdd);
                             }
                             if (AllowUpdate)
                             {
@@ -262,6 +273,8 @@ namespace SixtyThreeBits.Web.Domain.Libraries
                 }
             });
         }
+
+        public abstract TreeListBuilder<T> Render(IHtmlHelper Html);
         #endregion
     }
 
@@ -290,6 +303,25 @@ namespace SixtyThreeBits.Web.Domain.Libraries
                 column.Format(Constants.Formats.Date);
             }
             return column;
+        }
+
+        public static DateBoxBuilder InitDateBox(this DateBoxBuilder dateBox, bool formatDateTime = false)
+        {
+            if (formatDateTime)
+            {
+                dateBox.DisplayFormat(Constants.Formats.DateTime);
+            }
+            else
+            {
+                dateBox.DisplayFormat(Constants.Formats.Date);
+            }
+
+            return dateBox;
+        }
+
+        public static DataGridColumnBuilder<T> InitDetailsUrlCellTemplate<T>(this DataGridColumnBuilder<T> column, string urlPropertyName)
+        {
+            return column.Alignment(HorizontalAlignment.Center).CellTemplate($"<a href=\"<%-data.{urlPropertyName}%>\"><i class=\"fa-solid fa-circle-info\"></i></a>");
         }
 
         public static DataGridColumnBuilder<T1> InitLookupColumn<T1, T2, T3>(this DataGridColumnBuilder<T1> column, IEnumerable<KeyValueTuple<T2, T3>> data, bool isRequired = false, bool allowNull = false)
@@ -354,26 +386,7 @@ namespace SixtyThreeBits.Web.Domain.Libraries
                 }
             });
             return column;
-        }
-
-        public static DateBoxBuilder InitDateBox(this DateBoxBuilder dateBox, bool formatDateTime = false)
-        {
-            if (formatDateTime)
-            {
-                dateBox.DisplayFormat(Constants.Formats.DateTime);
-            }
-            else
-            {
-                dateBox.DisplayFormat(Constants.Formats.Date);
-            }
-
-            return dateBox;
-        }
-
-        public static DataGridColumnBuilder<T> InitDetailsUrlCellTemplate<T>(this DataGridColumnBuilder<T> column, string urlPropertyName)
-        {
-            return column.Alignment(HorizontalAlignment.Center).CellTemplate($"<a href=\"<%-data.{urlPropertyName}%>\"><i class=\"fa-solid fa-circle-info\"></i></a>");
-        }
+        }        
         #endregion
 
         #region Enums

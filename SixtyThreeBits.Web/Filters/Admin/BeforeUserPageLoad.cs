@@ -71,7 +71,7 @@ namespace SixtyThreeBits.Web.Filters.Admin
 
         void InitTabs()
         {
-            var tabsParentID = _model.User.Permissions.FindLast(Item => Item.PermissionCodeName == ControllerActionRouteNames.Admin.Users.User.Root)?.PermissionID;
+            var tabsParentID = _model.User.Permissions.FindLast(Item => Item.PermissionCodeName == WebConstants.Permissions.User)?.PermissionID;
 
             if (tabsParentID != null)
             {

@@ -21,27 +21,27 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         #endregion
 
         #region Actions
-        [Route("", Name = ControllerActionRouteNames.Admin.TeamMembers.TeamMembersPage)]
+        [Route("", Name = ControllerActionRouteNames.Admin.TeamMembersController.TeamMembers)]
         public async Task<IActionResult> TeamMembers()
         {
             Model.PluginsClient.EnableDevextreme(true);
-            var viewModel = await Model.GetPageViewModel();
-            return View(ViewNames.Admin.TeamMembers.TeamMembersPage, viewModel);
+            var viewModel = await Model.GetViewModel();
+            return View(ViewNames.Admin.TeamMembers.TeamMembersView, viewModel);
         }
 
-        [Route("grid", Name = ControllerActionRouteNames.Admin.TeamMembers.TeamMembersGrid)]
-        public async Task<ActionResult> TeamMembersGrid()
+        [Route("grid", Name = ControllerActionRouteNames.Admin.TeamMembersController.Grid)]
+        public async Task<ActionResult> Grid()
         {
-            var viewModel = await Model.GetGridViewModel();
+            var viewModel = await Model.ListGridItems();
             return Json(viewModel);
         }
 
         [HttpPost]
-        [Route("grid/add", Name = ControllerActionRouteNames.Admin.TeamMembers.TeamMembersGridAdd)]
-        public async Task<ActionResult> TeamMembersGridAdd(int? key, string values)
+        [Route("grid/add", Name = ControllerActionRouteNames.Admin.TeamMembersController.GridAdd)]
+        public async Task<ActionResult> GridAdd(int? key, string values)
         {
-            var submitModel = values.DeserializeJsonTo<TeamMembersModel.PageViewModel.GridModel.GridItem>() ?? new TeamMembersModel.PageViewModel.GridModel.GridItem();
-            await Model.CRUD(databaseAction: Enums.DatabaseActions.CREATE, teamMemberID: key, submitModel: submitModel);
+            var submitModel = values.DeserializeJsonTo<TeamMembersModel.ViewModel.GridViewModel.GridItem>() ?? new TeamMembersModel.ViewModel.GridViewModel.GridItem();
+            await Model.IUD(databaseAction: Enums.DatabaseActions.CREATE, teamMemberID: key, submitModel: submitModel);
             if (Model.Form.HasErrors)
             {
                 return GetDevexpressErrorResult(Model.Form.ErrorMessage);
@@ -53,11 +53,11 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         }
 
         [HttpPut]
-        [Route("grid/update", Name = ControllerActionRouteNames.Admin.TeamMembers.TeamMembersGridUpdate)]
-        public async Task<ActionResult> TeamMembersGridUpdate(int? key, string values)
+        [Route("grid/update", Name = ControllerActionRouteNames.Admin.TeamMembersController.GridUpdate)]
+        public async Task<ActionResult> GridUpdate(int? key, string values)
         {
-            var submitModel = values.DeserializeJsonTo<TeamMembersModel.PageViewModel.GridModel.GridItem>() ?? new TeamMembersModel.PageViewModel.GridModel.GridItem();
-            await Model.CRUD(databaseAction: Enums.DatabaseActions.UPDATE, teamMemberID: key, submitModel: submitModel);
+            var submitModel = values.DeserializeJsonTo<TeamMembersModel.ViewModel.GridViewModel.GridItem>() ?? new TeamMembersModel.ViewModel.GridViewModel.GridItem();
+            await Model.IUD(databaseAction: Enums.DatabaseActions.UPDATE, teamMemberID: key, submitModel: submitModel);
             if (Model.Form.HasErrors)
             {
                 return GetDevexpressErrorResult(Model.Form.ErrorMessage);
@@ -69,10 +69,10 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         }
 
         [HttpDelete]
-        [Route("grid/delete", Name = ControllerActionRouteNames.Admin.TeamMembers.TeamMembersGridDelete)]
-        public async Task<ActionResult> TeamMembersGridDelete(int? key)
+        [Route("grid/delete", Name = ControllerActionRouteNames.Admin.TeamMembersController.GridDelete)]
+        public async Task<ActionResult> GridDelete(int? key)
         {
-            await Model.CRUD(databaseAction: Enums.DatabaseActions.DELETE, teamMemberID: key, submitModel: new TeamMembersModel.PageViewModel.GridModel.GridItem());
+            await Model.IUD(databaseAction: Enums.DatabaseActions.DELETE, teamMemberID: key, submitModel: new TeamMembersModel.ViewModel.GridViewModel.GridItem());
             if (Model.Form.HasErrors)
             {
                 return GetDevexpressErrorResult(Model.Form.ErrorMessage);
@@ -84,10 +84,10 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         }
 
         [HttpPost]
-        [Route("grid/sort", Name = ControllerActionRouteNames.Admin.TeamMembers.TeamMembersGridSort)]
-        public async Task<IActionResult> TeamMembersGridSort(SyncSortIndexesSubmitModel submitModel)
+        [Route("grid/sort", Name = ControllerActionRouteNames.Admin.TeamMembersController.GridSort)]
+        public async Task<IActionResult> GridSort(SyncSortIndexesSubmitModel submitModel)
         {
-            var viewModel = await Model.TeamMembersSyncSortIndexes(submitModel);
+            var viewModel = await Model.Sort(submitModel);
             return Json(viewModel);
         }
         #endregion
@@ -106,49 +106,49 @@ namespace SixtyThreeBits.Web.Controllers.Admin
 
         #region Actions
         [HttpGet]
-        [Route("properties", Name = ControllerActionRouteNames.Admin.TeamMembers.TeamMember.Properties)]
+        [Route("properties", Name = ControllerActionRouteNames.Admin.TeamMembersPropertiesController.Properties)]
         public async Task<IActionResult> Properties()
         {
             Model.PluginsClient.EnableTinyMce(true).Enable63BitsForms(true).EnableFancybox(true).Enable63BitsSuccessErrorToast(true);
-            var viewModel = await Model.GetTeamMembersPropertiesViewModel(viewModel: null);
+            var viewModel = await Model.GetViewModel(viewModel: null);
             Model.PageTitle.Set($"{Model.DBItem.TeamMemberFirstname} {Model.DBItem.TeamMemberLastname}");
-            return View(ViewNames.Admin.TeamMembers.TeamMemberProperties, viewModel);
+            return View(ViewNames.Admin.TeamMembers.TeamMemberPropertiesView, viewModel);
         }
 
         [HttpPost]
         [Route("properties")]
-        public async Task<IActionResult> Properties(TeamMemberPropertiesModel.PageViewModel SubmitModel)
+        public async Task<IActionResult> Properties(TeamMemberPropertiesModel.ViewModel SubmitModel)
         {
             var result = default(IActionResult);
             Model.PluginsClient.Enable63BitsForms(true).EnableFancybox(true).EnableTinyMce(true).Enable63BitsSuccessErrorToast(true);
-            var viewModel = await Model.GetTeamMembersPropertiesViewModel(viewModel: SubmitModel);
+            var viewModel = await Model.GetViewModel(viewModel: SubmitModel);
 
             Model.PageTitle.Set($"{Model.DBItem.TeamMemberFirstname} {Model.DBItem.TeamMemberLastname}");
-            Model.ValidatePageViewModel(viewModel);
+            Model.Validate(viewModel);
             if (viewModel.IsValid)
             {
-                await Model.SaveTeamMemberProperties(viewModel);
-                if (viewModel.IsSaved)
+                await Model.Save(viewModel);
+                if (viewModel.IsValid)
                 {
                     Model.ShowSuccessToastNotification();
-                    result = Redirect(Url.RouteUrl(ControllerActionRouteNames.Admin.TeamMembers.TeamMember.Properties, new { teamMemberID = Model.DBItem.TeamMemberID }));
+                    result = Redirect(Url.RouteUrl(ControllerActionRouteNames.Admin.TeamMembersPropertiesController.Properties, new { teamMemberID = Model.DBItem.TeamMemberID }));
                 }
                 else
                 {
                     Model.ShowErrorToastNotification();
-                    result = View(ViewNames.Admin.TeamMembers.TeamMemberProperties, viewModel);
+                    result = View(ViewNames.Admin.TeamMembers.TeamMemberPropertiesView, viewModel);
                 }
             }
             else
             {
-                result = View(ViewNames.Admin.TeamMembers.TeamMemberProperties, viewModel);
+                result = View(ViewNames.Admin.TeamMembers.TeamMemberPropertiesView, viewModel);
             }
             return result;
         }
 
         [HttpPost]
-        [Route("properties/delete-image", Name = ControllerActionRouteNames.Admin.TeamMembers.TeamMember.PropertiesDeleteImage)]
-        public async Task<IActionResult> TeamMemberItemDeleteImage()
+        [Route("properties/delete-image", Name = ControllerActionRouteNames.Admin.TeamMembersPropertiesController.DeleteImage)]
+        public async Task<IActionResult> DeleteImage()
         {
             var viewModel = await Model.DeleteImage();
             return Json(viewModel);

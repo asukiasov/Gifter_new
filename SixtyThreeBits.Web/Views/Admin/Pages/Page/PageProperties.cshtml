@@ -6,7 +6,7 @@
 <form method="post" enctype="multipart/form-data">
     <div class="row">
         <div class="col d-flex justify-content-between">
-            @await Html.PartialAsync(ViewNames.Admin.Shared.ButtonSave, new ButtonSaveViewModel {CssClass = "js-show-preloader"})
+            @await Html.PartialAsync(ViewNames.Admin.Shared.ButtonSavePartialView, new ButtonSaveViewModel {CssClass = "js-show-preloader"})
             <a href="@Html.Raw(Model.UrlPreview)" target="_blank" class="btn btn-light btn-rounded"><i class="fa-solid fa-eye"></i> @Html.Raw(Model.TextPreview)</a>
         </div>
     </div>

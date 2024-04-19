@@ -21,8 +21,8 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         #endregion
 
         #region Actions
-        [Route("")]
-        public IActionResult RedirectToPage()
+        [Route("", Name = ControllerActionRouteNames.Admin.PagesManagementController.RedirectToChild)]
+        public IActionResult RedirectToChild()
         {
             var redirectUrl = Model.GetRedirectUrl();
             if (string.IsNullOrWhiteSpace(redirectUrl))
@@ -50,43 +50,43 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         #endregion
 
         #region Actions
-        [Route("", Name = ControllerActionRouteNames.Admin.PagesManagemet.Pages.Index)]
+        [Route("", Name = ControllerActionRouteNames.Admin.PagesController.Pages)]
         public ActionResult Pages()
         {
             Model.PluginsClient.EnableDevextreme(true);
-            var viewModel = Model.GetPageViewModel();
-            return View(ViewNames.Admin.PagesManagement.Pages.GridPage, viewModel);
+            var viewModel = Model.GetViewModel();
+            return View(ViewNames.Admin.Pages.PagesView, viewModel);
         }
 
-        [Route("grid", Name = ControllerActionRouteNames.Admin.PagesManagemet.Pages.Grid)]
-        public async Task<ActionResult> PagesGrid()
+        [Route("grid", Name = ControllerActionRouteNames.Admin.PagesController.Grid)]
+        public async Task<ActionResult> Grid()
         {
-            var viewModel = await Model.GetGridViewModel();
+            var viewModel = await Model.ListGridItems();
             return Json(viewModel);
         }
 
         [HttpPost]
-        [Route("grid/add", Name = ControllerActionRouteNames.Admin.PagesManagemet.Pages.GridAdd)]
-        public async Task<ActionResult> PagesGridAdd(int? key, string values)
+        [Route("grid/add", Name = ControllerActionRouteNames.Admin.PagesController.GridAdd)]
+        public async Task<ActionResult> GridAdd(int? key, string values)
         {
-            var submitModel = values.DeserializeJsonTo<PagesModel.PageViewModel.GridModel.GridItem>() ?? new PagesModel.PageViewModel.GridModel.GridItem();
+            var submitModel = values.DeserializeJsonTo<PagesModel.ViewModel.GridViewModel.GridItem>() ?? new PagesModel.ViewModel.GridViewModel.GridItem();
             if (Model.Form.HasErrors)
             {
                 return GetDevexpressErrorResult(Model.Form.ErrorMessage);
             }
             else
             {
-                await Model.CRUD(databaseAction: Enums.DatabaseActions.CREATE, pageID: key, submitModel: submitModel);
+                await Model.IUD(databaseAction: Enums.DatabaseActions.CREATE, pageID: key, submitModel: submitModel);
                 return GetDevexpressSuccessResult();
             }
         }
 
         [HttpPut]
-        [Route("grid/update", Name = ControllerActionRouteNames.Admin.PagesManagemet.Pages.GridUpdate)]
-        public async Task<ActionResult> PagesGridUpdate(int? key, string values)
+        [Route("grid/update", Name = ControllerActionRouteNames.Admin.PagesController.GridUpdate)]
+        public async Task<ActionResult> GridUpdate(int? key, string values)
         {
             var result = default(ActionResult);
-            var submitModel = values.DeserializeJsonTo<PagesModel.PageViewModel.GridModel.GridItem>() ?? new PagesModel.PageViewModel.GridModel.GridItem();
+            var submitModel = values.DeserializeJsonTo<PagesModel.ViewModel.GridViewModel.GridItem>() ?? new PagesModel.ViewModel.GridViewModel.GridItem();
 
             if (Model.Form.HasErrors)
             {
@@ -94,7 +94,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
             }
             else
             {
-                await Model.CRUD(databaseAction: Enums.DatabaseActions.UPDATE, pageID: key, submitModel: submitModel);
+                await Model.IUD(databaseAction: Enums.DatabaseActions.UPDATE, pageID: key, submitModel: submitModel);
                 if (Model.Form.HasErrors)
                 {
                     result = GetDevexpressErrorResult(Model.Form.ErrorMessage);
@@ -109,8 +109,8 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         }
 
         [HttpDelete]
-        [Route("grid/delete", Name = ControllerActionRouteNames.Admin.PagesManagemet.Pages.GridDelete)]
-        public async Task<ActionResult> PagesGridDelete(int? key)
+        [Route("grid/delete", Name = ControllerActionRouteNames.Admin.PagesController.GridDelete)]
+        public async Task<ActionResult> GridDelete(int? key)
         {
             await Model.Delete(pageID: key);
             if (Model.Form.HasErrors)
@@ -123,8 +123,8 @@ namespace SixtyThreeBits.Web.Controllers.Admin
             }
         }
 
-        [Route("data", Name = ControllerActionRouteNames.Admin.PagesManagemet.Pages.Data)]
-        public async Task<ActionResult> PagesData()
+        [Route("get", Name = ControllerActionRouteNames.Admin.PagesController.Get)]
+        public async Task<ActionResult> Get()
         {
             var viewModel = await Model.GetPagesData();
             return Json(viewModel);
@@ -145,8 +145,8 @@ namespace SixtyThreeBits.Web.Controllers.Admin
 
         #region Actions
         [HttpGet]
-        [Route("", Name = ControllerActionRouteNames.Admin.PagesManagemet.Pages.Page.Data)]
-        public IActionResult PageData()
+        [Route("", Name = ControllerActionRouteNames.Admin.PageDataController.Get)]
+        public IActionResult Get()
         {            
             var viewModel = Model.GetPageData();
             return Json(viewModel);
@@ -167,17 +167,17 @@ namespace SixtyThreeBits.Web.Controllers.Admin
 
         #region Actions
         [HttpGet]
-        [Route("", Name = ControllerActionRouteNames.Admin.PagesManagemet.Pages.Page.Properties)]
-        public IActionResult PageProperties()
+        [Route("", Name = ControllerActionRouteNames.Admin.PagePropertiesController.Properties)]
+        public IActionResult Properties()
         {
             Model.PluginsClient.Enable63BitsForms(true).EnableFancybox(true).Enable63BitsSuccessErrorToast(true);
             var viewModel = Model.GetPageViewModel(viewModel: null);
-            return View(ViewNames.Admin.PagesManagement.Pages.Page.Properties, viewModel);
+            return View(ViewNames.Admin.Pages.Page.PagePropertiesView, viewModel);
         }
 
         [HttpPost]
         [Route("")]
-        public async Task<IActionResult> PageProperties(PagePropertiesModel.PageViewModel submitModel)
+        public async Task<IActionResult> Properties(PagePropertiesModel.PageViewModel submitModel)
         {
             Model.PluginsClient.Enable63BitsForms(true).EnableFancybox(true).Enable63BitsSuccessErrorToast(true);
             var viewModel = Model.GetPageViewModel(viewModel: submitModel);
@@ -186,10 +186,10 @@ namespace SixtyThreeBits.Web.Controllers.Admin
             if (viewModel.IsValid)
             {
                 await Model.Save(viewModel);
-                if (viewModel.IsSaved)
+                if (viewModel.IsValid)
                 {
                     Model.ShowSuccessToastNotification();
-                    return Redirect(Url.RouteUrl(ControllerActionRouteNames.Admin.PagesManagemet.Pages.Page.Properties, new { pageID = Model.DBItem.PageID }));
+                    return Redirect(Url.RouteUrl(ControllerActionRouteNames.Admin.PagePropertiesController.Properties, new { pageID = Model.DBItem.PageID }));
                 }
                 else
                 {
@@ -197,12 +197,12 @@ namespace SixtyThreeBits.Web.Controllers.Admin
                 }
             }
 
-            return View(ViewNames.Admin.PagesManagement.Pages.Page.Properties, viewModel);
+            return View(ViewNames.Admin.Pages.Page.PagePropertiesView, viewModel);
         }
 
         [HttpPost]
-        [Route("delete-image", Name = ControllerActionRouteNames.Admin.PagesManagemet.Pages.Page.PropertiesDeleteImage)]
-        public async Task<IActionResult> PagePropertiesDeleteImage()
+        [Route("delete-image", Name = ControllerActionRouteNames.Admin.PagePropertiesController.DeleteImage)]
+        public async Task<IActionResult> DeleteImage()
         {
             var viewModel = await Model.DeleteImage();
             return Json(viewModel);
@@ -222,23 +222,22 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         #endregion
 
         #region Actions
-        [Route("", Name = ControllerActionRouteNames.Admin.PagesManagemet.Pages.Page.Builder)]
-        [Route("{Language:length(2)}", Name = ControllerActionRouteNames.Admin.PagesManagemet.Pages.Page.BuilderLanguage)]
+        [Route("", Name = ControllerActionRouteNames.Admin.PageBuilderController.Builder)]
+        [Route("{Language:length(2)}", Name = ControllerActionRouteNames.Admin.PageBuilderController.BuilderLanguage)]
         public IActionResult PageBuilder(int? pageID, string language)
         {
-            var viewModel = Model.GetPageViewModel(pageID, language);
+            var viewModel = Model.GetViewModel(pageID, language);
             viewModel.PluginsClient.EnableJsClient(true).EnableJQuery(true).EnableBootstrap(true).EnableFancybox(true).EnablePreloader(true).EnableTemplate7(true).EnableTinyMce(true).EnableUtils(true).EnablePageBuilderEditor(true).EnableJWPlayer(true).EnableFontAwesome(true).EnableMalihuScroll(true).EnableSortableJS(true);
-            return View(ViewNames.Admin.PagesManagement.Pages.Page.Builder, viewModel);
+            return View(ViewNames.Admin.Pages.Page.PageBuilderView, viewModel);
         }
 
         [HttpPost]
-        //[ValidateInput(false)]
         [Route("")]
         [Route("{Language:length(2)}")]
         public async Task<IActionResult> PageBuilder(PageBuilderModel.SubmitModel submitModel)
         {
             var viewModel = new AjaxResponse();
-            var errors = Model.ValidatePageViewModel(submitModel);
+            var errors = Model.Validate(submitModel);
             if (errors.HasErrors)
             {
                 viewModel.Data = errors;

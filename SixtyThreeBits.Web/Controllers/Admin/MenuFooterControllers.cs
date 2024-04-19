@@ -22,17 +22,17 @@ namespace SixtyThreeBits.Web.Controllers.Admin
 
         #region Actions
         [HttpGet]
-        [Route("", Name = ControllerActionRouteNames.Admin.PagesManagemet.MenuFooter.Page)]
+        [Route("", Name = ControllerActionRouteNames.Admin.MenuFooterController.MenuFooter)]
         public async Task<IActionResult> MenuFooter()
         {
             Model.PluginsClient.EnableDevextreme(true).Enable63BitsForms(true).EnableSortableJS(true);
-            var viewModel = await Model.GetPageViewModel();
-            return View(ViewNames.Admin.PagesManagement.MenuFooter.Page, viewModel);
+            var viewModel = await Model.GetViewModel();
+            return View(ViewNames.Admin.MenuFooter.Page, viewModel);
         }
 
         [HttpPost]
-        [Route("add", Name = ControllerActionRouteNames.Admin.PagesManagemet.MenuFooter.Add)]
-        public async Task<IActionResult> MenuFooterAdd(MenuFooterModel.SubmitModel submitModel)
+        [Route("add", Name = ControllerActionRouteNames.Admin.MenuFooterController.Add)]
+        public async Task<IActionResult> Add(MenuFooterModel.SubmitModel submitModel)
         {
             var viewModel = default(AjaxResponse);
             var errors = await Model.ValidateSubmitModel(submitModel);
@@ -49,8 +49,8 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         }
 
         [HttpPost]
-        [Route("update", Name = ControllerActionRouteNames.Admin.PagesManagemet.MenuFooter.Update)]
-        public async Task<IActionResult> MenuFooterUpdate(MenuFooterModel.SubmitModel submitModel)
+        [Route("update", Name = ControllerActionRouteNames.Admin.MenuFooterController.Update)]
+        public async Task<IActionResult> Update(MenuFooterModel.SubmitModel submitModel)
         {
             var viewModel = default(AjaxResponse);
             var errors = await Model.ValidateSubmitModel(submitModel);
@@ -67,24 +67,24 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         }
 
         [HttpPost]
-        [Route("delete", Name = ControllerActionRouteNames.Admin.PagesManagemet.MenuFooter.Delete)]
-        public async Task<IActionResult> MenuFooterDelete(MenuFooterModel.SubmitModel submitModel)
+        [Route("delete", Name = ControllerActionRouteNames.Admin.MenuFooterController.Delete)]
+        public async Task<IActionResult> Delete(MenuFooterModel.SubmitModel submitModel)
         {
             var viewModel = await Model.Delete(submitModel);
             return Json(viewModel);
         }
 
         [HttpPost]
-        [Route("sort", Name = ControllerActionRouteNames.Admin.PagesManagemet.MenuFooter.Sort)]
-        public async Task<IActionResult> MenuFooterSort(SyncSortIndexesSubmitModel submitModel)
+        [Route("sort", Name = ControllerActionRouteNames.Admin.MenuFooterController.Sort)]
+        public async Task<IActionResult> Sort(SyncSortIndexesSubmitModel submitModel)
         {
             var viewModel = await Model.Sort(submitModel);
             return Json(viewModel);
         }
 
         [HttpGet]
-        [Route("get/{menuFooterID:int}", Name = ControllerActionRouteNames.Admin.PagesManagemet.MenuFooter.Get)]
-        public async Task<IActionResult> MenuFooterGet(int? menuFooterID)
+        [Route("get/{menuFooterID:int}", Name = ControllerActionRouteNames.Admin.MenuFooterController.Get)]
+        public async Task<IActionResult> Get(int? menuFooterID)
         {
             var viewModel = await Model.Get(menuFooterID);
             return Json(viewModel);

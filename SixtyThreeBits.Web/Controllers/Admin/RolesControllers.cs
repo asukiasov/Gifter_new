@@ -20,27 +20,27 @@ namespace SixtyThreeBits.Web.Controllers.Admin
 
         #region Methods
         [HttpGet]
-        [Route("", Name = ControllerActionRouteNames.Admin.Roles.Page)]
+        [Route("", Name = ControllerActionRouteNames.Admin.RolesControllers.Roles)]
         public ActionResult Roles()
         {
             Model.PluginsClient.EnableDevextreme(true);
-            var viewModel = Model.GetPageViewModel();
-            return View(ViewNames.Admin.Roles.Page, viewModel);
+            var viewModel = Model.GetViewModel();
+            return View(ViewNames.Admin.Roles.RolesView, viewModel);
         }
 
-        [Route("grid", Name = ControllerActionRouteNames.Admin.Roles.Grid)]
-        public async Task<ActionResult> RolesGrid()
+        [Route("grid", Name = ControllerActionRouteNames.Admin.RolesControllers.Grid)]
+        public async Task<ActionResult> Grid()
         {
-            var viewModel = await Model.GetGridViewModel();
+            var viewModel = await Model.ListGridItem();
             return Json(viewModel);
         }
 
         [HttpPost]
-        [Route("grid/add", Name = ControllerActionRouteNames.Admin.Roles.GridAdd)]
-        public async Task<ActionResult> RolesGridAdd(int? key, string values)
+        [Route("grid/add", Name = ControllerActionRouteNames.Admin.RolesControllers.GridAdd)]
+        public async Task<ActionResult> GridAdd(int? key, string values)
         {
-            var submitModel = values.DeserializeJsonTo<RolesModel.PageViewModel.GridModel.GridItem>() ?? new RolesModel.PageViewModel.GridModel.GridItem();
-            await Model.CRUD(databaseAction: Enums.DatabaseActions.CREATE, roleID: key, submitModel: submitModel);
+            var submitModel = values.DeserializeJsonTo<RolesModel.ViewModel.GridViewModel.GridItem>() ?? new RolesModel.ViewModel.GridViewModel.GridItem();
+            await Model.IUD(databaseAction: Enums.DatabaseActions.CREATE, roleID: key, submitModel: submitModel);
             if (Model.Form.HasErrors)
             {
                 return GetDevexpressErrorResult(Model.Form.ErrorMessage);
@@ -52,11 +52,11 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         }
 
         [HttpPut]
-        [Route("grid/update", Name = ControllerActionRouteNames.Admin.Roles.GridUpdate)]
-        public async Task<ActionResult> RolesGridUpdate(int? key, string values)
+        [Route("grid/update", Name = ControllerActionRouteNames.Admin.RolesControllers.GridUpdate)]
+        public async Task<ActionResult> GridUpdate(int? key, string values)
         {
-            var submitModel = values.DeserializeJsonTo<RolesModel.PageViewModel.GridModel.GridItem>() ?? new RolesModel.PageViewModel.GridModel.GridItem();
-            await Model.CRUD(databaseAction: Enums.DatabaseActions.UPDATE, roleID: key, submitModel: submitModel);
+            var submitModel = values.DeserializeJsonTo<RolesModel.ViewModel.GridViewModel.GridItem>() ?? new RolesModel.ViewModel.GridViewModel.GridItem();
+            await Model.IUD(databaseAction: Enums.DatabaseActions.UPDATE, roleID: key, submitModel: submitModel);
             if (Model.Form.HasErrors)
             {
                 return GetDevexpressErrorResult(Model.Form.ErrorMessage);
@@ -68,10 +68,10 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         }
 
         [HttpDelete]
-        [Route("grid/delete", Name = ControllerActionRouteNames.Admin.Roles.GridDelete)]
-        public async Task<ActionResult> RolesGridDelete(int? key)
+        [Route("grid/delete", Name = ControllerActionRouteNames.Admin.RolesControllers.GridDelete)]
+        public async Task<ActionResult> GridDelete(int? key)
         {
-            await Model.CRUD(databaseAction: Enums.DatabaseActions.DELETE, roleID: key, submitModel: new RolesModel.PageViewModel.GridModel.GridItem());
+            await Model.IUD(databaseAction: Enums.DatabaseActions.DELETE, roleID: key, submitModel: new RolesModel.ViewModel.GridViewModel.GridItem());
             if (Model.Form.HasErrors)
             {
                 return GetDevexpressErrorResult(Model.Form.ErrorMessage);

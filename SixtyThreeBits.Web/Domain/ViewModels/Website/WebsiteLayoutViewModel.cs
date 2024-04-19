@@ -1,4 +1,5 @@
-﻿using SixtyThreeBits.Web.Domain.ViewModels.Shared;
+﻿using SixtyThreeBits.Web.Domain.ViewModels.Base;
+using SixtyThreeBits.Web.Domain.ViewModels.Shared;
 using System.Collections.Generic;
 using System.Linq;
 

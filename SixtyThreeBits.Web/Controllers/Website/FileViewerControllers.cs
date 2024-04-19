@@ -16,11 +16,11 @@ namespace SixtyThreeBits.Web.Controllers.Website
         #endregion
 
         #region Actions
-        [Route("pdf", Name = ControllerActionRouteNames.Website.FileViewer.Pdf)]
-        public IActionResult PDF(FileViewerModel.SubmitModel submitModel)
+        [Route("pdf", Name = ControllerActionRouteNames.Website.FileViewerController.Pdf)]
+        public IActionResult Pdf(FileViewerModel.SubmitModel submitModel)
         {
             var viewModel = Model.GetPDFViewModel(submitModel);
-            return View(ViewNames.Website.FileViewer.Pdf, viewModel);
+            return View(ViewNames.Website.FileViewer.PdfViewerView, viewModel);
         }
         #endregion
     }

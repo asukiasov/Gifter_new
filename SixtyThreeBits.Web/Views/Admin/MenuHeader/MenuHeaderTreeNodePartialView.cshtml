@@ -1,4 +1,4 @@
-﻿@model MenuHeaderModel.PageViewModel.MenuListItem
+﻿@model MenuHeaderModel.ViewModel.MenuListItem
 <li data-id="@Model.MenuHeaderID" class="tree-item file js-tree-node">
     <div class="handle">
         <div class="left-col">
@@ -39,7 +39,7 @@
         {
             foreach (var item in Model.Children)
             {
-                @await Html.PartialAsync(ViewNames.Admin.PagesManagement.MenuHeader.MenuHeaderTreeNodePartialView, item)
+                @await Html.PartialAsync(ViewNames.Admin.MenuHeader.MenuHeaderTreeNodePartialView, item)
             }
         }
     </ul>

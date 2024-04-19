@@ -17,7 +17,7 @@ namespace SixtyThreeBits.Web.Controllers.Website
         public IActionResult Test()
         {
             Model.PluginsClient.Enable63BitsComponents(true);
-            return View(ViewNames.Website.Test.Page);
+            return View(ViewNames.Website.Test.TestView);
         }
     }
 }

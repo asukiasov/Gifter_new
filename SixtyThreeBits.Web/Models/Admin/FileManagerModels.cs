@@ -21,22 +21,22 @@ namespace SixtyThreeBits.Web.Models.Admin
     public class FileManagerModel : ModelBase
     {
         #region Methods
-        public PageViewModel GetPageViewModel(string moduleName)
+        public ViewModel GetViewModel(string moduleName)
         {
-            var viewModel = new PageViewModel();
+            var viewModel = new ViewModel();
             viewModel.PluginClient = new PluginsClientViewModel();
 
             var allowedExtensions = Request.Query[WebConstants.QueryStringKeys.FileManagerAllowedExtensions].ToString();
             var allowChooseMultiple = Request.Query[WebConstants.QueryStringKeys.FileManagerAllowChooseMultiple].ToString().ToLower().ToBooleanValue();
             var onSelectedFilesChooseClientCallback = Request.Query[WebConstants.QueryStringKeys.FileManagerOnSelectedFilesChooseClientCallback].ToString();
 
-            viewModel.UrlGetFiles = Url.RouteUrl(ControllerActionRouteNames.Admin.FileManager.Files, new { moduleName });
-            viewModel.UrlUpload = Url.RouteUrl(ControllerActionRouteNames.Admin.FileManager.Upload, new { moduleName });
-            viewModel.UrlDelete = Url.RouteUrl(ControllerActionRouteNames.Admin.FileManager.Delete, new { moduleName });
+            viewModel.UrlGetFiles = Url.RouteUrl(ControllerActionRouteNames.Admin.FileManagerController.Files, new { moduleName });
+            viewModel.UrlUpload = Url.RouteUrl(ControllerActionRouteNames.Admin.FileManagerController.Upload, new { moduleName });
+            viewModel.UrlDelete = Url.RouteUrl(ControllerActionRouteNames.Admin.FileManagerController.Delete, new { moduleName });
 
             viewModel.OnSelectedFilesChooseClientCallback = onSelectedFilesChooseClientCallback;
 
-            viewModel.FileManager = new PageViewModel.FileManagerPartialViewModel();
+            viewModel.FileManager = new ViewModel.FileManagerPartialViewModel();
             viewModel.FileManager.ModuleName = moduleName;
             viewModel.FileManager.AllowedExtensions = string.IsNullOrWhiteSpace(allowedExtensions) ? new string[0] : allowedExtensions.Split(',');
             viewModel.FileManager.AllowChooseMultiple = allowChooseMultiple;
@@ -168,7 +168,7 @@ namespace SixtyThreeBits.Web.Models.Admin
         #endregion
 
         #region Nested Classes
-        public class PageViewModel
+        public class ViewModel
         {
             #region Properties
             public PluginsClientViewModel PluginClient { get; set; }

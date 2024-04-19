@@ -80,15 +80,15 @@
                     url: productCategoriesModel.urlDelete,
                     data: { ProductCategoryID: productCategoryID },
                     dataType: 'json',
-                    success: function (res) {
-                        if (res.IsSuccess) {
+                    success: function (e) {
+                        if (e.IsSuccess) {
                             $('.js-file-tree-editor-item[data-id="' + productCategoryID + '"]').slideUp(200, function () {
                                 $(this).remove();
                             });
 
                         }
                         else {
-                            components63Bits.dialog.error();
+                            components63Bits.dialog.error(e.Data);
                         }
                     },
                     error: function () {

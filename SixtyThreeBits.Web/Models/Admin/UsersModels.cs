@@ -9,7 +9,7 @@ using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries;
 using SixtyThreeBits.Web.Domain.Libraries;
 using SixtyThreeBits.Web.Domain.Utilities;
-using SixtyThreeBits.Web.Domain.ViewModels.Shared;
+using SixtyThreeBits.Web.Domain.ViewModels.Base;
 using SixtyThreeBits.Web.Models.Base;
 using System;
 using System.Collections.Generic;
@@ -25,17 +25,17 @@ namespace SixtyThreeBits.Web.Models.Admin
         {
             var viewModel = new PageViewModel();
 
-            viewModel.ShowAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.Users.GridAdd);
+            viewModel.ShowAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.UsersController.GridAdd);
             viewModel.Grid = new PageViewModel.GridModel();
 
             var repository = RepositoriesFactory.GetRolesRepository();
             viewModel.Grid.Roles = await repository.RolesListAsKeyValueTuple();
-            viewModel.Grid.UrlLoad = Url.RouteUrl(ControllerActionRouteNames.Admin.Users.Grid);
-            viewModel.Grid.UrlAddNew = Url.RouteUrl(ControllerActionRouteNames.Admin.Users.GridAdd);
-            viewModel.Grid.UrlUpdate = Url.RouteUrl(ControllerActionRouteNames.Admin.Users.GridUpdate);
-            viewModel.Grid.UrlDelete = Url.RouteUrl(ControllerActionRouteNames.Admin.Users.GridDelete);
-            viewModel.Grid.AllowUpdate = User.HasPermission(ControllerActionRouteNames.Admin.Users.GridUpdate);
-            viewModel.Grid.AllowDelete = User.HasPermission(ControllerActionRouteNames.Admin.Users.GridDelete);
+            viewModel.Grid.UrlLoad = Url.RouteUrl(ControllerActionRouteNames.Admin.UsersController.Grid);
+            viewModel.Grid.UrlAddNew = Url.RouteUrl(ControllerActionRouteNames.Admin.UsersController.GridAdd);
+            viewModel.Grid.UrlUpdate = Url.RouteUrl(ControllerActionRouteNames.Admin.UsersController.GridUpdate);
+            viewModel.Grid.UrlDelete = Url.RouteUrl(ControllerActionRouteNames.Admin.UsersController.GridDelete);
+            viewModel.Grid.AllowUpdate = User.HasPermission(ControllerActionRouteNames.Admin.UsersController.GridUpdate);
+            viewModel.Grid.AllowDelete = User.HasPermission(ControllerActionRouteNames.Admin.UsersController.GridDelete);
 
             return viewModel;
         }
@@ -54,7 +54,7 @@ namespace SixtyThreeBits.Web.Models.Admin
                 RoleID = Item.RoleID,
                 UserIsActive = Item.UserIsActive,
                 UserDateCreated = Item.UserDateCreated,
-                UrlUserProperties = Url.RouteUrl(ControllerActionRouteNames.Admin.Users.User.Properties, new { userID = Item.UserID }),
+                UrlUserProperties = Url.RouteUrl(ControllerActionRouteNames.Admin.UserPropertiesController.Properties, new { userID = Item.UserID }),
             })
             .ToList();
 
@@ -80,7 +80,7 @@ namespace SixtyThreeBits.Web.Models.Admin
                 var dbItem = await repository.UsersGetSingleByID(userID);
                 if (dbItem != null)
                 {
-                    await DeleteUploadedFile(dbItem.UserAvatarFilename, folderPath: null);
+                    await DeleteUploadedFile(dbItem.UserAvatarFilename);
                 }
             }
 
@@ -114,16 +114,16 @@ namespace SixtyThreeBits.Web.Models.Admin
             #endregion
 
             #region Nested Classes
-            public class GridModel : DevExtremeGridViewModelBase, IDevExtremeGridModel<GridModel.GridItem>
+            public class GridModel : DevExtremeGridViewModelBase<GridModel.GridItem>
             {
                 #region Properties
                 public List<KeyValueTuple<int?, string>> Roles { get; set; }
                 #endregion
 
                 #region Methods
-                public DataGridBuilder<GridItem> Render(IHtmlHelper html)
+                public override DataGridBuilder<GridItem> Render(IHtmlHelper html)
                 {
-                    var grid = GetGridWithStartupValues<GridItem>(html: html, keyFieldName: nameof(GridItem.UserID));
+                    var grid = CreateGridWithStartupValues(html: html, keyFieldName: nameof(GridItem.UserID));
 
                     grid
                     .ID("UsersGrid")
@@ -240,7 +240,12 @@ namespace SixtyThreeBits.Web.Models.Admin
                 }
 
             );
-            viewModel.IsSaved = !repository.IsError;
+
+            if (repository.IsError)
+            {
+                viewModel.AddError(repository.ErrorMessage);
+            }
+            
             viewModel.AddError(repository.ErrorMessage);
         }
         #endregion

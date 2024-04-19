@@ -11,7 +11,7 @@ using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries;
 using SixtyThreeBits.Web.Domain.Libraries;
 using SixtyThreeBits.Web.Domain.Utilities;
-using SixtyThreeBits.Web.Domain.ViewModels.Shared;
+using SixtyThreeBits.Web.Domain.ViewModels.Base;
 using SixtyThreeBits.Web.Models.Base;
 using System;
 using System.Collections.Generic;
@@ -27,28 +27,28 @@ namespace SixtyThreeBits.Web.Models.Admin
         #endregion
 
         #region Methods
-        public PageViewModel GetPageViewModel()
+        public ViewModel GetViewModel()
         {
-            var viewModel = new PageViewModel();
-            viewModel.ShowAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.Blog.GridAdd);
+            var viewModel = new ViewModel();
+            viewModel.ShowAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.BlogPostsController.GridAdd);
 
-            viewModel.Grid = new PageViewModel.GridModel();
-            viewModel.Grid.AllowAdd = User.HasPermission(ControllerActionRouteNames.Admin.Blog.GridAdd);
-            viewModel.Grid.AllowUpdate = User.HasPermission(ControllerActionRouteNames.Admin.Blog.GridUpdate);
-            viewModel.Grid.AllowDelete = User.HasPermission(ControllerActionRouteNames.Admin.Blog.GridDelete);
-            viewModel.Grid.UrlLoad = Url.RouteUrl(ControllerActionRouteNames.Admin.Blog.Grid);
-            viewModel.Grid.UrlAddNew = Url.RouteUrl(ControllerActionRouteNames.Admin.Blog.GridAdd);
-            viewModel.Grid.UrlUpdate = Url.RouteUrl(ControllerActionRouteNames.Admin.Blog.GridUpdate);
-            viewModel.Grid.UrlDelete = Url.RouteUrl(ControllerActionRouteNames.Admin.Blog.GridDelete);
+            viewModel.Grid = new ViewModel.GridViewModel();
+            viewModel.Grid.AllowAdd = User.HasPermission(ControllerActionRouteNames.Admin.BlogPostsController.GridAdd);
+            viewModel.Grid.AllowUpdate = User.HasPermission(ControllerActionRouteNames.Admin.BlogPostsController.GridUpdate);
+            viewModel.Grid.AllowDelete = User.HasPermission(ControllerActionRouteNames.Admin.BlogPostsController.GridDelete);
+            viewModel.Grid.UrlLoad = Url.RouteUrl(ControllerActionRouteNames.Admin.BlogPostsController.Grid);
+            viewModel.Grid.UrlAddNew = Url.RouteUrl(ControllerActionRouteNames.Admin.BlogPostsController.GridAdd);
+            viewModel.Grid.UrlUpdate = Url.RouteUrl(ControllerActionRouteNames.Admin.BlogPostsController.GridUpdate);
+            viewModel.Grid.UrlDelete = Url.RouteUrl(ControllerActionRouteNames.Admin.BlogPostsController.GridDelete);
 
             return viewModel;
         }
 
-        public async Task<List<PageViewModel.GridModel.GridItem>> GetGridViewModel()
+        public async Task<List<ViewModel.GridViewModel.GridItem>> ListGridItems()
         {
             var repository = RepositoriesFactory.GetBlogRepository();
             var viewModel = (await repository.BlogPostList())
-            ?.Select(item => new PageViewModel.GridModel.GridItem
+            ?.Select(item => new ViewModel.GridViewModel.GridItem
             {
                 BlogPostID = item.BlogPostID,
                 BlogPostTitle = item.BlogPostTitle,
@@ -56,12 +56,12 @@ namespace SixtyThreeBits.Web.Models.Admin
                 BlogPostDate = item.BlogPostDate,
                 BlogPostIsPublished = item.BlogPostIsPublished,
                 BlogPostDateCreated = item.BlogPostDateCreated,
-                UrlBlogPost = Url.RouteUrl(ControllerActionRouteNames.Admin.Blog.PostProperties, new { blogPostID = item.BlogPostID })
+                UrlBlogPost = Url.RouteUrl(ControllerActionRouteNames.Admin.BlogPostPropertiesController.Properties, new { blogPostID = item.BlogPostID })
             }).ToList();
             return viewModel;
         }
 
-        public async Task CRUD(Enums.DatabaseActions databaseAction, int? blogPostID, PageViewModel.GridModel.GridItem submitModel)
+        public async Task IUD(Enums.DatabaseActions databaseAction, int? blogPostID, ViewModel.GridViewModel.GridItem submitModel)
         {
             var repository = RepositoriesFactory.GetBlogRepository();
 
@@ -91,20 +91,20 @@ namespace SixtyThreeBits.Web.Models.Admin
         #endregion
 
         #region Nested Classes
-        public class PageViewModel
+        public class ViewModel
         {
             #region Properties
             public bool ShowAddNewButton { get; set; }
-            public GridModel Grid { get; set; }
+            public GridViewModel Grid { get; set; }
             #endregion
 
             #region Nested Classes
-            public class GridModel : DevExtremeGridViewModelBase, IDevExtremeGridModel<GridModel.GridItem>
+            public class GridViewModel : DevExtremeGridViewModelBase<GridViewModel.GridItem>
             {
                 #region Methods
-                public DataGridBuilder<GridItem> Render(IHtmlHelper html)
+                public override DataGridBuilder<GridItem> Render(IHtmlHelper html)
                 {
-                    var grid = GetGridWithStartupValues<GridItem>(html: html, keyFieldName: nameof(GridItem.BlogPostID));
+                    var grid = CreateGridWithStartupValues(html: html, keyFieldName: nameof(GridItem.BlogPostID));
 
                     grid
                     .ID("BlogGrid")
@@ -162,11 +162,11 @@ namespace SixtyThreeBits.Web.Models.Admin
         #endregion
 
         #region Methods
-        public BlogPropertiesViewModel GetBlogPropertiesViewModel(BlogPropertiesViewModel viewModel)
+        public ViewModel GetViewModel(ViewModel viewModel)
         {
             if (viewModel == null)
             {
-                viewModel = new BlogPropertiesViewModel();
+                viewModel = new ViewModel();
                 viewModel.BlogPostIsPublished = DBItem.BlogPostIsPublished;
                 viewModel.BlogPostSlug = DBItem.BlogPostSlug;
                 viewModel.BlogPostTitle = DBItem.BlogPostTitle;
@@ -178,12 +178,12 @@ namespace SixtyThreeBits.Web.Models.Admin
 
             viewModel.BlogPostImageFilename = DBItem.BlogPostImageFilename;
             viewModel.BlogPostImageHttpPath = FileStorage.GetUploadedFileHttpPath(DBItem.BlogPostImageFilename, _folderPath);
-            viewModel.UrlDeleteImage = Url.RouteUrl(ControllerActionRouteNames.Admin.Blog.PostPropertiesDeleteImage, new { blogPostID = DBItem.BlogPostID });
+            viewModel.UrlDeleteImage = Url.RouteUrl(ControllerActionRouteNames.Admin.BlogPostPropertiesController.DeleteImage, new { blogPostID = DBItem.BlogPostID });
 
             return viewModel;
         }
 
-        public async Task ValidatePageViewModel(BlogPropertiesViewModel viewModel)
+        public async Task Validate(ViewModel viewModel)
         {
             viewModel.AddError(Validation.ValidateRequired(errorKey: Validation.GetJQueryNameSelectorFor(nameof(viewModel.BlogPostTitle)), valueToValidate: viewModel.BlogPostTitle));
             viewModel.AddError(Validation.ValidateRequired(errorKey: Validation.GetJQueryNameSelectorFor(nameof(viewModel.BlogPostSlug)), valueToValidate: viewModel.BlogPostSlug));
@@ -201,7 +201,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             );
         }
 
-        public async Task Save(BlogPropertiesViewModel viewModel)
+        public async Task Save(ViewModel viewModel)
         {
             var hasBlogImage = viewModel.BlogImageFile?.Length > 0;
             var blogPostImageFilename = hasBlogImage ? GetFilenameFromUploadedFile(viewModel.BlogImageFile) : null;
@@ -227,9 +227,12 @@ namespace SixtyThreeBits.Web.Models.Admin
                 }                
             );
 
-            if (!repository.IsError)
+            if (repository.IsError)
             {
-                viewModel.IsSaved = true;
+                viewModel.AddError(repository.ErrorMessage);
+            }
+            else
+            {
                 if (hasBlogImage)
                 {
                     await SaveUploadedFile(viewModel.BlogImageFile, blogPostImageFilename, _folderPath);
@@ -256,11 +259,10 @@ namespace SixtyThreeBits.Web.Models.Admin
 
             return viewModel;
         }
-
         #endregion
 
         #region Nested Classes
-        public class BlogPropertiesViewModel : FormViewModelBase
+        public class ViewModel : FormViewModelBase
         {
             #region Properties           
             public bool BlogPostIsPublished { get; set; }

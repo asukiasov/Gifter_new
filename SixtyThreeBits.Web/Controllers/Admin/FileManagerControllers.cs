@@ -18,15 +18,15 @@ namespace SixtyThreeBits.Web.Controllers.Admin
 
         #region Methods
         [HttpGet]
-        [Route("{moduleName}", Name = ControllerActionRouteNames.Admin.FileManager.Page)]
+        [Route("{moduleName}", Name = ControllerActionRouteNames.Admin.FileManagerController.FileManager)]
         public IActionResult FileManager(string moduleName)
         {
-            var viewModel = Model.GetPageViewModel(moduleName);
+            var viewModel = Model.GetViewModel(moduleName);
             viewModel.PluginClient.EnableJQuery(true).EnableDevextreme(true).EnableFontAwesome(true).EnableFancybox(true).EnablePreloader(true).Enable63BitsComponents(true).EnableJQueryConfirm(true);
-            return View(ViewNames.Admin.FileManager.Page, viewModel);
+            return View(ViewNames.Admin.FileManager.FileManagerView, viewModel);
         }
 
-        [Route("{moduleName}/files", Name = ControllerActionRouteNames.Admin.FileManager.Files)]
+        [Route("{moduleName}/files", Name = ControllerActionRouteNames.Admin.FileManagerController.Files)]
         public async Task<IActionResult> FileManagerGetFile(string moduleName)
         {
             var viewModel = await Model.GetFiles(moduleName);
@@ -34,7 +34,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         }
 
         [HttpPost]
-        [Route("{moduleName}/upload", Name = ControllerActionRouteNames.Admin.FileManager.Upload)]
+        [Route("{moduleName}/upload", Name = ControllerActionRouteNames.Admin.FileManagerController.Upload)]
         public async Task<IActionResult> FileManagerUpload(string moduleName)
         {
             var viewModel = await Model.UploadFile(moduleName);
@@ -42,7 +42,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         }
 
         [HttpPost]
-        [Route("{moduleName}/delete", Name = ControllerActionRouteNames.Admin.FileManager.Delete)]
+        [Route("{moduleName}/delete", Name = ControllerActionRouteNames.Admin.FileManagerController.Delete)]
         public async Task<IActionResult> FileManagerDelete(string moduleName, string filename)
         {
             var viewModel = await Model.DeleteFile(moduleName, filename);

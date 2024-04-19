@@ -1,5 +1,5 @@
 ﻿using SixtyThreeBits.Web.Domain.Utilities;
-using SixtyThreeBits.Web.Domain.ViewModels.Shared;
+using SixtyThreeBits.Web.Domain.ViewModels.Base;
 
 namespace SixtyThreeBits.Web.Domain.ViewModels.Admin
 {

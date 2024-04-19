@@ -22,24 +22,24 @@ namespace SixtyThreeBits.Web.Models.Admin
         #endregion
 
         #region Methods
-        public async Task<PageViewModel> GetPageViewModel()
+        public async Task<ViewModel> GetViewModel()
         {
-            var viewModel = new PageViewModel();
+            var viewModel = new ViewModel();
             var repositoryMenuFooter = RepositoriesFactory.GetMenuFooterRepository();
             var repositoryPages = RepositoriesFactory.GetPagesRepository();
 
-            _showAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.PagesManagemet.MenuFooter.Add);
-            _showUpdateButton = User.HasPermission(ControllerActionRouteNames.Admin.PagesManagemet.MenuFooter.Update);
-            _showDeleteButton = User.HasPermission(ControllerActionRouteNames.Admin.PagesManagemet.MenuFooter.Delete);
+            _showAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.MenuFooterController.Add);
+            _showUpdateButton = User.HasPermission(ControllerActionRouteNames.Admin.MenuFooterController.Update);
+            _showDeleteButton = User.HasPermission(ControllerActionRouteNames.Admin.MenuFooterController.Delete);
 
             viewModel.ShowAddNewButton = _showAddNewButton;
-            viewModel.UrlAdd = Url.RouteUrl(ControllerActionRouteNames.Admin.PagesManagemet.MenuFooter.Add);
-            viewModel.UrlUpdate = Url.RouteUrl(ControllerActionRouteNames.Admin.PagesManagemet.MenuFooter.Update);
-            viewModel.UrlDelete = Url.RouteUrl(ControllerActionRouteNames.Admin.PagesManagemet.MenuFooter.Delete);
-            viewModel.UrlSort = Url.RouteUrl(ControllerActionRouteNames.Admin.PagesManagemet.MenuFooter.Sort);
-            viewModel.UrlGet = Url.RouteUrl(ControllerActionRouteNames.Admin.PagesManagemet.MenuFooter.Get, new { menuFooterID = 0 }).TrimEnd('0').TrimEnd('/');
-            viewModel.UrlGetPage = Url.RouteUrl(ControllerActionRouteNames.Admin.PagesManagemet.Pages.Page.Data, new { pageID = 0 }).TrimEnd('0').TrimEnd('/');
-            viewModel.UrlGetPages = Url.RouteUrl(ControllerActionRouteNames.Admin.PagesManagemet.Pages.Data);
+            viewModel.UrlAdd = Url.RouteUrl(ControllerActionRouteNames.Admin.MenuFooterController.Add);
+            viewModel.UrlUpdate = Url.RouteUrl(ControllerActionRouteNames.Admin.MenuFooterController.Update);
+            viewModel.UrlDelete = Url.RouteUrl(ControllerActionRouteNames.Admin.MenuFooterController.Delete);
+            viewModel.UrlSort = Url.RouteUrl(ControllerActionRouteNames.Admin.MenuFooterController.Sort);
+            viewModel.UrlGet = Url.RouteUrl(ControllerActionRouteNames.Admin.MenuFooterController.Get, new { menuFooterID = 0 }).TrimEnd('0').TrimEnd('/');
+            viewModel.UrlGetPage = Url.RouteUrl(ControllerActionRouteNames.Admin.PageDataController.Get, new { pageID = 0 }).TrimEnd('0').TrimEnd('/');
+            viewModel.UrlGetPages = Url.RouteUrl(ControllerActionRouteNames.Admin.PagesController.Get);
 
             viewModel.Pages = (await repositoryPages.PagesList())?
             .OrderBy(item => item.PageTitle)
@@ -63,9 +63,9 @@ namespace SixtyThreeBits.Web.Models.Admin
             var repositoryMenuFooter = RepositoriesFactory.GetMenuFooterRepository();
             var isError = false;
 
-            _showAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.PagesManagemet.MenuFooter.Add);
-            _showUpdateButton = User.HasPermission(ControllerActionRouteNames.Admin.PagesManagemet.MenuFooter.Update);
-            _showDeleteButton = User.HasPermission(ControllerActionRouteNames.Admin.PagesManagemet.MenuFooter.Delete);
+            _showAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.MenuFooterController.Add);
+            _showUpdateButton = User.HasPermission(ControllerActionRouteNames.Admin.MenuFooterController.Update);
+            _showDeleteButton = User.HasPermission(ControllerActionRouteNames.Admin.MenuFooterController.Delete);
 
             var menuFooterID = await repositoryMenuFooter.MenuFooterIUD(
                 databaseAction: Enums.DatabaseActions.CREATE,
@@ -112,7 +112,7 @@ namespace SixtyThreeBits.Web.Models.Admin
                     viewModel.Data = await WebUtilities.RenderViewAsync(
                         controller: Controller,
                         contentRootPath: Utilities.ContentRootPath,
-                        viewName: ViewNames.Admin.PagesManagement.MenuFooter.MenuFooterTreeNodePartialView,
+                        viewName: ViewNames.Admin.MenuFooter.MenuFooterTreeNodePartialView,
                         model: partialViewModel
                     );
                 }
@@ -126,9 +126,9 @@ namespace SixtyThreeBits.Web.Models.Admin
             var repositoryMenuFooter = RepositoriesFactory.GetMenuFooterRepository();
             var isError = false;
 
-            _showAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.PagesManagemet.MenuFooter.Add);
-            _showUpdateButton = User.HasPermission(ControllerActionRouteNames.Admin.PagesManagemet.MenuFooter.Update);
-            _showDeleteButton = User.HasPermission(ControllerActionRouteNames.Admin.PagesManagemet.MenuFooter.Delete);
+            _showAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.MenuFooterController.Add);
+            _showUpdateButton = User.HasPermission(ControllerActionRouteNames.Admin.MenuFooterController.Update);
+            _showDeleteButton = User.HasPermission(ControllerActionRouteNames.Admin.MenuFooterController.Delete);
 
             await repositoryMenuFooter.MenuFooterIUD(
                 databaseAction: Enums.DatabaseActions.UPDATE,
@@ -175,7 +175,7 @@ namespace SixtyThreeBits.Web.Models.Admin
                     viewModel.Data = await WebUtilities.RenderViewAsync(
                         controller: Controller,
                         contentRootPath: Utilities.ContentRootPath,
-                        viewName: ViewNames.Admin.PagesManagement.MenuFooter.MenuFooterTreeNodePartialView,
+                        viewName: ViewNames.Admin.MenuFooter.MenuFooterTreeNodePartialView,
                         model: partialViewModel
                     );
                 }
@@ -276,9 +276,9 @@ namespace SixtyThreeBits.Web.Models.Admin
             return errors;
         }
 
-        PageViewModel.MenuListItem getMenuListItemFromMenuFooterDto(MenuFooterDTO menuFooterDto)
+        ViewModel.MenuListItem getMenuListItemFromMenuFooterDto(MenuFooterDTO menuFooterDto)
         {
-            var menuListItem = new PageViewModel.MenuListItem();
+            var menuListItem = new ViewModel.MenuListItem();
             menuListItem.MenuFooterID = menuFooterDto.MenuFooterID;
             if (menuFooterDto.MenuFooterIsExternalPage)
             {
@@ -301,7 +301,7 @@ namespace SixtyThreeBits.Web.Models.Admin
         #endregion
 
         #region Nested Classes
-        public class PageViewModel
+        public class ViewModel
         {
             #region Properties
             public List<KeyValueTuple<int?, string>> Pages { get; set; }

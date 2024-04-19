@@ -9,7 +9,7 @@ using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries.Extensions;
 using SixtyThreeBits.Web.Domain.Libraries;
 using SixtyThreeBits.Web.Domain.Utilities;
-using SixtyThreeBits.Web.Domain.ViewModels.Shared;
+using SixtyThreeBits.Web.Domain.ViewModels.Base;
 using SixtyThreeBits.Web.Models.Base;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,23 +20,23 @@ namespace SixtyThreeBits.Web.Models.Admin
     public class EmailTemplatesModel : ModelBase
     {
         #region Methods
-        public PageViewModel GetPageViewModel()
+        public ViewModel GetViewModel()
         {
-            var viewModel = new PageViewModel();
+            var viewModel = new ViewModel();
             viewModel.Grid = new();
-            viewModel.Grid.UrlLoad = Url.RouteUrl(ControllerActionRouteNames.Admin.EmailTemplates.Grid);
+            viewModel.Grid.UrlLoad = Url.RouteUrl(ControllerActionRouteNames.Admin.EmailTemplatesController.Grid);
             return viewModel;
         }
 
-        public async Task<List<PageViewModel.GridModel.GridItem>> GetGridModel()
+        public async Task<List<ViewModel.GridViewModel.GridItem>> ListGridItems()
         {
             var repository = RepositoriesFactory.GetEmailTemplatesRepository();
             var viewModel = (await repository.EmailTemplatesList())
-            ?.Select(Item => new PageViewModel.GridModel.GridItem
+            ?.Select(Item => new ViewModel.GridViewModel.GridItem
             {
                 EmailTemplateID = Item.EmailTemplateID,
                 EmailTemplateName = Item.EmailTemplateName,
-                UrlEmailTemplate = Url.RouteUrl(ControllerActionRouteNames.Admin.EmailTemplates.EmailTemplate.Properties, new { Item.EmailTemplateID })
+                UrlProperties = Url.RouteUrl(ControllerActionRouteNames.Admin.EmailTemplatePropertiesController.Properties, new { emailTemplateID = Item.EmailTemplateID })
             })
             .ToList();
             return viewModel;
@@ -44,26 +44,26 @@ namespace SixtyThreeBits.Web.Models.Admin
         #endregion
 
         #region Nested Classes
-        public class PageViewModel
+        public class ViewModel
         {
             #region Properties            
-            public GridModel Grid { get; set; }
+            public GridViewModel Grid { get; set; }
             #endregion
 
             #region Nested Classes
-            public class GridModel : DevExtremeGridViewModelBase, IDevExtremeGridModel<GridModel.GridItem>
+            public class GridViewModel : DevExtremeGridViewModelBase<GridViewModel.GridItem>
             {
                 #region Methods
-                public DataGridBuilder<GridItem> Render(IHtmlHelper html)
+                public override DataGridBuilder<GridItem> Render(IHtmlHelper html)
                 {
-                    var grid = GetGridWithStartupValues<GridItem>(html: html, keyFieldName: nameof(GridItem.EmailTemplateID));
+                    var grid = CreateGridWithStartupValues(html: html, keyFieldName: nameof(GridItem.EmailTemplateID));
 
                     grid
                     .ID("EmailTemplatesGrid")
                     .OnInitialized("emailTemplatesModel.onGridInit")
                     .Columns(columns =>
                     {
-                        columns.Add().Width(30).Caption(" ").InitDetailsUrlCellTemplate(nameof(GridItem.UrlEmailTemplate));
+                        columns.Add().Width(30).Caption(" ").InitDetailsUrlCellTemplate(nameof(GridItem.UrlProperties));
                         columns.AddFor(m => m.EmailTemplateName).Caption(Resources.TextTemplate).Width(300);
                         columns.Add();
                     });
@@ -79,7 +79,7 @@ namespace SixtyThreeBits.Web.Models.Admin
                     #region Properties
                     public int? EmailTemplateID { get; set; }
                     public string EmailTemplateName { get; set; }
-                    public string UrlEmailTemplate { get; set; }
+                    public string UrlProperties { get; set; }
                     #endregion
                 }
                 #endregion
@@ -92,7 +92,7 @@ namespace SixtyThreeBits.Web.Models.Admin
     public class EmailTemplatePropertiesModel : ModelBase
     {
         #region Methods
-        public async Task<PageViewModel> GetPageViewModel(int? emailTemplateID, PageViewModel viewModel = null)
+        public async Task<ViewModel> GetViewModel(int? emailTemplateID, ViewModel viewModel = null)
         {
             var repository = RepositoriesFactory.GetEmailTemplatesRepository();
             var dbItem = await repository.EmailTemplatesGetSingleByID(emailTemplateID);
@@ -104,7 +104,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             {
                 if (viewModel == null)
                 {
-                    viewModel = new PageViewModel();
+                    viewModel = new ViewModel();
                     viewModel.EmailTemplateName = dbItem.EmailTemplateName;
                     viewModel.EmailTemplateSubject = dbItem.EmailTemplateSubject;
                     viewModel.EmailTemplateSubjectEng = dbItem.EmailTemplateSubjectEng;
@@ -117,7 +117,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             return viewModel;
         }
 
-        public void ValidatePageViewModel(PageViewModel viewModel)
+        public void ValidatePageViewModel(ViewModel viewModel)
         {
             viewModel.AddError(Validation.ValidateRequired(Validation.GetJQueryNameSelectorFor(nameof(viewModel.EmailTemplateName)), viewModel.EmailTemplateName));
             viewModel.AddError(Validation.ValidateRequired(Validation.GetJQueryNameSelectorFor(nameof(viewModel.EmailTemplateSubject)), viewModel.EmailTemplateSubject));
@@ -126,7 +126,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             viewModel.AddError(Validation.ValidateRequired(Validation.GetJQueryNameSelectorFor(nameof(viewModel.EmailTemplateBodyEng)), viewModel.EmailTemplateBodyEng));
         }
 
-        public async Task Save(int? emailTemplateID, PageViewModel viewModel)
+        public async Task Save(int? emailTemplateID, ViewModel viewModel)
         {
             var repository = RepositoriesFactory.GetEmailTemplatesRepository();
             await repository.EmailTemplatesIUD(
@@ -144,16 +144,12 @@ namespace SixtyThreeBits.Web.Models.Admin
             if (repository.IsError)
             {
                 viewModel.AddError(repository.ErrorMessage);
-            }
-            else
-            {
-                viewModel.IsSaved = true;
-            }
+            }            
         }
         #endregion
 
         #region Nested Classes
-        public class PageViewModel : FormViewModelBase
+        public class ViewModel : FormViewModelBase
         {
             #region Properties
             public string EmailTemplateName { get; set; }

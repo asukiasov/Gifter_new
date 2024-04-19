@@ -21,24 +21,24 @@ namespace SixtyThreeBits.Web.Controllers.Admin
 
         #region Actions
         [HttpGet]
-        [Route("", Name = ControllerActionRouteNames.Admin.Users.Page)]
+        [Route("", Name = ControllerActionRouteNames.Admin.UsersController.Users)]
         public async Task<ActionResult> Users()
         {
             Model.PluginsClient.EnableDevextreme(true);
             var viewModel = await Model.GetPageViewModel();
-            return View(ViewNames.Admin.Users.Page, viewModel);
+            return View(ViewNames.Admin.Users.UsersView, viewModel);
         }
 
-        [Route("grid", Name = ControllerActionRouteNames.Admin.Users.Grid)]
-        public async Task<ActionResult> UsersGrid()
+        [Route("grid", Name = ControllerActionRouteNames.Admin.UsersController.Grid)]
+        public async Task<ActionResult> Grid()
         {
             var viewModel = await Model.GetGridViewModel();
             return Json(viewModel);
         }
 
         [HttpPost]
-        [Route("grid/add", Name = ControllerActionRouteNames.Admin.Users.GridAdd)]
-        public async Task<ActionResult> UsersGridAdd(int? key, string values)
+        [Route("grid/add", Name = ControllerActionRouteNames.Admin.UsersController.GridAdd)]
+        public async Task<ActionResult> GridAdd(int? key, string values)
         {
             var submitModel = values.DeserializeJsonTo<UsersModel.PageViewModel.GridModel.GridItem>() ?? new UsersModel.PageViewModel.GridModel.GridItem();
             await Model.ValidateUserEmail(userEmail: submitModel.UserEmail, userID: key);
@@ -61,8 +61,8 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         }
 
         [HttpPut]
-        [Route("grid/update", Name = ControllerActionRouteNames.Admin.Users.GridUpdate)]
-        public async Task<ActionResult> UsersGridUpdate(int? key, string values)
+        [Route("grid/update", Name = ControllerActionRouteNames.Admin.UsersController.GridUpdate)]
+        public async Task<ActionResult> GridUpdate(int? key, string values)
         {
             var result = default(ActionResult);
             var submitModel = values.DeserializeJsonTo<UsersModel.PageViewModel.GridModel.GridItem>() ?? new UsersModel.PageViewModel.GridModel.GridItem();
@@ -89,8 +89,8 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         }
 
         [HttpDelete]
-        [Route("grid/delete", Name = ControllerActionRouteNames.Admin.Users.GridDelete)]
-        public async Task<ActionResult> UsersGridDelete(int? key)
+        [Route("grid/delete", Name = ControllerActionRouteNames.Admin.UsersController.GridDelete)]
+        public async Task<ActionResult> GridDelete(int? key)
         {
             await Model.CRUD(databaseAction: Enums.DatabaseActions.DELETE, userID: key, submitModel: new UsersModel.PageViewModel.GridModel.GridItem());
             if (Model.Form.HasErrors)
@@ -118,27 +118,27 @@ namespace SixtyThreeBits.Web.Controllers.Admin
 
         #region Actions
         [HttpGet]
-        [Route("", Name = ControllerActionRouteNames.Admin.Users.User.Properties)]
-        public async Task<IActionResult> UserProperties()
+        [Route("", Name = ControllerActionRouteNames.Admin.UserPropertiesController.Properties)]
+        public async Task<IActionResult> Properties()
         {
             Model.PluginsClient.Enable63BitsForms(true).Enable63BitsSuccessErrorToast(true).EnableDevextreme(true).EnableJQueryMaskedInput(true);
             var viewModel = await Model.GetPageViewModel();
-            return View(ViewNames.Admin.Users.User.Properties, viewModel);
+            return View(ViewNames.Admin.Users.User.UserPropertiesView, viewModel);
         }
 
         [HttpPost]
         [Route("")]
-        public async Task<IActionResult> UserPropertiesSave(UserPropertiesModel.PageViewModel submitModel)
+        public async Task<IActionResult> Properties(UserPropertiesModel.PageViewModel viewModel)
         {
             var result = default(IActionResult);
             Model.PluginsClient.Enable63BitsForms(true).Enable63BitsSuccessErrorToast(true).EnableDevextreme(true).EnableJQueryMaskedInput(true);
-            var viewModel = await Model.GetPageViewModel(submitModel);
+            viewModel = await Model.GetPageViewModel(viewModel);
 
             await Model.ValidatePageViewModel(viewModel);
             if (viewModel.IsValid)
             {
                 await Model.Save(viewModel);
-                if (viewModel.IsSaved)
+                if (viewModel.IsValid)
                 {
                     Model.ShowSuccessToastNotification();
                     result = Redirect(Model.UrlCurrentPageWithDomain);                    
@@ -146,12 +146,12 @@ namespace SixtyThreeBits.Web.Controllers.Admin
                 else
                 {
                     Model.ShowErrorToastNotification(viewModel.ErrorMessage);
-                    result = View(ViewNames.Admin.Users.User.Properties, viewModel);                    
+                    result = base.View(ViewNames.Admin.Users.User.UserPropertiesView, viewModel);                    
                 }
             }
             else
             {
-                result = View(ViewNames.Admin.Users.User.Properties, viewModel);
+                result = base.View(ViewNames.Admin.Users.User.UserPropertiesView, viewModel);
             }
 
             return result;
