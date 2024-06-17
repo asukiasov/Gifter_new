@@ -34,9 +34,9 @@ namespace SixtyThreeBits.Web
             else
             {
                 #if DEBUG
-                appSettingsConfiguration = new ConfigurationBuilder().SetBasePath(env.ContentRootPath).AddJsonFile("appsettings.Staging.json").Build();
+                appSettingsConfiguration = new ConfigurationBuilder().SetBasePath(env.ContentRootPath).AddJsonFile("appsettings.debug.json").Build();
                 #else
-                appSettingsConfiguration = new ConfigurationBuilder().SetBasePath(env.ContentRootPath).AddJsonFile("appsettings.Production.json").Build();                
+                appSettingsConfiguration = new ConfigurationBuilder().SetBasePath(env.ContentRootPath).AddJsonFile("appsettings.release.json").Build();                
                 #endif
             }
             _appSettings = new AppSettingsCollection(env.WebRootPath, appSettingsConfiguration);
