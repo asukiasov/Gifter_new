@@ -57,7 +57,7 @@ namespace SixtyThreeBits.Web.Models.Admin
 
         public async Task<List<ViewModel.GridViewModel.GridItem>> ListGridItems()
         {
-            var repository = RepositoriesFactory.GetPagesRepository();
+            var repository = RepositoriesFactory.CreatePagesRepository();
 
             var viewModel = (await repository.PagesList())
             ?.Select(item => new ViewModel.GridViewModel.GridItem
@@ -76,7 +76,7 @@ namespace SixtyThreeBits.Web.Models.Admin
 
         public async Task IUD(Enums.DatabaseActions databaseAction, int? pageID, ViewModel.GridViewModel.GridItem submitModel)
         {
-            var repository = RepositoriesFactory.GetPagesRepository();
+            var repository = RepositoriesFactory.CreatePagesRepository();
 
             await repository.PagesIUD(
                 databaseAction: databaseAction,
@@ -97,7 +97,7 @@ namespace SixtyThreeBits.Web.Models.Admin
 
         public async Task Delete(int? pageID)
         {
-            var repository = RepositoriesFactory.GetPagesRepository();
+            var repository = RepositoriesFactory.CreatePagesRepository();
 
             var dbItem = await repository.PagesGetSingleByID(pageID);
             if (dbItem != null)
@@ -116,7 +116,7 @@ namespace SixtyThreeBits.Web.Models.Admin
         public async Task<AjaxResponse> GetPagesData()
         {
             var viewModel = new AjaxResponse();
-            var repository = RepositoriesFactory.GetPagesRepository();
+            var repository = RepositoriesFactory.CreatePagesRepository();
 
             var pages = (await repository.PagesList())?
             .OrderBy(item => item.PageTitle)
@@ -255,7 +255,7 @@ namespace SixtyThreeBits.Web.Models.Admin
                 await Validation.ValidateAsync(
                         errorAction: async () =>
                         {
-                            var repository = RepositoriesFactory.GetPagesRepository();
+                            var repository = RepositoriesFactory.CreatePagesRepository();
                             var isUniq = await repository.PagesIsSlugUniq(pageSlug: viewModel.PageSlug, pageID: DBItem.PageID);
                             var isError = !isUniq;
                             return isError;
@@ -275,7 +275,7 @@ namespace SixtyThreeBits.Web.Models.Admin
                 await DeleteUploadedFile(pageImageFilename, _folderPath);
             }
 
-            var repository = RepositoriesFactory.GetPagesRepository();
+            var repository = RepositoriesFactory.CreatePagesRepository();
             await repository.PagesIUD(
                 databaseAction: Enums.DatabaseActions.UPDATE,
                 pageID: DBItem.PageID,
@@ -310,7 +310,7 @@ namespace SixtyThreeBits.Web.Models.Admin
 
             await DeleteUploadedFile(DBItem.PageImageFilename, _folderPath);
 
-            var repository = RepositoriesFactory.GetPagesRepository();
+            var repository = RepositoriesFactory.CreatePagesRepository();
             await repository.PagesIUD(
                 databaseAction: Enums.DatabaseActions.UPDATE,
                 pageID: DBItem.PageID,
@@ -400,7 +400,7 @@ namespace SixtyThreeBits.Web.Models.Admin
         public async Task<AjaxResponse> Save(SubmitModel submitModel)
         {
             var viewModel = new AjaxResponse();
-            var repository = RepositoriesFactory.GetPagesRepository();
+            var repository = RepositoriesFactory.CreatePagesRepository();
 
             switch (submitModel.Language)
             {

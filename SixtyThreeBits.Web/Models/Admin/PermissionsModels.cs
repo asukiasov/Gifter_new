@@ -36,7 +36,7 @@ namespace SixtyThreeBits.Web.Models.Admin
 
         public async Task<List<ViewModel.TreeViewModel.TreeItem>> ListTreeItems()
         {
-            var repository = RepositoriesFactory.GetPermissionsRepository();
+            var repository = RepositoriesFactory.CreatePermissionsRepository();
             var viewModel = (await repository.PermissionsList())
             ?.Select(item => new ViewModel.TreeViewModel.TreeItem
             {
@@ -59,7 +59,7 @@ namespace SixtyThreeBits.Web.Models.Admin
 
         public async Task CRUD(Enums.DatabaseActions databaseAction, int? permissionID, ViewModel.TreeViewModel.TreeItem submitModel)
         {
-            var repository = RepositoriesFactory.GetPermissionsRepository();
+            var repository = RepositoriesFactory.CreatePermissionsRepository();
             await repository.PermissionsIUD(
                 databaseAction: databaseAction,
                 permissionID: permissionID,
@@ -87,7 +87,7 @@ namespace SixtyThreeBits.Web.Models.Admin
 
         public async Task DeleteRecursive(int? permissionID)
         {
-            var repository = RepositoriesFactory.GetPermissionsRepository();
+            var repository = RepositoriesFactory.CreatePermissionsRepository();
             await repository.PermissionsDeleteRecursive(permissionID);
             if (repository.IsError)
             {

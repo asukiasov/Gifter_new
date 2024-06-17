@@ -25,7 +25,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 logString: $"{nameof(MenuFooterGetSingleByID)}({nameof(menuFooterID)} = {menuFooterID})",
                 asyncFuncToTry: async () =>
                 {
-                    using (var dbContext = _dbContextFactory.GetDbContext())
+                    using (var dbContext = _dbContextFactory.CreateDbContext())
                     {
                         var sqb = new SqlQueryBuilder(
                             dbContext: dbContext,
@@ -52,7 +52,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 logString: $"{nameof(MenuFooterIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(menuFooterID)} = {menuFooterID}, {nameof(menuFooter)} = {menuFooterJson})",
                 asyncFuncToTry: async () =>
                 {                    
-                    using (var dbContext = _dbContextFactory.GetDbContext())
+                    using (var dbContext = _dbContextFactory.CreateDbContext())
                     {
                         var sqb = new SqlQueryBuilder(
                             dbContext: dbContext,
@@ -80,7 +80,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 logString: $"{nameof(MenuFooterList)}({nameof(menuFooterIsPublished)} = {menuFooterIsPublished})",
                 asyncFuncToTry: async () =>
                 {
-                    using (var dbContext = _dbContextFactory.GetDbContext())
+                    using (var dbContext = _dbContextFactory.CreateDbContext())
                     {
                         var sqb = new SqlQueryBuilder(
                             dbContext: dbContext,
@@ -108,7 +108,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 logString: $"{nameof(MenuFooterSort)}({nameof(sortIndexes)} = {sortIndexesJson})",
                 asyncFuncToTry: async () =>
                 {
-                    using (var dbContext = _dbContextFactory.GetDbContext())
+                    using (var dbContext = _dbContextFactory.CreateDbContext())
                     {
                         var sqb = new SqlQueryBuilder(
                             dbContext: dbContext,

@@ -26,7 +26,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 logString: $"{nameof(DictionariesDeleteRecursive)}({nameof(dictionaryID)} = {dictionaryID})", 
                 asyncFuncToTry: async () =>
                 {
-                    using (var dbContext = _dbContextFactory.GetDbContext())
+                    using (var dbContext = _dbContextFactory.CreateDbContext())
                     {
                         var sqb = new SqlQueryBuilder(
                             dbContext: dbContext,
@@ -51,7 +51,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 logString: $"{nameof(DictionariesIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(dictionaryID)} = {dictionaryID}, {nameof(dictionary)} = {dictionaryJson})", 
                 asyncFuncToTry: async () =>
                 {
-                    using (var dbContext = _dbContextFactory.GetDbContext())
+                    using (var dbContext = _dbContextFactory.CreateDbContext())
                     {
                         var sqb = new SqlQueryBuilder(
                             dbContext: dbContext,
@@ -79,7 +79,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 logString: $"{nameof(DictionariesList)}()", 
                 asyncFuncToTry: async () =>
                 {
-                    using (var dbContext = _dbContextFactory.GetDbContext())
+                    using (var dbContext = _dbContextFactory.CreateDbContext())
                     {
                         var sqb = new SqlQueryBuilder(
                             dbContext: dbContext,
@@ -108,7 +108,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 logString: $"{nameof(DictionariesListByLevelCodeIsVisible)}({nameof(dictionaryLevel)} = {dictionaryLevel}, {nameof(dictionaryCode)} = {dictionaryCode}, {nameof(dictionaryIsVisible)} = {dictionaryIsVisible})",
                 asyncFuncToTry: async () =>
                 {
-                    using (var dbContext = _dbContextFactory.GetDbContext())
+                    using (var dbContext = _dbContextFactory.CreateDbContext())
                     {
                         var sqb = new SqlQueryBuilder(
                             dbContext: dbContext,

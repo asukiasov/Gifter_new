@@ -45,7 +45,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             viewModel.Grid.AllowUpdate = User.HasPermission(ControllerActionRouteNames.Admin.ProductsController.GridUpdate);
             viewModel.Grid.AllowDelete = User.HasPermission(ControllerActionRouteNames.Admin.ProductsController.GridDelete);
 
-            var repository = RepositoriesFactory.GetProductsRepository();
+            var repository = RepositoriesFactory.CreateProductsRepository();
             viewModel.Grid.Categories = (await repository.ProductCategoriesListWithTitlePaddindHierarchy(padChar: '-'))
             ?.Select(item => new KeyValueTuple<int?, string>
             {
@@ -59,7 +59,7 @@ namespace SixtyThreeBits.Web.Models.Admin
 
         public async Task<List<ViewModel.GridViewModel.GridItem>> ListGridItems()
         {
-            var repository = RepositoriesFactory.GetProductsRepository();
+            var repository = RepositoriesFactory.CreateProductsRepository();
             var viewModel = (await repository.ProductsList())
             ?.Select(Item => new ViewModel.GridViewModel.GridItem
             {
@@ -79,7 +79,7 @@ namespace SixtyThreeBits.Web.Models.Admin
 
         public async Task IUD(Enums.DatabaseActions databaseAction, int? productID, ViewModel.GridViewModel.GridItem submitModel)
         {
-            var repository = RepositoriesFactory.GetProductsRepository();
+            var repository = RepositoriesFactory.CreateProductsRepository();
 
             if (databaseAction == Enums.DatabaseActions.DELETE)
             {
@@ -277,7 +277,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             viewModel.ProductImageFilename = DBItem.ProductImageFilename;
             viewModel.ProductImageHttpPath = FileStorage.GetUploadedFileHttpPath(DBItem.ProductImageFilename, _folderPath);
 
-            var repositoryBrands = RepositoriesFactory.GetBrandsRepository();
+            var repositoryBrands = RepositoriesFactory.CreateBrandsRepository();
             viewModel.Brands = (await repositoryBrands.BrandsList())
             ?.Select(item => new KeyValueSelectedTuple<int?, string>
             {
@@ -287,7 +287,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             })
             .ToList();
 
-            var repositoryProducts = RepositoriesFactory.GetProductsRepository();
+            var repositoryProducts = RepositoriesFactory.CreateProductsRepository();
             viewModel.Categories = (await repositoryProducts.ProductCategoriesListWithTitlePaddindHierarchy('-'))
             ?.Select(item => new KeyValueSelectedTuple<int?, string>
             {
@@ -297,7 +297,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             })
             .ToList();
 
-            var repositoryCountries = RepositoriesFactory.GetCountriesRepository();
+            var repositoryCountries = RepositoriesFactory.CreateCountriesRepository();
             viewModel.ProductProducerCountries = await repositoryCountries.CountriesListAsSimpleKeyValue(SelectedCountryID: DBItem.CountryIDProducer);
 
             viewModel.ProductImages = DBItem.ProductImages?.Select(Item => new ViewModel.ProductImage
@@ -322,7 +322,7 @@ namespace SixtyThreeBits.Web.Models.Admin
                 
         public async Task Save(ViewModel viewModel)
         {
-            var repository = RepositoriesFactory.GetProductsRepository();
+            var repository = RepositoriesFactory.CreateProductsRepository();
             await repository.ProductsIUD(
                 databaseAction: Enums.DatabaseActions.UPDATE,
                 productID: DBItem.ProductID,
@@ -358,7 +358,7 @@ namespace SixtyThreeBits.Web.Models.Admin
 
             await DeleteUploadedFile(DBItem.ProductImageFilename, _folderPath);
 
-            var repository = RepositoriesFactory.GetProductsRepository();
+            var repository = RepositoriesFactory.CreateProductsRepository();
             await repository.ProductsIUD(
                 databaseAction: Enums.DatabaseActions.UPDATE,
                 productID: DBItem.ProductID,
@@ -382,7 +382,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             var productImageFilenameOriginal = postedFile.FileName;
             var productImageFilename = GetFilenameFromUploadedFile(postedFile);
 
-            var repository = RepositoriesFactory.GetProductsRepository();
+            var repository = RepositoriesFactory.CreateProductsRepository();
             var productImageID = await repository.ProductsImagesIUD(
                 databaseAction: Enums.DatabaseActions.CREATE,
                 productImageID: null,
@@ -418,7 +418,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             {
                 await DeleteUploadedFile(productImage.ProductImageFilename, _folderPath);
 
-                var repository = RepositoriesFactory.GetProductsRepository();
+                var repository = RepositoriesFactory.CreateProductsRepository();
                 await repository.ProductsImagesIUD(
                     databaseAction: Enums.DatabaseActions.DELETE,
                     productImageID: submitModel.ProductImageID,
@@ -432,7 +432,7 @@ namespace SixtyThreeBits.Web.Models.Admin
         public async Task<AjaxResponse> SortProductImages(SyncSortIndexesSubmitModel SubmitModel)
         {
             var viewModel = new AjaxResponse();
-            var repository = RepositoriesFactory.GetProductsRepository();
+            var repository = RepositoriesFactory.CreateProductsRepository();
             await repository.ProductsImagesSyncSortIndex(DBItem.ProductID, SubmitModel.SortIndexes);
             viewModel.IsSuccess = !repository.IsError;
             return viewModel;

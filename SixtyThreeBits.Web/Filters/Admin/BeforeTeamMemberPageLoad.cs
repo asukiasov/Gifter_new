@@ -19,7 +19,7 @@ namespace SixtyThreeBits.Web.Filters.Admin
             _model = WebUtilities.GetModelFromController<TeamMembersModelBase>(filterContext.Controller);
             var teamMemberID = filterContext.RouteData.Values[WebConstants.RouteValues.TeamMemberID]?.ToString().ToInt();
 
-            var repository = _model.RepositoriesFactory.GetTeamMembersRepository();
+            var repository = _model.RepositoriesFactory.CreateTeamMembersRepository();
             _model.DBItem = await repository.TeamMembersGetSingleByID(teamMemberID);
             if (_model.DBItem == null)
             {

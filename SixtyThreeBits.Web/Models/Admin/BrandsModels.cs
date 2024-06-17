@@ -42,7 +42,7 @@ namespace SixtyThreeBits.Web.Models.Admin
 
         public async Task<List<ViewModel.GridViewModel.GridItem>> ListGridItems()
         {
-            var repository = RepositoriesFactory.GetBrandsRepository();
+            var repository = RepositoriesFactory.CreateBrandsRepository();
             var brands = (await repository.BrandsList())?.Select(item => new ViewModel.GridViewModel.GridItem
             {
                 BrandID = item.BrandID,
@@ -55,7 +55,7 @@ namespace SixtyThreeBits.Web.Models.Admin
 
         public async Task IUD(Enums.DatabaseActions DatabaseAction, int? brandID, ViewModel.GridViewModel.GridItem submitModel)
         {
-            var repository = RepositoriesFactory.GetBrandsRepository();
+            var repository = RepositoriesFactory.CreateBrandsRepository();
 
             if (DatabaseAction == Enums.DatabaseActions.DELETE)
             {
@@ -172,7 +172,7 @@ namespace SixtyThreeBits.Web.Models.Admin
                 brandImageFilename = GetFilenameFromUploadedFile(viewModel.BrandImageFile);
             }
 
-            var repository = RepositoriesFactory.GetBrandsRepository();
+            var repository = RepositoriesFactory.CreateBrandsRepository();
             await repository.BrandsIUD(
                 databaseAction: Enums.DatabaseActions.UPDATE,
                 brandID: DBItem.BrandID,
@@ -200,7 +200,7 @@ namespace SixtyThreeBits.Web.Models.Admin
         public async Task<AjaxResponse> DeleteImage()
         {
             var viewModel = new AjaxResponse();
-            var repository = RepositoriesFactory.GetBrandsRepository();
+            var repository = RepositoriesFactory.CreateBrandsRepository();
 
             await DeleteUploadedFile(DBItem.BrandImageFilename);
 

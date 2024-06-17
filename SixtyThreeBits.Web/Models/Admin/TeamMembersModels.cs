@@ -37,7 +37,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             viewModel.Grid.AllowUpdate = User.HasPermission(ControllerActionRouteNames.Admin.TeamMembersController.GridUpdate);
             viewModel.Grid.AllowDelete = User.HasPermission(ControllerActionRouteNames.Admin.TeamMembersController.GridDelete);
 
-            var repository = RepositoriesFactory.GetDictionariesRepository();
+            var repository = RepositoriesFactory.CreateDictionariesRepository();
             viewModel.Grid.TeamMemberCategories = await repository.DictionariesListAsKeyValueTuple(Enums.DictionaryCodes.TeamMemberCategories);
             viewModel.UrlSync = Url.RouteUrl(ControllerActionRouteNames.Admin.TeamMembersController.GridSort);
 
@@ -46,7 +46,7 @@ namespace SixtyThreeBits.Web.Models.Admin
 
         public async Task<List<ViewModel.GridViewModel.GridItem>> ListGridItems()
         {
-            var repository = RepositoriesFactory.GetTeamMembersRepository();
+            var repository = RepositoriesFactory.CreateTeamMembersRepository();
             var viewModel = (await repository.TeamMembersList())
             ?.Select(item => new ViewModel.GridViewModel.GridItem
             {
@@ -67,7 +67,7 @@ namespace SixtyThreeBits.Web.Models.Admin
 
         public async Task IUD(Enums.DatabaseActions databaseAction, int? teamMemberID, ViewModel.GridViewModel.GridItem submitModel)
         {
-            var repository = RepositoriesFactory.GetTeamMembersRepository();
+            var repository = RepositoriesFactory.CreateTeamMembersRepository();
 
             if (databaseAction == Enums.DatabaseActions.DELETE)
             {
@@ -97,7 +97,7 @@ namespace SixtyThreeBits.Web.Models.Admin
         public async Task<AjaxResponse> Sort(SyncSortIndexesSubmitModel submitModel)
         {
             var viewModel = new AjaxResponse();
-            var repository = RepositoriesFactory.GetTeamMembersRepository();
+            var repository = RepositoriesFactory.CreateTeamMembersRepository();
             await repository.TeamMembersSyncSortIndexes(submitModel.SortIndexes);
             viewModel.IsSuccess = !repository.IsError;
             return viewModel;
@@ -127,36 +127,36 @@ namespace SixtyThreeBits.Web.Models.Admin
 
                     grid
                    .Sorting(sorting => sorting.Mode(GridSortingMode.None))
-                   .Pager(Options =>
+                   .Pager(options =>
                    {
-                       Options.Visible(false);
+                       options.Visible(false);
                    })
-                   .RowDragging(rd => rd
+                   .RowDragging(options => options
                         .AllowReordering(true)
                         .OnReorder("teamMembersModel.onGridReorder")
                         .DropFeedbackMode(DropFeedbackMode.Push)
                         .ShowDragIcons(true)
                     )
-                   .Paging(Options =>
+                   .Paging(options =>
                    {
-                       Options.Enabled(false);
+                       options.Enabled(false);
                    })
                    .ID("TeamMembersGrid")
-                   .FilterRow(Options =>
+                   .FilterRow(options =>
                    {
-                       Options.Visible(false);
+                       options.Visible(false);
                    })
                    .OnInitialized("teamMembersModel.onGridInit")
                    .Columns(Columns =>
                    {
                        Columns.Add().Width(30).Caption(" ").InitDetailsUrlCellTemplate(nameof(GridItem.UrlTeamMemberProperties));
-                       Columns.AddFor(m => m.TeamMemberFirstname).Caption(Resources.TextFirstname).Width(150).ValidationRules(Options =>
+                       Columns.AddFor(m => m.TeamMemberFirstname).Caption(Resources.TextFirstname).Width(150).ValidationRules(options =>
                        {
-                           Options.AddRequired();
+                           options.AddRequired();
                        });
-                       Columns.AddFor(m => m.TeamMemberLastname).Caption(Resources.TextLastname).Width(150).ValidationRules(Options =>
+                       Columns.AddFor(m => m.TeamMemberLastname).Caption(Resources.TextLastname).Width(150).ValidationRules(options =>
                        {
-                           Options.AddRequired();
+                           options.AddRequired();
                        });
                        Columns.AddFor(m => m.TeamMemberPosition).Caption(Resources.TextPosition).Width(150);
                        Columns.AddFor(m => m.TeamMemberCategoryID).Caption(Resources.TextCategory).Width(250).InitLookupColumn(data: TeamMemberCategories, allowNull: true);
@@ -213,7 +213,7 @@ namespace SixtyThreeBits.Web.Models.Admin
                 viewModel.TeamMemberCategoryID = DBItem.TeamMemberCategoryID;
             }
 
-            var repository = RepositoriesFactory.GetDictionariesRepository();
+            var repository = RepositoriesFactory.CreateDictionariesRepository();
             viewModel.TeamMemberCategories = await repository.DictionariesListAsKeyValueSelectedTuple(dictionaryCode: Enums.DictionaryCodes.TeamMemberCategories, selectedValue: viewModel.TeamMemberCategoryID);
             viewModel.TeamMemberImageFilename = DBItem.TeamMemberImageFilename;
             viewModel.TeamMemberImageHttpPath = FileStorage.GetUploadedFileHttpPath(DBItem.TeamMemberImageFilename);
@@ -236,7 +236,7 @@ namespace SixtyThreeBits.Web.Models.Admin
                 await DeleteUploadedFile(DBItem.TeamMemberImageFilename);
             }
 
-            var repository = RepositoriesFactory.GetTeamMembersRepository();
+            var repository = RepositoriesFactory.CreateTeamMembersRepository();
             await repository.TeamMembersIUD(
                 databaseAction: Enums.DatabaseActions.UPDATE,
                 teamMemberID: DBItem.TeamMemberID,
@@ -270,7 +270,7 @@ namespace SixtyThreeBits.Web.Models.Admin
         {
             var viewModel = new AjaxResponse();
             await DeleteUploadedFile(DBItem.TeamMemberImageFilename);
-            var repository = RepositoriesFactory.GetTeamMembersRepository();
+            var repository = RepositoriesFactory.CreateTeamMembersRepository();
             await repository.TeamMembersIUD(
                 databaseAction: Enums.DatabaseActions.UPDATE,
                 teamMemberID: DBItem.TeamMemberID,

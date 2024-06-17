@@ -25,7 +25,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 logString: $"{nameof(TeamMembersGetSingleByID)}({nameof(teamMemberID)} = {teamMemberID})", 
                 asyncFuncToTry: async () =>
                 {
-                    using (var dbContext = _dbContextFactory.GetDbContext())
+                    using (var dbContext = _dbContextFactory.CreateDbContext())
                     {
                         var sqb = new SqlQueryBuilder(
                             dbContext: dbContext,
@@ -53,7 +53,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 logString: $"{nameof(TeamMembersIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(teamMemberID)} = {teamMemberID}, {nameof(teamMemberJson)} = {teamMemberJson})", 
                 asyncFuncToTry: async () =>
                 {
-                    using (var dbContext = _dbContextFactory.GetDbContext())
+                    using (var dbContext = _dbContextFactory.CreateDbContext())
                     {
                         var sqb = new SqlQueryBuilder(
                             dbContext: dbContext,
@@ -81,7 +81,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 logString: $"{nameof(TeamMembersList)}()", 
                 asyncFuncToTry: async () =>
                 {
-                    using (var dbContext = _dbContextFactory.GetDbContext())
+                    using (var dbContext = _dbContextFactory.CreateDbContext())
                     {
                         var sqb = new SqlQueryBuilder(
                             dbContext: dbContext,
@@ -106,7 +106,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 logString: $"{nameof(TeamMembersSyncSortIndexes)}({nameof(sortIndexes)} = {sortIndexesJson})", 
                 asyncFuncToTry: async () =>
                 {
-                    using (var dbContext = _dbContextFactory.GetDbContext())
+                    using (var dbContext = _dbContextFactory.CreateDbContext())
                     {
                         var sqb = new SqlQueryBuilder(
                             dbContext: dbContext,

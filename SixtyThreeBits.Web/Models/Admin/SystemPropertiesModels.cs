@@ -21,7 +21,7 @@ namespace SixtyThreeBits.Web.Models.Admin
         public async Task<ViewModel> GetViewModel()
         {
             var viewModel = new ViewModel();
-            var repository = RepositoriesFactory.GetSystemPropertiesRepository();
+            var repository = RepositoriesFactory.CreateSystemPropertiesRepository();
             var dbItem = await repository.SystemPropertiesGet();
             viewModel.ProjectName = dbItem.ProjectName;
             viewModel.ContactEmail = dbItem.ContactEmail;
@@ -185,7 +185,7 @@ namespace SixtyThreeBits.Web.Models.Admin
         {
             var viewModel = new AjaxResponse();
 
-            var repository = RepositoriesFactory.GetSystemPropertiesRepository();
+            var repository = RepositoriesFactory.CreateSystemPropertiesRepository();
             var dbItem = await repository.SystemPropertiesGet();
 
             var awsServiceClient = new AwsService(
@@ -205,7 +205,7 @@ namespace SixtyThreeBits.Web.Models.Admin
                 viewModel.GoogleMapsIFrame = Regex.Replace(viewModel.GoogleMapsIFrame, "width=\"\\d+\"", "width=\"100%\"").Trim();
             }            
 
-            var repository = RepositoriesFactory.GetSystemPropertiesRepository();
+            var repository = RepositoriesFactory.CreateSystemPropertiesRepository();
             await repository.SystemPropertiesUpdate(
                 systemProperties: new SystemPropertiesIudDTO
                 {

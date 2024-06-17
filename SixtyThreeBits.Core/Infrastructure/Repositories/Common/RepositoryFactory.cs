@@ -16,82 +16,82 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         #endregion
 
         #region Methods
-        public BlogPostsRepository GetBlogRepository()
+        public BlogPostsRepository CreateBlogRepository()
         {
             return new BlogPostsRepository(_dbContextFactory);
         }
 
-        public BrandsRepository GetBrandsRepository()
+        public BrandsRepository CreateBrandsRepository()
         {
             return new BrandsRepository(_dbContextFactory);
         }
 
-        public CountriesRepository GetCountriesRepository()
+        public CountriesRepository CreateCountriesRepository()
         {
             return new CountriesRepository(_dbContextFactory);
         }
 
-        public DictionariesRepository GetDictionariesRepository()
+        public DictionariesRepository CreateDictionariesRepository()
         {
             return new DictionariesRepository(_dbContextFactory);
         }
 
-        public EmailTemplatesRepository GetEmailTemplatesRepository()
+        public EmailTemplatesRepository CreateEmailTemplatesRepository()
         {
             return new EmailTemplatesRepository(_dbContextFactory);
         }
 
-        public MenuFooterRepository GetMenuFooterRepository()
+        public MenuFooterRepository CreateMenuFooterRepository()
         {
             return new MenuFooterRepository(_dbContextFactory);
         }
 
-        public MenuHeaderRepository GetMenuHeaderRepository()
+        public MenuHeaderRepository CreateMenuHeaderRepository()
         {
             return new MenuHeaderRepository(_dbContextFactory);
         }
 
-        public NewsRepository GetNewsRepository()
+        public NewsRepository CreateNewsRepository()
         {
             return new NewsRepository(_dbContextFactory);
         }
 
-        public PagesRepository GetPagesRepository()
+        public PagesRepository CreatePagesRepository()
         {
             return new PagesRepository(_dbContextFactory);
         }
 
-        public PermissionsRepository GetPermissionsRepository()
+        public PermissionsRepository CreatePermissionsRepository()
         {
             return new PermissionsRepository(_dbContextFactory);
         }
 
-        public ProductsRepository GetProductsRepository()
+        public ProductsRepository CreateProductsRepository()
         {
             return new ProductsRepository(_dbContextFactory);
         }
 
-        public RedirectsRepository GetRedirectsRepository()
+        public RedirectsRepository CreateRedirectsRepository()
         {
             return new RedirectsRepository(_dbContextFactory);
         }
 
-        public RolesRepository GetRolesRepository()
+        public RolesRepository CreateRolesRepository()
         {
             return new RolesRepository(_dbContextFactory);
         }
 
-        public SystemPropertiesRepository GetSystemPropertiesRepository()
+        public SystemPropertiesRepository CreateSystemPropertiesRepository()
         {
             return new SystemPropertiesRepository(_dbContextFactory);
         }
 
-        public TeamMembersRepository GetTeamMembersRepository()
+        public TeamMembersRepository CreateTeamMembersRepository()
         {
             return new TeamMembersRepository(_dbContextFactory);
         }
 
-        public UsersRepository GetUsersRepository()
+        public UsersRepository CreateUsersRepository()
         {
             return new UsersRepository(_dbContextFactory);
         }

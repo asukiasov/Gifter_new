@@ -46,7 +46,7 @@ namespace SixtyThreeBits.Web.Models.Admin
 
         public async Task<List<ViewModel.GridViewModel.GridItem>> ListGridItems()
         {
-            var repository = RepositoriesFactory.GetBlogRepository();
+            var repository = RepositoriesFactory.CreateBlogRepository();
             var viewModel = (await repository.BlogPostList())
             ?.Select(item => new ViewModel.GridViewModel.GridItem
             {
@@ -63,7 +63,7 @@ namespace SixtyThreeBits.Web.Models.Admin
 
         public async Task IUD(Enums.DatabaseActions databaseAction, int? blogPostID, ViewModel.GridViewModel.GridItem submitModel)
         {
-            var repository = RepositoriesFactory.GetBlogRepository();
+            var repository = RepositoriesFactory.CreateBlogRepository();
 
             if (databaseAction == Enums.DatabaseActions.DELETE)
             {
@@ -191,7 +191,7 @@ namespace SixtyThreeBits.Web.Models.Admin
                 await Validation.ValidateAsync(
                     errorAction: async () =>
                     {
-                        var repository = RepositoriesFactory.GetBlogRepository();
+                        var repository = RepositoriesFactory.CreateBlogRepository();
                         var isUniq = await repository.BlogPostIsSlugUniq(blogPostSlug: viewModel.BlogPostSlug, blogPostID: DBItem.BlogPostID);
                         return !isUniq;
                     },
@@ -210,7 +210,7 @@ namespace SixtyThreeBits.Web.Models.Admin
                 await DeleteUploadedFile(DBItem.BlogPostImageFilename, _folderPath);
             }
 
-            var repository = RepositoriesFactory.GetBlogRepository();
+            var repository = RepositoriesFactory.CreateBlogRepository();
             await repository.BlogPostsIUD(
                 databaseAction: Enums.DatabaseActions.UPDATE,
                 blogPostID: DBItem.BlogPostID,
@@ -245,7 +245,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             var viewModel = new AjaxResponse();
             await DeleteUploadedFile(DBItem.BlogPostImageFilename, _folderPath);
 
-            var repository = RepositoriesFactory.GetBlogRepository();
+            var repository = RepositoriesFactory.CreateBlogRepository();
             await repository.BlogPostsIUD(
                 databaseAction: Enums.DatabaseActions.UPDATE,
                 blogPostID: DBItem.BlogPostID,

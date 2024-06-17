@@ -22,7 +22,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 logString: $"{nameof(SystemPropertiesGet)}()", 
                 asyncFuncToTry: async () =>
                 {
-                    using (var dbContext = _dbContextFactory.GetDbContext())
+                    using (var dbContext = _dbContextFactory.CreateDbContext())
                     {
                         var sqb = new SqlQueryBuilder(
                             dbContext: dbContext,
@@ -47,7 +47,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 logString: $"{nameof(SystemPropertiesUpdate)}({nameof(systemProperties)} = {systemPropertiesJson})", 
                 asyncFuncToTry: async () =>
                 {
-                    using (var dbContext = _dbContextFactory.GetDbContext())
+                    using (var dbContext = _dbContextFactory.CreateDbContext())
                     {
                         var sqb = new SqlQueryBuilder(
                             dbContext: dbContext,

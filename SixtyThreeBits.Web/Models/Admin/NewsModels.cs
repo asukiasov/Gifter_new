@@ -42,7 +42,7 @@ namespace SixtyThreeBits.Web.Models.Admin
 
         public async Task<List<ViewModel.GridViewModel.GridItem>> ListGridItems()
         {
-            var repository = RepositoriesFactory.GetNewsRepository();
+            var repository = RepositoriesFactory.CreateNewsRepository();
             var viewModel = (await repository.NewsList())
             ?.Select(item => new ViewModel.GridViewModel.GridItem
             {
@@ -59,7 +59,7 @@ namespace SixtyThreeBits.Web.Models.Admin
 
         public async Task IUD(Enums.DatabaseActions databaseAction, int? newsID, ViewModel.GridViewModel.GridItem submitModel)
         {
-            var repository = RepositoriesFactory.GetNewsRepository();
+            var repository = RepositoriesFactory.CreateNewsRepository();
             await repository.NewsIUD(
                 databaseAction: databaseAction,
                 newsID: newsID,
@@ -179,7 +179,7 @@ namespace SixtyThreeBits.Web.Models.Admin
                 await Validation.ValidateAsync(
                     errorAction: async () =>
                     {
-                        var repository = RepositoriesFactory.GetNewsRepository();
+                        var repository = RepositoriesFactory.CreateNewsRepository();
                         var IsUniq = await repository.NewsIsSlugUniq(newsSlug: viewModel.NewsSlug, newsID: DBItem.NewsID);
                         return !IsUniq;
                     },
@@ -198,7 +198,7 @@ namespace SixtyThreeBits.Web.Models.Admin
                 await DeleteUploadedFile(newsImageFilename, _folderPath);
             }
 
-            var repository = RepositoriesFactory.GetNewsRepository();
+            var repository = RepositoriesFactory.CreateNewsRepository();
             await repository.NewsIUD(
                 databaseAction: Enums.DatabaseActions.UPDATE,
                 newsID: DBItem.NewsID,
@@ -236,7 +236,7 @@ namespace SixtyThreeBits.Web.Models.Admin
 
             await DeleteUploadedFile(filename: DBItem.NewsImageFilename, folderPath: _folderPath);
 
-            var repository = RepositoriesFactory.GetNewsRepository();
+            var repository = RepositoriesFactory.CreateNewsRepository();
             await repository.NewsIUD(
                 databaseAction: Enums.DatabaseActions.UPDATE,
                 newsID: DBItem.NewsID,

@@ -28,7 +28,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             viewModel.ShowAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.UsersController.GridAdd);
             viewModel.Grid = new PageViewModel.GridModel();
 
-            var repository = RepositoriesFactory.GetRolesRepository();
+            var repository = RepositoriesFactory.CreateRolesRepository();
             viewModel.Grid.Roles = await repository.RolesListAsKeyValueTuple();
             viewModel.Grid.UrlLoad = Url.RouteUrl(ControllerActionRouteNames.Admin.UsersController.Grid);
             viewModel.Grid.UrlAddNew = Url.RouteUrl(ControllerActionRouteNames.Admin.UsersController.GridAdd);
@@ -42,7 +42,7 @@ namespace SixtyThreeBits.Web.Models.Admin
 
         public async Task<List<PageViewModel.GridModel.GridItem>> GetGridViewModel()
         {
-            var repository = RepositoriesFactory.GetUsersRepository();
+            var repository = RepositoriesFactory.CreateUsersRepository();
 
             var viewModel = (await repository.UsersList())
             ?.Select(Item => new PageViewModel.GridModel.GridItem
@@ -63,7 +63,7 @@ namespace SixtyThreeBits.Web.Models.Admin
 
         public async Task ValidateUserEmail(string userEmail, int? userID)
         {
-            var repository = RepositoriesFactory.GetUsersRepository();
+            var repository = RepositoriesFactory.CreateUsersRepository();
             var isUniq = await repository.UsersIsEmailUnique(userEmail, userID);
             if (!isUniq)
             {
@@ -73,7 +73,7 @@ namespace SixtyThreeBits.Web.Models.Admin
 
         public async Task CRUD(Enums.DatabaseActions databaseAction, int? userID, PageViewModel.GridModel.GridItem submitModel)
         {
-            var repository = RepositoriesFactory.GetUsersRepository();
+            var repository = RepositoriesFactory.CreateUsersRepository();
 
             if (databaseAction == Enums.DatabaseActions.DELETE)
             {
@@ -198,7 +198,7 @@ namespace SixtyThreeBits.Web.Models.Admin
                 viewModel.UserPhoneNumberMobile = dbItem.UserPhoneNumberMobile;
             }
 
-            var repository = RepositoriesFactory.GetRolesRepository();
+            var repository = RepositoriesFactory.CreateRolesRepository();
             viewModel.Roles = await repository.RolesListAsKeyValueSelectedTuple(dbItem.RoleID);
             return viewModel;
         }
@@ -212,7 +212,7 @@ namespace SixtyThreeBits.Web.Models.Admin
                 validateUnique: true,
                 validationPredicateReturnTrueWhenError: async () =>
                 {
-                    var repository = RepositoriesFactory.GetUsersRepository();
+                    var repository = RepositoriesFactory.CreateUsersRepository();
                     var isEmailUnique = await repository.UsersIsEmailUnique(viewModel.UserEmail, dbItem.UserID);
                     return !isEmailUnique;
                 }
@@ -223,7 +223,7 @@ namespace SixtyThreeBits.Web.Models.Admin
 
         public async Task Save(PageViewModel viewModel)
         {
-            var repository = RepositoriesFactory.GetUsersRepository();
+            var repository = RepositoriesFactory.CreateUsersRepository();
             await repository.UsersIUD(
                 databaseAction: Enums.DatabaseActions.UPDATE,
                 userID: dbItem.UserID,

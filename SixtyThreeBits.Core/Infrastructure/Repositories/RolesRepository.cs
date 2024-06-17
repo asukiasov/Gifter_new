@@ -28,7 +28,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 logString: $"{nameof(RolesIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(roleID)} = {roleID}, {nameof(role)} = {roleJson})", 
                 asyncFuncToTry: async () =>
                 {
-                    using (var dbContext = _dbContextFactory.GetDbContext())
+                    using (var dbContext = _dbContextFactory.CreateDbContext())
                     {
                         var sqb = new SqlQueryBuilder(
                             dbContext: dbContext,
@@ -56,7 +56,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 logString: $"{nameof(RolesList)}()", 
                 asyncFuncToTry: async () =>
                 {
-                    using (var dbContext = _dbContextFactory.GetDbContext())
+                    using (var dbContext = _dbContextFactory.CreateDbContext())
                     {
                         var sqb = new SqlQueryBuilder(
                             dbContext: dbContext,
@@ -104,7 +104,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 logString: $"{nameof(RolesPermissionsUpdate)}({nameof(roleID)} = {roleID}, {nameof(permissionIDs)} = {permissionIDsJson})", 
                 asyncFuncToTry: async () =>
                 {
-                    using (var dbContext = _dbContextFactory.GetDbContext())
+                    using (var dbContext = _dbContextFactory.CreateDbContext())
                     {
                         var sqb = new SqlQueryBuilder(
                             dbContext: dbContext,

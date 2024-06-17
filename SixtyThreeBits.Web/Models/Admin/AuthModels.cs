@@ -33,7 +33,7 @@ namespace SixtyThreeBits.Web.Models.Admin
         {
             bool isAuthenticated = false;
 
-            var repository = RepositoriesFactory.GetUsersRepository();
+            var repository = RepositoriesFactory.CreateUsersRepository();
             var user = await repository.UsersGetSingleByEmailAndPassword(userEmail: viewModel.Username, userPassword: viewModel.Password);
             if (user == null)
             {
@@ -61,7 +61,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             var sessionUser = SessionAssistance.Get<UserDTO>(WebConstants.Session.User);
             if (sessionUser != null)
             {
-                var repository = RepositoriesFactory.GetUsersRepository();
+                var repository = RepositoriesFactory.CreateUsersRepository();
                 var user = await repository.UsersGetSingleByID(sessionUser.UserID);
                 if (user != null && user.UserIsActive)
                 {

@@ -37,7 +37,7 @@ namespace SixtyThreeBits.Web.Models.Admin
 
         public async Task<List<ViewModel.GridViewModel.GridItem>> ListGridItem()
         {
-            var repository = RepositoriesFactory.GetRolesRepository();
+            var repository = RepositoriesFactory.CreateRolesRepository();
             var viewModel = (await repository.RolesList())
             ?.Select(Item => new ViewModel.GridViewModel.GridItem
             {
@@ -52,7 +52,7 @@ namespace SixtyThreeBits.Web.Models.Admin
 
         public async Task IUD(Enums.DatabaseActions databaseAction, int? roleID, ViewModel.GridViewModel.GridItem submitModel)
         {
-            var repository = RepositoriesFactory.GetRolesRepository();
+            var repository = RepositoriesFactory.CreateRolesRepository();
             await repository.RolesIUD(
                 databaseAction: databaseAction,
                 roleID: roleID,

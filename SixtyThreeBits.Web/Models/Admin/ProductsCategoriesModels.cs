@@ -30,7 +30,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             viewModel.UrlDelete = Url.RouteUrl(ControllerActionRouteNames.Admin.ProductCategoriesController.Delete);
             viewModel.UrlSort = Url.RouteUrl(ControllerActionRouteNames.Admin.ProductCategoriesController.Sort);
 
-            var repository = RepositoriesFactory.GetProductsRepository();
+            var repository = RepositoriesFactory.CreateProductsRepository();
             viewModel.ProductCategories = (await repository.ProductCategoriesList())
             ?.Select(item => new TreeNodeItem
             {
@@ -52,7 +52,7 @@ namespace SixtyThreeBits.Web.Models.Admin
         public async Task<AjaxResponse> DeleteRecursive(ProductCategoryDeleteSubmitModel submitModel)
         {
             var viewModel = new AjaxResponse();
-            var repository = RepositoriesFactory.GetProductsRepository();
+            var repository = RepositoriesFactory.CreateProductsRepository();
             await repository.ProductCategoriesDeleteRecursive(submitModel.ProductCategoryID);
             if(repository.IsError)
             {
@@ -70,7 +70,7 @@ namespace SixtyThreeBits.Web.Models.Admin
         {
             TreeNodeItem node = null;
 
-            var repository = RepositoriesFactory.GetProductsRepository();
+            var repository = RepositoriesFactory.CreateProductsRepository();
             var productCategoryID = await repository.ProductCategoriesIUD(
                 databaseAction: Enums.DatabaseActions.CREATE,
                 productCategoryID: null,
@@ -106,7 +106,7 @@ namespace SixtyThreeBits.Web.Models.Admin
         public async Task<AjaxResponse> SyncParentsAndSortIndexes(SyncSortIndexesSubmitModel submitModel)
         {
             var viewModel = new AjaxResponse();
-            var repository = RepositoriesFactory.GetProductsRepository();
+            var repository = RepositoriesFactory.CreateProductsRepository();
             await repository.ProductCategoriesSyncParentsAndSortIndexes(submitModel.SortIndexes);
             viewModel.IsSuccess = !repository.IsError;
             return viewModel;
@@ -187,7 +187,7 @@ namespace SixtyThreeBits.Web.Models.Admin
                 await DeleteUploadedFile(viewModel.ProductCategoryImageFilename);
             }
 
-            var repository = RepositoriesFactory.GetProductsRepository();
+            var repository = RepositoriesFactory.CreateProductsRepository();
             await repository.ProductCategoriesIUD(
                 databaseAction: Enums.DatabaseActions.UPDATE,                
                 productCategoryID: DBItem.ProductCategoryID,
@@ -226,7 +226,7 @@ namespace SixtyThreeBits.Web.Models.Admin
 
             await DeleteUploadedFile(DBItem.ProductCategoryImageFilename);
 
-            var repository = RepositoriesFactory.GetProductsRepository();
+            var repository = RepositoriesFactory.CreateProductsRepository();
             await repository.ProductCategoriesIUD(
                 databaseAction: Enums.DatabaseActions.UPDATE,
                 productCategoryID: DBItem.ProductCategoryID,

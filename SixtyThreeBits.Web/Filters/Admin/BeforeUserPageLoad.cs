@@ -29,7 +29,7 @@ namespace SixtyThreeBits.Web.Filters.Admin
             var c = filterContext.Controller as Controller;
             var userID = filterContext.RouteData.Values[WebConstants.RouteValues.UserID]?.ToString().ToInt();
 
-            var repository = _model.RepositoriesFactory.GetUsersRepository();
+            var repository = _model.RepositoriesFactory.CreateUsersRepository();
             _model.dbItem = await repository.UsersGetSingleByID(userID);
 
             if (_model.dbItem == null)

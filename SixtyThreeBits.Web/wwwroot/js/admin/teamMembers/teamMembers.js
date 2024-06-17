@@ -8,7 +8,7 @@
     },
     onGridReorder: function (e) {
         teamMembersModel.syncSortIndexes(e);
-    },    
+    },
     syncSortIndexes: function (e) {
         const sortIndexes = globals.devexpress.getGridSortIndexes('TeamMemberID', teamMembersModel.grid, e);
         

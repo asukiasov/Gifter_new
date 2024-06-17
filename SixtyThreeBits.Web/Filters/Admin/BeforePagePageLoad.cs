@@ -26,7 +26,7 @@ namespace SixtyThreeBits.Web.Filters.Admin
             _model = WebUtilities.GetModelFromController<PageModelBase>(filterContext.Controller);
             var pageID = filterContext.RouteData.Values[WebConstants.RouteValues.PageID]?.ToString().ToInt();
 
-            var repository = _model.RepositoriesFactory.GetPagesRepository();
+            var repository = _model.RepositoriesFactory.CreatePagesRepository();
             _model.DBItem = await repository.PagesGetSingleByID(pageID);
             if (_model.DBItem == null)
             {

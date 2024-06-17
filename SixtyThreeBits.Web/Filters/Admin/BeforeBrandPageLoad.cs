@@ -19,7 +19,7 @@ namespace SixtyThreeBits.Web.Filters.Admin
             _model = WebUtilities.GetModelFromController<BrandsModelBase>(filterContext.Controller);
             var brandID = filterContext.RouteData.Values[WebConstants.RouteValues.BrandID]?.ToString().ToInt();
 
-            var repository = _model.RepositoriesFactory.GetBrandsRepository();
+            var repository = _model.RepositoriesFactory.CreateBrandsRepository();
             _model.DBItem = await repository.BrandsGetSingleByID(brandID);
             if (_model.DBItem == null)
             {

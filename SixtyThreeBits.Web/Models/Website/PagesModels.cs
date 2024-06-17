@@ -10,7 +10,7 @@ namespace SixtyThreeBits.Web.Models.Website
         public async Task<PageViewModel> GetPageViewModel(string PageSlug)
         {
             var viewModel = default(PageViewModel);
-            var repository = RepositoriesFactory.GetPagesRepository(); ;
+            var repository = RepositoriesFactory.CreatePagesRepository(); ;
             var dbItem = await repository.PagesGetSingleBySlug(pageSlug: PageSlug?.Trim('/'));
             if (dbItem != null && (dbItem.PageIsPublished || User?.RoleCode == Enums.RolesCodes.Administrator))
             {

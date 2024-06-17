@@ -18,7 +18,7 @@ namespace SixtyThreeBits.Web.Filters.Admin
             _model = WebUtilities.GetModelFromController<BlogModelBase>(filterContext.Controller);
             var blogPostID = filterContext.RouteData.Values[WebConstants.RouteValues.BlogPostID]?.ToString().ToInt();
 
-            var repository = _model.RepositoriesFactory.GetBlogRepository();
+            var repository = _model.RepositoriesFactory.CreateBlogRepository();
             _model.DBItem = await repository.BlogPostGetSingleByID(blogPostID);
             if (_model.DBItem == null)
             {

@@ -34,7 +34,7 @@ namespace SixtyThreeBits.Web.Models.Admin
         public async Task<AjaxResponse> GetRolePermissions(int? roleID)
         {
             var viewModel = new AjaxResponse();
-            var repository = RepositoriesFactory.GetPermissionsRepository();
+            var repository = RepositoriesFactory.CreatePermissionsRepository();
             var permissionIDs = (await repository.PermissionsListByRoleID(roleID))
                 ?.Select(item => item.PermissionID)
                 .ToList();
@@ -47,7 +47,7 @@ namespace SixtyThreeBits.Web.Models.Admin
 
         public async Task<List<ViewModel.RolesGridViewModel.GridItem>> ListRolesGridItems()
         {
-            var repository = RepositoriesFactory.GetRolesRepository();
+            var repository = RepositoriesFactory.CreateRolesRepository();
             var viewModel = (await repository.RolesList())
             ?.Select(Item => new ViewModel.RolesGridViewModel.GridItem
             {
@@ -61,7 +61,7 @@ namespace SixtyThreeBits.Web.Models.Admin
 
         public async Task<List<ViewModel.PermissionsTreeViewModel.TreeItem>> ListPermissionsTreeItems()
         {
-            var repository = RepositoriesFactory.GetPermissionsRepository();
+            var repository = RepositoriesFactory.CreatePermissionsRepository();
             var viewModel = (await repository.PermissionsList())
             ?.Select(Item => new ViewModel.PermissionsTreeViewModel.TreeItem
             {
@@ -77,7 +77,7 @@ namespace SixtyThreeBits.Web.Models.Admin
         public async Task<AjaxResponse> Save(ViewModel.RolePermissionSaveSubmitModel submitModel)
         {
             var viewModel = new AjaxResponse();
-            var repository = RepositoriesFactory.GetRolesRepository();
+            var repository = RepositoriesFactory.CreateRolesRepository();
 
             await repository.RolesPermissionsUpdate(
                 roleID: submitModel.RoleID,

@@ -36,7 +36,7 @@ namespace SixtyThreeBits.Web.Models.Admin
 
         public async Task<List<ViewModel.GridViewModel.GridItem>> ListGridItems()
         {
-            var repository = RepositoriesFactory.GetRedirectsRepository();
+            var repository = RepositoriesFactory.CreateRedirectsRepository();
             var viewModel = (await repository.RedirectsList())
             ?.Select(Item => new ViewModel.GridViewModel.GridItem
             {
@@ -49,7 +49,7 @@ namespace SixtyThreeBits.Web.Models.Admin
 
         public async Task CRUD(Enums.DatabaseActions databaseAction, int? redirectID, ViewModel.GridViewModel.GridItem submitModel)
         {
-            var repository = RepositoriesFactory.GetRedirectsRepository();
+            var repository = RepositoriesFactory.CreateRedirectsRepository();
             await repository.RedirectsIUD(
                 databaseAction: databaseAction,
                 redirectID: redirectID,

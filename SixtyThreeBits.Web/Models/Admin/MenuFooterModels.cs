@@ -25,8 +25,8 @@ namespace SixtyThreeBits.Web.Models.Admin
         public async Task<ViewModel> GetViewModel()
         {
             var viewModel = new ViewModel();
-            var repositoryMenuFooter = RepositoriesFactory.GetMenuFooterRepository();
-            var repositoryPages = RepositoriesFactory.GetPagesRepository();
+            var repositoryMenuFooter = RepositoriesFactory.CreateMenuFooterRepository();
+            var repositoryPages = RepositoriesFactory.CreatePagesRepository();
 
             _showAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.MenuFooterController.Add);
             _showUpdateButton = User.HasPermission(ControllerActionRouteNames.Admin.MenuFooterController.Update);
@@ -60,7 +60,7 @@ namespace SixtyThreeBits.Web.Models.Admin
         public async Task<AjaxResponse> Add(SubmitModel submitModel)
         {
             var viewModel = new AjaxResponse();
-            var repositoryMenuFooter = RepositoriesFactory.GetMenuFooterRepository();
+            var repositoryMenuFooter = RepositoriesFactory.CreateMenuFooterRepository();
             var isError = false;
 
             _showAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.MenuFooterController.Add);
@@ -85,7 +85,7 @@ namespace SixtyThreeBits.Web.Models.Admin
 
             if (!isError && !submitModel.MenuFooterIsExternalPage)
             {
-                var repositoryPages = RepositoriesFactory.GetPagesRepository();
+                var repositoryPages = RepositoriesFactory.CreatePagesRepository();
                 await repositoryPages.PagesIUD(
                     databaseAction: Enums.DatabaseActions.UPDATE,
                     pageID: submitModel.PageID,
@@ -123,7 +123,7 @@ namespace SixtyThreeBits.Web.Models.Admin
         public async Task<AjaxResponse> Update(SubmitModel submitModel)
         {
             var viewModel = new AjaxResponse();
-            var repositoryMenuFooter = RepositoriesFactory.GetMenuFooterRepository();
+            var repositoryMenuFooter = RepositoriesFactory.CreateMenuFooterRepository();
             var isError = false;
 
             _showAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.MenuFooterController.Add);
@@ -148,7 +148,7 @@ namespace SixtyThreeBits.Web.Models.Admin
 
             if (!isError && !submitModel.MenuFooterIsExternalPage)
             {
-                var repositoryPages = RepositoriesFactory.GetPagesRepository();
+                var repositoryPages = RepositoriesFactory.CreatePagesRepository();
                 await repositoryPages.PagesIUD(
                     databaseAction: Enums.DatabaseActions.UPDATE,
                     pageID: submitModel.PageID,
@@ -186,7 +186,7 @@ namespace SixtyThreeBits.Web.Models.Admin
         public async Task<AjaxResponse> Sort(SyncSortIndexesSubmitModel submitModel)
         {
             var viewModel = new AjaxResponse();
-            var repository = RepositoriesFactory.GetMenuFooterRepository();
+            var repository = RepositoriesFactory.CreateMenuFooterRepository();
             await repository.MenuFooterSort(sortIndexes: submitModel.SortIndexes);
             viewModel.IsSuccess = !repository.IsError;
             return viewModel;
@@ -195,7 +195,7 @@ namespace SixtyThreeBits.Web.Models.Admin
         public async Task<AjaxResponse> Delete(SubmitModel submitModel)
         {
             var viewModel = new AjaxResponse();
-            var repository = RepositoriesFactory.GetMenuFooterRepository();
+            var repository = RepositoriesFactory.CreateMenuFooterRepository();
             await repository.MenuFooterIUD(
                 databaseAction: Enums.DatabaseActions.DELETE,
                 menuFooterID: submitModel.MenuFooterID,
@@ -208,7 +208,7 @@ namespace SixtyThreeBits.Web.Models.Admin
         public async Task<AjaxResponse> Get(int? menuFooterID)
         {
             var viewModel = new AjaxResponse();
-            var repository = RepositoriesFactory.GetMenuFooterRepository();
+            var repository = RepositoriesFactory.CreateMenuFooterRepository();
             var dbItem = await repository.MenuFooterGetSingleByID(menuFooterID: menuFooterID);
             if (dbItem != null)
             {
@@ -262,7 +262,7 @@ namespace SixtyThreeBits.Web.Models.Admin
                     await Validation.ValidateAsync(
                         errorAction: async () =>
                         {
-                            var repository = RepositoriesFactory.GetPagesRepository();
+                            var repository = RepositoriesFactory.CreatePagesRepository();
                             var isUniq = await repository.PagesIsSlugUniq(pageSlug: submitModel.PageSlug, pageID: submitModel.PageID);
                             var isError = !isUniq;
                             return isError;

@@ -94,7 +94,7 @@ namespace SixtyThreeBits.Web.Filters.Website
 
         async Task initMenu()
         {
-            var repositoryMenuHeader = _model.RepositoriesFactory.GetMenuHeaderRepository();
+            var repositoryMenuHeader = _model.RepositoriesFactory.CreateMenuHeaderRepository();
             var menuHeader = await repositoryMenuHeader.MenuHeaderList(menuHeaderIsPublished: true);
 
             if(menuHeader!= null)
@@ -142,7 +142,7 @@ namespace SixtyThreeBits.Web.Filters.Website
                 }
             }
 
-            var repositoryMenuFooter = _model.RepositoriesFactory.GetMenuFooterRepository();
+            var repositoryMenuFooter = _model.RepositoriesFactory.CreateMenuFooterRepository();
             var menuFooter = await repositoryMenuFooter.MenuFooterList(menuFooterIsPublished: true);
             if(menuFooter?.Any() == true)
             {
@@ -184,7 +184,7 @@ namespace SixtyThreeBits.Web.Filters.Website
         async Task<customRedirectResult> checkRedirect()
         {
             var result = new customRedirectResult();
-            var repository = _model.RepositoriesFactory.GetRedirectsRepository();
+            var repository = _model.RepositoriesFactory.CreateRedirectsRepository();
             var redirects = await repository.RedirectsList();
             if (redirects?.Any() == true)
             {

@@ -18,7 +18,7 @@ namespace SixtyThreeBits.Web.Filters.Admin
             _model = WebUtilities.GetModelFromController<ProductsModelBase>(filterContext.Controller);
             var productID = filterContext.RouteData.Values[WebConstants.RouteValues.ProductID]?.ToString().ToInt();
 
-            var repository = _model.RepositoriesFactory.GetProductsRepository();
+            var repository = _model.RepositoriesFactory.CreateProductsRepository();
             _model.DBItem = await repository.ProductsGetSingleByID(productID);
             if (_model.DBItem == null)
             {

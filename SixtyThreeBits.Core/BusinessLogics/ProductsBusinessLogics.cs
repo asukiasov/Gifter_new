@@ -41,7 +41,7 @@ namespace SixtyThreeBits.Core.BusinessLogics
 					using (var excel = new ExcelPackage(new FileInfo($"{_appSettings.DownloadFolderPhysicalPath}\\ProductsSync.xlsx")))
 					{
 						var workSheet = excel.Workbook.Worksheets[0];
-						var repository = _dataAccessFactory.GetProductsRepository();													
+						var repository = _dataAccessFactory.CreateProductsRepository();													
 						var products = await repository.ProductsList();
 
 						if (products?.Any() == true)
@@ -125,7 +125,7 @@ namespace SixtyThreeBits.Core.BusinessLogics
 
 			async Task initBusinessLogicProperties()
 			{
-				var repository = _repositoryFactory.GetProductsRepository();
+				var repository = _repositoryFactory.CreateProductsRepository();
 				var products = await repository.ProductsList();
 				if (products == null)
 				{
@@ -217,7 +217,7 @@ namespace SixtyThreeBits.Core.BusinessLogics
 
 			async Task initProductIDs()
 			{
-				var repository = _repositoryFactory.GetProductsRepository();
+				var repository = _repositoryFactory.CreateProductsRepository();
 
 				foreach(var excelItem in _excelItems)
 				{
@@ -248,7 +248,7 @@ namespace SixtyThreeBits.Core.BusinessLogics
 
 			async Task syncPricesAndRemainders()
 			{
-                var command = _repositoryFactory.GetProductsRepository();
+                var command = _repositoryFactory.CreateProductsRepository();
 
                 foreach (var ExcelItem in _excelItems)
 				{

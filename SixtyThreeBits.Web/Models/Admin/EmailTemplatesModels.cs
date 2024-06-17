@@ -30,7 +30,7 @@ namespace SixtyThreeBits.Web.Models.Admin
 
         public async Task<List<ViewModel.GridViewModel.GridItem>> ListGridItems()
         {
-            var repository = RepositoriesFactory.GetEmailTemplatesRepository();
+            var repository = RepositoriesFactory.CreateEmailTemplatesRepository();
             var viewModel = (await repository.EmailTemplatesList())
             ?.Select(Item => new ViewModel.GridViewModel.GridItem
             {
@@ -94,7 +94,7 @@ namespace SixtyThreeBits.Web.Models.Admin
         #region Methods
         public async Task<ViewModel> GetViewModel(int? emailTemplateID, ViewModel viewModel = null)
         {
-            var repository = RepositoriesFactory.GetEmailTemplatesRepository();
+            var repository = RepositoriesFactory.CreateEmailTemplatesRepository();
             var dbItem = await repository.EmailTemplatesGetSingleByID(emailTemplateID);
             if (dbItem == null)
             {
@@ -128,7 +128,7 @@ namespace SixtyThreeBits.Web.Models.Admin
 
         public async Task Save(int? emailTemplateID, ViewModel viewModel)
         {
-            var repository = RepositoriesFactory.GetEmailTemplatesRepository();
+            var repository = RepositoriesFactory.CreateEmailTemplatesRepository();
             await repository.EmailTemplatesIUD(
                 databaseAction: Enums.DatabaseActions.UPDATE,
                 emailTemplateID: emailTemplateID,

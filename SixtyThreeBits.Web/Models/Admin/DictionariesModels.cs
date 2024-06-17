@@ -36,7 +36,7 @@ namespace SixtyThreeBits.Web.Models.Admin
 
         public async Task<List<ViewModel.TreeViewModel.TreeItem>> ListTreeItems()
         {
-            var repository = RepositoriesFactory.GetDictionariesRepository();
+            var repository = RepositoriesFactory.CreateDictionariesRepository();
             var viewModel = (await repository.DictionariesList()).Select(Item => new ViewModel.TreeViewModel.TreeItem
             {
                 DictionaryID = Item.DictionaryID,
@@ -54,7 +54,7 @@ namespace SixtyThreeBits.Web.Models.Admin
 
         public async Task IUD(Enums.DatabaseActions DatabaseAction, int? dictionaryID, ViewModel.TreeViewModel.TreeItem submitModel)
         {
-            var repository = RepositoriesFactory.GetDictionariesRepository();
+            var repository = RepositoriesFactory.CreateDictionariesRepository();
             await repository.DictionariesIUD(
                 databaseAction: DatabaseAction,
                 dictionaryID: dictionaryID,
@@ -79,7 +79,7 @@ namespace SixtyThreeBits.Web.Models.Admin
 
         public async Task DeleteRecursive(int? dictionaryID)
         {
-            var repository = RepositoriesFactory.GetDictionariesRepository();
+            var repository = RepositoriesFactory.CreateDictionariesRepository();
             await repository.DictionariesDeleteRecursive(dictionaryID);
             if (repository.IsError)
             {
