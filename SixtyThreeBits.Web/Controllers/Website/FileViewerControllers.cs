@@ -8,13 +8,6 @@ namespace SixtyThreeBits.Web.Controllers.Website
     [Route("view")]
     public class FileViewerController : WebsiteControllerBase<FileViewerModel>
     {
-        #region Constructors
-        public FileViewerController()
-        {
-            Model = new FileViewerModel();
-        }
-        #endregion
-
         #region Actions
         [Route("pdf", Name = ControllerActionRouteNames.Website.FileViewerController.Pdf)]
         public IActionResult Pdf(FileViewerModel.SubmitModel submitModel)

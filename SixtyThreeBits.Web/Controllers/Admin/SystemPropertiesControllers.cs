@@ -9,13 +9,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
     [Route("admin/system-properties")]
     public class SystemPropertiesController : AdminControllerBase<SystemPropertiesModel>
     {
-        #region Constructors
-        public SystemPropertiesController()
-        {
-            Model = new SystemPropertiesModel();
-        }
-        #endregion
-
+        #region Actions
         [HttpGet]
         [Route("", Name = ControllerActionRouteNames.Admin.SystemPropertiesController.SystemProperies)]
         public async Task<IActionResult> SystemProperies()
@@ -73,7 +67,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
                 Model.ShowErrorToastNotification();
                 return View(ViewNames.Admin.SystemProperties.SystemPropertiesView, viewModel);
             }
-        }
-
+        } 
+        #endregion
     }
 }

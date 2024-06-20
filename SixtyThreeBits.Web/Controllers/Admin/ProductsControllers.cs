@@ -13,13 +13,6 @@ namespace SixtyThreeBits.Web.Controllers.Admin
     [Route("admin/products")]
     public class ProductsController : AdminControllerBase<ProductsModel>
     {
-        #region Constructors
-        public ProductsController()
-        {
-            Model = new ProductsModel();
-        }
-        #endregion
-
         #region Actions
         [HttpGet]
         [Route("", Name = ControllerActionRouteNames.Admin.ProductsController.Products)]
@@ -105,13 +98,6 @@ namespace SixtyThreeBits.Web.Controllers.Admin
     [TypeFilter(typeof(BeforeProductPageLoad), Order = 2)]
     public class ProductsPropertiesController : AdminControllerBase<ProductPropertiesModel>
     {
-        #region Constructors
-        public ProductsPropertiesController()
-        {
-            Model = new ProductPropertiesModel();
-        }
-        #endregion
-
         #region Actions
         [HttpGet]
         [Route("", Name = ControllerActionRouteNames.Admin.ProductsPropertiesController.Properties)]

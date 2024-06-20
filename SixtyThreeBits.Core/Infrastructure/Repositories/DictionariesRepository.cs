@@ -59,7 +59,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             sqlParameters:
                             [
                                 databaseAction.ToSqlParameter(nameof(databaseAction),SqlDbType.TinyInt),
-                                dictionaryID.ToSqlOutputParameter(nameof(dictionaryID),SqlDbType.Int),
+                                dictionaryID.ToSqlParameterOutput(nameof(dictionaryID),SqlDbType.Int),
                                 dictionaryJson.ToSqlParameter(nameof(dictionaryJson),SqlDbType.NVarChar)
                             ]
                         );

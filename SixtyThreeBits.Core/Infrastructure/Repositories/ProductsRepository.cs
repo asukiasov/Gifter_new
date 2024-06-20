@@ -112,7 +112,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             sqlParameters:
                             [
                                 databaseAction.ToSqlParameter(nameof(databaseAction),SqlDbType.TinyInt),
-                                productCategoryID.ToSqlOutputParameter(nameof(productCategoryID),SqlDbType.Int),
+                                productCategoryID.ToSqlParameterOutput(nameof(productCategoryID),SqlDbType.Int),
                                 productCategoryJson.ToSqlParameter(nameof(productCategoryJson),SqlDbType.NVarChar)
                             ]
                         );
@@ -311,7 +311,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             sqlParameters:
                             [
                                 databaseAction.ToSqlParameter(nameof(databaseAction),SqlDbType.TinyInt),
-                                productID.ToSqlOutputParameter(nameof(productID),SqlDbType.Int),
+                                productID.ToSqlParameterOutput(nameof(productID),SqlDbType.Int),
                                 productJson.ToSqlParameter(nameof(productJson),SqlDbType.NVarChar)                                
                             ]
                         );
@@ -341,7 +341,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             sqlParameters:
                             [
                                 databaseAction.ToSqlParameter(nameof(databaseAction),SqlDbType.TinyInt),
-                                productImageID.ToSqlOutputParameter(nameof(productImageID),SqlDbType.Int),
+                                productImageID.ToSqlParameterOutput(nameof(productImageID),SqlDbType.Int),
                                 productImageJson.ToSqlParameter(nameof(productImageJson),SqlDbType.NVarChar)                                
                             ]
                         );

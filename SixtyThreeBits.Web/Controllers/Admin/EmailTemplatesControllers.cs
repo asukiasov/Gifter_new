@@ -9,13 +9,6 @@ namespace SixtyThreeBits.Web.Controllers.Admin
     [Route("admin/email-templates")]
     public class EmailTemplatesController : AdminControllerBase<EmailTemplatesModel>
     {
-        #region Constructors
-        public EmailTemplatesController()
-        {
-            Model = new EmailTemplatesModel();
-        }
-        #endregion
-
         #region Actions
         [HttpGet]
         [Route("", Name = ControllerActionRouteNames.Admin.EmailTemplatesController.EmailTemplates)]
@@ -38,13 +31,6 @@ namespace SixtyThreeBits.Web.Controllers.Admin
     [Route("admin/email-templates/{emailTemplateID:int}/properties")]
     public class EmailTemplatePropertiesController : AdminControllerBase<EmailTemplatePropertiesModel>
     {
-        #region Constructors
-        public EmailTemplatePropertiesController()
-        {
-            Model = new EmailTemplatePropertiesModel();
-        }
-        #endregion
-
         #region Actions
         [HttpGet]
         [Route("", Name = ControllerActionRouteNames.Admin.EmailTemplatePropertiesController.Properties)]

@@ -11,13 +11,6 @@ namespace SixtyThreeBits.Web.Controllers.Admin
     [Route("admin/dictionaries")]
     public class DictionariesController : AdminControllerBase<DictionariesModel>
     {
-        #region Constructors
-        public DictionariesController()
-        {
-            Model = new DictionariesModel();
-        }
-        #endregion
-
         #region Methods
         [HttpGet]
         [Route("", Name = ControllerActionRouteNames.Admin.DictionariesController.Dictionaries)]

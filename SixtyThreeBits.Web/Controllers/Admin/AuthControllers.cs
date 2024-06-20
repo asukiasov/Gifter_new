@@ -9,13 +9,6 @@ namespace SixtyThreeBits.Web.Controllers.Admin
     [Route("admin")]
     public class AuthController : ControllerBase<AuthModel>
     {
-        #region Constructors
-        public AuthController()
-        {
-            Model = new AuthModel();
-        }
-        #endregion
-
         #region Actions
         [HttpGet]
         [Route("login", Name = ControllerActionRouteNames.Admin.AuthController.Login)]

@@ -32,7 +32,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
             return GetSqlParameter(parameter: parameter, parameterName: parameterName, sqlDbType: sqlDbType, isOutput: false);
         }
 
-        public static SqlParameter ToSqlOutputParameter(this object parameter, string parameterName, SqlDbType sqlDbType)
+        public static SqlParameter ToSqlParameterOutput(this object parameter, string parameterName, SqlDbType sqlDbType)
         {
             return GetSqlParameter(parameter: parameter, parameterName: parameterName, sqlDbType: sqlDbType, isOutput: true);
         }

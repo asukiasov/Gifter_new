@@ -57,7 +57,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             sqlParameters:
                             [
                                 databaseAction.ToSqlParameter(nameof(databaseAction),SqlDbType.TinyInt),
-                                permissionID.ToSqlOutputParameter(nameof(permissionID),SqlDbType.Int),
+                                permissionID.ToSqlParameterOutput(nameof(permissionID),SqlDbType.Int),
                                 permissionJson.ToSqlParameter(nameof(permissionJson),SqlDbType.NVarChar)                                
                             ]
                         );

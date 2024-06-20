@@ -12,13 +12,6 @@ namespace SixtyThreeBits.Web.Controllers.Admin
     [Route("admin/news")]
     public class NewsController : AdminControllerBase<NewsModel>
     {
-        #region Constructors
-        public NewsController()
-        {
-            Model = new NewsModel();
-        }
-        #endregion
-
         #region Actions
         [HttpGet]
         [Route("", Name = ControllerActionRouteNames.Admin.NewsController.News)]
@@ -90,13 +83,6 @@ namespace SixtyThreeBits.Web.Controllers.Admin
     [TypeFilter(typeof(BeforeNewsPageLoad), Order = 2)]
     public class NewsPropertiesController : AdminControllerBase<NewsPropertiesModel>
     {
-        #region Constructors
-        public NewsPropertiesController()
-        {
-            Model = new NewsPropertiesModel();
-        }
-        #endregion
-
         #region Actions
         [HttpGet]
         [Route("properties", Name = ControllerActionRouteNames.Admin.NewsPropertiesController.Properties)]

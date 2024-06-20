@@ -60,7 +60,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             sqlParameters:
                             [
                                 databaseAction.ToSqlParameter(nameof(databaseAction), SqlDbType.TinyInt),
-                                menuHeaderID.ToSqlOutputParameter(nameof(menuHeaderID), SqlDbType.Int),
+                                menuHeaderID.ToSqlParameterOutput(nameof(menuHeaderID), SqlDbType.Int),
                                 menuHeaderJson.ToSqlParameter(nameof(menuHeaderJson), SqlDbType.NVarChar)
                             ]
                         );

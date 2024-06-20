@@ -8,20 +8,14 @@ namespace SixtyThreeBits.Web.Controllers.Admin
     [Route("admin/change-language")]
     public class ChangeLanguageController : ControllerBase<ChangeLanguageModel>
     {
-        #region Constructors
-        public ChangeLanguageController()
-        {
-            Model = new ChangeLanguageModel();
-        }
-        #endregion
-
+        #region Action
         [HttpGet]
         [Route("{culture:length(2)}", Name = ControllerActionRouteNames.Admin.ChangeLanguageController.ChangeLanguage)]
-
         public IActionResult ChangeLanguage(string culture)
         {
             Model.ChangeLanguage(culture);
             return Redirect(Model.UrlPreviousPage);
-        }
+        } 
+        #endregion
     }
 }

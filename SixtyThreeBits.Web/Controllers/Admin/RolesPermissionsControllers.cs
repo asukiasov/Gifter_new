@@ -9,13 +9,6 @@ namespace SixtyThreeBits.Web.Controllers.Admin
     [Route("admin/roles-permissions")]
     public class RolePermissionsController : AdminControllerBase<RolePermissionsModel>
     {
-        #region Constructors
-        public RolePermissionsController()
-        {
-            Model = new RolePermissionsModel();
-        }
-        #endregion
-
         #region Methods
         [HttpGet]
         [Route("", Name = ControllerActionRouteNames.Admin.RolePermissionsController.RolesPermissions)]

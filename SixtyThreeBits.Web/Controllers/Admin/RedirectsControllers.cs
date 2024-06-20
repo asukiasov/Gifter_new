@@ -11,13 +11,6 @@ namespace SixtyThreeBits.Web.Controllers.Admin
     [Route("admin/redirects")]
     public class RedirectsController : AdminControllerBase<RedirectsModel>
     {
-        #region Constructors
-        public RedirectsController()
-        {
-            Model = new RedirectsModel();
-        }
-        #endregion
-
         #region Actions
         [HttpGet]
         [Route("", Name = ControllerActionRouteNames.Admin.RedirectsController.Redirects)]

@@ -8,19 +8,14 @@ namespace SixtyThreeBits.Web.Controllers.Admin
     [Route("admin")]
     public class HomeController : AdminControllerBase<HomeModel>
     {
-        #region Constructors
-        public HomeController()
-        {
-            Model = new HomeModel();
-        }
-        #endregion
-
+        #region Actions
         [HttpGet]
         [Route("", Name = ControllerActionRouteNames.Admin.HomeController.Index)]
         public IActionResult Index()
         {
             var viewModel = Model.GetViewModel();
             return View(ViewNames.Admin.Home.IndexView, viewModel);
-        }
+        } 
+        #endregion
     }
 }

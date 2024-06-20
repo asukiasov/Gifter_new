@@ -35,7 +35,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             sqlParameters:
                             [
                                 databaseAction.ToSqlParameter(nameof(databaseAction),SqlDbType.TinyInt),
-                                redirectID.ToSqlOutputParameter(nameof(redirectID),SqlDbType.Int),
+                                redirectID.ToSqlParameterOutput(nameof(redirectID),SqlDbType.Int),
                                 redirectJson.ToSqlParameter(nameof(redirectJson),SqlDbType.NVarChar)
                             ]
                          );

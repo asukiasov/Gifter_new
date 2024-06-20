@@ -87,7 +87,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             sqlParameters:
                             [
                                  databaseAction.ToSqlParameter(nameof(databaseAction),SqlDbType.TinyInt),
-                                 blogPostID.ToSqlOutputParameter(nameof(blogPostID),SqlDbType.Int),
+                                 blogPostID.ToSqlParameterOutput(nameof(blogPostID),SqlDbType.Int),
                                  blogPostJson.ToSqlParameter(nameof(blogPostJson),SqlDbType.NVarChar)                                 
                             ]
                         );

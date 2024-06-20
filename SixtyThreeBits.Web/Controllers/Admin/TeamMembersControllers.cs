@@ -13,13 +13,6 @@ namespace SixtyThreeBits.Web.Controllers.Admin
     [Route("admin/team-members")]
     public class TeamMembersController : AdminControllerBase<TeamMembersModel>
     {
-        #region Constructors
-        public TeamMembersController()
-        {
-            Model = new TeamMembersModel();
-        }
-        #endregion
-
         #region Actions
         [Route("", Name = ControllerActionRouteNames.Admin.TeamMembersController.TeamMembers)]
         public async Task<IActionResult> TeamMembers()
@@ -97,13 +90,6 @@ namespace SixtyThreeBits.Web.Controllers.Admin
     [TypeFilter(typeof(BeforeTeamMemberPageLoad), Order = 2)]
     public class TeamMembersPropertiesController : AdminControllerBase<TeamMemberPropertiesModel>
     {
-        #region Constructors
-        public TeamMembersPropertiesController()
-        {
-            Model = new TeamMemberPropertiesModel();
-        }
-        #endregion
-
         #region Actions
         [HttpGet]
         [Route("properties", Name = ControllerActionRouteNames.Admin.TeamMembersPropertiesController.Properties)]

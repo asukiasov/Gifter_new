@@ -12,13 +12,6 @@ namespace SixtyThreeBits.Web.Controllers.Admin
     [Route("admin/blog")]
     public class BlogPostsController : AdminControllerBase<BlogModel>
     {
-        #region Constructors
-        public BlogPostsController()
-        {
-            Model = new BlogModel();
-        }
-        #endregion
-
         #region Actions
         [HttpGet]
         [Route("", Name = ControllerActionRouteNames.Admin.BlogPostsController.BlogPosts)]
@@ -89,13 +82,6 @@ namespace SixtyThreeBits.Web.Controllers.Admin
     [TypeFilter(typeof(BeforeBlogPageLoad), Order = 2)]
     public class BlogPostPropertiesController : AdminControllerBase<BlogPropertiesModel>
     {
-        #region Constructors
-        public BlogPostPropertiesController()
-        {
-            Model = new BlogPropertiesModel();
-        }
-        #endregion
-
         #region Actions
         [HttpGet]
         [Route("", Name = ControllerActionRouteNames.Admin.BlogPostPropertiesController.Properties)]

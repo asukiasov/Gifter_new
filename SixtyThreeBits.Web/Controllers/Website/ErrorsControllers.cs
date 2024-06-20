@@ -8,10 +8,12 @@ namespace SixtyThreeBits.Web.Controllers.Website
     [Route("error")]
     public class ErrorsController : WebsiteControllerBase<ErrorsModel>
     {
+        #region Actions
         [Route("404")]
         public IActionResult Error404NotFound()
         {
             return View(ViewNames.Website.Errors.NotFoundView);
-        }
+        } 
+        #endregion
     }
 }

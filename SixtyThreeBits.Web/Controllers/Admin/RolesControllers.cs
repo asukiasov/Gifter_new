@@ -11,13 +11,6 @@ namespace SixtyThreeBits.Web.Controllers.Admin
     [Route("admin/roles")]
     public class RolesControllers : AdminControllerBase<RolesModel>
     {
-        #region Constructors
-        public RolesControllers()
-        {
-            Model = new RolesModel();
-        }
-        #endregion
-
         #region Methods
         [HttpGet]
         [Route("", Name = ControllerActionRouteNames.Admin.RolesControllers.Roles)]

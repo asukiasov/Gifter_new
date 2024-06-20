@@ -134,7 +134,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             sqlParameters:
                             [
                                 databaseAction.ToSqlParameter(nameof(databaseAction),SqlDbType.TinyInt),
-                                pageID.ToSqlOutputParameter(nameof(pageID),SqlDbType.Int),
+                                pageID.ToSqlParameterOutput(nameof(pageID),SqlDbType.Int),
                                 pageJson.ToSqlParameter(nameof(pageJson),SqlDbType.NVarChar)
                             ]
                         );

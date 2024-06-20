@@ -113,7 +113,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             sqlParameters:
                             [
                                 databaseAction.ToSqlParameter(nameof(databaseAction),SqlDbType.TinyInt),
-                                userID.ToSqlOutputParameter(nameof(userID),SqlDbType.Int),
+                                userID.ToSqlParameterOutput(nameof(userID),SqlDbType.Int),
                                 userJson.ToSqlParameter(nameof(userJson),SqlDbType.NVarChar),
                             ]
                         );

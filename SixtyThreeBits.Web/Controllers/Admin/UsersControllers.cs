@@ -12,13 +12,6 @@ namespace SixtyThreeBits.Web.Controllers.Admin
     [Route("admin/users")]
     public class UsersController : AdminControllerBase<UsersModel>
     {
-        #region Constructors
-        public UsersController()
-        {
-            Model = new UsersModel();
-        }
-        #endregion
-
         #region Actions
         [HttpGet]
         [Route("", Name = ControllerActionRouteNames.Admin.UsersController.Users)]
@@ -109,13 +102,6 @@ namespace SixtyThreeBits.Web.Controllers.Admin
     [TypeFilter(typeof(BeforeUserPageLoad), Order = 2)]
     public class UserPropertiesController : AdminControllerBase<UserPropertiesModel>
     {
-        #region Constructors
-        public UserPropertiesController()
-        {
-            Model = new UserPropertiesModel();
-        }
-        #endregion
-
         #region Actions
         [HttpGet]
         [Route("", Name = ControllerActionRouteNames.Admin.UserPropertiesController.Properties)]

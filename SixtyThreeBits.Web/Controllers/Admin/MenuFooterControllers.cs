@@ -13,13 +13,6 @@ namespace SixtyThreeBits.Web.Controllers.Admin
     [TypeFilter(typeof(BeforePagesManagementPageLoad), Order = 2)]
     public class MenuFooterController : AdminControllerBase<MenuFooterModel>
     {
-        #region Constructors
-        public MenuFooterController()
-        {
-            Model = new MenuFooterModel();
-        }
-        #endregion
-
         #region Actions
         [HttpGet]
         [Route("", Name = ControllerActionRouteNames.Admin.MenuFooterController.MenuFooter)]

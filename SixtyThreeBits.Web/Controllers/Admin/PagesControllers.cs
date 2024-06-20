@@ -13,13 +13,6 @@ namespace SixtyThreeBits.Web.Controllers.Admin
     [Route("admin/pages-management")]
     public class PagesManagementController : AdminControllerBase<PagesManagementModule>
     {
-        #region Constructors
-        public PagesManagementController()
-        {
-            Model = new PagesManagementModule();
-        }
-        #endregion
-
         #region Actions
         [Route("", Name = ControllerActionRouteNames.Admin.PagesManagementController.RedirectToChild)]
         public IActionResult RedirectToChild()
@@ -42,13 +35,6 @@ namespace SixtyThreeBits.Web.Controllers.Admin
     [TypeFilter(typeof(BeforePagesManagementPageLoad), Order = 2)]
     public class PagesController : AdminControllerBase<PagesModel>
     {
-        #region Constructors
-        public PagesController()
-        {
-            Model = new PagesModel();
-        }
-        #endregion
-
         #region Actions
         [Route("", Name = ControllerActionRouteNames.Admin.PagesController.Pages)]
         public ActionResult Pages()
@@ -136,13 +122,6 @@ namespace SixtyThreeBits.Web.Controllers.Admin
     [TypeFilter(typeof(BeforePagePageLoad), Order = 2)]
     public class PageDataController : AdminControllerBase<PageDataModel>
     {
-        #region Constructors
-        public PageDataController()
-        {
-            Model = new PageDataModel();
-        }
-        #endregion
-
         #region Actions
         [HttpGet]
         [Route("", Name = ControllerActionRouteNames.Admin.PageDataController.Get)]
@@ -158,13 +137,6 @@ namespace SixtyThreeBits.Web.Controllers.Admin
     [TypeFilter(typeof(BeforePagePageLoad), Order = 2)]
     public class PagePropertiesController : AdminControllerBase<PagePropertiesModel>
     {
-        #region Constructors
-        public PagePropertiesController()
-        {
-            Model = new PagePropertiesModel();
-        }
-        #endregion
-
         #region Actions
         [HttpGet]
         [Route("", Name = ControllerActionRouteNames.Admin.PagePropertiesController.Properties)]
@@ -214,13 +186,6 @@ namespace SixtyThreeBits.Web.Controllers.Admin
     [TypeFilter(typeof(BeforePagePageLoad), Order = 2)]
     public class PageBuilderController : AdminControllerBase<PageBuilderModel>
     {
-        #region Constructors
-        public PageBuilderController()
-        {
-            Model = new PageBuilderModel();
-        }
-        #endregion
-
         #region Actions
         [Route("", Name = ControllerActionRouteNames.Admin.PageBuilderController.Builder)]
         [Route("{Language:length(2)}", Name = ControllerActionRouteNames.Admin.PageBuilderController.BuilderLanguage)]

@@ -36,7 +36,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             sqlParameters:
                             [
                                 databaseAction.ToSqlParameter(nameof(databaseAction),SqlDbType.TinyInt),
-                                roleID.ToSqlOutputParameter(nameof(roleID),SqlDbType.Int),
+                                roleID.ToSqlParameterOutput(nameof(roleID),SqlDbType.Int),
                                 roleJson.ToSqlParameter(nameof(roleJson),SqlDbType.NVarChar)
                             ]
                          );

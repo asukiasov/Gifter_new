@@ -61,7 +61,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             sqlParameters:
                             [
                                 databaseAction.ToSqlParameter(nameof(databaseAction),SqlDbType.TinyInt),
-                                emailTemplateID.ToSqlOutputParameter(nameof(emailTemplateID),SqlDbType.Int),
+                                emailTemplateID.ToSqlParameterOutput(nameof(emailTemplateID),SqlDbType.Int),
                                 emailTemplateJson.ToSqlParameter(nameof(emailTemplateJson),SqlDbType.NVarChar)
                             ]
                         );
