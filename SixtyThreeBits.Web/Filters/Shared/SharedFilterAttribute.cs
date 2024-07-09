@@ -96,7 +96,10 @@ namespace SixtyThreeBits.Web.Filters.Shared
                 {
                     var repository = _dataAccessFactory.CreateUsersRepository();
                     _model.User = await repository.UsersGetSingleByID(userID);
-                    _model.SessionAssistance.Set(WebConstants.Session.User, _model.User);
+                    if (_model.User != null)
+                    {
+                        _model.SessionAssistance.Set(WebConstants.Session.User, _model.User);
+                    }
                 }
             }
         }
