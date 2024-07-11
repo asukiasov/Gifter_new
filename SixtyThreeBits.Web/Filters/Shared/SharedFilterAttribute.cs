@@ -21,16 +21,16 @@ namespace SixtyThreeBits.Web.Filters.Shared
         #region Properties
         AppSettingsCollection _appSettings;
         UtilityCollection _utilities;
-        RepositoryFactory _dataAccessFactory;
+        RepositoryFactory _repositoryFactory;
         ModelBase _model;
         #endregion
 
         #region Methods
-        public SharedFilterAttribute(AppSettingsCollection appSettings, UtilityCollection utilities, RepositoryFactory dataAccessFactory)
+        public SharedFilterAttribute(AppSettingsCollection appSettings, UtilityCollection utilities, RepositoryFactory repositoryFactory)
         {
             _appSettings = appSettings;
             _utilities = utilities;
-            _dataAccessFactory = dataAccessFactory;
+            _repositoryFactory = repositoryFactory;
         }
 
         public async Task OnActionExecutionAsync(ActionExecutingContext filterContext, ActionExecutionDelegate next)
@@ -59,7 +59,7 @@ namespace SixtyThreeBits.Web.Filters.Shared
 
             _model.AppSettings = _appSettings;
             _model.Utilities = _utilities;
-            _model.RepositoriesFactory = _dataAccessFactory;
+            _model.RepositoriesFactory = _repositoryFactory;
             
             _model.Controller = c;
             _model.ActionName = actionDescriptor.ActionName;
@@ -94,7 +94,7 @@ namespace SixtyThreeBits.Web.Filters.Shared
                 var userID = userIDEncrypted.AesDecryptString().ToInt();
                 if (userID != null)
                 {
-                    var repository = _dataAccessFactory.CreateUsersRepository();
+                    var repository = _repositoryFactory.CreateUsersRepository();
                     _model.User = await repository.UsersGetSingleByID(userID);
                     if (_model.User != null)
                     {
@@ -106,7 +106,7 @@ namespace SixtyThreeBits.Web.Filters.Shared
 
         async Task initSystemProperties()
         {
-            var repository = _dataAccessFactory.CreateSystemPropertiesRepository();
+            var repository = _repositoryFactory.CreateSystemPropertiesRepository();
             _model.SystemProperties = await repository.SystemPropertiesGet();
         }
 
