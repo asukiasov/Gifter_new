@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Infrastructure\Services\GoogleServices.cs" />
     <Compile Remove="Infrastructure\Services\Mega.cs" />
     <Compile Remove="Infrastructure\Services\TinifyService.cs" />
   </ItemGroup>

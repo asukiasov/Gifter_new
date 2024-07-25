@@ -23,7 +23,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Services.Base
         #endregion
 
         #region Methods        
-        public async Task<ApiResultBase> ExecuteAsyncTask(string resource, Method method, List<Parameter> headers = null, List<Parameter> parameters = null, string body = null, List<File> files = null, int? httpStatusCodeSuccess = null)
+        public async Task<ApiResultBase> ExecuteAsyncTask(int? httpStatusCodeSuccess, string resource, Method method, List<Parameter> headers = null, List<Parameter> parameters = null, string body = null, List<File> files = null)
         {
             var client = new RestClient(_baseUrl);
             var request = new RestRequest();
