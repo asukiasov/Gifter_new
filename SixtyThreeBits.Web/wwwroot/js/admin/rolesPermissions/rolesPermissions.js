@@ -63,7 +63,7 @@ $(function () {
             },
             success: function (res) {
                 if (res.IsSuccess) {
-                    successErrorToast63Bits.showSuccess(globals.textSuccess);
+                    successErrorToast63Bits.showSuccessMessage(globals.textSuccess);
                 }
             },
             complete: function () {

@@ -46,12 +46,12 @@
         $('.succes-error').removeClass('opened');
     },
 
-    showError: function (errorMessage) {
+    showErrorMessage: function (errorMessage) {
         errorMessage = errorMessage ? errorMessage : successErrorToast63Bits.textError;
         successErrorToast63Bits.init({ isError: true, message: errorMessage }).showMessage();
     },
 
-    showSuccess: function (successMessage) {
+    showSuccessMessage: function (successMessage) {
         successMessage = successMessage ? successMessage : successErrorToast63Bits.textSuccess;
         successErrorToast63Bits.init({ isSuccess: true, message: successMessage }).showMessage();
     }

@@ -1,9 +1,11 @@
-﻿using System;
+﻿using SixtyThreeBits.Core.Properties;
+using SixtyThreeBits.Libraries.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
-using System.IO;
 using System.Linq;
+using System.Resources;
 
 namespace SixtyThreeBits.Core.Utilities
 {
@@ -134,6 +136,11 @@ namespace SixtyThreeBits.Core.Utilities
             }
         }
 
+        public string FormatPercent(object percent)
+        {
+            return string.Format("{0:0.##}", percent);
+        }
+
         public string FormatPrice(object price, bool withCurrencySign, string currencySign = "₾")
         {
             if (withCurrencySign)
@@ -161,6 +168,20 @@ namespace SixtyThreeBits.Core.Utilities
             return string.Format("{0:#.#}", value);
         }
 
+        public string GetResourceByKey(string resourcesKey)
+        {
+            if (string.IsNullOrWhiteSpace(resourcesKey))
+            {
+                return null;
+            }
+            else
+            {
+                var rm = new ResourceManager(typeof(Resources));
+                var resourceValue = rm.GetString(resourcesKey);
+                return resourceValue;
+            }
+        }
+
         public Language GetSupportedLanguageOrDefault(string languageCultureCode)
         {
             var language = SupportedLanguages.FirstOrDefault(item => item.LanguageCultureCode == languageCultureCode, LanguageDefault);
@@ -177,10 +198,66 @@ namespace SixtyThreeBits.Core.Utilities
             }
         }
 
-        public bool IsImage(string filename)
+        // JWT Encoding
+        /*
+        public string JwtDecode(string jwtToken, string jwtEncodingSecretKey)
         {
-            return string.IsNullOrWhiteSpace(filename) ? false : new List<string> { ".JPG", ".JPEG", ".BMP", ".GIF", ".PNG" }.Contains(Path.GetExtension(filename).ToUpper());
+            try
+            {
+                var json = JwtBuilder.Create()
+                     .WithAlgorithm(new HMACSHA256Algorithm())
+                     .MustVerifySignature()
+                    .WithSecret(jwtEncodingSecretKey)
+                    .Decode(jwtToken);
+                return json;
+            }
+            catch
+            {
+                return null;
+            }
         }
+        public T JwtDecode<T>(string jwtToken, string jwtEncodingSecretKey)
+        {
+            var jwtokenDecoded = JwtDecode(jwtToken, jwtEncodingSecretKey);
+            if (jwtokenDecoded == null)
+            {
+                return default(T);
+            }
+            else
+            {
+                var jObject = JObject.Parse(jwtokenDecoded);
+                var payload = jObject["payload"].ToString();
+                var result = payload.DeserializeJsonTo<T>();
+                return result;
+            }
+        }
+        public string JwtEncode(string payload, string jwtEncodingSecretKey, DateTime? expirationDate = null)
+        {
+            var builder = JwtBuilder.Create()
+                .WithAlgorithm(new HMACSHA256Algorithm())
+                .AddClaim("payload", payload)
+                .WithSecret(jwtEncodingSecretKey);
+
+            if (expirationDate.HasValue)
+            {
+                var dateTimeOffset = new DateTimeOffset(expirationDate.Value.ToUniversalTime());
+                var ExpirationDateUnixTimeSeconds = dateTimeOffset.ToUnixTimeSeconds();
+                builder.AddClaim("exp", ExpirationDateUnixTimeSeconds);
+            }
+
+            var result = builder.Encode();
+            return result;
+        }
+        public string JwtEncode<T>(T payload, string jwtEncodingSecretKey, DateTime? expirationDate = null) where T : class
+        {
+            var result = JwtEncode(
+                payload: payload.ToJson(),
+                jwtEncodingSecretKey: jwtEncodingSecretKey,
+                expirationDate: expirationDate
+            );
+            return result;
+        }
+        */
         #endregion
 
         #region Nested Classes
@@ -198,6 +275,18 @@ namespace SixtyThreeBits.Core.Utilities
                 return $"{LanguageCultureCode} - {LanguageName}";
             }
             #endregion
+        }
+        #endregion
+    }
+
+    public static class UtilityExtensions
+    {
+        #region Methods
+        public static T MapViaJsonSerialization<T>(this object source)
+        {
+            var json = source.ToJson();
+            var destination = json.DeserializeJsonTo<T>();
+            return destination;
         }
         #endregion
     }

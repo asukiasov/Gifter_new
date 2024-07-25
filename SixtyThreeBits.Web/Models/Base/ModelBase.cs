@@ -80,7 +80,8 @@ namespace SixtyThreeBits.Web.Models.Base
                 ViewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary())
                 {
                     Model = viewModel
-                }
+                },
+                StatusCode = Enums.HttpStatusCodes.Status404NotFound
             };
         }
 
@@ -97,7 +98,8 @@ namespace SixtyThreeBits.Web.Models.Base
                 ViewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary())
                 {
                     Model = viewModel
-                }
+                },
+                StatusCode = Enums.HttpStatusCodes.Status404NotFound
             };
         }
 
