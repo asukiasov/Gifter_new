@@ -32,6 +32,8 @@ namespace SixtyThreeBits.Web.Models.Admin
             viewModel.InstagramUrl = dbItem.InstagramUrl;
             viewModel.YoutubeUrl = dbItem.YoutubeUrl;
             viewModel.LinkedInUrl = dbItem.LinkedInUrl;
+            viewModel.ReCaptchaSiteKey = dbItem.ReCaptchaSiteKey;
+            viewModel.ReCaptchaSecretKey = dbItem.ReCaptchaSecretKey;
             viewModel.GoogleMapsIFrame = dbItem.GoogleMapsIFrame;
             viewModel.ScriptsHeader = dbItem.ScriptsHeader;
             viewModel.ScriptsBodyStart = dbItem.ScriptsBodyStart;
@@ -218,6 +220,8 @@ namespace SixtyThreeBits.Web.Models.Admin
                     InstagramUrl = viewModel.InstagramUrl ?? Constants.NullValueFor.String,
                     YoutubeUrl = viewModel.YoutubeUrl ?? Constants.NullValueFor.String,
                     LinkedInUrl = viewModel.LinkedInUrl ?? Constants.NullValueFor.String,
+                    ReCaptchaSiteKey = viewModel.ReCaptchaSiteKey ?? Constants.NullValueFor.String,
+                    ReCaptchaSecretKey = viewModel.ReCaptchaSecretKey ?? Constants.NullValueFor.String,
                     GoogleMapsIFrame = viewModel.GoogleMapsIFrame ?? Constants.NullValueFor.String,
                     ScriptsHeader = viewModel.ScriptsHeader ?? Constants.NullValueFor.String,
                     ScriptsBodyStart = viewModel.ScriptsBodyStart ?? Constants.NullValueFor.String,
@@ -272,6 +276,9 @@ namespace SixtyThreeBits.Web.Models.Admin
             public string YoutubeUrl { get; set; }
             public string LinkedInUrl { get; set; }
             public string GoogleMapsIFrame { get; set; }
+
+            public string ReCaptchaSiteKey { get; set; }
+            public string ReCaptchaSecretKey { get; set; }
 
             public string ScriptsHeader { get; set; }
             public string ScriptsBodyStart { get; set; }

@@ -82,7 +82,18 @@
                 <div class="col-lg-4 form-group">
                 </div>
             </div>
-                <hr />
+            <hr />
+            <div class="row">
+                <div class="col-xl-6 form-group">
+                    <label>Repactcha Site Key</label>
+                    <input type="text" name="@nameof(Model.ReCaptchaSiteKey)" class="form-control" value="@Html.Raw(Model.ReCaptchaSiteKey)" />
+                </div>
+                <div class="col-xl-6 form-group">
+                    <label>Repactcha Secret Key</label>
+                    <input type="text" name="@nameof(Model.ReCaptchaSecretKey)" class="form-control" value="@Html.Raw(Model.ReCaptchaSecretKey)" />
+                </div>
+            </div>
+            <hr />
             <div class="row">
                 <div class="form-group col-lg-12">
                     <label>Scripts Header</label>

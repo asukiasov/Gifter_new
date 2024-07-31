@@ -1,20 +1,23 @@
 ﻿using Newtonsoft.Json;
 using RestSharp;
+using SixtyThreeBits.Core.Infrastructure.Services.Base;
+using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries.Extensions;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SixtyThreeBits.Core.Infrastructure.Services
 {
-    public class GoogleRecaptchaService
+    public class GoogleRecaptchaService : RestApiServiceBase
     {
         #region Properties
-        const string baseUrl = "https://www.google.com/recaptcha/api/siteverify";
+        const string _baseUrl = "https://www.google.com/recaptcha/api/siteverify";
         string _recaptchaSecretKey;
         decimal _recaptchaMinSuccessScore;
         #endregion
 
         #region Constructors
-        public GoogleRecaptchaService(string recaptchaSecretKey, decimal recaptchaMinSuccessScore = 0.3m)
+        public GoogleRecaptchaService(string recaptchaSecretKey, decimal recaptchaMinSuccessScore = 0.3m) : base(_baseUrl)
         {
             _recaptchaSecretKey = recaptchaSecretKey;
             _recaptchaMinSuccessScore = recaptchaMinSuccessScore;
@@ -24,24 +27,27 @@ namespace SixtyThreeBits.Core.Infrastructure.Services
         #region Methods
         public async Task<VerifyRecaptchaResult> VerifyRecaptcha(string recaptchaClientResponseToken, string userIP = null)
         {
-            var result = new VerifyRecaptchaResult();
-
-            var request = new RestRequest();
-            request.Method = Method.Post;
-            request.RequestFormat = DataFormat.Json;
-            request.AddParameter("secret", _recaptchaSecretKey);
-            request.AddParameter("response", recaptchaClientResponseToken);
+            var parameters = new List<Parameter>
+            {
+                new Parameter(Key: "secret", Value: _recaptchaSecretKey),
+                new Parameter(Key: "response", Value: recaptchaClientResponseToken)
+            };
             if (!string.IsNullOrWhiteSpace(userIP))
             {
-                request.AddParameter("remoteip", userIP);
+                parameters.Add(new Parameter(Key: "remoteip", Value: userIP));
             }
 
-            var client = new RestClient(baseUrl);
-            var response = await client.ExecuteAsync(request);
-            var responseData = response.Content.DeserializeJsonTo<verifyRecaptchaResponse>();
+            var executeResult = await ExecuteAsyncTask(
+                httpStatusCodeSuccess: Enums.HttpStatusCodes.Status200OK,
+                resource: null,
+                method: Method.Post,
+                parameters: parameters
+            );
+            var result = new VerifyRecaptchaResult(executeResult);
 
+            var responseData = executeResult.ResponseContent.DeserializeJsonTo<verifyRecaptchaResponse>();
             if (responseData != null)
-            {                
+            {
                 result.Score = responseData.Score;
                 result.IsSuccess = responseData.Score >= _recaptchaMinSuccessScore;
             }            
@@ -63,11 +69,17 @@ namespace SixtyThreeBits.Core.Infrastructure.Services
             #endregion
         }
 
-        public class VerifyRecaptchaResult
+        public class VerifyRecaptchaResult : ApiResultBase
         {
-            #region Properties
-            public bool IsSuccess { get; set; }
+            #region Properties            
             public decimal? Score { get; set; }
+            #endregion
+
+            #region Constructors
+            public VerifyRecaptchaResult(ApiResultBase apiResultBase) : base(apiResultBase)
+            {
+
+            }
             #endregion
         }
         #endregion
