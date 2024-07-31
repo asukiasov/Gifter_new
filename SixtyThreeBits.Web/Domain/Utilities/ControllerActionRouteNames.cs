@@ -194,7 +194,7 @@
                 public const string Tree = "AdminPermissionsControllerTree";
                 public const string TreeAdd = "AdminPermissionsControllerTreeAdd";
                 public const string TreeUpdate = "AdminPermissionsControllerTreeUpdate";
-                public const string TreeDelete = "AdminPermissionsControllerTreeDelete";                
+                public const string TreeDelete = "AdminPermissionsControllerTreeDelete";
                 #endregion
             }
 
@@ -254,11 +254,11 @@
             public static class RolesControllers
             {
                 #region Properties
-                public const string Roles = "AdminRolesControllersRoles";
-                public const string Grid = "AdminRolesControllersGrid";
-                public const string GridAdd = "AdminRolesControllersGridAdd";
-                public const string GridUpdate = "AdminRolesControllersGridUpdate";
-                public const string GridDelete = "AdminRolesControllersGridDelete";
+                public const string Roles = "AdminRolesControllerRoles";
+                public const string Grid = "AdminRolesControllerGrid";
+                public const string GridAdd = "AdminRolesControllerGridAdd";
+                public const string GridUpdate = "AdminRolesControllerGridUpdate";
+                public const string GridDelete = "AdminRolesControllerGridDelete";
                 #endregion
             }
 
@@ -272,15 +272,7 @@
                 public const string Save = "AdminRolePermissionsControllerSave";
                 #endregion
             }
-
-            public static class ServiceLogs
-            {
-                #region Properties
-                public const string Page = "AdminServiceLogs";
-                public const string Grid = "AdminServiceLogsGrid";
-                #endregion
-            }
-
+            
             public static class SystemPropertiesController
             {
                 #region Properties

@@ -28,7 +28,6 @@ namespace SixtyThreeBits.Web.Controllers.Admin
             }
         }
         #endregion
-
     }
 
     [Route("admin/pages")]

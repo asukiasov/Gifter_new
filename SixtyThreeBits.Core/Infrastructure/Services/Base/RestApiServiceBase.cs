@@ -87,7 +87,10 @@ namespace SixtyThreeBits.Core.Infrastructure.Services.Base
             }
             else
             {
-                result.ResponseContent = response.ErrorException.Message;
+                if (string.IsNullOrWhiteSpace(result.ResponseContent))
+                {
+                    result.ResponseContent = response.ErrorException.Message;
+                }
             }
 
             return result;

@@ -1,7 +1,7 @@
 /*!
 * DevExtreme (dx.messages.ru.js)
-* Version: 23.2.4
-* Build date: Mon Jan 29 2024
+* Version: 24.1.4
+* Build date: Mon Jul 15 2024
 *
 * Copyright (c) 2012 - 2024 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -60,6 +60,8 @@
             "dxList-pageLoadingText": "\u0417\u0430\u0433\u0440\u0443\u0437\u043a\u0430...",
             "dxList-nextButtonText": "\u0414\u0430\u043b\u0435\u0435",
             "dxList-selectAll": "\u0412\u044b\u0431\u0440\u0430\u0442\u044c \u0432\u0441\u0435",
+            "dxList-listAriaLabel": "Items",
+            "dxList-listAriaLabel-deletable": "Deletable items",
             "dxListEditDecorator-delete": "\u0423\u0434\u0430\u043b\u0438\u0442\u044c",
             "dxListEditDecorator-more": "\u0415\u0449\u0435",
             "dxScrollView-pullingDownText": "\u041f\u043e\u0442\u044f\u043d\u0438\u0442\u0435, \u0447\u0442\u043e\u0431\u044b \u043e\u0431\u043d\u043e\u0432\u0438\u0442\u044c...",
@@ -198,6 +200,7 @@
             "dxDataGrid-filterPanelCreateFilter": "\u0421\u043e\u0437\u0434\u0430\u0442\u044c \u0444\u0438\u043b\u044c\u0442\u0440",
             "dxDataGrid-filterPanelClearFilter": "\u041e\u0447\u0438\u0441\u0442\u0438\u0442\u044c",
             "dxDataGrid-filterPanelFilterEnabledHint": "\u0410\u043a\u0442\u0438\u0432\u0438\u0440\u043e\u0432\u0430\u0442\u044c \u0444\u0438\u043b\u044c\u0442\u0440",
+            "dxDataGrid-masterDetail": "Cell with details",
             "dxTreeList-ariaTreeList": "\u0418\u0435\u0440\u0430\u0440\u0445\u0438\u0447\u0435\u0441\u043a\u0430\u044f \u0442\u0430\u0431\u043b\u0438\u0446\u0430 \u0434\u0430\u043d\u043d\u044b\u0445 \u0441 {0} \u0441\u0442\u0440\u043e\u043a\u0430\u043c\u0438 \u0438 {1} \u043a\u043e\u043b\u043e\u043d\u043a\u0430\u043c\u0438",
             "dxTreeList-ariaSearchInGrid": "\u0418\u0441\u043a\u0430\u0442\u044c \u0432 \u0438\u0435\u0440\u0430\u0440\u0445\u0438\u0447\u0435\u0441\u043a\u043e\u0439 \u0442\u0430\u0431\u043b\u0438\u0446\u0435 \u0434\u0430\u043d\u043d\u044b\u0445",
             "dxTreeList-ariaToolbar": "\u041f\u0430\u043d\u0435\u043b\u044c \u0438\u043d\u0441\u0442\u0440\u0443\u043c\u0435\u043d\u0442\u043e\u0432 \u0438\u0435\u0440\u0430\u0440\u0445\u0438\u0447\u0435\u0441\u043a\u043e\u0439 \u0442\u0430\u0431\u043b\u0438\u0446\u044b \u0434\u0430\u043d\u043d\u044b\u0445",
@@ -277,6 +280,10 @@
             "dxScheduler-confirmRecurrenceDeleteOccurrence": "\u0422\u043e\u043b\u044c\u043a\u043e \u044d\u0442\u043e \u0441\u043e\u0431\u044b\u0442\u0438\u0435",
             "dxScheduler-noTimezoneTitle": "\u0427\u0430\u0441\u043e\u0432\u043e\u0439 \u043f\u043e\u044f\u0441 \u043d\u0435 \u0432\u044b\u0431\u0440\u0430\u043d",
             "dxScheduler-moreAppointments": "\u0438 \u0435\u0449\u0435 {0}",
+            "dxCalendar-currentDay": "Today",
+            "dxCalendar-currentMonth": "Current month",
+            "dxCalendar-currentYear": "Current year",
+            "dxCalendar-currentYearRange": "Current year range",
             "dxCalendar-todayButtonText": "\u0421\u0435\u0433\u043e\u0434\u043d\u044f",
             "dxCalendar-ariaWidgetName": "\u041a\u0430\u043b\u0435\u043d\u0434\u0430\u0440\u044c",
             "dxCalendar-previousMonthButtonLabel": "Previous month",
@@ -291,6 +298,8 @@
             "dxCalendar-captionYearLabel": "Year selection",
             "dxCalendar-captionDecadeLabel": "Decade selection",
             "dxCalendar-captionCenturyLabel": "Century selection",
+            "dxCalendar-selectedDate": "The selected date is {0}",
+            "dxCalendar-selectedDateRange": "The selected date range is from {0} to {1}",
             "dxColorView-ariaRed": "\u041a\u0440\u0430\u0441\u043d\u044b\u0439",
             "dxColorView-ariaGreen": "\u0417\u0435\u043b\u0435\u043d\u044b\u0439",
             "dxColorView-ariaBlue": "\u0421\u0438\u043d\u0438\u0439",
@@ -299,6 +308,7 @@
             "dxTagBox-selected": "{0} \u0432\u044b\u0431\u0440\u0430\u043d\u043e",
             "dxTagBox-allSelected": "\u0412\u044b\u0431\u0440\u0430\u043d\u043e \u0432\u0441\u0435 ({0})",
             "dxTagBox-moreSelected": "\u0438 \u0435\u0449\u0435 {0}",
+            "dxTagBox-tagRoleDescription": "Tag. Press the delete button to remove this tag",
             "vizExport-printingButtonText": "\u041f\u0435\u0447\u0430\u0442\u044c",
             "vizExport-titleMenuText": "\u042d\u043a\u0441\u043f\u043e\u0440\u0442/\u041f\u0435\u0447\u0430\u0442\u044c",
             "vizExport-exportButtonText": "{0} \u0444\u0430\u0439\u043b",
@@ -683,7 +693,8 @@
             "dxMultiView-elementAriaRoleDescription": "MultiView",
             "dxMultiView-elementAriaLabel": "Use the arrow keys or swipe to navigate between views",
             "dxMultiView-itemAriaRoleDescription": "View",
-            "dxMultiView-itemAriaLabel": "{0} of {1}"
+            "dxMultiView-itemAriaLabel": "{0} of {1}",
+            "dxSplitter-resizeHandleAriaLabel": "Split bar"
         }
     })
 }));

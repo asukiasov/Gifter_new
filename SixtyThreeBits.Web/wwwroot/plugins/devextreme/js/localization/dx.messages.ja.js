@@ -1,7 +1,7 @@
 /*!
 * DevExtreme (dx.messages.ja.js)
-* Version: 23.2.4
-* Build date: Mon Jan 29 2024
+* Version: 24.1.4
+* Build date: Mon Jul 15 2024
 *
 * Copyright (c) 2012 - 2024 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -60,6 +60,8 @@
             "dxList-pageLoadingText": "\u8aad\u307f\u8fbc\u307f\u4e2d\u2026",
             "dxList-nextButtonText": "\u3082\u3063\u3068\u8868\u793a\u3059\u308b",
             "dxList-selectAll": "\u3059\u3079\u3066\u3092\u9078\u629e",
+            "dxList-listAriaLabel": "Items",
+            "dxList-listAriaLabel-deletable": "Deletable items",
             "dxListEditDecorator-delete": "\u524a\u9664",
             "dxListEditDecorator-more": "\u3082\u3063\u3068",
             "dxScrollView-pullingDownText": "\u5f15\u3063\u5f35\u3063\u3066\u66f4\u65b0\u2026",
@@ -198,6 +200,7 @@
             "dxDataGrid-filterPanelCreateFilter": "\u30d5\u30a3\u30eb\u30bf\u30fc\u306e\u4f5c\u6210",
             "dxDataGrid-filterPanelClearFilter": "\u30af\u30ea\u30a2",
             "dxDataGrid-filterPanelFilterEnabledHint": "\u30d5\u30a3\u30eb\u30bf\u30fc\u306e\u6709\u52b9\u5316",
+            "dxDataGrid-masterDetail": "Cell with details",
             "dxTreeList-ariaTreeList": "{0} \u884c\u3068 {1} \u5217\u306e\u30c4\u30ea\u30fc \u30ea\u30b9\u30c8",
             "dxTreeList-ariaSearchInGrid": "\u30c4\u30ea\u30fc \u30ea\u30b9\u30c8\u5185\u3092\u691c\u7d22\u3059\u308b",
             "dxTreeList-ariaToolbar": "\u30c4\u30ea\u30fc \u30ea\u30b9\u30c8\u306e\u30c4\u30fc\u30eb \u30d0\u30fc",
@@ -277,6 +280,10 @@
             "dxScheduler-confirmRecurrenceDeleteOccurrence": "\u4e88\u5b9a\u3092\u524a\u9664",
             "dxScheduler-noTimezoneTitle": "\u6642\u9593\u5e2f\u306a\u3057",
             "dxScheduler-moreAppointments": "\u305d\u306e\u4ed6 {0} \u3064\u9078\u629e",
+            "dxCalendar-currentDay": "Today",
+            "dxCalendar-currentMonth": "Current month",
+            "dxCalendar-currentYear": "Current year",
+            "dxCalendar-currentYearRange": "Current year range",
             "dxCalendar-todayButtonText": "\u4eca\u65e5",
             "dxCalendar-ariaWidgetName": "\u30ab\u30ec\u30f3\u30c0\u30fc",
             "dxCalendar-previousMonthButtonLabel": "Previous month",
@@ -291,6 +298,8 @@
             "dxCalendar-captionYearLabel": "Year selection",
             "dxCalendar-captionDecadeLabel": "Decade selection",
             "dxCalendar-captionCenturyLabel": "Century selection",
+            "dxCalendar-selectedDate": "The selected date is {0}",
+            "dxCalendar-selectedDateRange": "The selected date range is from {0} to {1}",
             "dxColorView-ariaRed": "\u8d64",
             "dxColorView-ariaGreen": "\u7dd1",
             "dxColorView-ariaBlue": "\u9752",
@@ -299,6 +308,7 @@
             "dxTagBox-selected": "{0} \u3064\u9078\u629e\u6e08\u307f",
             "dxTagBox-allSelected": "\u3059\u3079\u3066\u9078\u629e\u6e08\u307f ({0})",
             "dxTagBox-moreSelected": "\u305d\u306e\u4ed6 {0} \u3064\u9078\u629e",
+            "dxTagBox-tagRoleDescription": "Tag. Press the delete button to remove this tag",
             "vizExport-printingButtonText": "\u5370\u5237",
             "vizExport-titleMenuText": "\u30a8\u30af\u30b9\u30dd\u30fc\u30c8 / \u5370\u5237",
             "vizExport-exportButtonText": "{0} \u30d5\u30a1\u30a4\u30eb",
@@ -683,7 +693,8 @@
             "dxMultiView-elementAriaRoleDescription": "MultiView",
             "dxMultiView-elementAriaLabel": "Use the arrow keys or swipe to navigate between views",
             "dxMultiView-itemAriaRoleDescription": "View",
-            "dxMultiView-itemAriaLabel": "{0} of {1}"
+            "dxMultiView-itemAriaLabel": "{0} of {1}",
+            "dxSplitter-resizeHandleAriaLabel": "Split bar"
         }
     })
 }));

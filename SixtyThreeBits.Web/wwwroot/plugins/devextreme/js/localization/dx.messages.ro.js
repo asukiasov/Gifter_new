@@ -1,7 +1,7 @@
 /*!
 * DevExtreme (dx.messages.ro.js)
-* Version: 23.2.4
-* Build date: Mon Jan 29 2024
+* Version: 24.1.4
+* Build date: Mon Jul 15 2024
 *
 * Copyright (c) 2012 - 2024 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -60,6 +60,8 @@
             "dxList-pageLoadingText": "\xcenc\u0103rcare...",
             "dxList-nextButtonText": "Mai mult",
             "dxList-selectAll": "Selecteaz\u0103 Tot",
+            "dxList-listAriaLabel": "Items",
+            "dxList-listAriaLabel-deletable": "Deletable items",
             "dxListEditDecorator-delete": "\u0218terge",
             "dxListEditDecorator-more": "Mai mult",
             "dxScrollView-pullingDownText": "Trage\u021bi \xeen jos pentru a actualiza...",
@@ -198,6 +200,7 @@
             "dxDataGrid-filterPanelCreateFilter": "Creaz\u0103 Fi\u0219ier",
             "dxDataGrid-filterPanelClearFilter": "Cur\u0103\u021b\u0103",
             "dxDataGrid-filterPanelFilterEnabledHint": "Activa\u021bi filtrul",
+            "dxDataGrid-masterDetail": "Cell with details",
             "dxTreeList-ariaTreeList": "Tree list with {0} rows and {1} columns",
             "dxTreeList-ariaSearchInGrid": "Search in the tree list",
             "dxTreeList-ariaToolbar": "Tree list toolbar",
@@ -277,6 +280,10 @@
             "dxScheduler-confirmRecurrenceDeleteOccurrence": "\u0218tergere rezervare",
             "dxScheduler-noTimezoneTitle": "F\u0103r\u0103 fus orar",
             "dxScheduler-moreAppointments": "{0} mai mult",
+            "dxCalendar-currentDay": "Today",
+            "dxCalendar-currentMonth": "Current month",
+            "dxCalendar-currentYear": "Current year",
+            "dxCalendar-currentYearRange": "Current year range",
             "dxCalendar-todayButtonText": "Ast\u0103zi",
             "dxCalendar-ariaWidgetName": "Calendar",
             "dxCalendar-previousMonthButtonLabel": "Previous month",
@@ -291,6 +298,8 @@
             "dxCalendar-captionYearLabel": "Year selection",
             "dxCalendar-captionDecadeLabel": "Decade selection",
             "dxCalendar-captionCenturyLabel": "Century selection",
+            "dxCalendar-selectedDate": "The selected date is {0}",
+            "dxCalendar-selectedDateRange": "The selected date range is from {0} to {1}",
             "dxColorView-ariaRed": "Ro\u0219u",
             "dxColorView-ariaGreen": "Verde",
             "dxColorView-ariaBlue": "Albastru",
@@ -299,6 +308,7 @@
             "dxTagBox-selected": "{0} selectat",
             "dxTagBox-allSelected": "Toate selctate ({0})",
             "dxTagBox-moreSelected": "{0} mai mult",
+            "dxTagBox-tagRoleDescription": "Tag. Press the delete button to remove this tag",
             "vizExport-printingButtonText": "Printare",
             "vizExport-titleMenuText": "Exportare/Printare",
             "vizExport-exportButtonText": "{0} fi\u0219ier",
@@ -683,7 +693,8 @@
             "dxMultiView-elementAriaRoleDescription": "MultiView",
             "dxMultiView-elementAriaLabel": "Use the arrow keys or swipe to navigate between views",
             "dxMultiView-itemAriaRoleDescription": "View",
-            "dxMultiView-itemAriaLabel": "{0} of {1}"
+            "dxMultiView-itemAriaLabel": "{0} of {1}",
+            "dxSplitter-resizeHandleAriaLabel": "Split bar"
         }
     })
 }));

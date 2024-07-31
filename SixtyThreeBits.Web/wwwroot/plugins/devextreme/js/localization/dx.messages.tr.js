@@ -1,7 +1,7 @@
 /*!
 * DevExtreme (dx.messages.tr.js)
-* Version: 23.2.4
-* Build date: Mon Jan 29 2024
+* Version: 24.1.4
+* Build date: Mon Jul 15 2024
 *
 * Copyright (c) 2012 - 2024 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -60,6 +60,8 @@
             "dxList-pageLoadingText": "Y\xfckleniyor...",
             "dxList-nextButtonText": "Daha",
             "dxList-selectAll": "T\xfcm\xfcn\xfc Se\xe7",
+            "dxList-listAriaLabel": "Items",
+            "dxList-listAriaLabel-deletable": "Deletable items",
             "dxListEditDecorator-delete": "Sil",
             "dxListEditDecorator-more": "Daha",
             "dxScrollView-pullingDownText": "Yenilemek i\xe7in a\u015fa\u011f\u0131ya \xe7ekin...",
@@ -198,6 +200,7 @@
             "dxDataGrid-filterPanelCreateFilter": "Filtre Olu\u015ftur",
             "dxDataGrid-filterPanelClearFilter": "Temizle",
             "dxDataGrid-filterPanelFilterEnabledHint": "Filtreyi etkinle\u015ftir",
+            "dxDataGrid-masterDetail": "Cell with details",
             "dxTreeList-ariaTreeList": "Tree list with {0} rows and {1} columns",
             "dxTreeList-ariaSearchInGrid": "Search in the tree list",
             "dxTreeList-ariaToolbar": "Tree list toolbar",
@@ -277,6 +280,10 @@
             "dxScheduler-confirmRecurrenceDeleteOccurrence": "Randevuyu sil",
             "dxScheduler-noTimezoneTitle": "Saat dilimi yok",
             "dxScheduler-moreAppointments": "{0} daha",
+            "dxCalendar-currentDay": "Today",
+            "dxCalendar-currentMonth": "Current month",
+            "dxCalendar-currentYear": "Current year",
+            "dxCalendar-currentYearRange": "Current year range",
             "dxCalendar-todayButtonText": "Bug\xfcn",
             "dxCalendar-ariaWidgetName": "Takvim",
             "dxCalendar-previousMonthButtonLabel": "Previous month",
@@ -291,6 +298,8 @@
             "dxCalendar-captionYearLabel": "Year selection",
             "dxCalendar-captionDecadeLabel": "Decade selection",
             "dxCalendar-captionCenturyLabel": "Century selection",
+            "dxCalendar-selectedDate": "The selected date is {0}",
+            "dxCalendar-selectedDateRange": "The selected date range is from {0} to {1}",
             "dxColorView-ariaRed": "K\u0131rm\u0131z\u0131",
             "dxColorView-ariaGreen": "Ye\u015fil",
             "dxColorView-ariaBlue": "Mavi",
@@ -299,6 +308,7 @@
             "dxTagBox-selected": "{0} se\xe7ili",
             "dxTagBox-allSelected": "T\xfcm\xfc se\xe7ildi ({0})",
             "dxTagBox-moreSelected": "{0} daha",
+            "dxTagBox-tagRoleDescription": "Tag. Press the delete button to remove this tag",
             "vizExport-printingButtonText": "Yazd\u0131r",
             "vizExport-titleMenuText": "D\u0131\u015fa Aktar/Yazd\u0131r",
             "vizExport-exportButtonText": "{0} dosya",
@@ -683,7 +693,8 @@
             "dxMultiView-elementAriaRoleDescription": "MultiView",
             "dxMultiView-elementAriaLabel": "Use the arrow keys or swipe to navigate between views",
             "dxMultiView-itemAriaRoleDescription": "View",
-            "dxMultiView-itemAriaLabel": "{0} of {1}"
+            "dxMultiView-itemAriaLabel": "{0} of {1}",
+            "dxSplitter-resizeHandleAriaLabel": "Split bar"
         }
     })
 }));

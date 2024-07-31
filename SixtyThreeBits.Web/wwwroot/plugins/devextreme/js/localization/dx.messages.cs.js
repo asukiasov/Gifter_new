@@ -1,7 +1,7 @@
 /*!
 * DevExtreme (dx.messages.cs.js)
-* Version: 23.2.4
-* Build date: Mon Jan 29 2024
+* Version: 24.1.4
+* Build date: Mon Jul 15 2024
 *
 * Copyright (c) 2012 - 2024 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -60,6 +60,8 @@
             "dxList-pageLoadingText": "Nahr\xe1v\xe1m...",
             "dxList-nextButtonText": "V\xedce",
             "dxList-selectAll": "Vybrat v\u0161e",
+            "dxList-listAriaLabel": "Items",
+            "dxList-listAriaLabel-deletable": "Deletable items",
             "dxListEditDecorator-delete": "Smazat",
             "dxListEditDecorator-more": "V\xedce",
             "dxScrollView-pullingDownText": "St\xe1hn\u011bte dol\u016f pro obnoven\xed...",
@@ -198,6 +200,7 @@
             "dxDataGrid-filterPanelCreateFilter": "Vytvo\u0159it Filtr",
             "dxDataGrid-filterPanelClearFilter": "Smazat",
             "dxDataGrid-filterPanelFilterEnabledHint": "Povolit Filtr",
+            "dxDataGrid-masterDetail": "Cell with details",
             "dxTreeList-ariaTreeList": "Tree list with {0} rows and {1} columns",
             "dxTreeList-ariaSearchInGrid": "Search in the tree list",
             "dxTreeList-ariaToolbar": "Tree list toolbar",
@@ -277,6 +280,10 @@
             "dxScheduler-confirmRecurrenceDeleteOccurrence": "Smazat sch\u016fzku",
             "dxScheduler-noTimezoneTitle": "Bez \u010dasov\xe9 z\xf3ny",
             "dxScheduler-moreAppointments": "{0} nav\xedc",
+            "dxCalendar-currentDay": "Today",
+            "dxCalendar-currentMonth": "Current month",
+            "dxCalendar-currentYear": "Current year",
+            "dxCalendar-currentYearRange": "Current year range",
             "dxCalendar-todayButtonText": "Dnes",
             "dxCalendar-ariaWidgetName": "Kalend\xe1\u0159",
             "dxCalendar-previousMonthButtonLabel": "Previous month",
@@ -291,6 +298,8 @@
             "dxCalendar-captionYearLabel": "Year selection",
             "dxCalendar-captionDecadeLabel": "Decade selection",
             "dxCalendar-captionCenturyLabel": "Century selection",
+            "dxCalendar-selectedDate": "The selected date is {0}",
+            "dxCalendar-selectedDateRange": "The selected date range is from {0} to {1}",
             "dxColorView-ariaRed": "\u010cerven\xe1",
             "dxColorView-ariaGreen": "Zelen\xe1",
             "dxColorView-ariaBlue": "Modr\xe1",
@@ -299,6 +308,7 @@
             "dxTagBox-selected": "{0} vybr\xe1no",
             "dxTagBox-allSelected": "V\u0161e vybr\xe1no ({0})",
             "dxTagBox-moreSelected": "{0} nav\xedc",
+            "dxTagBox-tagRoleDescription": "Tag. Press the delete button to remove this tag",
             "vizExport-printingButtonText": "Tisk",
             "vizExport-titleMenuText": "Export/import",
             "vizExport-exportButtonText": "{0} soubor\u016f",
@@ -683,7 +693,8 @@
             "dxMultiView-elementAriaRoleDescription": "MultiView",
             "dxMultiView-elementAriaLabel": "Use the arrow keys or swipe to navigate between views",
             "dxMultiView-itemAriaRoleDescription": "View",
-            "dxMultiView-itemAriaLabel": "{0} of {1}"
+            "dxMultiView-itemAriaLabel": "{0} of {1}",
+            "dxSplitter-resizeHandleAriaLabel": "Split bar"
         }
     })
 }));

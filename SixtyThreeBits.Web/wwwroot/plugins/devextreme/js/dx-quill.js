@@ -1,5 +1,5 @@
 /*!
- * DevExtreme-Quill Editor v.1.6.4
+ * DevExtreme-Quill Editor v.1.7.1
  * https://js.devexpress.com/
  * Copyright (c) 2020, Developer Express Inc.
  * Copyright (c) 2017, Slab
@@ -407,7 +407,11 @@ var Block = /*#__PURE__*/function (_BlockBlot) {
     key: "insertBefore",
     value: function insertBefore(blot, ref) {
       var head = this.children.head;
-      _get(_getPrototypeOf(Block.prototype), "insertBefore", this).call(this, blot, ref);
+
+      // NOTE: This condition is necessary for correct composition events handling on Android devices.
+      if (!ref || this.domNode.contains(ref.domNode)) {
+        _get(_getPrototypeOf(Block.prototype), "insertBefore", this).call(this, blot, ref);
+      }
       if (head instanceof blots_break/* default */.Z) {
         head.remove();
       }
@@ -1358,6 +1362,8 @@ function escapeText(text) {
 /* harmony import */ var _modules_history__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(2613);
 /* harmony import */ var _modules_keyboard__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(3071);
 /* harmony import */ var _modules_uploader__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(3859);
+/* harmony import */ var _modules_input__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(990);
+
 
 
 
@@ -1384,9 +1390,76 @@ _core_quill__WEBPACK_IMPORTED_MODULE_0__/* ["default"].register */ .ZP.register(
   'modules/clipboard': _modules_clipboard__WEBPACK_IMPORTED_MODULE_9__/* ["default"] */ .ZP,
   'modules/history': _modules_history__WEBPACK_IMPORTED_MODULE_10__/* ["default"] */ .Z,
   'modules/keyboard': _modules_keyboard__WEBPACK_IMPORTED_MODULE_11__/* ["default"] */ .ZP,
-  'modules/uploader': _modules_uploader__WEBPACK_IMPORTED_MODULE_12__/* ["default"] */ .Z
+  'modules/uploader': _modules_uploader__WEBPACK_IMPORTED_MODULE_12__/* ["default"] */ .Z,
+  'modules/input': _modules_input__WEBPACK_IMPORTED_MODULE_13__/* ["default"] */ .Z
 });
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_core_quill__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .ZP);
+
+/***/ }),
+
+/***/ 6229:
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Z": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _blots_embed__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7452);
+/* harmony import */ var _emitter__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2069);
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
+
+
+var Composition = /*#__PURE__*/function () {
+  function Composition(scroll, emitter) {
+    var _this = this;
+    _classCallCheck(this, Composition);
+    this.scroll = scroll;
+    this.emitter = emitter;
+    this.isComposing = false;
+    scroll.domNode.addEventListener('compositionstart', function (event) {
+      if (!_this.isComposing) {
+        _this.handleCompositionStart(event);
+      }
+    });
+    scroll.domNode.addEventListener('compositionend', function (event) {
+      if (_this.isComposing) {
+        _this.handleCompositionEnd(event);
+      }
+    });
+  }
+  _createClass(Composition, [{
+    key: "isCompositionInProgress",
+    value: function isCompositionInProgress() {
+      return this.isComposing;
+    }
+  }, {
+    key: "handleCompositionStart",
+    value: function handleCompositionStart(event) {
+      var blot = event.target instanceof Node ? this.scroll.find(event.target, true) : null;
+      if (blot && !(blot instanceof _blots_embed__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Z)) {
+        this.emitter.emit(_emitter__WEBPACK_IMPORTED_MODULE_1__/* ["default"].events.COMPOSITION_BEFORE_START */ .Z.events.COMPOSITION_BEFORE_START, event);
+        this.scroll.batchStart();
+        this.emitter.emit(_emitter__WEBPACK_IMPORTED_MODULE_1__/* ["default"].events.COMPOSITION_START */ .Z.events.COMPOSITION_START, event);
+        this.isComposing = true;
+      }
+    }
+  }, {
+    key: "handleCompositionEnd",
+    value: function handleCompositionEnd(event) {
+      this.emitter.emit(_emitter__WEBPACK_IMPORTED_MODULE_1__/* ["default"].events.COMPOSITION_BEFORE_END */ .Z.events.COMPOSITION_BEFORE_END, event);
+      this.scroll.batchEnd();
+      this.emitter.emit(_emitter__WEBPACK_IMPORTED_MODULE_1__/* ["default"].events.COMPOSITION_END */ .Z.events.COMPOSITION_END, event);
+      this.isComposing = false;
+    }
+  }]);
+  return Composition;
+}();
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Composition);
 
 /***/ }),
 
@@ -1943,10 +2016,15 @@ var EVENTS = ['selectionchange', 'mousedown', 'mouseup', 'click'];
 if ((0,_utils_has_window__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .Z)()) {
   EVENTS.forEach(function (eventName) {
     document.addEventListener(eventName, function () {
+      var _event$target;
       for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
         args[_key] = arguments[_key];
       }
-      Array.from(document.querySelectorAll('.ql-container')).forEach(function (node) {
+      var event = args[0];
+      var shadowRoot = event === null || event === void 0 || (_event$target = event.target) === null || _event$target === void 0 ? void 0 : _event$target.shadowRoot;
+      var root = shadowRoot !== null && shadowRoot !== void 0 ? shadowRoot : document;
+      var quillContainers = root.querySelectorAll('.ql-container');
+      Array.from(quillContainers).forEach(function (node) {
         var quill = _instances__WEBPACK_IMPORTED_MODULE_1__/* ["default"].get */ .Z.get(node);
         if (quill && quill.emitter) {
           var _quill$emitter;
@@ -2014,7 +2092,11 @@ Emitter.events = {
   SCROLL_UPDATE: 'scroll-update',
   SELECTION_CHANGE: 'selection-change',
   TEXT_CHANGE: 'text-change',
-  CONTENT_SETTED: 'content-setted'
+  CONTENT_SETTED: 'content-setted',
+  COMPOSITION_BEFORE_START: 'composition-before-start',
+  COMPOSITION_START: 'composition-start',
+  COMPOSITION_BEFORE_END: 'composition-before-end',
+  COMPOSITION_END: 'composition-end'
 };
 Emitter.sources = {
   API: 'api',
@@ -2115,7 +2197,8 @@ Module.DEFAULTS = {};
 /* harmony import */ var _instances__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(2598);
 /* harmony import */ var _logger__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(3122);
 /* harmony import */ var _theme__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(1690);
-/* harmony import */ var _utils_is_defined__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(5874);
+/* harmony import */ var _utils_is_defined__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(5874);
+/* harmony import */ var _composition__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(6229);
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
@@ -2141,7 +2224,9 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
 
 
 
+
 var debug = (0,_logger__WEBPACK_IMPORTED_MODULE_9__/* ["default"] */ .Z)('quill');
+var STYLE_ATTRIBUTE_KEY = 'style-data-key';
 var globalRegistry = new parchment__WEBPACK_IMPORTED_MODULE_3__.Registry();
 parchment__WEBPACK_IMPORTED_MODULE_3__.ParentBlot.uiClass = 'ql-ui';
 var Quill = /*#__PURE__*/function () {
@@ -2172,12 +2257,14 @@ var Quill = /*#__PURE__*/function () {
       toggleBlankClass: this.toggleBlankClass.bind(this)
     });
     this.editor = new _editor__WEBPACK_IMPORTED_MODULE_4__/* ["default"] */ .Z(this.scroll);
-    this.selection = new _selection__WEBPACK_IMPORTED_MODULE_7__/* ["default"] */ .Z(this.scroll, this.emitter);
+    this.composition = new _composition__WEBPACK_IMPORTED_MODULE_11__/* ["default"] */ .Z(this.scroll, this.emitter);
+    this.selection = new _selection__WEBPACK_IMPORTED_MODULE_7__/* ["default"] */ .Z(this.scroll, this.emitter, this.composition);
     this.theme = new this.options.theme(this, this.options); // eslint-disable-line new-cap
     this.keyboard = this.theme.addModule('keyboard');
     this.clipboard = this.theme.addModule('clipboard');
     this.history = this.theme.addModule('history');
     this.uploader = this.theme.addModule('uploader');
+    this.theme.addModule('input');
     this.theme.init();
     this.emitter.on(_emitter__WEBPACK_IMPORTED_MODULE_5__/* ["default"].events.EDITOR_CHANGE */ .Z.events.EDITOR_CHANGE, function (type) {
       if (type === _emitter__WEBPACK_IMPORTED_MODULE_5__/* ["default"].events.TEXT_CHANGE */ .Z.events.TEXT_CHANGE) {
@@ -2218,8 +2305,8 @@ var Quill = /*#__PURE__*/function () {
   }, {
     key: "toggleBlankClass",
     value: function toggleBlankClass() {
-      var isComposing = this.selection.composing;
-      this.root.classList.toggle('ql-blank', this.editor.isBlank(isComposing));
+      var isCompositionInProgress = this.composition.isCompositionInProgress();
+      this.root.classList.toggle('ql-blank', this.editor.isBlank(isCompositionInProgress));
     }
   }, {
     key: "addContainer",
@@ -2284,6 +2371,7 @@ var Quill = /*#__PURE__*/function () {
     value: function format(name, value) {
       var _this3 = this;
       var source = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : _emitter__WEBPACK_IMPORTED_MODULE_5__/* ["default"].sources.API */ .Z.sources.API;
+      this.applyCompositionChanges();
       return modify.call(this, function () {
         var range = _this3.getSelection(true);
         var change = new (quill_delta__WEBPACK_IMPORTED_MODULE_0___default())();
@@ -2368,7 +2456,7 @@ var Quill = /*#__PURE__*/function () {
     value: function getFormat() {
       var index = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.getSelection(true);
       var length = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-      if (!(0,_utils_is_defined__WEBPACK_IMPORTED_MODULE_11__/* ["default"] */ .Z)(index)) {
+      if (!(0,_utils_is_defined__WEBPACK_IMPORTED_MODULE_12__/* ["default"] */ .Z)(index)) {
         return {};
       }
       if (typeof index === 'number') {
@@ -2573,6 +2661,11 @@ var Quill = /*#__PURE__*/function () {
         return _this10.editor.applyDelta(delta, source);
       }, source, true);
     }
+  }, {
+    key: "applyCompositionChanges",
+    value: function applyCompositionChanges() {
+      this.composition.handleCompositionEnd({});
+    }
   }], [{
     key: "debug",
     value: function debug(limit) {
@@ -2637,7 +2730,23 @@ Quill.DEFAULTS = {
 Quill.events = _emitter__WEBPACK_IMPORTED_MODULE_5__/* ["default"].events */ .Z.events;
 Quill.sources = _emitter__WEBPACK_IMPORTED_MODULE_5__/* ["default"].sources */ .Z.sources;
 // eslint-disable-next-line no-undef
-Quill.version =  false ? 0 : "1.6.4";
+Quill.version =  false ? 0 : "1.7.1";
+Quill.MS_LIST_DATA_KEY = 'mso-list-data';
+Quill.replaceStyleAttribute = function (html) {
+  var tagAttrsRegex = /(?:(<[a-z0-9]+\s*))([\s\S]*?)(>|\/>)/gi;
+  return html.replace(tagAttrsRegex, function (allTagAttrs, tagStart, tagAttrs, tagEnd) {
+    var contentWithoutStyle = tagAttrs.replace(/style\s*=/gi, "".concat(STYLE_ATTRIBUTE_KEY, "="));
+    return tagStart + contentWithoutStyle + tagEnd;
+  });
+};
+Quill.restoreStyleAttribute = function (element) {
+  element.querySelectorAll("[".concat(STYLE_ATTRIBUTE_KEY, "]")).forEach(function (currentElement) {
+    var attrValue = currentElement.getAttribute(STYLE_ATTRIBUTE_KEY);
+    currentElement.style = attrValue;
+    currentElement.setAttribute(Quill.MS_LIST_DATA_KEY, attrValue);
+    currentElement.removeAttribute(STYLE_ATTRIBUTE_KEY);
+  });
+};
 Quill.imports = {
   delta: (quill_delta__WEBPACK_IMPORTED_MODULE_0___default()),
   parchment: parchment__WEBPACK_IMPORTED_MODULE_3__,
@@ -2837,6 +2946,12 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 
 var debug = (0,_logger__WEBPACK_IMPORTED_MODULE_4__/* ["default"] */ .Z)('quill:selection');
+function toNotNegative(value) {
+  if (value < 0) {
+    return 0;
+  }
+  return value;
+}
 var Range = /*#__PURE__*/_createClass(function Range(index) {
   var length = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
   _classCallCheck(this, Range);
@@ -2844,12 +2959,12 @@ var Range = /*#__PURE__*/_createClass(function Range(index) {
   this.length = length;
 });
 var Selection = /*#__PURE__*/function () {
-  function Selection(scroll, emitter) {
+  function Selection(scroll, emitter, composition) {
     var _this = this;
     _classCallCheck(this, Selection);
     this.emitter = emitter;
     this.scroll = scroll;
-    this.composing = false;
+    this.composition = composition;
     this.mouseDown = false;
     this.root = this.scroll.domNode;
     this.cursor = this.scroll.create('cursor', this);
@@ -2857,10 +2972,9 @@ var Selection = /*#__PURE__*/function () {
     this.savedRange = new Range(0, 0);
     this.lastRange = this.savedRange;
     this.lastNative = null;
-    this.handleComposition();
     this.handleDragging();
     this.emitter.listenDOM('selectionchange', document, function () {
-      if (!_this.mouseDown && !_this.composing) {
+      if (!_this.mouseDown && !_this.composition.isCompositionInProgress()) {
         setTimeout(_this.update.bind(_this, _emitter__WEBPACK_IMPORTED_MODULE_3__/* ["default"].sources.USER */ .Z.sources.USER), 1);
       }
     });
@@ -2894,35 +3008,15 @@ var Selection = /*#__PURE__*/function () {
     this.update(_emitter__WEBPACK_IMPORTED_MODULE_3__/* ["default"].sources.SILENT */ .Z.sources.SILENT);
   }
   _createClass(Selection, [{
-    key: "handleComposition",
-    value: function handleComposition() {
-      var _this2 = this;
-      this.root.addEventListener('compositionstart', function () {
-        _this2.composing = true;
-        _this2.scroll.batchStart();
-      });
-      this.root.addEventListener('compositionend', function () {
-        _this2.scroll.batchEnd();
-        _this2.composing = false;
-        if (_this2.cursor.parent) {
-          var range = _this2.cursor.restore();
-          if (!range) return;
-          setTimeout(function () {
-            _this2.setNativeRange(range.startNode, range.startOffset, range.endNode, range.endOffset);
-          }, 1);
-        }
-      });
-    }
-  }, {
     key: "handleDragging",
     value: function handleDragging() {
-      var _this3 = this;
+      var _this2 = this;
       this.emitter.listenDOM('mousedown', document.body, function () {
-        _this3.mouseDown = true;
+        _this2.mouseDown = true;
       });
       this.emitter.listenDOM('mouseup', document.body, function () {
-        _this3.mouseDown = false;
-        _this3.update(_emitter__WEBPACK_IMPORTED_MODULE_3__/* ["default"].sources.USER */ .Z.sources.USER);
+        _this2.mouseDown = false;
+        _this2.update(_emitter__WEBPACK_IMPORTED_MODULE_3__/* ["default"].sources.USER */ .Z.sources.USER);
       });
     }
   }, {
@@ -2995,7 +3089,9 @@ var Selection = /*#__PURE__*/function () {
           range.setStart(node, offset);
           range.setEnd(node, offset + 1);
         } else {
-          range.setStart(node, offset - 1);
+          // needed for composition events handling on Android devices
+          var decrementedOffset = toNotNegative(offset - 1);
+          range.setStart(node, decrementedOffset);
           range.setEnd(node, offset);
           side = 'right';
         }
@@ -3043,7 +3139,7 @@ var Selection = /*#__PURE__*/function () {
   }, {
     key: "normalizedToRange",
     value: function normalizedToRange(range) {
-      var _this4 = this;
+      var _this3 = this;
       var positions = [[range.start.node, range.start.offset]];
       if (!range.native.collapsed) {
         positions.push([range.end.node, range.end.offset]);
@@ -3052,8 +3148,8 @@ var Selection = /*#__PURE__*/function () {
         var _position = _slicedToArray(position, 2),
           node = _position[0],
           offset = _position[1];
-        var blot = _this4.scroll.find(node, true);
-        var index = blot.offset(_this4.scroll);
+        var blot = _this3.scroll.find(node, true);
+        var index = blot.offset(_this3.scroll);
         if (offset === 0) {
           return index;
         }
@@ -3113,20 +3209,20 @@ var Selection = /*#__PURE__*/function () {
   }, {
     key: "rangeToNative",
     value: function rangeToNative(range) {
-      var _this5 = this;
+      var _this4 = this;
       var indexes = range.collapsed ? [range.index] : [range.index, range.index + range.length];
       var args = [];
       var scrollLength = this.scroll.length();
       indexes.forEach(function (index, i) {
         index = Math.min(scrollLength - 1, index);
-        var _this5$scroll$leaf = _this5.scroll.leaf(index),
-          _this5$scroll$leaf2 = _slicedToArray(_this5$scroll$leaf, 2),
-          leaf = _this5$scroll$leaf2[0],
-          leafOffset = _this5$scroll$leaf2[1];
-        var _this5$getPositionDat = _this5.getPositionData(leaf, leafOffset, i !== 0),
-          _this5$getPositionDat2 = _slicedToArray(_this5$getPositionDat, 2),
-          node = _this5$getPositionDat2[0],
-          offset = _this5$getPositionDat2[1];
+        var _this4$scroll$leaf = _this4.scroll.leaf(index),
+          _this4$scroll$leaf2 = _slicedToArray(_this4$scroll$leaf, 2),
+          leaf = _this4$scroll$leaf2[0],
+          leafOffset = _this4$scroll$leaf2[1];
+        var _this4$getPositionDat = _this4.getPositionData(leaf, leafOffset, i !== 0),
+          _this4$getPositionDat2 = _slicedToArray(_this4$getPositionDat, 2),
+          node = _this4$getPositionDat2[0],
+          offset = _this4$getPositionDat2[1];
         args.push(node, offset);
       });
       if (args.length < 2) {
@@ -3193,6 +3289,10 @@ var Selection = /*#__PURE__*/function () {
             endNode = endNode.parentNode;
           }
           var range = document.createRange();
+
+          // needed for composition events handling on Android devices
+          startOffset = toNotNegative(startOffset);
+          endOffset = toNotNegative(endOffset);
           range.setStart(startNode, startOffset);
           range.setEnd(endNode, endOffset);
           selection.removeAllRanges();
@@ -3238,7 +3338,7 @@ var Selection = /*#__PURE__*/function () {
       }
       if (!lodash_isequal__WEBPACK_IMPORTED_MODULE_2___default()(oldRange, this.lastRange)) {
         var _this$emitter;
-        if (!this.composing && nativeRange != null && nativeRange.native.collapsed && nativeRange.start.node !== this.cursor.textNode) {
+        if (!this.composition.isCompositionInProgress() && nativeRange != null && nativeRange.native.collapsed && nativeRange.start.node !== this.cursor.textNode) {
           var range = this.cursor.restore();
           if (range) {
             this.setNativeRange(range.startNode, range.startOffset, range.endNode, range.endOffset);
@@ -4882,7 +4982,11 @@ var Clipboard = /*#__PURE__*/function (_Module) {
     value: function applyMatchers(html, keepLastNewLine) {
       var _this3 = this;
       var formats = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
-      var doc = new DOMParser().parseFromString(html, 'text/html');
+      // NOTE: Operations with style attribute is required
+      // to prevent a 'unsafe-inline' CSP error in DOMParser.
+      var htmlWithoutStyles = _core_quill__WEBPACK_IMPORTED_MODULE_3__/* ["default"].replaceStyleAttribute */ .ZP.replaceStyleAttribute(html);
+      var doc = new DOMParser().parseFromString(htmlWithoutStyles, 'text/html');
+      _core_quill__WEBPACK_IMPORTED_MODULE_3__/* ["default"].restoreStyleAttribute */ .ZP.restoreStyleAttribute(doc);
       var container = doc.body;
       var nodeMatches = new WeakMap();
       var _this$prepareMatching = this.prepareMatching(container, nodeMatches),
@@ -5505,6 +5609,132 @@ function getLastChangeIndex(scroll, delta) {
 
 // eslint-disable-next-line no-restricted-exports
 
+
+/***/ }),
+
+/***/ 990:
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Z": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var quill_delta__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(9098);
+/* harmony import */ var quill_delta__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(quill_delta__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _core_module__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7094);
+/* harmony import */ var _core_quill__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(281);
+/* harmony import */ var _keyboard__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(3071);
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+
+
+
+var INSERT_TYPES = ['insertText', 'insertReplacementText'];
+var Input = /*#__PURE__*/function (_Module) {
+  _inherits(Input, _Module);
+  var _super = _createSuper(Input);
+  function Input(quill, options) {
+    var _this;
+    _classCallCheck(this, Input);
+    _this = _super.call(this, quill, options);
+    quill.root.addEventListener('beforeinput', function (event) {
+      _this.handleBeforeInput(event);
+    });
+
+    // Gboard with English input on Android triggers `compositionstart` sometimes even
+    // users are not going to type anything.
+    if (!/Android/i.test(navigator.userAgent)) {
+      quill.on(_core_quill__WEBPACK_IMPORTED_MODULE_2__/* ["default"].events.COMPOSITION_BEFORE_START */ .ZP.events.COMPOSITION_BEFORE_START, function () {
+        _this.handleCompositionStart();
+      });
+    }
+    return _this;
+  }
+  _createClass(Input, [{
+    key: "deleteRange",
+    value: function deleteRange(range) {
+      (0,_keyboard__WEBPACK_IMPORTED_MODULE_3__/* .deleteRange */ .WQ)({
+        range: range,
+        quill: this.quill
+      });
+    }
+  }, {
+    key: "replaceText",
+    value: function replaceText(range) {
+      var text = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
+      if (range.length === 0) return false;
+      if (text) {
+        // Follow the native behavior that inherits the formats of the first character
+        var formats = this.quill.getFormat(range.index, 1);
+        this.deleteRange(range);
+        this.quill.updateContents(new (quill_delta__WEBPACK_IMPORTED_MODULE_0___default())().retain(range.index).insert(text, formats), _core_quill__WEBPACK_IMPORTED_MODULE_2__/* ["default"].sources.USER */ .ZP.sources.USER);
+      } else {
+        this.deleteRange(range);
+      }
+      this.quill.setSelection(range.index + text.length, 0, _core_quill__WEBPACK_IMPORTED_MODULE_2__/* ["default"].sources.SILENT */ .ZP.sources.SILENT);
+      return true;
+    }
+  }, {
+    key: "handleBeforeInput",
+    value: function handleBeforeInput(event) {
+      if (this.quill.composition.isCompositionInProgress() || event.defaultPrevented || !INSERT_TYPES.includes(event.inputType)) {
+        return;
+      }
+      var staticRange = event.getTargetRanges ? event.getTargetRanges()[0] : null;
+      if (!staticRange || staticRange.collapsed === true) {
+        return;
+      }
+      var text = getPlainTextFromInputEvent(event);
+      if (text == null) {
+        return;
+      }
+      var normalized = this.quill.selection.normalizeNative(staticRange);
+      var range = normalized ? this.quill.selection.normalizedToRange(normalized) : null;
+      if (range && this.replaceText(range, text)) {
+        event.preventDefault();
+      }
+    }
+  }, {
+    key: "handleCompositionStart",
+    value: function handleCompositionStart() {
+      var range = this.quill.getSelection();
+      if (range) {
+        this.replaceText(range);
+      }
+    }
+  }]);
+  return Input;
+}(_core_module__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .Z);
+function getPlainTextFromInputEvent(event) {
+  var _event$dataTransfer;
+  // When `inputType` is "insertText":
+  // - `event.data` should be string (Safari uses `event.dataTransfer`).
+  // - `event.dataTransfer` should be null.
+  // When `inputType` is "insertReplacementText":
+  // - `event.data` should be null.
+  // - `event.dataTransfer` should contain "text/plain" data.
+
+  if (typeof event.data === 'string') {
+    return event.data;
+  }
+  if ((_event$dataTransfer = event.dataTransfer) !== null && _event$dataTransfer !== void 0 && _event$dataTransfer.types.includes('text/plain')) {
+    return event.dataTransfer.getData('text/plain');
+  }
+  return null;
+}
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Input);
 
 /***/ }),
 
