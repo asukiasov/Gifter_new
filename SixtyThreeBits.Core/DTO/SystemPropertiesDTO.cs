@@ -4,6 +4,8 @@
     {
         #region Properties
         public string ProjectName { get; init; }
+        public string AdminEmails { get; init; }
+        public string DeveloperEmails { get; init; }
         public string ContactEmail { get; init; }
         public string ContactPhone { get; init; }
         public string ContactAddress { get; init; }
@@ -56,6 +58,8 @@
     {
         #region Properties
         public string ProjectName { get; init; }
+        public string AdminEmails { get; init; }
+        public string DeveloperEmails { get; init; }
         public string ContactEmail { get; init; }
         public string ContactPhone { get; init; }
         public string ContactAddress { get; init; }

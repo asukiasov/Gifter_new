@@ -24,6 +24,9 @@
   <ItemGroup>
     <ProjectReference Include="..\SixtyThreeBits.Core\SixtyThreeBits.Core.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Views\Website\Contact\" />
+  </ItemGroup>
   <ProjectExtensions>
     <VisualStudio>
       <UserProperties DismissedDevExtremeVersion="" />

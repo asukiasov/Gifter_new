@@ -64,6 +64,7 @@ namespace SixtyThreeBits.Web.Models.Admin
                     .Columns(columns =>
                     {
                         columns.Add().Width(30).Caption(" ").InitDetailsUrlCellTemplate(nameof(GridItem.UrlProperties));
+                        columns.AddFor(m => m.EmailTemplateID).Caption("#").Width(60);
                         columns.AddFor(m => m.EmailTemplateName).Caption(Resources.TextTemplate).Width(300);
                         columns.Add();
                     });

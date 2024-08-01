@@ -34,6 +34,7 @@ namespace SixtyThreeBits.Web.Domain.ViewModels.Shared
         public bool IsPageBuilderEnabled { get; private set; }
         public bool IsPageBuilderEditorEnabled { get; private set; }
         public bool IsPreloaderEnabled { get; private set; }
+        public bool IsGoogleRecaptchaEnabled { get; private set; }
         public bool IsSlickSliderEnabled { get; private set; }
         public bool IsSortableJSEnabled { get; private set; }
         
@@ -42,6 +43,7 @@ namespace SixtyThreeBits.Web.Domain.ViewModels.Shared
         public bool IsUtilsEnabled { get; private set; }
 
         public string LanguageCultureCode { get; private set; }
+        public string RecaptchaSiteKey { get; private set; }        
         public bool ShouldIncludeLocalizationFile { get; private set; }
 
         public readonly string TextError = Resources.TextError;
@@ -54,9 +56,10 @@ namespace SixtyThreeBits.Web.Domain.ViewModels.Shared
 
         }
 
-        public PluginsClientViewModel(string languageCultureCode)
+        public PluginsClientViewModel(string languageCultureCode, string recaptchaSiteKey)
         {
             LanguageCultureCode = languageCultureCode;
+            RecaptchaSiteKey = recaptchaSiteKey;
             ShouldIncludeLocalizationFile = languageCultureCode != Enums.Languages.ENGLISH;
         }
         #endregion
@@ -222,6 +225,12 @@ namespace SixtyThreeBits.Web.Domain.ViewModels.Shared
         public PluginsClientViewModel EnablePreloader(bool value)
         {
             IsPreloaderEnabled = value;
+            return this;
+        }
+
+        public PluginsClientViewModel EnableGoogleRecaptcha(bool value)
+        {
+            IsGoogleRecaptchaEnabled = value;
             return this;
         }
 

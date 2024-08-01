@@ -38,10 +38,10 @@
                 <div class="col-lg-4 form-group">
                     <label>@Html.Raw(Model.TextProjectName)</label>
                     <input type="text" name="@nameof(Model.ProjectName)" class="form-control" value="@Model.ProjectName" />
-                </div>
+                </div>                                
             </div>
             <hr />
-            <div class="row">
+            <div class="row">                
                 <div class="col-lg-4 form-group">
                     <label>@Html.Raw(Model.TextContactPhone)</label>
                     <input type="text" name="@nameof(Model.ContactPhone)" class="form-control" value="@Model.ContactPhone" />                
@@ -53,6 +53,14 @@
                 <div class="col-lg-4 form-group">
                     <label>@Html.Raw(Model.TextContactAddress)</label>
                     <input type="text" name="@nameof(Model.ContactAddress)" class="form-control" value="@Model.ContactAddress" />                
+                </div>
+                <div class="col-lg-4 form-group">
+                    <label>@Html.Raw(Model.TextContactAddress) Eng</label>
+                    <input type="text" name="@nameof(Model.ContactAddressEng)" class="form-control" value="@Model.ContactAddressEng" />
+                </div>
+                <div class="col-lg-8 form-group">
+                    <label>@Html.Raw(Model.TextAdminEmails)</label>
+                    <input type="text" name="@nameof(Model.AdminEmails)" class="form-control" value="@Model.AdminEmails" />
                 </div>
             </div>
                 <hr />
@@ -123,7 +131,13 @@
                 <div class="form-group col-lg-12">
                     @Html.Raw(Model.GoogleMapsIFrame)
                 </div>
-            </div>        
+            </div>      
+            <div action="row">
+                <div class="col-lg-12 form-group">
+                    <label>@Html.Raw(Model.TextDeveloperEmails)</label>
+                    <input type="text" name="@nameof(Model.DeveloperEmails)" class="form-control" value="@Model.DeveloperEmails" />
+                </div>
+            </div>
         </div>
         <div class="tab-pane fade" id="email-properties-tab-pane">
             <div class="row mb-4">

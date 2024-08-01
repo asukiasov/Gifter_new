@@ -211,6 +211,13 @@
         public static class Website
         {
             #region Nested Classes
+            public static class Contact
+            {
+                #region Properties
+                public const string ContactView = "~/Views/Website/Contact/Contact.cshtml";
+                #endregion
+            }
+
             public static class FileViewer
             {
                 #region Properties

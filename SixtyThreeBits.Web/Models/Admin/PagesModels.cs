@@ -390,11 +390,11 @@ namespace SixtyThreeBits.Web.Models.Admin
             return viewModel;
         }
 
-        public Errors Validate(SubmitModel submitModel)
+        public ValidationResult Validate(SubmitModel submitModel)
         {
-            var errors = new Errors();
-            errors.AddError(Validation.ValidateRequired(errorKey: Validation.GetJQueryNameSelectorFor(nameof(submitModel.PageTitle)), valueToValidate: submitModel.PageTitle));
-            return errors;
+            var validationResult = new ValidationResult();
+            validationResult.AddError(Validation.ValidateRequired(errorKey: Validation.GetJQueryNameSelectorFor(nameof(submitModel.PageTitle)), valueToValidate: submitModel.PageTitle));
+            return validationResult;
         }
 
         public async Task<AjaxResponse> Save(SubmitModel submitModel)

@@ -146,16 +146,36 @@ namespace SixtyThreeBits.Core.Libraries
             return result.IsSent;
         }
 
-        public async Task<EmailSendResultDTO> SendContactUsEmailToAdmins(string emailTo, string subject, string body)
+        public async Task SendContactUsEmailToAdmins(string name, string email, string message, string emailsTo)
         {
-            body = await _emailTemplatesRepository.EmailTemplatesWrapInLayout(_websiteHttpPath, _languageCultureCode, body);
+            var emailTemplate = await _emailTemplatesRepository.EmailTemplatesGetSingleByID(Enums.EmailTemplates.ContactFormToAdmins);
+            var subject = emailTemplate?.EmailTemplateSubject;
+            var body = await _emailTemplatesRepository.EmailTemplatesWrapInLayout(_websiteHttpPath, _languageCultureCode, emailTemplate?.EmailTemplateBody);
 
-            var result = await SendNotification(
-               emailTo: emailTo,
-               subject: subject,
-               body: body
-           );
-            return result;
+            var valuesToReplace = new Dictionary<NotificationPlaceHolders, string>
+            {
+                { NotificationPlaceHolders.Firstname, name },
+                { NotificationPlaceHolders.Email, email },
+                { NotificationPlaceHolders.Message, message }
+            };
+            body = ReplacePlaceHolders(body, valuesToReplace);
+
+            if (!string.IsNullOrWhiteSpace(emailsTo))
+            {
+                var split = emailsTo.Split(',');
+                foreach (var emailTo in split)
+                {
+                    var isEmailFormatValid = Validation.IsEmailFormatValid(emailTo);
+                    if (isEmailFormatValid)
+                    {
+                        var result = await SendNotification(
+                           emailTo: emailTo,
+                           subject: subject,
+                           body: body
+                       );
+                    }
+                }
+            }
         }
 
         async Task<EmailSendResultDTO> SendNotification(string emailTo, string subject, string body, string replyTo = null, string emailGuid = null, List<EmailAttachmentDTO> attachments = null)

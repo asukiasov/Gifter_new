@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
 using SixtyThreeBits.Core.DTO;
 using SixtyThreeBits.Core.Infrastructure.Repositories;
+using SixtyThreeBits.Core.Libraries;
+using SixtyThreeBits.Core.Libraries.EmailClients.Factory;
 using SixtyThreeBits.Core.Libraries.FileStorages;
 using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries.Extensions;
@@ -43,7 +45,9 @@ namespace SixtyThreeBits.Web.Filters.Shared
                 initModelBaseProperties(filterContext, c);
                 await initSystemProperties();
                 initFileStorage();
-                await initUser();
+                initNotificationManager();
+                initPluginsClient();
+                await initUser();                
                 await next();
             }
         }
@@ -79,9 +83,7 @@ namespace SixtyThreeBits.Web.Filters.Shared
             _model.Request = c.Request;
             _model.Response = c.Response;
             _model.UrlPreviousPage = _model.Request.Headers["Referer"].ToString();
-            _model.Form = new FormViewModelBase();
-
-            _model.PluginsClient = new PluginsClientViewModel(_model.LanguageCultureCode);
+            _model.Form = new FormViewModelBase();            
         }
 
         async Task initUser()
@@ -133,6 +135,22 @@ namespace SixtyThreeBits.Web.Filters.Shared
             //    noImageHttpPath: "/images/no-image.jpg"
             //);
         } 
+
+        void initNotificationManager()
+        {
+            _model.NotificationManager = new NotificationManager(
+                emailTemplatesRepository: _model.RepositoriesFactory.CreateEmailTemplatesRepository(),
+                utilities: _model.Utilities,
+                email: EmailClientFactory.GetEmailClientBySystemProperties(_model.SystemProperties),
+                websiteHttpPath: _model.WebsiteHttpPath,
+                languageCultureCode: _model.LanguageCultureCode
+            );
+        }
+
+        void initPluginsClient()
+        {
+            _model.PluginsClient = new PluginsClientViewModel(languageCultureCode: _model.LanguageCultureCode, recaptchaSiteKey: _model.SystemProperties.ReCaptchaSiteKey);
+        }
         #endregion
     }
 }

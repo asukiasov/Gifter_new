@@ -9,7 +9,7 @@ namespace SixtyThreeBits.Web.Controllers.Website
     {
         #region Actions
         [Route("", Name = ControllerActionRouteNames.Website.Home.Index)]
-        [Route("{Culture:length(2)}", Name = ControllerActionRouteNames.Website.Home.IndexCulture)]
+        [Route("{RouteValueLanguageCode}", Name = ControllerActionRouteNames.Website.Home.IndexCulture)]
         public IActionResult Index()
         {
             return View(ViewNames.Website.Home.IndexView);

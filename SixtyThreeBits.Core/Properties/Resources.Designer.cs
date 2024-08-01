@@ -79,6 +79,24 @@ namespace SixtyThreeBits.Core.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Address.
+        /// </summary>
+        public static string TextAddress {
+            get {
+                return ResourceManager.GetString("TextAddress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Administrator Emails. Comma separated.
+        /// </summary>
+        public static string TextAdminEmails {
+            get {
+                return ResourceManager.GetString("TextAdminEmails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please sign in to continue for administration.
         /// </summary>
         public static string TextAdminWelcomeSubTitle {
@@ -268,11 +286,29 @@ namespace SixtyThreeBits.Core.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Your message has been sent successfully.
+        /// </summary>
+        public static string TextContactFormSuccess {
+            get {
+                return ResourceManager.GetString("TextContactFormSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Contact Phone.
         /// </summary>
         public static string TextContactPhone {
             get {
                 return ResourceManager.GetString("TextContactPhone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Contact Us.
+        /// </summary>
+        public static string TextContactUs {
+            get {
+                return ResourceManager.GetString("TextContactUs", resourceCulture);
             }
         }
         
@@ -336,6 +372,15 @@ namespace SixtyThreeBits.Core.Properties {
         public static string TextDescriptionShortEng {
             get {
                 return ResourceManager.GetString("TextDescriptionShortEng", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Developer Emails, Comma Separated.
+        /// </summary>
+        public static string TextDeveloperEmails {
+            get {
+                return ResourceManager.GetString("TextDeveloperEmails", resourceCulture);
             }
         }
         
@@ -547,6 +592,15 @@ namespace SixtyThreeBits.Core.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Message.
+        /// </summary>
+        public static string TextMessage {
+            get {
+                return ResourceManager.GetString("TextMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Name.
         /// </summary>
         public static string TextName {
@@ -687,6 +741,15 @@ namespace SixtyThreeBits.Core.Properties {
         public static string TextPermissions {
             get {
                 return ResourceManager.GetString("TextPermissions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Phone.
+        /// </summary>
+        public static string TextPhone {
+            get {
+                return ResourceManager.GetString("TextPhone", resourceCulture);
             }
         }
         
@@ -858,6 +921,15 @@ namespace SixtyThreeBits.Core.Properties {
         public static string TextSave {
             get {
                 return ResourceManager.GetString("TextSave", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Send.
+        /// </summary>
+        public static string TextSend {
+            get {
+                return ResourceManager.GetString("TextSend", resourceCulture);
             }
         }
         
@@ -1092,6 +1164,15 @@ namespace SixtyThreeBits.Core.Properties {
         public static string ValidationProductRemainderRequired {
             get {
                 return ResourceManager.GetString("ValidationProductRemainderRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to reCaptcha validation failed.
+        /// </summary>
+        public static string ValidationRecaptchaInvalid {
+            get {
+                return ResourceManager.GetString("ValidationRecaptchaInvalid", resourceCulture);
             }
         }
         

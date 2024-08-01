@@ -7,12 +7,12 @@ namespace SixtyThreeBits.Web.Domain.ViewModels.Base
     public class FormViewModelBase
     {
         #region Properties        
-        readonly Errors _errors = new Errors();
+        readonly ValidationResult _validationResult = new ValidationResult();
 
-        public string ErrorMessage => HasErrors ? string.Join("<br />", _errors.GetErrors().Select(Item => Item.Value)) : null;
-        public bool HasErrors => _errors?.Count > 0;
+        public string ErrorMessage => HasErrors ? string.Join("<br />", _validationResult.GetErrors().Select(Item => Item.Value)) : null;
+        public bool HasErrors => _validationResult?.Count > 0;
         public bool IsValid => !HasErrors;
-        public string ErrorsJson => _errors.ErrorsJson;
+        public string ErrorsJson => _validationResult.ErrorsJson;
         
         public readonly string TextConfirmDelete = Resources.TextConfirmDelete;
         #endregion
@@ -23,7 +23,7 @@ namespace SixtyThreeBits.Web.Domain.ViewModels.Base
 
             if (!string.IsNullOrWhiteSpace(errorMessage))
             {
-                _errors.AddError(new ErrorItem(Key: errorKey, Value: errorMessage));
+                _validationResult.AddError(new ErrorItem(Key: errorKey, Value: errorMessage));
             }
         }
 

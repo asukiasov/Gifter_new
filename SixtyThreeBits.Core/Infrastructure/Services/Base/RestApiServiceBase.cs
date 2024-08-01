@@ -67,8 +67,13 @@ namespace SixtyThreeBits.Core.Infrastructure.Services.Base
 
             var result = new ApiResultBase();
             result.RequestUrl = $"{_baseUrl}{resource}";
-            result.RequestHeaders = string.Join(",", headers?.Select(item => $"{item.Key}: {item.Value}"));
             result.RequestMethod = request.Method.ToString().ToUpper();
+
+            if (headers != null)
+            {
+                result.RequestHeaders = string.Join(",", headers.Select(item => $"{item.Key}: {item.Value}"));
+            }
+            
             if (parameters is null)
             {
                 result.RequestBody = body;

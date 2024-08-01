@@ -335,6 +335,14 @@
         public static class Website
         {
             #region Nested Classes
+            public static class ContactController
+            {
+                #region Properties
+                public const string Contact = "WebsiteContactControllerContact";
+                public const string ContactCulture = "WebsiteContactControllerContactCulture";
+                #endregion
+            }
+
             public static class Home
             {
                 #region Properties

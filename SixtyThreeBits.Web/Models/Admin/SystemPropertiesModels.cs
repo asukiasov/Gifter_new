@@ -10,6 +10,7 @@ using SixtyThreeBits.Web.Domain.ViewModels.Base;
 using SixtyThreeBits.Web.Models.Base;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -24,9 +25,12 @@ namespace SixtyThreeBits.Web.Models.Admin
             var repository = RepositoriesFactory.CreateSystemPropertiesRepository();
             var dbItem = await repository.SystemPropertiesGet();
             viewModel.ProjectName = dbItem.ProjectName;
+            viewModel.AdminEmails = dbItem.AdminEmails;
+            viewModel.DeveloperEmails = dbItem.DeveloperEmails;
             viewModel.ContactEmail = dbItem.ContactEmail;
             viewModel.ContactPhone = dbItem.ContactPhone;
             viewModel.ContactAddress = dbItem.ContactAddress;
+            viewModel.ContactAddressEng = dbItem.ContactAddressEng;
             viewModel.FacebookUrl = dbItem.FacebookUrl;
             viewModel.TwitterUrl = dbItem.TwitterUrl;
             viewModel.InstagramUrl = dbItem.InstagramUrl;
@@ -205,7 +209,16 @@ namespace SixtyThreeBits.Web.Models.Admin
             if (viewModel.GoogleMapsIFrame != null && viewModel.GoogleMapsIFrame.Contains("<iframe") && !viewModel.GoogleMapsIFrame.Contains("width=\"100%\""))
             {
                 viewModel.GoogleMapsIFrame = Regex.Replace(viewModel.GoogleMapsIFrame, "width=\"\\d+\"", "width=\"100%\"").Trim();
-            }            
+            }
+
+            if (!string.IsNullOrWhiteSpace(viewModel.AdminEmails))
+            {
+                viewModel.AdminEmails = string.Join(",", viewModel.AdminEmails.Split(',').Select(item => item.Trim()));
+            }
+            if (!string.IsNullOrWhiteSpace(viewModel.DeveloperEmails))
+            {
+                viewModel.DeveloperEmails = string.Join(",", viewModel.DeveloperEmails.Split(',').Select(item => item.Trim()));
+            }
 
             var repository = RepositoriesFactory.CreateSystemPropertiesRepository();
             await repository.SystemPropertiesUpdate(
@@ -215,6 +228,7 @@ namespace SixtyThreeBits.Web.Models.Admin
                     ContactEmail = viewModel.ContactEmail ?? Constants.NullValueFor.String,
                     ContactPhone = viewModel.ContactPhone ?? Constants.NullValueFor.String,
                     ContactAddress = viewModel.ContactAddress ?? Constants.NullValueFor.String,
+                    ContactAddressEng = viewModel.ContactAddressEng ?? Constants.NullValueFor.String,
                     FacebookUrl = viewModel.FacebookUrl ?? Constants.NullValueFor.String,
                     TwitterUrl = viewModel.TwitterUrl ?? Constants.NullValueFor.String,
                     InstagramUrl = viewModel.InstagramUrl ?? Constants.NullValueFor.String,
@@ -249,7 +263,9 @@ namespace SixtyThreeBits.Web.Models.Admin
                     AwsS3RegionSystemName = viewModel.AwsS3RegionSystemName ?? Constants.NullValueFor.String,
                     AwsS3BucketNamePublic = viewModel.AwsS3BucketNamePublic ?? Constants.NullValueFor.String,
                     AzureConnectionString = viewModel.AzureConnectionString ?? Constants.NullValueFor.String,
-                    AzureBlobStorageContainerName = viewModel.AzureBlobStorageContainerName ?? Constants.NullValueFor.String
+                    AzureBlobStorageContainerName = viewModel.AzureBlobStorageContainerName ?? Constants.NullValueFor.String,                    
+                    AdminEmails = viewModel.AdminEmails ?? Constants.NullValueFor.String,
+                    DeveloperEmails = viewModel.DeveloperEmails ?? Constants.NullValueFor.String
                 }
             );
             
@@ -267,9 +283,14 @@ namespace SixtyThreeBits.Web.Models.Admin
         {
             #region Properties
             public string ProjectName { get; set; }
+
+            public string AdminEmails { get; set; }
+            public string DeveloperEmails { get; set; }
+
             public string ContactEmail { get; set; }
             public string ContactPhone { get; set; }
             public string ContactAddress { get; set; }
+            public string ContactAddressEng { get; set; }
             public string FacebookUrl { get; set; }
             public string InstagramUrl { get; set; }
             public string TwitterUrl { get; set; }
@@ -326,9 +347,11 @@ namespace SixtyThreeBits.Web.Models.Admin
             public readonly string TextEmailProperties = Resources.TextEmailProperties;
             public readonly string TextCloudProperties = Resources.TextCloudProperties;
             public readonly string TextProjectName = Resources.TextProjectName;
+            public readonly string TextAdminEmails = Resources.TextAdminEmails;
+            public readonly string TextDeveloperEmails = Resources.TextDeveloperEmails;
             public readonly string TextContactPhone = Resources.TextContactPhone;
             public readonly string TextContactEmail = Resources.TextContactEmail;
-            public readonly string TextContactAddress = Resources.TextContactAddress;
+            public readonly string TextContactAddress = Resources.TextContactAddress;            
             public readonly string TextTestButton = Resources.TextTestButton;
             #endregion
         }

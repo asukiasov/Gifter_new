@@ -248,31 +248,31 @@ namespace SixtyThreeBits.Web.Models.Admin
             return viewModel;
         }
 
-        public async Task<Errors> ValidateSubmitModel(SubmitModel submitModel)
+        public async Task<ValidationResult> ValidateSubmitModel(SubmitModel submitModel)
         {
-            var errors = new Errors();
+            var validationResult = new ValidationResult();
 
             if (submitModel.MenuHeaderIsExternalPage)
             {                
-                errors.AddError(
+                validationResult.AddError(
                        Validation.ValidateRequired(errorKey: ".js-modal-MenuHeaderExternalPageUrl-input", valueToValidate: submitModel.MenuHeaderExternalPageUrl)
                    );
-                errors.AddError(
+                validationResult.AddError(
                     Validation.ValidateRequired(errorKey: ".js-modal-MenuHeaderTitle-input", valueToValidate: submitModel.MenuHeaderTitle)
                 );
             }
             else
             {                
-                errors.AddError(
+                validationResult.AddError(
                     Validation.ValidateRequired(errorKey: ".js-modal-PageID-input", valueToValidate: submitModel.PageID)
                 );
-                errors.AddError(
+                validationResult.AddError(
                     Validation.ValidateRequired(errorKey: ".js-modal-PageTitle-input", valueToValidate: submitModel.PageTitle)
                 );
-                errors.AddError(
+                validationResult.AddError(
                     Validation.ValidateRequired(errorKey: ".js-modal-PageSlug-input", valueToValidate: submitModel.PageSlug)
                 );
-                errors.AddError(
+                validationResult.AddError(
                     await Validation.ValidateAsync(
                         errorAction: async () =>
                         {
@@ -287,7 +287,7 @@ namespace SixtyThreeBits.Web.Models.Admin
                 );
             }
 
-            return errors;
+            return validationResult;
         }
 
         ViewModel.MenuListItem getMenuListItemFromMenuHeaderDto(MenuHeaderDTO menuHeaderDto) 

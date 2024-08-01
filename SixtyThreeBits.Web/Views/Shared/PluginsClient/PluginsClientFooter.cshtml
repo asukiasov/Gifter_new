@@ -115,6 +115,10 @@
     <script src="/plugins/borex/js/bootstrap.bundle.min.js"></script>
     <script src="/plugins/borex/plugins/simplebar/simplebar.min.js"></script>    
 }
+@if (Model.IsGoogleRecaptchaEnabled)
+{
+    <script src="https://www.google.com/recaptcha/api.js?render=@Html.Raw(Model.RecaptchaSiteKey)"></script>
+}
 @if(Model.IsDevextremeExportExcelLibrariesEnabled)
 {
     @* https://js.devexpress.com/jQuery/Documentation/ApiReference/UI_Components/dxDataGrid/Configuration/export/ *@

@@ -1,0 +1,77 @@
+﻿@model ContactModel.PageViewModel
+
+<div class="container">
+    <h1 class="text-center">@Html.Raw(Model.TextContactUs)</h1>
+
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-header text-center">
+                    <i class="fa-solid fa-phone-arrow-right fa-2x"></i>
+                    <h3 class="h5 m-0">@Html.Raw(Model.TextPhone)</h3>
+                </div>
+                <div class="card-body text-center">
+                    <p class="my-3">@Html.Raw(Model.ContactPhone)</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-header text-center">
+                    <i class="fa-solid fa-location-dot fa-2x"></i>
+                    <h3 class="h5 m-0">@Html.Raw(Model.TextAddress)</h3>
+                </div>
+                <div class="card-body text-center">
+                    <p class="my-3">@Html.Raw(Model.ContactAddress)</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-header text-center">
+                    <i class="fa-solid fa-envelope fa-2x"></i>
+                    <h3 class="h5 m-0">@Html.Raw(Model.TextEmail)</h3>
+                </div>
+                <div class="card-body text-center">
+                    <p class="my-3">@Html.Raw(Model.ContactEmail)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row js_contact_form">
+        <div class="col-lg-12 form-group">
+            <label>@Html.Raw(Model.TextName)</label>
+            <input type="text" class="form-control" name="@nameof(ContactModel.SubmitModel.Name)" />
+            <p class="invalid-feedback"></p>
+        </div>
+        <div class="col-lg-12 form-group">
+            <label>@Html.Raw(Model.TextEmail)</label>
+            <input type="text" class="form-control" name="@nameof(ContactModel.SubmitModel.Email)" />
+            <p class="invalid-feedback"></p>
+        </div>
+        <div class="col-lg-12 form-group">
+            <label for="contact-message">@Html.Raw(Model.TextMessage)</label>
+            <textarea class="form-control" rows="10" name="@nameof(ContactModel.SubmitModel.Message)"></textarea>            
+            <p class="invalid-feedback"></p>
+        </div>
+        <div class="col-lg-12 form-group">
+            <input type="hidden" name="@nameof(ContactModel.SubmitModel.RecaptchaClientResponseToken)" />
+            <p class="invalid-feedback"></p>
+        </div>
+        <div class="col-lg-12 form-group text-center">
+            <button type="button" class="btn btn-primary js_send_button">@Html.Raw(Model.TextSend)</button>
+        </div>
+    </div>
+    <div class="row js_contact_form_success" style="display:none">
+        <div class="col">
+            <h3 class="text-success">@Html.Raw(Model.TextContactFormSuccess)</h3>
+        </div>
+    </div>
+</div>
+@section FooterSection {
+    <script src="~/js/website/contact/contact.js"></script>
+    <script>
+        model.recaptchaSiteKey = '@Html.Raw(Model.RecaptchaSiteKey)';        
+    </script>
+}

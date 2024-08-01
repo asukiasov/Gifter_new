@@ -56,6 +56,7 @@ namespace SixtyThreeBits.Web.Models.Base
         public ValueWrapper<bool> IsSidebarCollapsed { get; set; }
         public FormViewModelBase Form { get; set; }
         public SystemPropertiesDTO SystemProperties { get; set; }
+        public NotificationManager NotificationManager { get; set; }
 
         public readonly string CultureDefault = Enums.Languages.GEORGIAN;
         public readonly SuccessErrorToastPartialViewModel SuccessErrorPartialViewModel = new();

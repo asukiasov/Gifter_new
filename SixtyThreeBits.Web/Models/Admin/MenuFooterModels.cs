@@ -234,31 +234,31 @@ namespace SixtyThreeBits.Web.Models.Admin
             return viewModel;
         }
 
-        public async Task<Errors> ValidateSubmitModel(SubmitModel submitModel)
+        public async Task<ValidationResult> ValidateSubmitModel(SubmitModel submitModel)
         {
-            var errors = new Errors();
+            var validationResult = new ValidationResult();
 
             if (submitModel.MenuFooterIsExternalPage)
             {
-                errors.AddError(
+                validationResult.AddError(
                        Validation.ValidateRequired(errorKey: ".js-modal-MenuFooterExternalPageUrl-input", valueToValidate: submitModel.MenuFooterExternalPageUrl)
                    );
-                errors.AddError(
+                validationResult.AddError(
                     Validation.ValidateRequired(errorKey: ".js-modal-MenuFooterTitle-input", valueToValidate: submitModel.MenuFooterTitle)
                 );
             }
             else
             {
-                errors.AddError(
+                validationResult.AddError(
                     Validation.ValidateRequired(errorKey: ".js-modal-PageID-input", valueToValidate: submitModel.PageID)
                 );
-                errors.AddError(
+                validationResult.AddError(
                     Validation.ValidateRequired(errorKey: ".js-modal-PageTitle-input", valueToValidate: submitModel.PageTitle)
                 );
-                errors.AddError(
+                validationResult.AddError(
                     Validation.ValidateRequired(errorKey: ".js-modal-PageSlug-input", valueToValidate: submitModel.PageSlug)
                 );
-                errors.AddError(
+                validationResult.AddError(
                     await Validation.ValidateAsync(
                         errorAction: async () =>
                         {
@@ -273,7 +273,7 @@ namespace SixtyThreeBits.Web.Models.Admin
                 );
             }
 
-            return errors;
+            return validationResult;
         }
 
         ViewModel.MenuListItem getMenuListItemFromMenuFooterDto(MenuFooterDTO menuFooterDto)
