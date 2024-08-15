@@ -14,10 +14,11 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
 
             sqlParameter.SqlDbType = sqlDbType;
 
-            if (parameter != null && parameter.GetType() == typeof(string))
+            if (sqlDbType is SqlDbType.VarChar or SqlDbType.NVarChar)
             {
-                sqlParameter.Size = (parameter as string)?.Length ?? 3000;
-            }
+                var length = parameter?.ToString().Length;
+                sqlParameter.Size = length > 0 ? length.Value : 3000;
+            }            
 
             if (isOutput)
             {
