@@ -39,7 +39,7 @@ namespace SixtyThreeBits.Core.DTO
         public string BlogPostText { get; init; }
         public string BlogPostAuthorName { get; init; }
         public string BlogPostImageFilename { get; init; }
-        public DateTime? BlogPostDate { get; init; }
+        public string BlogPostDate { get; init; }
         public string BlogPostShortText { get; init; }
         public bool? BlogPostIsPublished { get; init; }
         #endregion

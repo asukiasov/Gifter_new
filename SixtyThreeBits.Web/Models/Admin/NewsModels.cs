@@ -66,7 +66,7 @@ namespace SixtyThreeBits.Web.Models.Admin
                 news: new NewsIudDTO
                 {
                     NewsTitle = submitModel.NewsTitle,
-                    NewsDatePublished = submitModel.NewsDatePublished,
+                    NewsDatePublished = Utilities.FormatDateSqlParseFriendly(submitModel.NewsDatePublished),
                     NewsIsPublished = submitModel.NewsIsPublished
                 }                
             );
@@ -212,7 +212,7 @@ namespace SixtyThreeBits.Web.Models.Admin
                     NewsText = viewModel.NewsText ?? Constants.NullValueFor.String,
                     NewsTextEng = viewModel.NewsTextEng ?? Constants.NullValueFor.String,
                     NewsImageFilename = newsImageFilename,
-                    NewsDatePublished = viewModel.NewsDatePublished,
+                    NewsDatePublished = Utilities.FormatDateSqlParseFriendly(viewModel.NewsDatePublished),
                     NewsIsPublished = viewModel.NewsIsPublished
                 }
             );

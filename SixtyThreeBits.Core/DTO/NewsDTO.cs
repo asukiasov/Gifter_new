@@ -42,7 +42,7 @@ namespace SixtyThreeBits.Core.DTO
         public string NewsShortDescriptionEng { get; init; }
         public string NewsText { get; init; }
         public string NewsTextEng { get; init; }
-        public DateTime? NewsDatePublished { get; init; }
+        public string NewsDatePublished { get; init; }
         public string NewsImageFilename { get; init; }
         public bool? NewsIsPublished { get; init; }
         #endregion

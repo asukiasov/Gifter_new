@@ -71,6 +71,11 @@ namespace SixtyThreeBits.Core.Utilities
             return string.Format(culture, Constants.Formats.DateEval, date);
         }
 
+        public string FormatDateSqlParseFriendly(object date)
+        {
+            return string.Format(CultureInfo.InvariantCulture, "{0:yyyy-MM-ddTHH:mm:ss}", date);
+        }
+
         public string FormatDateTime(object date)
         {
             return string.Format(Constants.Formats.DateTimeEval, date);
@@ -106,7 +111,7 @@ namespace SixtyThreeBits.Core.Utilities
             {
                 return null;
             }
-        }
+        }        
 
         public string FormatFileSizeBytes(long? fileSizeBytes)
         {
@@ -168,7 +173,7 @@ namespace SixtyThreeBits.Core.Utilities
             return string.Format("{0:#.#}", value);
         }
 
-        public string GetResourceByKey(string resourcesKey)
+        public string GetResourceByKey(string resourcesKey, string languageCultureCode)
         {
             if (string.IsNullOrWhiteSpace(resourcesKey))
             {
@@ -177,7 +182,7 @@ namespace SixtyThreeBits.Core.Utilities
             else
             {
                 var rm = new ResourceManager(typeof(Resources));
-                var resourceValue = rm.GetString(resourcesKey);
+                var resourceValue = string.IsNullOrWhiteSpace(languageCultureCode) ? rm.GetString(resourcesKey) : rm.GetString(resourcesKey, new CultureInfo(languageCultureCode));
                 return resourceValue;
             }
         }

@@ -234,7 +234,7 @@ namespace SixtyThreeBits.Web.Models.Admin
                     UserPassword = viewModel.UserPassword,
                     UserFirstname = viewModel.UserFirstname,
                     UserLastname = viewModel.UserLastname,
-                    UserBirthdate = viewModel.UserBirthdate ?? Constants.NullValueFor.Date,
+                    UserBirthdate = Utilities.FormatDateSqlParseFriendly(viewModel.UserBirthdate ?? Constants.NullValueFor.Date),
                     UserPhoneNumberMobile = viewModel.UserPhoneNumberMobile ?? Constants.NullValueFor.String,
                     UserIsActive = viewModel.UserIsActive
                 }

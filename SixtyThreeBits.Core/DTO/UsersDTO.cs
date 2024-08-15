@@ -81,7 +81,7 @@ namespace SixtyThreeBits.Core.DTO
         public string UserFirstname { get; init; }
         public string UserLastname { get; init; }
         public string UserFullname { get; init; }
-        public DateTime? UserBirthdate { get; init; }
+        public string UserBirthdate { get; init; }
         public string UserPhoneNumberMobile { get; init; }
         public string UserPersonalNumber { get; init; }
         public string UserAvatarFilename { get; init; }
