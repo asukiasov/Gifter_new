@@ -117,7 +117,7 @@ namespace SixtyThreeBits.Web.Filters.Shared
             _model.FileStorage = new LocalFileStorage(
                 uploadFolderPhysicalPath: _appSettings.UploadFolderPhysicalPath,
                 uploadFolderHttpPath: _appSettings.UploadFolderHttpPath,
-                noImageHttpPath: "/images/no-image.jpg",
+                noImageHttpPath: "/images/no_photo.jpg",
                 websiteDomain: _model.WebsiteDomain
            );
 
@@ -126,15 +126,15 @@ namespace SixtyThreeBits.Web.Filters.Shared
             //    awsSecretAccessKey: _model.SystemProperties.AwsSecretAccessKey,
             //    awsS3RegionSystemName: _model.SystemProperties.AwsS3RegionSystemName,
             //    awsS3BucketNamePublic: _model.SystemProperties.AwsS3BucketNamePublic,
-            //    noImageHttpPath: "/images/no-image.jpg"
+            //    noImageHttpPath: "/images/no_photo.jpg"
             //);
 
             //_model.FileStorage = new AzureFileStorage(
             //    azureBlobStorageConnectionString: _model.SystemProperties.AzureConnectionString,
             //    azureBlobStorageContainerName: _model.SystemProperties.AzureBlobStorageContainerName,
-            //    noImageHttpPath: "/images/no-image.jpg"
+            //    noImageHttpPath: "/images/no_photo.jpg"
             //);
-        } 
+        }
 
         void initNotificationManager()
         {

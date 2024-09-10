@@ -40,15 +40,50 @@ namespace SixtyThreeBits.Web.Domain.Utilities
 
         public static List<DevExtremeGridFilterItem> GetDevExtremeGridFilterValues(string filterString)
         {
-            var filters = string.IsNullOrWhiteSpace(filterString) ? new List<DevExtremeGridFilterItem>() :
-            Regex.Matches(filterString, @"\[\""(?<key>\w+)\"",\""(?<operator>[^\""]+)\"",(\"")?(?<value>[^\""|\]]+)(\"")?\]").OfType<Match>()
-
-            .Select(Item => new DevExtremeGridFilterItem
+            var filters = new List<DevExtremeGridFilterItem>();
+            if (string.IsNullOrWhiteSpace(filterString))
             {
-                FieldName = Item.Groups["key"].Value,
-                Operator = Item.Groups["operator"].Value,
-                Value = Item.Groups["value"].Value,
-            }).ToList() ?? new List<DevExtremeGridFilterItem>();
+                return filters;
+            }
+
+            //Column header filter, when not all items are checked https://demos.devexpress.com/ASPNetCore/Demo/DataGrid/ColumnHeaderFilter
+            var NegationMatches = Regex.Matches(filterString, @"\[\s*""!""\s*,\s*(?:\[\s*\[\s*""(?<key>\w+)""\s*,\s*""(?<operator>[^""]+)""\s*,\s*(?<value>\d+)\s*\]\s*(?:\s*,\s*""or""\s*,\s*\[\s*""(?<key>\w+)""\s*,\s*""(?<operator>[^""]+)""\s*,\s*(?<value>\d+)\s*\])*\s*\]|\[\s*""(?<key>\w+)""\s*,\s*""(?<operator>[^""]+)""\s*,\s*(?<value>\d+)\s*\])\s*\]").OfType<Match>();
+            if (NegationMatches.Count() > 0)
+            {
+                foreach (var NegationMatch in NegationMatches)
+                {
+                    var MatchesFromNegationMatch = Regex.Matches(NegationMatch.ToString(), @"\[\""(?<key>\w+)\"",\""(?<operator>[^\""]+)\"",(\"")?(?<value>[^\""|\]]+)(\"")?\]").OfType<Match>();
+                    filters.AddRange(MatchesFromNegationMatch.Select(Item => new DevExtremeGridFilterItem
+                    {
+                        FieldName = Item.Groups["key"].Value,
+                        Operator = Item.Groups["operator"].Value,
+                        Value = Item.Groups["value"].Value,
+                        IsNegation = true
+                    }).ToList() ?? new List<DevExtremeGridFilterItem>());
+                }
+            }
+
+            var Matches = Regex.Matches(filterString, @"\[\""(?<key>\w+)\"",\""(?<operator>[^\""]+)\"",(\"")?(?<value>[^\""|\]]+)(\"")?\]").OfType<Match>();
+
+            if (Matches.Count() > 0)
+            {
+                foreach (var Item in Matches)
+                {
+                    var FieldName = Item.Groups["key"].Value;
+                    var Operator = Item.Groups["operator"].Value;
+                    var Value = Item.Groups["value"].Value;
+
+                    if (!filters.Any(i => i.FieldName == FieldName && i.Operator == Operator && i.Value == Value))
+                    {
+                        filters.Add(new DevExtremeGridFilterItem
+                        {
+                            FieldName = FieldName,
+                            Operator = Operator,
+                            Value = Value
+                        });
+                    }
+                }
+            }
 
             return filters;
         }
