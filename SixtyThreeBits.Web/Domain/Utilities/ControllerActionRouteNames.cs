@@ -229,7 +229,7 @@
                 #endregion                
             }
 
-            public static class ProductsPropertiesController
+            public static class ProductPropertiesController
             {
                 #region Properties
                 public const string Properties = "AdminProductsPropertiesControllerProperties";
@@ -343,7 +343,7 @@
                 #endregion
             }
 
-            public static class Home
+            public static class HomeController
             {
                 #region Properties
                 public const string Index = "WebsiteHomeIndex";

@@ -100,7 +100,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
     {
         #region Actions
         [HttpGet]
-        [Route("", Name = ControllerActionRouteNames.Admin.ProductsPropertiesController.Properties)]
+        [Route("", Name = ControllerActionRouteNames.Admin.ProductPropertiesController.Properties)]
         public async Task<IActionResult> Properties()
         {
             Model.PluginsClient.Enable63BitsForms(true).Enable63BitsFileUploader(true).EnableFancybox(true).EnableTinyMce(true).EnableJQueryNumericInput(true).EnableTemplate7(true).EnableSortableJS(true).Enable63BitsSuccessErrorToast(true);
@@ -123,7 +123,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
                 if (viewModel.IsValid)
                 {
                     Model.ShowSuccessToastNotification();
-                    result = Redirect(Url.RouteUrl(ControllerActionRouteNames.Admin.ProductsPropertiesController.Properties, new { productID = Model.DBItem.ProductID }));
+                    result = Redirect(Url.RouteUrl(ControllerActionRouteNames.Admin.ProductPropertiesController.Properties, new { productID = Model.DBItem.ProductID }));
                 }
                 else
                 {
@@ -139,7 +139,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         }
 
         [HttpPost]
-        [Route("images/upload", Name = ControllerActionRouteNames.Admin.ProductsPropertiesController.ProductImagesUpload)]
+        [Route("images/upload", Name = ControllerActionRouteNames.Admin.ProductPropertiesController.ProductImagesUpload)]
         public async Task<IActionResult> PropertiesImagesUpload()
         {
             var viewModel = await Model.UploadProductImages();
@@ -147,7 +147,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         }
 
         [HttpPost]
-        [Route("images/sort", Name = ControllerActionRouteNames.Admin.ProductsPropertiesController.ProductImagesSort)]
+        [Route("images/sort", Name = ControllerActionRouteNames.Admin.ProductPropertiesController.ProductImagesSort)]
         public async Task<IActionResult> PropertiesImagesSort(SyncSortIndexesSubmitModel submitModel)
         {
             var viewModel = await Model.SortProductImages(submitModel);
@@ -155,7 +155,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         }
 
         [HttpPost]
-        [Route("images/delete", Name = ControllerActionRouteNames.Admin.ProductsPropertiesController.ProductImagesDelete)]
+        [Route("images/delete", Name = ControllerActionRouteNames.Admin.ProductPropertiesController.ProductImagesDelete)]
         public async Task<IActionResult> PropertiesImagesDelete(ProductPropertiesModel.DeleteProductImageSubmitModel submitModel)
         {
             var viewModel = await Model.DeleteProductImages(submitModel);

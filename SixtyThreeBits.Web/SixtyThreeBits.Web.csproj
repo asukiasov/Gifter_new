@@ -15,9 +15,9 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="63BITS.Libraries.DotNetCore" Version="1.0.7" />
-    <PackageReference Include="DevExpress.AspNetCore.Reporting" Version="24.1.4" />
-    <PackageReference Include="DevExtreme.AspNet.Core" Version="24.1.4" />
-    <PackageReference Include="DevExtreme.AspNet.Data" Version="4.0.0" />
+    <PackageReference Include="DevExpress.AspNetCore.Reporting" Version="24.1.5" />
+    <PackageReference Include="DevExtreme.AspNet.Core" Version="24.1.5" />
+    <PackageReference Include="DevExtreme.AspNet.Data" Version="4.0.1" />
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="8.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>

@@ -41,7 +41,8 @@ namespace SixtyThreeBits.Core.Utilities
             SupportedCultures = SupportedLanguages.Select(item => item.Culture).ToList().AsReadOnly();
             SupportedLanguageStrings = SupportedLanguages.Select(item => item.LanguageCultureCode).ToList().AsReadOnly();
             SupportedLanguagesRegex = string.Join('|', SupportedLanguages.Select(item => item.LanguageCultureCode));
-            LanguageDefault = SupportedLanguages.FirstOrDefault(item => item.LanguageCultureCode == Enums.Languages.ENGLISH);
+
+            LanguageDefault = SupportedLanguages.FirstOrDefault(item => item.LanguageCultureCode == Enums.Languages.GEORGIAN);
         }
         #endregion
 

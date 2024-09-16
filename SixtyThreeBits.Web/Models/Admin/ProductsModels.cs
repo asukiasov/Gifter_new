@@ -71,7 +71,7 @@ namespace SixtyThreeBits.Web.Models.Admin
                 ProductRemainder = Item.ProductRemainder,
                 ProductIsFeatured = Item.ProductIsFeatured,
                 ProductCategoryID = Item.ProductCategoryID,
-                UrlProductsProperties = Url.RouteUrl(ControllerActionRouteNames.Admin.ProductsPropertiesController.Properties, new { productID = Item.ProductID })
+                UrlProductsProperties = Url.RouteUrl(ControllerActionRouteNames.Admin.ProductPropertiesController.Properties, new { productID = Item.ProductID })
             })
             .ToList();
             return viewModel;
@@ -308,9 +308,9 @@ namespace SixtyThreeBits.Web.Models.Admin
             })
             .ToList();
 
-            viewModel.UrlImageUpload = Url.RouteUrl(ControllerActionRouteNames.Admin.ProductsPropertiesController.ProductImagesUpload, new { productID = DBItem.ProductID });
-            viewModel.UrlImageSort = Url.RouteUrl(ControllerActionRouteNames.Admin.ProductsPropertiesController.ProductImagesSort, new { productID = DBItem.ProductID });
-            viewModel.UrlImageDelete = Url.RouteUrl(ControllerActionRouteNames.Admin.ProductsPropertiesController.ProductImagesDelete, new { productID = DBItem.ProductID });
+            viewModel.UrlImageUpload = Url.RouteUrl(ControllerActionRouteNames.Admin.ProductPropertiesController.ProductImagesUpload, new { productID = DBItem.ProductID });
+            viewModel.UrlImageSort = Url.RouteUrl(ControllerActionRouteNames.Admin.ProductPropertiesController.ProductImagesSort, new { productID = DBItem.ProductID });
+            viewModel.UrlImageDelete = Url.RouteUrl(ControllerActionRouteNames.Admin.ProductPropertiesController.ProductImagesDelete, new { productID = DBItem.ProductID });
 
             return viewModel;
         }
