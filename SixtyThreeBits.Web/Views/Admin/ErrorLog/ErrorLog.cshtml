@@ -1,0 +1,22 @@
+﻿@model ErrorLogModel.ViewModel
+<div class="card">
+    <div class="card-body">
+        <div class="row">
+            <div class="col">
+                <button type="button" class="btn btn-danger js-clear-button"><i class="fa-light fa-trash-can text-white"></i> @Html.Raw(Model.TextLogClear)</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card">
+    <div class="card-body">
+        <textarea class="form-control js_error_log_textarea" rows="20">@Html.Raw(Model.ErrorLogContents)</textarea>
+    </div>
+</div>
+@section FooterSection{
+    <script src="~/js/admin/errorlogs/errorlogs.js"></script>
+    <script>
+        model.urlClear = '@Html.Raw(Model.UrlClear)';
+        model.textLogClearConfirm = '@Html.Raw(Model.TextLogClearConfirm)';
+    </script>
+}

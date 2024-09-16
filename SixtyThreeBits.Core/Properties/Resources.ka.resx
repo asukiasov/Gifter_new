@@ -136,7 +136,7 @@
     <value>მოგესალმებით ადმინის მხარეს</value>
   </data>
   <data name="TextAllDevexpressGridFilterRaw" xml:space="preserve">
-    <value> </value>
+    <value>---</value>
   </data>
   <data name="TextAuthor" xml:space="preserve">
     <value>ავტორი</value>
@@ -251,6 +251,9 @@
   </data>
   <data name="TextFeatured" xml:space="preserve">
     <value>რჩეული</value>
+  </data>
+  <data name="TextFileUpload" xml:space="preserve">
+    <value>ფაილის ატვირთვა</value>
   </data>
   <data name="TextFirstname" xml:space="preserve">
     <value>სახელი</value>
@@ -405,12 +408,6 @@
   <data name="TextSend" xml:space="preserve">
     <value>გაგზავნა</value>
   </data>
-  <data name="TextSignIn" xml:space="preserve">
-    <value>შესვლა</value>
-  </data>
-  <data name="TextSignOut" xml:space="preserve">
-    <value>გასვლა</value>
-  </data>
   <data name="TextSlug" xml:space="preserve">
     <value>Slug</value>
   </data>
@@ -506,5 +503,17 @@
   </data>
   <data name="ValidationUserInvalidUsernameOrPassword" xml:space="preserve">
     <value>არასწორი სახელი ან პაროლი</value>
+  </data>
+  <data name="TextSignIn" xml:space="preserve">
+    <value>შესვლა</value>
+  </data>
+  <data name="TextSignOut" xml:space="preserve">
+    <value>გასვლა</value>
+  </data>
+  <data name="TextLogClear" xml:space="preserve">
+    <value>ლოგის გაწმენა</value>
+  </data>
+  <data name="TextLogClearConfirm" xml:space="preserve">
+    <value>ნამდვილად გსურთ ლოგების გაწმენდა?</value>
   </data>
 </root>

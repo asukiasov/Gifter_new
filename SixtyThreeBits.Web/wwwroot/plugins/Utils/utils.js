@@ -288,6 +288,11 @@
         return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
     },
 
+    reloadPage: function () {
+        window.location = document.URL.split('#')[0];
+    },
+
+
     secondsToHMS: function (totalSeconds, option) {
         if (totalSeconds >= 0) {
             switch (option) {

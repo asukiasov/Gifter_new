@@ -538,6 +538,24 @@ namespace SixtyThreeBits.Core.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Clear Log.
+        /// </summary>
+        public static string TextLogClear {
+            get {
+                return ResourceManager.GetString("TextLogClear", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do you really want to clear logs?.
+        /// </summary>
+        public static string TextLogClearConfirm {
+            get {
+                return ResourceManager.GetString("TextLogClearConfirm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Login.
         /// </summary>
         public static string TextLogin {
@@ -930,6 +948,24 @@ namespace SixtyThreeBits.Core.Properties {
         public static string TextSend {
             get {
                 return ResourceManager.GetString("TextSend", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Login.
+        /// </summary>
+        public static string TextSignIn {
+            get {
+                return ResourceManager.GetString("TextSignIn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Logout.
+        /// </summary>
+        public static string TextSignOut {
+            get {
+                return ResourceManager.GetString("TextSignOut", resourceCulture);
             }
         }
         

@@ -51,6 +51,13 @@
                 #endregion
             }
 
+            public static class ErrorLog
+            {
+                #region Properties
+                public const string ErrorLogView = "~/Views/Admin/ErrorLog/ErrorLog.cshtml";
+                #endregion
+            }
+
             public static class FileManager
             {
                 #region Properties

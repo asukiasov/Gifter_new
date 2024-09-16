@@ -504,4 +504,16 @@
   <data name="ValidationUserInvalidUsernameOrPassword" xml:space="preserve">
     <value>Invalid username or password</value>
   </data>
+  <data name="TextSignIn" xml:space="preserve">
+    <value>Login</value>
+  </data>
+  <data name="TextSignOut" xml:space="preserve">
+    <value>Logout</value>
+  </data>
+  <data name="TextLogClear" xml:space="preserve">
+    <value>Clear Log</value>
+  </data>
+  <data name="TextLogClearConfirm" xml:space="preserve">
+    <value>Do you really want to clear logs?</value>
+  </data>
 </root>

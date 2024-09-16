@@ -111,6 +111,13 @@ namespace SixtyThreeBits.Web
                 app.UseHsts();
                 
                 urlRewriteOptions.AddRedirectToNonWwwPermanent().AddRedirectToHttpsPermanent();
+
+                app.Use(async (context, next) =>
+                {
+                    context.Response.Headers.Append("X-Frame-Options", "SAMEORIGIN");
+                    context.Response.Headers.Append("Content-Security-Policy", "default-src 'self'; img-src 'self' *amazonaws.com; media-src *amazonaws.com;");
+                    await next();
+                });
             }
 
             app.UseRewriter(urlRewriteOptions);
@@ -121,12 +128,7 @@ namespace SixtyThreeBits.Web
                 FileProvider = new PhysicalFileProvider(_appSettings.UploadFolderPhysicalPath),
                 RequestPath = _appSettings.UploadFolderHttpPath.TrimEnd('/')
             });
-            app.Use(async (context, next) =>
-            {
-                context.Response.Headers.Append("X-Frame-Options", "SAMEORIGIN");
-                context.Response.Headers.Append("Content-Security-Policy", "default-src 'self'; img-src 'self' *amazonaws.com; media-src *amazonaws.com;");                
-                await next();
-            });
+            
             app.UseRouting();
             app.UseSession();
 

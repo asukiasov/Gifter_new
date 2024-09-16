@@ -85,6 +85,14 @@
                 #endregion
             }
 
+            public static class ErrorLogController
+            {
+                #region Properties
+                public const string ErrorLog = "AdminErrorLogControllerErrorLog";
+                public const string Clear = "AdminErrorLogControllerClear";
+                #endregion
+            }
+
             public static class FileManagerController
             {
                 #region Properties
