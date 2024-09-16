@@ -16,8 +16,13 @@
     showErrors: function () {
         $(validation.errorsJson).each(function (index, item) {
             const selector = item.Key;
+            const formGroup = $(selector).closest('.js_form_group');
+            const container = formGroup.length > 0 ? formGroup : $(selector).parent();
+
             $(selector).addClass('is-invalid');
-            $(selector).parent().find('.invalid-feedback').text(item.Value);
+            container.find('.invalid-feedback').text(item.Value);
+
+            formGroup.addClass('has-error');
         });
         $('.is-invalid').first().scrollToElement();
     },
@@ -31,6 +36,7 @@
     },
     hideErrors: function () {
         $('.is-invalid').removeClass('is-invalid');
+        $('.js_form_group').removeClass('has-error');
     },
     templates: {
         compile: function () {
