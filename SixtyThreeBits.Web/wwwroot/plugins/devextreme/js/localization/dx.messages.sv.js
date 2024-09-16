@@ -1,7 +1,7 @@
 /*!
 * DevExtreme (dx.messages.sv.js)
-* Version: 23.2.4
-* Build date: Mon Jan 29 2024
+* Version: 24.1.4
+* Build date: Mon Jul 15 2024
 *
 * Copyright (c) 2012 - 2024 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -60,6 +60,8 @@
             "dxList-pageLoadingText": "Laddar...",
             "dxList-nextButtonText": "Mer",
             "dxList-selectAll": "V\xe4lj alla",
+            "dxList-listAriaLabel": "Items",
+            "dxList-listAriaLabel-deletable": "Deletable items",
             "dxListEditDecorator-delete": "Radera",
             "dxListEditDecorator-more": "Mer",
             "dxScrollView-pullingDownText": "Dra ner\xe5t f\xf6r att uppdatera...",
@@ -198,6 +200,7 @@
             "dxDataGrid-filterPanelCreateFilter": "Skapa filter",
             "dxDataGrid-filterPanelClearFilter": "Rensa",
             "dxDataGrid-filterPanelFilterEnabledHint": "Aktivera filter",
+            "dxDataGrid-masterDetail": "Cell with details",
             "dxTreeList-ariaTreeList": "Tree list with {0} rows and {1} columns",
             "dxTreeList-ariaSearchInGrid": "Search in the tree list",
             "dxTreeList-ariaToolbar": "Tree list toolbar",
@@ -277,6 +280,10 @@
             "dxScheduler-confirmRecurrenceDeleteOccurrence": "Radera avtalad tid",
             "dxScheduler-noTimezoneTitle": "Ingen tidszon",
             "dxScheduler-moreAppointments": "{0} mer",
+            "dxCalendar-currentDay": "Today",
+            "dxCalendar-currentMonth": "Current month",
+            "dxCalendar-currentYear": "Current year",
+            "dxCalendar-currentYearRange": "Current year range",
             "dxCalendar-todayButtonText": "I dag",
             "dxCalendar-ariaWidgetName": "Kalender",
             "dxCalendar-previousMonthButtonLabel": "Previous month",
@@ -291,6 +298,8 @@
             "dxCalendar-captionYearLabel": "Year selection",
             "dxCalendar-captionDecadeLabel": "Decade selection",
             "dxCalendar-captionCenturyLabel": "Century selection",
+            "dxCalendar-selectedDate": "The selected date is {0}",
+            "dxCalendar-selectedDateRange": "The selected date range is from {0} to {1}",
             "dxColorView-ariaRed": "R\xf6d",
             "dxColorView-ariaGreen": "Gr\xf6n",
             "dxColorView-ariaBlue": "Bl\xe5",
@@ -299,6 +308,7 @@
             "dxTagBox-selected": "{0} valda",
             "dxTagBox-allSelected": "Alla valda ({0})",
             "dxTagBox-moreSelected": "{0} mer",
+            "dxTagBox-tagRoleDescription": "Tag. Press the delete button to remove this tag",
             "vizExport-printingButtonText": "Skriv ut",
             "vizExport-titleMenuText": "Export/Utskrift",
             "vizExport-exportButtonText": "{0} fil",
@@ -683,7 +693,8 @@
             "dxMultiView-elementAriaRoleDescription": "MultiView",
             "dxMultiView-elementAriaLabel": "Use the arrow keys or swipe to navigate between views",
             "dxMultiView-itemAriaRoleDescription": "View",
-            "dxMultiView-itemAriaLabel": "{0} of {1}"
+            "dxMultiView-itemAriaLabel": "{0} of {1}",
+            "dxSplitter-resizeHandleAriaLabel": "Split bar"
         }
     })
 }));

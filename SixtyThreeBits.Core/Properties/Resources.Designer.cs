@@ -79,6 +79,24 @@ namespace SixtyThreeBits.Core.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Address.
+        /// </summary>
+        public static string TextAddress {
+            get {
+                return ResourceManager.GetString("TextAddress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Administrator Emails. Comma separated.
+        /// </summary>
+        public static string TextAdminEmails {
+            get {
+                return ResourceManager.GetString("TextAdminEmails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please sign in to continue for administration.
         /// </summary>
         public static string TextAdminWelcomeSubTitle {
@@ -241,6 +259,15 @@ namespace SixtyThreeBits.Core.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Do you really want to delete this parent record with all its children? Please type word &quot;delete&quot; to confirm..
+        /// </summary>
+        public static string TextConfirmDeleteRecursiveWithTypeDelete {
+            get {
+                return ResourceManager.GetString("TextConfirmDeleteRecursiveWithTypeDelete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Contact Address.
         /// </summary>
         public static string TextContactAddress {
@@ -259,11 +286,29 @@ namespace SixtyThreeBits.Core.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Your message has been sent successfully.
+        /// </summary>
+        public static string TextContactFormSuccess {
+            get {
+                return ResourceManager.GetString("TextContactFormSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Contact Phone.
         /// </summary>
         public static string TextContactPhone {
             get {
                 return ResourceManager.GetString("TextContactPhone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Contact Us.
+        /// </summary>
+        public static string TextContactUs {
+            get {
+                return ResourceManager.GetString("TextContactUs", resourceCulture);
             }
         }
         
@@ -327,6 +372,15 @@ namespace SixtyThreeBits.Core.Properties {
         public static string TextDescriptionShortEng {
             get {
                 return ResourceManager.GetString("TextDescriptionShortEng", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Developer Emails, Comma Separated.
+        /// </summary>
+        public static string TextDeveloperEmails {
+            get {
+                return ResourceManager.GetString("TextDeveloperEmails", resourceCulture);
             }
         }
         
@@ -538,6 +592,15 @@ namespace SixtyThreeBits.Core.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Message.
+        /// </summary>
+        public static string TextMessage {
+            get {
+                return ResourceManager.GetString("TextMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Name.
         /// </summary>
         public static string TextName {
@@ -570,6 +633,42 @@ namespace SixtyThreeBits.Core.Properties {
         public static string TextNo {
             get {
                 return ResourceManager.GetString("TextNo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open in new tab.
+        /// </summary>
+        public static string TextOpenInNewTab {
+            get {
+                return ResourceManager.GetString("TextOpenInNewTab", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Page External Url.
+        /// </summary>
+        public static string TextPageExternalUrl {
+            get {
+                return ResourceManager.GetString("TextPageExternalUrl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Internal Page.
+        /// </summary>
+        public static string TextPageInternal {
+            get {
+                return ResourceManager.GetString("TextPageInternal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to External Page.
+        /// </summary>
+        public static string TextPageIsExternal {
+            get {
+                return ResourceManager.GetString("TextPageIsExternal", resourceCulture);
             }
         }
         
@@ -646,6 +745,15 @@ namespace SixtyThreeBits.Core.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Phone.
+        /// </summary>
+        public static string TextPhone {
+            get {
+                return ResourceManager.GetString("TextPhone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cell number.
         /// </summary>
         public static string TextPhoneCell {
@@ -678,6 +786,15 @@ namespace SixtyThreeBits.Core.Properties {
         public static string TextPrev {
             get {
                 return ResourceManager.GetString("TextPrev", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Preview.
+        /// </summary>
+        public static string TextPreview {
+            get {
+                return ResourceManager.GetString("TextPreview", resourceCulture);
             }
         }
         
@@ -804,6 +921,15 @@ namespace SixtyThreeBits.Core.Properties {
         public static string TextSave {
             get {
                 return ResourceManager.GetString("TextSave", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Send.
+        /// </summary>
+        public static string TextSend {
+            get {
+                return ResourceManager.GetString("TextSend", resourceCulture);
             }
         }
         
@@ -952,6 +1078,15 @@ namespace SixtyThreeBits.Core.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Page slug is not unique.
+        /// </summary>
+        public static string ValidationPagesSlugNotUniq {
+            get {
+                return ResourceManager.GetString("ValidationPagesSlugNotUniq", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Password length must be more then 8 symbols.
         /// </summary>
         public static string ValidationPasswordLength {
@@ -1029,6 +1164,15 @@ namespace SixtyThreeBits.Core.Properties {
         public static string ValidationProductRemainderRequired {
             get {
                 return ResourceManager.GetString("ValidationProductRemainderRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to reCaptcha validation failed.
+        /// </summary>
+        public static string ValidationRecaptchaInvalid {
+            get {
+                return ResourceManager.GetString("ValidationRecaptchaInvalid", resourceCulture);
             }
         }
         

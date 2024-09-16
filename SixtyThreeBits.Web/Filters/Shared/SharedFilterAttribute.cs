@@ -3,30 +3,36 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
 using SixtyThreeBits.Core.DTO;
-using SixtyThreeBits.Core.Infrastructure.Factories;
+using SixtyThreeBits.Core.Infrastructure.Repositories;
+using SixtyThreeBits.Core.Libraries;
+using SixtyThreeBits.Core.Libraries.EmailClients.Factory;
 using SixtyThreeBits.Core.Libraries.FileStorages;
 using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries.Extensions;
-using SixtyThreeBits.Web.Domain;
 using SixtyThreeBits.Web.Domain.Libraries;
-using SixtyThreeBits.Web.Domain.SharedViewModels;
-using SixtyThreeBits.Web.Models.Shared;
+using SixtyThreeBits.Web.Domain.Utilities;
+using SixtyThreeBits.Web.Domain.ViewModels.Base;
+using SixtyThreeBits.Web.Domain.ViewModels.Shared;
+using SixtyThreeBits.Web.Models.Base;
 using System.Threading.Tasks;
 
 namespace SixtyThreeBits.Web.Filters.Shared
 {
     public class SharedFilterAttribute : IAsyncActionFilter
     {
+        #region Properties
         AppSettingsCollection _appSettings;
         UtilityCollection _utilities;
-        RepositoryFactory _dataAccessFactory;
+        RepositoryFactory _repositoryFactory;
         ModelBase _model;
+        #endregion
 
-        public SharedFilterAttribute(AppSettingsCollection appSettings, UtilityCollection utilities, RepositoryFactory dataAccessFactory)
+        #region Methods
+        public SharedFilterAttribute(AppSettingsCollection appSettings, UtilityCollection utilities, RepositoryFactory repositoryFactory)
         {
             _appSettings = appSettings;
             _utilities = utilities;
-            _dataAccessFactory = dataAccessFactory;
+            _repositoryFactory = repositoryFactory;
         }
 
         public async Task OnActionExecutionAsync(ActionExecutingContext filterContext, ActionExecutionDelegate next)
@@ -35,72 +41,83 @@ namespace SixtyThreeBits.Web.Filters.Shared
             _model = WebUtilities.GetModelFromController<ModelBase>(c);
             if (_model != null)
             {
-                _model.AppSettings = _appSettings;
-                _model.Utilities = _utilities;
-                _model.RepositoriesFactory = _dataAccessFactory;
-
-                var ActionDescriptor = filterContext.ActionDescriptor as ControllerActionDescriptor;
-
-                _model.ActionName = ActionDescriptor.ActionName;
-                _model.ControllerName = ActionDescriptor.ControllerTypeInfo.Name;
-
-                _model.WebsiteDomain = WebUtilities.GetWebsiteDomain(c.Request);
-                _model.UrlCurrentPageWithoutDomain = c.Request.Path;
-                _model.UrlCurrentPageWithDomain = $"{_model.WebsiteDomain}{c.Request.Path}";
-
-                _model.IsHttps = c.Request.IsHttps;
-                _model.IP = WebUtilities.GetClientIP(c.Request);
-
-                _model.SessionAssistance = new SessionAssistance(c.HttpContext.Session);
-                _model.CookieAssistance = new CookieAssistance(c.Request, c.Response);
-                _model.Url = c.Url;
-                _model.Request = c.Request;
-                _model.Response = c.Response;
-                _model.UrlPreviousPage = _model.Request.Headers["Referer"].ToString();
-                _model.Form = new FormViewModelBase();
-
-
-
-                _model.LanguageCultureCode = _model.Request.HttpContext.Features.Get<IRequestCultureFeature>().RequestCulture.Culture.Name;
-
-                _model.PluginsClient = new PluginsClient(_model.LanguageCultureCode);
-
-                await InitSystemProperties();
-                InitFileStorage();
-                await InitUser();
+                initCulture(c);
+                initModelBaseProperties(filterContext, c);
+                await initSystemProperties();
+                initFileStorage();
+                initNotificationManager();
+                initPluginsClient();
+                await initUser();                
                 await next();
             }
         }
 
-        async Task InitUser()
+        void initCulture(Controller c)
+        {
+            _model.LanguageCultureCode = c.Request.HttpContext.Features.Get<IRequestCultureFeature>().RequestCulture.Culture.Name;
+        }
+
+        void initModelBaseProperties(ActionExecutingContext filterContext, Controller c)
+        {
+            var actionDescriptor = filterContext.ActionDescriptor as ControllerActionDescriptor;
+
+            _model.AppSettings = _appSettings;
+            _model.Utilities = _utilities;
+            _model.RepositoriesFactory = _repositoryFactory;
+            
+            _model.Controller = c;
+            _model.ActionName = actionDescriptor.ActionName;
+            _model.ControllerName = actionDescriptor.ControllerTypeInfo.Name;
+
+            _model.WebsiteDomain = WebUtilities.GetWebsiteDomain(c.Request);
+            _model.UrlCurrentPageWithoutDomain = c.Request.Path;
+            _model.UrlCurrentPageWithDomain = $"{_model.WebsiteDomain}{c.Request.Path}";
+
+            _model.IsHttps = c.Request.IsHttps;
+            _model.IsAjaxRequest = c.Request.Headers["X-Requested-With"] == "XMLHttpRequest";
+            _model.IP = WebUtilities.GetClientIP(c.Request);
+
+            _model.SessionAssistance = new SessionAssistance(c.HttpContext.Session);
+            _model.CookieAssistance = new CookieAssistance(c.Request, c.Response);
+            _model.Url = c.Url;
+            _model.Request = c.Request;
+            _model.Response = c.Response;
+            _model.UrlPreviousPage = _model.Request.Headers["Referer"].ToString();
+            _model.Form = new FormViewModelBase();            
+        }
+
+        async Task initUser()
         {
             _model.User = _model.SessionAssistance.Get<UserDTO>(WebConstants.Session.User);
 
             if (_model.User == null)
             {
-                var userIDEncrypted = _model.CookieAssistance.Get<string>(WebConstants.Cookies.User);
+                var userIDEncrypted = _model.CookieAssistance.Get(WebConstants.Cookies.User);
                 var userID = userIDEncrypted.AesDecryptString().ToInt();
                 if (userID != null)
                 {
-                    var repository = _dataAccessFactory.GetUsersRepository();
+                    var repository = _repositoryFactory.CreateUsersRepository();
                     _model.User = await repository.UsersGetSingleByID(userID);
-                    _model.SessionAssistance.Set(WebConstants.Session.User, _model.User);
+                    if (_model.User != null)
+                    {
+                        _model.SessionAssistance.Set(WebConstants.Session.User, _model.User);
+                    }
                 }
             }
         }
 
-        async Task InitSystemProperties()
+        async Task initSystemProperties()
         {
-            var repository = _dataAccessFactory.GetSystemPropertiesRepository();
+            var repository = _repositoryFactory.CreateSystemPropertiesRepository();
             _model.SystemProperties = await repository.SystemPropertiesGet();
         }
 
-        void InitFileStorage()
+        void initFileStorage()
         {
             _model.FileStorage = new LocalFileStorage(
                 uploadFolderPhysicalPath: _appSettings.UploadFolderPhysicalPath,
                 uploadFolderHttpPath: _appSettings.UploadFolderHttpPath,
-                noImageHttpPath: "/images/no-image.jpg",
+                noImageHttpPath: "/images/no_photo.jpg",
                 websiteDomain: _model.WebsiteDomain
            );
 
@@ -109,15 +126,31 @@ namespace SixtyThreeBits.Web.Filters.Shared
             //    awsSecretAccessKey: _model.SystemProperties.AwsSecretAccessKey,
             //    awsS3RegionSystemName: _model.SystemProperties.AwsS3RegionSystemName,
             //    awsS3BucketNamePublic: _model.SystemProperties.AwsS3BucketNamePublic,
-            //    noImageHttpPath: "/images/no-image.jpg"
+            //    noImageHttpPath: "/images/no_photo.jpg"
             //);
 
             //_model.FileStorage = new AzureFileStorage(
             //    azureBlobStorageConnectionString: _model.SystemProperties.AzureConnectionString,
             //    azureBlobStorageContainerName: _model.SystemProperties.AzureBlobStorageContainerName,
-            //    noImageHttpPath: "/images/no-image.jpg"
+            //    noImageHttpPath: "/images/no_photo.jpg"
             //);
         }
+
+        void initNotificationManager()
+        {
+            _model.NotificationManager = new NotificationManager(
+                emailTemplatesRepository: _model.RepositoriesFactory.CreateEmailTemplatesRepository(),
+                utilities: _model.Utilities,
+                email: EmailClientFactory.GetEmailClientBySystemProperties(_model.SystemProperties),
+                websiteHttpPath: _model.WebsiteHttpPath,
+                languageCultureCode: _model.LanguageCultureCode
+            );
+        }
+
+        void initPluginsClient()
+        {
+            _model.PluginsClient = new PluginsClientViewModel(languageCultureCode: _model.LanguageCultureCode, recaptchaSiteKey: _model.SystemProperties.ReCaptchaSiteKey);
+        }
+        #endregion
     }
 }
-

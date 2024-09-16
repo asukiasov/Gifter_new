@@ -1,12 +1,10 @@
-﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using SixtyThreeBits.Core.DTO;
 using SixtyThreeBits.Core.Infrastructure.Database;
-using SixtyThreeBits.Core.Infrastructure.Factories;
-using SixtyThreeBits.Core.Infrastructure.Repositories.Base;
 using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries.Extensions;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -15,12 +13,8 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
     public class TeamMembersRepository : RepositoryBase
     {
         #region Constructors
-        public TeamMembersRepository(ConnectionFactory connectionFactory) : base(connectionFactory)
-        {
-            _mapper = new MapperConfiguration(cfg =>
-            {
-                cfg.CreateMap<DbContextQueries.TeamMembersListEntity, TeamMemberDTO>();
-            }).CreateMapper();
+        public TeamMembersRepository(DbContextFactory dbContextFactory) : base(dbContextFactory)
+        {            
         }
         #endregion
 
@@ -31,37 +25,49 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 logString: $"{nameof(TeamMembersGetSingleByID)}({nameof(teamMemberID)} = {teamMemberID})", 
                 asyncFuncToTry: async () =>
                 {
-                    using (var db = _connectionFactory.GetDbContextQueries())
+                    using (var dbContext = _dbContextFactory.CreateDbContext())
                     {
-                        var resultJson = await db.TeamMembersGetSingleByID(teamMemberID: teamMemberID);
-                        var result = resultJson?.DeserializeJsonTo<TeamMemberDTO>();
-                        return result;
+                        var sqb = new SqlQueryBuilder(
+                            dbContext: dbContext,
+                            databaseObjectName: nameof(TeamMembersGetSingleByID),
+                            sqlParameters:
+                            [
+                                teamMemberID.ToSqlParameter(nameof(teamMemberID), SqlDbType.Int)
+                            ]
+                        );
+
+                        var resultJson = await sqb.ExecuteScalarValuedFunction<string>();
+                        var result = resultJson.DeserializeJsonTo<TeamMemberDTO>();
+                        return result;                        
                     }
                 }
             );
             return result;
         }
 
-        public async Task<int?> TeamMembersIUD(Enums.DatabaseActions databaseAction, int? teamMemberID = null, string teamMemberFirstname = null, string teamMemberLastName = null, string teamMemberPosition = null, string teamMemberShortDescription = null, string teamMemberLongDescription = null, string teamMemberImageFilename = null, bool? teamMemberIsPublished = null, int? teamMemberCategoryID = null)
+        public async Task<int?> TeamMembersIUD(Enums.DatabaseActions databaseAction, int? teamMemberID, TeamMemberIudDTO teamMember)
         {
+            var teamMemberJson = teamMember.ToJson();
+
             teamMemberID = await TryToReturnAsyncTask(
-                logString: $"{nameof(TeamMembersIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(teamMemberID)} = {teamMemberID}, {nameof(teamMemberFirstname)} = {teamMemberFirstname}, {nameof(teamMemberLastName)} = {teamMemberLastName}, {nameof(teamMemberPosition)} = {teamMemberPosition}), {nameof(teamMemberShortDescription)} = {teamMemberShortDescription}, {nameof(teamMemberLongDescription)} = {teamMemberLongDescription},{nameof(teamMemberImageFilename)} = {teamMemberImageFilename},{nameof(teamMemberIsPublished)} = {teamMemberIsPublished}, {nameof(teamMemberCategoryID)} = {teamMemberCategoryID}", 
+                logString: $"{nameof(TeamMembersIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(teamMemberID)} = {teamMemberID}, {nameof(teamMemberJson)} = {teamMemberJson})", 
                 asyncFuncToTry: async () =>
                 {
-                    using (var db = _connectionFactory.GetDbContextCommands())
+                    using (var dbContext = _dbContextFactory.CreateDbContext())
                     {
-                        teamMemberID = await db.TeamMembersIUD(
-                            databaseAction: databaseAction, 
-                            teamMemberID: teamMemberID,
-                            teamMemberFirstname: teamMemberFirstname, 
-                            teamMemberLastName: teamMemberLastName, 
-                            teamMemberPosition: teamMemberPosition, 
-                            teamMemberShortDescription: teamMemberShortDescription, 
-                            teamMemberLongDescription: teamMemberLongDescription, 
-                            teamMemberImageFilename: teamMemberImageFilename, 
-                            teamMemberIsPublished: teamMemberIsPublished, 
-                            teamMemberCategoryID: teamMemberCategoryID
+                        var sqb = new SqlQueryBuilder(
+                            dbContext: dbContext,
+                            databaseObjectName: nameof(TeamMembersIUD),
+                            sqlParameters:
+                            [
+                                databaseAction.ToSqlParameter(nameof(databaseAction), SqlDbType.TinyInt),
+                                teamMemberID.ToSqlParameterOutput(nameof(teamMemberID), SqlDbType.Int),
+                                teamMemberJson.ToSqlParameter(nameof(teamMemberJson), SqlDbType.NVarChar)                                
+                            ]
                         );
+
+                        await sqb.ExecuteStoredProcedure();
+                        teamMemberID = sqb.GetNextOutputParameterValue<int?>();
                         return teamMemberID;
                     }
                 }
@@ -69,21 +75,23 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
             return teamMemberID;
         }
 
-        public async Task<List<TeamMemberDTO>> TeamMembersList()
+        public async Task<List<TeamMembersListDTO>> TeamMembersList()
         {
             var result = await TryToReturnAsyncTask(
                 logString: $"{nameof(TeamMembersList)}()", 
                 asyncFuncToTry: async () =>
                 {
-                    using (var db = _connectionFactory.GetDbContextQueries())
+                    using (var dbContext = _dbContextFactory.CreateDbContext())
                     {
-                        var result = (
-                            await db.TeamMembersList()
-                            .OrderByDescending(item => item.TeamMemberDateCreated)
-                            .ToListAsync()
-                        )
-                        ?.Select(item => _mapper.Map<TeamMemberDTO>(item))
-                        .ToList();
+                        var sqb = new SqlQueryBuilder(
+                            dbContext: dbContext,
+                            databaseObjectName: nameof(TeamMembersList)
+                        );
+
+                        var resultQueryable = sqb.ExecuteTableValuedFunction<TeamMembersListDTO>();
+                        resultQueryable = resultQueryable.OrderByDescending(item => item.TeamMemberDateCreated);
+                        var result = await resultQueryable.ToListAsync();
+                        
                         return result;
                     }
                 }
@@ -98,9 +106,17 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 logString: $"{nameof(TeamMembersSyncSortIndexes)}({nameof(sortIndexes)} = {sortIndexesJson})", 
                 asyncFuncToTry: async () =>
                 {
-                    using (var db = _connectionFactory.GetDbContextCommands())
+                    using (var dbContext = _dbContextFactory.CreateDbContext())
                     {
-                        await db.TeamMembersSyncSortIndexes(sortIndexesJson: sortIndexesJson);
+                        var sqb = new SqlQueryBuilder(
+                            dbContext: dbContext,
+                            databaseObjectName: nameof(TeamMembersSyncSortIndexes),
+                            sqlParameters:
+                            [
+                                sortIndexesJson.ToSqlParameter(nameof(sortIndexesJson), SqlDbType.NVarChar)
+                            ]
+                        );
+                        await sqb.ExecuteStoredProcedure();
                     }
                 }
             );

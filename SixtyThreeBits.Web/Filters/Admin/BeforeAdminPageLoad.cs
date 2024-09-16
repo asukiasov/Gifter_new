@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using SixtyThreeBits.Core.Utilities;
-using SixtyThreeBits.Web.Domain;
+using SixtyThreeBits.Core.Libraries;
+using SixtyThreeBits.Libraries.Extensions;
 using SixtyThreeBits.Web.Domain.Libraries;
-using SixtyThreeBits.Web.Domain.SharedViewModels;
-using SixtyThreeBits.Web.Models.Admin;
-using SixtyThreeBits.Web.Models.Shared;
+using SixtyThreeBits.Web.Domain.Utilities;
+using SixtyThreeBits.Web.Domain.ViewModels.Admin;
+using SixtyThreeBits.Web.Domain.ViewModels.Shared;
+using SixtyThreeBits.Web.Models.Base;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -31,16 +32,19 @@ namespace SixtyThreeBits.Web.Filters.Admin
                 var hasPermission = hasUserPermission();
                 if (hasPermission)
                 {
-                    initStartUp();
-                    initLanguage();
-                    initClientPlugins();
-                    initMenu();
-                    initBreadCrumbs();
-                    initTabs();
-                    initPageTitle();
-                    initSuccessErrorMessage();
-                    initSidebar();
-                    WebUtilities.SetLayoutViewModel(viewData: c.ViewData, viewModel: _viewModel, key: WebConstants.ViewData.LayoutViewModel);
+                    if (!_model.IsAjaxRequest)
+                    {
+                        initStartUp();
+                        initLanguage();
+                        initClientPlugins();
+                        initMenu();
+                        initBreadCrumbs();
+                        initTabs();
+                        initPageTitle();
+                        initSuccessErrorToast();
+                        initSidebar();
+                        WebUtilities.SetLayoutViewModel(viewData: c.ViewData, viewModel: _viewModel, key: WebConstants.ViewData.LayoutViewModel);
+                    }
                     await next();
                 }
                 else
@@ -50,7 +54,7 @@ namespace SixtyThreeBits.Web.Filters.Admin
             }
             else
             {
-                var urlLogin = _model.Url.RouteUrl(ControllerActionRouteNames.Admin.Auth.Login);
+                var urlLogin = _model.Url.RouteUrl(ControllerActionRouteNames.Admin.AuthController.Login);
                 filterContext.Result = new RedirectResult(urlLogin);
             }
         }
@@ -85,6 +89,7 @@ namespace SixtyThreeBits.Web.Filters.Admin
             .EnablePreloader(true)
             .Enable63BitsComponents(true)
             .EnableMetisMenu(true)
+            .Enable63BitsAnalogClock(true)
             .EnableUtils(true);
 
             _viewModel.PluginsClient = _model.PluginsClient;
@@ -96,18 +101,18 @@ namespace SixtyThreeBits.Web.Filters.Admin
             {
                 _viewModel.Menu = _model.User.Permissions
                 .Where(item => item.PermissionIsMenuItem && item.PermissionParentID == null)
-                .Select(item => new ProjectMenuItem
+                .Select(item => new ProjectMenuViewItem
                 {
-                    Caption = _model.Utilities.GetValuesByLanguage(_model.LanguageCultureCode, item.HasPermissionMenuTitle ? item.PermissionMenuTitle : item.PermissionCaption, item.HasPermissionMenuTitleEng ? item.PermissionMenuTitleEng : item.PermissionCaptionEng),
+                    Caption = _model.Utilities.GetValuesByLanguage(_model.LanguageCultureCode, item.PermissionMenuTitleOrCaption, item.PermissionMenuTitleOrCaptionEng),
                     NavigateUrl = string.IsNullOrWhiteSpace(item.PermissionPagePath) ? item.PermissionCode : item.PermissionPagePath,
                     Icon = item.PermissionMenuIcon,
                     IsSelected = item.PermissionPagePath == _model.UrlCurrentPageWithoutDomain,
-                    Children = _model.User.Permissions.Where(subItem => subItem.PermissionIsMenuItem && subItem.PermissionParentID == item.PermissionID).Select(SubItem => new ProjectMenuItem
+                    Children = _model.User.Permissions.Where(subItem => subItem.PermissionIsMenuItem && subItem.PermissionParentID == item.PermissionID).Select(subItem => new ProjectMenuViewItem
                     {
-                        Caption = _model.Utilities.GetValuesByLanguage(_model.LanguageCultureCode, SubItem.HasPermissionMenuTitle ? SubItem.PermissionMenuTitle : SubItem.PermissionCaption, SubItem.HasPermissionMenuTitleEng ? SubItem.PermissionMenuTitleEng : SubItem.PermissionCaptionEng),
-                        NavigateUrl = SubItem.PermissionPagePath,
-                        Icon = SubItem.PermissionMenuIcon,
-                        IsSelected = SubItem.PermissionPagePath == _model.UrlCurrentPageWithoutDomain
+                        Caption = _model.Utilities.GetValuesByLanguage(_model.LanguageCultureCode, subItem.PermissionMenuTitleOrCaption, subItem.PermissionMenuTitleOrCaptionEng),
+                        NavigateUrl = subItem.PermissionPagePath,
+                        Icon = subItem.PermissionMenuIcon,
+                        IsSelected = subItem.PermissionPagePath == _model.UrlCurrentPageWithoutDomain
                     }).ToList()
                 }).ToList();
 
@@ -120,8 +125,8 @@ namespace SixtyThreeBits.Web.Filters.Admin
                 });
             }
 
-            _viewModel.UrlRelogin = _model.Url.RouteUrl(ControllerActionRouteNames.Admin.Auth.Relogin);
-            _viewModel.UrlLogout = _model.Url.RouteUrl(ControllerActionRouteNames.Admin.Auth.Logout);
+            _viewModel.UrlRelogin = _model.Url.RouteUrl(ControllerActionRouteNames.Admin.AuthController.Relogin);
+            _viewModel.UrlLogout = _model.Url.RouteUrl(ControllerActionRouteNames.Admin.AuthController.Logout);
         }
 
         void initBreadCrumbs()
@@ -131,7 +136,7 @@ namespace SixtyThreeBits.Web.Filters.Admin
                 ID = item.PermissionID,
                 ParentID = item.PermissionParentID,
                 PageHttpPath = item.PermissionPagePath,
-                PageTitle = _model.Utilities.GetValuesByLanguage(_model.LanguageCultureCode, item.PermissionCaption, item.PermissionCaptionEng),
+                PageTitle = _model.Utilities.GetValuesByLanguage(_model.LanguageCultureCode, item.PermissionMenuTitleOrCaption, item.PermissionMenuTitleOrCaptionEng),
             }).ToList();
 
             _viewModel.Breadcrumbs = _model.Breadcrumbs = new Breadcrumbs();
@@ -153,17 +158,17 @@ namespace SixtyThreeBits.Web.Filters.Admin
             var p = _model.User.GetPermission(_model.UrlCurrentPageWithoutDomain);
             if (p != null)
             {
-                _model.PageTitle.Set(_model.Utilities.GetValuesByLanguage(_model.LanguageCultureCode, p.PermissionCaption, p.PermissionCaptionEng));
+                _model.PageTitle.Set(_model.Utilities.GetValuesByLanguage(_model.LanguageCultureCode, p.PermissionMenuTitleOrCaption, p.PermissionMenuTitleOrCaptionEng));
             }
         }
 
         void initSidebar()
         {
             _viewModel.IsSidebarCollapsed = _model.IsSidebarCollapsed = new ValueWrapper<bool>();
-            _model.IsSidebarCollapsed.Value = _model.CookieAssistance.Get<bool>(key: WebConstants.Cookies.IsAdminSideBarCollapsed);
+            _model.IsSidebarCollapsed.Value = _model.CookieAssistance.Get(key: WebConstants.Cookies.IsAdminSideBarCollapsed).ToBooleanValue();
         }
 
-        void initSuccessErrorMessage()
+        void initSuccessErrorToast()
         {
             _model.InitSuccessErrorToastNotificationPartialViewModel();
             _viewModel.SuccessErrorPartialViewModel = _model.SuccessErrorPartialViewModel;
@@ -179,7 +184,7 @@ namespace SixtyThreeBits.Web.Filters.Admin
                 LanguageCultureCode = item.LanguageCultureCode,
                 LanguageName = item.LanguageName,
                 IsActive = item.LanguageCultureCode == language.LanguageCultureCode,
-                UrlChangeLanguage = _model.Url.RouteUrl(ControllerActionRouteNames.Admin.ChangeLanguage.Page, new { Culture = item.LanguageCultureCode })
+                UrlChangeLanguage = _model.Url.RouteUrl(ControllerActionRouteNames.Admin.ChangeLanguageController.ChangeLanguage, new { Culture = item.LanguageCultureCode })
             }).ToList();
         }
         #endregion

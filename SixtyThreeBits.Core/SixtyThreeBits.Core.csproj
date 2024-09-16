@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Infrastructure\Services\GoogleServices.cs" />
     <Compile Remove="Infrastructure\Services\Mega.cs" />
     <Compile Remove="Infrastructure\Services\TinifyService.cs" />
   </ItemGroup>
@@ -18,16 +19,16 @@
   <ItemGroup>
     <PackageReference Include="63BITS.Libraries.DotNetCore" Version="1.0.7" />
     <PackageReference Include="AutoMapper" Version="13.0.1" />
-    <PackageReference Include="AWSSDK.S3" Version="3.7.305.24" />
-    <PackageReference Include="Azure.Storage.Blobs" Version="12.19.1" />
-    <PackageReference Include="EPPlus" Version="7.0.8" />
-    <PackageReference Include="ExcelDataReader" Version="3.6.0" />
-    <PackageReference Include="Imageflow.AllPlatforms" Version="0.12.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.1" />
-    <PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="3.0.0" />
+    <PackageReference Include="AWSSDK.S3" Version="3.7.400.2" />
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.21.1" />
+    <PackageReference Include="EPPlus" Version="7.2.2" />
+    <PackageReference Include="ExcelDataReader" Version="3.7.0" />
+    <PackageReference Include="Imageflow.AllPlatforms" Version="0.13.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.7" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.7" />
+    <PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="3.0.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="RestSharp" Version="110.2.0" />
+    <PackageReference Include="RestSharp" Version="111.4.1" />
   </ItemGroup>
 
   <ItemGroup>

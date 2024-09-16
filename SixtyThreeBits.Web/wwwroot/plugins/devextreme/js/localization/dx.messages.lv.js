@@ -1,7 +1,7 @@
 /*!
 * DevExtreme (dx.messages.lv.js)
-* Version: 23.2.4
-* Build date: Mon Jan 29 2024
+* Version: 24.1.4
+* Build date: Mon Jul 15 2024
 *
 * Copyright (c) 2012 - 2024 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -60,6 +60,8 @@
             "dxList-pageLoadingText": "L\u0101d\u0113...",
             "dxList-nextButtonText": "Vair\u0101k",
             "dxList-selectAll": "Izv\u0113l\u0113ties visu",
+            "dxList-listAriaLabel": "Items",
+            "dxList-listAriaLabel-deletable": "Deletable items",
             "dxListEditDecorator-delete": "Dz\u0113st",
             "dxListEditDecorator-more": "Vair\u0101k",
             "dxScrollView-pullingDownText": "Vilkt lej\u0101 lai atjaunotu...",
@@ -198,6 +200,7 @@
             "dxDataGrid-filterPanelCreateFilter": "Izveidot filtru",
             "dxDataGrid-filterPanelClearFilter": "Not\u012br\u012bt",
             "dxDataGrid-filterPanelFilterEnabledHint": "Iesp\u0113jot filtru",
+            "dxDataGrid-masterDetail": "Cell with details",
             "dxTreeList-ariaTreeList": "Tree list with {0} rows and {1} columns",
             "dxTreeList-ariaSearchInGrid": "Mekl\u0113t kok\u0101",
             "dxTreeList-ariaToolbar": "Koka r\u012bkjosla",
@@ -277,6 +280,10 @@
             "dxScheduler-confirmRecurrenceDeleteOccurrence": "Dz\u0113st apmekl\u0113jumu",
             "dxScheduler-noTimezoneTitle": "Nav laika josla",
             "dxScheduler-moreAppointments": "{0} vair\u0101k",
+            "dxCalendar-currentDay": "Today",
+            "dxCalendar-currentMonth": "Current month",
+            "dxCalendar-currentYear": "Current year",
+            "dxCalendar-currentYearRange": "Current year range",
             "dxCalendar-todayButtonText": "\u0160odien",
             "dxCalendar-ariaWidgetName": "Kalend\u0101rs",
             "dxCalendar-previousMonthButtonLabel": "Previous month",
@@ -291,6 +298,8 @@
             "dxCalendar-captionYearLabel": "Year selection",
             "dxCalendar-captionDecadeLabel": "Decade selection",
             "dxCalendar-captionCenturyLabel": "Century selection",
+            "dxCalendar-selectedDate": "The selected date is {0}",
+            "dxCalendar-selectedDateRange": "The selected date range is from {0} to {1}",
             "dxColorView-ariaRed": "Sarkans",
             "dxColorView-ariaGreen": "Za\u013c\u0161",
             "dxColorView-ariaBlue": "Zils",
@@ -299,6 +308,7 @@
             "dxTagBox-selected": "{0} izv\u0113l\u0113tie",
             "dxTagBox-allSelected": "Visi izv\u0113l\u0113tie ({0})",
             "dxTagBox-moreSelected": "{0} vair\u0101k",
+            "dxTagBox-tagRoleDescription": "Tag. Press the delete button to remove this tag",
             "vizExport-printingButtonText": "Druk\u0101t",
             "vizExport-titleMenuText": "Eksport\u0113\u0161ana/Druk\u0101\u0161ana",
             "vizExport-exportButtonText": "{0} fails",
@@ -683,7 +693,8 @@
             "dxMultiView-elementAriaRoleDescription": "MultiView",
             "dxMultiView-elementAriaLabel": "Use the arrow keys or swipe to navigate between views",
             "dxMultiView-itemAriaRoleDescription": "View",
-            "dxMultiView-itemAriaLabel": "{0} of {1}"
+            "dxMultiView-itemAriaLabel": "{0} of {1}",
+            "dxSplitter-resizeHandleAriaLabel": "Split bar"
         }
     })
 }));

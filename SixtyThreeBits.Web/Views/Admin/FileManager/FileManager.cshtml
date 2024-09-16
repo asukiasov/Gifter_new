@@ -1,4 +1,4 @@
-﻿@model FileManagerModel.PageViewModel
+﻿@model FileManagerModel.ViewModel
 @{
     Layout = null;
 }
@@ -7,11 +7,11 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <link href="/css/admin/devexpress.css" rel="stylesheet" />
-    @await Html.PartialAsync(ViewNames.Shared.PluginsClient.Header, Model.PluginClient)    
+    @await Html.PartialAsync(ViewNames.Shared.PluginsClient.PluginsClientHeader, Model.PluginClient)    
 </head>
 <body>
     @Model.FileManager.Render(Html)    
-    @await Html.PartialAsync(ViewNames.Shared.PluginsClient.Footer, Model.PluginClient)
+    @await Html.PartialAsync(ViewNames.Shared.PluginsClient.PluginsClientFooter, Model.PluginClient)
     
     <script src="/js/global.js?v=@Guid.NewGuid()"></script>
     <script src="/js/admin/fileManager/fileManager.js?v=@Guid.NewGuid()"></script>

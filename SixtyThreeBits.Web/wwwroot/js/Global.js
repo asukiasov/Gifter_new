@@ -46,7 +46,10 @@ const globals = {
             const screenHeight = $(window).outerHeight();                                    
             const paddingBottom = 50;
             const offsetTop = $(gridElement).offset().top;
-            const gridHeight = screenHeight - offsetTop - paddingBottom;
+            let gridHeight = screenHeight - offsetTop - paddingBottom;
+            if (gridHeight < 200) {
+                gridHeight = 200;
+            }
             grid.option('height', gridHeight);
             
         },

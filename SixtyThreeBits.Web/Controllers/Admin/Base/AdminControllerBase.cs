@@ -5,7 +5,7 @@ using SixtyThreeBits.Web.Filters.Admin;
 namespace SixtyThreeBits.Web.Controllers.Admin.Base
 {
     [TypeFilter(typeof(BeforeAdminPageLoad), Order = 1)]
-    public class AdminControllerBase<T> : ControllerBase<T>
+    public class AdminControllerBase<T> : ControllerBase<T> where T : new()
     {
         [NonAction]
         public ContentResult GetDevexpressErrorResult(string errorMessage)

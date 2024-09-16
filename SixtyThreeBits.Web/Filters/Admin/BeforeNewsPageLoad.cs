@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
-using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries.Extensions;
-using SixtyThreeBits.Web.Domain;
+using SixtyThreeBits.Web.Domain.Utilities;
 using SixtyThreeBits.Web.Models.Admin;
 using System.Threading.Tasks;
 
@@ -19,7 +18,7 @@ namespace SixtyThreeBits.Web.Filters.Admin
             _model = WebUtilities.GetModelFromController<NewsModelBase>(filterContext.Controller);
             var newsID = filterContext.RouteData.Values[WebConstants.RouteValues.NewsID]?.ToString().ToInt();
 
-            var repository = _model.RepositoriesFactory.GetNewsRepository();
+            var repository = _model.RepositoriesFactory.CreateNewsRepository();
             _model.DBItem = await repository.NewsGetSingleByID(newsID);
             if (_model.DBItem == null)
             {
@@ -27,8 +26,11 @@ namespace SixtyThreeBits.Web.Filters.Admin
             }
             else
             {
-                initPageTitle();
-                reinitBreadCrumbs();
+                if (!_model.IsAjaxRequest)
+                {
+                    initPageTitle();
+                    reinitBreadCrumbs();
+                }
                 await next();
             }
         }

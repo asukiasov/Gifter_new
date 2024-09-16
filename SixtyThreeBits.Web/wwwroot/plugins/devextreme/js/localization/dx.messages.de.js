@@ -1,7 +1,7 @@
 /*!
 * DevExtreme (dx.messages.de.js)
-* Version: 23.2.4
-* Build date: Mon Jan 29 2024
+* Version: 24.1.4
+* Build date: Mon Jul 15 2024
 *
 * Copyright (c) 2012 - 2024 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -60,6 +60,8 @@
             "dxList-pageLoadingText": "Laden...",
             "dxList-nextButtonText": "Mehr",
             "dxList-selectAll": "Alles ausw\xe4hlen",
+            "dxList-listAriaLabel": "Items",
+            "dxList-listAriaLabel-deletable": "Deletable items",
             "dxListEditDecorator-delete": "Entfernen",
             "dxListEditDecorator-more": "Mehr",
             "dxScrollView-pullingDownText": "Zum Aktualisieren nach unten ziehen",
@@ -70,12 +72,12 @@
             "dxDateBox-simulatedDataPickerTitleDate": "Datum ausw\xe4hlen",
             "dxDateBox-simulatedDataPickerTitleDateTime": "Datum und Zeit ausw\xe4hlen",
             "dxDateBox-validation-datetime": "Der Wert muss ein Datum oder eine Uhrzeit sein",
-            "dxDateRangeBox-invalidStartDateMessage": "Start value must be a date",
-            "dxDateRangeBox-invalidEndDateMessage": "End value must be a date",
-            "dxDateRangeBox-startDateOutOfRangeMessage": "Start date is out of range",
-            "dxDateRangeBox-endDateOutOfRangeMessage": "End date is out of range",
-            "dxDateRangeBox-startDateLabel": "Anfangszeit",
-            "dxDateRangeBox-endDateLabel": "Endzeit",
+            "dxDateRangeBox-invalidStartDateMessage": "Anfangsdatum muss ein Datum sein",
+            "dxDateRangeBox-invalidEndDateMessage": "Enddatum muss ein Datum sein",
+            "dxDateRangeBox-startDateOutOfRangeMessage": "Anfangsdatum ist ausserhalb des g\xfcltigen Bereichs",
+            "dxDateRangeBox-endDateOutOfRangeMessage": "Enddatum ist ausserhalb des g\xfcltigen Bereichs",
+            "dxDateRangeBox-startDateLabel": "Anfangsdatum",
+            "dxDateRangeBox-endDateLabel": "Enddatum",
             "dxFileUploader-selectFile": "Datei ausw\xe4hlen",
             "dxFileUploader-dropFile": "oder hierher ziehen",
             "dxFileUploader-bytes": "Bytes",
@@ -198,6 +200,7 @@
             "dxDataGrid-filterPanelCreateFilter": "Filter erzeugen",
             "dxDataGrid-filterPanelClearFilter": "Zur\xfccksetzen",
             "dxDataGrid-filterPanelFilterEnabledHint": "Filter aktivieren",
+            "dxDataGrid-masterDetail": "Cell with details",
             "dxTreeList-ariaTreeList": "TreeList mit {0} Zeilen und {1} Spalten",
             "dxTreeList-ariaSearchInGrid": "Suchen in der Strukturliste",
             "dxTreeList-ariaToolbar": "Symbolleiste der Strukturliste",
@@ -267,8 +270,8 @@
             "dxScheduler-recurrenceRepeatOnDate": "am Datum",
             "dxScheduler-recurrenceRepeatCount": "Ereignisse",
             "dxScheduler-allDay": "Ganzt\xe4gig",
-            "dxScheduler-confirmRecurrenceEditTitle": "Edit Recurring Appointment",
-            "dxScheduler-confirmRecurrenceDeleteTitle": "Delete Recurring Appointment",
+            "dxScheduler-confirmRecurrenceEditTitle": "Wiederkehrenden Termin bearbeiten",
+            "dxScheduler-confirmRecurrenceDeleteTitle": "Wiederkehrenden Termin l\xf6schen",
             "dxScheduler-confirmRecurrenceEditMessage": "M\xf6chten Sie nur diesen Termin bearbeiten, oder die gesamte Serie?",
             "dxScheduler-confirmRecurrenceDeleteMessage": "M\xf6chten Sie nur diesen Termin l\xf6schen, oder die gesamte Serie?",
             "dxScheduler-confirmRecurrenceEditSeries": "Serie bearbeiten",
@@ -277,6 +280,10 @@
             "dxScheduler-confirmRecurrenceDeleteOccurrence": "Termin l\xf6schen",
             "dxScheduler-noTimezoneTitle": "Keine Zeitzone",
             "dxScheduler-moreAppointments": "{0} weitere",
+            "dxCalendar-currentDay": "Today",
+            "dxCalendar-currentMonth": "Current month",
+            "dxCalendar-currentYear": "Current year",
+            "dxCalendar-currentYearRange": "Current year range",
             "dxCalendar-todayButtonText": "Heute",
             "dxCalendar-ariaWidgetName": "Kalendar",
             "dxCalendar-previousMonthButtonLabel": "Previous month",
@@ -291,6 +298,8 @@
             "dxCalendar-captionYearLabel": "Year selection",
             "dxCalendar-captionDecadeLabel": "Decade selection",
             "dxCalendar-captionCenturyLabel": "Century selection",
+            "dxCalendar-selectedDate": "The selected date is {0}",
+            "dxCalendar-selectedDateRange": "The selected date range is from {0} to {1}",
             "dxColorView-ariaRed": "Rot",
             "dxColorView-ariaGreen": "Gr\xfcn",
             "dxColorView-ariaBlue": "Blau",
@@ -299,6 +308,7 @@
             "dxTagBox-selected": "{0} ausgew\xe4hlt",
             "dxTagBox-allSelected": "Alle ausgew\xe4hlt ({0})",
             "dxTagBox-moreSelected": "{0} weitere",
+            "dxTagBox-tagRoleDescription": "Tag. Press the delete button to remove this tag",
             "vizExport-printingButtonText": "Drucken",
             "vizExport-titleMenuText": "Export/Druck",
             "vizExport-exportButtonText": "{0}-Datei",
@@ -376,8 +386,8 @@
             "dxHtmlEditor-clear": "Formate l\xf6schen",
             "dxHtmlEditor-insertTable": "Tabelle einf\xfcgen",
             "dxHtmlEditor-insertHeaderRow": "Kopfzeile einf\xfcgen",
-            "dxHtmlEditor-insertRowAbove": "Spalte oberhalb einf\xfcgen",
-            "dxHtmlEditor-insertRowBelow": "Spalte unterhalb einf\xfcgen",
+            "dxHtmlEditor-insertRowAbove": "Zeile oberhalb einf\xfcgen",
+            "dxHtmlEditor-insertRowBelow": "Zeile unterhalb einf\xfcgen",
             "dxHtmlEditor-insertColumnLeft": "Spalte links einf\xfcgen",
             "dxHtmlEditor-insertColumnRight": "Spalte rechts einf\xfcgen",
             "dxHtmlEditor-deleteColumn": "Spalte l\xf6schen",
@@ -683,7 +693,8 @@
             "dxMultiView-elementAriaRoleDescription": "MultiView",
             "dxMultiView-elementAriaLabel": "Use the arrow keys or swipe to navigate between views",
             "dxMultiView-itemAriaRoleDescription": "View",
-            "dxMultiView-itemAriaLabel": "{0} of {1}"
+            "dxMultiView-itemAriaLabel": "{0} of {1}",
+            "dxSplitter-resizeHandleAriaLabel": "Split bar"
         }
     })
 }));

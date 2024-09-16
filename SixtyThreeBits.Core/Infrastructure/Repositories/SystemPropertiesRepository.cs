@@ -1,7 +1,8 @@
-﻿using SixtyThreeBits.Core.DTO;
-using SixtyThreeBits.Core.Infrastructure.Factories;
-using SixtyThreeBits.Core.Infrastructure.Repositories.Base;
+﻿using Microsoft.EntityFrameworkCore;
+using SixtyThreeBits.Core.DTO;
+using SixtyThreeBits.Core.Infrastructure.Database;
 using SixtyThreeBits.Libraries.Extensions;
+using System.Data;
 using System.Threading.Tasks;
 
 namespace SixtyThreeBits.Core.Infrastructure.Repositories
@@ -9,9 +10,8 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
     public class SystemPropertiesRepository : RepositoryBase
     {
         #region Contructors
-        public SystemPropertiesRepository(ConnectionFactory connectionFactory) : base(connectionFactory)
+        public SystemPropertiesRepository(DbContextFactory dbContextFactory) : base(dbContextFactory)
         {
-
         }
         #endregion
 
@@ -22,10 +22,16 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 logString: $"{nameof(SystemPropertiesGet)}()", 
                 asyncFuncToTry: async () =>
                 {
-                    using (var db = _connectionFactory.GetDbContextQueries())
+                    using (var dbContext = _dbContextFactory.CreateDbContext())
                     {
-                        var resultJson = await db.SystemPropertiesGet();
-                        var result = resultJson?.DeserializeJsonTo<SystemPropertiesDTO>();
+                        var sqb = new SqlQueryBuilder(
+                            dbContext: dbContext,
+                            databaseObjectName: nameof(SystemPropertiesGet)
+                        );
+
+                        var resultJson = await sqb.ExecuteScalarValuedFunction<string>();
+                        var result = resultJson.DeserializeJsonTo<SystemPropertiesDTO>();
+
                         return result;
                     }
                 }
@@ -33,16 +39,25 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
             return result ?? new SystemPropertiesDTO();
         }
 
-        public async Task SystemPropertiesUpdate(SystemPropertiesDTO systemProperties)
+        public async Task SystemPropertiesUpdate(SystemPropertiesIudDTO systemProperties)
         {
             var systemPropertiesJson = systemProperties.ToJson();
+
             await TryExecuteAsyncTask(
                 logString: $"{nameof(SystemPropertiesUpdate)}({nameof(systemProperties)} = {systemPropertiesJson})", 
                 asyncFuncToTry: async () =>
                 {
-                    using (var db = _connectionFactory.GetDbContextCommands())
+                    using (var dbContext = _dbContextFactory.CreateDbContext())
                     {
-                        await db.SystemPropertiesUpdate(systemPropertiesJson: systemPropertiesJson);
+                        var sqb = new SqlQueryBuilder(
+                            dbContext: dbContext,
+                            databaseObjectName: nameof(SystemPropertiesUpdate),
+                            sqlParameters:
+                            [
+                                systemPropertiesJson.ToSqlParameter(nameof(systemPropertiesJson),SqlDbType.NVarChar)
+                            ]
+                        );
+                        await sqb.ExecuteStoredProcedure();                        
                     }
                 }
             );

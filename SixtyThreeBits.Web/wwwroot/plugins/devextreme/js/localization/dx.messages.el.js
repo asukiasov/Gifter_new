@@ -1,7 +1,7 @@
 /*!
 * DevExtreme (dx.messages.el.js)
-* Version: 23.2.4
-* Build date: Mon Jan 29 2024
+* Version: 24.1.4
+* Build date: Mon Jul 15 2024
 *
 * Copyright (c) 2012 - 2024 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -60,6 +60,8 @@
             "dxList-pageLoadingText": "\u03a6\u03cc\u03c1\u03c4\u03c9\u03c3\u03b7...",
             "dxList-nextButtonText": "\u03a0\u03b5\u03c1\u03b9\u03c3\u03c3\u03cc\u03c4\u03b5\u03c1\u03b1",
             "dxList-selectAll": "\u0395\u03c0\u03b9\u03bb\u03bf\u03b3\u03ae \u03cc\u03bb\u03c9\u03bd",
+            "dxList-listAriaLabel": "Items",
+            "dxList-listAriaLabel-deletable": "Deletable items",
             "dxListEditDecorator-delete": "\u0394\u03b9\u03b1\u03b3\u03c1\u03b1\u03c6\u03ae",
             "dxListEditDecorator-more": "\u03a0\u03b5\u03c1\u03b9\u03c3\u03c3\u03cc\u03c4\u03b5\u03c1\u03b1",
             "dxScrollView-pullingDownText": "\u03a3\u03cd\u03c1\u03b5\u03c4\u03b5 \u03b1\u03c0\u03bf \u03c0\u03ac\u03bd\u03c9 \u03c0\u03c1\u03bf\u03c2 \u03c4\u03b1 \u03ba\u03ac\u03c4\u03c9 \u03b3\u03b9\u03b1 \u03b1\u03bd\u03b1\u03bd\u03ad\u03c9\u03c3\u03b7...",
@@ -198,6 +200,7 @@
             "dxDataGrid-filterPanelCreateFilter": "\u0394\u03b7\u03bc\u03b9\u03bf\u03c5\u03c1\u03b3\u03af\u03b1 \u03c6\u03af\u03bb\u03c4\u03c1\u03bf\u03c5",
             "dxDataGrid-filterPanelClearFilter": "\u0395\u03ba\u03ba\u03b1\u03b8\u03ac\u03c1\u03b9\u03c3\u03b7",
             "dxDataGrid-filterPanelFilterEnabledHint": "\u0395\u03bd\u03b5\u03c1\u03b3\u03bf\u03c0\u03bf\u03b9\u03ae\u03c3\u03c4\u03b5 \u03c4\u03bf \u03c6\u03af\u03bb\u03c4\u03c1\u03bf",
+            "dxDataGrid-masterDetail": "Cell with details",
             "dxTreeList-ariaTreeList": "Tree list with {0} rows and {1} columns",
             "dxTreeList-ariaSearchInGrid": "Search in the tree list",
             "dxTreeList-ariaToolbar": "Tree list toolbar",
@@ -277,6 +280,10 @@
             "dxScheduler-confirmRecurrenceDeleteOccurrence": "\u0394\u03b9\u03b1\u03b3\u03c1\u03b1\u03c6\u03ae \u03c3\u03c5\u03bd\u03ac\u03bd\u03c4\u03b7\u03c3\u03b7\u03c2",
             "dxScheduler-noTimezoneTitle": "\u03a7\u03c9\u03c1\u03af\u03c2 \u03b6\u03ce\u03bd\u03b7 \u03ce\u03c1\u03b1\u03c2",
             "dxScheduler-moreAppointments": "{0} \u03c0\u03b5\u03c1\u03b9\u03c3\u03c3\u03cc\u03c4\u03b5\u03c1\u03b1",
+            "dxCalendar-currentDay": "Today",
+            "dxCalendar-currentMonth": "Current month",
+            "dxCalendar-currentYear": "Current year",
+            "dxCalendar-currentYearRange": "Current year range",
             "dxCalendar-todayButtonText": "\u03a3\u03ae\u03bc\u03b5\u03c1\u03b1",
             "dxCalendar-ariaWidgetName": "\u0397\u03bc\u03b5\u03c1\u03bf\u03bb\u03cc\u03b3\u03b9\u03bf",
             "dxCalendar-previousMonthButtonLabel": "Previous month",
@@ -291,6 +298,8 @@
             "dxCalendar-captionYearLabel": "Year selection",
             "dxCalendar-captionDecadeLabel": "Decade selection",
             "dxCalendar-captionCenturyLabel": "Century selection",
+            "dxCalendar-selectedDate": "The selected date is {0}",
+            "dxCalendar-selectedDateRange": "The selected date range is from {0} to {1}",
             "dxColorView-ariaRed": "\u039a\u03cc\u03ba\u03ba\u03b9\u03bd\u03bf",
             "dxColorView-ariaGreen": "\u03a0\u03c1\u03ac\u03c3\u03b9\u03bd\u03bf",
             "dxColorView-ariaBlue": "\u039c\u03c0\u03bb\u03b5",
@@ -299,6 +308,7 @@
             "dxTagBox-selected": "{0} \u03b5\u03c0\u03b9\u03bb\u03b5\u03b3\u03bc\u03ad\u03bd\u03bf/\u03b1",
             "dxTagBox-allSelected": "\u038c\u03bb\u03b1 \u03b5\u03c0\u03b9\u03bb\u03ad\u03c7\u03b8\u03b7\u03ba\u03b1\u03bd ({0})",
             "dxTagBox-moreSelected": "{0} \u03c0\u03b5\u03c1\u03b9\u03c3\u03c3\u03cc\u03c4\u03b5\u03c1\u03b1",
+            "dxTagBox-tagRoleDescription": "Tag. Press the delete button to remove this tag",
             "vizExport-printingButtonText": "\u0395\u03ba\u03c4\u03cd\u03c0\u03c9\u03c3\u03b7",
             "vizExport-titleMenuText": "\u0395\u03be\u03b1\u03b3\u03c9\u03b3\u03ae/\u0395\u03ba\u03c4\u03cd\u03c0\u03c9\u03c3\u03b7",
             "vizExport-exportButtonText": "{0} \u03b1\u03c1\u03c7\u03b5\u03af\u03bf/\u03b1",
@@ -683,7 +693,8 @@
             "dxMultiView-elementAriaRoleDescription": "MultiView",
             "dxMultiView-elementAriaLabel": "Use the arrow keys or swipe to navigate between views",
             "dxMultiView-itemAriaRoleDescription": "View",
-            "dxMultiView-itemAriaLabel": "{0} of {1}"
+            "dxMultiView-itemAriaLabel": "{0} of {1}",
+            "dxSplitter-resizeHandleAriaLabel": "Split bar"
         }
     })
 }));

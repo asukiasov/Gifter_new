@@ -1,5 +1,5 @@
 ﻿using SixtyThreeBits.Core.Properties;
-using SixtyThreeBits.Web.Domain.SharedViewModels;
+using SixtyThreeBits.Web.Domain.ViewModels.Website;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -122,8 +122,6 @@ namespace SixtyThreeBits.Web.Domain.Libraries
             currentPageHttpPath :
             $"{rootUrl}{(useQueryStringStyle ? $"{queryString}{queryStringSeparator}page={pageNumber}" : $"/page-{pageNumber}/{queryString}")}";
         }
-        #endregion
-
-        
+        #endregion        
     }
 }

@@ -1,7 +1,7 @@
 /*!
 * DevExtreme (dx.messages.sl.js)
-* Version: 23.2.4
-* Build date: Mon Jan 29 2024
+* Version: 24.1.4
+* Build date: Mon Jul 15 2024
 *
 * Copyright (c) 2012 - 2024 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -60,6 +60,8 @@
             "dxList-pageLoadingText": "Nalagam...",
             "dxList-nextButtonText": "Ve\u010d",
             "dxList-selectAll": "Izberi vse",
+            "dxList-listAriaLabel": "Items",
+            "dxList-listAriaLabel-deletable": "Deletable items",
             "dxListEditDecorator-delete": "Izbri\u0161i",
             "dxListEditDecorator-more": "Ve\u010d",
             "dxScrollView-pullingDownText": "Povlecite navzdol za osve\u017eitev...",
@@ -198,6 +200,7 @@
             "dxDataGrid-filterPanelCreateFilter": "Ustvari filter",
             "dxDataGrid-filterPanelClearFilter": "Pobri\u0161i",
             "dxDataGrid-filterPanelFilterEnabledHint": "Omogo\u010di filtriranje",
+            "dxDataGrid-masterDetail": "Cell with details",
             "dxTreeList-ariaTreeList": "Tree list with {0} rows and {1} columns",
             "dxTreeList-ariaSearchInGrid": "Search in the tree list",
             "dxTreeList-ariaToolbar": "Tree list toolbar",
@@ -277,6 +280,10 @@
             "dxScheduler-confirmRecurrenceDeleteOccurrence": "Izbri\u0161i dogodek",
             "dxScheduler-noTimezoneTitle": "Brez \u010dasovnega pasa",
             "dxScheduler-moreAppointments": "\u0161e {0}",
+            "dxCalendar-currentDay": "Today",
+            "dxCalendar-currentMonth": "Current month",
+            "dxCalendar-currentYear": "Current year",
+            "dxCalendar-currentYearRange": "Current year range",
             "dxCalendar-todayButtonText": "Danes",
             "dxCalendar-ariaWidgetName": "Koledar",
             "dxCalendar-previousMonthButtonLabel": "Previous month",
@@ -291,6 +298,8 @@
             "dxCalendar-captionYearLabel": "Year selection",
             "dxCalendar-captionDecadeLabel": "Decade selection",
             "dxCalendar-captionCenturyLabel": "Century selection",
+            "dxCalendar-selectedDate": "The selected date is {0}",
+            "dxCalendar-selectedDateRange": "The selected date range is from {0} to {1}",
             "dxColorView-ariaRed": "Rde\u010da",
             "dxColorView-ariaGreen": "Zelena",
             "dxColorView-ariaBlue": "Modra",
@@ -299,6 +308,7 @@
             "dxTagBox-selected": "{0} izbranih",
             "dxTagBox-allSelected": "Vsi izbrani ({0})",
             "dxTagBox-moreSelected": "\u0161e {0}",
+            "dxTagBox-tagRoleDescription": "Tag. Press the delete button to remove this tag",
             "vizExport-printingButtonText": "Natisni",
             "vizExport-titleMenuText": "Izvozi/Natisni",
             "vizExport-exportButtonText": "{0} datoteka",
@@ -683,7 +693,8 @@
             "dxMultiView-elementAriaRoleDescription": "MultiView",
             "dxMultiView-elementAriaLabel": "Use the arrow keys or swipe to navigate between views",
             "dxMultiView-itemAriaRoleDescription": "View",
-            "dxMultiView-itemAriaLabel": "{0} of {1}"
+            "dxMultiView-itemAriaLabel": "{0} of {1}",
+            "dxSplitter-resizeHandleAriaLabel": "Split bar"
         }
     })
 }));

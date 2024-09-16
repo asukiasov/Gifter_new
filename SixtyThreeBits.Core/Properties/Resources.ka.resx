@@ -123,6 +123,12 @@
   <data name="TextAdd" xml:space="preserve">
     <value>დამატება</value>
   </data>
+  <data name="TextAddress" xml:space="preserve">
+    <value>მისამართი</value>
+  </data>
+  <data name="TextAdminEmails" xml:space="preserve">
+    <value>ადმინისტრატორების ელ-ფოსტები. მძიმით გამოყოფილი</value>
+  </data>
   <data name="TextAdminWelcomeSubTitle" xml:space="preserve">
     <value>მართვის პანელზე მოსახვედრად გთხოვთ გაიაროთ ავტორიზაცია</value>
   </data>
@@ -177,14 +183,23 @@
   <data name="TextConfirmDeleteRecursive" xml:space="preserve">
     <value>ჩანაწერის წაშლა აგრეთვე გამოიწვევს ყველა ქვე-ჩანაწერების წაშლას (ასეთების არსებობის შემთხვევაში). ნამდვილად გსურთ გაგრძელება?</value>
   </data>
+  <data name="TextConfirmDeleteRecursiveWithTypeDelete" xml:space="preserve">
+    <value>ნამდვილად გნებავთ მთავარი ჩანაწერისა და ყველა მისი ქვე-ჩანაწერების წაშლა? გთხოვთ დასტურის მიზნად შეიტანოთ სიტყვა "delete".</value>
+  </data>
   <data name="TextContactAddress" xml:space="preserve">
     <value>საკონტაქტო მისამართი</value>
   </data>
   <data name="TextContactEmail" xml:space="preserve">
     <value>საკონტაქტო ელ-ფოსტა</value>
   </data>
+  <data name="TextContactFormSuccess" xml:space="preserve">
+    <value>თქვენი შეტყობინება წარმატებით გაიგზავნა</value>
+  </data>
   <data name="TextContactPhone" xml:space="preserve">
     <value>საკონტაქტო ტელეფონი</value>
+  </data>
+  <data name="TextContactUs" xml:space="preserve">
+    <value>კონტაქტი</value>
   </data>
   <data name="TextDate" xml:space="preserve">
     <value>თარიღი</value>
@@ -206,6 +221,9 @@
   </data>
   <data name="TextDescriptionShortEng" xml:space="preserve">
     <value>მოკლე აღწერა Eng</value>
+  </data>
+  <data name="TextDeveloperEmails" xml:space="preserve">
+    <value>დეველოპერების ელ-ფოსტები. მძიმით გამოყოფილი</value>
   </data>
   <data name="TextDictionaryCode" xml:space="preserve">
     <value>ცნობარის კოდი</value>
@@ -273,6 +291,9 @@
   <data name="TextMenuTitleEng" xml:space="preserve">
     <value>მენიუს სათაური Eng</value>
   </data>
+  <data name="TextMessage" xml:space="preserve">
+    <value>შეტყობინება</value>
+  </data>
   <data name="TextName" xml:space="preserve">
     <value>სახელი</value>
   </data>
@@ -284,6 +305,18 @@
   </data>
   <data name="TextNo" xml:space="preserve">
     <value>არა</value>
+  </data>
+  <data name="TextOpenInNewTab" xml:space="preserve">
+    <value>ახალ ტაბში გახსნა</value>
+  </data>
+  <data name="TextPageExternalUrl" xml:space="preserve">
+    <value>გარე გვერდის მისამართი</value>
+  </data>
+  <data name="TextPageInternal" xml:space="preserve">
+    <value>შიდა გვერდი</value>
+  </data>
+  <data name="TextPageIsExternal" xml:space="preserve">
+    <value>გარე გვერდი</value>
   </data>
   <data name="TextPageNotFound" xml:space="preserve">
     <value>404 - გვერდი ვერ მოიძებნა</value>
@@ -309,6 +342,9 @@
   <data name="TextPermissions" xml:space="preserve">
     <value>უფლებები</value>
   </data>
+  <data name="TextPhone" xml:space="preserve">
+    <value>ტელეფონი</value>
+  </data>
   <data name="TextPhoneCell" xml:space="preserve">
     <value>მობილურის ნომერი</value>
   </data>
@@ -320,6 +356,9 @@
   </data>
   <data name="TextPrev" xml:space="preserve">
     <value>შემდეგი</value>
+  </data>
+  <data name="TextPreview" xml:space="preserve">
+    <value>ნახვა</value>
   </data>
   <data name="TextPrice" xml:space="preserve">
     <value>ფასი</value>
@@ -362,6 +401,9 @@
   </data>
   <data name="TextSave" xml:space="preserve">
     <value>შენახვა</value>
+  </data>
+  <data name="TextSend" xml:space="preserve">
+    <value>გაგზავნა</value>
   </data>
   <data name="TextSignIn" xml:space="preserve">
     <value>შესვლა</value>
@@ -417,6 +459,9 @@
   <data name="ValidationExcelDuplicateItemFound" xml:space="preserve">
     <value>ჩანაწერი დუბლირებულია. ხაზი {0}</value>
   </data>
+  <data name="ValidationPagesSlugNotUniq" xml:space="preserve">
+    <value>გვერდის სლაგი არ არის უნიკალური</value>
+  </data>
   <data name="ValidationPasswordLength" xml:space="preserve">
     <value>პაროლი უნდა შეიცავდეს მინიმუმ 8 სიმბოლოს</value>
   </data>
@@ -443,6 +488,9 @@
   </data>
   <data name="ValidationProductRemainderRequired" xml:space="preserve">
     <value>პროდუქტის ნაშთის შეყვანა აუცილებელია</value>
+  </data>
+  <data name="ValidationRecaptchaInvalid" xml:space="preserve">
+    <value>reCaptcha -მ ვერ გაიარა ვალიდაცია</value>
   </data>
   <data name="ValidationRequired" xml:space="preserve">
     <value>ველის შეყვანა აუცილებელია</value>

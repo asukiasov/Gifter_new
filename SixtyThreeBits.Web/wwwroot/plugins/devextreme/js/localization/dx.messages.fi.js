@@ -1,7 +1,7 @@
 /*!
 * DevExtreme (dx.messages.fi.js)
-* Version: 23.2.4
-* Build date: Mon Jan 29 2024
+* Version: 24.1.4
+* Build date: Mon Jul 15 2024
 *
 * Copyright (c) 2012 - 2024 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -60,6 +60,8 @@
             "dxList-pageLoadingText": "Ladataan...",
             "dxList-nextButtonText": "Lis\xe4\xe4",
             "dxList-selectAll": "Valitse kaikki",
+            "dxList-listAriaLabel": "Items",
+            "dxList-listAriaLabel-deletable": "Deletable items",
             "dxListEditDecorator-delete": "Poista",
             "dxListEditDecorator-more": "Lis\xe4\xe4",
             "dxScrollView-pullingDownText": "P\xe4ivit\xe4 vet\xe4m\xe4ll\xe4 alas...",
@@ -198,6 +200,7 @@
             "dxDataGrid-filterPanelCreateFilter": "Luo suodatin",
             "dxDataGrid-filterPanelClearFilter": "Tyhjenn\xe4",
             "dxDataGrid-filterPanelFilterEnabledHint": "Ota suodatin k\xe4ytt\xf6\xf6n",
+            "dxDataGrid-masterDetail": "Cell with details",
             "dxTreeList-ariaTreeList": "Tree list with {0} rows and {1} columns",
             "dxTreeList-ariaSearchInGrid": "Search in the tree list",
             "dxTreeList-ariaToolbar": "Tree list toolbar",
@@ -277,6 +280,10 @@
             "dxScheduler-confirmRecurrenceDeleteOccurrence": "Poista tapaaminen",
             "dxScheduler-noTimezoneTitle": "Ei aikavy\xf6hyke",
             "dxScheduler-moreAppointments": "{0} lis\xe4\xe4",
+            "dxCalendar-currentDay": "Today",
+            "dxCalendar-currentMonth": "Current month",
+            "dxCalendar-currentYear": "Current year",
+            "dxCalendar-currentYearRange": "Current year range",
             "dxCalendar-todayButtonText": "T\xe4n\xe4\xe4n",
             "dxCalendar-ariaWidgetName": "Kalenteri",
             "dxCalendar-previousMonthButtonLabel": "Previous month",
@@ -291,6 +298,8 @@
             "dxCalendar-captionYearLabel": "Year selection",
             "dxCalendar-captionDecadeLabel": "Decade selection",
             "dxCalendar-captionCenturyLabel": "Century selection",
+            "dxCalendar-selectedDate": "The selected date is {0}",
+            "dxCalendar-selectedDateRange": "The selected date range is from {0} to {1}",
             "dxColorView-ariaRed": "Punainen",
             "dxColorView-ariaGreen": "Vihre\xe4",
             "dxColorView-ariaBlue": "Sininen",
@@ -299,6 +308,7 @@
             "dxTagBox-selected": "{0} valittu",
             "dxTagBox-allSelected": "Kaikki valitut ({0})",
             "dxTagBox-moreSelected": "{0} lis\xe4\xe4",
+            "dxTagBox-tagRoleDescription": "Tag. Press the delete button to remove this tag",
             "vizExport-printingButtonText": "Tulosta",
             "vizExport-titleMenuText": "Vienti/Tulostus",
             "vizExport-exportButtonText": "{0} tiedosto",
@@ -683,7 +693,8 @@
             "dxMultiView-elementAriaRoleDescription": "MultiView",
             "dxMultiView-elementAriaLabel": "Use the arrow keys or swipe to navigate between views",
             "dxMultiView-itemAriaRoleDescription": "View",
-            "dxMultiView-itemAriaLabel": "{0} of {1}"
+            "dxMultiView-itemAriaLabel": "{0} of {1}",
+            "dxSplitter-resizeHandleAriaLabel": "Split bar"
         }
     })
 }));

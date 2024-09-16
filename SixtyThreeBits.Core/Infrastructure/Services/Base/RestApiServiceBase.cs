@@ -23,7 +23,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Services.Base
         #endregion
 
         #region Methods        
-        public async Task<ApiResultBase> ExecuteAsyncTask(string resource, Method method, List<Parameter> headers = null, List<Parameter> parameters = null, string body = null, List<File> files = null, int? httpStatusCodeSuccess = null)
+        public async Task<ApiResultBase> ExecuteAsyncTask(int? httpStatusCodeSuccess, string resource, Method method, List<Parameter> headers = null, List<Parameter> parameters = null, string body = null, List<File> files = null)
         {
             var client = new RestClient(_baseUrl);
             var request = new RestRequest();
@@ -67,8 +67,13 @@ namespace SixtyThreeBits.Core.Infrastructure.Services.Base
 
             var result = new ApiResultBase();
             result.RequestUrl = $"{_baseUrl}{resource}";
-            result.RequestHeaders = string.Join(",", headers?.Select(item => $"{item.Key}: {item.Value}"));
             result.RequestMethod = request.Method.ToString().ToUpper();
+
+            if (headers != null)
+            {
+                result.RequestHeaders = string.Join(",", headers.Select(item => $"{item.Key}: {item.Value}"));
+            }
+            
             if (parameters is null)
             {
                 result.RequestBody = body;
@@ -87,7 +92,10 @@ namespace SixtyThreeBits.Core.Infrastructure.Services.Base
             }
             else
             {
-                result.ResponseContent = response.ErrorException.Message;
+                if (string.IsNullOrWhiteSpace(result.ResponseContent))
+                {
+                    result.ResponseContent = response.ErrorException.Message;
+                }
             }
 
             return result;

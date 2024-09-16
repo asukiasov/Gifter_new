@@ -15,7 +15,7 @@ namespace SixtyThreeBits.Web.Domain.Libraries
         #endregion Properties
 
         #region Constructors
-        public Breadcrumbs() { }        
+        public Breadcrumbs() { }
         #endregion Constructors        
 
         #region Methods                
@@ -47,6 +47,14 @@ namespace SixtyThreeBits.Web.Domain.Libraries
             if (_breadCrumbItems?.Count > 0)
             {
                 _breadCrumbItems.RemoveAt(_breadCrumbItems.Count - 1);
+            }
+        }
+
+        public void DeletePreLastItem()
+        {
+            if (_breadCrumbItems?.Count > 0)
+            {
+                _breadCrumbItems.RemoveAt(_breadCrumbItems.Count - 2);
             }
         }
 

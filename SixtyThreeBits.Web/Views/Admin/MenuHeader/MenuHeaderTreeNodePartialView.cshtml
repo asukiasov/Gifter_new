@@ -1,0 +1,46 @@
+﻿@model MenuHeaderModel.ViewModel.MenuListItem
+<li data-id="@Model.MenuHeaderID" class="tree-item file js-tree-node">
+    <div class="handle">
+        <div class="left-col">
+            <span class="drag js-tree-node-drag">
+                <i class="fa-solid fa-arrows-up-down-left-right"></i>
+            </span>
+            <i class="fa-solid fa-file-lines"></i>
+            <div class="name">
+                <div class="name">
+                    <a href="#" target="_blank" class="js-tree-node-title">@Html.Raw(Model.MenuHeaderTitle)</a>
+                </div>
+                
+            </div>            
+        </div>
+        <div class="right-col">
+            @if (Model.ShowAddNewButton)
+            {
+                <a href="#" class="js-tree-node-add-new-button">
+                    <i class="fa-solid fa-plus"></i>
+                </a>
+            }
+            @if (Model.ShowUpdateButton)
+            {
+                <a href="#" class="js-tree-node-edit-button">
+                    <i class="fa-solid fa-pencil"></i>
+                </a>
+            }
+            @if (Model.ShowDeleteButton)
+            {
+                <a href="#" class="js-tree-node-delete-button">
+                    <i class="fa-light fa-trash-can"></i>
+                </a>
+            }            
+        </div>
+    </div>
+    <ul class="js-sortable">
+        @if (Model.HasChildren)
+        {
+            foreach (var item in Model.Children)
+            {
+                @await Html.PartialAsync(ViewNames.Admin.MenuHeader.MenuHeaderTreeNodePartialView, item)
+            }
+        }
+    </ul>
+</li>

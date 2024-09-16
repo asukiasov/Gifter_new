@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
-using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries.Extensions;
-using SixtyThreeBits.Web.Domain;
+using SixtyThreeBits.Web.Domain.Utilities;
 using SixtyThreeBits.Web.Models.Admin;
 using System.Threading.Tasks;
 
@@ -19,7 +18,7 @@ namespace SixtyThreeBits.Web.Filters.Admin
             _model = WebUtilities.GetModelFromController<BlogModelBase>(filterContext.Controller);
             var blogPostID = filterContext.RouteData.Values[WebConstants.RouteValues.BlogPostID]?.ToString().ToInt();
 
-            var repository = _model.RepositoriesFactory.GetBlogRepository();
+            var repository = _model.RepositoriesFactory.CreateBlogRepository();
             _model.DBItem = await repository.BlogPostGetSingleByID(blogPostID);
             if (_model.DBItem == null)
             {
@@ -27,7 +26,10 @@ namespace SixtyThreeBits.Web.Filters.Admin
             }
             else
             {
-                reinitBreadCrumbs();
+                if (!_model.IsAjaxRequest)
+                {
+                    reinitBreadCrumbs();
+                }
                 await next();
             }
         }

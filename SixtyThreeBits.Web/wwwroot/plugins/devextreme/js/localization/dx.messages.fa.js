@@ -1,7 +1,7 @@
 /*!
 * DevExtreme (dx.messages.fa.js)
-* Version: 23.2.4
-* Build date: Mon Jan 29 2024
+* Version: 24.1.4
+* Build date: Mon Jul 15 2024
 *
 * Copyright (c) 2012 - 2024 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -60,6 +60,8 @@
             "dxList-pageLoadingText": "\u0628\u0627\u0631\u06af\u0630\u0627\u0631\u06cc...",
             "dxList-nextButtonText": "\u0628\u06cc\u0634\u062a\u0631",
             "dxList-selectAll": "\u0627\u0646\u062a\u062e\u0627\u0628 \u0647\u0645\u0647",
+            "dxList-listAriaLabel": "Items",
+            "dxList-listAriaLabel-deletable": "Deletable items",
             "dxListEditDecorator-delete": "\u062d\u0630\u0641",
             "dxListEditDecorator-more": "\u0628\u06cc\u0634\u062a\u0631",
             "dxScrollView-pullingDownText": "\u0628\u0631\u0627\u06cc \u062a\u0627\u0632\u0647 \u06a9\u0631\u062f\u0646 \u0628\u0647 \u067e\u0627\u06cc\u06cc\u0646 \u0628\u06a9\u0634\u06cc\u062f ...",
@@ -198,6 +200,7 @@
             "dxDataGrid-filterPanelCreateFilter": "\u0627\u06cc\u062c\u0627\u062f \u0641\u06cc\u0644\u062a\u0631",
             "dxDataGrid-filterPanelClearFilter": "\u062d\u0630\u0641 \u0641\u06cc\u0644\u062a\u0631",
             "dxDataGrid-filterPanelFilterEnabledHint": "\u0641\u0639\u0627\u0644 \u0646\u0645\u0648\u062f\u0646 \u0641\u06cc\u0644\u062a\u0631",
+            "dxDataGrid-masterDetail": "Cell with details",
             "dxTreeList-ariaTreeList": "Tree list with {0} rows and {1} columns",
             "dxTreeList-ariaSearchInGrid": "\u062c\u0633\u062a\u062c\u0648 \u062f\u0631 \u0644\u06cc\u0633\u062a \u062f\u0631\u062e\u062a\u06cc",
             "dxTreeList-ariaToolbar": "Tree list toolbar",
@@ -277,6 +280,10 @@
             "dxScheduler-confirmRecurrenceDeleteOccurrence": "\u062d\u0630\u0641 \u0642\u0631\u0627\u0631",
             "dxScheduler-noTimezoneTitle": "\u0628\u062f\u0648\u0646 \u0645\u0646\u0637\u0642\u0647 \u0632\u0645\u0627\u0646\u06cc",
             "dxScheduler-moreAppointments": "{0} \u0628\u06cc\u0634\u062a\u0631",
+            "dxCalendar-currentDay": "Today",
+            "dxCalendar-currentMonth": "Current month",
+            "dxCalendar-currentYear": "Current year",
+            "dxCalendar-currentYearRange": "Current year range",
             "dxCalendar-todayButtonText": "\u0627\u0645\u0631\u0648\u0632",
             "dxCalendar-ariaWidgetName": "\u062a\u0642\u0648\u06cc\u0645",
             "dxCalendar-previousMonthButtonLabel": "Previous month",
@@ -291,6 +298,8 @@
             "dxCalendar-captionYearLabel": "Year selection",
             "dxCalendar-captionDecadeLabel": "Decade selection",
             "dxCalendar-captionCenturyLabel": "Century selection",
+            "dxCalendar-selectedDate": "The selected date is {0}",
+            "dxCalendar-selectedDateRange": "The selected date range is from {0} to {1}",
             "dxColorView-ariaRed": "\u0642\u0631\u0645\u0632",
             "dxColorView-ariaGreen": "\u0633\u0628\u0632",
             "dxColorView-ariaBlue": "\u0622\u0628\u06cc",
@@ -299,6 +308,7 @@
             "dxTagBox-selected": "{0} \u0627\u0646\u062a\u062e\u0627\u0628 \u0634\u062f\u0647",
             "dxTagBox-allSelected": "\u0647\u0645\u0647 \u0627\u0646\u062a\u062e\u0627\u0628 \u0634\u062f\u0647 \u0627\u0646\u062f ({0})",
             "dxTagBox-moreSelected": "{0} \u0633\u0627\u06cc\u0631",
+            "dxTagBox-tagRoleDescription": "Tag. Press the delete button to remove this tag",
             "vizExport-printingButtonText": "\u0686\u0627\u067e",
             "vizExport-titleMenuText": "\u0635\u0627\u062f\u0631\u0627\u062a / \u0686\u0627\u067e",
             "vizExport-exportButtonText": "{0} \u067e\u0631\u0648\u0646\u062f\u0647",
@@ -683,7 +693,8 @@
             "dxMultiView-elementAriaRoleDescription": "MultiView",
             "dxMultiView-elementAriaLabel": "Use the arrow keys or swipe to navigate between views",
             "dxMultiView-itemAriaRoleDescription": "View",
-            "dxMultiView-itemAriaLabel": "{0} of {1}"
+            "dxMultiView-itemAriaLabel": "{0} of {1}",
+            "dxSplitter-resizeHandleAriaLabel": "Split bar"
         }
     })
 }));

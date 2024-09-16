@@ -1,11 +1,10 @@
-﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using SixtyThreeBits.Core.DTO;
 using SixtyThreeBits.Core.Infrastructure.Database;
-using SixtyThreeBits.Core.Infrastructure.Factories;
-using SixtyThreeBits.Core.Infrastructure.Repositories.Base;
 using SixtyThreeBits.Core.Utilities;
+using SixtyThreeBits.Libraries.Extensions;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -14,12 +13,8 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
     public class PermissionsRepository : RepositoryBase
     {
         #region Contructors
-        public PermissionsRepository(ConnectionFactory connectionFactory) : base(connectionFactory)
-        {
-            _mapper = new MapperConfiguration(cfg =>
-            {
-                cfg.CreateMap<DbContextQueries.PermissionsListEntity, PermissionDTO>();
-            }).CreateMapper();
+        public PermissionsRepository(DbContextFactory dbContextFactory) : base(dbContextFactory)
+        {            
         }
         #endregion
 
@@ -30,59 +25,69 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 logString: $"{nameof(PermissionsDeleteRecursive)}({nameof(permissionID)} = {permissionID})", 
                 asyncFuncToTry: async () =>
                 {
-                    using (var db = _connectionFactory.GetDbContextCommands())
+                    using (var dbContext = _dbContextFactory.CreateDbContext())
                     {
-                        await db.PermissionsDeleteRecursive(permissionID: permissionID);
+                        var sqb = new SqlQueryBuilder(
+                            dbContext: dbContext,
+                            databaseObjectName: nameof(PermissionsDeleteRecursive),
+                            sqlParameters:
+                            [
+                                permissionID.ToSqlParameter(nameof(permissionID),SqlDbType.Int)
+                            ]
+                        );
+                        await sqb.ExecuteStoredProcedure();                        
                     }
                 }
             );
         }
 
-        public async Task<int?> PermissionsIUD(Enums.DatabaseActions databaseAction, int? permissionID = null, int? permissionParentID = null, string permissionCaption = null, string permissionCaptionEng = null, string permissionPagePath = null, string permissionCodeName = null, string permissionCode = null, int? permissionSortIndex = null, bool? permissionIsMenuItem = null, string permissionMenuIcon = null, string permissionMenuTitle = null, string permissionMenuTitleEng = null)
+        public async Task<int?> PermissionsIUD(Enums.DatabaseActions databaseAction, int? permissionID, PermissionIudDTO permission)
         {
+            var permissionJson = permission.ToJson();
+
             permissionID = await TryToReturnAsyncTask(
-                logString: $"{nameof(PermissionsIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(permissionID)} = {permissionID}, {nameof(permissionParentID)} = {permissionParentID}, {nameof(permissionCaption)} = {permissionCaption}, {nameof(permissionCaptionEng)} = {permissionCaptionEng}, {nameof(permissionPagePath)} = {permissionPagePath}, {nameof(permissionCodeName)} = {permissionCodeName}, {nameof(permissionCode)} = {permissionCode}, {nameof(permissionSortIndex)} = {permissionSortIndex}, {nameof(permissionIsMenuItem)} = {permissionIsMenuItem}, {nameof(permissionMenuIcon)} = {permissionMenuIcon}, {nameof(permissionMenuTitle)} = {permissionMenuTitle}, {nameof(permissionMenuTitleEng)} = {permissionMenuTitleEng})", 
+                logString: $"{nameof(PermissionsIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(permissionID)} = {permissionID}, {nameof(permission)} = {permissionJson})", 
                 asyncFuncToTry: async () =>
                 {
-                    using (var db = _connectionFactory.GetDbContextCommands())
+                    using (var dbContext = _dbContextFactory.CreateDbContext())
                     {
-                        permissionID = await db.PermissionsIUD(
-                            databaseAction: databaseAction, 
-                            permissionID: permissionID, 
-                            permissionParentID: permissionParentID, 
-                            permissionCaption: permissionCaption, 
-                            permissionCaptionEng: permissionCaptionEng, 
-                            permissionPagePath: permissionPagePath, 
-                            permissionCodeName: permissionCodeName, 
-                            permissionCode: permissionCode, 
-                            permissionIsMenuItem: permissionIsMenuItem, 
-                            permissionMenuIcon: permissionMenuIcon, 
-                            permissionMenuTitle: permissionMenuTitle, 
-                            permissionMenuTitleEng: permissionMenuTitleEng, 
-                            permissionSortIndex: permissionSortIndex
+                        var sqb = new SqlQueryBuilder(
+                            dbContext: dbContext,
+                            databaseObjectName: nameof(PermissionsIUD),
+                            sqlParameters:
+                            [
+                                databaseAction.ToSqlParameter(nameof(databaseAction),SqlDbType.TinyInt),
+                                permissionID.ToSqlParameterOutput(nameof(permissionID),SqlDbType.Int),
+                                permissionJson.ToSqlParameter(nameof(permissionJson),SqlDbType.NVarChar)                                
+                            ]
                         );
-                        return permissionID;
+
+                        await sqb.ExecuteStoredProcedure();
+                        permissionID = sqb.GetNextOutputParameterValue<int?>();
+                        return permissionID;                        
                     }
                 }
             );
             return permissionID;
         }
 
-        public async Task<List<PermissionDTO>> PermissionsList()
+        public async Task<List<PermissionsListDTO>> PermissionsList()
         {
             var result = await TryToReturnAsyncTask(
                 logString: $"{nameof(PermissionsList)}()", 
                 asyncFuncToTry: async () =>
                 {
-                    using (var db = _connectionFactory.GetDbContextQueries())
+                    using (var dbContext = _dbContextFactory.CreateDbContext())
                     {
-                        var result = (
-                            await db.PermissionsList()
-                            .OrderBy(P => P.PermissionSortIndex)
-                            .ToListAsync()
-                        )
-                        ?.Select(item=>_mapper.Map<PermissionDTO>(item))
-                        .ToList();
+                        var sqb = new SqlQueryBuilder(
+                            dbContext: dbContext,
+                            databaseObjectName: nameof(PermissionsList)
+                        );
+
+                        var resultQueryable = sqb.ExecuteTableValuedFunction<PermissionsListDTO>();
+                        resultQueryable = resultQueryable.OrderBy(P => P.PermissionSortIndex);
+                        var result = await resultQueryable.ToListAsync();
+                        
                         return result;
                     }
                 }
@@ -90,17 +95,26 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
             return result;
         }
 
-        public async Task<List<int?>> PermissionsListByRoleID(int? roleID)
+        public async Task<List<PermissionsListByRoleIDDTO>> PermissionsListByRoleID(int? roleID)
         {
             var result = await TryToReturnAsyncTask(
                 logString: $"{nameof(PermissionsListByRoleID)}({nameof(roleID)} = {roleID}", 
                 asyncFuncToTry: async () =>
                 {
-                    using (var db = _connectionFactory.GetDbContextQueries())
+                    using (var dbContext = _dbContextFactory.CreateDbContext())
                     {
-                        var result = await db.PermissionsListByRoleID(roleID: roleID)
-                        .Select(item => item.PermissionID)
-                        .ToListAsync();
+                        var sqb = new SqlQueryBuilder(
+                            dbContext: dbContext,
+                            databaseObjectName: nameof(PermissionsListByRoleID),
+                            sqlParameters:
+                            [
+                                roleID.ToSqlParameter(nameof(roleID), SqlDbType.Int)
+                            ]
+                        );
+
+                        var resultQueryable = sqb.ExecuteTableValuedFunction<PermissionsListByRoleIDDTO>();
+                        var result = await resultQueryable.ToListAsync();
+                        
                         return result;
                     }
                 }

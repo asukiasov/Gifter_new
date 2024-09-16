@@ -1,7 +1,7 @@
 /*!
 * DevExtreme (dx.messages.ar.js)
-* Version: 23.2.4
-* Build date: Mon Jan 29 2024
+* Version: 24.1.4
+* Build date: Mon Jul 15 2024
 *
 * Copyright (c) 2012 - 2024 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -60,6 +60,8 @@
             "dxList-pageLoadingText": "\u062c\u0627\u0631 \u0627\u0644\u062a\u062d\u0645\u064a\u0644...",
             "dxList-nextButtonText": "\u0627\u0644\u0645\u0632\u064a\u062f",
             "dxList-selectAll": "\u062a\u062d\u062f\u064a\u062f \u0627\u0644\u0643\u0644",
+            "dxList-listAriaLabel": "Items",
+            "dxList-listAriaLabel-deletable": "Deletable items",
             "dxListEditDecorator-delete": "\u062d\u0630\u0641",
             "dxListEditDecorator-more": "\u0627\u0644\u0645\u0632\u064a\u062f",
             "dxScrollView-pullingDownText": "\u0644\u0644\u062a\u062d\u062f\u064a\u062b \u0627\u0633\u062d\u0628 \u0644\u0644\u0623\u0633\u0641\u0644...",
@@ -198,6 +200,7 @@
             "dxDataGrid-filterPanelCreateFilter": "\u0625\u0646\u0634\u0627\u0621 \u0639\u0627\u0645\u0644 \u062a\u0635\u0641\u064a\u0629",
             "dxDataGrid-filterPanelClearFilter": "\u0645\u0633\u062d",
             "dxDataGrid-filterPanelFilterEnabledHint": "\u062a\u0645\u0643\u064a\u0646 \u0639\u0627\u0645\u0644 \u0627\u0644\u062a\u0635\u0641\u064a\u0629",
+            "dxDataGrid-masterDetail": "Cell with details",
             "dxTreeList-ariaTreeList": "Tree list with {0} rows and {1} columns",
             "dxTreeList-ariaSearchInGrid": "Search in the tree list",
             "dxTreeList-ariaToolbar": "Tree list toolbar",
@@ -277,6 +280,10 @@
             "dxScheduler-confirmRecurrenceDeleteOccurrence": "\u062d\u0630\u0641 \u0627\u0644\u0645\u0648\u0639\u062f",
             "dxScheduler-noTimezoneTitle": "\u0628\u0644\u0627 \u0645\u0646\u0637\u0642\u0629 \u0632\u0645\u0646\u064a\u0629",
             "dxScheduler-moreAppointments": "{0} \u0627\u0644\u0645\u0632\u064a\u062f",
+            "dxCalendar-currentDay": "Today",
+            "dxCalendar-currentMonth": "Current month",
+            "dxCalendar-currentYear": "Current year",
+            "dxCalendar-currentYearRange": "Current year range",
             "dxCalendar-todayButtonText": "\u0627\u0644\u064a\u0648\u0645",
             "dxCalendar-ariaWidgetName": "\u0627\u0644\u062a\u0642\u0648\u064a\u0645",
             "dxCalendar-previousMonthButtonLabel": "Previous month",
@@ -291,6 +298,8 @@
             "dxCalendar-captionYearLabel": "Year selection",
             "dxCalendar-captionDecadeLabel": "Decade selection",
             "dxCalendar-captionCenturyLabel": "Century selection",
+            "dxCalendar-selectedDate": "The selected date is {0}",
+            "dxCalendar-selectedDateRange": "The selected date range is from {0} to {1}",
             "dxColorView-ariaRed": "\u0623\u062d\u0645\u0631",
             "dxColorView-ariaGreen": "\u0623\u062e\u0636\u0631",
             "dxColorView-ariaBlue": "\u0623\u0632\u0631\u0642",
@@ -299,6 +308,7 @@
             "dxTagBox-selected": "\u062a\u0645 \u062a\u062d\u062f\u064a\u062f {0}",
             "dxTagBox-allSelected": "\u0643\u0644 \u0627\u0644\u0639\u0646\u0627\u0635\u0631 \u0627\u0644\u0645\u062d\u062f\u062f\u0629 ({0})",
             "dxTagBox-moreSelected": "{0} \u0627\u0644\u0645\u0632\u064a\u062f",
+            "dxTagBox-tagRoleDescription": "Tag. Press the delete button to remove this tag",
             "vizExport-printingButtonText": "Print",
             "vizExport-titleMenuText": "\u062a\u0635\u062f\u064a\u0631 / \u0637\u0628\u0627\u0639\u0629",
             "vizExport-exportButtonText": "{0} file",
@@ -683,7 +693,8 @@
             "dxMultiView-elementAriaRoleDescription": "MultiView",
             "dxMultiView-elementAriaLabel": "Use the arrow keys or swipe to navigate between views",
             "dxMultiView-itemAriaRoleDescription": "View",
-            "dxMultiView-itemAriaLabel": "{0} of {1}"
+            "dxMultiView-itemAriaLabel": "{0} of {1}",
+            "dxSplitter-resizeHandleAriaLabel": "Split bar"
         }
     })
 }));

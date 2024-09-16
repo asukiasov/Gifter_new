@@ -1,13 +1,11 @@
-﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using SixtyThreeBits.Core.DTO;
 using SixtyThreeBits.Core.Infrastructure.Database;
-using SixtyThreeBits.Core.Infrastructure.Factories;
-using SixtyThreeBits.Core.Infrastructure.Repositories.Base;
 using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries;
 using SixtyThreeBits.Libraries.Extensions;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -16,30 +14,35 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
     public class RolesRepository : RepositoryBase
     {
         #region Contructors
-        public RolesRepository(ConnectionFactory connectionFactory) : base(connectionFactory) 
-        {
-            _mapper = new MapperConfiguration(cfg =>
-            {
-                cfg.CreateMap<DbContextQueries.RolesListEntity, RoleDTO>();
-            }).CreateMapper();
+        public RolesRepository(DbContextFactory dbContextFactory) : base(dbContextFactory) 
+        {            
         }
         #endregion
 
         #region Methods
-        public async Task<int?> RolesIUD(Enums.DatabaseActions databaseAction, int? roleID = null, string roleName = null, int? roleCode = null)
+        public async Task<int?> RolesIUD(Enums.DatabaseActions databaseAction, int? roleID, RoleIudDTO role)
         {
+            var roleJson = role.ToJson();
+
             roleID = await TryToReturnAsyncTask(
-                logString: $"{nameof(RolesIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(roleID)} = {roleID}, {nameof(roleName)} = {roleName}, {nameof(roleCode)} = {roleCode})", 
+                logString: $"{nameof(RolesIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(roleID)} = {roleID}, {nameof(role)} = {roleJson})", 
                 asyncFuncToTry: async () =>
                 {
-                    using (var db = _connectionFactory.GetDbContextCommands())
+                    using (var dbContext = _dbContextFactory.CreateDbContext())
                     {
-                        roleID = await db.RolesIUD(
-                            databaseAction: databaseAction, 
-                            roleID: roleID, 
-                            roleName: roleName, 
-                            roleCode: roleCode
-                        );
+                        var sqb = new SqlQueryBuilder(
+                            dbContext: dbContext,
+                            databaseObjectName: nameof(RolesIUD),
+                            sqlParameters:
+                            [
+                                databaseAction.ToSqlParameter(nameof(databaseAction),SqlDbType.TinyInt),
+                                roleID.ToSqlParameterOutput(nameof(roleID),SqlDbType.Int),
+                                roleJson.ToSqlParameter(nameof(roleJson),SqlDbType.NVarChar)
+                            ]
+                         );
+
+                        await sqb.ExecuteStoredProcedure();
+                        roleID = sqb.GetNextOutputParameterValue<int?>();
                         return roleID;
                     }
                 }
@@ -53,15 +56,17 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 logString: $"{nameof(RolesList)}()", 
                 asyncFuncToTry: async () =>
                 {
-                    using (var db = _connectionFactory.GetDbContextQueries())
+                    using (var dbContext = _dbContextFactory.CreateDbContext())
                     {
-                        var result = (
-                            await db.RolesList()
-                            .OrderBy(item => item.RoleCode)
-                            .ToListAsync()
-                        )
-                        ?.Select(item => _mapper.Map<RoleDTO>(item))
-                        .ToList();
+                        var sqb = new SqlQueryBuilder(
+                            dbContext: dbContext,
+                            databaseObjectName: nameof(RolesList)
+                        );
+
+                        var resultQueryable = sqb.ExecuteTableValuedFunction<RoleDTO>();
+                        resultQueryable = resultQueryable.OrderBy(item => item.RoleCode);
+                        var result = await resultQueryable.ToListAsync();
+                        
                         return result;
                     }
                 }
@@ -71,55 +76,25 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
 
         public async Task<List<KeyValueTuple<int?,string>>> RolesListAsKeyValueTuple(bool IsRoleCodeAsKey = false)
         {
-            var result = await TryToReturnAsyncTask(
-                logString: $"{nameof(RolesListAsKeyValueTuple)}()", 
-                asyncFuncToTry: async () =>
+            var result = (await RolesList())
+                ?.Select(item => new KeyValueTuple<int?, string>
                 {
-                    using (var db = _connectionFactory.GetDbContextQueries())
-                    {
-                        var result = (
-                            await db.RolesList()
-                            .OrderBy(item => item.RoleCode)
-                            .ToListAsync()
-                        )
-                        ?.Select(item => new KeyValueTuple<int?, string>
-                        {
-                            Key = IsRoleCodeAsKey ? item.RoleCode : item.RoleID,
-                            Value = item.RoleName
-                        })
-                        .ToList();
-                        return result;
-                    }
-                }
-            );
+                    Key = IsRoleCodeAsKey ? item.RoleCode : item.RoleID,
+                    Value = item.RoleName
+                }).ToList();            
             return result;
         }
 
         public async Task<List<KeyValueSelectedTuple<int?, string>>> RolesListAsKeyValueSelectedTuple(int? SelectedValue, bool IsRoleCodeAsKey = false)
         {
-            var result = await TryToReturnAsyncTask(
-                logString: $"{nameof(RolesListAsKeyValueTuple)}()", 
-                asyncFuncToTry: async () =>
+            var result = (await RolesList())
+                ?.Select(item => new KeyValueSelectedTuple<int?, string>
                 {
-                    using (var db = _connectionFactory.GetDbContextQueries())
-                    {
-                        var result = (
-                            await db.RolesList()
-                            .OrderBy(item => item.RoleCode)
-                            .ToListAsync()
-                        )
-                        ?.Select(item => new KeyValueSelectedTuple<int?, string>
-                        {
-                            Key = IsRoleCodeAsKey ? item.RoleCode : item.RoleID,
-                            Value = item.RoleName,
-                            IsSelected = (IsRoleCodeAsKey ? (item.RoleCode == SelectedValue) : (item.RoleID == SelectedValue))
-                        })
-                        .ToList();
-                        return result;
-                    }
-                }
-            );
-            return result;
+                    Key = IsRoleCodeAsKey ? item.RoleCode : item.RoleID,
+                    Value = item.RoleName,
+                    IsSelected = (IsRoleCodeAsKey ? (item.RoleCode == SelectedValue) : (item.RoleID == SelectedValue))
+                }).ToList();
+            return result;                      
         }
 
         public async Task RolesPermissionsUpdate(int? roleID, List<int?> permissionIDs)
@@ -129,9 +104,18 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 logString: $"{nameof(RolesPermissionsUpdate)}({nameof(roleID)} = {roleID}, {nameof(permissionIDs)} = {permissionIDsJson})", 
                 asyncFuncToTry: async () =>
                 {
-                    using (var db = _connectionFactory.GetDbContextCommands())
+                    using (var dbContext = _dbContextFactory.CreateDbContext())
                     {
-                        await db.RolesPermissionsUpdate(roleID: roleID, permissionIDsJson: permissionIDsJson);
+                        var sqb = new SqlQueryBuilder(
+                            dbContext: dbContext,
+                            databaseObjectName: nameof(RolesPermissionsUpdate),
+                            sqlParameters:
+                            [
+                                roleID.ToSqlParameter(nameof(roleID),SqlDbType.Int),
+                                permissionIDsJson.ToSqlParameter(nameof(permissionIDsJson),SqlDbType.NVarChar)
+                            ]
+                        );
+                        await sqb.ExecuteStoredProcedure();                        
                     }
                 }
             );

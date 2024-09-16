@@ -1,28 +1,30 @@
-﻿namespace SixtyThreeBits.Core.DTO
+﻿using System;
+
+namespace SixtyThreeBits.Core.DTO
 {
-    public class PermissionDTO
+    public record PermissionDTO
     {
         #region Properties
-        public int? PermissionID { get; set; }
-        public int? PermissionParentID { get; set; }
-        public string PermissionCaption { get; set; }
-        public string PermissionCaptionEng { get; set; }
-        public string PermissionPagePath { get; set; }
-        public string PermissionCodeName { get; set; }
-        public string PermissionCode { get; set; }
-        public bool PermissionIsMenuItem { get; set; }
-        public string PermissionMenuIcon { get; set; }
-        public int? PermissionSortIndex { get; set; }
+        public int? PermissionID { get; init; }
+        public int? PermissionParentID { get; init; }
+        public string PermissionCaption { get; init; }
+        public string PermissionCaptionEng { get; init; }
+        public string PermissionPagePath { get; init; }
+        public string PermissionCodeName { get; init; }
+        public string PermissionCode { get; init; }
+        public bool PermissionIsMenuItem { get; init; }
+        public string PermissionMenuIcon { get; init; }
+        public int? PermissionSortIndex { get; init; }
 
-        public string PermissionMenuTitle { get; set; }
+        public string PermissionMenuTitle { get; init; }
         public bool HasPermissionMenuTitle => !string.IsNullOrWhiteSpace(PermissionMenuTitle);
         public string PermissionMenuTitleOrCaption => HasPermissionMenuTitle ? PermissionMenuTitle : PermissionCaption;
 
-        public string PermissionMenuTitleEng { get; set; }
+        public string PermissionMenuTitleEng { get; init; }
         public bool HasPermissionMenuTitleEng => !string.IsNullOrWhiteSpace(PermissionMenuTitleEng);
         public string PermissionMenuTitleOrCaptionEng => HasPermissionMenuTitleEng ? PermissionMenuTitleEng : PermissionCaptionEng;
 
-        public bool PermissionIsSelected { get; set; }
+        public bool PermissionIsSelected { get; init; }
         #endregion
 
         #region Methods
@@ -30,6 +32,50 @@
         {
             return $"{PermissionCaption} {PermissionPagePath}";
         }
+        #endregion
+    }
+
+    public record PermissionIudDTO
+    {
+        #region Properties
+        public int? PermissionID { get; init; }
+        public int? PermissionParentID { get; init; }
+        public string PermissionCaption { get; init; }
+        public string PermissionCaptionEng { get; init; }
+        public string PermissionPagePath { get; init; }
+        public string PermissionCodeName { get; init; }
+        public string PermissionCode { get; init; }
+        public bool? PermissionIsMenuItem { get; init; }
+        public string PermissionMenuIcon { get; init; }
+        public string PermissionMenuTitle { get; init; }
+        public string PermissionMenuTitleEng { get; init; }
+        public int? PermissionSortIndex { get; init; }
+        #endregion
+    }
+
+    public record PermissionsListDTO
+    {
+        #region Properties
+        public int? PermissionID { get; init; }
+        public int? PermissionParentID { get; init; }
+        public string PermissionCaption { get; init; }
+        public string PermissionCaptionEng { get; init; }
+        public string PermissionPagePath { get; init; }
+        public string PermissionCodeName { get; init; }
+        public string PermissionCode { get; init; }
+        public bool PermissionIsMenuItem { get; init; }
+        public string PermissionMenuIcon { get; init; }
+        public string PermissionMenuTitle { get; init; }
+        public string PermissionMenuTitleEng { get; init; }
+        public int? PermissionSortIndex { get; init; }
+        public DateTime? PermissionDateCreated { get; init; }
+        #endregion
+    }
+
+    public record PermissionsListByRoleIDDTO
+    {
+        #region Properties
+        public int? PermissionID { get; init; }
         #endregion
     }
 }

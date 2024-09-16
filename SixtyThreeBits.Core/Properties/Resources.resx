@@ -123,6 +123,12 @@
   <data name="TextAdd" xml:space="preserve">
     <value>Add</value>
   </data>
+  <data name="TextAddress" xml:space="preserve">
+    <value>Address</value>
+  </data>
+  <data name="TextAdminEmails" xml:space="preserve">
+    <value>Administrator Emails. Comma separated</value>
+  </data>
   <data name="TextAdminWelcomeSubTitle" xml:space="preserve">
     <value>Please sign in to continue for administration</value>
   </data>
@@ -177,14 +183,23 @@
   <data name="TextConfirmDeleteRecursive" xml:space="preserve">
     <value>Deleting this item will also delete all child items. Do you really want to continue?</value>
   </data>
+  <data name="TextConfirmDeleteRecursiveWithTypeDelete" xml:space="preserve">
+    <value>Do you really want to delete this parent record with all its children? Please type word "delete" to confirm.</value>
+  </data>
   <data name="TextContactAddress" xml:space="preserve">
     <value>Contact Address</value>
   </data>
   <data name="TextContactEmail" xml:space="preserve">
     <value>Contact Email</value>
   </data>
+  <data name="TextContactFormSuccess" xml:space="preserve">
+    <value>Your message has been sent successfully</value>
+  </data>
   <data name="TextContactPhone" xml:space="preserve">
     <value>Contact Phone</value>
+  </data>
+  <data name="TextContactUs" xml:space="preserve">
+    <value>Contact Us</value>
   </data>
   <data name="TextDate" xml:space="preserve">
     <value>Date</value>
@@ -206,6 +221,9 @@
   </data>
   <data name="TextDescriptionShortEng" xml:space="preserve">
     <value>Short Description Eng</value>
+  </data>
+  <data name="TextDeveloperEmails" xml:space="preserve">
+    <value>Developer Emails, Comma Separated</value>
   </data>
   <data name="TextDictionaryCode" xml:space="preserve">
     <value>Dictionary Code</value>
@@ -276,6 +294,9 @@
   <data name="TextMenuTitleEng" xml:space="preserve">
     <value>Menu Title Eng</value>
   </data>
+  <data name="TextMessage" xml:space="preserve">
+    <value>Message</value>
+  </data>
   <data name="TextName" xml:space="preserve">
     <value>Name</value>
   </data>
@@ -287,6 +308,18 @@
   </data>
   <data name="TextNo" xml:space="preserve">
     <value>No</value>
+  </data>
+  <data name="TextOpenInNewTab" xml:space="preserve">
+    <value>Open in new tab</value>
+  </data>
+  <data name="TextPageExternalUrl" xml:space="preserve">
+    <value>Page External Url</value>
+  </data>
+  <data name="TextPageInternal" xml:space="preserve">
+    <value>Internal Page</value>
+  </data>
+  <data name="TextPageIsExternal" xml:space="preserve">
+    <value>External Page</value>
   </data>
   <data name="TextPageNotFound" xml:space="preserve">
     <value>404 - Page Not Found</value>
@@ -312,6 +345,9 @@
   <data name="TextPermissions" xml:space="preserve">
     <value>Permissions</value>
   </data>
+  <data name="TextPhone" xml:space="preserve">
+    <value>Phone</value>
+  </data>
   <data name="TextPhoneCell" xml:space="preserve">
     <value>Cell number</value>
   </data>
@@ -323,6 +359,9 @@
   </data>
   <data name="TextPrev" xml:space="preserve">
     <value>Next</value>
+  </data>
+  <data name="TextPreview" xml:space="preserve">
+    <value>Preview</value>
   </data>
   <data name="TextPrice" xml:space="preserve">
     <value>Price</value>
@@ -365,6 +404,9 @@
   </data>
   <data name="TextSave" xml:space="preserve">
     <value>Save</value>
+  </data>
+  <data name="TextSend" xml:space="preserve">
+    <value>Send</value>
   </data>
   <data name="TextSlug" xml:space="preserve">
     <value>Slug</value>
@@ -414,6 +456,9 @@
   <data name="ValidationExcelDuplicateItemFound" xml:space="preserve">
     <value>Duplicate item found. Row {0}</value>
   </data>
+  <data name="ValidationPagesSlugNotUniq" xml:space="preserve">
+    <value>Page slug is not unique</value>
+  </data>
   <data name="ValidationPasswordLength" xml:space="preserve">
     <value>Password length must be more then 8 symbols</value>
   </data>
@@ -440,6 +485,9 @@
   </data>
   <data name="ValidationProductRemainderRequired" xml:space="preserve">
     <value>Product remainder is required</value>
+  </data>
+  <data name="ValidationRecaptchaInvalid" xml:space="preserve">
+    <value>reCaptcha validation failed</value>
   </data>
   <data name="ValidationRequired" xml:space="preserve">
     <value>Field is required</value>

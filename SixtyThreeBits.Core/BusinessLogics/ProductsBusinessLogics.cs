@@ -1,6 +1,7 @@
 ﻿using ExcelDataReader;
 using OfficeOpenXml;
-using SixtyThreeBits.Core.Infrastructure.Factories;
+using SixtyThreeBits.Core.DTO;
+using SixtyThreeBits.Core.Infrastructure.Repositories;
 using SixtyThreeBits.Core.Properties;
 using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries.Extensions;
@@ -40,7 +41,7 @@ namespace SixtyThreeBits.Core.BusinessLogics
 					using (var excel = new ExcelPackage(new FileInfo($"{_appSettings.DownloadFolderPhysicalPath}\\ProductsSync.xlsx")))
 					{
 						var workSheet = excel.Workbook.Worksheets[0];
-						var repository = _dataAccessFactory.GetProductsRepository();													
+						var repository = _dataAccessFactory.CreateProductsRepository();													
 						var products = await repository.ProductsList();
 
 						if (products?.Any() == true)
@@ -124,7 +125,7 @@ namespace SixtyThreeBits.Core.BusinessLogics
 
 			async Task initBusinessLogicProperties()
 			{
-				var repository = _repositoryFactory.GetProductsRepository();
+				var repository = _repositoryFactory.CreateProductsRepository();
 				var products = await repository.ProductsList();
 				if (products == null)
 				{
@@ -216,7 +217,7 @@ namespace SixtyThreeBits.Core.BusinessLogics
 
 			async Task initProductIDs()
 			{
-				var repository = _repositoryFactory.GetProductsRepository();
+				var repository = _repositoryFactory.CreateProductsRepository();
 
 				foreach(var excelItem in _excelItems)
 				{
@@ -229,7 +230,11 @@ namespace SixtyThreeBits.Core.BusinessLogics
 					{
 						excelItem.ProductID = await repository.ProductsIUD(
 							databaseAction: Enums.DatabaseActions.CREATE,
-							productName: excelItem.ProductName
+							productID: null,
+							product: new ProductIudDTO
+							{
+                                ProductName = excelItem.ProductName
+                            }							
 						);
 						if (repository.IsError)
 						{
@@ -243,15 +248,18 @@ namespace SixtyThreeBits.Core.BusinessLogics
 
 			async Task syncPricesAndRemainders()
 			{
-                var command = _repositoryFactory.GetProductsRepository();
+                var command = _repositoryFactory.CreateProductsRepository();
 
                 foreach (var ExcelItem in _excelItems)
 				{
 					await command.ProductsIUD(
 						databaseAction: Enums.DatabaseActions.UPDATE,
 						productID: ExcelItem.ProductID,
-						productPrice: ExcelItem.ProductPrice,
-						productRemainder: ExcelItem.ProductRemainder
+						product: new ProductIudDTO
+						{
+							ProductPrice = ExcelItem.ProductPrice,
+							ProductRemainder = ExcelItem.ProductRemainder
+						}        
 					);
 					if (command.IsError)
 					{
@@ -283,6 +291,7 @@ namespace SixtyThreeBits.Core.BusinessLogics
                 }
                 #endregion
             }
+
             public class SyncProductPricesAndRemaindersResult : BusinessLogicResultBase
 			{
 				#region Properties

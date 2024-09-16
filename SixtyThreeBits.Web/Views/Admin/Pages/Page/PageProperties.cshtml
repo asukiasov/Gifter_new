@@ -5,8 +5,9 @@
 
 <form method="post" enctype="multipart/form-data">
     <div class="row">
-        <div class="col">
-            @await Html.PartialAsync(ViewNames.Admin.Shared.ButtonSave, new ButtonSaveViewModel {CssClass = "js-show-preloader"})
+        <div class="col d-flex justify-content-between">
+            @await Html.PartialAsync(ViewNames.Admin.Shared.ButtonSavePartialView, new ButtonSaveViewModel {CssClass = "js-show-preloader"})
+            <a href="@Html.Raw(Model.UrlPreview)" target="_blank" class="btn btn-light btn-rounded"><i class="fa-solid fa-eye"></i> @Html.Raw(Model.TextPreview)</a>
         </div>
     </div>
     <hr />
@@ -17,22 +18,8 @@
                 <input type="checkbox" id="IsPublishedChechBox" name="@nameof(Model.PageIsPublished)" value="true" @(Model.PageIsPublished ? Html.Raw("checked") : null) />
                 <i></i>
             </label>
-        </div>
-        <div class="form-group col-lg-2">
-            <label>@Html.Raw(Model.TextMenu)</label>
-            <label class="toggler toggler-lg">
-                <input type="checkbox" id="IsMenuItemChechBox" name="@nameof(Model.PageIsMenuItem)" value="true" @(Model.PageIsMenuItem ? Html.Raw("checked") : null) />
-                <i></i>
-            </label>
-        </div>
-        <div class="form-group col-lg-2">
-            <label>@Html.Raw(Model.TextFooter)</label>
-            <label class="toggler toggler-lg">
-                <input type="checkbox" id="IsMenuItemChechBox" name="@nameof(Model.PageIsFooterItem)" value="true" @(Model.PageIsFooterItem ? Html.Raw("checked") : null) />
-                <i></i>
-            </label>
-        </div>
-        <div class="form-group col-lg-6">                    
+        </div>        
+        <div class="form-group col-lg-4">                    
             <label>@Html.Raw(Model.TextUploadImage) <a href="#" class="js-short-description-and-image-info"><i class="fa-solid fa-circle-info"></i></a></label>
             <div class="input-group custom-file-group js-custom-file-upload">
                 <div class="form-control">
@@ -50,7 +37,24 @@
                 </span>                
             </div>
         </div>
-    </div>
+        <div class="form-group col-lg-6">
+            <div class="d-flex justify-content-between">
+                <label>@Html.Raw(Model.TextSlug) *</label>
+                <div class="dropdown">
+                    <a href="javascript:void(0)" class="dropdown-toggle" data-bs-toggle="dropdown">
+                        @Html.Raw(Model.TextGenerateFromTitle)
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#" class="dropdown-item js-generate-slug-from-title" data-title-input-selector=".js-title-input" data-slug-input-selectpr=".js-slug-input">@Html.Raw(Model.TextTitle)</a></li>
+                        <li><a href="#" class="dropdown-item js-generate-slug-from-title" data-title-input-selector=".js-title-eng-input" data-slug-input-selectpr=".js-slug-input">@Html.Raw(Model.TextTitleEng)</a></li>                        
+                    </ul>
+                </div>
+            </div>
+            
+            <input type="text" name="@nameof(Model.PageSlug)" class="form-control js-slug-input js-apply-slug-input-behaviour" value="@Html.Raw(Model.PageSlug)" />
+            <div class="invalid-feedback"></div>
+        </div>
+    </div>    
     <div class="row">
         <div class="form-group col-lg-6">
             <label>@Html.Raw(Model.TextTitle) *</label>
@@ -59,40 +63,19 @@
         </div>
         <div class="form-group col-lg-6">
             <label>@Html.Raw(Model.TextTitleEng)</label>
-            <input type="text" name="@nameof(Model.PageTitleEng)" class="form-control" value="@Html.Raw(Model.PageTitleEng)" />
+            <input type="text" name="@nameof(Model.PageTitleEng)" class="form-control js-title-eng-input" value="@Html.Raw(Model.PageTitleEng)" />
             <div class="invalid-feedback"></div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="form-group col-lg-6">
-            <label class="d-flex justify-content-between">
-                <span>@Html.Raw(Model.TextSlug) *</span>
-                <a href="#" class="js-generate-slug-from-title" data-title-input-selector=".js-title-input" data-slug-input-selectpr=".js-slug-input">@Html.Raw(Model.TextGenerateFromTitle)</a>
-            </label>
-            <input type="text" name="@nameof(Model.PageSlug)" class="form-control js-slug-input js-apply-slug-input-behaviour" value="@Html.Raw(Model.PageSlug)" />            
-            <div class="invalid-feedback"></div>
-        </div>
-        <div class="form-group col-lg-6">
-            <div class="d-flex justify-content-between">
-                <label>@Html.Raw(Model.TextPageUrl)</label>
-                <div class="form-check">
-                    <input type="checkbox" name="@(nameof(Model.PageIsExternalUrl))" class="form-check-input js-is-external-url-checkbox" id="js-is-external-url-checkbox" value="true" @(Model.PageIsExternalUrl ? Html.Raw("checked") : null) />
-                    <label class="form-check-label" for="js-is-external-url-checkbox">@Html.Raw(Model.TextExternalPage)</label>
-                </div>                
-            </div>            
-            <input type="text" name="@nameof(Model.PageExternalUrl)" class="form-control js-external-url-input" value="@Html.Raw(Model.PageExternalUrl)" />
-            <div class="invalid-feedback"></div>
-        </div>
+        </div>        
     </div>    
     <div class="row">
         <div class="form-group col-lg-6">
             <label>@Html.Raw(Model.TextDescriptionShort) <a href="#" class="js-short-description-and-image-info"><i class="fa-solid fa-circle-info"></i></a> </label>
-            <textarea name="@nameof(Model.PageShortDescription)" class="form-control" maxlength="200">@Html.Raw(Model.PageShortDescription)</textarea>
+            <textarea name="@nameof(Model.PageShortDescription)" class="form-control" maxlength="300">@Html.Raw(Model.PageShortDescription)</textarea>
         </div>
         <div class="form-group col-lg-6">
             <label>@Html.Raw(Model.TextDescriptionShortEng) <a href="#" class="js-short-description-and-image-info"><i class="fa-solid fa-circle-info"></i></a> </label>
-            <textarea name="@nameof(Model.PageShortDescriptionEng)" class="form-control" maxlength="200">@Html.Raw(Model.PageShortDescriptionEng)</textarea>
-        </div>        
+            <textarea name="@nameof(Model.PageShortDescriptionEng)" class="form-control" maxlength="300">@Html.Raw(Model.PageShortDescriptionEng)</textarea>
+        </div>
     </div>             
 </form>
 

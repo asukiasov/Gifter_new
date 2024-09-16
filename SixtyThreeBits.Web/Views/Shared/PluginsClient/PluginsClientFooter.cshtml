@@ -1,4 +1,4 @@
-﻿@model PluginsClient
+﻿@model PluginsClientViewModel
 @if (Model.IsJsClientEnabled)
 {
     <script src="/plugins/js-client/js-client.min.js"></script>
@@ -34,6 +34,11 @@
 @if (Model.IsPreloaderEnabled)
 {
     <script src="/plugins/preloader/preloader.js"></script>
+}
+@if (Model.Is63BitsAnalogClockEnabled)
+{
+    <script src="/plugins/63bits-analog-clock/63bits-analog-clock.js"></script>
+    <script>AnalogClockModel.now = new Date(@DateTime.Now.Year, @DateTime.Now.Month, @DateTime.Now.Day, @DateTime.Now.Hour, @DateTime.Now.Minute, @DateTime.Now.Second, @DateTime.Now.Millisecond);</script>
 }
 @if (Model.Is63BitsComponentsEnabled)
 {
@@ -103,11 +108,16 @@
 @if (Model.Is63BitsSuccessErrorToastEnabled)
 {
     <script src="/plugins/63bits-success-error-toast/63bits-success-error-toast.js"></script>
+    <script>successErrorToast63Bits.textError = '@Html.Raw(Model.TextError)'; successErrorToast63Bits.textSuccess = '@Html.Raw(Model.TextSuccess)';</script>
 }
 @if (Model.IsAdminThemeEnabled)
 {
     <script src="/plugins/borex/js/bootstrap.bundle.min.js"></script>
     <script src="/plugins/borex/plugins/simplebar/simplebar.min.js"></script>    
+}
+@if (Model.IsGoogleRecaptchaEnabled)
+{
+    <script src="https://www.google.com/recaptcha/api.js?render=@Html.Raw(Model.RecaptchaSiteKey)"></script>
 }
 @if(Model.IsDevextremeExportExcelLibrariesEnabled)
 {

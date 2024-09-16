@@ -1,0 +1,34 @@
+﻿@model NotFoundViewModel
+@{ Layout = null; }
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>@Html.Raw(Model.PageTitle)</title>
+    @await Html.PartialAsync(ViewNames.Shared.PluginsClient.PluginsClientHeader, Model.PluginsClient)
+</head>
+
+<body>
+    <div class="wrapper">
+        <div class="abs-center wd-xl">
+            <!-- START panel-->
+            <div class="text-center mb-xl">
+                <div class="text-lg mb-lg">404</div>
+                <p class="lead m0">@Html.Raw(Model.TextPageNotFoundMessage1)</p>
+                <p>@Html.Raw(Model.TextPageNotFoundMessage2)</p>
+            </div>
+            <ul class="list-inline text-center text-sm mb-xl">
+                <li>
+                    <a class="text-muted" href="javascript:history.go(-1)">@Html.Raw(Model.TextBackToPreviousPage)</a>
+                </li>
+            </ul>
+            <div class="p-lg text-center">
+                
+            </div>
+        </div>
+    </div>
+    @await Html.PartialAsync(ViewNames.Shared.PluginsClient.PluginsClientFooter, Model.PluginsClient)
+</body>
+</html>

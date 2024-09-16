@@ -1,11 +1,10 @@
-﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using SixtyThreeBits.Core.DTO;
 using SixtyThreeBits.Core.Infrastructure.Database;
-using SixtyThreeBits.Core.Infrastructure.Factories;
-using SixtyThreeBits.Core.Infrastructure.Repositories.Base;
 using SixtyThreeBits.Core.Utilities;
+using SixtyThreeBits.Libraries.Extensions;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -14,30 +13,35 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
     public class RedirectsRepository : RepositoryBase
     {
         #region Constructors
-        public RedirectsRepository(ConnectionFactory connectionFactory) : base(connectionFactory)
-        {
-            _mapper = new MapperConfiguration(cfg =>
-            {
-                cfg.CreateMap<DbContextQueries.RedirectsListEntity, RedirectDTO>();
-            }).CreateMapper();
+        public RedirectsRepository(DbContextFactory dbContextFactory) : base(dbContextFactory)
+        {            
         }
         #endregion
 
         #region Methods
-        public async Task<int?> RedirectsIUD(Enums.DatabaseActions databaseAction, int? redirectID = null, string redirectFrom = null, string redirectTo = null)
+        public async Task<int?> RedirectsIUD(Enums.DatabaseActions databaseAction, int? redirectID, RedirectIudDTO redirect)
         {
+            var redirectJson = redirect.ToJson();
+
             redirectID = await TryToReturnAsyncTask(
-                logString: $"{nameof(RedirectsIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(redirectID)} = {redirectID}, {nameof(redirectFrom)} = {redirectFrom}, {nameof(redirectTo)} = {redirectTo})", 
+                logString: $"{nameof(RedirectsIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(redirectID)} = {redirectID}, {nameof(redirect)} = {redirectJson})", 
                 asyncFuncToTry: async () =>
                 {
-                    using (var db = _connectionFactory.GetDbContextCommands())
+                    using (var dbContext = _dbContextFactory.CreateDbContext())
                     {
-                        redirectID = await db.RedirectsIUD(
-                            databaseAction: databaseAction, 
-                            redirectID: redirectID, 
-                            redirectFrom: redirectFrom, 
-                            redirectTo: redirectTo
-                        );
+                        var sqb = new SqlQueryBuilder(
+                            dbContext: dbContext,
+                            databaseObjectName: nameof(RedirectsIUD),
+                            sqlParameters:
+                            [
+                                databaseAction.ToSqlParameter(nameof(databaseAction),SqlDbType.TinyInt),
+                                redirectID.ToSqlParameterOutput(nameof(redirectID),SqlDbType.Int),
+                                redirectJson.ToSqlParameter(nameof(redirectJson),SqlDbType.NVarChar)
+                            ]
+                         );
+
+                        await sqb.ExecuteStoredProcedure();
+                        redirectID = sqb.GetNextOutputParameterValue<int?>();
                         return redirectID;
                     }
                 }
@@ -51,14 +55,17 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 logString: $"{nameof(RedirectsList)}()", 
                 asyncFuncToTry: async () =>
                 {
-                    using (var db = _connectionFactory.GetDbContextQueries())
+                    using (var dbContext = _dbContextFactory.CreateDbContext())
                     {
-                        var result = (
-                            await db.RedirectsList()
-                            .OrderByDescending(item => item.RedirectDateCreated).ToListAsync()
-                        )
-                        ?.Select(item => _mapper.Map<RedirectDTO>(item))
-                        .ToList();
+                        var sqb = new SqlQueryBuilder(
+                            dbContext: dbContext,
+                            databaseObjectName: nameof(RedirectsList)
+                        );
+
+                        var resultQueryable = sqb.ExecuteTableValuedFunction<RedirectDTO>();
+                        resultQueryable = resultQueryable.OrderByDescending(item => item.RedirectDateCreated);
+                        var result = await resultQueryable.ToListAsync();
+                        
                         return result;
                     }
                 }

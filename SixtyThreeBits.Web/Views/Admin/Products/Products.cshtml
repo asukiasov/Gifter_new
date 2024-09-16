@@ -1,18 +1,23 @@
-﻿@model ProductsModel.PageViewModel
+﻿@model ProductsModel.ViewModel
 <div class="card">
-    <div class="card-body">
+    <div class="card-body">        
         <div class="row">
             <div class="col">
-                @if (Model.ShowAddNewButton)
-                {
-                    @await Html.PartialAsync(ViewNames.Admin.Shared.ButtonAddNew, new ButtonAddNewViewModel{ CssClass = "me-3"})
-                }
-                @if (Model.ShowExcelUploadButton)
-                {
-
-                    <button class="btn btn-light btn-rounded js-upload-excel-button"><i class="fa-solid fa-upload"></i> @Html.Raw(Model.TextRemainderUpload)</button>
-                }
-                <button class="btn btn-light btn-rounded js-export-excel-button"><i class="fa-solid fa-file-excel"></i> @Html.Raw(Model.TextExport)</button>
+                <div class="d-flex justify-content-between">                    
+                    <div>
+                        @if (Model.ShowAddNewButton)
+                        {
+                            @await Html.PartialAsync(ViewNames.Admin.Shared.ButtonAddNewPartialView, new ButtonAddNewViewModel { CssClass = "me-3" })
+                        }
+                        @if (Model.ShowExcelUploadButton)
+                        {
+                            <button class="btn btn-light btn-rounded js-upload-excel-button"><i class="fa-solid fa-upload"></i> @Html.Raw(Model.TextRemainderUpload)</button>
+                        }
+                    </div>
+                    <div>
+                        <button class="btn btn-light btn-rounded js-export-excel-button"><i class="fa-solid fa-file-excel"></i> @Html.Raw(Model.TextExport)</button>
+                    </div>
+                </div>                                
             </div>
         </div>
     </div>

@@ -1,13 +1,10 @@
-﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using SixtyThreeBits.Core.DTO;
 using SixtyThreeBits.Core.Infrastructure.Database;
-using SixtyThreeBits.Core.Infrastructure.Factories;
-using SixtyThreeBits.Core.Infrastructure.Repositories.Base;
 using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries.Extensions;
-using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -16,12 +13,8 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
     public class BlogPostsRepository : RepositoryBase
     {
         #region Constructors
-        public BlogPostsRepository(ConnectionFactory connectionFactory) : base(connectionFactory)
-        {
-            _mapper = new MapperConfiguration(cfg =>
-            {
-                cfg.CreateMap<DbContextQueries.BlogPostListEntity, BlogPostDTO>();
-            }).CreateMapper();
+        public BlogPostsRepository(DbContextFactory dbContextFactory) : base(dbContextFactory)
+        {            
         }
         #endregion
 
@@ -32,10 +25,20 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 logString: $"{nameof(BlogPostGetSingleByID)}({nameof(blogPostID)} = {blogPostID})", 
                 asyncFuncToTry: async () =>
                 {
-                    using (var db = _connectionFactory.GetDbContextQueries())
+                    using (var dbContext = _dbContextFactory.CreateDbContext())
                     {
-                        var resultJson = await db.BlogPostGetSingleByID(blogPostID: blogPostID);
-                        var result = resultJson?.DeserializeJsonTo<BlogPostDTO>();
+                        var sqb = new SqlQueryBuilder(
+                            dbContext: dbContext,
+                            databaseObjectName: nameof(BlogPostGetSingleByID),
+                            sqlParameters:
+                            [
+                                blogPostID.ToSqlParameter(nameof(blogPostID), SqlDbType.Int),
+                            ]
+                        );
+
+                        var resultJson = await sqb.ExecuteScalarValuedFunction<string>();
+                        var result = resultJson.DeserializeJsonTo<BlogPostDTO>();
+
                         return result;
                     }
                 }
@@ -49,9 +52,18 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 logString: $"{nameof(BlogPostIsSlugUniq)}({nameof(blogPostSlug)} = {blogPostSlug}, {nameof(blogPostID)} = {blogPostID})", 
                 asyncFuncToTry: async () =>
                 {
-                    using (var db = _connectionFactory.GetDbContextQueries())
+                    using (var dbContext = _dbContextFactory.CreateDbContext())
                     {
-                        var result = await db.BlogPostIsSlugUniq(blogPostSlug: blogPostSlug, blogPostID: blogPostID);
+                        var sqb = new SqlQueryBuilder(
+                            dbContext: dbContext,
+                            databaseObjectName: nameof(BlogPostIsSlugUniq),
+                            sqlParameters:
+                            [
+                                blogPostSlug.ToSqlParameter(nameof(blogPostSlug), SqlDbType.NVarChar),
+                                blogPostID.ToSqlParameter(nameof(blogPostID), SqlDbType.Int)
+                            ]
+                        );
+                        var result = await sqb.ExecuteScalarValuedFunction<bool>();                        
                         return result;
                     }
                 }
@@ -59,26 +71,28 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
             return result;
         }
 
-        public async Task<int?> BlogIUD(Enums.DatabaseActions databaseAction, int? blogPostID = null, string blogPostSlug = null, string blogPostTitle = null, string blogPostShortText = null, string blogPostText = null, string blogPostAuthorName = null, string blogPostImageFilename = null, DateTime? blogPostDate = null, bool? blogPostIsPublished = null)
+        public async Task<int?> BlogPostsIUD(Enums.DatabaseActions databaseAction, int? blogPostID, BlogPostIudDTO blogPost)
         {
+            var blogPostJson = blogPost.ToJson();
+
             blogPostID = await TryToReturnAsyncTask(
-                logString: $"{nameof(BlogIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(blogPostID)} = {blogPostID}, {nameof(blogPostSlug)} = {blogPostSlug}, {nameof(blogPostTitle)} = {blogPostTitle}, {nameof(blogPostShortText)} = {blogPostShortText}, {nameof(blogPostText)} = {blogPostText}, {nameof(blogPostAuthorName)} = {blogPostAuthorName}, {nameof(blogPostImageFilename)} = {blogPostImageFilename}, {nameof(blogPostDate)} = {blogPostDate}, {nameof(blogPostIsPublished)} = {blogPostIsPublished})", 
+                logString: $"{nameof(BlogPostsIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(blogPostID)} = {blogPostID}, {nameof(blogPost)} = {blogPostJson})", 
                 asyncFuncToTry: async () =>
                 {
-                    using (var db = _connectionFactory.GetDbContextCommands())
+                    using (var dbContext = _dbContextFactory.CreateDbContext())
                     {
-                        blogPostID = await db.BlogIUD(
-                            databaseAction: databaseAction, 
-                            blogPostID: blogPostID,
-                            blogPostSlug: blogPostSlug, 
-                            blogPostTitle: blogPostTitle, 
-                            blogPostShortText: blogPostShortText, 
-                            blogPostText: blogPostText, 
-                            blogPostAuthorName: blogPostAuthorName, 
-                            blogPostImageFilename: blogPostImageFilename, 
-                            blogPostDate: blogPostDate, 
-                            blogPostIsPublished: blogPostIsPublished
+                        var sqb = new SqlQueryBuilder(
+                            dbContext: dbContext,
+                            databaseObjectName: nameof(BlogPostsIUD),
+                            sqlParameters:
+                            [
+                                 databaseAction.ToSqlParameter(nameof(databaseAction),SqlDbType.TinyInt),
+                                 blogPostID.ToSqlParameterOutput(nameof(blogPostID),SqlDbType.Int),
+                                 blogPostJson.ToSqlParameter(nameof(blogPostJson),SqlDbType.NVarChar)                                 
+                            ]
                         );
+                        await sqb.ExecuteStoredProcedure();
+                        blogPostID = sqb.GetNextOutputParameterValue<int?>();          
                         return blogPostID;
                     }
                 }
@@ -86,21 +100,23 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
             return blogPostID;
         }
 
-        public async Task<List<BlogPostDTO>> BlogPostList()
+        public async Task<List<BlogPostListDTO>> BlogPostList()
         {
             var result = await TryToReturn(
                 logString: $"{nameof(BlogPostList)}()", 
                 funcToTry: async () =>
                 {
-                    using (var db = _connectionFactory.GetDbContextQueries())
+                    using (var dbContext = _dbContextFactory.CreateDbContext())
                     {
-                        var result = (
-                            await db.BlogPostList()
-                            .OrderByDescending(item => item.BlogPostDateCreated)
-                            .ToListAsync()
-                        )
-                        ?.Select(item => _mapper.Map<BlogPostDTO>(item))
-                        .ToList();
+                        var sqb = new SqlQueryBuilder(
+                            dbContext: dbContext,
+                            databaseObjectName: nameof(BlogPostList)
+                        );
+
+                        var resultQueryable = sqb.ExecuteTableValuedFunction<BlogPostListDTO>();
+                        resultQueryable = resultQueryable.OrderByDescending(item => item.BlogPostDateCreated);
+                        var result = await resultQueryable.ToListAsync();
+
                         return result;
                     }
                 }

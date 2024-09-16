@@ -1,0 +1,8 @@
+.analog-clock{
+    z-index:1;
+    display:flex;
+    justify-content:center;
+}
+.sidebar-enable .analog-clock{
+    display: none;
+}

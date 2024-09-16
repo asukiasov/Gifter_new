@@ -9,9 +9,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
-using SixtyThreeBits.Core.Infrastructure.Factories;
+using SixtyThreeBits.Core.Infrastructure.Repositories;
 using SixtyThreeBits.Core.Utilities;
-using SixtyThreeBits.Web.Domain;
+using SixtyThreeBits.Web.Domain.Utilities;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -34,14 +34,14 @@ namespace SixtyThreeBits.Web
             else
             {
                 #if DEBUG
-                appSettingsConfiguration = new ConfigurationBuilder().SetBasePath(env.ContentRootPath).AddJsonFile("appsettings.Staging.json").Build();
+                appSettingsConfiguration = new ConfigurationBuilder().SetBasePath(env.ContentRootPath).AddJsonFile("appsettings.debug.json").Build();
                 #else
-                appSettingsConfiguration = new ConfigurationBuilder().SetBasePath(env.ContentRootPath).AddJsonFile("appsettings.Production.json").Build();                
+                appSettingsConfiguration = new ConfigurationBuilder().SetBasePath(env.ContentRootPath).AddJsonFile("appsettings.release.json").Build();                
                 #endif
             }
             _appSettings = new AppSettingsCollection(env.WebRootPath, appSettingsConfiguration);
-            _utilities = new UtilityCollection();
-            _repositoryFactory = new RepositoryFactory(_appSettings.ConnectionStrings.CommandsConnectionString, _appSettings.ConnectionStrings.QueriesConnectionString);            
+            _utilities = new UtilityCollection(env.ContentRootPath, env.WebRootPath);
+            _repositoryFactory = new RepositoryFactory(_appSettings.ConnectionStrings.DbConnectionString);
         }
 
         public void ConfigureServices(IServiceCollection services)
@@ -153,7 +153,7 @@ namespace SixtyThreeBits.Web
             {
                 string culture;
                 var path = context.Request.Path.ToString() ?? string.Empty;
-                if (path.StartsWith("/admin/"))
+                if (path.StartsWith("/admin/") || path == "/admin")
                 {
                     var languageCultureCode = context.Request.Cookies[WebConstants.Cookies.AdminLanguageCultureCode]?.ToString();
                     var language = _utilities.GetSupportedLanguageOrDefault(languageCultureCode);

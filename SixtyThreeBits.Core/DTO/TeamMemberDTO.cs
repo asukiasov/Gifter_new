@@ -1,19 +1,53 @@
-﻿namespace SixtyThreeBits.Core.DTO
+﻿using System;
+
+namespace SixtyThreeBits.Core.DTO
 {
-    public class TeamMemberDTO
+    public record TeamMemberDTO
     {
         #region Properties
-        public int? TeamMemberID { get; set; }
-        public string TeamMemberFirstname { get; set; }
-        public string TeamMemberLastname { get; set; }
-        public string TeamMemberFullname { get; set; }
-        public string TeamMemberPosition { get; set; }
-        public string TeamMemberShortDescription { get; set; }
-        public string TeamMemberLongDescription { get; set; }
-        public string TeamMemberImageFilename { get; set; }
-        public bool TeamMemberIsPublished { get; set; }
-        public int? TeamMemberCategoryID { get; set; }
-        public int? TeamMemberSortIndex { get; set; }
+        public int? TeamMemberID { get; init; }
+        public string TeamMemberFirstname { get; init; }
+        public string TeamMemberLastname { get; init; }
+        public string TeamMemberFullname { get; init; }
+        public string TeamMemberPosition { get; init; }
+        public string TeamMemberShortDescription { get; init; }
+        public string TeamMemberLongDescription { get; init; }
+        public string TeamMemberImageFilename { get; init; }
+        public bool TeamMemberIsPublished { get; init; }
+        public int? TeamMemberCategoryID { get; init; }
+        public int? TeamMemberSortIndex { get; init; }
+        public DateTime? TeamMemberDateCreated { get; init; }
+        #endregion
+    }
+
+    public record TeamMembersListDTO
+    {
+        #region Properties
+        public int? TeamMemberID { get; init; }
+        public string TeamMemberFirstname { get; init; }
+        public string TeamMemberLastname { get; init; }
+        public string TeamMemberPosition { get; init; }
+        public bool TeamMemberIsPublished { get; init; }
+        public int? TeamMemberCategoryID { get; init; }
+        public int? TeamMemberSortIndex { get; init; }
+        public DateTime? TeamMemberDateCreated { get; init; }
+        #endregion
+    }
+
+    public record TeamMemberIudDTO
+    {
+        #region Properties
+        public int? TeamMemberID { get; init; }
+        public string TeamMemberFirstname { get; init; }
+        public string TeamMemberLastname { get; init; }
+        public string TeamMemberFullname { get; init; }
+        public string TeamMemberPosition { get; init; }
+        public string TeamMemberShortDescription { get; init; }
+        public string TeamMemberLongDescription { get; init; }
+        public string TeamMemberImageFilename { get; init; }
+        public int? TeamMemberSortIndex { get; init; }
+        public bool? TeamMemberIsPublished { get; init; }
+        public int? TeamMemberCategoryID { get; init; }
         #endregion
     }
 }

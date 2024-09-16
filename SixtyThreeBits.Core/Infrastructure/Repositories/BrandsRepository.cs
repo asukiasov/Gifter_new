@@ -1,12 +1,10 @@
-﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using SixtyThreeBits.Core.DTO;
 using SixtyThreeBits.Core.Infrastructure.Database;
-using SixtyThreeBits.Core.Infrastructure.Factories;
-using SixtyThreeBits.Core.Infrastructure.Repositories.Base;
 using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries.Extensions;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -15,12 +13,9 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
     public class BrandsRepository : RepositoryBase
     {
         #region Constructors
-        public BrandsRepository(ConnectionFactory connectionFactory) : base(connectionFactory)
+        public BrandsRepository(DbContextFactory dbContextFactory) : base(dbContextFactory)
         {
-            _mapper = new MapperConfiguration(cfg =>
-            {
-                cfg.CreateMap<DbContextQueries.BrandsListEntity, BrandDTO>();
-            }).CreateMapper();
+            
         }
         #endregion
 
@@ -31,10 +26,20 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                 logString: $"{nameof(BrandsGetSingleByID)}({nameof(brandID)} = {brandID})", 
                 asyncFuncToTry: async () =>
                 {
-                    using (var db = _connectionFactory.GetDbContextQueries())
+                    using (var dbContext = _dbContextFactory.CreateDbContext())
                     {
-                        var resultJson = await db.BrandsGetSingleByID(brandID: brandID);
-                        var result = resultJson?.DeserializeJsonTo<BrandDTO>();
+                        var sqb = new SqlQueryBuilder(
+                            dbContext: dbContext,
+                            databaseObjectName: nameof(BrandsGetSingleByID),
+                            sqlParameters:
+                            [
+                                brandID.ToSqlParameter(nameof(brandID), SqlDbType.Int)
+                            ]
+                        );
+
+                        var resultJson = await sqb.ExecuteScalarValuedFunction<string>();
+                        var result = resultJson.DeserializeJsonTo<BrandDTO>();
+
                         return result;
                     }
                 }
@@ -42,21 +47,29 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
             return result;
         }
 
-        public async Task<int?> BrandsIUD(Enums.DatabaseActions databaseAction, int? brandID = null, string brandName = null, string brandNameEng = null, string brandImageFilename = null)
+        public async Task<int?> BrandsIUD(Enums.DatabaseActions databaseAction, int? brandID, BrandIudDTO brand)
         {
+            var brandJson = brand.ToJson();
+
             brandID = await TryToReturnAsyncTask(
-                logString: $"{nameof(BrandsIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(brandID)} = {brandID}, {nameof(brandName)} = {brandName}, {nameof(brandNameEng)} = {brandNameEng})", 
+                logString: $"{nameof(BrandsIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(brandID)} = {brandID}, {nameof(brand)} = {brandJson})", 
                 asyncFuncToTry: async () =>
                 {
-                    using (var db = _connectionFactory.GetDbContextCommands())
+                    using (var dbContext = _dbContextFactory.CreateDbContext())
                     {
-                        brandID = await db.BrandsIUD(
-                            databaseAction: databaseAction, 
-                            brandID: brandID, 
-                            brandName: brandName, 
-                            brandNameEng: brandNameEng, 
-                            brandImageFilename: brandImageFilename
+                        var sqb = new SqlQueryBuilder(
+                            dbContext: dbContext,
+                            databaseObjectName: nameof(BrandsIUD),
+                            sqlParameters:
+                            [
+                                 databaseAction.ToSqlParameter(nameof(databaseAction),SqlDbType.TinyInt),
+                                 brandID.ToSqlParameterOutput(nameof(brandID),SqlDbType.Int),
+                                 brandJson.ToSqlParameter(nameof(brandJson),SqlDbType.NVarChar)
+                            ]
                         );
+
+                        var DBResult = await sqb.ExecuteStoredProcedure();
+                        brandID = sqb.GetNextOutputParameterValue<int?>();
                         return brandID;
                     }
                 }
@@ -64,21 +77,23 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
             return brandID;
         }
 
-        public async Task<List<BrandDTO>> BrandsList()
+        public async Task<List<BrandListDTO>> BrandsList()
         {
             var result = await TryToReturnAsyncTask(
                 logString: $"{nameof(BrandsList)}()", 
                 asyncFuncToTry: async () =>
                 {
-                    using (var db = _connectionFactory.GetDbContextQueries())
+                    using (var dbContext = _dbContextFactory.CreateDbContext())
                     {
-                        var result = (
-                            await db.BrandsList()
+                        var sqb = new SqlQueryBuilder(
+                            dbContext: dbContext,
+                            databaseObjectName: nameof(BrandsList)
+                        );
+
+                        var resultQueryable = sqb.ExecuteTableValuedFunction<BrandListDTO>();
+                        var result = await resultQueryable
                             .OrderByDescending(item => item.BrandDateCreated)
-                            .ToListAsync()
-                        )
-                        ?.Select(item => _mapper.Map<BrandDTO>(item))
-                        .ToList();
+                            .ToListAsync();
                         return result;
                     }
                 }

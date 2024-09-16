@@ -50,7 +50,7 @@ namespace SixtyThreeBits.Core.Libraries
             return Error;
         }
 
-        public async static Task<ErrorItem> ValidateEmail(string errorKey, string userEmail, bool validateRequired, bool validateUnique, Func<Task<bool>> validationPredicateReturnTrueWhenError)
+        public async static Task<ErrorItem> ValidateEmail(string errorKey, string userEmail, bool validateRequired, bool validateUnique = false, Func<Task<bool>> validationPredicateReturnTrueWhenError = null)
         {
             ErrorItem error = null;
             if (string.IsNullOrWhiteSpace(userEmail))
@@ -162,7 +162,7 @@ namespace SixtyThreeBits.Core.Libraries
         #endregion
     }
 
-    public class Errors
+    public class ValidationResult
     {
         #region Properties
         readonly List<ErrorItem> _errors = [];

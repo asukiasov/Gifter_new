@@ -5,18 +5,20 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using SixtyThreeBits.Core.Abstractions;
 using SixtyThreeBits.Core.Abstractions.Web;
 using SixtyThreeBits.Core.DTO;
-using SixtyThreeBits.Core.Infrastructure.Factories;
+using SixtyThreeBits.Core.Infrastructure.Repositories;
+using SixtyThreeBits.Core.Libraries;
 using SixtyThreeBits.Core.Properties;
 using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries.Extensions;
-using SixtyThreeBits.Web.Domain;
 using SixtyThreeBits.Web.Domain.Libraries;
-using SixtyThreeBits.Web.Domain.SharedViewModels;
+using SixtyThreeBits.Web.Domain.Utilities;
+using SixtyThreeBits.Web.Domain.ViewModels.Base;
+using SixtyThreeBits.Web.Domain.ViewModels.Shared;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace SixtyThreeBits.Web.Models.Shared
+namespace SixtyThreeBits.Web.Models.Base
 {
     public class ModelBase
     {
@@ -31,11 +33,13 @@ namespace SixtyThreeBits.Web.Models.Shared
         public string WebsiteHttpPath => $"{WebsiteDomain}/";
         public string IP { get; set; }
         public bool IsHttps { get; set; }
+        public bool IsAjaxRequest { get; set; }
         public RepositoryFactory RepositoriesFactory { get; set; }
         public AppSettingsCollection AppSettings { get; set; }
         public UtilityCollection Utilities { get; set; }
         public ISessionAssistance SessionAssistance { get; set; }
         public ICookieAssistance CookieAssistance { get; set; }
+        public Controller Controller { get; set; }
         public IUrlHelper Url { get; set; }
         public HttpRequest Request { get; set; }
         public HttpResponse Response { get; set; }
@@ -44,17 +48,18 @@ namespace SixtyThreeBits.Web.Models.Shared
         public IFileStorage FileStorage { get; set; }
 
         public Breadcrumbs Breadcrumbs { get; set; }
-        public List<ProjectMenuItem> Tabs { get; set; } = [];
+        public List<ProjectMenuViewItem> Tabs { get; set; } = [];
 
-        public PluginsClient PluginsClient { get; set; }
+        public PluginsClientViewModel PluginsClient { get; set; }
         public UserDTO User { get; set; }
         public bool IsLoggedIn => User != null;
         public ValueWrapper<bool> IsSidebarCollapsed { get; set; }
         public FormViewModelBase Form { get; set; }
         public SystemPropertiesDTO SystemProperties { get; set; }
+        public NotificationManager NotificationManager { get; set; }
 
         public readonly string CultureDefault = Enums.Languages.GEORGIAN;
-        public readonly SuccessErrorPartialViewModel SuccessErrorPartialViewModel = new();
+        public readonly SuccessErrorToastPartialViewModel SuccessErrorPartialViewModel = new();
         #endregion
 
         #region Methods
@@ -68,15 +73,16 @@ namespace SixtyThreeBits.Web.Models.Shared
             var viewModel = new NotFoundViewModel();
             PluginsClient.EnableAdminTheme(true);
             viewModel.PluginsClient = PluginsClient;
-            viewModel.UrlLogout = Url.RouteUrl(ControllerActionRouteNames.Admin.Auth.Logout);
+            viewModel.UrlLogout = Url.RouteUrl(ControllerActionRouteNames.Admin.AuthController.Logout);
 
             return new ViewResult
             {
-                ViewName = ViewNames.Website.NotFound.Page,
+                ViewName = ViewNames.Website.Errors.NotFoundView,
                 ViewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary())
                 {
                     Model = viewModel
-                }
+                },
+                StatusCode = Enums.HttpStatusCodes.Status404NotFound
             };
         }
 
@@ -85,34 +91,46 @@ namespace SixtyThreeBits.Web.Models.Shared
             var viewModel = new NotFoundViewModel();
             PluginsClient.EnableAdminTheme(true);
             viewModel.PluginsClient = PluginsClient;
-            viewModel.UrlLogout = Url.RouteUrl(ControllerActionRouteNames.Admin.Auth.Logout);
+            viewModel.UrlLogout = Url.RouteUrl(ControllerActionRouteNames.Admin.AuthController.Logout);
 
             return new ViewResult
             {
-                ViewName = ViewNames.Admin.NotFound.Page,
+                ViewName = ViewNames.Admin.Errors.NotFoundView,
                 ViewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary())
                 {
                     Model = viewModel
-                }
+                },
+                StatusCode = Enums.HttpStatusCodes.Status404NotFound
             };
         }
 
-        public string GetRouteByName(string routeName, object routeValues = null)
+        public string GetRouteByName(string routeName, object routeValues = null, string languageCultureCode = null)
         {
-            var Result = Url.RouteUrl(routeName, routeValues);
-            if (LanguageCultureCode != Constants.Languages.ENGLISH)
+            if (string.IsNullOrWhiteSpace(languageCultureCode))
             {
-                Result = $"{WebsiteHttpPath}{Result.TrimStart('/')}";
+                languageCultureCode = LanguageCultureCode;
+            }
+
+            var result = Url.RouteUrl(routeName, routeValues);
+            if (languageCultureCode == Utilities.LanguageDefault.LanguageCultureCode)
+            {
+                result = $"{WebsiteHttpPath}{result.TrimStart('/')}";
             }
             else
             {
-                Result = $"{WebsiteHttpPath}{LanguageCultureCode}{Result}";
+                result = $"{WebsiteHttpPath}{languageCultureCode}{result}";
             }
-            return Result;
+            return result;
 
         }
 
-        public async Task SaveUploadedFile(IFormFile postedFile, string filename, string folderPath)
+        public string GetUrlPages(string pageSlug, string languageCultureCode = null)
+        {
+            var url = GetRouteByName(routeName: ControllerActionRouteNames.Website.PagesController.Page, new { pageSlug = pageSlug }, languageCultureCode: languageCultureCode);
+            return url;
+        }
+
+        public async Task SaveUploadedFile(IFormFile postedFile, string filename, string folderPath = null)
         {
             using (var MS = new MemoryStream())
             {
@@ -121,7 +139,7 @@ namespace SixtyThreeBits.Web.Models.Shared
             }
         }
 
-        public async Task DeleteUploadedFile(string filename, string folderPath)
+        public async Task DeleteUploadedFile(string filename, string folderPath = null)
         {
             await FileStorage.DeleteFile(filename, folderPath);
         }

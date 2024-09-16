@@ -1,7 +1,7 @@
 /*!
  * DevExpress Diagram (dx-diagram)
- * Version: 2.2.5
- * Build date: Mon Jan 22 2024
+ * Version: 2.2.10
+ * Build date: Fri Jul 12 2024
  *
  * Copyright (c) 2012 - 2024 Developer Express Inc. ALL RIGHTS RESERVED
  * Read about DevExpress licensing here: https://www.devexpress.com/Support/EULAs
@@ -25,6 +25,7 @@ return /******/ (() => { // webpackBootstrap
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Browser = void 0;
 var Browser = (function () {
     function Browser() {
     }
@@ -248,6 +249,7 @@ exports.Browser = Browser;
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.EmptyBatchUpdatableObject = exports.BatchUpdatableObject = void 0;
 var BatchUpdatableObject = (function () {
     function BatchUpdatableObject() {
         this.suspendUpdateCount = 0;
@@ -317,6 +319,7 @@ exports.EmptyBatchUpdatableObject = EmptyBatchUpdatableObject;
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Flag = void 0;
 var Flag = (function () {
     function Flag(initValue) {
         if (initValue === void 0) { initValue = 0; }
@@ -368,6 +371,7 @@ exports.Flag = Flag;
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ExtendedMinMax = exports.ExtendedMax = exports.ExtendedMin = exports.MinMaxNumber = exports.MinMax = void 0;
 var tslib_1 = __webpack_require__(655);
 var MinMax = (function () {
     function MinMax(minElement, maxElement) {
@@ -386,7 +390,7 @@ var MinMaxNumber = (function (_super) {
         get: function () {
             return this.maxElement - this.minElement;
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     return MinMaxNumber;
@@ -428,6 +432,7 @@ exports.ExtendedMinMax = ExtendedMinMax;
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.UnitConverter = void 0;
 var UnitConverter = (function () {
     function UnitConverter() {
     }
@@ -572,6 +577,7 @@ exports.UnitConverter = UnitConverter;
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Metrics = void 0;
 var Metrics = (function () {
     function Metrics() {
     }
@@ -595,6 +601,7 @@ exports.Metrics = Metrics;
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Offsets = void 0;
 var Offsets = (function () {
     function Offsets(left, right, top, bottom) {
         this.left = left;
@@ -609,14 +616,14 @@ var Offsets = (function () {
         get: function () {
             return this.left + this.right;
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(Offsets.prototype, "vertical", {
         get: function () {
             return this.top + this.bottom;
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Offsets.fromNumber = function (offset) {
@@ -708,6 +715,7 @@ exports.Offsets = Offsets;
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Point = void 0;
 var Point = (function () {
     function Point(x, y) {
         this.x = x;
@@ -787,6 +795,7 @@ exports.Point = Point;
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.RectangleDeviation = exports.HitTestDeviation = exports.Rectangle = void 0;
 var flag_1 = __webpack_require__(7820);
 var algorithms_1 = __webpack_require__(1104);
 var fixed_1 = __webpack_require__(8860);
@@ -803,21 +812,21 @@ var Rectangle = (function () {
         get: function () {
             return this.x + this.width;
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(Rectangle.prototype, "bottom", {
         get: function () {
             return this.y + this.height;
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(Rectangle.prototype, "center", {
         get: function () {
             return Rectangle.center(this);
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Rectangle.prototype.createRectangle = function () {
@@ -1106,6 +1115,7 @@ exports.RectangleDeviation = RectangleDeviation;
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Segment = void 0;
 var math_1 = __webpack_require__(8679);
 var metrics_1 = __webpack_require__(5596);
 var point_1 = __webpack_require__(8900);
@@ -1119,28 +1129,28 @@ var Segment = (function () {
         get: function () {
             return metrics_1.Metrics.euclideanDistance(this.startPoint, this.endPoint);
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(Segment.prototype, "xLength", {
         get: function () {
             return Math.abs(this.endPoint.x - this.startPoint.x);
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(Segment.prototype, "yLength", {
         get: function () {
             return Math.abs(this.endPoint.y - this.startPoint.y);
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(Segment.prototype, "center", {
         get: function () {
             return new point_1.Point(this.startPoint.x + (this.endPoint.x - this.startPoint.x) / 2, this.startPoint.y + (this.endPoint.y - this.startPoint.y) / 2);
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Segment.prototype.isIntersected = function (segment) {
@@ -1201,6 +1211,7 @@ exports.Segment = Segment;
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Size = void 0;
 var Size = (function () {
     function Size(width, height) {
         this.width = width;
@@ -1270,6 +1281,7 @@ exports.Size = Size;
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Vector = void 0;
 var Vector = (function () {
     function Vector(x, y) {
         if (x === void 0) { x = 0; }
@@ -1281,7 +1293,7 @@ var Vector = (function () {
         get: function () {
             return Math.sqrt(this.x * this.x + this.y * this.y);
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Vector.fromPoints = function (begin, end) {
@@ -1307,14 +1319,14 @@ var Vector = (function () {
         get: function () {
             return new Vector(1, 0);
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(Vector, "axisY", {
         get: function () {
             return new Vector(0, 1);
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Vector.angleBetween = function (a, b) {
@@ -1336,6 +1348,7 @@ exports.Vector = Vector;
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.IntervalAlgorithms = void 0;
 var list_1 = __webpack_require__(2940);
 var search_1 = __webpack_require__(2400);
 var fixed_1 = __webpack_require__(8860);
@@ -1504,6 +1517,7 @@ exports.IntervalAlgorithms = IntervalAlgorithms;
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ConstInterval = void 0;
 var ConstInterval = (function () {
     function ConstInterval() {
     }
@@ -1511,7 +1525,7 @@ var ConstInterval = (function () {
         get: function () {
             return this.start + (this.length / 2);
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     ConstInterval.prototype.isNormalized = function () {
@@ -1553,6 +1567,7 @@ exports.ConstInterval = ConstInterval;
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.FixedInterval = void 0;
 var tslib_1 = __webpack_require__(655);
 var mutable_1 = __webpack_require__(8678);
 var FixedInterval = (function (_super) {
@@ -1570,14 +1585,14 @@ var FixedInterval = (function (_super) {
         set: function (newEnd) {
             this.length = newEnd - this.start;
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(FixedInterval.prototype, "center", {
         get: function () {
             return this.start + this.length / 2;
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     FixedInterval.prototype.copyFrom = function (obj) {
@@ -1623,6 +1638,7 @@ exports.FixedInterval = FixedInterval;
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.MutableInterval = void 0;
 var tslib_1 = __webpack_require__(655);
 var const_1 = __webpack_require__(7814);
 var MutableInterval = (function (_super) {
@@ -1647,6 +1663,7 @@ exports.MutableInterval = MutableInterval;
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.SparseIntervalsCollector = void 0;
 var intervals_1 = __webpack_require__(448);
 var SparseIntervalsCollector = (function () {
     function SparseIntervalsCollector(template) {
@@ -1676,6 +1693,7 @@ exports.SparseIntervalsCollector = SparseIntervalsCollector;
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.SparseIntervals = void 0;
 var iterator_1 = __webpack_require__(8094);
 var objects_iterator_1 = __webpack_require__(510);
 var SparseIntervals = (function () {
@@ -1694,14 +1712,14 @@ var SparseIntervals = (function () {
         get: function () {
             return this._count;
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(SparseIntervals.prototype, "numIntervals", {
         get: function () {
             return this._numIntervals;
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     SparseIntervals.prototype.getInterval = function (index) {
@@ -1725,6 +1743,7 @@ exports.SparseIntervals = SparseIntervals;
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.SparseIntervalsIterator = void 0;
 var SparseIntervalsIterator = (function () {
     function SparseIntervalsIterator(sparseIntervals) {
         this.sparseIntervals = sparseIntervals;
@@ -1734,7 +1753,7 @@ var SparseIntervalsIterator = (function () {
         get: function () {
             return !!this.curr;
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     SparseIntervalsIterator.prototype.moveNext = function () {
@@ -1788,6 +1807,7 @@ exports.SparseIntervalsIterator = SparseIntervalsIterator;
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.SparseObjectsIterator = void 0;
 var tslib_1 = __webpack_require__(655);
 var iterator_1 = __webpack_require__(8094);
 var SparseObjectsIterator = (function (_super) {
@@ -1812,6 +1832,7 @@ exports.SparseObjectsIterator = SparseObjectsIterator;
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Base64Utils = void 0;
 var file_1 = __webpack_require__(2674);
 var mime_type_1 = __webpack_require__(4633);
 var Base64Utils = (function () {
@@ -1883,6 +1904,7 @@ exports.Base64Utils = Base64Utils;
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ColorUtils = void 0;
 var string_1 = __webpack_require__(49);
 var ColorUtils = (function () {
     function ColorUtils() {
@@ -2041,6 +2063,7 @@ exports.ColorUtils = ColorUtils;
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.numberToStringHex = exports.numberToStringBin = exports.isOdd = exports.isEven = exports.isNonNullString = exports.isString = exports.isNumber = exports.boolToString = exports.boolToInt = exports.isDefined = void 0;
 var string_1 = __webpack_require__(49);
 function isDefined(value) {
     return value !== undefined && value !== null;
@@ -2093,6 +2116,7 @@ exports.numberToStringHex = numberToStringHex;
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Equals = exports.Comparers = void 0;
 var Comparers = (function () {
     function Comparers() {
     }
@@ -2131,6 +2155,7 @@ exports.Equals = Equals;
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.DomUtils = void 0;
 var browser_1 = __webpack_require__(9279);
 var common_1 = __webpack_require__(2491);
 var math_1 = __webpack_require__(8679);
@@ -2324,21 +2349,6 @@ var DomUtils = (function () {
         function getAbsolutePositionY_FF3(element) {
             return Math.round(element.getBoundingClientRect().top + DomUtils.getDocumentScrollTop());
         }
-        function getAbsolutePositionY_Opera(curEl) {
-            var isFirstCycle = true;
-            if (curEl && DomUtils.isHTMLTableRowElement(curEl) && curEl.cells.length > 0)
-                curEl = curEl.cells[0];
-            var pos = getAbsoluteScrollOffset_OperaFF(curEl, false);
-            while (curEl != null) {
-                pos += curEl.offsetTop;
-                if (!isFirstCycle)
-                    pos -= curEl.scrollTop;
-                curEl = curEl.offsetParent;
-                isFirstCycle = false;
-            }
-            pos += document.body.scrollTop;
-            return pos;
-        }
         function getAbsolutePositionY_NS(curEl) {
             var pos = getAbsoluteScrollOffset_OperaFF(curEl, false);
             var isFirstCycle = true;
@@ -2374,8 +2384,6 @@ var DomUtils = (function () {
             return getAbsolutePositionY_IE(element);
         else if (browser_1.Browser.Firefox && browser_1.Browser.Version >= 3)
             return getAbsolutePositionY_FF3(element);
-        else if (browser_1.Browser.Opera)
-            return getAbsolutePositionY_Opera(element);
         else if (browser_1.Browser.NetscapeFamily && (!browser_1.Browser.Firefox || browser_1.Browser.Version < 3))
             return getAbsolutePositionY_NS(element);
         else if (browser_1.Browser.WebKitFamily || browser_1.Browser.Edge)
@@ -2624,6 +2632,7 @@ function getAbsoluteScrollOffset_OperaFF(curEl, isX) {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.EncodeUtils = void 0;
 var EncodeUtils = (function () {
     function EncodeUtils() {
     }
@@ -2672,6 +2681,7 @@ exports.EncodeUtils = EncodeUtils;
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.EvtUtils = void 0;
 var browser_1 = __webpack_require__(9279);
 var common_1 = __webpack_require__(2491);
 var dom_1 = __webpack_require__(6907);
@@ -2779,6 +2789,7 @@ exports.EvtUtils = EvtUtils;
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.FileUtils = void 0;
 var browser_1 = __webpack_require__(9279);
 var base64_1 = __webpack_require__(6477);
 var common_1 = __webpack_require__(2491);
@@ -2848,6 +2859,7 @@ exports.FileUtils = FileUtils;
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.KeyCode = exports.ModifierKey = exports.KeyUtils = void 0;
 var browser_1 = __webpack_require__(9279);
 var encode_1 = __webpack_require__(9712);
 var string_1 = __webpack_require__(49);
@@ -3128,6 +3140,7 @@ var KeyCode;
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ListUtils = void 0;
 var min_max_1 = __webpack_require__(6799);
 var comparers_1 = __webpack_require__(4170);
 var ListUtils = (function () {
@@ -3582,6 +3595,7 @@ exports.ListUtils = ListUtils;
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.MathUtils = void 0;
 var list_1 = __webpack_require__(2940);
 var MathUtils = (function () {
     function MathUtils() {
@@ -3643,9 +3657,11 @@ exports.MathUtils = MathUtils;
 
 var _a, _b, _c;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.MimeTypeUtils = exports.DxMimeType = exports.ImageWebpMimeType = exports.ImageWbmpMimeType = exports.ImageIcoMimeType = exports.ImageTiffMimeType = exports.ImageSvgMimeType = exports.ImagePjpegMimeType = exports.ImageJpegMimeType = exports.ImageGifMimeType = exports.ImagePngMimeType = exports.DocmMimeType = exports.HtmlMimeType = exports.PlainTextMimeType = exports.RtfMimeType = exports.OpenXmlMimeType = void 0;
 exports.OpenXmlMimeType = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
 exports.RtfMimeType = 'application/rtf';
 exports.PlainTextMimeType = 'text/plain';
+exports.HtmlMimeType = 'text/html';
 exports.DocmMimeType = 'application/vnd.ms-word.document.macroEnabled.12';
 exports.ImagePngMimeType = 'image/png';
 exports.ImageGifMimeType = 'image/gif';
@@ -3672,6 +3688,7 @@ var DxMimeType;
     DxMimeType[DxMimeType["Ico"] = 11] = "Ico";
     DxMimeType[DxMimeType["Wbmp"] = 12] = "Wbmp";
     DxMimeType[DxMimeType["Webp"] = 13] = "Webp";
+    DxMimeType[DxMimeType["Html"] = 14] = "Html";
 })(DxMimeType = exports.DxMimeType || (exports.DxMimeType = {}));
 var MimeTypeUtils = (function () {
     function MimeTypeUtils() {
@@ -3704,6 +3721,7 @@ var MimeTypeUtils = (function () {
         _a[exports.RtfMimeType] = DxMimeType.Rtf,
         _a[exports.PlainTextMimeType] = DxMimeType.PlainText,
         _a[exports.DocmMimeType] = DxMimeType.Docm,
+        _a[exports.HtmlMimeType] = DxMimeType.Html,
         _a[exports.ImagePngMimeType] = DxMimeType.Png,
         _a[exports.ImageGifMimeType] = DxMimeType.Gif,
         _a[exports.ImageJpegMimeType] = DxMimeType.Jpeg,
@@ -3720,6 +3738,7 @@ var MimeTypeUtils = (function () {
         _b[DxMimeType.Rtf] = exports.RtfMimeType,
         _b[DxMimeType.PlainText] = exports.PlainTextMimeType,
         _b[DxMimeType.Docm] = exports.DocmMimeType,
+        _b[DxMimeType.Html] = exports.HtmlMimeType,
         _b[DxMimeType.Png] = exports.ImagePngMimeType,
         _b[DxMimeType.Gif] = exports.ImageGifMimeType,
         _b[DxMimeType.Jpeg] = exports.ImageJpegMimeType,
@@ -3736,6 +3755,7 @@ var MimeTypeUtils = (function () {
         _c[DxMimeType.Rtf] = '.rtf',
         _c[DxMimeType.PlainText] = '.txt',
         _c[DxMimeType.Docm] = '.docm',
+        _c[DxMimeType.Html] = '.html',
         _c[DxMimeType.Png] = '.png',
         _c[DxMimeType.Gif] = '.gif',
         _c[DxMimeType.Jpeg] = '.jpeg',
@@ -3751,6 +3771,8 @@ var MimeTypeUtils = (function () {
         '.rtf': DxMimeType.Rtf,
         '.txt': DxMimeType.PlainText,
         '.docm': DxMimeType.Docm,
+        '.html': DxMimeType.Html,
+        '.htm': DxMimeType.Html,
         '.png': DxMimeType.Png,
         '.gif': DxMimeType.Gif,
         '.jpeg': DxMimeType.Jpeg,
@@ -3773,6 +3795,7 @@ exports.MimeTypeUtils = MimeTypeUtils;
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.SearchUtils = void 0;
 var SearchUtils = (function () {
     function SearchUtils() {
     }
@@ -3846,6 +3869,7 @@ exports.SearchUtils = SearchUtils;
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.StringUtils = void 0;
 var StringUtils = (function () {
     function StringUtils() {
     }
@@ -3970,6 +3994,7 @@ exports.StringUtils = StringUtils;
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.TouchUtils = void 0;
 var browser_1 = __webpack_require__(9279);
 var common_1 = __webpack_require__(2491);
 var TouchUtils = (function () {
@@ -4933,12 +4958,12 @@ var PasteSelectionCommandBase = (function (_super) {
     PasteSelectionCommandBase.prototype.executeCore = function (state, parameter) {
         var _this = this;
         var ret = true;
-        if (parameter)
-            this.performPaste(parameter);
-        else
+        if (parameter === undefined)
             this.getClipboardData(function (data) {
                 ret = _this.execute(data);
             });
+        else
+            this.performPaste(parameter);
         return ret;
     };
     PasteSelectionCommandBase.prototype.addItemForSortingRecursive = function (itemsHashtable, item) {
@@ -9490,20 +9515,22 @@ var DataSource = (function () {
         return shape;
     };
     DataSource.prototype.changeShapeByDataItem = function (history, model, shape, node, point) {
+        var updated = false;
         if (node.left !== undefined)
             point.x = ModelUtils_1.ModelUtils.getTwipsValue(model.units, node.left);
         if (node.top !== undefined)
             point.y = ModelUtils_1.ModelUtils.getTwipsValue(model.units, node.top);
-        ModelUtils_1.ModelUtils.setShapePosition(history, model, shape, point, false);
+        updated = ModelUtils_1.ModelUtils.setShapePosition(history, model, shape, point, false) || updated;
         if (node.type !== undefined)
-            ModelUtils_1.ModelUtils.changeShapeType(history, model, shape, node.type);
+            updated = ModelUtils_1.ModelUtils.changeShapeType(history, model, shape, node.type) || updated;
         var size = shape.size.clone();
         if (node.width !== undefined)
             size.width = ModelUtils_1.ModelUtils.getTwipsValue(model.units, node.width);
         if (node.height !== undefined)
             size.height = ModelUtils_1.ModelUtils.getTwipsValue(model.units, node.height);
-        ModelUtils_1.ModelUtils.setShapeSize(history, model, shape, point, size);
-        ModelUtils_1.ModelUtils.updateShapeAttachedConnectors(history, model, shape);
+        updated = ModelUtils_1.ModelUtils.setShapeSize(history, model, shape, point, size) || updated;
+        if (updated)
+            ModelUtils_1.ModelUtils.updateShapeAttachedConnectors(history, model, shape);
         if (node.text !== undefined && node.text !== shape.text)
             history.addAndRedo(new ChangeShapeTextHistoryItem_1.ChangeShapeTextHistoryItem(shape, node.text));
         if (node.image !== undefined && node.image !== shape.image.actualUrl)
@@ -9767,6 +9794,8 @@ var DocumentDataSource = (function (_super) {
         model.items.forEach(function (item) {
             if (item instanceof Shape_1.Shape)
                 _this.updateNode(model, item);
+        });
+        model.items.forEach(function (item) {
             if (item instanceof Connector_1.Connector)
                 _this.updateEdge(model, item);
         });
@@ -25316,11 +25345,16 @@ var ModelUtils = (function () {
                         ModelUtils.setShapePosition(history, model, child, childPosition);
                     }
                 });
+            return true;
         }
+        return false;
     };
     ModelUtils.setShapeSize = function (history, model, shape, newPosition, newSize) {
-        if (!shape.size.equals(newSize) || !shape.position.equals(newPosition))
+        if (!shape.size.equals(newSize) || !shape.position.equals(newPosition)) {
             history.addAndRedo(new ResizeShapeHistoryItem_1.ResizeShapeHistoryItem(shape.key, newPosition, newSize));
+            return true;
+        }
+        return false;
     };
     ModelUtils.addConnectorPoint = function (history, connectorKey, pointIndex, position) {
         history.addAndRedo(new AddConnectorPointHistoryItem_1.AddConnectorPointHistoryItem(connectorKey, pointIndex, position));
@@ -26186,7 +26220,7 @@ var ModelUtils = (function () {
     };
     ModelUtils.changeShapeType = function (history, model, shape, shapeType) {
         if (shape.description.key === shapeType)
-            return;
+            return false;
         history.beginTransaction();
         var oldConPts = shape.getConnectionPoints();
         var oldConPtsSides = oldConPts.map(function (p) { return shape.getConnectionPointSide(p); });
@@ -26201,6 +26235,7 @@ var ModelUtils = (function () {
             this.updateConnectorAttachedPoints(history, model, connector);
         }
         history.endTransaction();
+        return true;
     };
     ModelUtils.updateConnectionIndexByNewShapeType = function (history, connector, position, oldPointIndex, oldConPts, oldConPtsSides, newConPts, newConPtsSides) {
         if (oldPointIndex < 0)
@@ -28035,7 +28070,7 @@ var CustomShapeDescription = (function (_super) {
         return new rectangle_1.Rectangle(left + (this.properties.imageLeft && !forToolbox ? this.properties.imageLeft * width : 0), top + (this.properties.imageTop && !forToolbox ? this.properties.imageTop * height : 0), this.properties.imageWidth && !forToolbox ? this.properties.imageWidth * width : width, this.properties.imageHeight && !forToolbox ? this.properties.imageHeight * height : height);
     };
     CustomShapeDescription.prototype.updateSvgImage = function (cacheImageInfo) {
-        var isToolboxImage = cacheImageInfo.imageUrl && cacheImageInfo.imageUrl === this.properties.svgToolboxUrl;
+        var isToolboxImage = this.svgToolboxImage && cacheImageInfo.imageUrl && cacheImageInfo.imageUrl === this.properties.svgToolboxUrl;
         var svgImage = isToolboxImage ? this.svgToolboxImage : this.svgImage;
         if (cacheImageInfo.base64)
             svgImage.loadBase64Content(cacheImageInfo.base64);
@@ -33370,7 +33405,7 @@ var CanvasItemsManager = (function (_super) {
         this.populateItems(itemsToUpdate, this.selectedItems, newSelectedItems);
         this.selectedItems = newSelectedItems;
         itemsToUpdate.forEach(function (item) {
-            if (item instanceof Connector_1.Connector)
+            if (item instanceof Connector_1.Connector && !_this.pendingRemoveChanges[item.key])
                 _this.applyOrPostponeChanges([new ModelChange_1.ItemChange(item, ModelChange_1.ItemChangeType.UpdateClassName, true)]);
         });
     };
@@ -40630,6 +40665,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   __read: () => (/* binding */ __read),
 /* harmony export */   __rest: () => (/* binding */ __rest),
 /* harmony export */   __spread: () => (/* binding */ __spread),
+/* harmony export */   __spreadArray: () => (/* binding */ __spreadArray),
 /* harmony export */   __spreadArrays: () => (/* binding */ __spreadArrays),
 /* harmony export */   __values: () => (/* binding */ __values)
 /* harmony export */ });
@@ -40657,6 +40693,8 @@ var extendStatics = function(d, b) {
 };
 
 function __extends(d, b) {
+    if (typeof b !== "function" && b !== null)
+        throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
     extendStatics(d, b);
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -40779,19 +40817,31 @@ function __read(o, n) {
     return ar;
 }
 
+/** @deprecated */
 function __spread() {
     for (var ar = [], i = 0; i < arguments.length; i++)
         ar = ar.concat(__read(arguments[i]));
     return ar;
 }
 
+/** @deprecated */
 function __spreadArrays() {
     for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
     for (var r = Array(s), k = 0, i = 0; i < il; i++)
         for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
             r[k] = a[j];
     return r;
-};
+}
+
+function __spreadArray(to, from, pack) {
+    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+        if (ar || !(i in from)) {
+            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+            ar[i] = from[i];
+        }
+    }
+    return to.concat(ar || Array.prototype.slice.call(from));
+}
 
 function __await(v) {
     return this instanceof __await ? (this.v = v, this) : new __await(v);
@@ -40846,19 +40896,17 @@ function __importDefault(mod) {
     return (mod && mod.__esModule) ? mod : { default: mod };
 }
 
-function __classPrivateFieldGet(receiver, privateMap) {
-    if (!privateMap.has(receiver)) {
-        throw new TypeError("attempted to get private field on non-instance");
-    }
-    return privateMap.get(receiver);
+function __classPrivateFieldGet(receiver, state, kind, f) {
+    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
+    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 }
 
-function __classPrivateFieldSet(receiver, privateMap, value) {
-    if (!privateMap.has(receiver)) {
-        throw new TypeError("attempted to set private field on non-instance");
-    }
-    privateMap.set(receiver, value);
-    return value;
+function __classPrivateFieldSet(receiver, state, value, kind, f) {
+    if (kind === "m") throw new TypeError("Private method is not writable");
+    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
+    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
+    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
 }
 
 

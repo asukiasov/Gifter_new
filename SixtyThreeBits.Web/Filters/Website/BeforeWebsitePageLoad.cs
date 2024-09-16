@@ -1,11 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using SixtyThreeBits.Core.Utilities;
-using SixtyThreeBits.Web.Domain;
 using SixtyThreeBits.Web.Domain.Libraries;
-using SixtyThreeBits.Web.Domain.SharedViewModels;
-using SixtyThreeBits.Web.Models.Shared;
-using SixtyThreeBits.Web.Models.Website;
+using SixtyThreeBits.Web.Domain.Utilities;
+using SixtyThreeBits.Web.Domain.ViewModels.Shared;
+using SixtyThreeBits.Web.Domain.ViewModels.Website;
+using SixtyThreeBits.Web.Models.Base;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -22,34 +21,53 @@ namespace SixtyThreeBits.Web.Filters.Website
 
         #region Methods
         public async Task OnActionExecutionAsync(ActionExecutingContext filterContext, ActionExecutionDelegate next)
-        {
-            _viewModel = new WebsiteLayoutViewModel();
+        {            
             _model = WebUtilities.GetModelFromController<ModelBase>(filterContext.Controller);
             var c = filterContext.Controller as Controller;
 
-            var redirectResult = await checkRedirect();
-            if (redirectResult.IsRedirect)
-            {
-                filterContext.Result = new RedirectResult(redirectResult.RedirectUrl, permanent: true);
-            }
-            else
-            {
-                await initStartUp(filterContext);
-                initClientPlugins();
-                initPageTitle();
-                await initMenu();
-                initLanguageSwitch();
 
-                WebUtilities.SetLayoutViewModel(viewData: c.ViewData, viewModel: _viewModel, key: WebConstants.ViewData.LayoutViewModel);
-                await next();
+            initStartUp(filterContext);
+            if (!_model.IsAjaxRequest)
+            {
+                var redirectResult = await checkRedirect();
+                if (redirectResult.IsRedirect)
+                {
+                    filterContext.Result = new RedirectResult(redirectResult.RedirectUrl, permanent: true);
+                }
+                else
+                {
+                    initViewModel();
+                    initClientPlugins();
+                    initPageTitle();
+                    await initMenu();
+
+                    WebUtilities.SetLayoutViewModel(viewData: c.ViewData, viewModel: _viewModel, key: WebConstants.ViewData.LayoutViewModel);
+                }
             }
+            await next();
         }
 
-        async Task initStartUp(ActionExecutingContext filterContext)
+        void initStartUp(ActionExecutingContext filterContext)
         {
-            var repository = _model.RepositoriesFactory.GetSystemPropertiesRepository();
-            _model.LanguageCultureCode = filterContext.RouteData.Values[WebConstants.RouteValues.Culture]?.ToString() ?? Enums.Languages.GEORGIAN;
-            _model.SystemProperties = await repository.SystemPropertiesGet();
+            _model.LanguageCultureCode = filterContext.RouteData.Values[WebConstants.RouteValues.Culture]?.ToString() ?? _model.Utilities.LanguageDefault.LanguageCultureCode;
+        }
+
+        void initViewModel()
+        {
+            _viewModel = new WebsiteLayoutViewModel();
+            _viewModel.ProjectName = _model.SystemProperties.ProjectName;
+            _viewModel.ContactPhone = _model.SystemProperties.ContactPhone;
+            _viewModel.ContactEmail = _model.SystemProperties.ContactEmail;
+            _viewModel.ContactAddress = _model.Utilities.GetValuesByLanguage(
+                culture: _model.LanguageCultureCode,
+                georgianValue: _model.SystemProperties.ContactAddress,
+                englishValue: _model.SystemProperties.ContactAddressEng
+            );
+            _viewModel.FacebookUrl = _model.SystemProperties.FacebookUrl;
+            _viewModel.InstagramUrl = _model.SystemProperties.InstagramUrl;
+            _viewModel.TwitterUrl = _model.SystemProperties.TwitterUrl;
+            _viewModel.YoutubeUrl = _model.SystemProperties.YoutubeUrl;
+            _viewModel.LinkedInUrl = _model.SystemProperties.LinkedInUrl;
             _viewModel.ScriptsHeader = _model.SystemProperties.ScriptsHeader;
             _viewModel.ScriptsBodyStart = _model.SystemProperties.ScriptsBodyStart;
             _viewModel.ScriptsBodyEnd = _model.SystemProperties.ScriptsBodyEnd;
@@ -62,6 +80,7 @@ namespace SixtyThreeBits.Web.Filters.Website
             .EnableFontAwesome(true)
             .Enable63BitsFonts(true)
             .EnableBootstrap(true)
+            .EnableUtils(true)
             .EnableJQuery(true)
             .EnablePreloader(true);
 
@@ -75,72 +94,97 @@ namespace SixtyThreeBits.Web.Filters.Website
 
         async Task initMenu()
         {
-            var repository = _model.RepositoriesFactory.GetPagesRepository();
-            var pages = await repository.PagesList(pageIsPublished: true, pageIsMenuItem: true);
-            if (pages != null)
+            var repositoryMenuHeader = _model.RepositoriesFactory.CreateMenuHeaderRepository();
+            var menuHeader = await repositoryMenuHeader.MenuHeaderList(menuHeaderIsPublished: true);
+
+            if(menuHeader!= null)
             {
-                _viewModel.Menu = new List<ProjectMenuItem>();
-                var parents = pages.Where(item => item.PageParentID == null);
-                foreach (var p1 in parents)
+                _viewModel.Menu = new List<ProjectMenuViewItem>();
+                var parents = menuHeader.Where(item => item.MenuHeaderParentID == null);
+                foreach (var parent in parents)
                 {
-                    var parentItem = new ProjectMenuItem();
-                    parentItem.Caption = _model.Utilities.GetValuesByLanguage(_model.LanguageCultureCode, p1.PageTitle, p1.PageTitleEng);
-                    if (p1.PageIsExternalUrl)
+                    var parentItem = new ProjectMenuViewItem();
+                    if(parent.MenuHeaderIsExternalPage)
                     {
-                        parentItem.NavigateUrl = p1.PageExternalUrl;
-                        if (!string.IsNullOrWhiteSpace(p1.PageExternalUrl))
-                        {
-                            parentItem.IsTargetBlank = !p1.PageExternalUrl.Contains(_model.WebsiteDomain) && !p1.PageExternalUrl.StartsWith("/");
-                        }
+                        parentItem.Caption = _model.Utilities.GetValuesByLanguage(_model.LanguageCultureCode, parent.MenuHeaderTitle, parent.MenuHeaderTitleEng);
+                        parentItem.NavigateUrl = parent.MenuHeaderExternalPageUrl;
                     }
                     else
                     {
-                        parentItem.NavigateUrl = _model.GetRouteByName(ControllerActionRouteNames.Website.Pages.Page, new { culture = _model.LanguageCultureCode, pageSlugHierarchy = p1.PageSlugHierarchy }); ;
+                        parentItem.Caption = _model.Utilities.GetValuesByLanguage(_model.LanguageCultureCode, parent.PageTitle, parent.PageTitleEng);
+                        parentItem.NavigateUrl = _model.GetRouteByName(ControllerActionRouteNames.Website.PagesController.Page, new { pageSlug = parent.PageSlug });
                     }
-                    parentItem.IsSelected = parentItem.NavigateUrl == $"{_model.WebsiteDomain}{_model.UrlCurrentPageWithDomain}";
 
-                    var children = pages.Where(item => item.PageParentID == p1.PageID);
-                    parentItem.Children = new List<ProjectMenuItem>();
-                    foreach (var p2 in children)
+                    var children = menuHeader.Where(item => item.MenuHeaderParentID == parent.MenuHeaderID);
+                    if (children.Any())
                     {
-                        var childItem = new ProjectMenuItem();
-                        childItem.Caption = _model.Utilities.GetValuesByLanguage(_model.LanguageCultureCode, p2.PageTitle, p2.PageTitleEng);
-                        childItem.NavigateUrl = _model.GetRouteByName(ControllerActionRouteNames.Website.Pages.Page, new { culture = _model.LanguageCultureCode, pageSlugHierarchy = p2.PageSlugHierarchy });
-                        if (p2.PageIsExternalUrl)
+                        parentItem.Children = new List<ProjectMenuViewItem>();
+
+                        foreach (var child in children)
                         {
-                            childItem.NavigateUrl = p2.PageExternalUrl;
-                            if (!string.IsNullOrWhiteSpace(p2.PageExternalUrl))
+                            var childItem = new ProjectMenuViewItem();
+                            if (child.MenuHeaderIsExternalPage)
                             {
-                                childItem.IsTargetBlank = !p2.PageExternalUrl.Contains(_model.WebsiteDomain) && !p2.PageExternalUrl.StartsWith("/");
+                                childItem.Caption = _model.Utilities.GetValuesByLanguage(_model.LanguageCultureCode, child.MenuHeaderTitle, child.MenuHeaderTitleEng);
+                                childItem.NavigateUrl = childItem.NavigateUrl;
                             }
+                            else
+                            {
+                                childItem.Caption = _model.Utilities.GetValuesByLanguage(_model.LanguageCultureCode, child.PageTitle, child.PageTitleEng);
+                                childItem.NavigateUrl = _model.GetRouteByName(ControllerActionRouteNames.Website.PagesController.Page, new { pageSlug = child.PageSlug });
+                            }
+
+                            _viewModel.Menu.Add(childItem);
                         }
-                        else
-                        {
-                            childItem.NavigateUrl = _model.GetRouteByName(ControllerActionRouteNames.Website.Pages.Page, new { Culture = _model.LanguageCultureCode, p2.PageSlugHierarchy });
-                        }
-                        childItem.IsSelected = childItem.NavigateUrl == $"{_model.WebsiteDomain}{_model.UrlCurrentPageWithDomain}";
-                        parentItem.Children.Add(childItem);
                     }
+                    
                     _viewModel.Menu.Add(parentItem);
                 }
             }
-        }
 
-        void initLanguageSwitch()
-        {
-            _viewModel.ShowUrlKa = _model.LanguageCultureCode != Enums.Languages.GEORGIAN;
-            _viewModel.ShowUrlEn = !_viewModel.ShowUrlKa;
-
-            var Index = _model.UrlCurrentPageWithDomain.IndexOf('/', 8) + 1;
-
-            _viewModel.UrlEn = _model.UrlCurrentPageWithDomain.Replace($"/{_model.LanguageCultureCode}", null);
-            _viewModel.UrlKa = _model.UrlCurrentPageWithDomain.Insert(Index, $"{Enums.Languages.ENGLISH}/").Replace($"/{_model.LanguageCultureCode}", null);
+            var repositoryMenuFooter = _model.RepositoriesFactory.CreateMenuFooterRepository();
+            var menuFooter = await repositoryMenuFooter.MenuFooterList(menuFooterIsPublished: true);
+            if(menuFooter?.Any() == true)
+            {
+                var menuFooterColumn1 = menuFooter.Take(4);
+                var menuFooterColumn2 = menuFooter.Skip(4).Take(4);
+                _viewModel.FooterMenu1 = menuFooterColumn1.Select((item) => 
+                {
+                    var footerItem = new ProjectMenuViewItem();
+                    if (item.MenuFooterIsExternalPage)
+                    {
+                        footerItem.Caption = _model.Utilities.GetValuesByLanguage(_model.LanguageCultureCode, item.MenuFooterTitle, item.MenuFooterTitleEng);
+                        footerItem.NavigateUrl = item.MenuFooterExternalPageUrl;
+                    }
+                    else
+                    {
+                        footerItem.Caption = _model.Utilities.GetValuesByLanguage(_model.LanguageCultureCode, item.PageTitle, item.PageTitleEng);
+                        footerItem.NavigateUrl = _model.GetRouteByName(ControllerActionRouteNames.Website.PagesController.Page, new { pageSlug = item.PageSlug });
+                    }
+                    return footerItem;
+                }).ToList();
+                _viewModel.FooterMenu2 = menuFooterColumn2.Select((item) =>
+                {
+                    var footerItem = new ProjectMenuViewItem();
+                    if (item.MenuFooterIsExternalPage)
+                    {
+                        footerItem.Caption = _model.Utilities.GetValuesByLanguage(_model.LanguageCultureCode, item.MenuFooterTitle, item.MenuFooterTitleEng);
+                        footerItem.NavigateUrl = item.MenuFooterExternalPageUrl;
+                    }
+                    else
+                    {
+                        footerItem.Caption = _model.Utilities.GetValuesByLanguage(_model.LanguageCultureCode, item.PageTitle, item.PageTitleEng);
+                        footerItem.NavigateUrl = _model.GetRouteByName(ControllerActionRouteNames.Website.PagesController.Page, new { pageSlug = item.PageSlug });
+                    }
+                    return footerItem;
+                }).ToList();
+            }
         }
 
         async Task<customRedirectResult> checkRedirect()
         {
             var result = new customRedirectResult();
-            var repository = _model.RepositoriesFactory.GetRedirectsRepository();
+            var repository = _model.RepositoriesFactory.CreateRedirectsRepository();
             var redirects = await repository.RedirectsList();
             if (redirects?.Any() == true)
             {

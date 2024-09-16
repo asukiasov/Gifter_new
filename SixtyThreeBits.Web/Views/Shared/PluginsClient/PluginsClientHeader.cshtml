@@ -1,4 +1,4 @@
-﻿@model PluginsClient
+﻿@model PluginsClientViewModel
 @if (Model.IsGoogleFontsEnabled)
 {
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -36,6 +36,10 @@
 @if (Model.IsUtilsEnabled)
 {
     <link href="/plugins/utils/utils.css" rel="stylesheet" />
+}
+@if (Model.Is63BitsAnalogClockEnabled)
+{
+    <link href="/plugins/63bits-analog-clock/63bits-analog-clock.css" rel="stylesheet" />    
 }
 @if (Model.Is63BitsFormsEnabled)
 {

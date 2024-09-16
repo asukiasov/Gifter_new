@@ -1,11 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries.Extensions;
-using SixtyThreeBits.Web.Domain;
-using SixtyThreeBits.Web.Domain.SharedViewModels;
+using SixtyThreeBits.Web.Domain.Utilities;
+using SixtyThreeBits.Web.Domain.ViewModels.Admin;
+using SixtyThreeBits.Web.Domain.ViewModels.Shared;
 using SixtyThreeBits.Web.Models.Admin;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -30,7 +29,7 @@ namespace SixtyThreeBits.Web.Filters.Admin
             var c = filterContext.Controller as Controller;
             var userID = filterContext.RouteData.Values[WebConstants.RouteValues.UserID]?.ToString().ToInt();
 
-            var repository = _model.RepositoriesFactory.GetUsersRepository();
+            var repository = _model.RepositoriesFactory.CreateUsersRepository();
             _model.dbItem = await repository.UsersGetSingleByID(userID);
 
             if (_model.dbItem == null)
@@ -39,11 +38,14 @@ namespace SixtyThreeBits.Web.Filters.Admin
             }
             else
             {
-                InitStartup();
-                InitPageTitle();
-                ReinitBreadCrumbs();
-                InitTabs();
-                WebUtilities.SetLayoutViewModel(viewData: c.ViewData, viewModel: _viewModel, key: WebConstants.ViewData.UserLayoutViewModel);
+                if (!_model.IsAjaxRequest)
+                {
+                    InitStartup();
+                    InitPageTitle();
+                    ReinitBreadCrumbs();
+                    InitTabs();
+                    WebUtilities.SetLayoutViewModel(viewData: c.ViewData, viewModel: _viewModel, key: WebConstants.ViewData.UserLayoutViewModel);
+                }
                 await next();
             }
         }
@@ -69,14 +71,14 @@ namespace SixtyThreeBits.Web.Filters.Admin
 
         void InitTabs()
         {
-            var tabsParentID = _model.User.Permissions.FindLast(Item => Item.PermissionCodeName == ControllerActionRouteNames.Admin.Users.User.Root)?.PermissionID;
+            var tabsParentID = _model.User.Permissions.FindLast(Item => Item.PermissionCodeName == WebConstants.Permissions.User)?.PermissionID;
 
             if (tabsParentID != null)
             {
                 var tabs = _model.User.Permissions
                 .Where(item => item.PermissionIsMenuItem && item.PermissionParentID == tabsParentID)
                 .OrderBy(item => item.PermissionSortIndex)
-                .Select(item => new ProjectMenuItem
+                .Select(item => new ProjectMenuViewItem
                 {
                     Caption = _model.Utilities.GetValuesByLanguage(_model.LanguageCultureCode, item.PermissionMenuTitleOrCaption, item.PermissionMenuTitleOrCaptionEng),
                     NavigateUrl = _model.Url.RouteUrl(item.PermissionCodeName, new { userID = _model.dbItem.UserID }),

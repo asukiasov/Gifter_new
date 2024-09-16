@@ -39,16 +39,7 @@ namespace SixtyThreeBits.Core.Utilities
 
             #endregion
         }
-
-        public static class Languages
-        {
-            #region Properties
-            public const string GEORGIAN = "ka";
-            public const string ENGLISH = "en";
-            public const string RUSSIAN = "ru";
-            #endregion
-        }
-
+        
         public static class NullValueFor
         {
             #region Properties

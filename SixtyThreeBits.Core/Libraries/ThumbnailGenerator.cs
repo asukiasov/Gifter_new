@@ -57,13 +57,16 @@ namespace SixtyThreeBits.Core.Libraries
 
             using (var image = new ImageJob())
             {
-                var fileInfo = await ImageJob.GetImageInfo(new BytesSource(imageByteArray));
+                var ms1 = new MemorySource(imageByteArray);
+                var fileInfo = await ImageJob.GetImageInfoAsync(ms1, SourceLifetime.Borrowed);
                 var fileExtension = fileInfo.PreferredExtension.ToLower();
+                ms1.Dispose();
                 BuildJobResult result;
+                var ms2 = new MemorySource(imageByteArray);
                 if (fileExtension is "gif")
                 {
                     result = await image
-                    .Decode(new BytesSource(imageByteArray), commands: new DecodeCommands { IgnoreColorProfileErrors = true })
+                    .Decode(ms2, commands: new DecodeCommands { IgnoreColorProfileErrors = true })
                     .ResizerCommands($"width={width}&height={heigth}")
                     .EncodeToBytes(new GifEncoder())
                     .Finish()
@@ -72,7 +75,7 @@ namespace SixtyThreeBits.Core.Libraries
                 if (fileExtension is "png")
                 {
                     result = await image
-                    .Decode(new BytesSource(imageByteArray), commands: new DecodeCommands { IgnoreColorProfileErrors = true })
+                    .Decode(ms2, commands: new DecodeCommands { IgnoreColorProfileErrors = true })
                     .ResizerCommands($"width={width}&height={heigth}&mode=crop")
                     .EncodeToBytes(new LodePngEncoder())
                     .Finish()
@@ -81,7 +84,7 @@ namespace SixtyThreeBits.Core.Libraries
                 else if (fileExtension is "webp")
                 {
                     result = await image
-                    .Decode(new BytesSource(imageByteArray), commands: new DecodeCommands { IgnoreColorProfileErrors = true })
+                    .Decode(ms2, commands: new DecodeCommands { IgnoreColorProfileErrors = true })
                     .ResizerCommands($"width={width}&height={heigth}&mode=crop")
                     .EncodeToBytes(new WebPLossyEncoder(80))
                     .Finish()
@@ -90,12 +93,13 @@ namespace SixtyThreeBits.Core.Libraries
                 else
                 {
                     result = await image
-                    .Decode(new BytesSource(imageByteArray), commands: new DecodeCommands { IgnoreColorProfileErrors = true })
+                    .Decode(ms2, commands: new DecodeCommands { IgnoreColorProfileErrors = true })
                     .ResizerCommands($"width={width}&height={heigth}&mode=crop")
                     .EncodeToBytes(new MozJpegEncoder(80))
                     .Finish()
                     .InProcessAsync();
                 }
+                ms2.Dispose();
                 return result.First.TryGetBytes()?.ToArray();
             }
         }
