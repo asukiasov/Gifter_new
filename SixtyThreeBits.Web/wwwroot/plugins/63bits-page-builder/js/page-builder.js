@@ -4700,13 +4700,13 @@ var PageBuilderModel = {
             template:
                 `<div class="action-buttons js-t63-action-buttons">
                     {{#if editBtn}}
-                        <button class="editor-btn-rounded action-btn component-edit-btn js-t63-edit-btn js-t63-togglable-buttons" data-placement="left" data-toggle="tooltip" data-placement="left" title="{{editBtn.tooltip}}"></button>
+                        <button class="editor-btn-rounded action-btn component-edit-btn js-t63-edit-btn js-t63-togglable-buttons" data-placement="left" data-bs-toggle="tooltip" data-placement="left" title="{{editBtn.tooltip}}"></button>
                     {{/if}}
                     {{#if doneBtn}}
-                        <button class="editor-btn-rounded action-btn component-done-btn js-t63-done-btn js-t63-togglable-buttons hidden" data-toggle="tooltip" data-placement="left" title="{{doneBtn.tooltip}}"></button>
+                        <button class="editor-btn-rounded action-btn component-done-btn js-t63-done-btn js-t63-togglable-buttons hidden" data-bs-toggle="tooltip" data-placement="left" title="{{doneBtn.tooltip}}"></button>
                     {{/if}}
                     {{#if removeBtn}}
-                        <button class="editor-btn-rounded action-btn component-remove-btn js-t63-remove-btn" data-toggle="tooltip" data-placement="left" title="{{removeBtn.tooltip}}"></button>
+                        <button class="editor-btn-rounded action-btn component-remove-btn js-t63-remove-btn" data-bs-toggle="tooltip" data-placement="left" title="{{removeBtn.tooltip}}"></button>
                     {{/if}}
                 </div>`,
 
@@ -6305,7 +6305,7 @@ var PageBuilderModel = {
             },
 
             remove: function (container) {
-                container.parent().remove();
+                container.remove();
             }
         },
 
@@ -7954,7 +7954,7 @@ var PageBuilderModel = {
             }
         },
         init: function () {
-            //$('[data-toggle="tooltip"]').tooltip();
+            //$('[data-bs-toggle="tooltip"]').tooltip();
             PageBuilderModel.plugins.tabs.init();
 
             $('.js-t63-show-filemanager-popup-btn').click(function () {
