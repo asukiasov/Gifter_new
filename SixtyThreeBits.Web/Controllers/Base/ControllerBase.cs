@@ -16,6 +16,5 @@ namespace SixtyThreeBits.Web.Controllers.Base
             Model = new T();
         }
         #endregion
-
     }
 }

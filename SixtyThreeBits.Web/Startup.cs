@@ -1,4 +1,6 @@
+using DevExpress.XtraRichEdit.SpellChecker;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
@@ -11,9 +13,12 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using SixtyThreeBits.Core.Infrastructure.Repositories;
 using SixtyThreeBits.Core.Utilities;
+using SixtyThreeBits.Libraries.Extensions;
 using SixtyThreeBits.Web.Domain.Utilities;
 using System;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace SixtyThreeBits.Web
@@ -99,10 +104,71 @@ namespace SixtyThreeBits.Web
 
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
-            }
+				//app.UseDeveloperExceptionPage();
+
+				app.UseExceptionHandler(exceptionHandlerApp =>
+				{
+					//exceptionHandlerApp.Run(context =>
+					exceptionHandlerApp.Run(async context =>
+					{
+						var exceptionHandlerPathFeature = context.Features.Get<IExceptionHandlerPathFeature>();
+						if (exceptionHandlerPathFeature != null)
+						{
+							var sb = new StringBuilder();
+							sb.AppendLine();
+
+							var requestUrl = $"{context.Request.Scheme}://{context.Request.Host}{context.Request.Path}{context.Request.QueryString}";
+							sb.Append("Url: ").Append(requestUrl).AppendLine().AppendLine();
+
+							sb.Append("Exception: ").Append(exceptionHandlerPathFeature.Error.Message).AppendLine();
+							if (exceptionHandlerPathFeature.Error.InnerException != null)
+							{
+								sb.Append("InnerException: ").Append(exceptionHandlerPathFeature.Error.InnerException.Message).AppendLine().AppendLine();
+							}
+							else
+							{
+								sb.AppendLine();
+							}
+
+							if (context.Request.HasFormContentType)
+							{
+								var hasFormValues = context.Request.Form.Keys.Count > 0;
+								if (hasFormValues)
+								{
+									sb.AppendLine("Form:");
+									foreach (var key in context.Request.Form.Keys)
+									{
+										sb.AppendLine($"{key}={context.Request.Form[key]}");
+									}
+									sb.AppendLine();
+								}
+							}
+
+							using (var reader = new StreamReader(context.Request.Body, Encoding.UTF8, true, 1024, true))
+							{
+								var body = await reader.ReadToEndAsync();
+								if (!string.IsNullOrWhiteSpace(body))
+								{
+									sb.AppendLine("Body:");
+									sb.AppendLine(body);
+									sb.AppendLine();
+								}
+							}
+
+							sb.Append("StackTrace:").Append(Environment.NewLine).Append(exceptionHandlerPathFeature.Error.StackTrace);
+
+							sb.ToString().LogString();
+						}
+
+
+						//return Task.CompletedTask;
+					});
+				});
+			}
             else
             {
+                
+
                 //app.UseDeveloperExceptionPage();
                 app.UseExceptionHandler(Options =>
                 {

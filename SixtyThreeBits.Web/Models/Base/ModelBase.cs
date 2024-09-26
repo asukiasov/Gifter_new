@@ -71,7 +71,6 @@ namespace SixtyThreeBits.Web.Models.Base
         public IActionResult GetNotFoundWebsiteViewResult()
         {
             var viewModel = new NotFoundViewModel();
-            PluginsClient.EnableAdminTheme(true);
             viewModel.PluginsClient = PluginsClient;
             viewModel.UrlLogout = Url.RouteUrl(ControllerActionRouteNames.Admin.AuthController.Logout);
 

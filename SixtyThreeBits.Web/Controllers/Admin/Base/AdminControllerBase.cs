@@ -7,6 +7,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin.Base
     [TypeFilter(typeof(BeforeAdminPageLoad), Order = 1)]
     public class AdminControllerBase<T> : ControllerBase<T> where T : new()
     {
+        #region Methods
         [NonAction]
         public ContentResult GetDevexpressErrorResult(string errorMessage)
         {
@@ -17,6 +18,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin.Base
         public JsonResult GetDevexpressSuccessResult()
         {
             return Json("OK");
-        }
+        } 
+        #endregion
     }
 }

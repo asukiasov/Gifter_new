@@ -527,6 +527,15 @@ $.fn.extend({
         $.mask.definitions['9'] = '';
         $.mask.definitions['d'] = '[0-9]';
         this.mask('+995 (ddd) dd-dd-dd');
+
+        this.click(function () {
+            const value = $(this).val().substr(6, $(this).val().length)
+            const indexOfFirstNum = value.indexOf(value.match(/\d/))
+            if (indexOfFirstNum < 0) {
+                indexOfFirstNum = 6
+                this.setSelectionRange(indexOfFirstNum, indexOfFirstNum)
+            }
+        });
     },
     maskUserPersonalNumberGeorgian: function () {
         $.mask.definitions['9'] = '';

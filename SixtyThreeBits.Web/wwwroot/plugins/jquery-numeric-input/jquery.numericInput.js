@@ -8,38 +8,41 @@
 ///////////////////////////////////////////////////////////////
 
 //	Sets a keypress event for the selected element allowing only numbers. Typically this would only be bound to a textbox.
-(function( $ ) {
+(function ($) {
 	// Plugin defaults
 	var defaults = {
 		allowFloat: false,
 		allowNegative: false,
 		min: undefined,
-		max: undefined
-	};	
-	
+		max: undefined,
+		allowedDecimalPositions: undefined
+	};
+
 	// Plugin definition
 	//	allowFloat: (boolean) Allows floating point (real) numbers. If set to false only integers will be allowed. Default: false.
 	//	allowNegative: (boolean) Allows negative values. If set to false only positive number input will be allowed. Default: false.
- 	//	min: (int/float) If set, when the user leaves the input if the entered value is too low it will be set to this value
+	//	min: (int/float) If set, when the user leaves the input if the entered value is too low it will be set to this value
 	//	max: (int/float) If set, when the user leaves the input if the entered value is too high it will be set to this value
-	$.fn.numericInput = function( options ) { 
-		var settings = $.extend( {}, defaults, options ); 
+	//	allowedDecimalPositions: (int) Maximum number of decimal places allowed. Default: undefined (no restriction).
+	$.fn.numericInput = function (options) {
+		var settings = $.extend({}, defaults, options);
 		var allowFloat = settings.allowFloat;
 		var allowNegative = settings.allowNegative;
 		var min = settings.min;
 		var max = settings.max;
-		
-		if (min && max && min == max)
-		{
-			throw("The minimum value cannot be the same as the max value");
+		var allowedDecimalPositions = settings.allowedDecimalPositions;
+
+		if (min && max && min == max) {
+			throw ("The minimum value cannot be the same as the max value");
 		}
-		else if(min > max) //If the values are swapped we swap them back
+		else if (min > max) //If the values are swapped we swap them back
 		{
 			var temp = min;
 			min = max;
 			max = temp;
 		}
-		
+
+		this.off('keypress');
 		this.keypress(function (event) {
 			var inputCode = event.which;
 			var currentValue = $(this).val();
@@ -49,88 +52,100 @@
 				if (allowFloat == true && inputCode == 46)	// Conditions for a period (decimal point)
 				{
 					//Disallows a period before a negative
-					if (allowNegative == true && getCaret(this) == 0 && currentValue.charAt(0) == '-') 
+					if (allowNegative == true && getCaret(this) == 0 && currentValue.charAt(0) == '-')
 						return false;
 
 					//Disallows more than one decimal point.
-					if (currentValue.match(/[.]/)) 
-						return false; 
+					if (currentValue.match(/[.]/))
+						return false;
 				}
 
 				else if (allowNegative == true && inputCode == 45)	// Conditions for a decimal point
 				{
-					if(currentValue.charAt(0) == '-') 
+					if (currentValue.charAt(0) == '-')
 						return false;
-					
-					if(getCaret(this) != 0) 
-						return false; 
+
+					if (getCaret(this) != 0)
+						return false;
 				}
 
 				else if (inputCode == 8 || inputCode == 67 || inputCode == 86) 	// Allows backspace , ctrl+c ,ctrl+v (copy & paste)
-					return true; 
+					return true;
 
 				else								// Disallow non-numeric
-					return false;  
-			}
-
-			else if(inputCode > 0 && (inputCode >= 48 && inputCode <= 57))	// Disallows numbers before a negative.
-			{
-				if (allowNegative == true && currentValue.charAt(0) == '-' && getCaret(this) == 0) 
 					return false;
 			}
+
+			else if (inputCode > 0 && (inputCode >= 48 && inputCode <= 57))	// Disallows numbers before a negative.
+			{
+				if (allowNegative == true && currentValue.charAt(0) == '-' && getCaret(this) == 0)
+					return false;
+			}
+
+			if (allowFloat == true && allowedDecimalPositions !== undefined) {
+				// Check if the number of decimal places exceeds the allowed limit
+				var parts = currentValue.split('.');
+				if (parts.length === 2 && parts[1].length >= allowedDecimalPositions && getCaret(this) > currentValue.indexOf('.')) {
+					return false;
+				}
+			}
 		});
-		
-		
+
+		this.off('blur');
 		this.blur(function (event) {
 			//Get and store the current value
 			var currentValue = $(this).val();
-			
+
 			//If the value isn't empty
-			if(currentValue.length > 0)
-			{
+			if (currentValue.length > 0) {
 				//Get the float value, even if we're not using floats this will be ok
 				var floatValue = parseFloat(currentValue);
-				
+
 				//If min is specified and the value is less set the value to min
-				if(min !== undefined && floatValue < min)
-				{
+				if (min !== undefined && floatValue < min) {
 					$(this).val(min);
 				}
-				
+
 				//If max is specified and the value is less set the value to max
-				if(max !== undefined && floatValue > max)
-				{
+				if (max !== undefined && floatValue > max) {
 					$(this).val(max);
+				}
+
+				// Check if the number of decimal places exceeds the allowed limit
+				if (allowFloat == true && allowedDecimalPositions !== undefined) {
+					var parts = currentValue.split('.');
+					if (parts.length === 2 && parts[1].length > allowedDecimalPositions) {
+						$(this).val(floatValue.toFixed(allowedDecimalPositions));
+					}
 				}
 			}
 		});
-		
+
 		return this;
 	};
-	
-	
+
+
 	// Private function for selecting cursor position. Makes IE play nice.
 	//	http://stackoverflow.com/questions/263743/how-to-get-caret-position-in-textarea
-	function getCaret(element) 
-	{ 
-		if (element.selectionStart) 
-			return element.selectionStart; 
+	function getCaret(element) {
+		if (element.selectionStart)
+			return element.selectionStart;
 
 		else if (document.selection) //IE specific
-		{ 
-			element.focus(); 
+		{
+			element.focus();
 
-			var r = document.selection.createRange(); 
-			if (r == null) 
-				return 0; 
+			var r = document.selection.createRange();
+			if (r == null)
+				return 0;
 
-			var re = element.createTextRange(), 
-			rc = re.duplicate(); 
-			re.moveToBookmark(r.getBookmark()); 
-			rc.setEndPoint('EndToStart', re); 
-			return rc.text.length; 
-		}  
+			var re = element.createTextRange(),
+				rc = re.duplicate();
+			re.moveToBookmark(r.getBookmark());
+			rc.setEndPoint('EndToStart', re);
+			return rc.text.length;
+		}
 
-		return 0; 
+		return 0;
 	};
-}( jQuery ));
+}(jQuery));

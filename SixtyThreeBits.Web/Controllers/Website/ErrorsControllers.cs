@@ -12,7 +12,8 @@ namespace SixtyThreeBits.Web.Controllers.Website
         [Route("404")]
         public IActionResult Error404NotFound()
         {
-            return View(ViewNames.Website.Errors.NotFoundView);
+            return Model.GetNotFoundWebsiteViewResult();
+            
         } 
         #endregion
     }
