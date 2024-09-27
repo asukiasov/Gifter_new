@@ -1,4 +1,3 @@
-using DevExpress.XtraRichEdit.SpellChecker;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
@@ -14,16 +13,18 @@ using Microsoft.Extensions.Hosting;
 using SixtyThreeBits.Core.Infrastructure.Repositories;
 using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries.Extensions;
+using SixtyThreeBits.Web.Domain.Libraries;
 using SixtyThreeBits.Web.Domain.Utilities;
+using SixtyThreeBits.Web.Domain.ViewModels.Shared;
 using System;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+
 
 namespace SixtyThreeBits.Web
 {
-    public class Startup
+	public class Startup
     {
         readonly AppSettingsCollection _appSettings;
         readonly UtilityCollection _utilities;
@@ -104,84 +105,32 @@ namespace SixtyThreeBits.Web
 
             if (env.IsDevelopment())
             {
-				//app.UseDeveloperExceptionPage();
-
+				app.UseDeveloperExceptionPage();				
+			}
+            else
+            {				
 				app.UseExceptionHandler(exceptionHandlerApp =>
 				{
-					//exceptionHandlerApp.Run(context =>
 					exceptionHandlerApp.Run(async context =>
 					{
 						var exceptionHandlerPathFeature = context.Features.Get<IExceptionHandlerPathFeature>();
 						if (exceptionHandlerPathFeature != null)
 						{
-							var sb = new StringBuilder();
-							sb.AppendLine();
-
-							var requestUrl = $"{context.Request.Scheme}://{context.Request.Host}{context.Request.Path}{context.Request.QueryString}";
-							sb.Append("Url: ").Append(requestUrl).AppendLine().AppendLine();
-
-							sb.Append("Exception: ").Append(exceptionHandlerPathFeature.Error.Message).AppendLine();
-							if (exceptionHandlerPathFeature.Error.InnerException != null)
-							{
-								sb.Append("InnerException: ").Append(exceptionHandlerPathFeature.Error.InnerException.Message).AppendLine().AppendLine();
-							}
-							else
-							{
-								sb.AppendLine();
-							}
-
-							if (context.Request.HasFormContentType)
-							{
-								var hasFormValues = context.Request.Form.Keys.Count > 0;
-								if (hasFormValues)
-								{
-									sb.AppendLine("Form:");
-									foreach (var key in context.Request.Form.Keys)
-									{
-										sb.AppendLine($"{key}={context.Request.Form[key]}");
-									}
-									sb.AppendLine();
-								}
-							}
-
-							using (var reader = new StreamReader(context.Request.Body, Encoding.UTF8, true, 1024, true))
-							{
-								var body = await reader.ReadToEndAsync();
-								if (!string.IsNullOrWhiteSpace(body))
-								{
-									sb.AppendLine("Body:");
-									sb.AppendLine(body);
-									sb.AppendLine();
-								}
-							}
-
-							sb.Append("StackTrace:").Append(Environment.NewLine).Append(exceptionHandlerPathFeature.Error.StackTrace);
-
-							sb.ToString().LogString();
+							var messageCollected = await ExceptionRequestInformationCollector.Create(request: context.Request, exception: exceptionHandlerPathFeature.Error).Collect();
+							messageCollected.LogString();
+							await RenderNotFoundView(context);
 						}
-
-
-						//return Task.CompletedTask;
 					});
 				});
-			}
-            else
-            {
-                
 
-                //app.UseDeveloperExceptionPage();
-                app.UseExceptionHandler(Options =>
-                {
-                    app.UseExceptionHandler("/error/404/");
-                });
-                app.UseHsts();
+				app.UseHsts();
                 
                 urlRewriteOptions.AddRedirectToNonWwwPermanent().AddRedirectToHttpsPermanent();
 
                 app.Use(async (context, next) =>
                 {
                     context.Response.Headers.Append("X-Frame-Options", "SAMEORIGIN");
-                    context.Response.Headers.Append("Content-Security-Policy", "default-src 'self'; img-src 'self' *amazonaws.com; media-src *amazonaws.com;");
+                    context.Response.Headers.Append("Content-Security-Policy", "default-src 'self'; img-src *; style-src 'unsafe-inline' *; font-src *; script-src 'unsafe-inline' *");
                     await next();
                 });
             }
@@ -210,6 +159,71 @@ namespace SixtyThreeBits.Web
                 endpoints.MapControllers();
             });
         }
+
+        public async Task RenderNotFoundView(HttpContext context)
+        {
+			// Set the response content type to HTML
+			context.Response.ContentType = "text/html";
+
+			// Get the MVC services from the request scope
+			var services = context.RequestServices;
+			var viewEngine = services.GetRequiredService<Microsoft.AspNetCore.Mvc.ViewEngines.ICompositeViewEngine>();
+			var tempDataFactory = services.GetRequiredService<Microsoft.AspNetCore.Mvc.ViewFeatures.ITempDataDictionaryFactory>();
+			var tempData = tempDataFactory.GetTempData(context);
+
+			// Create an ActionContext using the current HttpContext
+			var actionContext = new Microsoft.AspNetCore.Mvc.ActionContext(
+				context,
+				new Microsoft.AspNetCore.Routing.RouteData(),
+				new Microsoft.AspNetCore.Mvc.Abstractions.ActionDescriptor()
+			);
+
+			// Define the error view you want to return (e.g., Error.cshtml)
+			var viewName = ViewNames.Website.Errors.NotFoundView; // You can define a specific view here
+
+			// Use a ViewDataDictionary to pass data to the view (without ModelState)
+			var viewModel = new NotFoundViewModel
+			{
+				PluginsClient = new PluginsClientViewModel(),
+				UrlLogout = "/"
+			};
+			viewModel.PluginsClient.EnableBootstrap(true);
+			var viewData = new Microsoft.AspNetCore.Mvc.ViewFeatures.ViewDataDictionary(
+				new Microsoft.AspNetCore.Mvc.ModelBinding.EmptyModelMetadataProvider(),
+				new Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary()
+			)
+			{
+				Model = viewModel
+			};
+
+			// Find the view
+			var viewEngineResult = viewEngine.GetView(viewName, viewName, false);
+
+			if (viewEngineResult.Success)
+			{
+				// Render the view and write it to the response stream
+				var view = viewEngineResult.View;
+				using (var writer = new System.IO.StringWriter())
+				{
+					var viewContext = new Microsoft.AspNetCore.Mvc.Rendering.ViewContext(
+						actionContext,
+						view,
+						viewData,
+						tempData,
+						writer,
+						new Microsoft.AspNetCore.Mvc.ViewFeatures.HtmlHelperOptions()
+					);
+
+					await view.RenderAsync(viewContext);
+					await context.Response.WriteAsync(writer.ToString());
+				}
+			}
+			else
+			{
+				// If the view is not found, you can display a default message
+				await context.Response.WriteAsync("<h1>An error occurred</h1>");
+			}
+		}
 
         public class CustomCultureProvider : RequestCultureProvider
         {

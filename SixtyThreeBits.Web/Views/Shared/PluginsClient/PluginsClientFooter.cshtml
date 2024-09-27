@@ -38,7 +38,7 @@
 @if (Model.Is63BitsAnalogClockEnabled)
 {
     <script src="/plugins/63bits-analog-clock/63bits-analog-clock.js"></script>
-    <script>AnalogClockModel.now = new Date(@DateTime.Now.Year, @DateTime.Now.Month, @DateTime.Now.Day, @DateTime.Now.Hour, @DateTime.Now.Minute, @DateTime.Now.Second, @DateTime.Now.Millisecond);</script>
+    <script>analogClockModel.now = new Date(@DateTime.Now.Year, @DateTime.Now.Month, @DateTime.Now.Day, @DateTime.Now.Hour, @DateTime.Now.Minute, @DateTime.Now.Second, @DateTime.Now.Millisecond);</script>
 }
 @if (Model.Is63BitsComponentsEnabled)
 {

@@ -1,10 +1,10 @@
-const AnalogClockModel = {
+const analogClockModel = {
     now: null,
     drawClock: function () {
-        AnalogClockModel.now.setSeconds(AnalogClockModel.now.getSeconds() + 1);
-        AnalogClockModel.drawFace(ctx, radius);
-        AnalogClockModel.drawNumbers(ctx, radius);
-        AnalogClockModel.drawTime(AnalogClockModel.now, ctx, radius);
+        analogClockModel.now.setSeconds(analogClockModel.now.getSeconds() + 1);
+        analogClockModel.drawFace(ctx, radius);
+        analogClockModel.drawNumbers(ctx, radius);
+        analogClockModel.drawTime(analogClockModel.now, ctx, radius);
     },
     drawFace: function (ctx, radius) {
         var grad;
@@ -52,13 +52,13 @@ const AnalogClockModel = {
         hour = (hour * Math.PI / 6) +
             (minute * Math.PI / (6 * 60)) +
             (second * Math.PI / (360 * 60));
-        AnalogClockModel.drawHand(ctx, hour, radius * 0.5, radius * 0.07);
+        analogClockModel.drawHand(ctx, hour, radius * 0.5, radius * 0.07);
         //minute
         minute = (minute * Math.PI / 30) + (second * Math.PI / (30 * 60));
-        AnalogClockModel.drawHand(ctx, minute, radius * 0.8, radius * 0.07);
+        analogClockModel.drawHand(ctx, minute, radius * 0.8, radius * 0.07);
         // second
         second = (second * Math.PI / 30);
-        AnalogClockModel.drawHand(ctx, second, radius * 0.9, radius * 0.02);
+        analogClockModel.drawHand(ctx, second, radius * 0.9, radius * 0.02);
     },
 
     drawHand: function (ctx, pos, length, width) {
@@ -78,4 +78,4 @@ var ctx = canvas.getContext('2d');
 var radius = canvas.height / 2;
 ctx.translate(radius, radius);
 radius = radius * 0.90
-setInterval(AnalogClockModel.drawClock, 1000);
+setInterval(analogClockModel.drawClock, 1000);

@@ -526,14 +526,32 @@ $.fn.extend({
     maskPhoneNumberGeorgian: function () {
         $.mask.definitions['9'] = '';
         $.mask.definitions['d'] = '[0-9]';
-        this.mask('+995 (ddd) dd-dd-dd');
-
+        this.mask('+995 (ddd) dd-dd-dd', {
+            autoclear: false,
+            placeholder: "_"
+        });
         this.click(function () {
-            const value = $(this).val().substr(6, $(this).val().length)
-            const indexOfFirstNum = value.indexOf(value.match(/\d/))
-            if (indexOfFirstNum < 0) {
-                indexOfFirstNum = 6
-                this.setSelectionRange(indexOfFirstNum, indexOfFirstNum)
+            let Value = $(this).val().substr(4, $(this).val().length)
+            var IndexOfFirstNum = Value.indexOf(Value.match(/\d/))
+            if (IndexOfFirstNum < 0) {
+                IndexOfFirstNum = 4
+                this.setSelectionRange(IndexOfFirstNum, IndexOfFirstNum)
+            }
+        });
+    },
+    maskPhoneNumberUsa: function () {
+        $.mask.definitions['9'] = '';
+        $.mask.definitions['d'] = '[0-9]';
+        this.mask('+1 (ddd) ddd-dddd', {
+            autoclear: false,
+            placeholder: "_"
+        });
+        this.click(function () {
+            let Value = $(this).val().substr(4, $(this).val().length)
+            var IndexOfFirstNum = Value.indexOf(Value.match(/\d/))
+            if (IndexOfFirstNum < 0) {
+                IndexOfFirstNum = 4
+                this.setSelectionRange(IndexOfFirstNum, IndexOfFirstNum)
             }
         });
     },
