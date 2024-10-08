@@ -298,6 +298,29 @@ namespace SixtyThreeBits.Core.Infrastructure.Services
             return result;
         }
 
+        public async Task<bool> IsFileExists(string filePath)
+        {
+            using (var s3Client = new AmazonS3Client(_awsAccessKeyID, _awsSecretAccessKey, _awsS3Region))
+            {
+                try
+                {
+                    var request = new GetObjectMetadataRequest
+                    {
+                        BucketName = _awsS3BucketName,
+                        Key = filePath
+                    };
+                    var response = await s3Client.GetObjectMetadataAsync(request);
+
+                    return true;
+                }
+
+                catch
+                {
+                    return false;
+                }
+            }
+        }
+
         public async Task<bool> Ping()
         {
             using (var s3Client = new AmazonS3Client(_awsAccessKeyID, _awsSecretAccessKey, _awsS3Region))

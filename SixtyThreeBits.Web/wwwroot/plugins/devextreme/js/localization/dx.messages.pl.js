@@ -1,7 +1,7 @@
 /*!
 * DevExtreme (dx.messages.pl.js)
-* Version: 24.1.4
-* Build date: Mon Jul 15 2024
+* Version: 24.1.6
+* Build date: Sat Sep 14 2024
 *
 * Copyright (c) 2012 - 2024 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -402,6 +402,7 @@
             "dxHtmlEditor-width": "Szeroko\u015b\u0107",
             "dxHtmlEditor-height": "wysoko\u015b\u0107",
             "dxHtmlEditor-borderColor": "kolor",
+            "dxHtmlEditor-borderWidth": "Border Width",
             "dxHtmlEditor-tableBackground": "t\u0142o",
             "dxHtmlEditor-dimensions": "wymiary",
             "dxHtmlEditor-alignment": "Orientacja",

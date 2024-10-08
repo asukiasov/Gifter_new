@@ -1,7 +1,7 @@
 /*!
  * DevExtreme (dx.viz.debug.js)
- * Version: 24.1.4
- * Build date: Mon Jul 15 2024
+ * Version: 24.1.6
+ * Build date: Sat Sep 14 2024
  *
  * Copyright (c) 2012 - 2024 Developer Express Inc. ALL RIGHTS RESERVED
  * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -3033,7 +3033,7 @@
                     e: 65537,
                     n: new Uint8Array([200, 219, 153, 203, 140, 7, 228, 253, 193, 243, 62, 137, 139, 60, 68, 242, 48, 142, 113, 88, 185, 235, 253, 105, 80, 74, 32, 170, 96, 74, 111, 250, 7, 205, 154, 3, 146, 115, 153, 53, 45, 132, 123, 56, 61, 208, 184, 201, 63, 24, 109, 223, 0, 179, 169, 102, 139, 224, 73, 233, 45, 173, 138, 66, 98, 88, 69, 76, 177, 111, 113, 218, 192, 33, 101, 152, 25, 134, 34, 173, 32, 82, 230, 44, 247, 200, 253, 170, 192, 246, 30, 12, 96, 205, 100, 249, 181, 93, 0, 231])
                 };
-                exports.INTERNAL_USAGE_ID = "ivFX-RTa20yT88msMzvP6g"
+                exports.INTERNAL_USAGE_ID = "ppJtlS56r0az1kqUjWJs-g"
             },
         77685:
             /*!*******************************************************************************************!*\
@@ -11718,7 +11718,8 @@
                     _attachPointerDownHandler() {
                         _events_engine.default.on(this._$thumb, (0, _index.addNamespace)(_pointer.default.down, "dxScrollbar"), this.feedbackOn.bind(this))
                     },
-                    feedbackOn() {
+                    feedbackOn(e) {
+                        null === e || void 0 === e || e.preventDefault();
                         this.$element().addClass("dx-scrollable-scrollbar-active");
                         activeScrollbar = this
                     },
@@ -27718,6 +27719,14 @@
                     }
                 };
                 exports.compileGetter = compileGetter;
+
+                function toLowerCase(value, options) {
+                    return null !== options && void 0 !== options && options.locale ? value.toLocaleLowerCase(options.locale) : value.toLowerCase()
+                }
+
+                function toUpperCase(value, options) {
+                    return null !== options && void 0 !== options && options.locale ? value.toLocaleUpperCase(options.locale) : value.toUpperCase()
+                }
                 const ensurePropValueDefined = function(obj, propName, value, options) {
                     if ((0, _type.isDefined)(value)) {
                         return value
@@ -27771,12 +27780,14 @@
                     }
                     const isCaseSensitive = "case" === (null === options || void 0 === options || null === (_options$collatorOpti = options.collatorOptions) || void 0 === _options$collatorOpti ? void 0 : _options$collatorOpti.sensitivity) || caseSensitive;
                     if (!isCaseSensitive && "string" === typeof value) {
-                        var _options$collatorOpti2;
+                        var _options$collatorOpti2, _options$locale;
                         if ("base" === (null === options || void 0 === options || null === (_options$collatorOpti2 = options.collatorOptions) || void 0 === _options$collatorOpti2 ? void 0 : _options$collatorOpti2.sensitivity)) {
                             const REMOVE_DIACRITICAL_MARKS_REGEXP = /[\u0300-\u036f]/g;
                             value = value.normalize("NFD").replace(REMOVE_DIACRITICAL_MARKS_REGEXP, "")
                         }
-                        return null !== options && void 0 !== options && options.locale ? value.toLocaleLowerCase(options.locale) : value.toLowerCase()
+                        const locale = null === options || void 0 === options || null === (_options$locale = options.locale) || void 0 === _options$locale ? void 0 : _options$locale.toLowerCase();
+                        const useUpperCase = locale && !!["hy", "el"].find((code => locale === code || locale.startsWith(`${code}-`)));
+                        return (useUpperCase ? toUpperCase : toLowerCase)(value, options)
                     }
                     return value
                 }
@@ -30931,8 +30942,8 @@
               \*************************************************************/
             function(__unused_webpack_module, exports) {
                 exports.version = exports.fullVersion = void 0;
-                exports.version = "24.1.4";
-                exports.fullVersion = "24.1.4"
+                exports.version = "24.1.6";
+                exports.fullVersion = "24.1.6"
             },
         66507:
             /*!*******************************************************************!*\
@@ -53143,6 +53154,7 @@
                         "dxHtmlEditor-width": "Width",
                         "dxHtmlEditor-height": "Height",
                         "dxHtmlEditor-borderColor": "Color",
+                        "dxHtmlEditor-borderWidth": "Border Width",
                         "dxHtmlEditor-tableBackground": "Background",
                         "dxHtmlEditor-dimensions": "Dimensions",
                         "dxHtmlEditor-alignment": "Alignment",
@@ -55188,6 +55200,9 @@
                     },
                     w: function(count) {
                         return 2 === count ? "[1-5][0-9]|0?[0-9]" : "0??[0-9]|[1-5][0-9]"
+                    },
+                    x: function(count) {
+                        return 3 === count ? "[+-](?:2[0-3]|[01][0-9]):(?:[0-5][0-9])|Z" : "[+-](?:2[0-3]|[01][0-9])(?:[0-5][0-9])|Z"
                     }
                 };
                 const parseNumber = Number;

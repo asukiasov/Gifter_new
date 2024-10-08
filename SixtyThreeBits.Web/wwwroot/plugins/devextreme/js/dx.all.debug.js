@@ -1,7 +1,7 @@
 /*!
  * DevExtreme (dx.all.debug.js)
- * Version: 24.1.4
- * Build date: Mon Jul 15 2024
+ * Version: 24.1.6
+ * Build date: Sat Sep 14 2024
  *
  * Copyright (c) 2012 - 2024 Developer Express Inc. ALL RIGHTS RESERVED
  * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -5981,7 +5981,7 @@
                     e: 65537,
                     n: new Uint8Array([200, 219, 153, 203, 140, 7, 228, 253, 193, 243, 62, 137, 139, 60, 68, 242, 48, 142, 113, 88, 185, 235, 253, 105, 80, 74, 32, 170, 96, 74, 111, 250, 7, 205, 154, 3, 146, 115, 153, 53, 45, 132, 123, 56, 61, 208, 184, 201, 63, 24, 109, 223, 0, 179, 169, 102, 139, 224, 73, 233, 45, 173, 138, 66, 98, 88, 69, 76, 177, 111, 113, 218, 192, 33, 101, 152, 25, 134, 34, 173, 32, 82, 230, 44, 247, 200, 253, 170, 192, 246, 30, 12, 96, 205, 100, 249, 181, 93, 0, 231])
                 };
-                exports.INTERNAL_USAGE_ID = "ivFX-RTa20yT88msMzvP6g"
+                exports.INTERNAL_USAGE_ID = "ppJtlS56r0az1kqUjWJs-g"
             },
         77685:
             /*!*******************************************************************************************!*\
@@ -15339,25 +15339,43 @@
                     _createCol(column) {
                         return super._createCol(column).toggleClass("dx-col-fixed", !!(this._isFixedTableRendering && (column.fixed || column.command && "transparent" !== column.command)))
                     }
+                    isIndicesArray(arr) {
+                        return Array.isArray(arr) && arr.length > 0
+                    }
                     _correctColumnIndicesForFixedColumns(fixedColumns, change) {
+                        var _change$items;
+                        const columnIndicesArray = null === change || void 0 === change ? void 0 : change.columnIndices;
+                        if (!this.isIndicesArray(columnIndicesArray)) {
+                            return
+                        }
                         const transparentColumnIndex = getTransparentColumnIndex(fixedColumns);
                         const transparentColspan = fixedColumns[transparentColumnIndex].colspan;
-                        const columnIndices = change && change.columnIndices;
-                        if (columnIndices) {
-                            change.columnIndices = columnIndices.map((columnIndices => {
-                                if (columnIndices) {
-                                    return columnIndices.map((columnIndex => {
-                                        if (columnIndex < transparentColumnIndex) {
-                                            return columnIndex
-                                        }
-                                        if (columnIndex >= transparentColumnIndex + transparentColspan) {
-                                            return columnIndex - transparentColspan + 1
-                                        }
-                                        return -1
-                                    })).filter((columnIndex => columnIndex >= 0))
+                        const transparentOffset = transparentColumnIndex + transparentColspan;
+                        const rowTypes = null === change || void 0 === change || null === (_change$items = change.items) || void 0 === _change$items ? void 0 : _change$items.map((_ref => {
+                            let {
+                                rowType: rowType
+                            } = _ref;
+                            return rowType
+                        }));
+                        change.columnIndices = columnIndicesArray.map(((columnIndices, idx) => {
+                            if (!this.isIndicesArray(columnIndices)) {
+                                return columnIndices
+                            }
+                            const isGroupRow = rowTypes && "group" === rowTypes[idx];
+                            if (isGroupRow) {
+                                return [...columnIndices]
+                            }
+                            return columnIndices.reduce(((result, colIdx) => {
+                                switch (true) {
+                                    case colIdx < transparentColumnIndex:
+                                        result.push(colIdx);
+                                        break;
+                                    case colIdx >= transparentOffset:
+                                        result.push(colIdx - transparentColspan + 1)
                                 }
-                            }))
-                        }
+                                return result
+                            }), [])
+                        }))
                     }
                     _partialUpdateFixedTable(fixedColumns, rows) {
                         const fixedTableElement = this._fixedTableElement;
@@ -15417,10 +15435,10 @@
                         this._isFixedColumns = !!fixedColumns.length;
                         const $table = super._renderTable(options);
                         if (this._isFixedColumns) {
-                            var _change$items;
+                            var _change$items2;
                             const change = null === options || void 0 === options ? void 0 : options.change;
                             const $fixedDataRows = this._getRowElements(this._fixedTableElement);
-                            const needPartialUpdate = (null === change || void 0 === change ? void 0 : change.virtualColumnsScrolling) && $fixedDataRows.length === (null === change || void 0 === change || null === (_change$items = change.items) || void 0 === _change$items ? void 0 : _change$items.length);
+                            const needPartialUpdate = (null === change || void 0 === change ? void 0 : change.virtualColumnsScrolling) && $fixedDataRows.length === (null === change || void 0 === change || null === (_change$items2 = change.items) || void 0 === _change$items2 ? void 0 : _change$items2.length);
                             this._isFixedTableRendering = true;
                             if (needPartialUpdate && true !== this.option("scrolling.legacyMode")) {
                                 var _options$change;
@@ -22761,7 +22779,7 @@
                 Object.defineProperty(exports, "__esModule", {
                     value: true
                 });
-                exports.VIEWPORT_TOP_NEW_ROW_POSITION = exports.VIEWPORT_BOTTOM_NEW_ROW_POSITION = exports.TARGET_COMPONENT_NAME = exports.ROW_SELECTED_CLASS = exports.ROW_SELECTED = exports.ROW_REMOVED = exports.ROW_MODIFIED = exports.ROW_INSERTED = exports.ROW_CLASS = exports.ROW_BASED_MODES = exports.REQUIRED_EDITOR_LABELLEDBY_MODES = exports.READONLY_CLASS = exports.PAGE_TOP_NEW_ROW_POSITION = exports.PAGE_BOTTOM_NEW_ROW_POSITION = exports.MODES_WITH_DELAYED_FOCUS = exports.METHOD_NAMES = exports.LINK_ICON_CLASS = exports.LINK_CLASS = exports.LAST_NEW_ROW_POSITION = exports.INSERT_INDEX = exports.FORM_BUTTONS_CONTAINER_CLASS = exports.FOCUS_OVERLAY_CLASS = exports.FOCUSABLE_ELEMENT_SELECTOR = exports.FOCUSABLE_ELEMENT_CLASS = exports.FIRST_NEW_ROW_POSITION = exports.EDIT_ROW = exports.EDIT_POPUP_FORM_CLASS = exports.EDIT_POPUP_CLASS = exports.EDIT_MODE_ROW = exports.EDIT_MODE_POPUP = exports.EDIT_MODE_FORM = exports.EDIT_MODE_CELL = exports.EDIT_MODE_BATCH = exports.EDIT_MODES = exports.EDIT_LINK_CLASS = exports.EDIT_ICON_CLASS = exports.EDIT_FORM_ITEM_CLASS = exports.EDIT_FORM_CLASS = exports.EDIT_BUTTON_CLASS = exports.EDITOR_CELL_CLASS = exports.EDITORS_INPUT_SELECTOR = exports.EDITING_POPUP_OPTION_NAME = exports.EDITING_NAMESPACE = exports.EDITING_FORM_OPTION_NAME = exports.EDITING_EDITROWKEY_OPTION_NAME = exports.EDITING_EDITCOLUMNNAME_OPTION_NAME = exports.EDITING_CHANGES_OPTION_NAME = exports.DROPDOWN_EDITOR_OVERLAY_CLASS = exports.DEFAULT_START_EDIT_ACTION = exports.DATA_ROW_CLASS = exports.DATA_EDIT_DATA_UPDATE_TYPE = exports.DATA_EDIT_DATA_REMOVE_TYPE = exports.DATA_EDIT_DATA_INSERT_TYPE = exports.COMMAND_EDIT_WITH_ICONS_CLASS = exports.COMMAND_EDIT_CLASS = exports.CELL_MODIFIED_CLASS = exports.CELL_MODIFIED = exports.CELL_FOCUS_DISABLED_CLASS = exports.CELL_BASED_MODES = exports.BUTTON_NAMES = exports.BUTTON_CLASS = exports.ADD_ROW_BUTTON_CLASS = exports.ACTION_OPTION_NAMES = void 0;
+                exports.VIEWPORT_TOP_NEW_ROW_POSITION = exports.VIEWPORT_BOTTOM_NEW_ROW_POSITION = exports.TARGET_COMPONENT_NAME = exports.ROW_SELECTED_CLASS = exports.ROW_SELECTED = exports.ROW_REMOVED = exports.ROW_MODIFIED = exports.ROW_INSERTED = exports.ROW_CLASS = exports.ROW_BASED_MODES = exports.REQUIRED_EDITOR_LABELLEDBY_MODES = exports.READONLY_CLASS = exports.PAGE_TOP_NEW_ROW_POSITION = exports.PAGE_BOTTOM_NEW_ROW_POSITION = exports.MODES_WITH_DELAYED_FOCUS = exports.METHOD_NAMES = exports.LINK_ICON_CLASS = exports.LINK_CLASS = exports.LAST_NEW_ROW_POSITION = exports.INSERT_INDEX = exports.FORM_BUTTONS_CONTAINER_CLASS = exports.FOCUS_OVERLAY_CLASS = exports.FOCUSABLE_ELEMENT_SELECTOR = exports.FOCUSABLE_ELEMENT_CLASS = exports.FIRST_NEW_ROW_POSITION = exports.FILTER_ROW_CLASS = exports.EDIT_ROW = exports.EDIT_POPUP_FORM_CLASS = exports.EDIT_POPUP_CLASS = exports.EDIT_MODE_ROW = exports.EDIT_MODE_POPUP = exports.EDIT_MODE_FORM = exports.EDIT_MODE_CELL = exports.EDIT_MODE_BATCH = exports.EDIT_MODES = exports.EDIT_LINK_CLASS = exports.EDIT_ICON_CLASS = exports.EDIT_FORM_ITEM_CLASS = exports.EDIT_FORM_CLASS = exports.EDIT_BUTTON_CLASS = exports.EDITOR_CELL_CLASS = exports.EDITORS_INPUT_SELECTOR = exports.EDITING_POPUP_OPTION_NAME = exports.EDITING_NAMESPACE = exports.EDITING_FORM_OPTION_NAME = exports.EDITING_EDITROWKEY_OPTION_NAME = exports.EDITING_EDITCOLUMNNAME_OPTION_NAME = exports.EDITING_CHANGES_OPTION_NAME = exports.DROPDOWN_EDITOR_OVERLAY_CLASS = exports.DEFAULT_START_EDIT_ACTION = exports.DATA_ROW_CLASS = exports.DATA_EDIT_DATA_UPDATE_TYPE = exports.DATA_EDIT_DATA_REMOVE_TYPE = exports.DATA_EDIT_DATA_INSERT_TYPE = exports.COMMAND_EDIT_WITH_ICONS_CLASS = exports.COMMAND_EDIT_CLASS = exports.CELL_MODIFIED_CLASS = exports.CELL_MODIFIED = exports.CELL_FOCUS_DISABLED_CLASS = exports.CELL_BASED_MODES = exports.BUTTON_NAMES = exports.BUTTON_CLASS = exports.ADD_ROW_BUTTON_CLASS = exports.ACTION_OPTION_NAMES = void 0;
                 var _ui = (obj = __webpack_require__( /*! ../../../../ui/scroll_view/ui.scrollable */ 41183), obj && obj.__esModule ? obj : {
                     default: obj
                 });
@@ -22847,6 +22865,7 @@
                 exports.DROPDOWN_EDITOR_OVERLAY_CLASS = "dx-dropdowneditor-overlay";
                 exports.DATA_ROW_CLASS = "dx-data-row";
                 exports.ROW_REMOVED = "dx-row-removed";
+                exports.FILTER_ROW_CLASS = "filter-row";
                 const isRenovatedScrollable = !!_ui.default.IS_RENOVATED_WIDGET;
                 exports.EDIT_FORM_ITEM_CLASS = "edit-form-item";
                 exports.EDIT_POPUP_CLASS = "edit-popup";
@@ -29116,6 +29135,10 @@
                                 }
                             },
                             data: Base => class extends Base {
+                                constructor() {
+                                    super(...arguments);
+                                    this._needToUpdateFocusedRowByIndex = false
+                                }
                                 _applyChange(change) {
                                     if (change && "updateFocusedRow" === change.changeType) {
                                         return
@@ -29127,7 +29150,10 @@
                                     if (this.option("focusedRowEnabled") && this._dataSource) {
                                         const isPartialUpdate = "update" === e.changeType && e.repaintChangesOnly;
                                         const isPartialUpdateWithDeleting = isPartialUpdate && e.changeTypes && e.changeTypes.indexOf("remove") >= 0;
-                                        if ("refresh" === e.changeType && e.items.length || isPartialUpdateWithDeleting) {
+                                        if (this._needToUpdateFocusedRowByIndex) {
+                                            this._needToUpdateFocusedRowByIndex = false;
+                                            this._focusController._focusRowByIndex()
+                                        } else if ("refresh" === e.changeType && e.items.length || isPartialUpdateWithDeleting) {
                                             this._updatePageIndexes();
                                             this._updateFocusedRow(e)
                                         } else if ("append" === e.changeType || "prepend" === e.changeType) {
@@ -29136,6 +29162,11 @@
                                             this._updateFocusedRow(e)
                                         }
                                     }
+                                }
+                                _handleDataPushed(changes) {
+                                    super._handleDataPushed(changes);
+                                    const focusedRowKey = this.option("focusedRowKey");
+                                    this._needToUpdateFocusedRowByIndex = null === changes || void 0 === changes ? void 0 : changes.some((change => "remove" === change.type && (0, _common.equalByValue)(change.key, focusedRowKey)))
                                 }
                                 _updatePageIndexes() {
                                     const prevRenderingPageIndex = this._lastRenderingPageIndex || 0;
@@ -31217,7 +31248,9 @@
                             }
                         }
                         if (isOriginalHandlerRequired) {
-                            if (isLastValidCell) {
+                            const $cell = this._getFocusedCell();
+                            const isCommandCell = $cell.is(_const2.COMMAND_CELL_SELECTOR);
+                            if (isLastValidCell && !isCommandCell) {
                                 this._toggleInertAttr(true)
                             }
                             this._editorFactory.loseFocus();
@@ -32770,8 +32803,18 @@
                                     const keyboardNavigation = this._keyboardNavigationController;
                                     keyboardNavigation._fastEditingStarted = false;
                                     const result = super.closeEditCell.apply(this, arguments);
-                                    keyboardNavigation._updateFocus();
+                                    const $focusedElement = this._getFocusedElement();
+                                    const isFilterCell = !!$focusedElement.closest(`.${this.addWidgetPrefix(_const.FILTER_ROW_CLASS)}`).length;
+                                    if (!isFilterCell) {
+                                        keyboardNavigation._updateFocus()
+                                    }
                                     return result
+                                }
+                                _getFocusedElement() {
+                                    var _this$component$eleme, _this$component;
+                                    const $element = (0, _renderer.default)(null === (_this$component$eleme = (_this$component = this.component).element) || void 0 === _this$component$eleme ? void 0 : _this$component$eleme.call(_this$component));
+                                    const $focusedElement = $element.find(":focus");
+                                    return $focusedElement
                                 }
                                 _delayedInputFocus() {
                                     this._keyboardNavigationController._isNeedScroll = true;
@@ -32972,6 +33015,7 @@
                         super._tabKeyHandler(eventArgs, isEditing)
                     }
                     getFirstNotFixedCell() {
+                        var _this$_editingControl;
                         const columns = this._columnsController.getVisibleColumns();
                         const columnIndex = columns.findIndex((_ref => {
                             let {
@@ -32979,7 +33023,8 @@
                             } = _ref;
                             return !fixed
                         }));
-                        return -1 === columnIndex ? void 0 : this._rowsView._getCellElement(0, columnIndex)
+                        const isEditing = null === (_this$_editingControl = this._editingController) || void 0 === _this$_editingControl ? void 0 : _this$_editingControl.isEditing();
+                        return -1 === columnIndex || isEditing ? void 0 : this._rowsView._getCellElement(0, columnIndex)
                     }
                     isScrollableNeedFocusable() {
                         var _this$_rowsView$_fixe, _this$_rowsView$getCe;
@@ -35535,6 +35580,7 @@
                             selectionFilter: this.option("selectionFilter"),
                             ignoreDisabledItems: true,
                             isVirtualPaging: virtualPaging,
+                            sensitivity: this.option("selection.sensitivity"),
                             allowLoadByRange() {
                                 const hasGroupColumns = columnsController.getGroupColumns().length > 0;
                                 return virtualPaging && !legacyScrollingMode && !hasGroupColumns && allowSelectAll && !deferred
@@ -35712,11 +35758,16 @@
                         return ["selectionChanged"]
                     }
                     optionChanged(args) {
+                        var _this$_selection;
                         super.optionChanged(args);
+                        const selectionOptionsExists = !!(null !== (_this$_selection = this._selection) && void 0 !== _this$_selection && _this$_selection.options);
                         switch (args.name) {
                             case "selection": {
                                 const oldSelectionMode = this._selectionMode;
                                 this.init();
+                                if (selectionOptionsExists && "selection.sensitivity" === args.fullName) {
+                                    this._selection.options.sensitivity = args.value
+                                }
                                 if ("selection.showCheckBoxesMode" !== args.fullName) {
                                     const selectionMode = this._selectionMode;
                                     let selectedRowKeys = this.option("selectedRowKeys");
@@ -36761,7 +36812,7 @@
                                 this._saveState(this.state())
                             }
                         };
-                        _events_engine.default.on((0, _window.getWindow)(), "unload", this._windowUnloadHandler);
+                        _events_engine.default.on((0, _window.getWindow)(), "visibilitychange", this._windowUnloadHandler);
                         return this
                     }
                     optionChanged(args) {
@@ -36777,7 +36828,7 @@
                     }
                     dispose() {
                         clearTimeout(this._savingTimeoutID);
-                        _events_engine.default.off((0, _window.getWindow)(), "unload", this._windowUnloadHandler)
+                        _events_engine.default.off((0, _window.getWindow)(), "visibilitychange", this._windowUnloadHandler)
                     }
                     _loadState() {
                         const options = this.option("stateStoring");
@@ -40007,7 +40058,7 @@
                         if (!this._a11yGeneralStatusElement) {
                             this._a11yGeneralStatusElement = (0, _a11y_status_container_component.A11yStatusContainerComponent)({});
                             this._a11yGeneralStatusElement.attr(E2E_ATTRIBUTES_a11yStatusContainer, "true");
-                            this._rootElement.append(this._a11yGeneralStatusElement)
+                            $groupElement.append(this._a11yGeneralStatusElement)
                         }
                         this._renderViews($groupElement)
                     }
@@ -52820,7 +52871,8 @@
 
                     function preparePathValue(pathValue, dataField) {
                         if (pathValue) {
-                            pathValue = (0, _type.isString)(pathValue) && pathValue.includes("&") ? pathValue : `[${pathValue}]`;
+                            const shouldSkipWrappingPathValue = (0, _type.isString)(pathValue) && (pathValue.includes("&") || pathValue.startsWith(`${dataField}.`));
+                            pathValue = shouldSkipWrappingPathValue ? pathValue : `[${pathValue}]`;
                             if (dataField && 0 === pathValue.indexOf(`${dataField}.`)) {
                                 pathValue = pathValue.slice(dataField.length + 1, pathValue.length)
                             }
@@ -60392,6 +60444,13 @@
                             return
                         }
                         const position = this.getCellPosition(positionByMap, inAllDayRow && !this.isVerticalGrouping);
+                        const groupEdgeIndices = this.viewDataProvider.getGroupEdgeIndices(validGroupIndex);
+                        const {
+                            top: vMin
+                        } = this.getCellPosition({
+                            columnIndex: positionByMap.columnIndex,
+                            rowIndex: groupEdgeIndices.firstRowIndex
+                        }, inAllDayRow && !this.isVerticalGrouping);
                         const timeShift = inAllDayRow ? 0 : this.getTimeShiftRatio(positionByMap, date);
                         const shift = this.getPositionShift(timeShift, inAllDayRow);
                         const horizontalHMax = this.positionHelper.getHorizontalMax(validGroupIndex, date);
@@ -60412,6 +60471,7 @@
                             columnIndex: position.columnIndex,
                             hMax: horizontalHMax,
                             vMax: verticalMax,
+                            vMin: vMin,
                             groupIndex: validGroupIndex
                         }
                     }
@@ -63033,9 +63093,11 @@
                         currentPartTop += allDayPanelOffset;
                         const minHeight = this.getAppointmentMinSize();
                         const {
+                            hMax: hMax,
                             vMax: vMax,
-                            hMax: hMax
+                            vMin: vMin
                         } = appointmentSettings;
+                        const maxHeight = this.isVirtualScrolling ? vMax : vMax - vMin;
                         const hasTailPart = this.options.endViewDate > appointmentSettings.info.appointment.endDate;
                         let left = Math.round(appointmentSettings.left + offset);
                         let tailHeight = this._getTailHeight(appointmentGeometry, appointmentSettings);
@@ -63045,7 +63107,7 @@
                         while (tailHeight > 0 && left < hMax) {
                             tailHeight = Math.max(minHeight, tailHeight);
                             columnIndex += cellsDiff;
-                            const height = Math.min(tailHeight, vMax);
+                            const height = Math.min(tailHeight, maxHeight);
                             result.push(_extends({}, appointmentSettings, {
                                 top: currentPartTop,
                                 left: left,
@@ -63056,7 +63118,7 @@
                                 columnIndex: columnIndex
                             }));
                             left += offset;
-                            tailHeight -= vMax
+                            tailHeight -= maxHeight
                         }
                         if (hasTailPart && result.length > 0) {
                             result[result.length - 1].appointmentReduced = "tail"
@@ -63153,7 +63215,8 @@
                         } = position.info.appointment;
                         const allDay = _m_expression_utils.ExpressionUtils.getField(this.dataAccessors, "allDay", appointment);
                         const duration = this.getAppointmentDurationInMs(startDate, normalizedEndDate, allDay);
-                        const durationInMinutes = this._adjustDurationByDaylightDiff(duration, startDate, normalizedEndDate) / toMs("minute");
+                        const skippedMinutes = 60 * (0, _index.getSkippedHoursInRange)(startDate, normalizedEndDate, appointment.allDay, this.viewDataProvider);
+                        const durationInMinutes = this._adjustDurationByDaylightDiff(duration, startDate, normalizedEndDate) / toMs("minute") - skippedMinutes;
                         const height = durationInMinutes * this._getMinuteHeight();
                         return height
                     }
@@ -66765,6 +66828,7 @@
                                 this._dataAccessors.resources = (0, _m_utils2.createExpressions)(this.option("resources"));
                                 this.agendaResourceProcessor.initializeState(this.option("resources"));
                                 this.updateInstances();
+                                this.option("resourceLoaderMap").clear();
                                 this._postponeResourceLoading().done((resources => {
                                     this._appointments.option("items", []);
                                     this._refreshWorkSpace(resources);
@@ -73181,7 +73245,7 @@
                         currentDate.setDate(currentDate.getDate() + 1)
                     }
                     const startDateHours = startDate.getHours();
-                    const endDateHours = endDate.getHours() + Math.ceil(endDate.getTime() % 36e5);
+                    const endDateHours = endDate.getHours() + endDate.getTime() % 36e5 / 36e5;
                     if (viewDataProvider.isSkippedDate(startDate)) {
                         if (isAllDay) {
                             result += 24
@@ -91765,7 +91829,8 @@
                     h: "getHours",
                     m: "getMinutes",
                     s: "getSeconds",
-                    S: "getMilliseconds"
+                    S: "getMilliseconds",
+                    x: "getTimezoneOffset"
                 };
                 const PATTERN_SETTERS = (0, _extend.extend)({}, (0, _date.getPatternSetters)(), {
                     a: (date, value) => {
@@ -91801,7 +91866,8 @@
                         const maxLimitLength = String(getLimits("y", date).max).length;
                         const newValue = parseInt(String(currentYear).substr(0, maxLimitLength - valueLength) + value);
                         date.setFullYear(newValue)
-                    }
+                    },
+                    x: date => date
                 });
                 const getPatternGetter = patternChar => PATTERN_GETTERS[patternChar] || (() => patternChar);
                 exports.renderDateParts = (text, regExpInfo) => {
@@ -91884,6 +91950,10 @@
                         a: {
                             min: 0,
                             max: 1
+                        },
+                        x: {
+                            min: 0,
+                            max: 0
                         }
                     };
                     return limits[forcedPattern || pattern] || limits.getAmPm
@@ -96655,10 +96725,15 @@
                         this._$textEditorContainer.remove();
                         this._$templateWrapper.empty();
                         const $templateWrapper = this._$templateWrapper;
+                        const currentRenderContext = Symbol("renderContext");
+                        this._activeRenderContext = currentRenderContext;
                         fieldTemplate.render({
                             model: data,
                             container: (0, _element.getPublicElement)($templateWrapper),
                             onRendered: () => {
+                                if (this._activeRenderContext !== currentRenderContext) {
+                                    return
+                                }
                                 const isRenderedInRoot = !!this.$element().find($templateWrapper).length;
                                 if (!isRenderedInRoot) {
                                     return
@@ -103042,7 +103117,8 @@
                     },
                     _render() {
                         this._prepareConverters();
-                        this.callBase()
+                        this.callBase();
+                        this._toggleReadOnlyState()
                     },
                     _prepareQuillRegistrator() {
                         if (!this._quillRegistrator) {
@@ -134535,7 +134611,8 @@
                     _attachPointerDownHandler() {
                         _events_engine.default.on(this._$thumb, (0, _index.addNamespace)(_pointer.default.down, "dxScrollbar"), this.feedbackOn.bind(this))
                     },
-                    feedbackOn() {
+                    feedbackOn(e) {
+                        null === e || void 0 === e || e.preventDefault();
                         this.$element().addClass("dx-scrollable-scrollbar-active");
                         activeScrollbar = this
                     },
@@ -135040,12 +135117,20 @@
                     }
                     isItemKeySelected(itemData) {
                         const {
-                            selectionFilter: selectionFilter
+                            selectionFilter: selectionFilter,
+                            sensitivity: sensitivity
                         } = this.options;
                         if (!selectionFilter) {
                             return true
                         }
-                        return !!(0, _query.default)([itemData]).filter(selectionFilter).toArray().length
+                        const queryParams = {
+                            langParams: {
+                                collatorOptions: {
+                                    sensitivity: sensitivity
+                                }
+                            }
+                        };
+                        return !!(0, _query.default)([itemData], queryParams).filter(selectionFilter).toArray().length
                     }
                     _getKeyExpr() {
                         const keyField = this.options.key();
@@ -137824,10 +137909,12 @@
                 });
                 exports.default = void 0;
                 var _component_registrator = _interopRequireDefault(__webpack_require__( /*! ../../../core/component_registrator */ 99393));
+                var _dom_adapter = _interopRequireDefault(__webpack_require__( /*! ../../../core/dom_adapter */ 73349));
                 var _element = __webpack_require__( /*! ../../../core/element */ 6415);
                 var _renderer = _interopRequireDefault(__webpack_require__( /*! ../../../core/renderer */ 68374));
                 var _resize_observer = _interopRequireDefault(__webpack_require__( /*! ../../../core/resize_observer */ 91784));
                 var _deferred = __webpack_require__( /*! ../../../core/utils/deferred */ 62754);
+                var _dom = __webpack_require__( /*! ../../../core/utils/dom */ 3532);
                 var _extend = __webpack_require__( /*! ../../../core/utils/extend */ 13306);
                 var _size = __webpack_require__( /*! ../../../core/utils/size */ 58664);
                 var _type = __webpack_require__( /*! ../../../core/utils/type */ 35922);
@@ -137936,20 +138023,25 @@
                         }
                     }
                     _attachHoldEvent() {}
+                    _isAttached() {
+                        return !!(0, _dom.contains)(_dom_adapter.default.getBody(), (0, _renderer.default)(this.element()).get(0))
+                    }
+                    _isVisible() {
+                        return (0, _layout.isElementVisible)((0, _renderer.default)(this.element())[0])
+                    }
                     _resizeHandler() {
-                        if (!this._shouldRecalculateLayout) {
-                            return
+                        if (this._shouldRecalculateLayout && this._isAttached() && this._isVisible()) {
+                            this._layout = this._getDefaultLayoutBasedOnSize();
+                            this._applyStylesFromLayout(this._layout);
+                            this._updateItemSizes();
+                            this._shouldRecalculateLayout = false
                         }
-                        this._layout = this._getDefaultLayoutBasedOnSize();
-                        this._applyStylesFromLayout(this._layout);
-                        this._updateItemSizes();
-                        this._shouldRecalculateLayout = false
                     }
                     _renderItems(items) {
                         super._renderItems(items);
                         this._updateResizeHandlesResizableState();
                         this._updateResizeHandlesCollapsibleState();
-                        if ((0, _layout.isElementVisible)((0, _renderer.default)(this.element())[0])) {
+                        if (this._isVisible()) {
                             this._layout = this._getDefaultLayoutBasedOnSize();
                             this._applyStylesFromLayout(this._layout);
                             this._updateItemSizes()
@@ -138163,14 +138255,10 @@
                                     event: event,
                                     handleElement: (0, _element.getPublicElement)($resizeHandle)
                                 };
-                                this._getAction(_event.RESIZE_EVENT.onResizeEnd)(eventArgs);
-                                if (eventArgs.cancel) {
-                                    event.cancel = true;
-                                    return
-                                }
                                 null === (_this$_feedbackDeferr = this._feedbackDeferred) || void 0 === _this$_feedbackDeferr || _this$_feedbackDeferr.resolve();
                                 this._toggleActiveState($resizeHandle, false);
-                                this._updateItemSizes()
+                                this._updateItemSizes();
+                                this._getAction(_event.RESIZE_EVENT.onResizeEnd)(eventArgs)
                             }
                         }
                     }
@@ -162289,6 +162377,14 @@
                     }
                 };
                 exports.compileGetter = compileGetter;
+
+                function toLowerCase(value, options) {
+                    return null !== options && void 0 !== options && options.locale ? value.toLocaleLowerCase(options.locale) : value.toLowerCase()
+                }
+
+                function toUpperCase(value, options) {
+                    return null !== options && void 0 !== options && options.locale ? value.toLocaleUpperCase(options.locale) : value.toUpperCase()
+                }
                 const ensurePropValueDefined = function(obj, propName, value, options) {
                     if ((0, _type.isDefined)(value)) {
                         return value
@@ -162342,12 +162438,14 @@
                     }
                     const isCaseSensitive = "case" === (null === options || void 0 === options || null === (_options$collatorOpti = options.collatorOptions) || void 0 === _options$collatorOpti ? void 0 : _options$collatorOpti.sensitivity) || caseSensitive;
                     if (!isCaseSensitive && "string" === typeof value) {
-                        var _options$collatorOpti2;
+                        var _options$collatorOpti2, _options$locale;
                         if ("base" === (null === options || void 0 === options || null === (_options$collatorOpti2 = options.collatorOptions) || void 0 === _options$collatorOpti2 ? void 0 : _options$collatorOpti2.sensitivity)) {
                             const REMOVE_DIACRITICAL_MARKS_REGEXP = /[\u0300-\u036f]/g;
                             value = value.normalize("NFD").replace(REMOVE_DIACRITICAL_MARKS_REGEXP, "")
                         }
-                        return null !== options && void 0 !== options && options.locale ? value.toLocaleLowerCase(options.locale) : value.toLowerCase()
+                        const locale = null === options || void 0 === options || null === (_options$locale = options.locale) || void 0 === _options$locale ? void 0 : _options$locale.toLowerCase();
+                        const useUpperCase = locale && !!["hy", "el"].find((code => locale === code || locale.startsWith(`${code}-`)));
+                        return (useUpperCase ? toUpperCase : toLowerCase)(value, options)
                     }
                     return value
                 }
@@ -165629,8 +165727,8 @@
               \*************************************************************/
             function(__unused_webpack_module, exports) {
                 exports.version = exports.fullVersion = void 0;
-                exports.version = "24.1.4";
-                exports.fullVersion = "24.1.4"
+                exports.version = "24.1.6";
+                exports.fullVersion = "24.1.6"
             },
         66507:
             /*!*******************************************************************!*\
@@ -188971,6 +189069,7 @@
                         "dxHtmlEditor-width": "Width",
                         "dxHtmlEditor-height": "Height",
                         "dxHtmlEditor-borderColor": "Color",
+                        "dxHtmlEditor-borderWidth": "Border Width",
                         "dxHtmlEditor-tableBackground": "Background",
                         "dxHtmlEditor-dimensions": "Dimensions",
                         "dxHtmlEditor-alignment": "Alignment",
@@ -191016,6 +191115,9 @@
                     },
                     w: function(count) {
                         return 2 === count ? "[1-5][0-9]|0?[0-9]" : "0??[0-9]|[1-5][0-9]"
+                    },
+                    x: function(count) {
+                        return 3 === count ? "[+-](?:2[0-3]|[01][0-9]):(?:[0-5][0-9])|Z" : "[+-](?:2[0-3]|[01][0-9])(?:[0-5][0-9])|Z"
                     }
                 };
                 const parseNumber = Number;
