@@ -10,6 +10,22 @@ const globals = {
         }
     },
     devexpress: {
+        exportGridToExcel: function (grid, fileName) {
+            preloader.show();
+            const workbook = new ExcelJS.Workbook();
+            const worksheet = workbook.addWorksheet('Sheet1');
+            DevExpress.excelExporter.exportDataGrid({
+                component: grid,
+                worksheet,
+                autoFilterEnabled: true,
+            }).then(function () {
+                preloader.hide();
+                workbook.xlsx.writeBuffer().then((buffer) => {
+                    saveAs(new Blob([buffer], { type: 'application/octet-stream' }), fileName);
+                });
+            });
+        },
+
         onGridCheckBoxColumnEditorInit: function (grid, editor, eventArgs) {
             if (grid.IsNewRowEditing()) {
                 editor.SetValue(false);
@@ -21,6 +37,11 @@ const globals = {
                 components63Bits.dialog.error(grid.cpErrorMessage);
                 grid.cpErrorMessage = null;
             }
+        },
+
+        onRowUpdatingSendAllColumnsData: function (grid) {
+            //https://supportcenter.devexpress.com/ticket/details/t191423/dxdatagrid-passes-only-modified-values-to-the-customstore-update-method
+            grid.newData = { ...grid.oldData, ...grid.newData };
         },
 
         onTreeEndCallback: function (tree, eventArgs) {
@@ -81,23 +102,7 @@ const globals = {
             }
 
             return sortIndexes;
-        },
-
-        exportGridToExcel: function (grid, fileName) {
-            preloader.show();
-            const workbook = new ExcelJS.Workbook();
-            const worksheet = workbook.addWorksheet('Sheet1');
-            DevExpress.excelExporter.exportDataGrid({
-                component: grid,
-                worksheet,
-                autoFilterEnabled: true,
-            }).then(function() {
-                preloader.hide();
-                workbook.xlsx.writeBuffer().then((buffer) => {
-                    saveAs(new Blob([buffer], { type: 'application/octet-stream' }), fileName);
-                });
-            });
-        }
+        }        
     },    
     selectors: {
         buttonAddNew: '.js-add-new-button',

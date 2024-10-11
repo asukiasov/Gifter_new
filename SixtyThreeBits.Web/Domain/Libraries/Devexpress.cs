@@ -389,7 +389,13 @@ namespace SixtyThreeBits.Web.Domain.Libraries
                 }
             });
             return column;
-        }        
+        }
+
+        public static DataGridBuilder<T> SetOnRowUpdatingSendAllColumnsData<T>(this DataGridBuilder<T> grid)
+        {
+            grid.OnRowUpdating("globals.devexpress.onRowUpdatingSendAllColumnsData");
+            return grid;
+        }
         #endregion
 
         #region Enums
