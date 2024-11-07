@@ -1,7 +1,7 @@
 /*!
 * DevExtreme (dx.messages.ar.js)
-* Version: 24.1.6
-* Build date: Sat Sep 14 2024
+* Version: 24.1.7
+* Build date: Wed Oct 30 2024
 *
 * Copyright (c) 2012 - 2024 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -24,6 +24,7 @@
             Yes: "\u0646\u0639\u0645",
             No: "\u0644\u0627",
             Cancel: "\u0627\u0644\u063a\u0627\u0621",
+            CheckState: "Check state",
             Close: "\u0625\u063a\u0644\u0627\u0642",
             Clear: "\u062a\u0646\u0636\u064a\u0641",
             Done: "\u062a\u0645",
@@ -64,6 +65,9 @@
             "dxList-listAriaLabel-deletable": "Deletable items",
             "dxListEditDecorator-delete": "\u062d\u0630\u0641",
             "dxListEditDecorator-more": "\u0627\u0644\u0645\u0632\u064a\u062f",
+            "dxList-selectAll-indeterminate": "Half-checked",
+            "dxList-selectAll-checked": "Checked",
+            "dxList-selectAll-notChecked": "Not checked",
             "dxScrollView-pullingDownText": "\u0644\u0644\u062a\u062d\u062f\u064a\u062b \u0627\u0633\u062d\u0628 \u0644\u0644\u0623\u0633\u0641\u0644...",
             "dxScrollView-pulledDownText": "\u062d\u0631\u0631 \u0644\u0644\u062a\u062d\u062f\u064a\u062b ...",
             "dxScrollView-refreshingText": "\u062c\u0627\u0631 \u0627\u0644\u062a\u062d\u062f\u064a\u062b ...",

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using System.IO;
 using System.Runtime.CompilerServices;
 
 namespace SixtyThreeBits.Core.Utilities
@@ -8,22 +9,23 @@ namespace SixtyThreeBits.Core.Utilities
         #region Properties        
         IConfiguration _configuration;
 
-        public readonly string WebRootPath;
-
         public readonly ConnectionStringSettings ConnectionStrings;
-
-        public readonly string OgImageDefaultHttpPath = "/img/og_image_default.jpg";
-
-        public string DownloadFolderPhysicalPath => GetConfigValue();
-        public string UploadFolderPhysicalPath => GetConfigValue();
-        public string UploadFolderHttpPath => GetConfigValue();
-        public bool IsDevelopment => GetConfigValue() == "true";
+        public readonly string ContentRootPath;
+        public readonly string DownloadFolderPhysicalPath;                        
+        public readonly string UploadFolderPhysicalPath;
+        public readonly string UploadFolderHttpPath = "/upload/";
+        public readonly string WebRootPath;
         #endregion
 
         #region Constructors
-        public AppSettingsCollection(string webRootPath, IConfiguration configuration)
+        public AppSettingsCollection(string contentRootPath, string webRootPath, IConfiguration configuration)
         {
+            ContentRootPath = contentRootPath;
             WebRootPath = webRootPath;
+
+            DownloadFolderPhysicalPath = $"{WebRootPath}{Path.DirectorySeparatorChar}download";
+            UploadFolderPhysicalPath = $"{WebRootPath}{Path.DirectorySeparatorChar}upload";
+
             _configuration = configuration;
             ConnectionStrings = new ConnectionStringSettings(configuration);
         }

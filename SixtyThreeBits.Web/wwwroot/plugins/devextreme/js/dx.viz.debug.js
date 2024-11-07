@@ -1,7 +1,7 @@
 /*!
  * DevExtreme (dx.viz.debug.js)
- * Version: 24.1.6
- * Build date: Sat Sep 14 2024
+ * Version: 24.1.7
+ * Build date: Wed Oct 30 2024
  *
  * Copyright (c) 2012 - 2024 Developer Express Inc. ALL RIGHTS RESERVED
  * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -3033,7 +3033,7 @@
                     e: 65537,
                     n: new Uint8Array([200, 219, 153, 203, 140, 7, 228, 253, 193, 243, 62, 137, 139, 60, 68, 242, 48, 142, 113, 88, 185, 235, 253, 105, 80, 74, 32, 170, 96, 74, 111, 250, 7, 205, 154, 3, 146, 115, 153, 53, 45, 132, 123, 56, 61, 208, 184, 201, 63, 24, 109, 223, 0, 179, 169, 102, 139, 224, 73, 233, 45, 173, 138, 66, 98, 88, 69, 76, 177, 111, 113, 218, 192, 33, 101, 152, 25, 134, 34, 173, 32, 82, 230, 44, 247, 200, 253, 170, 192, 246, 30, 12, 96, 205, 100, 249, 181, 93, 0, 231])
                 };
-                exports.INTERNAL_USAGE_ID = "ppJtlS56r0az1kqUjWJs-g"
+                exports.INTERNAL_USAGE_ID = "rP3XF5nvQkaypOyBLpucTA"
             },
         77685:
             /*!*******************************************************************************************!*\
@@ -3434,7 +3434,7 @@
                     return _extends.apply(this, arguments)
                 }
                 const BASE_Z_INDEX = exports.BASE_Z_INDEX = 1500;
-                const isClient = () => "undefined" !== typeof HTMLElement;
+                const isClient = () => "undefined" !== typeof HTMLElement && "undefined" !== typeof customElements;
                 exports.isClient = isClient;
                 const SafeHTMLElement = isClient() ? HTMLElement : class {};
                 const componentNames = {
@@ -3552,7 +3552,7 @@
                     _createContentContainer() {
                         const contentContainer = document.createElement("div");
                         contentContainer.style.cssText = this._contentStyles;
-                        contentContainer.append(this._createSpan("For evaluation purposes only. Redistribution not authorized. Please "), this._createLink("purchase a license", this.getAttribute(attributeNames.buyNow)), this._createSpan(` to continue use of DevExpress product libraries (v${this.getAttribute(attributeNames.version)}).`));
+                        contentContainer.append(this._createSpan("For evaluation purposes only. Redistribution prohibited. Please "), this._createLink("purchase a license", this.getAttribute(attributeNames.buyNow)), this._createSpan(` to continue use of DevExpress product libraries (v${this.getAttribute(attributeNames.version)}).`));
                         return contentContainer
                     }
                     _reassignComponent() {
@@ -24959,10 +24959,10 @@
                     W0016: 'The "{0}" option does not accept the "{1}" value since v{2}. {3}.',
                     W0017: 'Setting the "{0}" property with a function is deprecated since v21.2',
                     W0018: 'Setting the "position" property with a function is deprecated since v21.2',
-                    W0019: "DevExtreme: Unable to Locate a Valid License Key.\n\nIf you are using a 30-day trial version of DevExtreme, you must uninstall all copies of DevExtreme once your 30-day trial period expires. For terms and conditions that govern use of DevExtreme UI components/libraries, please refer to the DevExtreme End User License Agreement: https://js.devexpress.com/EULAs/DevExtremeComplete.\n\nTo use DevExtreme in a commercial project, you must purchase a license. For pricing/licensing options, please visit: https://js.devexpress.com/Buy.\n\nIf you have licensing-related questions or need help with a purchase, please email clientservices@devexpress.com.\n\n",
-                    W0020: "DevExtreme: License Key Has Expired.\n\nA mismatch exists between the license key used and the DevExtreme version referenced in this project.\n\nTo proceed, you can:\n\u2022 use a version of DevExtreme linked to your license key: https://www.devexpress.com/ClientCenter/DownloadManager\n\u2022 renew your DevExpress Subscription: https://www.devexpress.com/buy/renew (once you renew your subscription, you will be entitled to product updates and support service as defined in the DevExtreme End User License Agreement)\n\nIf you have licensing-related questions or need help with a renewal, please email clientservices@devexpress.com.\n\n",
-                    W0021: "DevExtreme: License Key Verification Has Failed.\n\nTo verify your DevExtreme license, make certain to specify a correct key in the GlobalConfig. If you continue to encounter this error, please visit https://www.devexpress.com/ClientCenter/DownloadManager to obtain a valid license key.\n\nIf you have a valid license and this problem persists, please submit a support ticket via the DevExpress Support Center. We will be happy to follow-up: https://supportcenter.devexpress.com/ticket/create.\n\n",
-                    W0022: "DevExtreme: Pre-release software. Not suitable for commercial use.\n\nPre-release software may contain deficiencies and as such, should not be considered for use or integrated in any mission critical application.\n\n",
+                    W0019: "DevExtreme: Unable to Locate a Valid License Key.\n\nDetailed license/registration related information and instructions: https://js.devexpress.com/Documentation/Licensing/.\n\nIf you are using a 30-day trial version of DevExtreme, you must uninstall all copies of DevExtreme once your 30-day trial period expires. For terms and conditions that govern use of DevExtreme UI components/libraries, please refer to the DevExtreme End User License Agreement: https://js.devexpress.com/EULAs/DevExtremeComplete.\n\nTo use DevExtreme in a commercial project, you must purchase a license. For pricing/licensing options, please visit: https://js.devexpress.com/Buy.\n\nIf you have licensing-related questions or need help with a purchase, please email clientservices@devexpress.com.\n\n",
+                    W0020: "DevExtreme: License Key Has Expired.\n\nDetailed license/registration related information and instructions: https://js.devexpress.com/Documentation/Licensing/.\n\nA mismatch exists between the license key used and the DevExtreme version referenced in this project.\n\nTo proceed, you can:\n\u2022 use a version of DevExtreme linked to your license key: https://www.devexpress.com/ClientCenter/DownloadManager\n\u2022 renew your DevExpress Subscription: https://www.devexpress.com/buy/renew (once you renew your subscription, you will be entitled to product updates and support service as defined in the DevExtreme End User License Agreement)\n\nIf you have licensing-related questions or need help with a renewal, please email clientservices@devexpress.com.\n\n",
+                    W0021: "DevExtreme: License Key Verification Has Failed.\n\nDetailed license/registration related information and instructions: https://js.devexpress.com/Documentation/Licensing/.\n\nTo verify your DevExtreme license, make certain to specify a correct key in the GlobalConfig. If you continue to encounter this error, please visit https://www.devexpress.com/ClientCenter/DownloadManager to obtain a valid license key.\n\nIf you have a valid license and this problem persists, please submit a support ticket via the DevExpress Support Center. We will be happy to follow-up: https://supportcenter.devexpress.com/ticket/create.\n\n",
+                    W0022: "DevExtreme: Pre-release software. Not suitable for commercial use.\n\nDetailed license/registration related information and instructions: https://js.devexpress.com/Documentation/Licensing/.\n\nPre-release software may contain deficiencies and as such, should not be considered for use or integrated in any mission critical application.\n\n",
                     W0023: "DevExtreme: the following 'devextreme' package version does not match versions of other DevExpress products used in this application:\n\n{0}\n\nInteroperability between different versions of the products listed herein cannot be guaranteed.\n\n"
                 });
                 module.exports = exports.default;
@@ -30942,8 +30942,8 @@
               \*************************************************************/
             function(__unused_webpack_module, exports) {
                 exports.version = exports.fullVersion = void 0;
-                exports.version = "24.1.6";
-                exports.fullVersion = "24.1.6"
+                exports.version = "24.1.7";
+                exports.fullVersion = "24.1.7"
             },
         66507:
             /*!*******************************************************************!*\
@@ -52776,6 +52776,7 @@
                         Yes: "Yes",
                         No: "No",
                         Cancel: "Cancel",
+                        CheckState: "Check state",
                         Close: "Close",
                         Clear: "Clear",
                         Done: "Done",
@@ -52816,6 +52817,9 @@
                         "dxList-listAriaLabel-deletable": "Deletable items",
                         "dxListEditDecorator-delete": "Delete",
                         "dxListEditDecorator-more": "More",
+                        "dxList-selectAll-indeterminate": "Half-checked",
+                        "dxList-selectAll-checked": "Checked",
+                        "dxList-selectAll-notChecked": "Not checked",
                         "dxScrollView-pullingDownText": "Pull down to refresh...",
                         "dxScrollView-pulledDownText": "Release to refresh...",
                         "dxScrollView-refreshingText": "Refreshing...",

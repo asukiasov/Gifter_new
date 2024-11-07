@@ -1,7 +1,7 @@
 /*!
  * DevExpress Diagram (dx-diagram)
- * Version: 2.2.10
- * Build date: Fri Jul 12 2024
+ * Version: 2.2.12
+ * Build date: Thu Oct 10 2024
  *
  * Copyright (c) 2012 - 2024 Developer Express Inc. ALL RIGHTS RESERVED
  * Read about DevExpress licensing here: https://www.devexpress.com/Support/EULAs
@@ -4926,8 +4926,10 @@ var PasteSelectionCommandBase = (function (_super) {
             var item = items[i];
             if (item instanceof Shape_1.Shape)
                 item.position.offsetByPoint(offset);
-            else if (item instanceof Connector_1.Connector)
+            else if (item instanceof Connector_1.Connector) {
                 item.points.forEach(function (p) { return p.offsetByPoint(offset); });
+                item.clearRenderPoints();
+            }
         }
         return items;
     };
@@ -6361,6 +6363,7 @@ var MoveCommand = (function (_super) {
         helper.initDraggingShapes(selection.getSelectedShapes(false, true), false);
         helper.initDraggingConnectors(selection.getSelectedConnectors(false, true), false);
         helper.move(false, function (p) { return _this.getPosition(p); }, function () { }, function () { });
+        helper.finish();
         ModelUtils_1.ModelUtils.tryUpdateModelRectangle(this.control.history, function (offsetLeft, offsetTop) { return helper.onTryUpdateModelSize(offsetLeft, offsetTop); });
         this.control.history.endTransaction();
         return true;
@@ -12908,6 +12911,8 @@ var MouseHandlerDragDiagramItemStateBase = (function (_super) {
         return _this;
     }
     MouseHandlerDragDiagramItemStateBase.prototype.finish = function () {
+        var _a;
+        (_a = this.dragHelper) === null || _a === void 0 ? void 0 : _a.finish();
         this.visualizerManager.resetExtensionLines();
         this.visualizerManager.resetContainerTarget();
         this.visualizerManager.resetConnectionTarget();
@@ -19312,9 +19317,10 @@ var SugiyamaNodesOrderer = (function () {
         var blocks = [];
         var isBottom = alignment === MedianAlignmentMode.BottomLeft || alignment === MedianAlignmentMode.BottomRight;
         var allNodesInfo = new ListUtils_1.HashSet(nodeInfos.slice(0).sort(function (a, b) { return isBottom ? (a.layer - b.layer) : (b.layer - a.layer); }), function (n) { return n.key; });
+        var knownNodes = new ListUtils_1.HashSet();
         while (allNodesInfo.length) {
             var firstNode = allNodesInfo.item(0);
-            var block = this.getBlock(graph, firstNode, medians, alignment);
+            var block = this.getBlock(graph, firstNode, medians, alignment).filter(function (n) { return knownNodes.tryPush(n.key); });
             blocks.push(block);
             block.forEach(function (n) { return allNodesInfo.remove(n); });
         }
@@ -20432,6 +20438,270 @@ var CycleRemover = (function () {
     return CycleRemover;
 }());
 exports.CycleRemover = CycleRemover;
+
+
+/***/ }),
+
+/***/ 1057:
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.RTree = void 0;
+var rectangle_1 = __webpack_require__(8011);
+var RTree = (function () {
+    function RTree(maxWidth) {
+        if (maxWidth === void 0) { maxWidth = 6; }
+        this.maxWidth = maxWidth;
+        this.minWidth = Math.floor(maxWidth / 2);
+        this.root = new RTreeNodeBranch(new rectangle_1.Rectangle(0, 0, 0, 0), []);
+    }
+    RTree.prototype.search = function (point) {
+        var result = [];
+        if (!this.root.rect.containsPoint(point))
+            return result;
+        var hitsStack = [];
+        hitsStack.push(this.root.nodes);
+        while (hitsStack.length) {
+            var nodes = hitsStack.pop();
+            for (var i = nodes.length - 1, node = void 0; node = nodes[i]; i--)
+                if (node.rect.containsPoint(point))
+                    if (isBranch(node))
+                        hitsStack.push(node.nodes);
+                    else
+                        result.push(node.obj);
+        }
+        return result;
+    };
+    RTree.prototype.insert = function (rect, obj) {
+        var newLeaf = new RTreeNodeLeaf(rect.clone(), obj);
+        if (!this.root.nodes.length) {
+            this.root.rect = rect.clone();
+            this.root.nodes.push(newLeaf);
+            return;
+        }
+        var treeStack = this.chooseLeafSubtree(newLeaf);
+        var retObj = newLeaf;
+        var current;
+        var previous;
+        while (treeStack.length) {
+            if (current && isBranch(current) && !current.nodes.length) {
+                previous = current;
+                current = treeStack.pop();
+                for (var i = 0, node = void 0; node = current.nodes[i]; i++) {
+                    if (isBranch(node) && (node === previous || !node.nodes.length)) {
+                        node.nodes.splice(i, 1);
+                        break;
+                    }
+                }
+            }
+            else
+                current = treeStack.pop();
+            if (retObj instanceof RTreeNode || Array.isArray(retObj)) {
+                if (Array.isArray(retObj)) {
+                    for (var i = 0, retObjChild = void 0; retObjChild = retObj[i]; i++) {
+                        expandRect(current.rect, retObjChild.rect);
+                    }
+                    current.nodes = current.nodes.concat(retObj);
+                }
+                else {
+                    expandRect(current.rect, retObj.rect);
+                    current.nodes.push(retObj);
+                }
+                if (current.nodes.length <= this.maxWidth) {
+                    retObj = current.rect.clone();
+                }
+                else {
+                    var a = this.linearSplit(current.nodes);
+                    retObj = a;
+                    if (!treeStack.length) {
+                        current.nodes.push(a[0]);
+                        treeStack.push(current);
+                        retObj = a[1];
+                    }
+                }
+            }
+            else {
+                expandRect(current.rect, retObj);
+                retObj = current.rect.clone();
+            }
+        }
+    };
+    RTree.prototype.chooseLeafSubtree = function (newLeaf) {
+        var result = [];
+        var bestChoiceIndex = -1;
+        var bestChoiceArea;
+        var first = true;
+        result.push(this.root);
+        var nodes = this.root.nodes;
+        while (first || bestChoiceIndex !== -1) {
+            if (first)
+                first = false;
+            else {
+                result.push(nodes[bestChoiceIndex]);
+                nodes = nodes[bestChoiceIndex].nodes;
+                bestChoiceIndex = -1;
+            }
+            for (var i = nodes.length - 1, ltree = void 0; ltree = nodes[i]; i--) {
+                if (!isBranch(ltree)) {
+                    bestChoiceIndex = -1;
+                    break;
+                }
+                var oldLRatio = squarifiedRatio(ltree.rect.width, ltree.rect.height, ltree.nodes.length + 1);
+                var nw = Math.max(ltree.rect.x + ltree.rect.width, newLeaf.rect.x + newLeaf.rect.width) - Math.min(ltree.rect.x, newLeaf.rect.x);
+                var nh = Math.max(ltree.rect.y + ltree.rect.height, newLeaf.rect.y + newLeaf.rect.height) - Math.min(ltree.rect.y, newLeaf.rect.y);
+                var lratio = squarifiedRatio(nw, nh, ltree.nodes.length + 2);
+                if (bestChoiceIndex < 0 || Math.abs(lratio - oldLRatio) < bestChoiceArea) {
+                    bestChoiceArea = Math.abs(lratio - oldLRatio);
+                    bestChoiceIndex = i;
+                }
+            }
+        }
+        return result;
+    };
+    RTree.prototype.linearSplit = function (nodes) {
+        var n = this.pickLinear(nodes);
+        while (nodes.length > 0) {
+            this.pickNext(nodes, n[0], n[1]);
+        }
+        return n;
+    };
+    RTree.prototype.pickLinear = function (nodes) {
+        var lowestHighX = nodes.length - 1;
+        var highestLowX = 0;
+        var lowestHighY = nodes.length - 1;
+        var highestLowY = 0;
+        var t1;
+        var t2;
+        for (var i = nodes.length - 2, l = void 0; l = nodes[i]; i--) {
+            if (l.rect.x > nodes[highestLowX].rect.x)
+                highestLowX = i;
+            else if (l.rect.right < nodes[lowestHighX].rect.right)
+                lowestHighX = i;
+            if (l.rect.y > nodes[highestLowY].rect.y)
+                highestLowY = i;
+            else if (l.rect.bottom < nodes[lowestHighY].rect.bottom)
+                lowestHighY = i;
+        }
+        var dx = Math.abs((nodes[lowestHighX].rect.right) - nodes[highestLowX].rect.x);
+        var dy = Math.abs((nodes[lowestHighY].rect.bottom) - nodes[highestLowY].rect.y);
+        if (dx > dy) {
+            if (lowestHighX > highestLowX) {
+                t1 = nodes.splice(lowestHighX, 1)[0];
+                t2 = nodes.splice(highestLowX, 1)[0];
+            }
+            else {
+                t2 = nodes.splice(highestLowX, 1)[0];
+                t1 = nodes.splice(lowestHighX, 1)[0];
+            }
+        }
+        else {
+            if (lowestHighY > highestLowY) {
+                t1 = nodes.splice(lowestHighY, 1)[0];
+                t2 = nodes.splice(highestLowY, 1)[0];
+            }
+            else {
+                t2 = nodes.splice(highestLowY, 1)[0];
+                t1 = nodes.splice(lowestHighY, 1)[0];
+            }
+        }
+        return [
+            new RTreeNodeBranch(t1.rect.clone(), [t1]),
+            new RTreeNodeBranch(t2.rect.clone(), [t2])
+        ];
+    };
+    RTree.prototype.pickNext = function (nodes, a, b) {
+        var areaA = squarifiedRatio(a.rect.width, a.rect.height, a.nodes.length + 1);
+        var areaB = squarifiedRatio(b.rect.width, b.rect.height, b.nodes.length + 1);
+        var highAreaDelta;
+        var highAreaNode;
+        var lowestGrowthGroup;
+        for (var i = nodes.length - 1, l = void 0; l = nodes[i]; i--) {
+            var newAreaA = new rectangle_1.Rectangle(Math.min(a.rect.x, l.rect.x), Math.min(a.rect.y, l.rect.y), 0, 0);
+            newAreaA.width = Math.max(a.rect.right, l.rect.right) - newAreaA.x;
+            newAreaA.height = Math.max(a.rect.bottom, l.rect.bottom) - newAreaA.y;
+            var changeNewAreaA = Math.abs(squarifiedRatio(newAreaA.width, newAreaA.height, a.nodes.length + 2) - areaA);
+            var newAreaB = new rectangle_1.Rectangle(Math.min(b.rect.x, l.rect.x), Math.min(b.rect.y, l.rect.y), 0, 0);
+            newAreaB.width = Math.max(b.rect.right, l.rect.right) - newAreaB.x;
+            newAreaB.height = Math.max(b.rect.bottom, l.rect.bottom) - newAreaB.y;
+            var changeNewAreaB = Math.abs(squarifiedRatio(newAreaB.width, newAreaB.height, b.nodes.length + 2) - areaB);
+            if (!highAreaNode || !highAreaDelta || Math.abs(changeNewAreaB - changeNewAreaA) < highAreaDelta) {
+                highAreaNode = i;
+                highAreaDelta = Math.abs(changeNewAreaB - changeNewAreaA);
+                lowestGrowthGroup = changeNewAreaB < changeNewAreaA ? b : a;
+            }
+        }
+        var tmp = nodes.splice(highAreaNode, 1)[0];
+        if (a.nodes.length + nodes.length + 1 <= this.minWidth) {
+            a.nodes.push(tmp);
+            expandRect(a.rect, tmp.rect);
+        }
+        else if (b.nodes.length + nodes.length + 1 <= this.minWidth) {
+            b.nodes.push(tmp);
+            expandRect(b.rect, tmp.rect);
+        }
+        else {
+            lowestGrowthGroup.nodes.push(tmp);
+            expandRect(lowestGrowthGroup.rect, tmp.rect);
+        }
+    };
+    return RTree;
+}());
+exports.RTree = RTree;
+var RTreeNode = (function () {
+    function RTreeNode(rect) {
+        this.rect = rect;
+    }
+    return RTreeNode;
+}());
+var RTreeNodeLeaf = (function (_super) {
+    __extends(RTreeNodeLeaf, _super);
+    function RTreeNodeLeaf(rect, obj) {
+        var _this = _super.call(this, rect) || this;
+        _this.obj = obj;
+        return _this;
+    }
+    return RTreeNodeLeaf;
+}(RTreeNode));
+var RTreeNodeBranch = (function (_super) {
+    __extends(RTreeNodeBranch, _super);
+    function RTreeNodeBranch(rect, nodes) {
+        var _this = _super.call(this, rect) || this;
+        _this.nodes = nodes;
+        return _this;
+    }
+    return RTreeNodeBranch;
+}(RTreeNode));
+function isBranch(node) {
+    return "nodes" in node;
+}
+function squarifiedRatio(width, height, fill) {
+    var lperi = (width + height) / 2;
+    var larea = width * height;
+    var lgeo = larea / (lperi * lperi);
+    return larea * fill / lgeo;
+}
+function expandRect(rect, other) {
+    var rx = Math.max(rect.right, other.right);
+    var ry = Math.max(rect.bottom, other.bottom);
+    rect.x = Math.min(rect.x, other.x);
+    rect.y = Math.min(rect.y, other.y);
+    rect.width = rx - rect.x;
+    rect.height = ry - rect.y;
+}
 
 
 /***/ }),
@@ -22239,6 +22509,9 @@ var Connector = (function (_super) {
         this.actualRoutingMode = undefined;
         this.invalidateRenderPoints();
     };
+    Connector.prototype.unlockCreateRenderPoints = function () {
+        this.lockCreateRenderPoints = false;
+    };
     Connector.prototype.replaceRenderPointsCore = function (renderPoints, lockCreateRenderPoints, mode) {
         this.changeRenderPoints(renderPoints);
         this.lockCreateRenderPoints = lockCreateRenderPoints;
@@ -22897,7 +23170,7 @@ var AStarContext = (function (_super) {
         return _this;
     }
     AStarContext.prototype.addProhibitedPoint = function (point) {
-        this.prohibitedPoints[point.toString()] = point;
+        this.prohibitedPoints[point.x + "_" + point.y] = point;
     };
     AStarContext.prototype.getNeighborPoints = function (point) {
         var _this = this;
@@ -22915,7 +23188,7 @@ var AStarContext = (function (_super) {
         return node.penalty + this.metrics.penalty(distance, middlePosition, turnDirection, this.getIntersectedItems(middlePosition));
     };
     AStarContext.prototype.allowPoint = function (p) {
-        return this.prohibitedPoints[p.toString()] === undefined && (!this.prohibitedSegments || this.prohibitedSegments.allowPoint(p));
+        return !((p.x + "_" + p.y) in this.prohibitedPoints) && (!this.prohibitedSegments || this.prohibitedSegments.allowPoint(p));
     };
     AStarContext.prototype.getTurnDirection = function (angle) {
         return RightAngleConnectorRoutingMathOperations_1.RightAngleConnectorRoutingMathOperations.getTurnDirection(angle);
@@ -22923,17 +23196,8 @@ var AStarContext = (function (_super) {
     AStarContext.prototype.getIntersectedItems = function (position) {
         var _this = this;
         var margin = this.routingContext.shapeMargins;
-        return this.routingContext.getIntersectedItems(position, function (p, i) { return _this.hasIntersectedItem(p, i, margin); });
-    };
-    AStarContext.prototype.hasIntersectedItem = function (point, item, margin) {
-        if (!this.isIntersectedWithExtendedRectangle(point, item, margin))
-            return false;
-        if (this.hasOneShapeConnection(item))
-            return true;
-        return !this.itemContainsConnectionPoints(item);
-    };
-    AStarContext.prototype.isIntersectedWithExtendedRectangle = function (point, item, margin) {
-        return item.rectangle.clone().inflate(margin).containsPoint(point);
+        return this.routingContext.getIntersectedItems(position, margin)
+            .filter(function (i) { return _this.hasOneShapeConnection(i) || !_this.itemContainsConnectionPoints(i); });
     };
     AStarContext.prototype.itemContainsConnectionPoints = function (item) {
         var rectangle = item.rectangle;
@@ -23227,9 +23491,10 @@ var UniqueAStarNodePositions = (function () {
         if (getKey === void 0) { getKey = function (key) { return key.toString(); }; }
         this.getKey = getKey;
         this.items = {};
+        this.length = 0;
     }
     Object.defineProperty(UniqueAStarNodePositions.prototype, "count", {
-        get: function () { return Object.keys(this.items).length; },
+        get: function () { return this.length; },
         enumerable: false,
         configurable: true
     });
@@ -23239,13 +23504,17 @@ var UniqueAStarNodePositions = (function () {
     };
     UniqueAStarNodePositions.prototype.add = function (position, node) {
         var key = this.getKey(position);
-        if (this.items[key] === undefined)
+        if (this.items[key] === undefined) {
+            this.length++;
             this.items[key] = { position: position, node: node };
+        }
     };
     UniqueAStarNodePositions.prototype.remove = function (position) {
         var key = this.getKey(position);
-        if (this.items[key] !== undefined)
+        if (this.items[key] !== undefined) {
+            this.length--;
             delete this.items[key];
+        }
     };
     return UniqueAStarNodePositions;
 }());
@@ -23269,10 +23538,10 @@ var ConnectorProhibitedSegments = (function () {
         this.segments.push(segment);
     };
     ConnectorProhibitedSegments.prototype.addExludedPoint = function (point) {
-        this.exludedPoints[point.toString()] = point;
+        this.exludedPoints[point.x + "_" + point.y] = true;
     };
     ConnectorProhibitedSegments.prototype.allowPoint = function (point) {
-        if (this.exludedPoints[point.toString()] === undefined)
+        if (!((point.x + "_" + point.y) in this.exludedPoints))
             for (var i = 0; i < this.segments.length; i++)
                 if (this.segments[i].containsPoint(point))
                     return false;
@@ -23438,26 +23707,16 @@ var ConnectorRoutingModel = (function () {
             return new RightAngleConnectorRoutingStrategy_1.RightAngleConnectorRoutingStrategy(this);
         return undefined;
     };
-    ConnectorRoutingModel.prototype.getItems = function (beginConnectorShape, endConnectorShape) {
-        return this.getShapes(beginConnectorShape, endConnectorShape);
+    ConnectorRoutingModel.prototype.getItems = function () {
+        return this.getShapes();
     };
     ConnectorRoutingModel.prototype.notifyConnectorRoutingModeChanged = function (connectorRoutingMode) {
         this.connectorRoutingMode = connectorRoutingMode;
     };
-    ConnectorRoutingModel.prototype.getShapes = function (beginConnectorShape, endConnectorShape) {
+    ConnectorRoutingModel.prototype.getShapes = function () {
         if (this.model === undefined || this.connectorRoutingMode === undefined || this.connectorRoutingMode === Settings_1.ConnectorRoutingMode.None)
             return [];
-        if (this.connectorRoutingMode === Settings_1.ConnectorRoutingMode.AllShapesOnly)
-            return this.model.items.filter(function (i) { return i instanceof Shape_1.Shape; });
-        return this.getConnectorShapes(beginConnectorShape, endConnectorShape);
-    };
-    ConnectorRoutingModel.prototype.getConnectorShapes = function (beginConnectorShape, endConnectorShape) {
-        var result = [];
-        if (beginConnectorShape)
-            result.push(beginConnectorShape);
-        if (endConnectorShape && beginConnectorShape !== endConnectorShape)
-            result.push(endConnectorShape);
-        return result;
+        return this.model.items.filter(function (i) { return i instanceof Shape_1.Shape; });
     };
     return ConnectorRoutingModel;
 }());
@@ -23560,6 +23819,7 @@ var AStarMetrics_1 = __webpack_require__(9927);
 var AStarContext_1 = __webpack_require__(2180);
 var AStarCalculator_1 = __webpack_require__(3975);
 var Utils_1 = __webpack_require__(8675);
+var RTree_1 = __webpack_require__(1057);
 var CuttingItemsContext = (function () {
     function CuttingItemsContext() {
         this.cuttingItemKeys = [];
@@ -23582,22 +23842,21 @@ var CuttingItemsContext = (function () {
 }());
 exports.CuttingItemsContext = CuttingItemsContext;
 var IntersectingItemsByPointsContext = (function () {
-    function IntersectingItemsByPointsContext() {
-        this.items = {};
+    function IntersectingItemsByPointsContext(routingModel) {
+        this.routingModel = routingModel;
+        this.trees = {};
     }
-    IntersectingItemsByPointsContext.prototype.getOrAddItems = function (point, getItems) {
-        if (point) {
-            var key = point.toString();
-            var item = this.items[key];
-            if (item !== undefined)
-                return item.items;
-            if (getItems) {
-                var items = getItems(point);
-                this.items[key] = { point: point, items: items };
-                return items;
-            }
+    IntersectingItemsByPointsContext.prototype.getItems = function (point, margin) {
+        return this.getOrCreateTree(margin).search(point);
+    };
+    IntersectingItemsByPointsContext.prototype.getOrCreateTree = function (margin) {
+        if (!this.trees[margin]) {
+            this.trees[margin] = new RTree_1.RTree();
+            var items = this.routingModel.getItems();
+            for (var i = 0, item = void 0; item = items[i]; i++)
+                this.trees[margin].insert(margin ? item.rectangle.inflate(margin, margin) : item.rectangle, item);
         }
-        return undefined;
+        return this.trees[margin];
     };
     return IntersectingItemsByPointsContext;
 }());
@@ -23613,7 +23872,7 @@ var RightAngleConnectorRoutingContext = (function () {
         this.endConnectionSide = this.getConnectionSide(this.endConnectionShape, endConnectionPointIndex, this.endPoint);
         this.ignorableItemKeys = {};
         this.cuttingShapesContext = new CuttingItemsContext();
-        this.intersectedItemsByPointsContext = new IntersectingItemsByPointsContext();
+        this.intersectedItemsByPointsContext = new IntersectingItemsByPointsContext(this.routingModel);
         this.isInvalidRenderSegments = true;
     }
     Object.defineProperty(RightAngleConnectorRoutingContext.prototype, "shapeMargins", {
@@ -23722,11 +23981,11 @@ var RightAngleConnectorRoutingContext = (function () {
         RightAngleConnectorRoutingMathOperations_1.RightAngleConnectorRoutingMathOperations.unionPoints(result);
         return result;
     };
-    RightAngleConnectorRoutingContext.prototype.getIntersectedItems = function (point, predicate) {
+    RightAngleConnectorRoutingContext.prototype.getIntersectedItems = function (point, margin) {
         var _this = this;
-        return this.intersectedItemsByPointsContext.getOrAddItems(point, function (p) { return _this.routingModel
-            .getItems(_this.beginConnectionShape, _this.endConnectionShape)
-            .filter(function (s) { return !_this.isIgnorableItem(s) && predicate(p, s); }); });
+        return this.intersectedItemsByPointsContext
+            .getItems(point, margin)
+            .filter(function (item) { return !_this.isIgnorableItem(item); });
     };
     RightAngleConnectorRoutingContext.prototype.validateRenderPoints = function (result) {
         if (this.isInvalidRenderSegments) {
@@ -23754,7 +24013,7 @@ var RightAngleConnectorRoutingContext = (function () {
     };
     RightAngleConnectorRoutingContext.prototype.processIntersection = function () {
         var _this = this;
-        var shapes = this.routingModel.getItems(this.beginConnectionShape, this.endConnectionShape);
+        var shapes = this.routingModel.getItems();
         if (shapes)
             shapes.forEach(function (s) {
                 var key = s.key;
@@ -23897,8 +24156,8 @@ var RightAngleConnectorRoutingContext = (function () {
         return this.createBeginConnectionSegmentCore(-offset);
     };
     RightAngleConnectorRoutingContext.prototype.hasIntersectedItemsByPoint = function (point, secondPoint, connectionItem) {
-        var intersectedItems = this.getIntersectedItems(point, function (p, s) { return s.rectangle.containsPoint(p) && !s.rectangle.containsPoint(secondPoint) && s.key !== connectionItem.key; });
-        return intersectedItems !== undefined && intersectedItems.length > 0;
+        return this.getIntersectedItems(point, 0)
+            .some(function (i) { return i.key !== connectionItem.key && !i.rectangle.containsPoint(secondPoint); });
     };
     RightAngleConnectorRoutingContext.prototype.createEndConnectionSegment = function (offset, endShapeContainsBeginConnection) {
         if (this.endConnectionSide === DiagramItem_1.ConnectionPointSide.Undefined)
@@ -23939,11 +24198,11 @@ var RightAngleConnectorRoutingContext = (function () {
         return RightAngleConnectorRoutingMathOperations_1.RightAngleConnectorRoutingMathOperations.isConnectionRectanleLineIntersected(this.endConnectionShape.rectangle, segment, this.endConnectionSide, excludeBeginPoint, excludeEndPoint, function (x, y) { return new point_1.Point(x, y); });
     };
     RightAngleConnectorRoutingContext.prototype.isIgnorableItem = function (item) {
-        return this.ignorableItemKeys[item.key] !== undefined;
+        return item.key in this.ignorableItemKeys;
     };
     RightAngleConnectorRoutingContext.prototype.createExtendedShapesBounds = function () {
         var _this = this;
-        return this.routingModel.getItems(this.beginConnectionShape, this.endConnectionShape).map(function (i) { return i.rectangle.clone().inflate(_this.routingModel.shapeMargins); });
+        return this.routingModel.getItems().map(function (i) { return i.rectangle.clone().inflate(_this.routingModel.shapeMargins); });
     };
     RightAngleConnectorRoutingContext.prototype.createGrid = function () {
         return RoutingGrid_1.RoutingGrid.create(this.createGridPoints(), this.createExtendedShapesBounds(), function (x, y) { return new point_1.Point(x, y); });
@@ -24442,6 +24701,9 @@ var SelectionDragHelper = (function () {
             pi.point.x += offsetLeft;
             pi.point.y += offsetTop;
         });
+    };
+    SelectionDragHelper.prototype.finish = function () {
+        this.draggingConnectors.forEach(function (c) { return c.connector.unlockCreateRenderPoints(); });
     };
     SelectionDragHelper.prototype.moveConnector = function (dc, shouldClone, getMovePoint) {
         var startPoints = dc.startPoints;
@@ -39126,7 +39388,6 @@ var AutoZoomMode;
 var ConnectorRoutingMode;
 (function (ConnectorRoutingMode) {
     ConnectorRoutingMode[ConnectorRoutingMode["None"] = 0] = "None";
-    ConnectorRoutingMode[ConnectorRoutingMode["ConnectorShapesOnly"] = 1] = "ConnectorShapesOnly";
     ConnectorRoutingMode[ConnectorRoutingMode["AllShapesOnly"] = 2] = "AllShapesOnly";
 })(ConnectorRoutingMode = exports.ConnectorRoutingMode || (exports.ConnectorRoutingMode = {}));
 

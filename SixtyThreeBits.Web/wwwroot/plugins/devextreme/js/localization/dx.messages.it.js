@@ -1,7 +1,7 @@
 /*!
 * DevExtreme (dx.messages.it.js)
-* Version: 24.1.6
-* Build date: Sat Sep 14 2024
+* Version: 24.1.7
+* Build date: Wed Oct 30 2024
 *
 * Copyright (c) 2012 - 2024 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -24,6 +24,7 @@
             Yes: "S\xec",
             No: "No",
             Cancel: "Annulla",
+            CheckState: "Check state",
             Close: "Chiudi",
             Clear: "Cancella",
             Done: "Fatto",
@@ -64,6 +65,9 @@
             "dxList-listAriaLabel-deletable": "Deletable items",
             "dxListEditDecorator-delete": "Elimina",
             "dxListEditDecorator-more": "Ancora",
+            "dxList-selectAll-indeterminate": "Half-checked",
+            "dxList-selectAll-checked": "Checked",
+            "dxList-selectAll-notChecked": "Not checked",
             "dxScrollView-pullingDownText": "Trascina in basso per aggiornare...",
             "dxScrollView-pulledDownText": "Rilascia per aggiornare...",
             "dxScrollView-refreshingText": "Aggiornamento...",

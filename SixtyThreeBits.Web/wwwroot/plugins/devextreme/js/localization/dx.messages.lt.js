@@ -1,7 +1,7 @@
 /*!
 * DevExtreme (dx.messages.lt.js)
-* Version: 24.1.6
-* Build date: Sat Sep 14 2024
+* Version: 24.1.7
+* Build date: Wed Oct 30 2024
 *
 * Copyright (c) 2012 - 2024 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -24,6 +24,7 @@
             Yes: "Taip",
             No: "Ne",
             Cancel: "At\u0161aukti",
+            CheckState: "Check state",
             Close: "Close",
             Clear: "I\u0161valyti",
             Done: "Atlikta",
@@ -64,6 +65,9 @@
             "dxList-listAriaLabel-deletable": "Deletable items",
             "dxListEditDecorator-delete": "I\u0161trinti",
             "dxListEditDecorator-more": "Daugiau",
+            "dxList-selectAll-indeterminate": "Half-checked",
+            "dxList-selectAll-checked": "Checked",
+            "dxList-selectAll-notChecked": "Not checked",
             "dxScrollView-pullingDownText": "Patraukite \u017eemyn, kad atnaujintum\u0117te...",
             "dxScrollView-pulledDownText": "Atleiskite, kad atnaujintum\u0117te...",
             "dxScrollView-refreshingText": "Atnaujinama...",

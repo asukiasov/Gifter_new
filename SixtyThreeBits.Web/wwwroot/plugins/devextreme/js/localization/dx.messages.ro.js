@@ -1,7 +1,7 @@
 /*!
 * DevExtreme (dx.messages.ro.js)
-* Version: 24.1.6
-* Build date: Sat Sep 14 2024
+* Version: 24.1.7
+* Build date: Wed Oct 30 2024
 *
 * Copyright (c) 2012 - 2024 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -24,6 +24,7 @@
             Yes: "Da",
             No: "Nu",
             Cancel: "Anulare",
+            CheckState: "Check state",
             Close: "\xcenchide",
             Clear: "Cur\u0103\u021b\u0103",
             Done: "Gata",
@@ -64,6 +65,9 @@
             "dxList-listAriaLabel-deletable": "Deletable items",
             "dxListEditDecorator-delete": "\u0218terge",
             "dxListEditDecorator-more": "Mai mult",
+            "dxList-selectAll-indeterminate": "Half-checked",
+            "dxList-selectAll-checked": "Checked",
+            "dxList-selectAll-notChecked": "Not checked",
             "dxScrollView-pullingDownText": "Trage\u021bi \xeen jos pentru a actualiza...",
             "dxScrollView-pulledDownText": "Elibera\u021bi pentru a actualiza...",
             "dxScrollView-refreshingText": "Actualizare...",

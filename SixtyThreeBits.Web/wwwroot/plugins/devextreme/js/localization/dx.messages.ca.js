@@ -1,7 +1,7 @@
 /*!
 * DevExtreme (dx.messages.ca.js)
-* Version: 24.1.6
-* Build date: Sat Sep 14 2024
+* Version: 24.1.7
+* Build date: Wed Oct 30 2024
 *
 * Copyright (c) 2012 - 2024 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -24,6 +24,7 @@
             Yes: "S\xed",
             No: "No",
             Cancel: "Cancel\xb7lar",
+            CheckState: "Check state",
             Close: "Tanca",
             Clear: "Clar",
             Done: "Fer",
@@ -64,6 +65,9 @@
             "dxList-listAriaLabel-deletable": "Deletable items",
             "dxListEditDecorator-delete": "Esborrar",
             "dxListEditDecorator-more": "M\xe9s",
+            "dxList-selectAll-indeterminate": "Half-checked",
+            "dxList-selectAll-checked": "Checked",
+            "dxList-selectAll-notChecked": "Not checked",
             "dxScrollView-pullingDownText": "Tireu cap avall per refrescar -se ...",
             "dxScrollView-pulledDownText": "Allibereu a refresc ...",
             "dxScrollView-refreshingText": "Refrescant ...",

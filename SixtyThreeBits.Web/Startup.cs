@@ -31,7 +31,7 @@ namespace SixtyThreeBits.Web
         readonly RepositoryFactory _repositoryFactory;
 
         public Startup(IWebHostEnvironment env)
-        {
+        {            
             IConfiguration appSettingsConfiguration;
             if (env.IsDevelopment())
             {
@@ -45,7 +45,7 @@ namespace SixtyThreeBits.Web
                 appSettingsConfiguration = new ConfigurationBuilder().SetBasePath(env.ContentRootPath).AddJsonFile("appsettings.release.json").Build();                
                 #endif
             }
-            _appSettings = new AppSettingsCollection(env.WebRootPath, appSettingsConfiguration);
+            _appSettings = new AppSettingsCollection(env.ContentRootPath, env.WebRootPath, appSettingsConfiguration);
             _utilities = new UtilityCollection(env.ContentRootPath, env.WebRootPath);
             _repositoryFactory = new RepositoryFactory(_appSettings.ConnectionStrings.DbConnectionString);
         }

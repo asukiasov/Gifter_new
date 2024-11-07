@@ -1,7 +1,7 @@
 /*!
 * DevExtreme (dx.messages.hu.js)
-* Version: 24.1.6
-* Build date: Sat Sep 14 2024
+* Version: 24.1.7
+* Build date: Wed Oct 30 2024
 *
 * Copyright (c) 2012 - 2024 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -24,6 +24,7 @@
             Yes: "Igen",
             No: "Nem",
             Cancel: "M\xe9gse",
+            CheckState: "Check state",
             Close: "Bez\xe1r\xe1s",
             Clear: "T\xf6rl\xe9s",
             Done: "K\xe9sz",
@@ -64,6 +65,9 @@
             "dxList-listAriaLabel-deletable": "Deletable items",
             "dxListEditDecorator-delete": "T\xf6rl\xe9s",
             "dxListEditDecorator-more": "T\xf6bb",
+            "dxList-selectAll-indeterminate": "Half-checked",
+            "dxList-selectAll-checked": "Checked",
+            "dxList-selectAll-notChecked": "Not checked",
             "dxScrollView-pullingDownText": "H\xfazza le a friss\xedt\xe9shez...",
             "dxScrollView-pulledDownText": "Engedje el a friss\xedt\xe9shez...",
             "dxScrollView-refreshingText": "Friss\xedt\xe9s...",

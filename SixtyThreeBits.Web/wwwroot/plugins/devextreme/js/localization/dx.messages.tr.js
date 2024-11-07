@@ -1,7 +1,7 @@
 /*!
 * DevExtreme (dx.messages.tr.js)
-* Version: 24.1.6
-* Build date: Sat Sep 14 2024
+* Version: 24.1.7
+* Build date: Wed Oct 30 2024
 *
 * Copyright (c) 2012 - 2024 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -24,6 +24,7 @@
             Yes: "Evet",
             No: "Hay\u0131r",
             Cancel: "\u0130ptal",
+            CheckState: "Check state",
             Close: "Kapat",
             Clear: "Temizle",
             Done: "Tamam",
@@ -64,6 +65,9 @@
             "dxList-listAriaLabel-deletable": "Deletable items",
             "dxListEditDecorator-delete": "Sil",
             "dxListEditDecorator-more": "Daha",
+            "dxList-selectAll-indeterminate": "Half-checked",
+            "dxList-selectAll-checked": "Checked",
+            "dxList-selectAll-notChecked": "Not checked",
             "dxScrollView-pullingDownText": "Yenilemek i\xe7in a\u015fa\u011f\u0131ya \xe7ekin...",
             "dxScrollView-pulledDownText": "Yenilemek i\xe7in b\u0131rak\u0131n...",
             "dxScrollView-refreshingText": "Yenileniyor...",

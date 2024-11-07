@@ -1,7 +1,7 @@
 /*!
 * DevExtreme (dx.messages.el.js)
-* Version: 24.1.6
-* Build date: Sat Sep 14 2024
+* Version: 24.1.7
+* Build date: Wed Oct 30 2024
 *
 * Copyright (c) 2012 - 2024 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -24,6 +24,7 @@
             Yes: "\u039d\u03b1\u03af",
             No: "\u038c\u03c7\u03b9",
             Cancel: "\u0391\u03ba\u03cd\u03c1\u03c9\u03c3\u03b7",
+            CheckState: "Check state",
             Close: "\u039a\u03bb\u03b5\u03af\u03c3\u03b9\u03bc\u03bf",
             Clear: "\u0395\u03ba\u03ba\u03b1\u03b8\u03ac\u03c1\u03b9\u03c3\u03b7",
             Done: "\u039a\u03b1\u03c4\u03b1\u03c7\u03ce\u03c1\u03b7\u03c3\u03b7",
@@ -64,6 +65,9 @@
             "dxList-listAriaLabel-deletable": "Deletable items",
             "dxListEditDecorator-delete": "\u0394\u03b9\u03b1\u03b3\u03c1\u03b1\u03c6\u03ae",
             "dxListEditDecorator-more": "\u03a0\u03b5\u03c1\u03b9\u03c3\u03c3\u03cc\u03c4\u03b5\u03c1\u03b1",
+            "dxList-selectAll-indeterminate": "Half-checked",
+            "dxList-selectAll-checked": "Checked",
+            "dxList-selectAll-notChecked": "Not checked",
             "dxScrollView-pullingDownText": "\u03a3\u03cd\u03c1\u03b5\u03c4\u03b5 \u03b1\u03c0\u03bf \u03c0\u03ac\u03bd\u03c9 \u03c0\u03c1\u03bf\u03c2 \u03c4\u03b1 \u03ba\u03ac\u03c4\u03c9 \u03b3\u03b9\u03b1 \u03b1\u03bd\u03b1\u03bd\u03ad\u03c9\u03c3\u03b7...",
             "dxScrollView-pulledDownText": "\u0391\u03c0\u03b5\u03bb\u03b5\u03c5\u03b8\u03b5\u03c1\u03ce\u03c3\u03c4\u03b5 \u03b3\u03b9\u03b1 \u03b1\u03bd\u03b1\u03bd\u03ad\u03c9\u03c3\u03b7...",
             "dxScrollView-refreshingText": "\u0391\u03bd\u03b1\u03bd\u03ad\u03c9\u03c3\u03b7...",

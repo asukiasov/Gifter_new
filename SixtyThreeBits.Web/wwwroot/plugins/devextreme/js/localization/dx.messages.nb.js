@@ -1,7 +1,7 @@
 /*!
 * DevExtreme (dx.messages.nb.js)
-* Version: 24.1.6
-* Build date: Sat Sep 14 2024
+* Version: 24.1.7
+* Build date: Wed Oct 30 2024
 *
 * Copyright (c) 2012 - 2024 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -24,6 +24,7 @@
             Yes: "Ja",
             No: "Nei",
             Cancel: "Avbryt",
+            CheckState: "Check state",
             Close: "Lukke",
             Clear: "Slett",
             Done: "Fullf\xf8rt",
@@ -64,6 +65,9 @@
             "dxList-listAriaLabel-deletable": "Deletable items",
             "dxListEditDecorator-delete": "Slett",
             "dxListEditDecorator-more": "Mer",
+            "dxList-selectAll-indeterminate": "Half-checked",
+            "dxList-selectAll-checked": "Checked",
+            "dxList-selectAll-notChecked": "Not checked",
             "dxScrollView-pullingDownText": "Dra ned for \xe5 oppdatere...",
             "dxScrollView-pulledDownText": " Slipp for \xe5 oppdatere...",
             "dxScrollView-refreshingText": "Oppdaterer...",
