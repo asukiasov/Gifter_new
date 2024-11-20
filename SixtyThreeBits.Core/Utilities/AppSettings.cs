@@ -8,25 +8,35 @@ namespace SixtyThreeBits.Core.Utilities
     {
         #region Properties        
         IConfiguration _configuration;
+        const string _uploadFolderName = "upload";
+        const string _downloadFolderName = "download";
 
         public readonly ConnectionStringSettings ConnectionStrings;
         public readonly string ContentRootPath;
         public readonly string DownloadFolderPhysicalPath;                        
         public readonly string UploadFolderPhysicalPath;
-        public readonly string UploadFolderHttpPath = "/upload/";
+        public readonly string UploadFolderHttpPath = $"/{_uploadFolderName}/";
         public readonly string WebRootPath;
         #endregion
 
         #region Constructors
         public AppSettingsCollection(string contentRootPath, string webRootPath, IConfiguration configuration)
         {
+            _configuration = configuration;
             ContentRootPath = contentRootPath;
             WebRootPath = webRootPath;
 
-            DownloadFolderPhysicalPath = $"{WebRootPath}{Path.DirectorySeparatorChar}download";
-            UploadFolderPhysicalPath = $"{WebRootPath}{Path.DirectorySeparatorChar}upload";
-
-            _configuration = configuration;
+            DownloadFolderPhysicalPath = $"{WebRootPath}{Path.DirectorySeparatorChar}{_downloadFolderName}";
+            UploadFolderPhysicalPath = GetConfigValue(nameof(UploadFolderPhysicalPath));
+            if (string.IsNullOrWhiteSpace(UploadFolderPhysicalPath))
+            {
+                UploadFolderPhysicalPath = $"{WebRootPath}{Path.DirectorySeparatorChar}{_uploadFolderName}";
+            }
+            if (string.IsNullOrWhiteSpace(UploadFolderPhysicalPath))
+            {
+                throw new System.Exception($"UploadFolderPhysicalPath: \"{UploadFolderPhysicalPath}\" is not found");
+            }
+            
             ConnectionStrings = new ConnectionStringSettings(configuration);
         }
         #endregion
