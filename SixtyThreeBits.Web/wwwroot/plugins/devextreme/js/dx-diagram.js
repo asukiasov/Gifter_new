@@ -1,7 +1,7 @@
 /*!
  * DevExpress Diagram (dx-diagram)
- * Version: 2.2.12
- * Build date: Thu Oct 10 2024
+ * Version: 2.2.13
+ * Build date: Mon Nov 11 2024
  *
  * Copyright (c) 2012 - 2024 Developer Express Inc. ALL RIGHTS RESERVED
  * Read about DevExpress licensing here: https://www.devexpress.com/Support/EULAs
@@ -4861,13 +4861,51 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.PasteSelectionCommand = void 0;
 var point_1 = __webpack_require__(8900);
 var PasteSelectionCommandBase_1 = __webpack_require__(7688);
+var Shape_1 = __webpack_require__(5503);
+var Connector_1 = __webpack_require__(7959);
 var PasteSelectionCommand = (function (_super) {
     __extends(PasteSelectionCommand, _super);
     function PasteSelectionCommand() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    PasteSelectionCommand.prototype.getEventPositionOffset = function (_items, _evtPosition) {
-        return new point_1.Point(0, 0);
+    PasteSelectionCommand.prototype.getEventPositionOffset = function (items, _evtPosition) {
+        var topLeftItem = items.reduce(function (acc, item) {
+            var x = item instanceof Shape_1.Shape ? item.position.x : item instanceof Connector_1.Connector ? item.getMinX() : Number.MAX_VALUE;
+            var y = item instanceof Shape_1.Shape ? item.position.y : item instanceof Connector_1.Connector ? item.getMinY() : Number.MAX_VALUE;
+            if (y < acc.y || (y === acc.y && x < acc.x)) {
+                acc.topLeftItem = item;
+                acc.x = x;
+                acc.y = y;
+            }
+            return acc;
+        }, {
+            topLeftItem: items[0],
+            x: Number.MAX_VALUE,
+            y: Number.MAX_VALUE
+        }).topLeftItem;
+        if (topLeftItem instanceof Shape_1.Shape) {
+            var newPoint = this.getShapeCorrectedPosition(this.control.model, topLeftItem);
+            return new point_1.Point(newPoint.x - topLeftItem.position.x, newPoint.y - topLeftItem.position.y);
+        }
+        else if (topLeftItem instanceof Connector_1.Connector) {
+            var newPoints = this.getConnectorCorrectedPoints(this.control.model, topLeftItem);
+            return new point_1.Point(topLeftItem.points[0].x - newPoints[0].x, topLeftItem.points[0].y - newPoints[0].y);
+        }
+    };
+    PasteSelectionCommand.prototype.getShapeCorrectedPosition = function (model, shape) {
+        var position = shape.position.clone();
+        while (model.findShapeAtPosition(position))
+            position.offset(PasteSelectionCommandBase_1.PasteSelectionCommandBase.positionOffset, PasteSelectionCommandBase_1.PasteSelectionCommandBase.positionOffset);
+        return position;
+    };
+    PasteSelectionCommand.prototype.getConnectorCorrectedPoints = function (model, connector) {
+        var points = connector.points.map(function (p) { return p.clone(); });
+        while (model.findConnectorAtPoints(points))
+            points.forEach(function (pt) {
+                pt.x += PasteSelectionCommandBase_1.PasteSelectionCommandBase.positionOffset;
+                pt.y += PasteSelectionCommandBase_1.PasteSelectionCommandBase.positionOffset;
+            });
+        return points;
     };
     return PasteSelectionCommand;
 }(PasteSelectionCommandBase_1.PasteSelectionCommandBase));
@@ -4903,7 +4941,6 @@ var Connector_1 = __webpack_require__(7959);
 var ImportConnectorHistoryItem_1 = __webpack_require__(3849);
 var ModelUtils_1 = __webpack_require__(4867);
 var SetSelectionHistoryItem_1 = __webpack_require__(4297);
-var point_1 = __webpack_require__(8900);
 var unit_converter_1 = __webpack_require__(9291);
 var PasteSelectionCommandBase = (function (_super) {
     __extends(PasteSelectionCommandBase, _super);
@@ -4921,7 +4958,6 @@ var PasteSelectionCommandBase = (function (_super) {
         var importer = new Importer_1.Importer(this.control.shapeDescriptionManager, data);
         items = importer.importItems(this.control.model);
         var offset = this.getEventPositionOffset(items, this.control.contextMenuPosition);
-        offset = this.getCorrectedOffsetByModel(items, offset);
         for (var i = 0; i < items.length; i++) {
             var item = items[i];
             if (item instanceof Shape_1.Shape)
@@ -4932,30 +4968,6 @@ var PasteSelectionCommandBase = (function (_super) {
             }
         }
         return items;
-    };
-    PasteSelectionCommandBase.prototype.getCorrectedOffsetByModel = function (items, baseOffset) {
-        var topLeftItem = items.reduce(function (acc, item) {
-            var x = item instanceof Shape_1.Shape ? item.position.x : item instanceof Connector_1.Connector ? item.getMinX() : Number.MAX_VALUE;
-            var y = item instanceof Shape_1.Shape ? item.position.y : item instanceof Connector_1.Connector ? item.getMinY() : Number.MAX_VALUE;
-            if (y < acc.y || (y === acc.y && x < acc.x)) {
-                acc.topLeftItem = item;
-                acc.x = x;
-                acc.y = y;
-            }
-            return acc;
-        }, {
-            topLeftItem: items[0],
-            x: Number.MAX_VALUE,
-            y: Number.MAX_VALUE
-        }).topLeftItem;
-        if (topLeftItem instanceof Shape_1.Shape) {
-            var newPoint = this.getShapeCorrectedPosition(this.control.model, topLeftItem, baseOffset);
-            return new point_1.Point(newPoint.x - topLeftItem.position.x, newPoint.y - topLeftItem.position.y);
-        }
-        else if (topLeftItem instanceof Connector_1.Connector) {
-            var newPoints = this.getConnectorCorrectedPoints(this.control.model, topLeftItem, baseOffset);
-            return new point_1.Point(topLeftItem.points[0].x - newPoints[0].x, topLeftItem.points[0].y - newPoints[0].y);
-        }
     };
     PasteSelectionCommandBase.prototype.executeCore = function (state, parameter) {
         var _this = this;
@@ -5030,21 +5042,6 @@ var PasteSelectionCommandBase = (function (_super) {
         this.control.history.endTransaction();
         this.control.endUpdateCanvas();
         this.control.barManager.updateItemsState();
-    };
-    PasteSelectionCommandBase.prototype.getShapeCorrectedPosition = function (model, shape, initOffset) {
-        var position = shape.position.clone().offsetByPoint(initOffset);
-        while (model.findShapeAtPosition(position))
-            position.offset(PasteSelectionCommandBase.positionOffset, PasteSelectionCommandBase.positionOffset);
-        return position;
-    };
-    PasteSelectionCommandBase.prototype.getConnectorCorrectedPoints = function (model, connector, initOffset) {
-        var points = connector.points.map(function (p) { return p.clone().offsetByPoint(initOffset); });
-        while (model.findConnectorAtPoints(points))
-            points.forEach(function (pt) {
-                pt.x += PasteSelectionCommandBase.positionOffset;
-                pt.y += PasteSelectionCommandBase.positionOffset;
-            });
-        return points;
     };
     Object.defineProperty(PasteSelectionCommandBase.prototype, "isPermissionsRequired", {
         get: function () { return true; },
@@ -11265,7 +11262,7 @@ var ContextMenuHandler = (function (_super) {
         window.setTimeout(function () {
             _this.onVisibilityChanged.raise1(function (l) { return l.notifyShowContextMenu(eventPoint, modelPoint); });
             _this.contextMenuVisible = true;
-        }, 0);
+        }, 1);
     };
     ContextMenuHandler.prototype.hideContextMenu = function () {
         var _this = this;
@@ -11273,7 +11270,7 @@ var ContextMenuHandler = (function (_super) {
             window.setTimeout(function () {
                 _this.onVisibilityChanged.raise1(function (l) { return l.notifyHideContextMenu(); });
                 _this.contextMenuVisible = false;
-            }, 0);
+            }, 1);
     };
     ContextMenuHandler.prototype.notifyDragStart = function (itemKeys) { };
     ContextMenuHandler.prototype.notifyDragEnd = function (itemKeys) { };
@@ -11518,6 +11515,16 @@ var MouseEventSource = (function () {
         this.key = key;
         this.value = value;
     }
+    Object.defineProperty(MouseEventSource.prototype, "isConnector", {
+        get: function () { return this.type === MouseEventElementType.Connector || this.type === MouseEventElementType.ConnectorText; },
+        enumerable: false,
+        configurable: true
+    });
+    Object.defineProperty(MouseEventSource.prototype, "isShape", {
+        get: function () { return this.type === MouseEventElementType.Shape || this.type === MouseEventElementType.ShapeConnectionPoint; },
+        enumerable: false,
+        configurable: true
+    });
     return MouseEventSource;
 }());
 exports.MouseEventSource = MouseEventSource;
@@ -11978,7 +11985,7 @@ var MouseHandler = (function () {
                 return false;
             if (!this.copyDiagramItemsByCtrlAndShift)
                 return true;
-            return evt.source.type !== Event_1.MouseEventElementType.Shape && evt.source.type !== Event_1.MouseEventElementType.Connector;
+            return !evt.source.isConnector && !evt.source.isShape;
         }
         return this.allowScrollPage && this.shouldScrollPage;
     };
@@ -12594,9 +12601,9 @@ var MouseHandlerDefaultState = (function (_super) {
     MouseHandlerDefaultState.prototype.onDragDiagramItemOnMouseDown = function (evt) {
         if (!this.handler.canAddDiagramItemToSelection(evt))
             _super.prototype.onDragDiagramItemOnMouseDown.call(this, evt);
-        else if (evt.source.type === Event_1.MouseEventElementType.Shape)
+        else if (evt.source.isShape)
             this.handler.switchState(new MouseHandlerMoveShapeState_1.MouseHandlerMoveShapeState(this.handler, this.history, this.model, this.selection, this.visualizerManager));
-        else if (evt.source.type === Event_1.MouseEventElementType.Connector)
+        else if (evt.source.isConnector)
             this.handler.switchState(new MouseHandlerMoveConnectorState_1.MouseHandlerMoveConnectorState(this.handler, this.history, this.model, this.selection, this.visualizerManager));
     };
     MouseHandlerDefaultState.prototype.onDragStart = function (evt) {
@@ -12787,8 +12794,7 @@ var MouseHandlerDefaultStateBase = (function (_super) {
         return this.selection.hasKey(key);
     };
     MouseHandlerDefaultStateBase.prototype.hasDiagramItem = function (evt) {
-        return evt.source.type === Event_1.MouseEventElementType.Shape ||
-            evt.source.type === Event_1.MouseEventElementType.Connector;
+        return evt.source.isShape || evt.source.isConnector;
     };
     MouseHandlerDefaultStateBase.prototype.onShapeExpandBtnMouseDown = function (evt) {
         this.handler.addDiagramItemToSelection(evt);

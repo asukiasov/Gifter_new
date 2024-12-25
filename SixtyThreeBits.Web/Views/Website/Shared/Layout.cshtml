@@ -11,7 +11,7 @@
     <title>@Html.Raw(Model.PageTitle.TitleHead)</title>
     @await Html.PartialAsync(ViewNames.Shared.PluginsClient.PluginsClientHeader, Model.PluginsClient)    
     <link href="/css/website/style.css" rel="stylesheet" />
-    
+
     @RenderSection("HeaderSection", false)
     @Html.Raw(Model.ScriptsHeader)
 </head>
@@ -19,38 +19,57 @@
     @Html.Raw(Model.ScriptsBodyStart)
     <div class="app">
         <header class="app-header">
-            @if (Model.HasMenu)
-            {
-                <nav>
-                    <div class="container-lg">
-                        <ul class="row">
-                            @foreach (var Item in Model.Menu)
-                            {
-                                <li class="col-sm-6 col-md-4 col-lg-3">
-                                    @if (Item.HasChildren)
+            <nav class="navbar navbar-expand-lg bg-body-tertiary">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="/">@Html.Raw(Model.ProjectName)</a>                    
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        @if (Model.HasMenu)
+                        {
+                            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                                @foreach(var item in Model.Menu)
+                                {
+                                    if(item.HasChildren)
                                     {
-                                        <a class="nav-link @(Item.IsSelected ?  Html.Raw("active") : null)" @(Item.IsTargetBlank ? Html.Raw("target=\"_blank\"") : null)>@Html.Raw(Item.Caption)</a>
-                                        <ul>
-                                            @foreach (var SubItem in Item.Children)
-                                            {
-                                                <li>
-                                                    <a @(SubItem.IsSelected ? Html.Raw("class=\"active\"") : Html.Raw($"href=\"{SubItem.NavigateUrl}\"")) @(Item.IsTargetBlank ? Html.Raw("target=\"_blank\"") : null)>@Html.Raw(SubItem.Caption)</a>
-                                                </li>
-                                            }
-                                        </ul>
+                                        <li class="nav-item dropdown">
+                                            <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown">
+                                                @Html.Raw(item.Caption)
+                                            </a>                                            
+                                            <ul class="dropdown-menu">
+                                                @foreach(var child in item.Children)
+                                                {
+                                                    @if (child.IsSelected)
+                                                    {
+                                                        <li><a class="dropdown-item active">@Html.Raw(child.Caption)</a></li>
+                                                    }
+                                                    else
+                                                    {
+                                                        <li><a class="dropdown-item" href="@Html.Raw(child.NavigateUrl)">@Html.Raw(child.Caption)</a></li>
+                                                    }
+                                                }                                                                                                
+                                            </ul>
+                                        </li>
                                     }
                                     else
                                     {
-                                        <a @(Item.IsSelected ? Html.Raw("class=\"active\"") : Html.Raw($"href=\"{Item.NavigateUrl}\"")) @(Item.IsTargetBlank ? Html.Raw("target=\"_blank\"") : null)>@Html.Raw(Item.Caption)</a>
+                                        if(item.IsSelected)
+                                        {
+                                            <li class="nav-item">
+                                                <a class="nav-link active">@Html.Raw(item.Caption)</a>
+                                            </li>
+                                        }
+                                        else
+                                        {
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="@Html.Raw(item.NavigateUrl)">@Html.Raw(item.Caption)</a>
+                                            </li>                                            
+                                        }
                                     }
-
-                                </li>
-                            }
-                        </ul>
+                                }                                                                
+                            </ul>
+                        }
                     </div>
-                </nav>
-            }
-
+                </div>
+            </nav>            
         </header>
         @RenderBody()
         <footer class="app-page">

@@ -10,8 +10,8 @@ namespace SixtyThreeBits.Web.Controllers.Website
     {
         #region Actions
         //https://docs.microsoft.com/en-us/aspnet/core/fundamentals/routing?view=aspnetcore-5.0#rtr        
-        [Route("{*pageSlug}", Name = ControllerActionRouteNames.Website.PagesController.Page, Order = 9999)]
-        [Route($"{RouteValueLanguageCode}/{{*pageSlug}}", Name = ControllerActionRouteNames.Website.PagesController.PageCulture, Order = 10000)]
+        [Route($"{RouteValueLanguageCode}/{{*pageSlug}}", Name = ControllerActionRouteNames.Website.PagesController.PageCulture, Order = 9999)]
+        [Route("{*pageSlug}", Name = ControllerActionRouteNames.Website.PagesController.Page, Order = 10000)]        
         public async Task<IActionResult> Page(string pageSlug)
         {
             Model.PluginsClient.EnablePageBuilder(true).EnableSlickSlider(true).EnableJQueryAppear(true).EnableJWPlayer(true);

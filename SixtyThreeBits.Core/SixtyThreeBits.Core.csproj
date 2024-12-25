@@ -18,9 +18,9 @@
 
   <ItemGroup>
     <PackageReference Include="63BITS.Libraries.DotNetCore" Version="1.0.8" />
-    <PackageReference Include="AWSSDK.S3" Version="3.7.405.13" />
+    <PackageReference Include="AWSSDK.S3" Version="3.7.410.11" />
     <PackageReference Include="Azure.Storage.Blobs" Version="12.23.0" />
-    <PackageReference Include="EPPlus" Version="7.4.2" />
+    <PackageReference Include="EPPlus" Version="7.5.2" />
     <PackageReference Include="ExcelDataReader" Version="3.7.0" />
     <PackageReference Include="Imageflow.AllPlatforms" Version="0.13.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.0" />

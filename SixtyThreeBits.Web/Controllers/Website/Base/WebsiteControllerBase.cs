@@ -9,7 +9,7 @@ namespace SixtyThreeBits.Web.Controllers.Website.Base
     public class WebsiteControllerBase<T> : ControllerBase<T> where T : new ()
     {
         #region Properties
-        public const string RouteValueLanguageCode = $"{{Culture:regex({RouteLanguageCodes})}}";
+        public const string RouteValueLanguageCode = $"{{Culture:regex(^({RouteLanguageCodes})$)}}";
         public const string RouteLanguageCodes = $"{Enums.Languages.GEORGIAN}|{Enums.Languages.ENGLISH}"; 
         #endregion
     }
