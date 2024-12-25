@@ -466,7 +466,7 @@ namespace SixtyThreeBits.Core.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Uplaod File.
+        ///   Looks up a localized string similar to Upload File.
         /// </summary>
         public static string TextFileUpload {
             get {
