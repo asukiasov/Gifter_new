@@ -33,7 +33,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         [Route("grid/add", Name = ControllerActionRouteNames.Admin.UsersController.GridAdd)]
         public async Task<ActionResult> GridAdd(int? key, string values)
         {
-            var submitModel = values.DeserializeJsonTo<UsersModel.PageViewModel.GridModel.GridItem>() ?? new UsersModel.PageViewModel.GridModel.GridItem();
+            var submitModel = values.DeserializeJsonTo<UsersModel.ViewModel.GridModel.GridItem>() ?? new UsersModel.ViewModel.GridModel.GridItem();
             await Model.ValidateUserEmail(userEmail: submitModel.UserEmail, userID: key);
             if (Model.Form.HasErrors)
             {
@@ -58,7 +58,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         public async Task<ActionResult> GridUpdate(int? key, string values)
         {
             var result = default(ActionResult);
-            var submitModel = values.DeserializeJsonTo<UsersModel.PageViewModel.GridModel.GridItem>() ?? new UsersModel.PageViewModel.GridModel.GridItem();
+            var submitModel = values.DeserializeJsonTo<UsersModel.ViewModel.GridModel.GridItem>() ?? new UsersModel.ViewModel.GridModel.GridItem();
 
             await Model.ValidateUserEmail(userEmail: submitModel.UserEmail, userID: key);
             if (Model.Form.HasErrors)
@@ -85,7 +85,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         [Route("grid/delete", Name = ControllerActionRouteNames.Admin.UsersController.GridDelete)]
         public async Task<ActionResult> GridDelete(int? key)
         {
-            await Model.CRUD(databaseAction: Enums.DatabaseActions.DELETE, userID: key, submitModel: new UsersModel.PageViewModel.GridModel.GridItem());
+            await Model.CRUD(databaseAction: Enums.DatabaseActions.DELETE, userID: key, submitModel: new UsersModel.ViewModel.GridModel.GridItem());
             if (Model.Form.HasErrors)
             {
                 return GetDevexpressErrorResult(Model.Form.ErrorMessage);

@@ -1,20 +1,19 @@
-﻿const dictionariesModel = {    
+﻿const model = {    
     tree: null,
     urlUpdate: null,
 
     onTreeInit: function (e) {
-        dictionariesModel.tree = e.component;
-        globals.devexpress.setGridFullHeight(dictionariesModel.tree, e.element[0]);
+        model.tree = e.component;
+        globals.devexpress.setGridFullHeight(model.tree, e.element[0]);
     },
 
-    //In order to pass those values back, that remain unchanged
-    onRowUpdating: function (options) {        
-        $.extend(options.newData, $.extend({}, options.oldData, options.newData));
+    onTreeRowUpdating: function (e) {
+        globals.devexpress.onRowUpdatingSendAllColumnsData(e);        
     }
 };
 
 $(function () {
     $(globals.selectors.buttonAddNew).click(function () {
-        dictionariesModel.tree.addRow();
+        model.tree.addRow();
     });
 });

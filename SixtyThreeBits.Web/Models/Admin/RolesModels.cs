@@ -87,8 +87,8 @@ namespace SixtyThreeBits.Web.Models.Admin
                     var grid = CreateGridWithStartupValues(html: html, keyFieldName: nameof(GridItem.RoleID));
 
                     grid
-                    .ID("Roles.Grid")
-                    .OnInitialized("rolesModel.onGridInit")
+                    .ID("RolesGrid")
+                    .OnInitialized("model.onGridInit")
                     .Columns(columns =>
                     {
                         columns.AddFor(m => m.RoleName).Caption(Resources.TextName).Width(300).ValidationRules(options =>

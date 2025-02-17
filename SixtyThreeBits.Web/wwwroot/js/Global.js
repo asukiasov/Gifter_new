@@ -39,9 +39,9 @@ const globals = {
             }
         },
 
-        onRowUpdatingSendAllColumnsData: function (grid) {
+        onRowUpdatingSendAllColumnsData: function (e) {
             //https://supportcenter.devexpress.com/ticket/details/t191423/dxdatagrid-passes-only-modified-values-to-the-customstore-update-method
-            grid.newData = { ...grid.oldData, ...grid.newData };
+            e.newData = { ...e.oldData, ...e.newData };
         },
 
         onTreeEndCallback: function (tree, eventArgs) {

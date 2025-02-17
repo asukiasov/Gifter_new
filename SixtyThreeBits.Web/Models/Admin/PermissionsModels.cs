@@ -115,8 +115,8 @@ namespace SixtyThreeBits.Web.Models.Admin
 
                     tree
                     .ID("PermissionsTree")
-                    .OnInitialized("permissionsModel.onTreeInit")
-                    .OnInitNewRow("permissionsModel.onTreeInitNewRow")
+                    .OnInitialized("model.onTreeInit")
+                    .OnInitNewRow("model.onTreeInitNewRow")
                     .RowDragging(Options =>
                     {
                         if (AllowUpdate)
@@ -124,7 +124,7 @@ namespace SixtyThreeBits.Web.Models.Admin
                             Options.AllowDropInsideItem(true);
                             Options.AllowReordering(false);
                             Options.ShowDragIcons(true);
-                            Options.OnReorder("permissionsModel.onTreeReorder");
+                            Options.OnReorder("model.onTreeReorder");
                         }
                     })
                     .AutoExpandAll(false)

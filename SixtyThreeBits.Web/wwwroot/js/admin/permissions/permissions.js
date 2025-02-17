@@ -1,9 +1,9 @@
-﻿const permissionsModel = {    
+﻿const model = {    
     tree: null,
     urlUpdate: null,
 
     onTreeInit: function (e) {
-        permissionsModel.tree = e.component;
+        model.tree = e.component;
         globals.devexpress.setGridFullHeight(e.component, e.element[0]);
     },
     onTreeInitNewRow: function (e) {
@@ -15,21 +15,21 @@
         let permissionParentID = globals.constants.nullValueFor.int;
         
         if (e.dropInsideItem) {
-            visibleRows = permissionsModel.tree.getVisibleRows();
+            visibleRows = model.tree.getVisibleRows();
             const parent = visibleRows[e.toIndex].data;
             permissionParentID = parent.PermissionID;
         }
 
         $.ajax({
             type: 'PUT',
-            url: permissionsModel.urlUpdate,
+            url: model.urlUpdate,
             data: { key: permissionID, values: JSON.stringify({ PermissionParentID: permissionParentID }) },
             dataType: 'json',
             beforeSend: function () {
                 preloader.show();
             },            
             complete: function () {
-                permissionsModel.tree.refresh();
+                model.tree.refresh();
                 preloader.hide();
             }
         });
@@ -38,6 +38,6 @@
 
 $(function () {
     $(globals.selectors.buttonAddNew).click(function () {
-        permissionsModel.tree.addRow();
+        model.tree.addRow();
     });
 });
