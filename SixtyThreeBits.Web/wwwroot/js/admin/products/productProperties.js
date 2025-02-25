@@ -1,5 +1,6 @@
 ﻿const productModel = {
     urlImageUpload: null,
+    urlImageUpdate: null,
     urlImageDelete: null,
     urlImageSort: null,
     TextConfirmDeleteImage: null,
@@ -31,6 +32,79 @@
             success: function () {
             }
         });
+    },
+
+    updateImage: function (saveButtton) {
+        const parent = saveButtton.closest('.js-product-image-item');
+        const productImageID = parent.attr('data-id');
+        const productImageAltText = parent.find('.js-product-image-alt-text-textbox').val();
+
+        $.ajax({
+            method: 'POST',
+            url: productModel.urlImageUpdate,
+            data: { ProductImageID: productImageID, ProductImageAltText: productImageAltText },
+            dataType: 'json',
+            beforeSend: function () {
+                preloader.show();
+            },
+            success: function (res) {
+                if (res.IsSuccess) {
+                    successErrorToast63Bits.showSuccessMessage();
+                }
+                else {
+                    if (res.Data) {
+                        if (res.Data.RedirectUrl) {
+                            window.location = res.Data.RedirectUrl;
+                        }
+                        else {
+                            components63Bits.dialog.error(res.Data);
+                        }
+                    }
+                    else {
+                        components63Bits.dialog.error();
+                    }
+                }
+            },
+            error: function () {
+                components63Bits.dialog.error();
+            },
+            complete: function () {
+                preloader.hide();
+            }
+        });
+    },
+
+    deleteImage: function (deleteButton) {
+        const productImageID = deleteButton.closest('.js-product-image-item').attr('data-id');
+        const productImageFilename = deleteButton.attr('data-filename');
+        components63Bits.dialog.confirm({
+            textConfirm: productModel.textConfirmDeleteImage,
+            confirmButtonColor: components63Bits.dialog.buttonColors.red,
+            resolve: function () {
+                $.ajax({
+                    method: 'POST',
+                    url: productModel.urlImageDelete,
+                    data: { ProductImageID: productImageID, ProductImageFilename: productImageFilename },
+                    dataType: 'json',
+                    beforeSend: function () {
+                        preloader.show();
+                    },
+                    success: function (res) {
+                        if (res.IsSuccess) {
+                            deleteButton.closest('.js-product-image-item').slideUp(function () {
+                                $(this).remove();
+                            })
+                        }
+                        else {
+                            components63Bits.dialog.error();
+                        }
+                    },
+                    complete: function () {
+                        preloader.hide();
+                    }
+                });
+            }
+        })
     },
 
     templates: {
@@ -103,39 +177,17 @@ $(function () {
         }).showImagePopup();    
     });
 
+    $('.js-product-images-container').on('click', '.js-product-image-save-button', function (e) {
+        e.preventDefault();
+
+        const _this = $(this);
+        productModel.updateImage(_this);
+    });
+
     $('.js-product-images-container').on('click', '.js-product-image-delete-button', function (e) {
         e.preventDefault();
 
         const _this = $(this);
-        const productImageID = _this.closest('.js-product-image-item').attr('data-id');
-        const productImageFilename = _this.attr('data-filename');
-        components63Bits.dialog.confirm({
-            textConfirm: productModel.textConfirmDeleteImage,
-            confirmButtonColor: components63Bits.dialog.buttonColors.red,
-            resolve: function () {
-                $.ajax({
-                    method: 'POST',
-                    url: productModel.urlImageDelete,
-                    data: { ProductImageID: productImageID, ProductImageFilename: productImageFilename },
-                    dataType: 'json',
-                    beforeSend: function () {
-                        preloader.show();
-                    },
-                    success: function (res) {
-                        if (res.IsSuccess) {
-                            _this.closest('.js-product-image-item').slideUp(function () {
-                                $(this).remove();
-                            })
-                        }
-                        else {
-                            components63Bits.dialog.error();
-                        }
-                    },
-                    complete: function () {
-                        preloader.hide();
-                    }
-                });
-            }
-        })
+        productModel.deleteImage(_this);
     });
 });
