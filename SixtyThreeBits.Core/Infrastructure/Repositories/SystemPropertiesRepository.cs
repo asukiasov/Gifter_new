@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using SixtyThreeBits.Core.DTO;
 using SixtyThreeBits.Core.Infrastructure.Database;
 using SixtyThreeBits.Libraries.Extensions;
@@ -10,7 +11,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
     public class SystemPropertiesRepository : RepositoryBase
     {
         #region Contructors
-        public SystemPropertiesRepository(DbContextFactory dbContextFactory) : base(dbContextFactory)
+        public SystemPropertiesRepository(DbContextFactory dbContextFactory, ILogger logger) : base(dbContextFactory, logger)
         {
         }
         #endregion

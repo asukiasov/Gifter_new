@@ -1,4 +1,5 @@
-﻿using SixtyThreeBits.Core.Infrastructure.Database;
+﻿using Microsoft.Extensions.Logging;
+using SixtyThreeBits.Core.Infrastructure.Database;
 using SixtyThreeBits.Core.Libraries;
 
 namespace SixtyThreeBits.Core.Infrastructure.Repositories
@@ -10,7 +11,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
         #endregion
 
         #region Constructors
-        public RepositoryBase(DbContextFactory dbContextFactory)
+        public RepositoryBase(DbContextFactory dbContextFactory, ILogger logger) : base(logger)
         {
             _dbContextFactory = dbContextFactory;
         }

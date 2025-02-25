@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using SixtyThreeBits.Core.DTO;
 using SixtyThreeBits.Core.Infrastructure.Database;
 using SixtyThreeBits.Core.Utilities;
@@ -13,7 +14,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
     public class NewsRepository : RepositoryBase
     {
         #region Constructors
-        public NewsRepository(DbContextFactory dbContextFactory) : base(dbContextFactory)
+        public NewsRepository(DbContextFactory dbContextFactory, ILogger logger) : base(dbContextFactory, logger)
         {            
         }
         #endregion

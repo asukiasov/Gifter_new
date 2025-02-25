@@ -1,4 +1,5 @@
 ﻿using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Logging;
 using SixtyThreeBits.Libraries.Extensions;
 using System;
 using System.Runtime.CompilerServices;
@@ -10,12 +11,22 @@ namespace SixtyThreeBits.Core.Libraries
     public class SixtyThreeBitsDataObjectBase
     {
         #region Properties
+        protected readonly ILogger _logger;
+
         string _errorMessageForLog;
 
         public bool IsError { private set; get; }
-        public string ErrorMessage { private set; get; }        
+        public string ErrorMessage { private set; get; }
         public Exception ExceptionObject { private set; get; }
         public bool IsCustomDatabaseMessage { private set; get; }
+        #endregion
+
+        #region Constructors
+        public SixtyThreeBitsDataObjectBase() { }
+        public SixtyThreeBitsDataObjectBase(ILogger logger)
+        {
+            this._logger = logger;
+        }
         #endregion
 
         #region Methods
@@ -97,7 +108,7 @@ namespace SixtyThreeBits.Core.Libraries
                 {
                     ExceptionObject = ex;
                     result = funcForCatch();
-                }                
+                }
             }
             return result;
         }
@@ -121,7 +132,7 @@ namespace SixtyThreeBits.Core.Libraries
                         ex: ex,
                         callerFilePath: callerFilePath,
                         callerLineNumber: callerLineNumber
-                    );                    
+                    );
                 }
                 else if (asyncFuncForCatch != null)
                 {
@@ -163,6 +174,10 @@ namespace SixtyThreeBits.Core.Libraries
             if (!IsCustomDatabaseMessage)
             {
                 _errorMessageForLog.LogString();
+                if (_logger != null)
+                {
+                    _logger.LogError(ex, _errorMessageForLog);
+                }
             }
         }
 
@@ -186,6 +201,10 @@ namespace SixtyThreeBits.Core.Libraries
             if (!IsCustomDatabaseMessage)
             {
                 _errorMessageForLog.LogString();
+                if (_logger != null)
+                {
+                    _logger.LogError(ex, _errorMessageForLog);
+                }
             }
         }
         #endregion

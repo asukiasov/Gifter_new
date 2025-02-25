@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using SixtyThreeBits.Core.DTO;
 using SixtyThreeBits.Core.Infrastructure.Database;
 using SixtyThreeBits.Libraries;
@@ -11,7 +12,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
     public class CountriesRepository : RepositoryBase
     {
         #region Contructors
-        public CountriesRepository(DbContextFactory dbContextFactory) : base(dbContextFactory)
+        public CountriesRepository(DbContextFactory dbContextFactory, ILogger logger) : base(dbContextFactory, logger)
         {
         }
         #endregion
