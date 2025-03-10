@@ -147,10 +147,10 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         }
 
         [HttpPost]
-        [Route("images/sort", Name = ControllerActionRouteNames.Admin.ProductPropertiesController.ProductImagesSort)]
-        public async Task<IActionResult> PropertiesImagesSort(SyncSortIndexesSubmitModel submitModel)
+        [Route("images/update", Name = ControllerActionRouteNames.Admin.ProductPropertiesController.ProductImagesUpdate)]
+        public async Task<IActionResult> PropertiesImagesUpdate(ProductPropertiesModel.UpdateProductImageSubmitModel submitModel)
         {
-            var viewModel = await Model.SortProductImages(submitModel);
+            var viewModel = await Model.UpdateProductImages(submitModel);
             return Json(viewModel);
         }
 
@@ -159,6 +159,14 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         public async Task<IActionResult> PropertiesImagesDelete(ProductPropertiesModel.DeleteProductImageSubmitModel submitModel)
         {
             var viewModel = await Model.DeleteProductImages(submitModel);
+            return Json(viewModel);
+        }
+
+        [HttpPost]
+        [Route("images/sort", Name = ControllerActionRouteNames.Admin.ProductPropertiesController.ProductImagesSort)]
+        public async Task<IActionResult> PropertiesImagesSort(SyncSortIndexesSubmitModel submitModel)
+        {
+            var viewModel = await Model.SortProductImages(submitModel);
             return Json(viewModel);
         }
         #endregion

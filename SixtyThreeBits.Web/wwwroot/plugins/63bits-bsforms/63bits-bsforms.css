@@ -283,4 +283,17 @@ input[type=number] {
 .file-uploader-card .img-wrap .remove-btn:hover {
     opacity: 1;
 }
+
+.file-uploader-card .alt-input {
+    border-radius: 0px 0px 0px 8px !important;
+}
+
+.file-uploader-card .alt-save-btn {
+    border-radius: 0px 0px 8px 0px;
+}
+
+.file-uploader-card .img-wrap:not(:last-child) {
+    border-bottom-left-radius: 0px !important;
+    border-bottom-right-radius: 0px !important;
+}
 /* ---------- /file uploader ---------- */

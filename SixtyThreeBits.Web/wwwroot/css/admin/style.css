@@ -10,6 +10,17 @@ body {
     font-family: var(--font-family-uppercase);
 }
 
+.form-select-sm + .select2-container--bootstrap4 .select2-selection--single{
+    height: 28px !important;
+    border-radius: .2rem !important;
+    font-size: .76563rem;
+}
+
+.form-select-sm + .select2-container--bootstrap4 .select2-selection--single .select2-selection__rendered,
+.form-select-sm + .select2-container--bootstrap4 .select2-selection--single .select2-selection__rendered .select2-selection__placeholder{
+    line-height: 26px;
+}
+
 /*---------- layout ----------*/
 body[data-sidebar="dark"][data-sidebar-size="sm"]{
     min-height: unset;
