@@ -105,7 +105,7 @@ namespace SixtyThreeBits.Web.Models.Admin
                     ProductPriceOld = submitModel.ProductPriceOld,
                     ProductRemainder = submitModel.ProductRemainder,
                     ProductIsFeatured = submitModel.ProductIsFeatured
-                }                
+                }
             );
 
             if (repository.IsError)
@@ -300,15 +300,17 @@ namespace SixtyThreeBits.Web.Models.Admin
             var repositoryCountries = RepositoriesFactory.CreateCountriesRepository();
             viewModel.ProductProducerCountries = await repositoryCountries.CountriesListAsSimpleKeyValue(SelectedCountryID: DBItem.CountryIDProducer);
 
-            viewModel.ProductImages = DBItem.ProductImages?.Select(Item => new ViewModel.ProductImage
+            viewModel.ProductImages = DBItem.ProductImages?.Select(item => new ViewModel.ProductImage
             {
-                ProductImageID = Item.ProductImageID,
-                ProductImageFilename = Item.ProductImageFilename,
-                ProductImageFileHttpPath = FileStorage.GetUploadedFileHttpPath(Item.ProductImageFilename, _folderPath)
+                ProductImageID = item.ProductImageID,
+                ProductImageFilename = item.ProductImageFilename,
+                ProductImageFileHttpPath = FileStorage.GetUploadedFileHttpPath(item.ProductImageFilename, _folderPath),
+                ProductImageAltText = item.ProductImageAltText
             })
             .ToList();
 
             viewModel.UrlImageUpload = Url.RouteUrl(ControllerActionRouteNames.Admin.ProductPropertiesController.ProductImagesUpload, new { productID = DBItem.ProductID });
+            viewModel.UrlImageUpdate = Url.RouteUrl(ControllerActionRouteNames.Admin.ProductPropertiesController.ProductImagesUpdate, new { productID = DBItem.ProductID });
             viewModel.UrlImageSort = Url.RouteUrl(ControllerActionRouteNames.Admin.ProductPropertiesController.ProductImagesSort, new { productID = DBItem.ProductID });
             viewModel.UrlImageDelete = Url.RouteUrl(ControllerActionRouteNames.Admin.ProductPropertiesController.ProductImagesDelete, new { productID = DBItem.ProductID });
 
@@ -319,7 +321,7 @@ namespace SixtyThreeBits.Web.Models.Admin
         {
             viewModel.AddError(Validation.ValidateRequired(errorKey: Validation.GetJQueryNameSelectorFor(nameof(viewModel.ProductName)), valueToValidate: viewModel.ProductName));
         }
-                
+
         public async Task Save(ViewModel viewModel)
         {
             var repository = RepositoriesFactory.CreateProductsRepository();
@@ -343,13 +345,13 @@ namespace SixtyThreeBits.Web.Models.Admin
                     ProductIsPublished = viewModel.ProductIsPublished,
                     ProductIsFeatured = viewModel.ProductIsFeatured,
                     ProductSKU = viewModel.ProductSKU ?? Constants.NullValueFor.String
-                }                
+                }
             );
 
-            if(repository.IsError)
+            if (repository.IsError)
             {
                 viewModel.AddError(repository.ErrorMessage);
-            }            
+            }
         }
 
         public async Task<AjaxResponse> DeleteImage()
@@ -379,33 +381,93 @@ namespace SixtyThreeBits.Web.Models.Admin
             var viewModel = new AjaxResponse();
 
             var postedFile = Request.Form.Files[0];
-            var productImageFilenameOriginal = postedFile.FileName;
-            var productImageFilename = GetFilenameFromUploadedFile(postedFile);
 
-            var repository = RepositoriesFactory.CreateProductsRepository();
-            var productImageID = await repository.ProductsImagesIUD(
-                databaseAction: Enums.DatabaseActions.CREATE,
-                productImageID: null,
-                productImage: new ProductImageIudDTO
-                {
-                    ProductID = DBItem.ProductID,
-                    ProductImageFilename = productImageFilename
-                }
-            );
-
-            if (productImageID > 0)
+            if (postedFile.Length > 2097152) //2MB
             {
-                await SaveUploadedFile(postedFile: postedFile, filename: productImageFilename, folderPath: _folderPath);
+                viewModel.Data = "Max file size exceeded";
+            }
+            else
+            {
+                var productImageFilenameOriginal = postedFile.FileName;
+                var productImageFilename = GetFilenameFromUploadedFile(postedFile);
 
-                viewModel.Data = new ViewModel.ProductImage
+                var repository = RepositoriesFactory.CreateProductsRepository();
+                var productImageID = await repository.ProductsImagesIUD(
+                    databaseAction: Enums.DatabaseActions.CREATE,
+                    productImageID: null,
+                    productImage: new ProductImageIudDTO
+                    {
+                        ProductID = DBItem.ProductID,
+                        ProductImageFilename = productImageFilename
+                    }
+                );
+
+                if (productImageID > 0)
                 {
-                    ProductImageID = productImageID,
-                    ProductImageFilename = productImageFilenameOriginal,
-                    ProductImageFileHttpPath = FileStorage.GetUploadedFileHttpPath(productImageFilename, _folderPath)
-                };
-                viewModel.IsSuccess = true;
+                    await SaveUploadedFile(postedFile: postedFile, filename: productImageFilename, folderPath: _folderPath);
+
+                    DBItem = await repository.ProductsGetSingleByID(DBItem.ProductID);
+                    var firstImage = DBItem.ProductImages?.FirstOrDefault();
+                    if (firstImage != null)
+                    {
+                        await repository.ProductsIUD(
+                            databaseAction: Enums.DatabaseActions.UPDATE,
+                            productID: DBItem.ProductID,
+                            product: new ProductIudDTO
+                            {
+                                ProductImageFilename = firstImage.ProductImageFilename,
+                                ProductImageAltText = firstImage.ProductImageAltText
+                            }
+                        );
+                    }
+
+                    viewModel.Data = new ViewModel.ProductImage
+                    {
+                        ProductImageID = productImageID,
+                        ProductImageFilename = productImageFilenameOriginal,
+                        ProductImageFileHttpPath = FileStorage.GetUploadedFileHttpPath(productImageFilename, _folderPath)
+                    };
+                    viewModel.IsSuccess = true;
+                }
             }
 
+            return viewModel;
+        }
+
+        public async Task<AjaxResponse> UpdateProductImages(UpdateProductImageSubmitModel submitModel)
+        {
+            var viewModel = new AjaxResponse();
+
+            var productImage = DBItem.ProductImages?.FirstOrDefault(Item => Item.ProductImageID == submitModel.ProductImageID);
+            if (productImage != null)
+            {
+                var repository = RepositoriesFactory.CreateProductsRepository();
+                await repository.ProductsImagesIUD(
+                    databaseAction: Enums.DatabaseActions.UPDATE,
+                    productImageID: submitModel.ProductImageID,
+                    productImage: new ProductImageIudDTO
+                    {
+                        ProductImageAltText = submitModel.ProductImageAltText ?? Constants.NullValueFor.String
+                    }
+                );
+
+                if (!repository.IsError)
+                {
+                    var firstImage = DBItem.ProductImages?.FirstOrDefault();
+                    if (firstImage != null && firstImage.ProductImageID == submitModel.ProductImageID)
+                    {
+                        await repository.ProductsIUD(
+                            databaseAction: Enums.DatabaseActions.UPDATE,
+                            productID: DBItem.ProductID,
+                            product: new ProductIudDTO
+                            {
+                                ProductImageAltText = submitModel.ProductImageAltText ?? Constants.NullValueFor.String
+                            }
+                        );
+                    }
+                    viewModel.IsSuccess = true;
+                }
+            }
             return viewModel;
         }
 
@@ -474,6 +536,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             public bool HasProductProducerCountries => ProductProducerCountries?.Any() == true;
 
             public string UrlImageUpload { get; set; }
+            public string UrlImageUpdate { get; set; }
             public string UrlImageDelete { get; set; }
             public string UrlImageSort { get; set; }
 
@@ -504,6 +567,7 @@ namespace SixtyThreeBits.Web.Models.Admin
                 public int? ProductImageID { get; set; }
                 public string ProductImageFilename { get; set; }
                 public string ProductImageFileHttpPath { get; set; }
+                public string ProductImageAltText { get; set; }
                 #endregion
             }
             #endregion
@@ -513,6 +577,14 @@ namespace SixtyThreeBits.Web.Models.Admin
         {
             #region Properties
             public int? ProductImageID { get; set; }
+            #endregion
+        }
+
+        public class UpdateProductImageSubmitModel
+        {
+            #region Properties
+            public int? ProductImageID { get; set; }
+            public string ProductImageAltText { get; set; }
             #endregion
         }
         #endregion

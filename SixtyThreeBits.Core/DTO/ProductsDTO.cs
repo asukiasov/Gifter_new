@@ -6,16 +6,16 @@ namespace SixtyThreeBits.Core.DTO
     public record ProductCategoryDTO
     {
         #region Properties
-        public int? ProductCategoryID { get; set; }
-        public int? ProductCategoryParentID { get; set; }
-        public string ProductCategorySlug { get; set; }
-        public string ProductCategoryName { get; set; }
-        public string ProductCategoryNameEng { get; set; }
-        public string ProductCategoryImageFilename { get; set; }
-        public int? ProductCategorySortIndex { get; set; }
-        public string ProductCategoryDescriptionShort { get; set; }
-        public string ProductCategoryDescriptionShortEng { get; set; }
-        public DateTime? ProductCategoryDateCreated { get; set; }
+        public int? ProductCategoryID { get; init; }
+        public int? ProductCategoryParentID { get; init; }
+        public string ProductCategorySlug { get; init; }
+        public string ProductCategoryName { get; init; }
+        public string ProductCategoryNameEng { get; init; }
+        public string ProductCategoryImageFilename { get; init; }
+        public int? ProductCategorySortIndex { get; init; }
+        public string ProductCategoryDescriptionShort { get; init; }
+        public string ProductCategoryDescriptionShortEng { get; init; }
+        public DateTime? ProductCategoryDateCreated { get; init; }
         #endregion
 
         #region Methods
@@ -76,6 +76,7 @@ namespace SixtyThreeBits.Core.DTO
         public decimal? ProductPriceOld { get; init; }
         public decimal? ProductRemainder { get; init; }
         public string ProductImageFilename { get; init; }
+        public string ProductImageAltText { get; init; }
         public string ProductDescriptionShort { get; init; }
         public string ProductDescriptionShortEng { get; init; }
         public string ProductDescription { get; init; }
@@ -95,6 +96,7 @@ namespace SixtyThreeBits.Core.DTO
             #region Properties
             public int? ProductImageID { get; init; }
             public string ProductImageFilename { get; init; }
+            public string ProductImageAltText { get; init; }
             #endregion
         }
         #endregion
@@ -103,7 +105,6 @@ namespace SixtyThreeBits.Core.DTO
     public record ProductIudDTO
     {
         #region Properties
-        public int? ProductID { get; init; }
         public int? ProductCategoryID { get; init; }
         public int? CountryIDProducer { get; init; }
         public int? BrandID { get; init; }
@@ -114,6 +115,7 @@ namespace SixtyThreeBits.Core.DTO
         public decimal? ProductPriceOld { get; init; }
         public decimal? ProductRemainder { get; init; }
         public string ProductImageFilename { get; init; }
+        public string ProductImageAltText { get; init; }
         public string ProductDescriptionShort { get; init; }
         public string ProductDescriptionShortEng { get; init; }
         public string ProductDescription { get; init; }
@@ -146,6 +148,7 @@ namespace SixtyThreeBits.Core.DTO
         public int? ProductImageID { get; init; }
         public int? ProductID { get; init; }
         public string ProductImageFilename { get; init; }
+        public string ProductImageAltText { get; init; }
         public int? ProductImageSortIndex { get; init; }
         #endregion
     }

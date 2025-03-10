@@ -240,11 +240,12 @@
             public static class ProductPropertiesController
             {
                 #region Properties
-                public const string Properties = "AdminProductsPropertiesControllerProperties";
-                public const string DeleteImage = "AdminProductsPropertiesControllerDeleteImage";
-                public const string ProductImagesUpload = "AdminProductsPropertiesControllerProductImagesUpload";
-                public const string ProductImagesSort = "AdminProductsPropertiesControllerProductImagesSort";
-                public const string ProductImagesDelete = "AdminProductsPropertiesControllerProductImagesDelete";
+                public const string Properties = "AdminProductPropertiesControllerProperties";
+                public const string DeleteImage = "AdminProductPropertiesControllerDeleteImage";
+                public const string ProductImagesUpload = "AdminProductPropertiesControllerProductImagesUpload";
+                public const string ProductImagesUpdate = "AdminProductPropertiesControllerProductImagesUpdate";
+                public const string ProductImagesSort = "AdminProductPropertiesControllerProductImagesSort";
+                public const string ProductImagesDelete = "AdminProductPropertiesControllerProductImagesDelete";
                 #endregion
             }
 

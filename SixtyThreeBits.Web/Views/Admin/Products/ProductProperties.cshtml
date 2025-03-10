@@ -130,12 +130,21 @@
                 foreach (var Item in Model.ProductImages)
                 {
                     <div class="col-md-4 col-xl-2 js-product-image-item" data-id="@Html.Raw(Item.ProductImageID)">
-                        <figure class="embed-responsive img-wrap">
+                        <figure class="embed-responsive img-wrap mb-1 radius-bottom-none">
                             <img class="embed-responsive-item js-product-image" src="@Html.Raw(Item.ProductImageFileHttpPath)" />
                             <a class="remove-btn js-product-image-delete-button" href="#">
                                 <i class="fa-light fa-trash-can"></i>
                             </a>
                         </figure>
+                        <div class="form-group">
+                            <div class="input-group">
+                                <input type="text" class="form-control form-control-sm alt-input js-product-image-alt-text-textbox" value="@Html.Raw(Item.ProductImageAltText)" placeholder="Enter Alt Text" />
+                                <div class="input-group-append">
+                                    <button class="btn btn-sm btn-primary alt-save-btn js-product-image-save-button" type="button"><i class="fas fa-save"></i></button>
+                                </div>
+                            </div>
+                            <div class="invalid-feedback"></div>
+                        </div>
                     </div>
                 }
             }
@@ -152,7 +161,7 @@
     </div>
 </div>
 @section FooterSection{
-    
+
     <script id="productImageProgressTemplate" type="text/template7">
         <div class="col-md-4 col-xl-2 js-product-image-item" data-filename="{{productImageFilename}}">
             <div class="uploader-progress-wrap">
@@ -167,21 +176,31 @@
     </script>
     <script id="productImageTemplate" type="text/template7">
         <div class="col-md-4 col-xl-2 js-product-image-item" data-id="{{ProductImageID}}">
-            <figure class="embed-responsive img-wrap">
+            <figure class="embed-responsive img-wrap mb-1 radius-bottom-none">
                 <img class="embed-responsive-item js-product-image" src="{{ProductImageFileHttpPath}}" />
                 <a class="remove-btn js-product-image-delete-button" href="#">
                     <i class="fa-light fa-trash-can"></i>
                 </a>
             </figure>
+            <div class="form-group">
+                <div class="input-group">
+                    <input type="text" class="form-control form-control-sm alt-input js-product-image-alt-text-textbox" value="" placeholder="Enter Alt Text" />
+                    <div class="input-group-append">
+                        <button class="btn btn-sm btn-primary alt-save-btn js-product-image-save-button" type="button"><i class="fas fa-save"></i></button>
+                    </div>
+                </div>
+                <div class="invalid-feedback"></div>
+            </div>
         </div>
     </script>
 
     <script src="/js/admin/products/productProperties.js"></script>
     <script>
-    productModel.urlImageUpload = '@Html.Raw(Model.UrlImageUpload)';
-    productModel.urlImageDelete = '@Html.Raw(Model.UrlImageDelete)';
-    productModel.urlImageSort = '@Html.Raw(Model.UrlImageSort)';
-    productModel.textConfirmDeleteImage = '@Html.Raw(Model.TextConfirmDeleteImage)';
+        productModel.urlImageUpload = '@Html.Raw(Model.UrlImageUpload)';
+        productModel.urlImageUpdate = '@Html.Raw(Model.UrlImageUpdate)';
+        productModel.urlImageDelete = '@Html.Raw(Model.UrlImageDelete)';
+        productModel.urlImageSort = '@Html.Raw(Model.UrlImageSort)';
+        productModel.textConfirmDeleteImage = '@Html.Raw(Model.TextConfirmDeleteImage)';
     </script>
     @if (Model.HasErrors)
     {

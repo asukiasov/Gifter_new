@@ -301,7 +301,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
             var productJson = product.ToJson();
 
             var result = await TryToReturnAsyncTask(
-                logString: $"{nameof(ProductsIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(productID)} = {productID})", 
+                logString: $"{nameof(ProductsIUD)}({nameof(databaseAction)} = {databaseAction}, {nameof(productID)} = {productID}, {nameof(productJson)} = {productJson})", 
                 asyncFuncToTry: async () =>
                 {
                     using (var dbContext = _dbContextFactory.CreateDbContext())
