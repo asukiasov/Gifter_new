@@ -6,16 +6,16 @@ namespace SixtyThreeBits.Core.DTO
     public record ProductCategoryDTO
     {
         #region Properties
-        public int? ProductCategoryID { get; set; }
-        public int? ProductCategoryParentID { get; set; }
-        public string ProductCategorySlug { get; set; }
-        public string ProductCategoryName { get; set; }
-        public string ProductCategoryNameEng { get; set; }
-        public string ProductCategoryImageFilename { get; set; }
-        public int? ProductCategorySortIndex { get; set; }
-        public string ProductCategoryDescriptionShort { get; set; }
-        public string ProductCategoryDescriptionShortEng { get; set; }
-        public DateTime? ProductCategoryDateCreated { get; set; }
+        public int? ProductCategoryID { get; init; }
+        public int? ProductCategoryParentID { get; init; }
+        public string ProductCategorySlug { get; init; }
+        public string ProductCategoryName { get; init; }
+        public string ProductCategoryNameEng { get; init; }
+        public string ProductCategoryImageFilename { get; init; }
+        public int? ProductCategorySortIndex { get; init; }
+        public string ProductCategoryDescriptionShort { get; init; }
+        public string ProductCategoryDescriptionShortEng { get; init; }
+        public DateTime? ProductCategoryDateCreated { get; init; }
         #endregion
 
         #region Methods
@@ -105,7 +105,6 @@ namespace SixtyThreeBits.Core.DTO
     public record ProductIudDTO
     {
         #region Properties
-        public int? ProductID { get; init; }
         public int? ProductCategoryID { get; init; }
         public int? CountryIDProducer { get; init; }
         public int? BrandID { get; init; }

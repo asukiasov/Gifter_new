@@ -18,16 +18,16 @@
         });
     },
     sortImages: function () {
-        const SortIndexes = new Array();
+        const sortIndexes = new Array();
 
-        $('.js-product-image-item').each(function (Index, Item) {
-            SortIndexes.push({ ID: $(Item).attr('data-id'), SortIndex: Index, });
+        $('.js-product-image-item').each(function (index, item) {
+            sortIndexes.push({ ID: $(item).attr('data-id'), SortIndex: index, });
         });
 
         $.ajax({
             method: 'POST',
             url: productModel.urlImageSort,
-            data: { SortIndexes: SortIndexes },
+            data: { SortIndexes: sortIndexes },
             dataType: 'json',            
             success: function () {
             }
