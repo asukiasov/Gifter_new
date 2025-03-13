@@ -570,6 +570,31 @@ $.fn.extend({
         this.each(function () {
             $('<img/>')[0].src = this;
         });
+    },
+    showLoader: function (showDarkSpinner) {
+        var _this = $(this).first();
+        _this.hideLoader();
+
+        var classToUse = showDarkSpinner == true ? 'is-loading-dark': 'is-loading';
+
+        if (!_this.hasClass(classToUse)) {
+            var $span = $('<span></span>');
+            _this.contents().appendTo($span);
+            _this.append($span);
+
+            _this.addClass(classToUse);
+        }
+    },
+    hideLoader: function () {
+        var _this = $(this).first();
+        _this.removeClass('is-loading');
+        _this.removeClass('is-loading-dark');
+
+        var $span = _this.find('span');
+        if ($span.length > 0) {
+            $span.contents().appendTo(_this);
+            $span.remove();
+        }
     }
 });
 
