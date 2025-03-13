@@ -1,6 +1,5 @@
 ﻿using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
-using SixtyThreeBits.Libraries.Extensions;
 using System;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -173,10 +172,13 @@ namespace SixtyThreeBits.Core.Libraries
             _errorMessageForLog = string.Format("Source File - {0}{4}Line Number - {1}{4}{2} --- {3}", callerFilePath, callerLineNumber, logString, ErrorMessage, Environment.NewLine);
             if (!IsCustomDatabaseMessage)
             {
-                _errorMessageForLog.LogString();
                 if (_logger != null)
                 {
                     _logger.LogError(ex, _errorMessageForLog);
+                }
+                else
+                {
+                    throw ex;
                 }
             }
         }
@@ -198,12 +200,15 @@ namespace SixtyThreeBits.Core.Libraries
             }
             ErrorMessage = sb.ToString();
             _errorMessageForLog = string.Format("Source File - {0}{4}Line Number - {1}{4}{2} --- {3}", callerFilePath, callerLineNumber, logString, ErrorMessage, Environment.NewLine);
-            if (!IsCustomDatabaseMessage)
+            if (!IsCustomDatabaseMessage && _logger != null)
             {
-                _errorMessageForLog.LogString();
                 if (_logger != null)
                 {
                     _logger.LogError(ex, _errorMessageForLog);
+                }
+                else
+                {
+                    throw ex;
                 }
             }
         }

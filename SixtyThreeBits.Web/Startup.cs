@@ -10,7 +10,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using SixtyThreeBits.Core.Infrastructure.Repositories;
+using SixtyThreeBits.Core.Libraries;
 using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries.Extensions;
 using SixtyThreeBits.Web.Domain.Libraries;
@@ -29,6 +31,7 @@ namespace SixtyThreeBits.Web
         readonly AppSettingsCollection _appSettings;
         readonly UtilityCollection _utilities;
         readonly RepositoryFactory _repositoryFactory;
+        readonly ILogger _logger;
 
         public Startup(IWebHostEnvironment env)
         {            
@@ -47,7 +50,8 @@ namespace SixtyThreeBits.Web
             }
             _appSettings = new AppSettingsCollection(env.ContentRootPath, env.WebRootPath, appSettingsConfiguration);
             _utilities = new UtilityCollection(env.ContentRootPath, env.WebRootPath);
-            _repositoryFactory = new RepositoryFactory(_appSettings.ConnectionStrings.DbConnectionString);
+            _logger = new ErrorLogger();
+            _repositoryFactory = new RepositoryFactory(dbConnectionString: _appSettings.ConnectionStrings.DbConnectionString, logger: _logger);
         }
 
         public void ConfigureServices(IServiceCollection services)
@@ -55,7 +59,8 @@ namespace SixtyThreeBits.Web
             services.AddSingleton(_appSettings);
             services.AddSingleton(_utilities);
             services.AddSingleton(_repositoryFactory);
-            
+            services.AddSingleton(_logger);
+
             services.AddDistributedMemoryCache();
             services.AddSession(options =>
             {
@@ -117,8 +122,12 @@ namespace SixtyThreeBits.Web
 						if (exceptionHandlerPathFeature != null)
 						{
 							var messageCollected = await ExceptionRequestInformationCollector.Create(request: context.Request, exception: exceptionHandlerPathFeature.Error).Collect();
-							messageCollected.LogString();
-							await RenderNotFoundView(context);
+                            if (_logger != null)
+                            {
+                                _logger.LogError(exceptionHandlerPathFeature.Error, messageCollected);
+                            }
+
+                            await RenderNotFoundView(context);
 						}
 					});
 				});

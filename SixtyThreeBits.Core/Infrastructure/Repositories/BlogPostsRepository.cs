@@ -103,9 +103,9 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
 
         public async Task<List<BlogPostListDTO>> BlogPostList()
         {
-            var result = await TryToReturn(
+            var result = await TryToReturnAsyncTask(
                 logString: $"{nameof(BlogPostList)}()", 
-                funcToTry: async () =>
+                asyncFuncToTry: async () =>
                 {
                     using (var dbContext = _dbContextFactory.CreateDbContext())
                     {
