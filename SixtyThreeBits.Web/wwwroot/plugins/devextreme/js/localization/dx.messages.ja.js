@@ -1,9 +1,9 @@
 /*!
 * DevExtreme (dx.messages.ja.js)
-* Version: 24.2.3
-* Build date: Fri Dec 06 2024
+* Version: 24.2.7
+* Build date: Mon Apr 28 2025
 *
-* Copyright (c) 2012 - 2024 Developer Express Inc. ALL RIGHTS RESERVED
+* Copyright (c) 2012 - 2025 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
 */
 "use strict";
@@ -70,6 +70,8 @@
             "dxList-selectAll-indeterminate": "Half-checked",
             "dxList-selectAll-checked": "Checked",
             "dxList-selectAll-notChecked": "Not checked",
+            "dxList-ariaRoleDescription": "List",
+            "dxList-listAriaLabel-itemContent": "List item content",
             "dxScrollView-pullingDownText": "\u5f15\u3063\u5f35\u3063\u3066\u66f4\u65b0\u2026",
             "dxScrollView-pulledDownText": "\u6307\u3092\u96e2\u3057\u3066\u66f4\u65b0\u2026",
             "dxScrollView-refreshingText": "\u66f4\u65b0\u4e2d\u2026",
@@ -351,6 +353,7 @@
             "dxTagBox-allSelected": "\u3059\u3079\u3066\u9078\u629e\u6e08\u307f ({0})",
             "dxTagBox-moreSelected": "\u305d\u306e\u4ed6 {0} \u3064\u9078\u629e",
             "dxTagBox-tagRoleDescription": "Tag. Press the delete button to remove this tag",
+            "dxTagBox-ariaRoleDescription": "Tag box",
             "vizExport-printingButtonText": "\u5370\u5237",
             "vizExport-titleMenuText": "\u30a8\u30af\u30b9\u30dd\u30fc\u30c8 / \u5370\u5237",
             "vizExport-exportButtonText": "{0} \u30d5\u30a1\u30a4\u30eb",
@@ -746,7 +749,8 @@
             "dxMultiView-elementAriaLabel": "Use the arrow keys or swipe to navigate between views",
             "dxMultiView-itemAriaRoleDescription": "View",
             "dxMultiView-itemAriaLabel": "{0} of {1}",
-            "dxSplitter-resizeHandleAriaLabel": "Split bar"
+            "dxSplitter-resizeHandleAriaLabel": "Split bar",
+            "dxSplitter-resizeHandleAriaRoleDescription": "Separator"
         }
     })
 }));

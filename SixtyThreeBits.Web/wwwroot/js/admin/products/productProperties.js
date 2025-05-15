@@ -12,6 +12,7 @@
             animation: 150,
             fallbackOnBody: true,
             swapThreshold: 0.65,
+            handle: '.js-product-image',
             onSort: function (e) {
                 productModel.sortImages();
             },
@@ -45,11 +46,12 @@
             data: { ProductImageID: productImageID, ProductImageAltText: productImageAltText },
             dataType: 'json',
             beforeSend: function () {
-                preloader.show();
+                saveButtton.showLoader();
             },
             success: function (res) {
                 if (res.IsSuccess) {
                     successErrorToast63Bits.showSuccessMessage();
+                    saveButtton.attr('data-is-unsaved', false);
                 }
                 else {
                     if (res.Data) {
@@ -69,7 +71,7 @@
                 components63Bits.dialog.error();
             },
             complete: function () {
-                preloader.hide();
+                saveButtton.hideLoader();
             }
         });
     },
@@ -181,7 +183,27 @@ $(function () {
         e.preventDefault();
 
         const _this = $(this);
-        productModel.updateImage(_this);
+        const isUnsaved = _this.attr('data-is-unsaved') === 'true';
+        if (isUnsaved) {
+            productModel.updateImage(_this);
+        }
+    });
+
+    $('.js-product-images-container').on('keydown', '.js-product-image-alt-text-textbox', function (e) {
+        if (e.keyCode === 9) {
+            return; // Exclude Tab key
+        }
+        const saveBtn = $(this).closest('.js-product-image-item').find('.js-product-image-save-button');
+        saveBtn.attr('data-is-unsaved', true);
+    });
+
+    $('.js-product-images-container').on('focusout', '.js-product-image-alt-text-textbox', function () {
+        const _this = $(this);
+        const saveBtn = _this.closest('.js-product-image-item').find('.js-product-image-save-button');
+        const isUnsaved = saveBtn.attr('data-is-unsaved') === 'true';
+        if (isUnsaved) {
+            productModel.updateImage(saveBtn);
+        }
     });
 
     $('.js-product-images-container').on('click', '.js-product-image-delete-button', function (e) {
@@ -189,5 +211,5 @@ $(function () {
 
         const _this = $(this);
         productModel.deleteImage(_this);
-    });
+    });    
 });

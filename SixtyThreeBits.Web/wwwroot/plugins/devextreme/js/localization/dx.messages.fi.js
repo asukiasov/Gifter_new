@@ -1,9 +1,9 @@
 /*!
 * DevExtreme (dx.messages.fi.js)
-* Version: 24.2.3
-* Build date: Fri Dec 06 2024
+* Version: 24.2.7
+* Build date: Mon Apr 28 2025
 *
-* Copyright (c) 2012 - 2024 Developer Express Inc. ALL RIGHTS RESERVED
+* Copyright (c) 2012 - 2025 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
 */
 "use strict";
@@ -70,6 +70,8 @@
             "dxList-selectAll-indeterminate": "Half-checked",
             "dxList-selectAll-checked": "Checked",
             "dxList-selectAll-notChecked": "Not checked",
+            "dxList-ariaRoleDescription": "List",
+            "dxList-listAriaLabel-itemContent": "List item content",
             "dxScrollView-pullingDownText": "P\xe4ivit\xe4 vet\xe4m\xe4ll\xe4 alas...",
             "dxScrollView-pulledDownText": "P\xe4ivit\xe4 vapauttamalla...",
             "dxScrollView-refreshingText": "P\xe4ivitet\xe4\xe4n...",
@@ -351,6 +353,7 @@
             "dxTagBox-allSelected": "Kaikki valitut ({0})",
             "dxTagBox-moreSelected": "{0} lis\xe4\xe4",
             "dxTagBox-tagRoleDescription": "Tag. Press the delete button to remove this tag",
+            "dxTagBox-ariaRoleDescription": "Tag box",
             "vizExport-printingButtonText": "Tulosta",
             "vizExport-titleMenuText": "Vienti/Tulostus",
             "vizExport-exportButtonText": "{0} tiedosto",
@@ -746,7 +749,8 @@
             "dxMultiView-elementAriaLabel": "Use the arrow keys or swipe to navigate between views",
             "dxMultiView-itemAriaRoleDescription": "View",
             "dxMultiView-itemAriaLabel": "{0} of {1}",
-            "dxSplitter-resizeHandleAriaLabel": "Split bar"
+            "dxSplitter-resizeHandleAriaLabel": "Split bar",
+            "dxSplitter-resizeHandleAriaRoleDescription": "Separator"
         }
     })
 }));

@@ -114,8 +114,9 @@ namespace SixtyThreeBits.Core.Infrastructure.Database
             {
                 if (outputParameterToGetIndex < outputParametersCount)
                 {
-                    var value = _outputParameters[outputParameterToGetIndex].Value;
-                    result = (T)value;
+                    var param = _outputParameters[outputParameterToGetIndex];
+                    var value = param.Value == DBNull.Value ? null : param.Value;
+                    result = value == null ? default(T) : (T)value;
                 }
             }
             return result;

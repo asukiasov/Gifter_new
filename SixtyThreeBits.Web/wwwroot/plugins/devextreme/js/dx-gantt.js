@@ -1,9 +1,9 @@
 /*!
  * DevExpress Gantt (dx-gantt)
- * Version: 4.1.56
- * Build date: Mon Jun 10 2024
+ * Version: 4.1.60
+ * Build date: Thu Mar 13 2025
  *
- * Copyright (c) 2012 - 2024 Developer Express Inc. ALL RIGHTS RESERVED
+ * Copyright (c) 2012 - 2025 Developer Express Inc. ALL RIGHTS RESERVED
  * Read about DevExpress licensing here: https://www.devexpress.com/Support/EULAs
  */
 (function webpackUniversalModuleDefinition(root, factory) {
@@ -18068,11 +18068,14 @@ var CustomTaskRender = (function () {
         if (this._hasRepeatedTemplateRenderCall(index))
             return;
         var viewItem = this.getViewItem(index);
-        viewItem.isCustom = false;
-        var taskTemplateContainer = document.createElement("DIV");
-        var taskInformation = this.createCustomTaskInformation(index);
-        viewItem.isCustom = true;
-        taskTemplateFunction(taskTemplateContainer, taskInformation, this.onTaskTemplateContainerRendered.bind(this), index);
+        if (viewItem) {
+            viewItem.isCustom = false;
+            var taskTemplateContainer = document.createElement("DIV");
+            var taskInformation = this.createCustomTaskInformation(index);
+            viewItem.isCustom = true;
+            taskTemplateFunction(taskTemplateContainer, taskInformation, this.onTaskTemplateContainerRendered.bind(this), index);
+        }
+        this._clearTemplateFuncsStack(index);
     };
     CustomTaskRender.prototype.onTaskTemplateContainerRendered = function (taskTemplateContainer, taskIndex) {
         var _this = this;
@@ -18107,16 +18110,16 @@ var CustomTaskRender = (function () {
     };
     CustomTaskRender.prototype.drawCustomTask = function (taskTemplateContainer, taskIndex) {
         var _this = this;
-        if (!this.taskElements[taskIndex])
-            return;
         var viewItem = this.getViewItem(taskIndex);
+        if (!viewItem || !this.taskElements[taskIndex])
+            return;
         viewItem.visible = !!taskTemplateContainer.innerHTML;
         this.taskElements[taskIndex].innerHTML = taskTemplateContainer.innerHTML;
         viewItem.size.height = this.taskElements[taskIndex].offsetHeight;
         viewItem.size.width = this.taskElements[taskIndex].offsetWidth;
         this.destroyTemplate(this.taskElements[taskIndex]);
         this._taskRender.removeTaskElement(taskIndex);
-        if (viewItem.visible) {
+        if (viewItem.visible && viewItem.task.isValid()) {
             var taskWrapperInfo = this.gridLayoutCalculator.getTaskWrapperElementInfo(taskIndex);
             this.createCustomTaskWrapperElement(taskIndex, taskWrapperInfo);
             this.taskElements[taskIndex].appendChild(taskTemplateContainer);
@@ -19729,15 +19732,16 @@ var TaskRender = (function () {
         var viewItem = this.getViewItem(index);
         if (taskTemplateFunction)
             this.customTaskRender.createCustomTaskElement(index, taskTemplateFunction);
-        if (!viewItem.task.isValid() || !viewItem.visible) {
-            var taskDependencies = this.getTaskDependencies(viewItem.task.internalId);
-            this.addInvalidTaskDependencies(taskDependencies);
-            if (viewItem.selected)
-                this.createTaskSelectionElement(index);
-            return;
-        }
-        if (!viewItem.isCustom)
+        else {
+            if (!viewItem.task.isValid() || !viewItem.visible) {
+                var taskDependencies = this.getTaskDependencies(viewItem.task.internalId);
+                this.addInvalidTaskDependencies(taskDependencies);
+                if (viewItem.selected)
+                    this.createTaskSelectionElement(index);
+                return;
+            }
             this.createDefaultTaskElement(index);
+        }
     };
     TaskRender.prototype.createTaskVisualElement = function (index) {
         var taskElementInfo = this.gridLayoutCalculator.getTaskElementInfo(index, this.taskTitlePosition !== Enums_1.TaskTitlePosition.Inside);

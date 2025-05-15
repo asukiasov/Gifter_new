@@ -34,3 +34,22 @@
     transform: translateX(-5px);
   }
 }
+
+/* is loading */
+.is-loading,
+.is-loading-dark{
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: 28px 28px;
+    pointer-events: none;
+}
+.is-loading{
+	background-image: url("../../images/icons/spinner_white.svg");
+}
+.is-loading-dark{
+	background-image: url("../../images/icons/spinner.svg");
+}
+.is-loading > *,
+.is-loading-dark > *{
+	opacity: 0;
+}

@@ -394,8 +394,8 @@ namespace SixtyThreeBits.Core.Infrastructure.Services
             #region Properties
             public string Name { get; set; }
             public string Key { get; set; }
-            public long Size { get; set; }
-            public DateTime DateModified { get; set; }
+            public long? Size { get; set; }
+            public DateTime? DateModified { get; set; }
             #endregion
         }
         #endregion

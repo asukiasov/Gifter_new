@@ -1,5 +1,5 @@
 /*!
- * DevExtreme-Quill Editor v.1.7.1
+ * DevExtreme-Quill Editor v.1.7.2
  * https://js.devexpress.com/
  * Copyright (c) 2020, Developer Express Inc.
  * Copyright (c) 2017, Slab
@@ -2730,7 +2730,7 @@ Quill.DEFAULTS = {
 Quill.events = _emitter__WEBPACK_IMPORTED_MODULE_5__/* ["default"].events */ .Z.events;
 Quill.sources = _emitter__WEBPACK_IMPORTED_MODULE_5__/* ["default"].sources */ .Z.sources;
 // eslint-disable-next-line no-undef
-Quill.version =  false ? 0 : "1.7.1";
+Quill.version =  false ? 0 : "1.7.2";
 Quill.MS_LIST_DATA_KEY = 'mso-list-data';
 Quill.replaceStyleAttribute = function (html) {
   var tagAttrsRegex = /(?:(<[a-z0-9]+\s*))([\s\S]*?)(>|\/>)/gi;
@@ -5690,6 +5690,14 @@ var Input = /*#__PURE__*/function (_Module) {
     key: "handleBeforeInput",
     value: function handleBeforeInput(event) {
       if (this.quill.composition.isCompositionInProgress() || event.defaultPrevented || !INSERT_TYPES.includes(event.inputType)) {
+        if (event.inputType === 'insertFromDrop') {
+          var htmlToInsert = event.dataTransfer.getData('text/html');
+          var containsTable = htmlToInsert.includes('<table');
+          if (containsTable) {
+            // NOTE: Table drag is not supported.
+            event.preventDefault();
+          }
+        }
         return;
       }
       var staticRange = event.getTargetRanges ? event.getTargetRanges()[0] : null;
@@ -6539,27 +6547,59 @@ function deleteRange(_ref6) {
 
 /***/ }),
 
-/***/ 9072:
+/***/ 5657:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "ZP": () => (/* binding */ Syntax)
-/* harmony export */ });
-/* unused harmony exports CodeBlock, CodeToken */
-/* harmony import */ var quill_delta__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(9098);
-/* harmony import */ var quill_delta__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(quill_delta__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var parchment__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1233);
-/* harmony import */ var _blots_inline__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(6603);
-/* harmony import */ var _core_quill__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(281);
-/* harmony import */ var _core_module__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(7094);
-/* harmony import */ var _blots_block__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(6446);
-/* harmony import */ var _blots_break__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(4122);
-/* harmony import */ var _blots_cursor__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(3657);
-/* harmony import */ var _blots_text__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(8222);
-/* harmony import */ var _formats_code__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(7309);
-/* harmony import */ var _clipboard__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(5635);
-/* harmony import */ var _utils_has_window__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(8034);
+
+// EXPORTS
+__webpack_require__.d(__webpack_exports__, {
+  "ZP": () => (/* binding */ Syntax)
+});
+
+// UNUSED EXPORTS: CodeBlock, CodeToken
+
+// EXTERNAL MODULE: ./node_modules/quill-delta/dist/Delta.js
+var Delta = __webpack_require__(9098);
+var Delta_default = /*#__PURE__*/__webpack_require__.n(Delta);
+// EXTERNAL MODULE: ./node_modules/parchment/src/parchment.ts + 17 modules
+var parchment = __webpack_require__(1233);
+// EXTERNAL MODULE: ./blots/inline.js
+var inline = __webpack_require__(6603);
+// EXTERNAL MODULE: ./core/quill.js
+var quill = __webpack_require__(281);
+// EXTERNAL MODULE: ./core/module.js
+var core_module = __webpack_require__(7094);
+// EXTERNAL MODULE: ./blots/block.js + 1 modules
+var block = __webpack_require__(6446);
+// EXTERNAL MODULE: ./blots/break.js
+var blots_break = __webpack_require__(4122);
+// EXTERNAL MODULE: ./blots/cursor.js
+var cursor = __webpack_require__(3657);
+// EXTERNAL MODULE: ./blots/text.js
+var blots_text = __webpack_require__(8222);
+// EXTERNAL MODULE: ./formats/code.js
+var code = __webpack_require__(7309);
+// EXTERNAL MODULE: ./modules/clipboard.js
+var clipboard = __webpack_require__(5635);
+// EXTERNAL MODULE: ./utils/has_window.js
+var has_window = __webpack_require__(8034);
+;// CONCATENATED MODULE: ./utils/is_version_not_less_than.js
+function isVersionNotLessThan(version, versionToCompare) {
+  var aVersionArray = version.split('.').map(Number);
+  var bVersionArray = versionToCompare.split('.').map(Number);
+  var maxVersionLength = Math.max(aVersionArray.length, bVersionArray.length);
+  for (var i = 0; i < maxVersionLength; i += 1) {
+    var _aVersionArray$i, _bVersionArray$i;
+    var a = (_aVersionArray$i = aVersionArray[i]) !== null && _aVersionArray$i !== void 0 ? _aVersionArray$i : 0;
+    var b = (_bVersionArray$i = bVersionArray[i]) !== null && _bVersionArray$i !== void 0 ? _bVersionArray$i : 0;
+    if (a !== b) {
+      return a > b;
+    }
+  }
+  return true;
+}
+;// CONCATENATED MODULE: ./modules/syntax.js
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
@@ -6594,8 +6634,9 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 
 
 
-var TokenAttributor = new parchment__WEBPACK_IMPORTED_MODULE_1__.ClassAttributor('code-token', 'hljs', {
-  scope: parchment__WEBPACK_IMPORTED_MODULE_1__.Scope.INLINE
+
+var TokenAttributor = new parchment.ClassAttributor('code-token', 'hljs', {
+  scope: parchment.Scope.INLINE
 });
 var CodeToken = /*#__PURE__*/function (_Inline) {
   _inherits(CodeToken, _Inline);
@@ -6635,7 +6676,7 @@ var CodeToken = /*#__PURE__*/function (_Inline) {
     key: "formats",
     value: function formats(node, scroll) {
       while (node != null && node !== scroll.domNode) {
-        if (node.classList && node.classList.contains(_formats_code__WEBPACK_IMPORTED_MODULE_9__/* ["default"].className */ .ZP.className)) {
+        if (node.classList && node.classList.contains(code/* default.className */.ZP.className)) {
           return _get(_getPrototypeOf(CodeToken), "formats", this).call(this, node, scroll);
         }
         node = node.parentNode;
@@ -6644,7 +6685,7 @@ var CodeToken = /*#__PURE__*/function (_Inline) {
     }
   }]);
   return CodeToken;
-}(_blots_inline__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .Z);
+}(inline/* default */.Z);
 CodeToken.blotName = 'code-token';
 CodeToken.className = 'ql-token';
 var SyntaxCodeBlock = /*#__PURE__*/function (_CodeBlock) {
@@ -6691,7 +6732,7 @@ var SyntaxCodeBlock = /*#__PURE__*/function (_CodeBlock) {
     value: function register() {}
   }]);
   return SyntaxCodeBlock;
-}(_formats_code__WEBPACK_IMPORTED_MODULE_9__/* ["default"] */ .ZP);
+}(code/* default */.ZP);
 var SyntaxCodeBlockContainer = /*#__PURE__*/function (_CodeBlockContainer) {
   _inherits(SyntaxCodeBlockContainer, _CodeBlockContainer);
   var _super3 = _createSuper(SyntaxCodeBlockContainer);
@@ -6740,8 +6781,8 @@ var SyntaxCodeBlockContainer = /*#__PURE__*/function (_CodeBlockContainer) {
       if (forced || this.forceNext || this.cachedText !== text) {
         if (text.trim().length > 0 || this.cachedText == null) {
           var oldDelta = this.children.reduce(function (delta, child) {
-            return delta.concat((0,_blots_block__WEBPACK_IMPORTED_MODULE_5__/* .blockDelta */ .qz)(child, false));
-          }, new (quill_delta__WEBPACK_IMPORTED_MODULE_0___default())());
+            return delta.concat((0,block/* blockDelta */.qz)(child, false));
+          }, new (Delta_default())());
           var delta = _highlight(text, language);
           oldDelta.diff(delta).reduce(function (index, _ref) {
             var retain = _ref.retain,
@@ -6784,10 +6825,10 @@ var SyntaxCodeBlockContainer = /*#__PURE__*/function (_CodeBlockContainer) {
     }
   }]);
   return SyntaxCodeBlockContainer;
-}(_formats_code__WEBPACK_IMPORTED_MODULE_9__/* .CodeBlockContainer */ .se);
+}(code/* CodeBlockContainer */.se);
 SyntaxCodeBlockContainer.allowedChildren = [SyntaxCodeBlock];
 SyntaxCodeBlock.requiredContainer = SyntaxCodeBlockContainer;
-SyntaxCodeBlock.allowedChildren = [CodeToken, _blots_cursor__WEBPACK_IMPORTED_MODULE_7__/* ["default"] */ .Z, _blots_text__WEBPACK_IMPORTED_MODULE_8__/* ["default"] */ .Z, _blots_break__WEBPACK_IMPORTED_MODULE_6__/* ["default"] */ .Z];
+SyntaxCodeBlock.allowedChildren = [CodeToken, cursor/* default */.Z, blots_text/* default */.Z, blots_break/* default */.Z];
 var Syntax = /*#__PURE__*/function (_Module) {
   _inherits(Syntax, _Module);
   var _super4 = _createSuper(Syntax);
@@ -6812,7 +6853,7 @@ var Syntax = /*#__PURE__*/function (_Module) {
     key: "initListener",
     value: function initListener() {
       var _this4 = this;
-      this.quill.on(_core_quill__WEBPACK_IMPORTED_MODULE_3__/* ["default"].events.SCROLL_BLOT_MOUNT */ .ZP.events.SCROLL_BLOT_MOUNT, function (blot) {
+      this.quill.on(quill/* default.events.SCROLL_BLOT_MOUNT */.ZP.events.SCROLL_BLOT_MOUNT, function (blot) {
         if (!(blot instanceof SyntaxCodeBlockContainer)) return;
         var select = _this4.quill.root.ownerDocument.createElement('select');
         _this4.options.languages.forEach(function (_ref3) {
@@ -6841,7 +6882,7 @@ var Syntax = /*#__PURE__*/function (_Module) {
     value: function initTimer() {
       var _this5 = this;
       var timer = null;
-      this.quill.on(_core_quill__WEBPACK_IMPORTED_MODULE_3__/* ["default"].events.SCROLL_OPTIMIZE */ .ZP.events.SCROLL_OPTIMIZE, function () {
+      this.quill.on(quill/* default.events.SCROLL_OPTIMIZE */.ZP.events.SCROLL_OPTIMIZE, function () {
         clearTimeout(timer);
         timer = setTimeout(function () {
           _this5.highlight();
@@ -6856,15 +6897,15 @@ var Syntax = /*#__PURE__*/function (_Module) {
       var blot = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
       var force = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
       if (this.quill.selection.composing) return;
-      this.quill.update(_core_quill__WEBPACK_IMPORTED_MODULE_3__/* ["default"].sources.USER */ .ZP.sources.USER);
+      this.quill.update(quill/* default.sources.USER */.ZP.sources.USER);
       var range = this.quill.getSelection();
       var blots = blot == null ? this.quill.scroll.descendants(SyntaxCodeBlockContainer) : [blot];
       blots.forEach(function (container) {
         container.highlight(_this6.highlightBlot, force);
       });
-      this.quill.update(_core_quill__WEBPACK_IMPORTED_MODULE_3__/* ["default"].sources.SILENT */ .ZP.sources.SILENT);
-      if (range != null) {
-        this.quill.setSelection(range, _core_quill__WEBPACK_IMPORTED_MODULE_3__/* ["default"].sources.SILENT */ .ZP.sources.SILENT);
+      this.quill.update(quill/* default.sources.SILENT */.ZP.sources.SILENT);
+      if (range != null && this.quill.hasFocus()) {
+        this.quill.setSelection(range, quill/* default.sources.SILENT */.ZP.sources.SILENT);
       }
     }
   }, {
@@ -6873,25 +6914,33 @@ var Syntax = /*#__PURE__*/function (_Module) {
       var language = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'plain';
       language = this.languages[language] ? language : 'plain';
       if (language === 'plain') {
-        return (0,_blots_text__WEBPACK_IMPORTED_MODULE_8__/* .escapeText */ .b)(text).split('\n').reduce(function (delta, line, i) {
+        return (0,blots_text/* escapeText */.b)(text).split('\n').reduce(function (delta, line, i) {
           if (i !== 0) {
-            delta.insert('\n', _defineProperty({}, _formats_code__WEBPACK_IMPORTED_MODULE_9__/* ["default"].blotName */ .ZP.blotName, language));
+            delta.insert('\n', _defineProperty({}, code/* default.blotName */.ZP.blotName, language));
           }
           return delta.insert(line);
-        }, new (quill_delta__WEBPACK_IMPORTED_MODULE_0___default())());
+        }, new (Delta_default())());
       }
       var container = this.quill.root.ownerDocument.createElement('div');
-      container.classList.add(_formats_code__WEBPACK_IMPORTED_MODULE_9__/* ["default"].className */ .ZP.className);
-      container.innerHTML = this.options.hljs.highlight(language, text).value;
-      return (0,_clipboard__WEBPACK_IMPORTED_MODULE_10__/* .traverse */ .fw)(this.quill.scroll, container, [function (node, delta) {
+      container.classList.add(code/* default.className */.ZP.className);
+      var highlightJsVersion = this.options.hljs.versionString;
+      if (isVersionNotLessThan(highlightJsVersion, '10.7')) {
+        // NOTE: https://github.com/highlightjs/highlight.js/issues/2277;
+        container.innerHTML = this.options.hljs.highlight(text, {
+          language: language
+        }).value;
+      } else {
+        container.innerHTML = this.options.hljs.highlight(language, text).value;
+      }
+      return (0,clipboard/* traverse */.fw)(this.quill.scroll, container, [function (node, delta) {
         var value = TokenAttributor.value(node);
         if (value) {
-          return delta.compose(new (quill_delta__WEBPACK_IMPORTED_MODULE_0___default())().retain(delta.length(), _defineProperty({}, CodeToken.blotName, value)));
+          return delta.compose(new (Delta_default())().retain(delta.length(), _defineProperty({}, CodeToken.blotName, value)));
         }
         return delta;
       }], [function (node, delta) {
         return node.data.split('\n').reduce(function (memo, nodeText, i) {
-          if (i !== 0) memo.insert('\n', _defineProperty({}, _formats_code__WEBPACK_IMPORTED_MODULE_9__/* ["default"].blotName */ .ZP.blotName, language));
+          if (i !== 0) memo.insert('\n', _defineProperty({}, code/* default.blotName */.ZP.blotName, language));
           return memo.insert(nodeText);
         }, delta);
       }], new WeakMap());
@@ -6899,16 +6948,16 @@ var Syntax = /*#__PURE__*/function (_Module) {
   }], [{
     key: "register",
     value: function register() {
-      _core_quill__WEBPACK_IMPORTED_MODULE_3__/* ["default"].register */ .ZP.register(CodeToken, true);
-      _core_quill__WEBPACK_IMPORTED_MODULE_3__/* ["default"].register */ .ZP.register(SyntaxCodeBlock, true);
-      _core_quill__WEBPACK_IMPORTED_MODULE_3__/* ["default"].register */ .ZP.register(SyntaxCodeBlockContainer, true);
+      quill/* default.register */.ZP.register(CodeToken, true);
+      quill/* default.register */.ZP.register(SyntaxCodeBlock, true);
+      quill/* default.register */.ZP.register(SyntaxCodeBlockContainer, true);
     }
   }]);
   return Syntax;
-}(_core_module__WEBPACK_IMPORTED_MODULE_4__/* ["default"] */ .Z);
+}(core_module/* default */.Z);
 Syntax.DEFAULTS = {
   hljs: function () {
-    if ((0,_utils_has_window__WEBPACK_IMPORTED_MODULE_11__/* ["default"] */ .Z)()) {
+    if ((0,has_window/* default */.Z)()) {
       return window.hljs;
     }
     return null;
@@ -21773,8 +21822,8 @@ Video.tagName = 'IFRAME';
 /* harmony default export */ const video = (Video);
 // EXTERNAL MODULE: ./formats/code.js
 var code = __webpack_require__(7309);
-// EXTERNAL MODULE: ./modules/syntax.js
-var syntax = __webpack_require__(9072);
+// EXTERNAL MODULE: ./modules/syntax.js + 1 modules
+var syntax = __webpack_require__(5657);
 // EXTERNAL MODULE: ./modules/table/index.js
 var table = __webpack_require__(867);
 // EXTERNAL MODULE: ./node_modules/quill-delta/dist/Delta.js
