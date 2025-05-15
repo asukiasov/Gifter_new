@@ -1,9 +1,9 @@
 /*!
 * DevExtreme (dx.messages.tr.js)
-* Version: 24.2.3
-* Build date: Fri Dec 06 2024
+* Version: 24.2.7
+* Build date: Mon Apr 28 2025
 *
-* Copyright (c) 2012 - 2024 Developer Express Inc. ALL RIGHTS RESERVED
+* Copyright (c) 2012 - 2025 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
 */
 "use strict";
@@ -70,6 +70,8 @@
             "dxList-selectAll-indeterminate": "Half-checked",
             "dxList-selectAll-checked": "Checked",
             "dxList-selectAll-notChecked": "Not checked",
+            "dxList-ariaRoleDescription": "List",
+            "dxList-listAriaLabel-itemContent": "List item content",
             "dxScrollView-pullingDownText": "Yenilemek i\xe7in a\u015fa\u011f\u0131ya \xe7ekin...",
             "dxScrollView-pulledDownText": "Yenilemek i\xe7in b\u0131rak\u0131n...",
             "dxScrollView-refreshingText": "Yenileniyor...",
@@ -351,6 +353,7 @@
             "dxTagBox-allSelected": "T\xfcm\xfc se\xe7ildi ({0})",
             "dxTagBox-moreSelected": "{0} daha",
             "dxTagBox-tagRoleDescription": "Tag. Press the delete button to remove this tag",
+            "dxTagBox-ariaRoleDescription": "Tag box",
             "vizExport-printingButtonText": "Yazd\u0131r",
             "vizExport-titleMenuText": "D\u0131\u015fa Aktar/Yazd\u0131r",
             "vizExport-exportButtonText": "{0} dosya",
@@ -746,7 +749,8 @@
             "dxMultiView-elementAriaLabel": "Use the arrow keys or swipe to navigate between views",
             "dxMultiView-itemAriaRoleDescription": "View",
             "dxMultiView-itemAriaLabel": "{0} of {1}",
-            "dxSplitter-resizeHandleAriaLabel": "Split bar"
+            "dxSplitter-resizeHandleAriaLabel": "Split bar",
+            "dxSplitter-resizeHandleAriaRoleDescription": "Separator"
         }
     })
 }));

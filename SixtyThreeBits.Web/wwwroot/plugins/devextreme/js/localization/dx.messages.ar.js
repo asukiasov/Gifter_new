@@ -1,9 +1,9 @@
 /*!
 * DevExtreme (dx.messages.ar.js)
-* Version: 24.2.3
-* Build date: Fri Dec 06 2024
+* Version: 24.2.7
+* Build date: Mon Apr 28 2025
 *
-* Copyright (c) 2012 - 2024 Developer Express Inc. ALL RIGHTS RESERVED
+* Copyright (c) 2012 - 2025 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
 */
 "use strict";
@@ -70,6 +70,8 @@
             "dxList-selectAll-indeterminate": "Half-checked",
             "dxList-selectAll-checked": "Checked",
             "dxList-selectAll-notChecked": "Not checked",
+            "dxList-ariaRoleDescription": "List",
+            "dxList-listAriaLabel-itemContent": "List item content",
             "dxScrollView-pullingDownText": "\u0644\u0644\u062a\u062d\u062f\u064a\u062b \u0627\u0633\u062d\u0628 \u0644\u0644\u0623\u0633\u0641\u0644...",
             "dxScrollView-pulledDownText": "\u062d\u0631\u0631 \u0644\u0644\u062a\u062d\u062f\u064a\u062b ...",
             "dxScrollView-refreshingText": "\u062c\u0627\u0631 \u0627\u0644\u062a\u062d\u062f\u064a\u062b ...",
@@ -351,6 +353,7 @@
             "dxTagBox-allSelected": "\u0643\u0644 \u0627\u0644\u0639\u0646\u0627\u0635\u0631 \u0627\u0644\u0645\u062d\u062f\u062f\u0629 ({0})",
             "dxTagBox-moreSelected": "{0} \u0627\u0644\u0645\u0632\u064a\u062f",
             "dxTagBox-tagRoleDescription": "Tag. Press the delete button to remove this tag",
+            "dxTagBox-ariaRoleDescription": "Tag box",
             "vizExport-printingButtonText": "Print",
             "vizExport-titleMenuText": "\u062a\u0635\u062f\u064a\u0631 / \u0637\u0628\u0627\u0639\u0629",
             "vizExport-exportButtonText": "{0} file",
@@ -746,7 +749,8 @@
             "dxMultiView-elementAriaLabel": "Use the arrow keys or swipe to navigate between views",
             "dxMultiView-itemAriaRoleDescription": "View",
             "dxMultiView-itemAriaLabel": "{0} of {1}",
-            "dxSplitter-resizeHandleAriaLabel": "Split bar"
+            "dxSplitter-resizeHandleAriaLabel": "Split bar",
+            "dxSplitter-resizeHandleAriaRoleDescription": "Separator"
         }
     })
 }));

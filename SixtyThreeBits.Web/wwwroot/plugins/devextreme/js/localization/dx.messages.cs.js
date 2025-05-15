@@ -1,9 +1,9 @@
 /*!
 * DevExtreme (dx.messages.cs.js)
-* Version: 24.2.3
-* Build date: Fri Dec 06 2024
+* Version: 24.2.7
+* Build date: Mon Apr 28 2025
 *
-* Copyright (c) 2012 - 2024 Developer Express Inc. ALL RIGHTS RESERVED
+* Copyright (c) 2012 - 2025 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
 */
 "use strict";
@@ -70,6 +70,8 @@
             "dxList-selectAll-indeterminate": "Half-checked",
             "dxList-selectAll-checked": "Checked",
             "dxList-selectAll-notChecked": "Not checked",
+            "dxList-ariaRoleDescription": "List",
+            "dxList-listAriaLabel-itemContent": "List item content",
             "dxScrollView-pullingDownText": "St\xe1hn\u011bte dol\u016f pro obnoven\xed...",
             "dxScrollView-pulledDownText": "Uvoln\u011bte pro obnoven\xed...",
             "dxScrollView-refreshingText": "Obnovuji...",
@@ -351,6 +353,7 @@
             "dxTagBox-allSelected": "V\u0161e vybr\xe1no ({0})",
             "dxTagBox-moreSelected": "{0} nav\xedc",
             "dxTagBox-tagRoleDescription": "Tag. Press the delete button to remove this tag",
+            "dxTagBox-ariaRoleDescription": "Tag box",
             "vizExport-printingButtonText": "Tisk",
             "vizExport-titleMenuText": "Export/import",
             "vizExport-exportButtonText": "{0} soubor\u016f",
@@ -746,7 +749,8 @@
             "dxMultiView-elementAriaLabel": "Use the arrow keys or swipe to navigate between views",
             "dxMultiView-itemAriaRoleDescription": "View",
             "dxMultiView-itemAriaLabel": "{0} of {1}",
-            "dxSplitter-resizeHandleAriaLabel": "Split bar"
+            "dxSplitter-resizeHandleAriaLabel": "Split bar",
+            "dxSplitter-resizeHandleAriaRoleDescription": "Separator"
         }
     })
 }));

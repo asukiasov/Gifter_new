@@ -42,9 +42,9 @@ namespace SixtyThreeBits.Core.Libraries.FileStorages
                 Filename: item.Name,
                 FilesizeBytes: item.Size,
                 FileDateCreated: item.DateModified,
-                FileDateCreatedUtc: item.DateModified.ToUniversalTime(),
+                FileDateCreatedUtc: item.DateModified?.ToUniversalTime(),
                 FileDateUpdated: item.DateModified,
-                FileDateUpdatedUtc: item.DateModified.ToUniversalTime()
+                FileDateUpdatedUtc: item.DateModified?.ToUniversalTime()
             )).ToList();
             return result;
         }

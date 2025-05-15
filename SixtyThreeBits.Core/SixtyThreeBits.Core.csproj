@@ -18,13 +18,13 @@
 
   <ItemGroup>
     <PackageReference Include="63BITS.Libraries.DotNetCore" Version="1.0.8" />
-    <PackageReference Include="AWSSDK.S3" Version="3.7.410.11" />
-    <PackageReference Include="Azure.Storage.Blobs" Version="12.23.0" />
-    <PackageReference Include="EPPlus" Version="7.5.2" />
+    <PackageReference Include="AWSSDK.S3" Version="4.0.0.3" />
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.24.0" />
+    <PackageReference Include="EPPlus" Version="8.0.4" />
     <PackageReference Include="ExcelDataReader" Version="3.7.0" />
     <PackageReference Include="Imageflow.AllPlatforms" Version="0.13.2" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.5" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="RestSharp" Version="112.1.0" />
   </ItemGroup>
