@@ -1,8 +1,8 @@
-﻿using Microsoft.Data.SqlClient;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
+using SixtyThreeBits.Core.Libraries.Loggers;
+using SixtyThreeBits.Libraries.Extensions;
 using System;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SixtyThreeBits.Core.Libraries
@@ -12,11 +12,9 @@ namespace SixtyThreeBits.Core.Libraries
         #region Properties
         protected readonly ILogger _logger;
 
-        string _errorMessageForLog;
-
         public bool IsError { private set; get; }
         public string ErrorMessage { private set; get; }
-        public Exception ExceptionObject { private set; get; }
+        public Exception Exception { private set; get; }
         public bool IsCustomDatabaseMessage { private set; get; }
         #endregion
 
@@ -24,7 +22,7 @@ namespace SixtyThreeBits.Core.Libraries
         public SixtyThreeBitsDataObjectBase() { }
         public SixtyThreeBitsDataObjectBase(ILogger logger)
         {
-            this._logger = logger;
+            _logger = logger;
         }
         #endregion
 
@@ -42,14 +40,14 @@ namespace SixtyThreeBits.Core.Libraries
                 {
                     processException(
                         logString: logString,
-                        ex: ex,
+                        exception: ex,
                         callerFilePath: callerFilePath,
                         callerLineNumber: callerLineNumber
                     );
                 }
                 else
                 {
-                    ExceptionObject = ex;
+                    Exception = ex;
                     actionForCatch.Invoke();
                 }
             }
@@ -68,7 +66,7 @@ namespace SixtyThreeBits.Core.Libraries
                 {
                     processException(
                         logString: logString,
-                        ex: ex,
+                        exception: ex,
                         callerFilePath: callerFilePath,
                         callerLineNumber: callerLineNumber
                     );
@@ -98,14 +96,14 @@ namespace SixtyThreeBits.Core.Libraries
                 {
                     processException(
                         logString: logString,
-                        ex: ex,
+                        exception: ex,
                         callerFilePath: callerFilePath,
                         callerLineNumber: callerLineNumber
                     );
                 }
                 else
                 {
-                    ExceptionObject = ex;
+                    Exception = ex;
                     result = funcForCatch();
                 }
             }
@@ -122,13 +120,13 @@ namespace SixtyThreeBits.Core.Libraries
             }
             catch (Exception ex)
             {
-                ExceptionObject = ex;
+                Exception = ex;
 
                 if (asyncFuncForCatch == null && funcForCatch == null)
                 {
                     processException(
                         logString: logString,
-                        ex: ex,
+                        exception: ex,
                         callerFilePath: callerFilePath,
                         callerLineNumber: callerLineNumber
                     );
@@ -145,72 +143,20 @@ namespace SixtyThreeBits.Core.Libraries
             return result;
         }
 
-        void processException(string logString, Exception ex, [CallerFilePath] string callerFilePath = "", [CallerLineNumber] int callerLineNumber = 0)
+        void processException(string logString, Exception exception, [CallerFilePath] string callerFilePath = "", [CallerLineNumber] int callerLineNumber = 0)
         {
+            _logger.LogError(
+                exception: exception, 
+                message: new LogState
+                {
+                    LogString = logString,
+                    CallerFilePath = callerFilePath,
+                    CallerLineNumber = callerLineNumber
+                }.ToJson()
+            );            
             IsError = true;
-
-            if (ex is SqlException)
-            {
-                processSqlException(logString, (SqlException)ex, callerFilePath, callerLineNumber);
-            }
-            else
-            {
-                processSystemException(logString, ex, callerFilePath, callerLineNumber);
-            }
-        }
-
-        void processSystemException(string logString, Exception ex, string callerFilePath, int callerLineNumber)
-        {
-            if (ex.InnerException == null)
-            {
-                ErrorMessage = $"{ex.Message}{Environment.NewLine}";
-            }
-            else
-            {
-                ErrorMessage = $"Exception: {ex.Message}{Environment.NewLine}InnerException: {ex.InnerException.Message}{Environment.NewLine}";
-            }
-            _errorMessageForLog = string.Format("Source File - {0}{4}Line Number - {1}{4}{2} --- {3}", callerFilePath, callerLineNumber, logString, ErrorMessage, Environment.NewLine);
-            if (!IsCustomDatabaseMessage)
-            {
-                if (_logger != null)
-                {
-                    _logger.LogError(ex, _errorMessageForLog);
-                }
-                else
-                {
-                    throw ex;
-                }
-            }
-        }
-
-        void processSqlException(string logString, SqlException ex, string callerFilePath, int callerLineNumber)
-        {
-            var sb = new StringBuilder();
-            for (int i = 0; i < ex.Errors.Count; i++)
-            {
-                if (ex.Errors[i].Number > 50000)
-                {
-                    IsCustomDatabaseMessage = true;
-                    sb.Append(ex.Message);
-                }
-                else
-                {
-                    sb.Append(ex.Errors[i].Message).Append(Environment.NewLine);
-                }
-            }
-            ErrorMessage = sb.ToString();
-            _errorMessageForLog = string.Format("Source File - {0}{4}Line Number - {1}{4}{2} --- {3}", callerFilePath, callerLineNumber, logString, ErrorMessage, Environment.NewLine);
-            if (!IsCustomDatabaseMessage && _logger != null)
-            {
-                if (_logger != null)
-                {
-                    _logger.LogError(ex, _errorMessageForLog);
-                }
-                else
-                {
-                    throw ex;
-                }
-            }
+            Exception = exception;
+            ErrorMessage = exception.Message;            
         }
         #endregion
     }

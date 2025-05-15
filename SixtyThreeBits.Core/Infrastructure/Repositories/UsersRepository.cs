@@ -25,7 +25,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
             var result = await TryToReturnAsyncTask(
                 logString: $"{nameof(UsersGetSingleByID)}({nameof(userID)} = {userID})", 
                 asyncFuncToTry: async () =>
-                {
+                {                    
                     using (var dbContext = _dbContextFactory.CreateDbContext())
                     {
                         var sqb = new SqlQueryBuilder(

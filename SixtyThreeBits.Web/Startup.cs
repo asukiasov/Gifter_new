@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.AspNetCore.Routing;
@@ -12,9 +11,8 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using SixtyThreeBits.Core.Infrastructure.Repositories;
-using SixtyThreeBits.Core.Libraries;
+using SixtyThreeBits.Core.Libraries.Loggers;
 using SixtyThreeBits.Core.Utilities;
-using SixtyThreeBits.Libraries.Extensions;
 using SixtyThreeBits.Web.Domain.Libraries;
 using SixtyThreeBits.Web.Domain.Utilities;
 using SixtyThreeBits.Web.Domain.ViewModels.Shared;
@@ -50,7 +48,7 @@ namespace SixtyThreeBits.Web
             }
             _appSettings = new AppSettingsCollection(env.ContentRootPath, env.WebRootPath, appSettingsConfiguration);
             _utilities = new UtilityCollection(env.ContentRootPath, env.WebRootPath);
-            _logger = new ErrorLogger();
+            _logger = new ErrorLogTxtFileLogger();
             _repositoryFactory = new RepositoryFactory(dbConnectionString: _appSettings.ConnectionStrings.DbConnectionString, logger: _logger);
         }
 
