@@ -29,7 +29,6 @@ namespace SixtyThreeBits.Web
         readonly AppSettingsCollection _appSettings;
         readonly UtilityCollection _utilities;
         readonly RepositoryFactory _repositoryFactory;
-        readonly ILogger _logger;
 
         public Startup(IWebHostEnvironment env)
         {            
@@ -46,10 +45,20 @@ namespace SixtyThreeBits.Web
                 appSettingsConfiguration = new ConfigurationBuilder().SetBasePath(env.ContentRootPath).AddJsonFile("appsettings.production.json").Build();                
                 #endif
             }
-            _appSettings = new AppSettingsCollection(env.ContentRootPath, env.WebRootPath, appSettingsConfiguration);
-            _utilities = new UtilityCollection(env.ContentRootPath, env.WebRootPath);
-            _logger = new ErrorLogTxtFileLogger();
-            _repositoryFactory = new RepositoryFactory(dbConnectionString: _appSettings.ConnectionStrings.DbConnectionString, logger: _logger);
+
+            _appSettings = new AppSettingsCollection(
+                contentRootPath: env.ContentRootPath,
+                webRootPath: env.WebRootPath,
+                configuration: appSettingsConfiguration
+            );
+            _utilities = new UtilityCollection(
+                contentRootPath: env.ContentRootPath,
+                webRootPath: env.WebRootPath
+            );            
+            _repositoryFactory = new RepositoryFactory(
+                dbConnectionString: _appSettings.ConnectionStrings.DbConnectionString, 
+                logger: new ErrorLogTxtFileLogger()
+            );
         }
 
         public void ConfigureServices(IServiceCollection services)
@@ -57,7 +66,6 @@ namespace SixtyThreeBits.Web
             services.AddSingleton(_appSettings);
             services.AddSingleton(_utilities);
             services.AddSingleton(_repositoryFactory);
-            services.AddSingleton(_logger);
 
             services.AddDistributedMemoryCache();
             services.AddSession(options =>
