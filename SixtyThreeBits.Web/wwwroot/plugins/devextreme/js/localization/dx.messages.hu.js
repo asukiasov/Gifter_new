@@ -1,9 +1,9 @@
 /*!
 * DevExtreme (dx.messages.hu.js)
-* Version: 24.2.3
-* Build date: Fri Dec 06 2024
+* Version: 24.2.7
+* Build date: Mon Apr 28 2025
 *
-* Copyright (c) 2012 - 2024 Developer Express Inc. ALL RIGHTS RESERVED
+* Copyright (c) 2012 - 2025 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
 */
 "use strict";
@@ -70,6 +70,8 @@
             "dxList-selectAll-indeterminate": "Half-checked",
             "dxList-selectAll-checked": "Checked",
             "dxList-selectAll-notChecked": "Not checked",
+            "dxList-ariaRoleDescription": "List",
+            "dxList-listAriaLabel-itemContent": "List item content",
             "dxScrollView-pullingDownText": "H\xfazza le a friss\xedt\xe9shez...",
             "dxScrollView-pulledDownText": "Engedje el a friss\xedt\xe9shez...",
             "dxScrollView-refreshingText": "Friss\xedt\xe9s...",
@@ -351,6 +353,7 @@
             "dxTagBox-allSelected": "\xd6sszes kiv\xe1lasztva ({0})",
             "dxTagBox-moreSelected": "{0} t\xf6bb",
             "dxTagBox-tagRoleDescription": "Tag. Press the delete button to remove this tag",
+            "dxTagBox-ariaRoleDescription": "Tag box",
             "vizExport-printingButtonText": "Nyomtat\xe1s",
             "vizExport-titleMenuText": "Export\xe1l\xe1s/Nyomtat\xe1s",
             "vizExport-exportButtonText": "{0} f\xe1jl",
@@ -746,7 +749,8 @@
             "dxMultiView-elementAriaLabel": "Use the arrow keys or swipe to navigate between views",
             "dxMultiView-itemAriaRoleDescription": "View",
             "dxMultiView-itemAriaLabel": "{0} of {1}",
-            "dxSplitter-resizeHandleAriaLabel": "Split bar"
+            "dxSplitter-resizeHandleAriaLabel": "Split bar",
+            "dxSplitter-resizeHandleAriaRoleDescription": "Separator"
         }
     })
 }));

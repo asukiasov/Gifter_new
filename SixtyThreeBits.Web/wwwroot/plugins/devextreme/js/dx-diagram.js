@@ -1,9 +1,9 @@
 /*!
  * DevExpress Diagram (dx-diagram)
- * Version: 2.2.13
- * Build date: Mon Nov 11 2024
+ * Version: 2.2.16
+ * Build date: Fri Apr 04 2025
  *
- * Copyright (c) 2012 - 2024 Developer Express Inc. ALL RIGHTS RESERVED
+ * Copyright (c) 2012 - 2025 Developer Express Inc. ALL RIGHTS RESERVED
  * Read about DevExpress licensing here: https://www.devexpress.com/Support/EULAs
  */
 (function webpackUniversalModuleDefinition(root, factory) {
@@ -9789,17 +9789,58 @@ var DocumentDataSource = (function (_super) {
     DocumentDataSource.prototype.updateItemsByModel = function (model) {
         var _this = this;
         this.beginChangesNotification();
-        this.deleteNodes(model);
-        this.deleteEdges(model);
+        var nodeNotifications = {
+            inserts: [],
+            updates: [],
+            deletes: []
+        };
+        this.deleteNodes(model, nodeNotifications);
         model.items.forEach(function (item) {
             if (item instanceof Shape_1.Shape)
-                _this.updateNode(model, item);
+                _this.updateNode(model, item, nodeNotifications);
         });
+        model.items.forEach(function (item) {
+            if (item instanceof Shape_1.Shape)
+                _this.updateNodeObjectConnectedProperties(item, _this.findNode(item.dataKey), _this.changesListener);
+        });
+        this.applyDelayedNodeNotifications(nodeNotifications);
+        this.deleteEdges(model);
         model.items.forEach(function (item) {
             if (item instanceof Connector_1.Connector)
                 _this.updateEdge(model, item);
         });
         this.endChangesNotification(false);
+    };
+    DocumentDataSource.prototype.applyDelayedNodeNotifications = function (notification) {
+        var _this = this;
+        notification.deletes.forEach(function (element) {
+            _this.beginChangesNotification();
+            _this.changesListener.notifyNodeRemoved.call(_this.changesListener, element[0], element[1].dataObj, function (_key, _data) {
+                _this.endChangesNotification(false);
+            }, function (_error) {
+                _this.endChangesNotification(false);
+            });
+        });
+        notification.inserts.forEach(function (element) {
+            _this.beginChangesNotification();
+            _this.beginNodeInserting();
+            _this.changesListener.notifyNodeInserted.call(_this.changesListener, element[1].dataObj, function (data) {
+                _this.updateNodeObjectKey(element[0], element[1], data);
+                _this.endNodeInserting();
+                _this.endChangesNotification(false);
+            }, function (_) {
+                _this.endNodeInserting();
+                _this.endChangesNotification(false);
+            });
+        });
+        notification.updates.forEach(function (element) {
+            _this.beginChangesNotification();
+            _this.changesListener.notifyNodeUpdated.call(_this.changesListener, _this.nodeDataImporter.getKey(element[1].dataObj || element[1].key), element[1].dataObj, function (_key, _data) {
+                _this.endChangesNotification(false);
+            }, function (_error) {
+                _this.endChangesNotification(false);
+            });
+        });
     };
     DocumentDataSource.prototype.isItemObjectModified = function (item, itemObj, importer) {
         var modified = (importer.setLocked && itemObj.locked !== item.locked) ||
@@ -9865,8 +9906,7 @@ var DocumentDataSource = (function (_super) {
             }
         });
     };
-    DocumentDataSource.prototype.updateNode = function (model, shape) {
-        var _this = this;
+    DocumentDataSource.prototype.updateNode = function (model, shape, notifications) {
         var nodeObj = this.findNode(shape.dataKey);
         if (!nodeObj) {
             var dataObj = {};
@@ -9878,26 +9918,12 @@ var DocumentDataSource = (function (_super) {
             this.updateNodeObjectProperties(shape, nodeObj, model.units);
             this.updateNodeObjectConnectedProperties(shape, nodeObj);
             this.updateNodeObjectKey(shape, nodeObj, nodeObj.dataObj);
-            this.beginChangesNotification();
-            this.beginNodeInserting();
-            this.changesListener.notifyNodeInserted.call(this.changesListener, nodeObj.dataObj, function (data) {
-                _this.updateNodeObjectKey(shape, nodeObj, data);
-                _this.endNodeInserting();
-                _this.endChangesNotification(false);
-            }, function (error) {
-                _this.endNodeInserting();
-                _this.endChangesNotification(false);
-            });
+            notifications.inserts.push([shape, nodeObj]);
         }
         else if (this.isNodeObjectModified(shape, nodeObj, model.units)) {
             this.updateNodeObjectProperties(shape, nodeObj, model.units);
             this.updateNodeObjectConnectedProperties(shape, nodeObj);
-            this.beginChangesNotification();
-            this.changesListener.notifyNodeUpdated.call(this.changesListener, this.nodeDataImporter.getKey(nodeObj.dataObj || nodeObj.key), nodeObj.dataObj, function (key, data) {
-                _this.endChangesNotification(false);
-            }, function (error) {
-                _this.endChangesNotification(false);
-            });
+            notifications.updates.push([shape, nodeObj]);
         }
         else
             this.updateNodeObjectConnectedProperties(shape, nodeObj, this.changesListener);
@@ -9994,9 +10020,9 @@ var DocumentDataSource = (function (_super) {
     DocumentDataSource.prototype.updateNodeObjectParentKeyInternal = function (nodeObj, changesListener) {
         var _this = this;
         this.beginChangesNotification();
-        changesListener.notifyNodeUpdated.call(changesListener, this.nodeDataImporter.getKey(nodeObj.dataObj) || nodeObj.key, nodeObj.dataObj, function (key, data) {
+        changesListener.notifyNodeUpdated.call(changesListener, this.nodeDataImporter.getKey(nodeObj.dataObj) || nodeObj.key, nodeObj.dataObj, function (_key, _data) {
             _this.endChangesNotification(false);
-        }, function (error) {
+        }, function (_error) {
             _this.endChangesNotification(false);
         });
     };
@@ -10015,9 +10041,9 @@ var DocumentDataSource = (function (_super) {
     DocumentDataSource.prototype.updateNodeObjectContainerOrParentKeyInternal = function (nodeObj, changesListener) {
         var _this = this;
         this.beginChangesNotification();
-        changesListener.notifyNodeUpdated.call(changesListener, this.nodeDataImporter.getKey(nodeObj.dataObj) || nodeObj.key, nodeObj.dataObj, function (key, data) {
+        changesListener.notifyNodeUpdated.call(changesListener, this.nodeDataImporter.getKey(nodeObj.dataObj) || nodeObj.key, nodeObj.dataObj, function (_key, _data) {
             _this.endChangesNotification(false);
-        }, function (error) {
+        }, function (_error) {
             _this.endChangesNotification(false);
         });
     };
@@ -10040,9 +10066,9 @@ var DocumentDataSource = (function (_super) {
                 nodeObj.parentDataObj = parentNodeObj && parentNodeObj.dataObj;
                 if (changesListener) {
                     this.beginChangesNotification();
-                    changesListener.notifyNodeUpdated.call(changesListener, this.nodeDataImporter.getKey(nodeObj.dataObj) || nodeObj.key, nodeObj.dataObj, function (key, data) {
+                    changesListener.notifyNodeUpdated.call(changesListener, this.nodeDataImporter.getKey(nodeObj.dataObj) || nodeObj.key, nodeObj.dataObj, function (_key, _data) {
                         _this.endChangesNotification(false);
-                    }, function (error) {
+                    }, function (_error) {
                         _this.endChangesNotification(false);
                     });
                 }
@@ -10063,9 +10089,9 @@ var DocumentDataSource = (function (_super) {
             nodeObj.containerDataObj = containerNodeObj && containerNodeObj.dataObj;
             if (changesListener) {
                 this.beginChangesNotification();
-                changesListener.notifyNodeUpdated.call(changesListener, this.nodeDataImporter.getKey(nodeObj.dataObj) || nodeObj.key, nodeObj.dataObj, function (key, data) {
+                changesListener.notifyNodeUpdated.call(changesListener, this.nodeDataImporter.getKey(nodeObj.dataObj) || nodeObj.key, nodeObj.dataObj, function (_key, _data) {
                     _this.endChangesNotification(false);
-                }, function (error) {
+                }, function (_error) {
                     _this.endChangesNotification(false);
                 });
             }
@@ -10131,21 +10157,15 @@ var DocumentDataSource = (function (_super) {
                 }
             });
     };
-    DocumentDataSource.prototype.deleteNodes = function (model) {
+    DocumentDataSource.prototype.deleteNodes = function (model, notifications) {
         var _this = this;
         this.deleteItems(this.nodes, function (key) { return model.findShapeByDataKey(key); }, function (item) { return _this.getNodeArray(item); }, function (item, dataModified) {
             var key = (item.dataObj && _this.nodeDataImporter.getKey(item.dataObj)) || item.key;
             var nodeObj = _this.findNode(key);
             if (nodeObj)
                 _this.nodes.splice(_this.nodes.indexOf(nodeObj), 1);
-            if (dataModified) {
-                _this.beginChangesNotification();
-                _this.changesListener.notifyNodeRemoved.call(_this.changesListener, key, item.dataObj, function (key, data) {
-                    _this.endChangesNotification(false);
-                }, function (error) {
-                    _this.endChangesNotification(false);
-                });
-            }
+            if (dataModified)
+                notifications.deletes.push([key, item]);
         });
     };
     DocumentDataSource.prototype.getParentItem = function (shape) {
@@ -10199,7 +10219,7 @@ var DocumentDataSource = (function (_super) {
                     _this.updateEdgeObjectKey(connector, edgeObj, data);
                     _this.endNodeInserting();
                     _this.endChangesNotification(false);
-                }, function (error) {
+                }, function (_error) {
                     _this.endNodeInserting();
                     _this.endChangesNotification(false);
                 });
@@ -10209,9 +10229,9 @@ var DocumentDataSource = (function (_super) {
             this.updateEdgeObjectProperties(connector, edgeObj, model.units);
             if (edgeObj.dataObj) {
                 this.beginChangesNotification();
-                this.changesListener.notifyEdgeUpdated.call(this.changesListener, this.edgeDataImporter.getKey(edgeObj.dataObj) || edgeObj.key, edgeObj.dataObj, function (key, data) {
+                this.changesListener.notifyEdgeUpdated.call(this.changesListener, this.edgeDataImporter.getKey(edgeObj.dataObj) || edgeObj.key, edgeObj.dataObj, function (_key, _data) {
                     _this.endChangesNotification(false);
-                }, function (error) {
+                }, function (_error) {
                     _this.endChangesNotification(false);
                 });
             }
@@ -10256,9 +10276,9 @@ var DocumentDataSource = (function (_super) {
     DocumentDataSource.prototype.updateEdgeObjectFromOrToPropertyInternal = function (edgeObj, changesListener) {
         var _this = this;
         this.beginChangesNotification();
-        changesListener.notifyEdgeUpdated.call(changesListener, this.nodeDataImporter.getKey(edgeObj.dataObj) || edgeObj.key, edgeObj.dataObj, function (key, data) {
+        changesListener.notifyEdgeUpdated.call(changesListener, this.nodeDataImporter.getKey(edgeObj.dataObj) || edgeObj.key, edgeObj.dataObj, function (_key, _data) {
             _this.endChangesNotification(false);
-        }, function (error) {
+        }, function (_error) {
             _this.endChangesNotification(false);
         });
     };
@@ -10355,16 +10375,16 @@ var DocumentDataSource = (function (_super) {
     };
     DocumentDataSource.prototype.deleteEdges = function (model) {
         var _this = this;
-        this.deleteItems(this.edges, function (key) { return model.findConnectorByDataKey(key); }, function (item) { return _this.edgeDataSource; }, function (item, dataModified) {
+        this.deleteItems(this.edges, function (key) { return model.findConnectorByDataKey(key); }, function (_item) { return _this.edgeDataSource; }, function (item, dataModified) {
             var key = (item.dataObj && _this.edgeDataImporter.getKey(item.dataObj)) || item.key;
             var edgeObj = _this.findEdge(key);
             if (edgeObj)
                 _this.edges.splice(_this.edges.indexOf(edgeObj), 1);
             if (dataModified) {
                 _this.beginChangesNotification();
-                _this.changesListener.notifyEdgeRemoved.call(_this.changesListener, key, item.dataObj, function (key, data) {
+                _this.changesListener.notifyEdgeRemoved.call(_this.changesListener, key, item.dataObj, function (_key, _data) {
                     _this.endChangesNotification(false);
-                }, function (error) {
+                }, function (_error) {
                     _this.endChangesNotification(false);
                 });
             }
@@ -33427,11 +33447,11 @@ var CanvasItemsManager = (function (_super) {
     };
     CanvasItemsManager.prototype.notifyDragScrollStart = function () { };
     CanvasItemsManager.prototype.notifyDragScrollEnd = function () { };
-    CanvasItemsManager.prototype.notifyTextInputStart = function (item, text, position, size) {
+    CanvasItemsManager.prototype.notifyTextInputStart = function (item, _text, _position, _size) {
         var element = this.itemElements[item.key];
         dom_1.DomUtils.addClassName(element, "text-input");
     };
-    CanvasItemsManager.prototype.notifyTextInputEnd = function (item, captureFocus) {
+    CanvasItemsManager.prototype.notifyTextInputEnd = function (item, _captureFocus) {
         var element = this.itemElements[item.key];
         dom_1.DomUtils.removeClassName(element, "text-input");
     };
@@ -33448,7 +33468,7 @@ var CanvasItemsManager = (function (_super) {
         this.dom.changeByFunc(this.itemSelectorsContainer, function (e) { return e.setAttribute("transform", scale); });
         this.actualZoom = actualZoom;
     };
-    CanvasItemsManager.prototype.notifyViewAdjusted = function (canvasOffset) { };
+    CanvasItemsManager.prototype.notifyViewAdjusted = function (_canvasOffset) { };
     CanvasItemsManager.prototype.invalidatePrimitives = function (item) {
         if (this.primitives[item.key]) {
             this.primitives[item.key].forEach(function (primitive) {
@@ -33639,7 +33659,7 @@ var CanvasItemsManager = (function (_super) {
         if (this.itemGroupContainers[key] === undefined || this.itemGroupContainers[key][zIndex] === undefined) {
             if (this.itemGroupContainers[key] === undefined)
                 this.itemGroupContainers[key] = [];
-            var nextSiblingZIndex = Object.keys(this.itemGroupContainers[key]).map(function (z) { return +z; }).sort().filter(function (z) { return z > zIndex; })[0];
+            var nextSiblingZIndex = Object.keys(this.itemGroupContainers[key]).map(function (z) { return +z; }).sort(function (a, b) { return a - b; }).filter(function (z) { return z > zIndex; })[0];
             this.itemGroupContainers[key][zIndex] = this.createAndChangePrimitiveElement(new GroupPrimitive_1.GroupPrimitive([], null, zIndex), parent, this.itemGroupContainers[key][nextSiblingZIndex]);
         }
         return this.itemGroupContainers[key][zIndex];
@@ -33650,7 +33670,7 @@ var CanvasItemsManager = (function (_super) {
         if (this.itemSelectorGroupContainers[key] === undefined || this.itemSelectorGroupContainers[key][zIndex] === undefined) {
             if (this.itemSelectorGroupContainers[key] === undefined)
                 this.itemSelectorGroupContainers[key] = [];
-            var nextSiblingZIndex = Object.keys(this.itemSelectorGroupContainers[key]).map(function (z) { return +z; }).sort().filter(function (z) { return z > zIndex; })[0];
+            var nextSiblingZIndex = Object.keys(this.itemSelectorGroupContainers[key]).map(function (z) { return +z; }).sort(function (a, b) { return a - b; }).filter(function (z) { return z > zIndex; })[0];
             this.itemSelectorGroupContainers[key][zIndex] = this.createAndChangePrimitiveElement(new GroupPrimitive_1.GroupPrimitive([], null, zIndex), parent, this.itemSelectorGroupContainers[key][nextSiblingZIndex]);
         }
         return this.itemSelectorGroupContainers[key][zIndex];
@@ -35327,7 +35347,7 @@ var CanvasViewManager = (function (_super) {
             }
         }
         else
-            this.resizeView(actualModelSizeWithoutZoom, this.actualZoom, containerSize, simpleView, crop, offset);
+            this.resizeView(actualModelSizeWithoutZoom, this.actualZoom, containerSize, simpleView, crop, offset || offsets_1.Offsets.empty());
     };
     CanvasViewManager.prototype.resetView = function (actualModelSizeWithoutZoom, actualZoom, containerSize, simpleView, cropWithoutZoom, toReset) {
         var actualModelSize = actualModelSizeWithoutZoom.clone().multiply(actualZoom, actualZoom);
@@ -37626,12 +37646,8 @@ var RenderManager = (function () {
             this.input.captureFocus();
         if (Utils_2.EventUtils.isTouchEvent(evt))
             this.processTouchDown(evt);
-        var srcElement = evt_1.EvtUtils.getEventSource(evt);
-        var tagName = srcElement && srcElement.tagName;
-        if (browser_1.Browser.TouchUI || tagName.toLowerCase() === "img" || tagName.toLowerCase() === "image") {
-            evt_1.EvtUtils.preventEventAndBubble(evt);
-            return false;
-        }
+        evt_1.EvtUtils.preventEventAndBubble(evt);
+        return false;
     };
     RenderManager.prototype.onMouseMove = function (evt) {
         var _this = this;
