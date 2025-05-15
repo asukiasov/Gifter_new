@@ -12,6 +12,7 @@
             animation: 150,
             fallbackOnBody: true,
             swapThreshold: 0.65,
+            handle: '.js-product-image',
             onSort: function (e) {
                 productModel.sortImages();
             },
