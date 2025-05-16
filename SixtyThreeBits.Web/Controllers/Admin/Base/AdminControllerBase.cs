@@ -4,7 +4,7 @@ using SixtyThreeBits.Web.Filters.Admin;
 
 namespace SixtyThreeBits.Web.Controllers.Admin.Base
 {
-    [TypeFilter(typeof(BeforeAdminPageLoad), Order = 1)]
+    [TypeFilter(typeof(AdminFilterAttribute), Order = 1)]
     public class AdminControllerBase<T> : ControllerBase<T> where T : new()
     {
         #region Methods

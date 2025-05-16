@@ -12,7 +12,7 @@ using System.Web;
 
 namespace SixtyThreeBits.Web.Filters.Website
 {
-    public class BeforeWebsitePageLoad : IAsyncActionFilter
+    public class WebsiteFilterAttribute : IAsyncActionFilter
     {
         #region Properties
         ModelBase _model;

@@ -79,7 +79,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
     }
 
     [Route("admin/blog/{blogPostID:int}/properties")]
-    [TypeFilter(typeof(BeforeBlogPageLoad), Order = 2)]
+    [TypeFilter(typeof(BlogFilterAttribute), Order = 2)]
     public class BlogPostPropertiesController : AdminControllerBase<BlogPropertiesModel>
     {
         #region Actions

@@ -31,7 +31,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
     }
 
     [Route("admin/pages")]
-    [TypeFilter(typeof(BeforePagesManagementPageLoad), Order = 2)]
+    [TypeFilter(typeof(PagesManagementFilterAttribute), Order = 2)]
     public class PagesController : AdminControllerBase<PagesModel>
     {
         #region Actions
@@ -118,7 +118,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
     }
 
     [Route("admin/pages/{PageID:int}/data")]
-    [TypeFilter(typeof(BeforePagePageLoad), Order = 2)]
+    [TypeFilter(typeof(PageFilterAttribute), Order = 2)]
     public class PageDataController : AdminControllerBase<PageDataModel>
     {
         #region Actions
@@ -133,7 +133,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
     }
 
     [Route("admin/pages/{PageID:int}/properties")]
-    [TypeFilter(typeof(BeforePagePageLoad), Order = 2)]
+    [TypeFilter(typeof(PageFilterAttribute), Order = 2)]
     public class PagePropertiesController : AdminControllerBase<PagePropertiesModel>
     {
         #region Actions
@@ -182,7 +182,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
     }
 
     [Route("admin/pages/{pageID:int}/page-builder")]
-    [TypeFilter(typeof(BeforePagePageLoad), Order = 2)]
+    [TypeFilter(typeof(PageFilterAttribute), Order = 2)]
     public class PageBuilderController : AdminControllerBase<PageBuilderModel>
     {
         #region Actions

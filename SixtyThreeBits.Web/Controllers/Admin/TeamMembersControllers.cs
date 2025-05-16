@@ -87,7 +87,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
     }
 
     [Route("admin/team-members/{teamMemberID:int}")]
-    [TypeFilter(typeof(BeforeTeamMemberPageLoad), Order = 2)]
+    [TypeFilter(typeof(TeamMemberFilterAttribute), Order = 2)]
     public class TeamMembersPropertiesController : AdminControllerBase<TeamMemberPropertiesModel>
     {
         #region Actions

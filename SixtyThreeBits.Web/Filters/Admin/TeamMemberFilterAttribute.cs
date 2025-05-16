@@ -6,20 +6,20 @@ using System.Threading.Tasks;
 
 namespace SixtyThreeBits.Web.Filters.Admin
 {
-    public class BeforeProductCategoryPageLoad : IAsyncActionFilter
+    public class TeamMemberFilterAttribute : IAsyncActionFilter
     {
         #region Properties
-        ProductsCategoriesModelBase _model;
+        TeamMembersModelBase _model;
         #endregion
 
         #region Methods
         public async Task OnActionExecutionAsync(ActionExecutingContext filterContext, ActionExecutionDelegate next)
         {
-            _model = WebUtilities.GetModelFromController<ProductsCategoriesModelBase>(filterContext.Controller);
-            var productCategoryID = filterContext.RouteData.Values[WebConstants.RouteValues.ProductCategoryID]?.ToString().ToInt();
+            _model = WebUtilities.GetModelFromController<TeamMembersModelBase>(filterContext.Controller);
+            var teamMemberID = filterContext.RouteData.Values[WebConstants.RouteValues.TeamMemberID]?.ToString().ToInt();
 
-            var repository = _model.RepositoriesFactory.CreateProductsRepository();
-            _model.DBItem = await repository.ProductCategoriesGetSingleByID(productCategoryID);
+            var repository = _model.RepositoriesFactory.CreateTeamMembersRepository();
+            _model.DBItem = await repository.TeamMembersGetSingleByID(teamMemberID);
             if (_model.DBItem == null)
             {
                 filterContext.Result = _model.GetNotFoundAdminViewResult();
@@ -37,13 +37,13 @@ namespace SixtyThreeBits.Web.Filters.Admin
 
         void initPageTitle()
         {
-            _model.PageTitle.Set(_model.DBItem.ProductCategoryName);
+            _model.PageTitle.Set(_model.DBItem.TeamMemberFullname);
         }
 
         void reinitBreadCrumbs()
         {
-            _model.Breadcrumbs.DeleteLastItem();
-            _model.Breadcrumbs.RenameLastItem(_model.DBItem.ProductCategoryName);
+            _model.Breadcrumbs.RemoveAt(2);
+            _model.Breadcrumbs.RenameLastItem(_model.DBItem.TeamMemberFullname);
         }
         #endregion
     }

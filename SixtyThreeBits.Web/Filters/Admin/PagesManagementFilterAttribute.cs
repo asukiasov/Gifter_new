@@ -1,58 +1,44 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using SixtyThreeBits.Libraries.Extensions;
 using SixtyThreeBits.Web.Domain.Utilities;
 using SixtyThreeBits.Web.Domain.ViewModels.Shared;
-using SixtyThreeBits.Web.Models.Admin;
+using SixtyThreeBits.Web.Models.Base;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace SixtyThreeBits.Web.Filters.Admin
 {
-    public class BeforePagePageLoad : IAsyncActionFilter
+    public class PagesManagementFilterAttribute : IAsyncActionFilter
     {
         #region Properties
-        PageModelBase _model;
+        ModelBase _model;
         #endregion
 
         #region Methods
-        public BeforePagePageLoad()
+        public PagesManagementFilterAttribute()
         {
         }
 
         public async Task OnActionExecutionAsync(ActionExecutingContext filterContext, ActionExecutionDelegate next)
         {
-            _model = WebUtilities.GetModelFromController<PageModelBase>(filterContext.Controller);
-            var pageID = filterContext.RouteData.Values[WebConstants.RouteValues.PageID]?.ToString().ToInt();
-
-            var repository = _model.RepositoriesFactory.CreatePagesRepository();
-            _model.DBItem = await repository.PagesGetSingleByID(pageID);
-            if (_model.DBItem == null)
+            _model = WebUtilities.GetModelFromController<ModelBase>(filterContext.Controller);
+            if (!_model.IsAjaxRequest)
             {
-                filterContext.Result = _model.GetNotFoundAdminViewResult();
+                reinitBreadCrumbs();
+                initTabs();
             }
-            else
-            {
-                if (!_model.IsAjaxRequest)
-                {
-                    reinitBreadCrumbs();
-                    initTabs();
-                }
-                await next();
-            }
+            await next();
         }
 
         void reinitBreadCrumbs()
         {
-            _model.Breadcrumbs.DeleteLastItem();
-            _model.Breadcrumbs.RemoveAt(1);
-            _model.Breadcrumbs.RenameLastItem(_model.DBItem.PageTitle);
+            _model.Breadcrumbs.DeletePreLastItem();
         }
 
         void initTabs()
         {
-            var tabsParentID = _model.User.Permissions.FindLast(Item => Item.PermissionCode == WebConstants.Permissions.Page)?.PermissionID;
+            var tabsParentID = _model.User.Permissions.FirstOrDefault(Item => Item.PermissionCodeName == ControllerActionRouteNames.Admin.PagesManagementController.RedirectToChild)?.PermissionID;
 
             if (tabsParentID != null)
             {
@@ -62,7 +48,7 @@ namespace SixtyThreeBits.Web.Filters.Admin
                 .Select(item => new ProjectMenuViewItem
                 {
                     Caption = _model.Utilities.GetValuesByLanguage(_model.LanguageCultureCode, item.PermissionMenuTitleOrCaption, item.PermissionMenuTitleOrCaptionEng),
-                    NavigateUrl = _model.Url.RouteUrl(item.PermissionCodeName, new { pageID = _model.DBItem.PageID }),
+                    NavigateUrl = _model.Url.RouteUrl(item.PermissionCodeName),
                     IsSelected = Regex.IsMatch(_model.UrlCurrentPageWithDomain, item.PermissionPagePath)
                 }).ToList();
 

@@ -80,7 +80,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
     }
 
     [Route("admin/news/{newsID:int}")]
-    [TypeFilter(typeof(BeforeNewsPageLoad), Order = 2)]
+    [TypeFilter(typeof(NewsFilterAttribute), Order = 2)]
     public class NewsPropertiesController : AdminControllerBase<NewsPropertiesModel>
     {
         #region Actions

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace SixtyThreeBits.Web.Controllers.Admin
 {
     [Route("admin/menu-header")]
-    [TypeFilter(typeof(BeforePagesManagementPageLoad), Order = 2)]
+    [TypeFilter(typeof(PagesManagementFilterAttribute), Order = 2)]
     public class MenuHeaderController : AdminControllerBase<MenuHeaderModel>
     {
         #region Actions

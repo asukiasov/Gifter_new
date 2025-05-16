@@ -6,20 +6,20 @@ using System.Threading.Tasks;
 
 namespace SixtyThreeBits.Web.Filters.Admin
 {
-    public class BeforeNewsPageLoad : IAsyncActionFilter
+    public class ProductCategoryFilterAttribute : IAsyncActionFilter
     {
         #region Properties
-        NewsModelBase _model;
+        ProductsCategoriesModelBase _model;
         #endregion
 
         #region Methods
         public async Task OnActionExecutionAsync(ActionExecutingContext filterContext, ActionExecutionDelegate next)
         {
-            _model = WebUtilities.GetModelFromController<NewsModelBase>(filterContext.Controller);
-            var newsID = filterContext.RouteData.Values[WebConstants.RouteValues.NewsID]?.ToString().ToInt();
+            _model = WebUtilities.GetModelFromController<ProductsCategoriesModelBase>(filterContext.Controller);
+            var productCategoryID = filterContext.RouteData.Values[WebConstants.RouteValues.ProductCategoryID]?.ToString().ToInt();
 
-            var repository = _model.RepositoriesFactory.CreateNewsRepository();
-            _model.DBItem = await repository.NewsGetSingleByID(newsID);
+            var repository = _model.RepositoriesFactory.CreateProductsRepository();
+            _model.DBItem = await repository.ProductCategoriesGetSingleByID(productCategoryID);
             if (_model.DBItem == null)
             {
                 filterContext.Result = _model.GetNotFoundAdminViewResult();
@@ -37,13 +37,13 @@ namespace SixtyThreeBits.Web.Filters.Admin
 
         void initPageTitle()
         {
-            _model.PageTitle.Set(_model.DBItem.NewsTitle);
+            _model.PageTitle.Set(_model.DBItem.ProductCategoryName);
         }
 
         void reinitBreadCrumbs()
         {
             _model.Breadcrumbs.DeleteLastItem();
-            _model.Breadcrumbs.RenameLastItem(_model.DBItem.NewsTitle);
+            _model.Breadcrumbs.RenameLastItem(_model.DBItem.ProductCategoryName);
         }
         #endregion
     }

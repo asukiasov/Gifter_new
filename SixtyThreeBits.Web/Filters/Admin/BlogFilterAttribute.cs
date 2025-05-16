@@ -6,20 +6,20 @@ using System.Threading.Tasks;
 
 namespace SixtyThreeBits.Web.Filters.Admin
 {
-    public class BeforeTeamMemberPageLoad : IAsyncActionFilter
+    public class BlogFilterAttribute : IAsyncActionFilter
     {
         #region Properties
-        TeamMembersModelBase _model;
+        BlogModelBase _model;
         #endregion
 
         #region Methods
         public async Task OnActionExecutionAsync(ActionExecutingContext filterContext, ActionExecutionDelegate next)
         {
-            _model = WebUtilities.GetModelFromController<TeamMembersModelBase>(filterContext.Controller);
-            var teamMemberID = filterContext.RouteData.Values[WebConstants.RouteValues.TeamMemberID]?.ToString().ToInt();
+            _model = WebUtilities.GetModelFromController<BlogModelBase>(filterContext.Controller);
+            var blogPostID = filterContext.RouteData.Values[WebConstants.RouteValues.BlogPostID]?.ToString().ToInt();
 
-            var repository = _model.RepositoriesFactory.CreateTeamMembersRepository();
-            _model.DBItem = await repository.TeamMembersGetSingleByID(teamMemberID);
+            var repository = _model.RepositoriesFactory.CreateBlogRepository();
+            _model.DBItem = await repository.BlogPostGetSingleByID(blogPostID);
             if (_model.DBItem == null)
             {
                 filterContext.Result = _model.GetNotFoundAdminViewResult();
@@ -28,22 +28,16 @@ namespace SixtyThreeBits.Web.Filters.Admin
             {
                 if (!_model.IsAjaxRequest)
                 {
-                    initPageTitle();
                     reinitBreadCrumbs();
                 }
                 await next();
             }
         }
 
-        void initPageTitle()
-        {
-            _model.PageTitle.Set(_model.DBItem.TeamMemberFullname);
-        }
-
         void reinitBreadCrumbs()
         {
-            _model.Breadcrumbs.RemoveAt(2);
-            _model.Breadcrumbs.RenameLastItem(_model.DBItem.TeamMemberFullname);
+            _model.Breadcrumbs.DeleteLastItem();
+            _model.Breadcrumbs.RenameLastItem(_model.DBItem.BlogPostTitle);
         }
         #endregion
     }

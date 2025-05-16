@@ -99,7 +99,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
     }
 
     [Route("admin/users/{userID:int}/properties")]
-    [TypeFilter(typeof(BeforeUserPageLoad), Order = 2)]
+    [TypeFilter(typeof(UserFilterAttribute), Order = 2)]
     public class UserPropertiesController : AdminControllerBase<UserPropertiesModel>
     {
         #region Actions

@@ -102,7 +102,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
     }
 
     [Route("admin/products/{productID:int}/properties")]
-    [TypeFilter(typeof(BeforeProductPageLoad), Order = 2)]
+    [TypeFilter(typeof(ProductFilterAttribute), Order = 2)]
     public class ProductsPropertiesController : AdminControllerBase<ProductPropertiesModel>
     {
         #region Actions

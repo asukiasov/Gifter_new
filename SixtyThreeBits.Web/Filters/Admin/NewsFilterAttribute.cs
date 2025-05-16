@@ -6,20 +6,20 @@ using System.Threading.Tasks;
 
 namespace SixtyThreeBits.Web.Filters.Admin
 {
-    public class BeforeBlogPageLoad : IAsyncActionFilter
+    public class NewsFilterAttribute : IAsyncActionFilter
     {
         #region Properties
-        BlogModelBase _model;
+        NewsModelBase _model;
         #endregion
 
         #region Methods
         public async Task OnActionExecutionAsync(ActionExecutingContext filterContext, ActionExecutionDelegate next)
         {
-            _model = WebUtilities.GetModelFromController<BlogModelBase>(filterContext.Controller);
-            var blogPostID = filterContext.RouteData.Values[WebConstants.RouteValues.BlogPostID]?.ToString().ToInt();
+            _model = WebUtilities.GetModelFromController<NewsModelBase>(filterContext.Controller);
+            var newsID = filterContext.RouteData.Values[WebConstants.RouteValues.NewsID]?.ToString().ToInt();
 
-            var repository = _model.RepositoriesFactory.CreateBlogRepository();
-            _model.DBItem = await repository.BlogPostGetSingleByID(blogPostID);
+            var repository = _model.RepositoriesFactory.CreateNewsRepository();
+            _model.DBItem = await repository.NewsGetSingleByID(newsID);
             if (_model.DBItem == null)
             {
                 filterContext.Result = _model.GetNotFoundAdminViewResult();
@@ -28,16 +28,22 @@ namespace SixtyThreeBits.Web.Filters.Admin
             {
                 if (!_model.IsAjaxRequest)
                 {
+                    initPageTitle();
                     reinitBreadCrumbs();
                 }
                 await next();
             }
         }
 
+        void initPageTitle()
+        {
+            _model.PageTitle.Set(_model.DBItem.NewsTitle);
+        }
+
         void reinitBreadCrumbs()
         {
             _model.Breadcrumbs.DeleteLastItem();
-            _model.Breadcrumbs.RenameLastItem(_model.DBItem.BlogPostTitle);
+            _model.Breadcrumbs.RenameLastItem(_model.DBItem.NewsTitle);
         }
         #endregion
     }

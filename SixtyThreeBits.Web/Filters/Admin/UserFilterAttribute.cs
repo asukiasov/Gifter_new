@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace SixtyThreeBits.Web.Filters.Admin
 {
-    public class BeforeUserPageLoad : IAsyncActionFilter
+    public class UserFilterAttribute : IAsyncActionFilter
     {
         #region Properties
         UserModelBase _model;
@@ -19,7 +19,7 @@ namespace SixtyThreeBits.Web.Filters.Admin
         #endregion
 
         #region Methods
-        public BeforeUserPageLoad()
+        public UserFilterAttribute()
         {
         }
 

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SixtyThreeBits.Web.Filters.Admin
 {
-    public class BeforeProductPageLoad : IAsyncActionFilter
+    public class ProductFilterAttribute : IAsyncActionFilter
     {
         #region Properties
         ProductsModelBase _model;

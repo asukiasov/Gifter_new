@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace SixtyThreeBits.Web.Controllers.Admin
 {
     [Route("admin/menu-footer")]
-    [TypeFilter(typeof(BeforePagesManagementPageLoad), Order = 2)]
+    [TypeFilter(typeof(PagesManagementFilterAttribute), Order = 2)]
     public class MenuFooterController : AdminControllerBase<MenuFooterModel>
     {
         #region Actions
