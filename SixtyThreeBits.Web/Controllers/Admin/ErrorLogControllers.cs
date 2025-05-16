@@ -6,7 +6,7 @@ using SixtyThreeBits.Web.Models.Admin;
 namespace SixtyThreeBits.Web.Controllers.Admin
 {
     [Route("admin/error-log")]
-    public class ErrorLogController :  AdminControllerBase<ErrorLogModel>
+    public class ErrorLogControllers :  AdminControllerBase<ErrorLogModel>
     {
         [Route("", Name = ControllerActionRouteNames.Admin.ErrorLogController.ErrorLog)]
         public IActionResult ErrorLogs()

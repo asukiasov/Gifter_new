@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Logging;
-using SixtyThreeBits.Core.Libraries.Loggers;
 using SixtyThreeBits.Core.Libraries.Loggers.DTO;
 using SixtyThreeBits.Libraries.Extensions;
 using System;
@@ -16,11 +15,9 @@ namespace SixtyThreeBits.Core.Libraries
         public bool IsError { private set; get; }
         public string ErrorMessage { private set; get; }
         public Exception Exception { private set; get; }
-        public bool IsCustomDatabaseMessage { private set; get; }
         #endregion
 
         #region Constructors
-        public SixtyThreeBitsDataObjectBase() { }
         public SixtyThreeBitsDataObjectBase(ILogger logger)
         {
             _logger = logger;
