@@ -1,6 +1,6 @@
 ﻿using SixtyThreeBits.Core.Abstractions;
 using SixtyThreeBits.Core.Infrastructure.Services;
-using SixtyThreeBits.Core.Libraries.FileStorages.Common;
+using SixtyThreeBits.Core.Libraries.FileStorages.DTO;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -20,10 +20,10 @@ public class AzureFileStorage : IFileStorage
         _noImageHttpPath = noImageHttpPath;
     }
 
-    public async Task<List<FileStorageItem>> GetFiles(string folderPath = null)
+    public async Task<List<FileStorageItemDTO>> GetFiles(string folderPath = null)
     {
         var blobs = await _azureBlobStorageService.GetFiles(folderPath);
-        var result = blobs.Select(item => new FileStorageItem
+        var result = blobs.Select(item => new FileStorageItemDTO
         (
             Filename: Path.GetFileName(item.Name),
             FilesizeBytes: item.Properties.ContentLength ?? 0,

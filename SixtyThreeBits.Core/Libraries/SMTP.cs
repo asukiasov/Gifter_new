@@ -1,4 +1,4 @@
-﻿using SixtyThreeBits.Core.DTO;
+﻿using SixtyThreeBits.Core.Infrastructure.Repositories.DTO;
 using System;
 using System.Collections.Generic;
 using System.IO;

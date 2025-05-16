@@ -3,8 +3,7 @@ using DevExtreme.AspNet.Mvc.Builders;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using SixtyThreeBits.Core.DTO;
-using SixtyThreeBits.Core.Infrastructure.Repositories;
+using SixtyThreeBits.Core.Infrastructure.Repositories.DTO;
 using SixtyThreeBits.Core.Libraries;
 using SixtyThreeBits.Core.Properties;
 using SixtyThreeBits.Core.Utilities;
@@ -98,7 +97,7 @@ namespace SixtyThreeBits.Web.Models.Admin
 
                     grid
                       .ID("BrandsGrid")
-                      .OnInitialized("brandsModel.onGridInit")
+                      .OnInitialized("model.onGridInit")
                       .Columns(columns =>
                       {
                           columns.Add().Width(30).Caption(" ").InitDetailsUrlCellTemplate(nameof(GridItem.UrlBrandProperties));

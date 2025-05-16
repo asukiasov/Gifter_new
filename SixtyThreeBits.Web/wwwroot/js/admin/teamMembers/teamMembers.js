@@ -1,20 +1,20 @@
-﻿const teamMembersModel = {
+﻿const model = {
     grid: null,
     urlSync: null,
     
     onGridInit: function (e) {
-        teamMembersModel.grid = e.component;
+        model.grid = e.component;
         globals.devexpress.setGridFullHeight(e.component, e.element[0]);
     },
     onGridReorder: function (e) {
-        teamMembersModel.syncSortIndexes(e);
+        model.syncSortIndexes(e);
     },
     syncSortIndexes: function (e) {
-        const sortIndexes = globals.devexpress.getGridSortIndexes('TeamMemberID', teamMembersModel.grid, e);
+        const sortIndexes = globals.devexpress.getGridSortIndexes('TeamMemberID', model.grid, e);
         
         $.ajax({
             type: 'POST',
-            url: teamMembersModel.urlSync,
+            url: model.urlSync,
             data: { SortIndexes: sortIndexes },
             dataType: 'json',
             beforeSend: function () {
@@ -22,7 +22,7 @@
             },
             success: function (res) {
                 if (res.IsSuccess) {
-                    teamMembersModel.grid.refresh()
+                    model.grid.refresh()
                 }
                 else {
                     components63Bits.dialog.error();
@@ -40,6 +40,6 @@
 
 $(function () {
     $(globals.selectors.buttonAddNew).click(function () {
-        teamMembersModel.grid.addRow();
+        model.grid.addRow();
     });
 });

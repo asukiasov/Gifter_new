@@ -1,7 +1,7 @@
-﻿const emailTemplateModel = {
+﻿const model = {
     emailTemplatePlaceHoldersJson: null
 };
 
 $(function () {
-    new TinyMCE({ selector: '.js-apply-tinymce', width: '100%', height: 400, placeHolders: emailTemplateModel.emailTemplatePlaceHoldersJson }).displaySimplified();
+    new TinyMCE({ selector: '.js-apply-tinymce', width: '100%', height: 400, placeHolders: model.emailTemplatePlaceHoldersJson }).displaySimplified();
 });

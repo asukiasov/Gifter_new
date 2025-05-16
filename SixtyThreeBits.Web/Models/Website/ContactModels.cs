@@ -10,9 +10,9 @@ namespace SixtyThreeBits.Web.Models.Website
     public class ContactModel : ModelBase
     {
         #region Methods
-        public PageViewModel GetPageViewModel()
+        public ViewModel GetViewModel()
         {
-            var viewModel = new PageViewModel();
+            var viewModel = new ViewModel();
             viewModel.ContactPhone = SystemProperties.ContactPhone;
             viewModel.ContactAddress = Utilities.GetValuesByLanguage(LanguageCultureCode, SystemProperties.ContactAddress, SystemProperties.ContactAddressEng);
             viewModel.ContactEmail = SystemProperties.ContactEmail;
@@ -71,7 +71,7 @@ namespace SixtyThreeBits.Web.Models.Website
         #endregion
 
         #region Nested Classes
-        public class PageViewModel
+        public class ViewModel
         {
             #region Properties
             public string ContactPhone { get; set; }

@@ -1,7 +1,7 @@
 ﻿using ExcelDataReader;
 using OfficeOpenXml;
-using SixtyThreeBits.Core.DTO;
-using SixtyThreeBits.Core.Infrastructure.Repositories;
+using SixtyThreeBits.Core.Factories;
+using SixtyThreeBits.Core.Infrastructure.Repositories.DTO;
 using SixtyThreeBits.Core.Properties;
 using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries.Extensions;
@@ -38,7 +38,8 @@ namespace SixtyThreeBits.Core.BusinessLogics
 			{
 				try
 				{
-					using (var excel = new ExcelPackage(new FileInfo($"{_appSettings.DownloadFolderPhysicalPath}\\ProductsSync.xlsx")))
+					ExcelPackage.License.SetNonCommercialPersonal("63NonCommercial");
+                    using (var excel = new ExcelPackage(new FileInfo($"{_appSettings.DownloadFolderPhysicalPath}\\ProductsSync.xlsx")))
 					{
 						var workSheet = excel.Workbook.Worksheets[0];
 						var repository = _dataAccessFactory.CreateProductsRepository();													

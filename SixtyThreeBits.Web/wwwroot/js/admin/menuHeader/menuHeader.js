@@ -1,4 +1,4 @@
-const menuHeaderModel = {
+const model = {
     urlAdd: null,
     urlUpdate: null,
     urlDelete: null,
@@ -25,7 +25,7 @@ const menuHeaderModel = {
                 fallbackOnBody: true,
                 swapThreshold: 0.65,
                 onSort: function (e) {
-                    menuHeaderModel.sort();
+                    model.sort();
                 },
             });
         });
@@ -40,24 +40,24 @@ const menuHeaderModel = {
     },
     updateTreeNode: function (id, treeNodeHtml) {
         $('.js-tree-node[data-id="' + id + '"]').replaceWith(treeNodeHtml);
-        menuHeaderModel.initSortable();
+        model.initSortable();
     },
 
     onPagesSelectBoxInitialized: function (e) {
-        menuHeaderModel.pagesSelectBox = e.component;
+        model.pagesSelectBox = e.component;
     },
     onPagesSelectBoxSelectionChanged: function (e) {
         if (e.selectedItem) {
             const pageID = e.selectedItem.Key;
-            menuHeaderModel.setModalPageComponentsDataBySelectedPageIDPromise(pageID).then(function () { }).catch(function (e) { console.error(e); });
+            model.setModalPageComponentsDataBySelectedPageIDPromise(pageID).then(function () { }).catch(function (e) { console.error(e); });
         }
     },
 
     startEditTreeNode: function (menuHeaderID) {
         preloader.show();
-        menuHeaderModel.setModalComponentsDataByMenuHeaderIDPromise(menuHeaderID).then(function () {
-            menuHeaderModel.initModalComponentsState();
-            menuHeaderModel.modal.show();
+        model.setModalComponentsDataByMenuHeaderIDPromise(menuHeaderID).then(function () {
+            model.initModalComponentsState();
+            model.modal.show();
             preloader.hide();
         }).catch(function () {
             components63Bits.dialog.error();
@@ -80,7 +80,7 @@ const menuHeaderModel = {
         $('.js-modal-MenuHeaderID-hf').val(null);
         $('.js-modal-MenuHeaderParentID-hf').val(null);
         $('.js-modal-MenuHeaderIsExternalPage-checkbox').prop('checked', false);
-        menuHeaderModel.pagesSelectBox.option('value', null);
+        model.pagesSelectBox.option('value', null);
         $('.js-modal-PageTitle-input').val(null);
         $('.js-modal-PageTitleEng-input').val(null);
         $('.js-modal-PageTitleRus-input').val(null);
@@ -98,14 +98,14 @@ const menuHeaderModel = {
         return new Promise(function (resolve, reject) {
             $.ajax({
                 type: 'GET',
-                url: menuHeaderModel.urlGet + '/' + menuHeaderID,
+                url: model.urlGet + '/' + menuHeaderID,
                 dataType: 'json',                
                 success: function (e) {
                     if (e.IsSuccess) {
                         $('.js-modal-MenuHeaderID-hf').val(e.Data.MenuHeaderID);
                         $('.js-modal-MenuHeaderParentID-hf').val(e.Data.MenuHeaderParentID);
                         $('.js-modal-MenuHeaderIsExternalPage-checkbox').prop('checked', e.Data.MenuHeaderIsExternalPage)
-                        menuHeaderModel.pagesSelectBox.option('value', e.Data.PageID);
+                        model.pagesSelectBox.option('value', e.Data.PageID);
                         $('.js-modal-PageTitle-input').val(e.Data.PageTitle);
                         $('.js-modal-PageTitleEng-input').val(e.Data.PageTitleEng);
                         $('.js-modal-PageTitleRus-input').val(e.Data.PageTitleRus);
@@ -131,7 +131,7 @@ const menuHeaderModel = {
         });
     },
     setModalPageComponentsDataBySelectedPageIDPromise: function (pageID) {
-        const urlGetPage = menuHeaderModel.urlGetPage.replace('0', pageID);
+        const urlGetPage = model.urlGetPage.replace('0', pageID);
         return new Promise(function (resolve, reject) {
             $.ajax({
                 type: 'GET',
@@ -158,10 +158,10 @@ const menuHeaderModel = {
     },    
 
     addNew: function () {
-        const submitModel = menuHeaderModel.getModalFormData();
+        const submitModel = model.getModalFormData();
         $.ajax({
             type: 'POST',
-            url: menuHeaderModel.urlAdd,
+            url: model.urlAdd,
             data: submitModel,
             dataType: 'json',
             beforeSend: function () {
@@ -172,11 +172,11 @@ const menuHeaderModel = {
                 if (e.IsSuccess) {
                     const parentID = submitModel.MenuHeaderParentID;
                     const treeNodeHtml = e.Data;
-                    menuHeaderModel.addNodeToTree(parentID, treeNodeHtml);
-                    menuHeaderModel.modal.hide();
-                    menuHeaderModel.initSortable();
-                    menuHeaderModel.sort();
-                    menuHeaderModel.refreshPagesSelectBox();
+                    model.addNodeToTree(parentID, treeNodeHtml);
+                    model.modal.hide();
+                    model.initSortable();
+                    model.sort();
+                    model.refreshPagesSelectBox();
                 }
                 else if (e.Data) {
                     validation.init({ errorsJson: e.Data }).showErrors();
@@ -191,10 +191,10 @@ const menuHeaderModel = {
         });
     },
     update: function () {
-        const submitModel = menuHeaderModel.getModalFormData();
+        const submitModel = model.getModalFormData();
         $.ajax({
             type: 'POST',
-            url: menuHeaderModel.urlUpdate,
+            url: model.urlUpdate,
             data: submitModel,
             dataType: 'json',
             beforeSend: function () {
@@ -204,10 +204,10 @@ const menuHeaderModel = {
             success: function (e) {
                 if (e.IsSuccess) {
                     const treeNodeHtml = e.Data;                    
-                    menuHeaderModel.updateTreeNode(submitModel.MenuHeaderID, treeNodeHtml);
-                    menuHeaderModel.modal.hide();
-                    menuHeaderModel.initSortable();
-                    menuHeaderModel.refreshPagesSelectBox();
+                    model.updateTreeNode(submitModel.MenuHeaderID, treeNodeHtml);
+                    model.modal.hide();
+                    model.initSortable();
+                    model.refreshPagesSelectBox();
                 }
                 else if (e.Data) {
                     validation.init({ errorsJson: e.Data }).showErrors();
@@ -224,7 +224,7 @@ const menuHeaderModel = {
     delete: function (menuHeaderID) {
         $.ajax({
             type: 'POST',
-            url: menuHeaderModel.urlDelete,
+            url: model.urlDelete,
             data: {
                 menuHeaderID: menuHeaderID
             },
@@ -261,7 +261,7 @@ const menuHeaderModel = {
 
         $.ajax({
             type: 'POST',
-            url: menuHeaderModel.urlSort,
+            url: model.urlSort,
             data: {
                 SortIndexes: sortIndexes
             },
@@ -283,14 +283,14 @@ const menuHeaderModel = {
     refreshPagesSelectBox: function () {
         $.ajax({
             type: 'GET',
-            url: menuHeaderModel.urlGetPages,
+            url: model.urlGetPages,
             dataType: 'json',            
             success: function (e) {
                 if (e.IsSuccess) {
                     var ds = new DevExpress.data.DataSource({
                         store: e.Data
                     });
-                    menuHeaderModel.pagesSelectBox.option('dataSource', ds)
+                    model.pagesSelectBox.option('dataSource', ds)
                 }                
             }
         });
@@ -307,7 +307,7 @@ const menuHeaderModel = {
         const menuHeaderIsPublished = $('.js-modal-MenuHeaderIsPublished-checkbox').is(':checked');
         const menuHeaderIsTargetBlank = $('.js-modal-MenuHeaderIsTargetBlank-checkbox').is(':checked');
 
-        const pageID = menuHeaderModel.pagesSelectBox.option('value')
+        const pageID = model.pagesSelectBox.option('value')
         const pageTitle = $('.js-modal-PageTitle-input').val();
         const pageTitleEng = $('.js-modal-PageTitleEng-input').val();
         const pageTitleRus = $('.js-modal-PageTitleRus-input').val();
@@ -336,32 +336,32 @@ const menuHeaderModel = {
 }
 
 $(function () {
-    menuHeaderModel.initSortable();
-    menuHeaderModel.modal = components63Bits.modal.create('.js-modal');
+    model.initSortable();
+    model.modal = components63Bits.modal.create('.js-modal');
 
     $(globals.selectors.buttonAddNew).click(function () {
-        menuHeaderModel.clearModalComponentsData();
-        menuHeaderModel.initModalComponentsState();
-        menuHeaderModel.modal.show();
+        model.clearModalComponentsData();
+        model.initModalComponentsState();
+        model.modal.show();
     });
     
     $('.js-tree').on('click', '.js-tree-node-title', function (e) {
         e.preventDefault();
         const menuHeaderID = $(this).closest('.js-tree-node').data('id');
-        menuHeaderModel.startEditTreeNode(menuHeaderID);
+        model.startEditTreeNode(menuHeaderID);
     });
     $('.js-tree').on('click', '.js-tree-node-add-new-button', function (e) {
         e.preventDefault();
-        menuHeaderModel.clearModalComponentsData();
-        menuHeaderModel.initModalComponentsState();
+        model.clearModalComponentsData();
+        model.initModalComponentsState();
         const menuHeaderParentID = $(this).closest('.js-tree-node').data('id');
         $('.js-modal-MenuHeaderParentID-hf').val(menuHeaderParentID)
-        menuHeaderModel.modal.show();
+        model.modal.show();
     });
     $('.js-tree').on('click', '.js-tree-node-edit-button', function (e) {
         e.preventDefault();
         const menuHeaderID = $(this).closest('.js-tree-node').data('id');
-        menuHeaderModel.startEditTreeNode(menuHeaderID);
+        model.startEditTreeNode(menuHeaderID);
     });
     $('.js-tree').on('click', '.js-tree-node-delete-button', function (e) {
         e.preventDefault();
@@ -369,22 +369,22 @@ $(function () {
         const childrenCount = $(this).closest('.js-tree-node').find('.js-tree-node').length;
         if (childrenCount > 0) {
             components63Bits.dialog.prompt({
-                text: menuHeaderModel.textConfirmDeleteRecursiveWithTypeDelete,
+                text: model.textConfirmDeleteRecursiveWithTypeDelete,
                 size: components63Bits.dialog.sizes.medium,
                 buttonColor: components63Bits.dialog.buttonColors.red,
                 resolve: function (e) {
                     if (e == 'delete') {
-                        menuHeaderModel.delete(menuHeaderID);
+                        model.delete(menuHeaderID);
                     }
                 }
             });
         }
         else {
             components63Bits.dialog.confirm({
-                textConfirm: menuHeaderModel.textConfirmDelete,
+                textConfirm: model.textConfirmDelete,
                 confirmButtonColor: components63Bits.dialog.buttonColors.red,
                 resolve: function () {
-                    menuHeaderModel.delete(menuHeaderID);
+                    model.delete(menuHeaderID);
                 }
             });
         }
@@ -392,15 +392,15 @@ $(function () {
     });
 
     $('.js-modal-MenuHeaderIsExternalPage-checkbox').click(function () {
-        menuHeaderModel.initModalComponentsState();
+        model.initModalComponentsState();
     });
     $('.js-modal-save-button').click(function () {
-        const data = menuHeaderModel.getModalFormData();
+        const data = model.getModalFormData();
         if (data.MenuHeaderID > 0) {
-            menuHeaderModel.update();            
+            model.update();            
         }
         else {
-            menuHeaderModel.addNew();
+            model.addNew();
         }
     });
 });

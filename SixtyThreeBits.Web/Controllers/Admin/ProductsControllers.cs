@@ -80,8 +80,15 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         [Route("excel/download", Name = ControllerActionRouteNames.Admin.ProductsController.ExcelDownload)]
         public async Task<IActionResult> ExcelDownload()
         {
-            var excelFileBytes = await Model.GetProductsSyncExcelFileBytes();
-            return File(excelFileBytes, "application/force-download", "ProductsSync.xlsx");
+            var viewModel = await Model.GetProductsSyncExcelFileBytes();
+            if (viewModel == null)
+            {
+                return Model.GetNotFoundAdminViewResult();
+            }
+            else
+            {
+                return File(viewModel, "application/force-download", "ProductsSync.xlsx");
+            }
         }
 
         [HttpPost]

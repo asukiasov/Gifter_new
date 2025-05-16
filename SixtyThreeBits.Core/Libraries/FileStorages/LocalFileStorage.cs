@@ -1,5 +1,5 @@
 ﻿using SixtyThreeBits.Core.Abstractions;
-using SixtyThreeBits.Core.Libraries.FileStorages.Common;
+using SixtyThreeBits.Core.Libraries.FileStorages.DTO;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -146,7 +146,7 @@ namespace SixtyThreeBits.Core.Libraries.FileStorages
             }
         }
 
-        public async Task<List<FileStorageItem>> GetFiles(string folderPath = null)
+        public async Task<List<FileStorageItemDTO>> GetFiles(string folderPath = null)
         {
             if (!string.IsNullOrWhiteSpace(folderPath))
             {
@@ -158,7 +158,7 @@ namespace SixtyThreeBits.Core.Libraries.FileStorages
             }
 
             var files = new DirectoryInfo($"{_uploadFolderPhysicalPath}{folderPath}").GetFiles().ToList();
-            var fileStorageItems = files.Select(item => new FileStorageItem
+            var fileStorageItems = files.Select(item => new FileStorageItemDTO
             (
                 Filename: item.Name,
                 FilesizeBytes: item.Length,
@@ -167,7 +167,7 @@ namespace SixtyThreeBits.Core.Libraries.FileStorages
                 FileDateUpdated: item.LastWriteTime,
                 FileDateUpdatedUtc: item.LastWriteTimeUtc
             )).ToList();
-            return await Task.FromResult(fileStorageItems) ?? new List<FileStorageItem>(0);
+            return await Task.FromResult(fileStorageItems) ?? new List<FileStorageItemDTO>(0);
         }
         #endregion
 

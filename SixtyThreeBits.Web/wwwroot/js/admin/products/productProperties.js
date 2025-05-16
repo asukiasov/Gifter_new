@@ -1,4 +1,4 @@
-﻿const productModel = {
+﻿const model = {
     urlImageUpload: null,
     urlImageUpdate: null,
     urlImageDelete: null,
@@ -14,7 +14,7 @@
             swapThreshold: 0.65,
             handle: '.js-product-image',
             onSort: function (e) {
-                productModel.sortImages();
+                model.sortImages();
             },
         });
     },
@@ -27,7 +27,7 @@
 
         $.ajax({
             method: 'POST',
-            url: productModel.urlImageSort,
+            url: model.urlImageSort,
             data: { SortIndexes: sortIndexes },
             dataType: 'json',            
             success: function () {
@@ -42,7 +42,7 @@
 
         $.ajax({
             method: 'POST',
-            url: productModel.urlImageUpdate,
+            url: model.urlImageUpdate,
             data: { ProductImageID: productImageID, ProductImageAltText: productImageAltText },
             dataType: 'json',
             beforeSend: function () {
@@ -80,12 +80,12 @@
         const productImageID = deleteButton.closest('.js-product-image-item').attr('data-id');
         const productImageFilename = deleteButton.attr('data-filename');
         components63Bits.dialog.confirm({
-            textConfirm: productModel.textConfirmDeleteImage,
+            textConfirm: model.textConfirmDeleteImage,
             confirmButtonColor: components63Bits.dialog.buttonColors.red,
             resolve: function () {
                 $.ajax({
                     method: 'POST',
-                    url: productModel.urlImageDelete,
+                    url: model.urlImageDelete,
                     data: { ProductImageID: productImageID, ProductImageFilename: productImageFilename },
                     dataType: 'json',
                     beforeSend: function () {
@@ -111,8 +111,8 @@
 
     templates: {
         compile: function () {
-            productModel.templates.productImageProgressTemplate = Template7.compile($('#productImageProgressTemplate').html());
-            productModel.templates.productImageTemplate = Template7.compile($('#productImageTemplate').html());
+            model.templates.productImageProgressTemplate = Template7.compile($('#productImageProgressTemplate').html());
+            model.templates.productImageTemplate = Template7.compile($('#productImageTemplate').html());
         },
         productImageProgressTemplate: null,
         productImageTemplate: null
@@ -123,19 +123,19 @@
 $(function () {
     new TinyMCE({ selector: '.js-apply-tinymce', width: '100%', height: 300 }).displaySimplified();
 
-    productModel.templates.compile();
-    productModel.initSortable();
+    model.templates.compile();
+    model.initSortable();
 
-    productModel.productImagesUploader = new FileUplaoder({
+    model.productImagesUploader = new FileUplaoder({
         inputElement: $('.js-product-images-uploader')[0],
-        urlFileUplaod: productModel.urlImageUpload,
+        urlFileUplaod: model.urlImageUpload,
         isReportProgressIndividual: true,
         onStartCallback: function (e) {            
             const productImageProgressModel = {
                 productImageFilename: e.filename,
                 productImageFileUploadProgressPercent: 0
             }
-            const productImageProgressItemHtml = productModel.templates.productImageProgressTemplate(productImageProgressModel);
+            const productImageProgressItemHtml = model.templates.productImageProgressTemplate(productImageProgressModel);
             $(productImageProgressItemHtml).insertBefore('.js-product-images-uploader-container');
         },
         onProgressCallback: function (e) {            
@@ -149,12 +149,12 @@ $(function () {
                     ProductImageID: e.Data.ProductImageID,
                     ProductImageFileHttpPath: e.Data.ProductImageFileHttpPath
                 };
-                const productImageItemHtml = productModel.templates.productImageTemplate(productImageModel);
+                const productImageItemHtml = model.templates.productImageTemplate(productImageModel);
                 productImageProgressItem.replaceWith(productImageItemHtml);                
             }            
         },
         onComplete: function () {            
-            productModel.sortImages();
+            model.sortImages();
         }
     });
     
@@ -169,7 +169,7 @@ $(function () {
     });    
 
     $('.js-product-images-uploader').change(function () {
-        productModel.productImagesUploader.upload();
+        model.productImagesUploader.upload();
     });
 
     $('.js-product-images-container').on('click', '.js-product-image', function (e) {
@@ -185,7 +185,7 @@ $(function () {
         const _this = $(this);
         const isUnsaved = _this.attr('data-is-unsaved') === 'true';
         if (isUnsaved) {
-            productModel.updateImage(_this);
+            model.updateImage(_this);
         }
     });
 
@@ -202,7 +202,7 @@ $(function () {
         const saveBtn = _this.closest('.js-product-image-item').find('.js-product-image-save-button');
         const isUnsaved = saveBtn.attr('data-is-unsaved') === 'true';
         if (isUnsaved) {
-            productModel.updateImage(saveBtn);
+            model.updateImage(saveBtn);
         }
     });
 
@@ -210,6 +210,6 @@ $(function () {
         e.preventDefault();
 
         const _this = $(this);
-        productModel.deleteImage(_this);
+        model.deleteImage(_this);
     });    
 });

@@ -3,7 +3,7 @@ using DevExtreme.AspNet.Mvc.Builders;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using SixtyThreeBits.Core.BusinessLogics;
-using SixtyThreeBits.Core.DTO;
+using SixtyThreeBits.Core.Infrastructure.Repositories.DTO;
 using SixtyThreeBits.Core.Libraries;
 using SixtyThreeBits.Core.Libraries.FileStorages;
 using SixtyThreeBits.Core.Properties;
@@ -189,7 +189,7 @@ namespace SixtyThreeBits.Web.Models.Admin
 
                     grid
                    .ID("ProductsGrid")
-                   .OnInitialized("productsModel.onGridInit")
+                   .OnInitialized("model.onGridInit")
                    .Columns(columns =>
                    {
                        columns.Add().Width(30).Caption(" ").InitDetailsUrlCellTemplate(nameof(GridItem.UrlProductsProperties)).AllowExporting(false);

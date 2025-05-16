@@ -74,7 +74,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             return viewModel;
         }
 
-        public async Task<AjaxResponse> Save(ViewModel.RolePermissionSaveSubmitModel submitModel)
+        public async Task<AjaxResponse> Save(SubmitModelRolePermissionSave submitModel)
         {
             var viewModel = new AjaxResponse();
             var repository = RepositoriesFactory.CreateRolesRepository();
@@ -113,8 +113,8 @@ namespace SixtyThreeBits.Web.Models.Admin
 
                     Grid
                     .ID("RolesGrid")
-                    .OnInitialized("rolesPermissionsModel.onRolesGridInit")
-                    .OnFocusedRowChanged("rolesPermissionsModel.onRolesGridFocusedRowChanged")
+                    .OnInitialized("model.onGridInit")
+                    .OnFocusedRowChanged("model.onGridFocusedRowChanged")
                     .FilterRow(Options =>
                     {
                         Options.Visible(false);
@@ -157,8 +157,8 @@ namespace SixtyThreeBits.Web.Models.Admin
 
                     tree
                     .ID("PermissionsTree")
-                    .OnInitialized("rolesPermissionsModel.onPermissionsTreeInit")
-                    .OnContentReady("rolesPermissionsModel.onPermissionsTreeContentReady")
+                    .OnInitialized("model.onTreeInit")
+                    .OnContentReady("model.onTreeContentReady")
                     .FilterRow(Options =>
                     {
                         Options.Visible(false);
@@ -196,15 +196,15 @@ namespace SixtyThreeBits.Web.Models.Admin
                     #endregion
                 }
                 #endregion
-            }
+            }            
+            #endregion
+        }
 
-            public class RolePermissionSaveSubmitModel
-            {
-                #region Properties
-                public int? RoleID { get; set; }
-                public List<int?> PermissionIDs { get; set; }
-                #endregion
-            }
+        public class SubmitModelRolePermissionSave
+        {
+            #region Properties
+            public int? RoleID { get; set; }
+            public List<int?> PermissionIDs { get; set; }
             #endregion
         }
         #endregion

@@ -15,7 +15,7 @@ namespace SixtyThreeBits.Web.Controllers.Website
         public async Task<IActionResult> Page(string pageSlug)
         {
             Model.PluginsClient.EnablePageBuilder(true).EnableSlickSlider(true).EnableJQueryAppear(true).EnableJWPlayer(true);
-            var viewModel = await Model.GetPageViewModel(pageSlug);
+            var viewModel = await Model.GetViewModel(pageSlug);
             if (viewModel == null)
             {
                 return Model.GetNotFoundWebsiteViewResult();

@@ -7,14 +7,14 @@ namespace SixtyThreeBits.Web.Models.Website
     public class PagesModel : ModelBase
     {
         #region Methods
-        public async Task<PageViewModel> GetPageViewModel(string PageSlug)
+        public async Task<ViewModel> GetViewModel(string PageSlug)
         {
-            var viewModel = default(PageViewModel);
+            var viewModel = default(ViewModel);
             var repository = RepositoriesFactory.CreatePagesRepository(); ;
             var dbItem = await repository.PagesGetSingleBySlug(pageSlug: PageSlug?.Trim('/'));
             if (dbItem != null && (dbItem.PageIsPublished || User?.RoleCode == Enums.RolesCodes.Administrator))
             {
-                viewModel = new PageViewModel();
+                viewModel = new ViewModel();
                 viewModel.PageTitle = Utilities.GetValuesByLanguage(LanguageCultureCode, dbItem.PageTitle, dbItem.PageTitleEng);
                 viewModel.PageShortDescription = Utilities.GetValuesByLanguage(LanguageCultureCode, dbItem.PageShortDescription, dbItem.PageShortDescriptionEng);
                 viewModel.PageText = Utilities.GetValuesByLanguage(LanguageCultureCode, dbItem.PageText, dbItem.PageTextEng);
@@ -27,7 +27,7 @@ namespace SixtyThreeBits.Web.Models.Website
         #endregion
 
         #region Nested Classes
-        public class PageViewModel
+        public class ViewModel
         {
             #region Properties
             public string PageTitle { get; set; }

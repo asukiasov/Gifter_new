@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SixtyThreeBits.Web.Filters.Shared;
+using SixtyThreeBits.Web.Filters.Base;
 
 namespace SixtyThreeBits.Web.Controllers.Base
 {
-    [TypeFilter(typeof(SharedFilterAttribute), Order = 0)]
+    [TypeFilter(typeof(BaseFilterAttribute), Order = 0)]
     public class ControllerBase<T> : Controller where T : new()
     {
         #region Properties

@@ -61,8 +61,8 @@
                         <label>@Html.Raw(Model.TextPageInternal)</label>
                         <div class="form-control js-modal-PageID-input">
                             @(Html.DevExtreme().SelectBox()
-                                .OnInitialized("menuHeaderModel.onPagesSelectBoxInitialized")
-                                .OnSelectionChanged("menuHeaderModel.onPagesSelectBoxSelectionChanged")                                
+                                .OnInitialized("model.onPagesSelectBoxInitialized")
+                                .OnSelectionChanged("model.onPagesSelectBoxSelectionChanged")
                                 .DataSource(d => d.Array().Data(Model.Pages))
                                 .ValueExpr(Model.SelectBoxValueExpr)
                                 .DisplayExpr(Model.SelectBoxDisplayExpr)                                
@@ -148,16 +148,16 @@
 @section FooterSection{
     <script src="/js/admin/menuHeader/menuHeader.js"></script>
     <script>
-        menuHeaderModel.urlAdd = '@Model.UrlAdd';
-        menuHeaderModel.urlUpdate = '@Model.UrlUpdate';
-        menuHeaderModel.urlDelete = '@Model.UrlDelete';
-        menuHeaderModel.urlSort = '@Model.UrlSort';
-        menuHeaderModel.urlGet = '@Model.UrlGet';
-        menuHeaderModel.urlGetPage = '@Model.UrlGetPage';
-        menuHeaderModel.urlGetPages = '@Model.UrlGetPages';
-        menuHeaderModel.textAdd = '@Html.Raw(Model.TextAdd)';
-        menuHeaderModel.textUpdate = '@Html.Raw(Model.TextUpdate)';
-        menuHeaderModel.textConfirmDelete = '@Html.Raw(Model.TextConfirmDelete)';
-        menuHeaderModel.textConfirmDeleteRecursiveWithTypeDelete = '@Html.Raw(Model.TextConfirmDeleteRecursiveWithTypeDelete)';
+        model.urlAdd = '@Model.UrlAdd';
+        model.urlUpdate = '@Model.UrlUpdate';
+        model.urlDelete = '@Model.UrlDelete';
+        model.urlSort = '@Model.UrlSort';
+        model.urlGet = '@Model.UrlGet';
+        model.urlGetPage = '@Model.UrlGetPage';
+        model.urlGetPages = '@Model.UrlGetPages';
+        model.textAdd = '@Html.Raw(Model.TextAdd)';
+        model.textUpdate = '@Html.Raw(Model.TextUpdate)';
+        model.textConfirmDelete = '@Html.Raw(Model.TextConfirmDelete)';
+        model.textConfirmDeleteRecursiveWithTypeDelete = '@Html.Raw(Model.TextConfirmDeleteRecursiveWithTypeDelete)';
     </script>
 }

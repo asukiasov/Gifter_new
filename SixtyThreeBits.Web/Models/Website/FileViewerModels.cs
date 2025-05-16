@@ -2,12 +2,12 @@
 
 namespace SixtyThreeBits.Web.Models.Website
 {
-    public class FileViewerModel : ModelBase
+    public class PdfFileViewerModel : ModelBase
     {
         #region Methods
-        public PdfPageViewModel GetPDFViewModel(SubmitModel submitModel)
+        public ViewModel GetViewModel(SubmitModel submitModel)
         {
-            var viewModel = new PdfPageViewModel();
+            var viewModel = new ViewModel();
 
             viewModel.PageTitle = submitModel.PageTitle;
             viewModel.UrlPdfFile = submitModel.UrlPdfFile;
@@ -18,7 +18,7 @@ namespace SixtyThreeBits.Web.Models.Website
         #endregion
 
         #region Nested Classes
-        public class PdfPageViewModel
+        public class ViewModel
         {
             #region Properties
             public string PageTitle { get; set; }

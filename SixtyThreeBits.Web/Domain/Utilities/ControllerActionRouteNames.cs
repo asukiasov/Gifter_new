@@ -361,10 +361,10 @@
                 #endregion
             }
 
-            public static class FileViewerController
+            public static class PdfFileViewerController
             {
                 #region Properties
-                public const string Pdf = "FileViewerControllerPdf";
+                public const string PdfFileViewer = "FileViewerControllerPdfFileViewer";
                 #endregion
             }
 

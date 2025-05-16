@@ -1,4 +1,4 @@
-﻿const systemPropertiesModel = {
+﻿const model = {
     urlTestEmailSmtp: null,
     urlTestEmailMailgun: null,
     urlTestEmailOffice365: null,
@@ -21,7 +21,7 @@ $(function () {
 
                 $.ajax({
                     type: 'POST',
-                    url: systemPropertiesModel.urlTestEmailSmtp,
+                    url: model.urlTestEmailSmtp,
                     data: {
                         EmailTo: emailTo,
                         SmtpAddress: smtpAddress,
@@ -66,7 +66,7 @@ $(function () {
 
                 $.ajax({
                     type: 'POST',
-                    url: systemPropertiesModel.urlTestEmailMailgun,
+                    url: model.urlTestEmailMailgun,
                     data: {
                         EmailTo: emailTo,
                         MailgunBaseUrl: mailgunBaseUrl,
@@ -109,7 +109,7 @@ $(function () {
 
                 $.ajax({
                     type: 'POST',
-                    url: systemPropertiesModel.urlTestEmailOffice365,
+                    url: model.urlTestEmailOffice365,
                     data: {
                         EmailTo: emailTo,
                         MicrosoftGraphServiceTenant: microsoftGraphServiceTenant,
@@ -144,7 +144,7 @@ $(function () {
 
         $.ajax({
             type: 'POST',
-            url: systemPropertiesModel.urlTestAws,
+            url: model.urlTestAws,
             dataType: 'json',
             beforeSend: function () {
                 preloader.show();

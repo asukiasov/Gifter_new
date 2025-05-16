@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using SixtyThreeBits.Core.Libraries.Loggers;
+using SixtyThreeBits.Core.Libraries.Loggers.DTO;
 using SixtyThreeBits.Libraries.Extensions;
 using System;
 using System.Runtime.CompilerServices;
@@ -147,7 +148,7 @@ namespace SixtyThreeBits.Core.Libraries
         {
             _logger.LogError(
                 exception: exception, 
-                message: new LogState
+                message: new LogStateDTO
                 {
                     LogString = logString,
                     CallerFilePath = callerFilePath,

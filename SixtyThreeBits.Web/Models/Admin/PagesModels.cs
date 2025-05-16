@@ -3,7 +3,7 @@ using DevExtreme.AspNet.Mvc.Builders;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using SixtyThreeBits.Core.DTO;
+using SixtyThreeBits.Core.Infrastructure.Repositories.DTO;
 using SixtyThreeBits.Core.Libraries;
 using SixtyThreeBits.Core.Libraries.FileStorages;
 using SixtyThreeBits.Core.Properties;
@@ -152,7 +152,7 @@ namespace SixtyThreeBits.Web.Models.Admin
 
                     grid
                     .ID("PagesGrid")
-                    .OnInitialized("pagesModel.onGridInit")
+                    .OnInitialized("model.onGridInit")
                     .Columns(columns =>
                     {
                         columns.Add().Width(30).Caption(" ").InitDetailsUrlCellTemplate(nameof(GridItem.UrlProperties));
@@ -225,11 +225,11 @@ namespace SixtyThreeBits.Web.Models.Admin
         #endregion
 
         #region Methods
-        public PageViewModel GetPageViewModel(PageViewModel viewModel)
+        public ViewModel GetViewModel(ViewModel viewModel)
         {
             if (viewModel == null)
             {
-                viewModel = new PageViewModel();
+                viewModel = new ViewModel();
                 viewModel.PageIsPublished = DBItem.PageIsPublished;
                 viewModel.PageSlug = DBItem.PageSlug;
                 viewModel.PageTitle = DBItem.PageTitle;
@@ -247,7 +247,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             return viewModel;
         }
 
-        public async Task ValidatePageViewModel(PageViewModel viewModel)
+        public async Task ValidateViewModel(ViewModel viewModel)
         {
             viewModel.AddError(Validation.ValidateRequired(errorKey: Validation.GetJQueryNameSelectorFor(nameof(viewModel.PageTitle)), valueToValidate: viewModel.PageTitle));
             viewModel.AddError(Validation.ValidateRequired(errorKey: Validation.GetJQueryNameSelectorFor(nameof(viewModel.PageSlug)), valueToValidate: viewModel.PageSlug));
@@ -266,7 +266,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             );
         }
 
-        public async Task Save(PageViewModel viewModel)
+        public async Task Save(ViewModel viewModel)
         {
             var hasPageImage = viewModel.PageImageFile?.Length > 0;
             var pageImageFilename = hasPageImage ? GetFilenameFromUploadedFile(viewModel.PageImageFile) : null;
@@ -325,7 +325,7 @@ namespace SixtyThreeBits.Web.Models.Admin
         #endregion
 
         #region Nested Classes
-        public class PageViewModel : FormViewModelBase
+        public class ViewModel : FormViewModelBase
         {
             #region Properties             
             public string PageSlug { get; set; }

@@ -3,7 +3,7 @@ using DevExtreme.AspNet.Mvc.Builders;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using SixtyThreeBits.Core.DTO;
+using SixtyThreeBits.Core.Infrastructure.Repositories.DTO;
 using SixtyThreeBits.Core.Libraries;
 using SixtyThreeBits.Core.Properties;
 using SixtyThreeBits.Core.Utilities;
@@ -126,6 +126,8 @@ namespace SixtyThreeBits.Web.Models.Admin
                     var grid = CreateGridWithStartupValues(html: Html, keyFieldName: nameof(GridItem.TeamMemberID));
 
                     grid
+                    .ID("TeamMembersGrid")
+                    .OnInitialized("model.onGridInit")
                    .Sorting(sorting => sorting.Mode(GridSortingMode.None))
                    .Pager(options =>
                    {
@@ -133,20 +135,18 @@ namespace SixtyThreeBits.Web.Models.Admin
                    })
                    .RowDragging(options => options
                         .AllowReordering(true)
-                        .OnReorder("teamMembersModel.onGridReorder")
+                        .OnReorder("model.onGridReorder")
                         .DropFeedbackMode(DropFeedbackMode.Push)
                         .ShowDragIcons(true)
                     )
                    .Paging(options =>
                    {
                        options.Enabled(false);
-                   })
-                   .ID("TeamMembersGrid")
+                   })                   
                    .FilterRow(options =>
                    {
                        options.Visible(false);
-                   })
-                   .OnInitialized("teamMembersModel.onGridInit")
+                   })                   
                    .Columns(Columns =>
                    {
                        Columns.Add().Width(30).Caption(" ").InitDetailsUrlCellTemplate(nameof(GridItem.UrlTeamMemberProperties));

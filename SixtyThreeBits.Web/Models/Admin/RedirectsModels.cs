@@ -2,7 +2,7 @@
 using DevExtreme.AspNet.Mvc.Builders;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using SixtyThreeBits.Core.DTO;
+using SixtyThreeBits.Core.Infrastructure.Repositories.DTO;
 using SixtyThreeBits.Core.Properties;
 using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Web.Domain.Libraries;
@@ -85,7 +85,7 @@ namespace SixtyThreeBits.Web.Models.Admin
 
                     grid
                    .ID("RedirectsGrid")
-                   .OnInitialized("redirectsModel.onGridInit")
+                   .OnInitialized("model.onGridInit")
                    .Columns(columns =>
                    {
                        columns.AddFor(m => m.RedirectFrom).Caption(Resources.TextRedirectFrom).Width(500);

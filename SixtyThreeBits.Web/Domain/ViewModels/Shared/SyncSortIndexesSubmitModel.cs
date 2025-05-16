@@ -1,4 +1,4 @@
-﻿using SixtyThreeBits.Core.DTO;
+﻿using SixtyThreeBits.Core.Infrastructure.Repositories.DTO;
 using System.Collections.Generic;
 
 namespace SixtyThreeBits.Web.Domain.ViewModels.Shared

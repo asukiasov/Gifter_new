@@ -10,7 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using SixtyThreeBits.Core.Infrastructure.Repositories;
+using SixtyThreeBits.Core.Factories;
 using SixtyThreeBits.Core.Libraries.Loggers;
 using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Web.Domain.Libraries;
@@ -29,6 +29,7 @@ namespace SixtyThreeBits.Web
         readonly AppSettingsCollection _appSettings;
         readonly UtilityCollection _utilities;
         readonly RepositoryFactory _repositoryFactory;
+        readonly ILogger _logger = new ErrorLogTxtFileLogger();
 
         public Startup(IWebHostEnvironment env)
         {            
@@ -57,7 +58,7 @@ namespace SixtyThreeBits.Web
             );            
             _repositoryFactory = new RepositoryFactory(
                 dbConnectionString: _appSettings.ConnectionStrings.DbConnectionString, 
-                logger: new ErrorLogTxtFileLogger()
+                logger: _logger
             );
         }
 

@@ -2,7 +2,7 @@
 using DevExtreme.AspNet.Mvc.Builders;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using SixtyThreeBits.Core.DTO;
+using SixtyThreeBits.Core.Infrastructure.Repositories.DTO;
 using SixtyThreeBits.Core.Libraries;
 using SixtyThreeBits.Core.Properties;
 using SixtyThreeBits.Core.Utilities;
@@ -60,7 +60,7 @@ namespace SixtyThreeBits.Web.Models.Admin
 
                     grid
                     .ID("EmailTemplatesGrid")
-                    .OnInitialized("emailTemplatesModel.onGridInit")
+                    .OnInitialized("model.onGridInit")
                     .Columns(columns =>
                     {
                         columns.Add().Width(30).Caption(" ").InitDetailsUrlCellTemplate(nameof(GridItem.UrlProperties));
@@ -118,7 +118,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             return viewModel;
         }
 
-        public void ValidatePageViewModel(ViewModel viewModel)
+        public void ValidateViewModel(ViewModel viewModel)
         {
             viewModel.AddError(Validation.ValidateRequired(Validation.GetJQueryNameSelectorFor(nameof(viewModel.EmailTemplateName)), viewModel.EmailTemplateName));
             viewModel.AddError(Validation.ValidateRequired(Validation.GetJQueryNameSelectorFor(nameof(viewModel.EmailTemplateSubject)), viewModel.EmailTemplateSubject));

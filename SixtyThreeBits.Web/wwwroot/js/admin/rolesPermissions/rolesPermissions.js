@@ -1,62 +1,62 @@
-﻿const rolesPermissionsModel = {    
-    rolesGrid: null,
-    permissionsTree: null,
+﻿const model = {    
+    grid: null,
+    tree: null,
     urlPermissionsGetByRole: null,
     urlSave: null,
     urlUpdate: null,    
     roleIDRocused: null,    
-    isPermissionsTreeContentReady:false,
+    isTreeContentReady:false,
 
-    onRolesGridInit: function (e) {
-        rolesPermissionsModel.rolesGrid = e.component;
-        globals.devexpress.setGridFullHeight(e.component, e.element[0]);
-    },    
-    onPermissionsTreeInit: function (e) {
-        rolesPermissionsModel.permissionsTree = e.component;
+    onGridInit: function (e) {
+        model.grid = e.component;
         globals.devexpress.setGridFullHeight(e.component, e.element[0]);
     },
-    onPermissionsTreeContentReady: function (e) {
-        rolesPermissionsModel.isPermissionsTreeContentReady = true;
-    },
-    onRolesGridFocusedRowChanged: function (e) {        
+    onGridFocusedRowChanged: function (e) {
 
-        if (!rolesPermissionsModel.isPermissionsTreeContentReady) {
+        if (!model.isTreeContentReady) {
             setTimeout(function () {
-                rolesPermissionsModel.onRolesGridFocusedRowChanged(e);
+                model.onGridFocusedRowChanged(e);
             }, 1000);
 
             return;
         }
 
-        const roleID = rolesPermissionsModel.roleIDRocused = e.row.key;
+        const roleID = model.roleIDRocused = e.row.key;
         $.ajax({
             type: 'GET',
-            url: rolesPermissionsModel.urlPermissionsGetByRole,
-            data: { RoleID: roleID  },
+            url: model.urlPermissionsGetByRole,
+            data: { RoleID: roleID },
             dataType: 'json',
             beforeSend: function () {
                 preloader.show();
             },
             success: function (res) {
                 if (res.IsSuccess) {
-                    rolesPermissionsModel.permissionsTree.selectRows(res.Data);
+                    model.tree.selectRows(res.Data);
                 }
             },
-            complete: function () {                
+            complete: function () {
                 preloader.hide();
             }
         });
+    },
+    onTreeInit: function (e) {
+        model.tree = e.component;
+        globals.devexpress.setGridFullHeight(e.component, e.element[0]);
+    },
+    onTreeContentReady: function (e) {
+        model.isTreeContentReady = true;
     }
 };
 
 $(function () {
     $(globals.selectors.buttonSave).click(function () {
-        const permissionIDs = rolesPermissionsModel.permissionsTree.getSelectedRowKeys();
+        const permissionIDs = model.tree.getSelectedRowKeys();
 
         $.ajax({
             type: 'POST',
-            url: rolesPermissionsModel.urlSave,
-            data: { RoleID: rolesPermissionsModel.roleIDRocused, PermissionIDs: permissionIDs },
+            url: model.urlSave,
+            data: { RoleID: model.roleIDRocused, PermissionIDs: permissionIDs },
             dataType: 'json',
             beforeSend: function () {
                 preloader.show();

@@ -1,6 +1,6 @@
 ﻿using SixtyThreeBits.Core.Abstractions;
 using SixtyThreeBits.Core.Infrastructure.Services;
-using SixtyThreeBits.Core.Libraries.FileStorages.Common;
+using SixtyThreeBits.Core.Libraries.FileStorages.DTO;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -35,10 +35,10 @@ namespace SixtyThreeBits.Core.Libraries.FileStorages
             await _awsService.DeleteFolderAsyncTask(folderPath);
         }
 
-        public async Task<List<FileStorageItem>> GetFiles(string folderPath = null)
+        public async Task<List<FileStorageItemDTO>> GetFiles(string folderPath = null)
         {
             var files = string.IsNullOrWhiteSpace(folderPath) ? await _awsService.GetFilesAsyncTask() : await _awsService.GetFilesAsyncTask(folderPath);
-            var result = files.Select(item => new FileStorageItem(
+            var result = files.Select(item => new FileStorageItemDTO(
                 Filename: item.Name,
                 FilesizeBytes: item.Size,
                 FileDateCreated: item.DateModified,

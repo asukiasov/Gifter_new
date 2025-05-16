@@ -18,7 +18,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         public async Task<ActionResult> Users()
         {
             Model.PluginsClient.EnableDevextreme(true);
-            var viewModel = await Model.GetPageViewModel();
+            var viewModel = await Model.GetViewModel();
             return View(ViewNames.Admin.Users.UsersView, viewModel);
         }
 
@@ -108,19 +108,19 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         public async Task<IActionResult> Properties()
         {
             Model.PluginsClient.Enable63BitsForms(true).Enable63BitsSuccessErrorToast(true).EnableDevextreme(true).EnableJQueryMaskedInput(true);
-            var viewModel = await Model.GetPageViewModel();
+            var viewModel = await Model.GetViewModel();
             return View(ViewNames.Admin.Users.User.UserPropertiesView, viewModel);
         }
 
         [HttpPost]
         [Route("")]
-        public async Task<IActionResult> Properties(UserPropertiesModel.PageViewModel viewModel)
+        public async Task<IActionResult> Properties(UserPropertiesModel.ViewModel viewModel)
         {
             var result = default(IActionResult);
             Model.PluginsClient.Enable63BitsForms(true).Enable63BitsSuccessErrorToast(true).EnableDevextreme(true).EnableJQueryMaskedInput(true);
-            viewModel = await Model.GetPageViewModel(viewModel);
+            viewModel = await Model.GetViewModel(viewModel);
 
-            await Model.ValidatePageViewModel(viewModel);
+            await Model.ValidateViewModel(viewModel);
             if (viewModel.IsValid)
             {
                 await Model.Save(viewModel);

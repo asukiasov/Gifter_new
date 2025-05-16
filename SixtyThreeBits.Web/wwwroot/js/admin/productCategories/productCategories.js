@@ -1,4 +1,4 @@
-﻿const productCategoriesModel = {
+﻿const model = {
     urlAddNew: null,
     urlUpdate: null,
     urlDelete: null,
@@ -14,14 +14,14 @@
         productCategoryParentID = productCategoryParentID > 0 ? productCategoryParentID : null;
         
         if (productCategoryName) {
-            productCategoriesModel.createNewCategoryPromise(productCategoryName, productCategoryParentID).then(function (item) {
+            model.createNewCategoryPromise(productCategoryName, productCategoryParentID).then(function (item) {
                 $('.js-create-new-category-modal').modal('hide');
                 const parentUL = item.ParentID > 0 ? $('.js-file-tree-editor-item[data-id="' + item.ParentID + '"] > ul') : $('.js-file-tree-editor');
-                const html = productCategoriesModel.templates.treeItem({ Children: [item] });
+                const html = model.templates.treeItem({ Children: [item] });
 
                 parentUL.prepend(html);
-                productCategoriesModel.initTree();
-                productCategoriesModel.syncParentsAndSortIndexes();
+                model.initTree();
+                model.syncParentsAndSortIndexes();
             });
         }
         else {
@@ -34,7 +34,7 @@
 
             $.ajax({
                 type: 'POST',
-                url: productCategoriesModel.urlAddNew,
+                url: model.urlAddNew,
                 data: {
                     productCategoryParentID: productCategoryParentID,
                     productCategoryName: productCategoryName
@@ -69,7 +69,7 @@
     },
     deleteCategory: function (productCategoryID) {
 
-        const textConfirm = $('.js-file-tree-editor-item[data-id="' + productCategoryID + '"]').find('.js-file-tree-editor-item').length > 0 ? productCategoriesModel.textConfirmDeleteRecursive : productCategoriesModel.textConfirmDeleteRecord;
+        const textConfirm = $('.js-file-tree-editor-item[data-id="' + productCategoryID + '"]').find('.js-file-tree-editor-item').length > 0 ? model.textConfirmDeleteRecursive : model.textConfirmDeleteRecord;
 
         components63Bits.dialog.confirm({
             textConfirm: textConfirm,
@@ -77,7 +77,7 @@
             resolve: function () {
                 $.ajax({
                     type: 'POST',
-                    url: productCategoriesModel.urlDelete,
+                    url: model.urlDelete,
                     data: { ProductCategoryID: productCategoryID },
                     dataType: 'json',
                     success: function (e) {
@@ -109,7 +109,7 @@
                 fallbackOnBody: true,
                 swapThreshold: 0.65,
                 onSort: function (e) {
-                    productCategoriesModel.syncParentsAndSortIndexes();
+                    model.syncParentsAndSortIndexes();
                 },
             });
         });                
@@ -130,7 +130,7 @@
 
         $.ajax({
             type: 'POST',
-            url: productCategoriesModel.urlSort,
+            url: model.urlSort,
             data: { SortIndexes: sortIndexes },
             dataType: 'json',
             success: function (res) {
@@ -149,37 +149,37 @@
     templates: {
         compile: function () {
             Template7.registerPartial('Children', $('#file-tree-editor-partial-template').html())
-            productCategoriesModel.templates.treeItem = Template7.compile(productCategoriesModel.templates.treeItem);
+            model.templates.treeItem = Template7.compile(model.templates.treeItem);
         },
         treeItem: '{{> "Children"}}'
     }
 }
 
 $(function () {
-    productCategoriesModel.templates.compile();
-    productCategoriesModel.createNewCategoryModal = components63Bits.modal.create('.js-create-new-category-modal');
+    model.templates.compile();
+    model.createNewCategoryModal = components63Bits.modal.create('.js-create-new-category-modal');
 
     $('.js-show-create-new-page-modal-button').click(function () {
         $('.js-create-new-category-modal-input').val('');
         $('.js-create-new-category-modal-category-parent-id-hf').val('');
-        productCategoriesModel.createNewCategoryModal.show();
+        model.createNewCategoryModal.show();
         setTimeout(function () {
             $('.js-create-new-category-modal-input').focus();
         }, 500);
     });
 
     $('.js-create-new-category-modal-save-button').click(function () {
-        productCategoriesModel.startCreateNewCategoryProcess();
+        model.startCreateNewCategoryProcess();
     });
 
-    productCategoriesModel.initTree();
+    model.initTree();
 
     $('.js-file-tree-editor').on('click', '.js-file-tree-editor-item-add-new-button', function (e) {
         e.preventDefault();
         const parentID = $(this).closest('.js-file-tree-editor-item').attr('data-id');
         $('.js-create-new-category-modal-input').val('');
         $('.js-create-new-category-modal-category-parent-id-hf').val(parentID);
-        productCategoriesModel.createNewCategoryModal.show();
+        model.createNewCategoryModal.show();
         setTimeout(function () {
             $('.js-page-title-textbox').focus();
         }, 500);
@@ -188,6 +188,6 @@ $(function () {
     $('.js-file-tree-editor').on('click', '.js-file-tree-editor-item-delete-button', function (e) {
         e.preventDefault();
         const productCategoryID = $(this).closest('.js-file-tree-editor-item').attr('data-id');
-        productCategoriesModel.deleteCategory(productCategoryID);
+        model.deleteCategory(productCategoryID);
     });
 });

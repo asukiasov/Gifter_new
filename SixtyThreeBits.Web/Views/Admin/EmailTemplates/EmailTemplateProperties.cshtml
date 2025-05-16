@@ -45,7 +45,7 @@
 @section FooterSection{
     <script src="/js/admin/emailTemplates/emailTemplateProperties.js"></script>
     <script>
-        emailTemplateModel.emailTemplatePlaceHoldersJson = @Html.Raw(Model.EmailTemplatePlaceHoldersJson);
+        model.emailTemplatePlaceHoldersJson = @Html.Raw(Model.EmailTemplatePlaceHoldersJson);
     </script>
     @if (Model.HasErrors)
     {

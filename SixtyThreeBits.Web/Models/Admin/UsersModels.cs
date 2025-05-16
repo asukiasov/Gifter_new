@@ -2,7 +2,7 @@
 using DevExtreme.AspNet.Mvc.Builders;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using SixtyThreeBits.Core.DTO;
+using SixtyThreeBits.Core.Infrastructure.Repositories.DTO;
 using SixtyThreeBits.Core.Libraries;
 using SixtyThreeBits.Core.Properties;
 using SixtyThreeBits.Core.Utilities;
@@ -21,7 +21,7 @@ namespace SixtyThreeBits.Web.Models.Admin
     public class UsersModel : ModelBase
     {
         #region Methods
-        public async Task<ViewModel> GetPageViewModel()
+        public async Task<ViewModel> GetViewModel()
         {
             var viewModel = new ViewModel();
 
@@ -186,11 +186,11 @@ namespace SixtyThreeBits.Web.Models.Admin
     public class UserPropertiesModel : UserModelBase
     {
         #region Methods
-        public async Task<PageViewModel> GetPageViewModel(PageViewModel viewModel = null)
+        public async Task<ViewModel> GetViewModel(ViewModel viewModel = null)
         {
             if (viewModel == null)
             {
-                viewModel = new PageViewModel();
+                viewModel = new ViewModel();
                 viewModel.UserIsActive = dbItem.UserIsActive;
                 viewModel.UserEmail = dbItem.UserEmail;
                 viewModel.UserFirstname = dbItem.UserFirstname;
@@ -204,7 +204,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             return viewModel;
         }
 
-        public async Task ValidatePageViewModel(PageViewModel viewModel)
+        public async Task ValidateViewModel(ViewModel viewModel)
         {
             viewModel.AddError(await Validation.ValidateEmail(
                 errorKey: Validation.GetJQueryNameSelectorFor(nameof(viewModel.UserEmail)),
@@ -222,7 +222,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             viewModel.AddError(Validation.ValidateRequired(errorKey: Validation.GetJQueryNameSelectorFor(nameof(viewModel.UserLastname)), valueToValidate: viewModel.UserLastname));
         }
 
-        public async Task Save(PageViewModel viewModel)
+        public async Task Save(ViewModel viewModel)
         {
             var repository = RepositoriesFactory.CreateUsersRepository();
             await repository.UsersIUD(
@@ -252,7 +252,7 @@ namespace SixtyThreeBits.Web.Models.Admin
         #endregion
 
         #region Nested Classes
-        public class PageViewModel : FormViewModelBase
+        public class ViewModel : FormViewModelBase
         {
             #region Properties
             public string UserFirstname { get; set; }

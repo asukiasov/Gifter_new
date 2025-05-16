@@ -89,19 +89,19 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         public IActionResult Properties()
         {
             Model.PluginsClient.Enable63BitsForms(true).EnableFancybox(true).EnableTinyMce(true).EnableDevextreme(true).Enable63BitsSuccessErrorToast(true);
-            var viewModel = Model.GetPageViewModel(viewModel: null);
+            var viewModel = Model.GetViewModel(viewModel: null);
             return View(ViewNames.Admin.News.NewsPropertiesView, viewModel);
         }
 
         [HttpPost]
         [Route("properties")]
-        public async Task<IActionResult> Properties(NewsPropertiesModel.PageViewModel submitModel)
+        public async Task<IActionResult> Properties(NewsPropertiesModel.ViewModel submitModel)
         {
             var result = default(IActionResult);
             Model.PluginsClient.Enable63BitsForms(true).EnableFancybox(true).EnableTinyMce(true).EnableDevextreme(true).Enable63BitsSuccessErrorToast(true);
-            var viewModel = Model.GetPageViewModel(viewModel: submitModel);
+            var viewModel = Model.GetViewModel(viewModel: submitModel);
 
-            await Model.ValidatePageViewModel(viewModel);
+            await Model.ValidateViewModel(viewModel);
             if (viewModel.IsValid)
             {
                 await Model.Save(viewModel);

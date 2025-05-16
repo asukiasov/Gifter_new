@@ -68,10 +68,10 @@ namespace SixtyThreeBits.Web.Controllers.Admin
                 Model.PageTitle.Set(viewModel.EmailTemplateName);
                 Model.Breadcrumbs.RenameLastItem(viewModel.EmailTemplateName);
 
-                Model.ValidatePageViewModel((EmailTemplatePropertiesModel.ViewModel)viewModel);
+                Model.ValidateViewModel(viewModel);
                 if (viewModel.IsValid)
                 {
-                    await Model.Save(emailTemplateID, (EmailTemplatePropertiesModel.ViewModel)viewModel);
+                    await Model.Save(emailTemplateID, viewModel);
                     if (viewModel.IsValid)
                     {
                         result = Redirect(Model.Url.RouteUrl(ControllerActionRouteNames.Admin.EmailTemplatePropertiesController.Properties, new { emailTemplateID }));

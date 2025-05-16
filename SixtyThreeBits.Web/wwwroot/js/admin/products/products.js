@@ -1,10 +1,10 @@
-﻿const productsModel = {
+﻿const model = {
     grid: null,
     urlExcelUpload: null,
     excelUploadModal: null,
-    onGridInit: function (s) {
-        productsModel.grid = s.component;
-        globals.devexpress.setGridFullHeight(s.component, s.element[0]);
+    onGridInit: function (e) {
+        model.grid = e.component;
+        globals.devexpress.setGridFullHeight(e.component, e.element[0]);
     },
     getDetailsButtonColumnCellHtml: function (element, cellInfo) {
         element.append('<a href=\'' + cellInfo.data.UrlProductsProperties + '\'><i class=\'fas fa-info-circle\'></i></a>')
@@ -12,16 +12,16 @@
 };
 
 $(function () {
-    productsModel.excelUploadModal = components63Bits.modal.create('.js-upload-excel-file-modal');
+    model.excelUploadModal = components63Bits.modal.create('.js-upload-excel-file-modal');
 
     $(globals.selectors.buttonAddNew).click(function () {
-        productsModel.grid.addRow();
+        model.grid.addRow();
     });
 
     $('.js-upload-excel-button').click(function () {
         $('.js-custom-file-upload-clear-button').trigger('click');
         $('.js-excel-errors').empty();
-        productsModel.excelUploadModal.show();        
+        model.excelUploadModal.show();        
     });
     
     $('.js-upload-excel-file-button').click(function () {        
@@ -32,7 +32,7 @@ $(function () {
             utilities.getBase64FromInputFilePromise('.js-excel-file-input').then(function (result) {
                 $.ajax({
                     method: 'POST',
-                    url: productsModel.urlExcelUpload,
+                    url: model.urlExcelUpload,
                     data: { ExcelFileBytes: result.fileBase64, ExcelFilename: result.filename },
                     dataType: 'json',
                     beforeSend: function () {
@@ -40,7 +40,7 @@ $(function () {
                     },
                     success: function (res) {                        
                         if (res.IsSuccess) {
-                            productsModel.grid.refresh();
+                            model.grid.refresh();
                             $('.js-upload-excel-file-modal').modal('hide');
                         }
                         else {
@@ -74,6 +74,6 @@ $(function () {
     }); 
 
     $('.js-export-excel-button').click(function () {
-        globals.devexpress.exportGridToExcel(productsModel.grid, 'Products.xlsx');
+        globals.devexpress.exportGridToExcel(model.grid, 'Products.xlsx');
     });
 });

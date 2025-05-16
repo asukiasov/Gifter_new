@@ -196,11 +196,11 @@
 
     <script src="/js/admin/products/productProperties.js"></script>
     <script>
-        productModel.urlImageUpload = '@Html.Raw(Model.UrlImageUpload)';
-        productModel.urlImageUpdate = '@Html.Raw(Model.UrlImageUpdate)';
-        productModel.urlImageDelete = '@Html.Raw(Model.UrlImageDelete)';
-        productModel.urlImageSort = '@Html.Raw(Model.UrlImageSort)';
-        productModel.textConfirmDeleteImage = '@Html.Raw(Model.TextConfirmDeleteImage)';
+        model.urlImageUpload = '@Html.Raw(Model.UrlImageUpload)';
+        model.urlImageUpdate = '@Html.Raw(Model.UrlImageUpdate)';
+        model.urlImageDelete = '@Html.Raw(Model.UrlImageDelete)';
+        model.urlImageSort = '@Html.Raw(Model.UrlImageSort)';
+        model.textConfirmDeleteImage = '@Html.Raw(Model.TextConfirmDeleteImage)';
     </script>
     @if (Model.HasErrors)
     {

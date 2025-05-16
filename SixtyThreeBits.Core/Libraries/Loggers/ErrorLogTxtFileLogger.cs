@@ -1,5 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
+using SixtyThreeBits.Core.Libraries.Loggers.DTO;
 using SixtyThreeBits.Libraries.Extensions;
 using System;
 using System.IO;
@@ -39,7 +40,7 @@ namespace SixtyThreeBits.Core.Libraries.Loggers
                 var isErrorLogFileExists = this.isErrorLogFileExists();
                 if (isErrorLogFileExists)
                 {
-                    var logState = state?.ToString().DeserializeJsonTo<LogState>();
+                    var logState = state?.ToString().DeserializeJsonTo<LogStateDTO>();
                     var errorMessage = formatErrorMessage(logState: logState, exception: exception);
                     writeErrorMessageToErroLogTxtFile(errorMessage: errorMessage);                    
                 }
@@ -75,7 +76,7 @@ namespace SixtyThreeBits.Core.Libraries.Loggers
             return isFileExists;
         }
 
-        string formatErrorMessage(LogState logState, Exception exception)
+        string formatErrorMessage(LogStateDTO logState, Exception exception)
         {
             var errorMessageBuilder = new StringBuilder();
             if (exception is SqlException)

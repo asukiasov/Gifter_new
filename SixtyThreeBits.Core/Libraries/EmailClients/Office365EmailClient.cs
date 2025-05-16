@@ -1,5 +1,5 @@
 ﻿using SixtyThreeBits.Core.Abstractions;
-using SixtyThreeBits.Core.DTO;
+using SixtyThreeBits.Core.Infrastructure.Repositories.DTO;
 using SixtyThreeBits.Core.Infrastructure.Services;
 using System;
 using System.Collections.Generic;

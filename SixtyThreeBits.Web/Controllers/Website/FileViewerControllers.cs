@@ -6,13 +6,13 @@ using SixtyThreeBits.Web.Models.Website;
 namespace SixtyThreeBits.Web.Controllers.Website
 {
     [Route("view")]
-    public class FileViewerController : WebsiteControllerBase<FileViewerModel>
+    public class PdfFileViewerController : WebsiteControllerBase<PdfFileViewerModel>
     {
         #region Actions
-        [Route("pdf", Name = ControllerActionRouteNames.Website.FileViewerController.Pdf)]
-        public IActionResult Pdf(FileViewerModel.SubmitModel submitModel)
+        [Route("pdf", Name = ControllerActionRouteNames.Website.PdfFileViewerController.PdfFileViewer)]
+        public IActionResult PdfFileViewer(PdfFileViewerModel.SubmitModel submitModel)
         {
-            var viewModel = Model.GetPDFViewModel(submitModel);
+            var viewModel = Model.GetViewModel(submitModel);
             return View(ViewNames.Website.FileViewer.PdfViewerView, viewModel);
         }
         #endregion

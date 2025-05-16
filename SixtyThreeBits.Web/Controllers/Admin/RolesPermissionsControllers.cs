@@ -45,7 +45,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
 
         [HttpPost]
         [Route("save", Name = ControllerActionRouteNames.Admin.RolePermissionsController.Save)]
-        public async Task<ActionResult> Save(RolePermissionsModel.ViewModel.RolePermissionSaveSubmitModel submitModel)
+        public async Task<ActionResult> Save(RolePermissionsModel.SubmitModelRolePermissionSave submitModel)
         {
             var viewModel = await Model.Save(submitModel);
             return Json(viewModel);

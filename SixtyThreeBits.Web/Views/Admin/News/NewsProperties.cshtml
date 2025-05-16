@@ -1,4 +1,4 @@
-﻿@model NewsPropertiesModel.PageViewModel
+﻿@model NewsPropertiesModel.ViewModel
 <div class="card">
     <div class="card-body">
         <div class="row">
@@ -99,7 +99,7 @@
 @section FooterSection{
     <script src="/js/admin/news/newsProperties.js"></script>
     <script>
-        newsPropertiesModel.urlFileManager = '@Html.Raw(Model.UrlFileManager)';
+        model.urlFileManager = '@Html.Raw(Model.UrlFileManager)';
     </script>
     @if (Model.HasErrors)
     {

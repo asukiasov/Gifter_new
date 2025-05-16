@@ -1,4 +1,4 @@
-﻿using SixtyThreeBits.Core.DTO;
+﻿using SixtyThreeBits.Core.Infrastructure.Repositories.DTO;
 using SixtyThreeBits.Core.Properties;
 using SixtyThreeBits.Libraries.Extensions;
 using SixtyThreeBits.Web.Domain.Utilities;

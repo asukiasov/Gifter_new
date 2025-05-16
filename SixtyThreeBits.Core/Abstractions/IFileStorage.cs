@@ -1,4 +1,4 @@
-﻿using SixtyThreeBits.Core.Libraries.FileStorages.Common;
+﻿using SixtyThreeBits.Core.Libraries.FileStorages.DTO;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
@@ -16,7 +16,7 @@ namespace SixtyThreeBits.Core.Abstractions
         string GetUploadedFileHttpPath(string filename, string folderPath = null);
         string GetUploadedFileHttpPathOrDefault(string filename, string folderPath = null, string noImageHttpPath = null);
         string GetUploadedFileHttpPathSigned(string filename, string folderPath = null);
-        Task<List<FileStorageItem>> GetFiles(string folderPath = null);
+        Task<List<FileStorageItemDTO>> GetFiles(string folderPath = null);
         #endregion
     }    
 }

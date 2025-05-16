@@ -1,4 +1,4 @@
-﻿@model PagePropertiesModel.PageViewModel
+﻿@model PagePropertiesModel.ViewModel
 @section HeaderSection{
 }
 
@@ -82,7 +82,7 @@
 @section FooterSection{
     <script src="/js/admin/pages/page/pageProperties.js"></script>    
     <script>
-        pagePropertiesModel.textPageShortDescriptionAndImageInfo = '@Html.Raw(Model.TextPageShortDescriptionAndImageInfo)';
+        model.textPageShortDescriptionAndImageInfo = '@Html.Raw(Model.TextPageShortDescriptionAndImageInfo)';
     </script>
     @if (Model.HasErrors)
     {

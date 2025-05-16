@@ -15,7 +15,7 @@ namespace SixtyThreeBits.Web.Controllers.Website
         public IActionResult Contact()
         {
             Model.PluginsClient.Enable63BitsForms(true).EnablePreloader(true).EnableGoogleRecaptcha(true);
-            var viewModel = Model.GetPageViewModel();
+            var viewModel = Model.GetViewModel();
             Model.PageTitle.Set(viewModel.TextContactUs);
             return View(ViewNames.Website.Contact.ContactView, viewModel);
         }
