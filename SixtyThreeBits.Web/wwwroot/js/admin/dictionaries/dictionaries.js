@@ -4,7 +4,7 @@
 
     onTreeInit: function (e) {
         model.tree = e.component;
-        globals.devexpress.setGridFullHeight(model.tree, e.element[0]);
+        globals.devexpress.setGridFullHeight(e.component);
     },
 
     onTreeRowUpdating: function (e) {

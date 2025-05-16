@@ -2,7 +2,7 @@
     grid: null,
     onGridInit: function (e) {
         model.grid = e.component;
-        globals.devexpress.setGridFullHeight(e.component, e.element[0]);
+        globals.devexpress.setGridFullHeight(e.component);
     }
 };
 

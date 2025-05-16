@@ -61,9 +61,10 @@ const globals = {
             }
         },
 
-        setGridFullHeight: function (grid, gridElement, heightCorrectionInPixels) {
+        setGridFullHeight: function (grid, heightCorrectionInPixels) {
             // Making sure that number is passed, if not heightCorrectionInPixels will be zero.
             heightCorrectionInPixels = heightCorrectionInPixels % 1 === 0 ? heightCorrectionInPixels : 0;
+            const gridElement = grid.element();
             const screenHeight = $(window).outerHeight();                                    
             const paddingBottom = 50;
             const offsetTop = $(gridElement).offset().top;

@@ -4,7 +4,7 @@
 
     onTreeInit: function (e) {
         model.tree = e.component;
-        globals.devexpress.setGridFullHeight(e.component, e.element[0]);
+        globals.devexpress.setGridFullHeight(e.component);
     },
     onTreeInitNewRow: function (e) {
         e.data.PermissionIsMenuItem = false;

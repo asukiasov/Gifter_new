@@ -4,7 +4,7 @@
     excelUploadModal: null,
     onGridInit: function (e) {
         model.grid = e.component;
-        globals.devexpress.setGridFullHeight(e.component, e.element[0]);
+        globals.devexpress.setGridFullHeight(e.component);
     },
     getDetailsButtonColumnCellHtml: function (element, cellInfo) {
         element.append('<a href=\'' + cellInfo.data.UrlProductsProperties + '\'><i class=\'fas fa-info-circle\'></i></a>')
