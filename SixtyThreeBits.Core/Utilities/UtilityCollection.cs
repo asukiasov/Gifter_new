@@ -160,11 +160,11 @@ namespace SixtyThreeBits.Core.Utilities
                 var isPrecedingCurrencySign = currencySign is "$" or "€" or "£";
                 if (isPrecedingCurrencySign)
                 {
-                    result = string.Format("{0:#,#.#}{1}", price, currencySign);
+                    result = string.Format("{1}{0:#,#.#}", price, currencySign);
                 }
                 else
                 {
-                    result = string.Format("{1}{0:#,#.#}", price, currencySign);
+                    result = string.Format("{0:#,#.#}{1}", price, currencySign);
                 }
             }
 
