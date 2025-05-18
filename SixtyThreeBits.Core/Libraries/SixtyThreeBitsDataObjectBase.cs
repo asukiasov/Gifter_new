@@ -10,7 +10,7 @@ namespace SixtyThreeBits.Core.Libraries
     public class SixtyThreeBitsDataObjectBase
     {
         #region Properties
-        protected readonly ILogger _logger;
+        readonly ILogger _logger;
 
         public bool IsError { private set; get; }
         public string ErrorMessage { private set; get; }
@@ -143,15 +143,18 @@ namespace SixtyThreeBits.Core.Libraries
 
         void processException(string logString, Exception exception, [CallerFilePath] string callerFilePath = "", [CallerLineNumber] int callerLineNumber = 0)
         {
-            _logger.LogError(
-                exception: exception, 
-                message: new LogStateDTO
-                {
-                    LogString = logString,
-                    CallerFilePath = callerFilePath,
-                    CallerLineNumber = callerLineNumber
-                }.ToJson()
-            );            
+            if (_logger != null)
+            {
+                _logger.LogError(
+                    exception: exception,
+                    message: new LogStateDTO
+                    {
+                        LogString = logString,
+                        CallerFilePath = callerFilePath,
+                        CallerLineNumber = callerLineNumber
+                    }.ToJson()
+                );
+            }
             IsError = true;
             Exception = exception;
             ErrorMessage = exception.Message;            

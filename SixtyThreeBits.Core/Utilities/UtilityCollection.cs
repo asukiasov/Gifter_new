@@ -147,16 +147,28 @@ namespace SixtyThreeBits.Core.Utilities
             return string.Format("{0:0.##}", percent);
         }
 
-        public string FormatPrice(object price, bool withCurrencySign, string currencySign = "₾")
+        public string FormatPrice(object price, string currencySign = null)
         {
-            if (withCurrencySign)
+            string result;
+
+            if (string.IsNullOrWhiteSpace(currencySign))
             {
-                return string.Format("{0:#,#.#}{1}", price, currencySign);
+                result = string.Format("{0:#,#.#}", price);
             }
             else
             {
-                return string.Format("{0:#,#.#}", price);
+                var isPrecedingCurrencySign = currencySign is "$" or "€" or "£";
+                if (isPrecedingCurrencySign)
+                {
+                    result = string.Format("{0:#,#.#}{1}", price, currencySign);
+                }
+                else
+                {
+                    result = string.Format("{1}{0:#,#.#}", price, currencySign);
+                }
             }
+
+            return result;
         }
 
         public string FormatPriceValue(object price)
