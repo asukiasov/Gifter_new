@@ -119,8 +119,8 @@ $(function () {
     });
 
     //--- tooltip
-    $('[data-toggle="tooltip"]').tooltip();
-    $('a[data-toggle="tooltip"]').click(function (e) {
+    $('[data-bs-toggle="tooltip"]').tooltip();
+    $('a[data-bs-toggle="tooltip"]').click(function (e) {
         e.preventDefault();
     });
 

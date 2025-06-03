@@ -444,15 +444,11 @@ header.editor-header .form-group.has-error .form-control{
 
 /* right col dropdown */
 header.editor-header .right-col .dropdown-menu{
-	min-width: 100px;
+	min-width: auto;
 	background-color: #eae9e9;
 	border: 0;
 	border-radius: 5px;
 	padding: 0;
-	margin: 9px 0 0;
-	
-	left: auto;
-	right: -6px;
 }
 header.editor-header .right-col .dropdown-menu ul{
 	list-style: none;

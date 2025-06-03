@@ -18,7 +18,7 @@
     <header class="editor-header d-flex align-items-center justify-content-between">
         <div class="d-flex align-items-center left-col">
             <div>
-                <a href="@Model.UrlBack" class="editor-btn-rounded" data-toggle="tooltip" data-placement="right" title="Back"><img src="/plugins/63bits-page-builder/images/icons/back.svg" alt="Back" /></a>
+                <a href="@Model.UrlBack" class="editor-btn-rounded" data-bs-toggle="tooltip" data-bs-placement="right" title="Back"><img src="/plugins/63bits-page-builder/images/icons/back.svg" alt="Back" /></a>
             </div>
             <div>
                 <div class="form-group d-flex align-items-center">
@@ -35,7 +35,7 @@
 
         <div class="d-flex align-items-center right-col">
 
-            <div class="editor-lang-wrap dropdown">
+            <div class="editor-lang-wrap dropdown dropdown-center">
                 <button class="editor-btn-rounded" data-bs-toggle="dropdown" data-display="static" aria-expanded="false"><span class="js-t63-current-lang-short-name">@Model.SelectedLanguage</span></button>
                 <div class="dropdown-menu">
                     @if (Model.HasLanguageOptions)
@@ -55,13 +55,13 @@
                 </div>
             </div>
 
-            <button class="editor-btn-rounded js-t63-show-filemanager-popup-btn" data-toggle="tooltip" data-placement="bottom" title="Upload files"><img src="/plugins/63bits-page-builder/images/icons/upload.svg" alt="filemanager"></button>
+            <button class="editor-btn-rounded js-t63-show-filemanager-popup-btn" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Upload files"><img src="/plugins/63bits-page-builder/images/icons/upload.svg" alt="filemanager"></button>
 
-            <button class="editor-btn-rounded js-t63-show-page-scripts-popup-btn" data-toggle="tooltip" data-placement="bottom" title="Add custom Styles & Scripts"><img src="/plugins/63bits-page-builder/images/icons/settings.svg" alt="settings"></button>
+            <button class="editor-btn-rounded js-t63-show-page-scripts-popup-btn" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Add custom Styles & Scripts"><img src="/plugins/63bits-page-builder/images/icons/settings.svg" alt="settings"></button>
 
-            <a href="@Html.Raw(Model.UrlPreview)" target="_blank" class="editor-btn-rounded" data-toggle="tooltip" data-placement="left" title="Preview"><img src="/plugins/63bits-page-builder/images/icons/eye.svg" alt="preview"></a>
+            <a href="@Html.Raw(Model.UrlPreview)" target="_blank" class="editor-btn-rounded" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Preview"><img src="/plugins/63bits-page-builder/images/icons/eye.svg" alt="preview"></a>
 
-            <button class="editor-btn-rounded bg-green js-t63-save-btn" data-toggle="tooltip" data-placement="left" title="Save">
+            <button class="editor-btn-rounded bg-green js-t63-save-btn" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Save">
                 <img class="js-t63-save-img" src="/plugins/63bits-page-builder/images/icons/save_white.svg" alt="save icon">
                 <img class="js-t63-loader-img hidden" src="/plugins/63bits-page-builder/images/icons/loader_white.svg" alt="loader icon">
                 <img class="js-t63-success-img hidden" src="/plugins/63bits-page-builder/images/icons/done_white.svg" alt="success icon">

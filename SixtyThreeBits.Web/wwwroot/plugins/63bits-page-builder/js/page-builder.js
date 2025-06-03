@@ -7954,7 +7954,7 @@ var PageBuilderModel = {
             }
         },
         init: function () {
-            //$('[data-bs-toggle="tooltip"]').tooltip();
+            $('[data-bs-toggle="tooltip"]').tooltip();
             PageBuilderModel.plugins.tabs.init();
 
             $('.js-t63-show-filemanager-popup-btn').click(function () {
