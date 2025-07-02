@@ -104,7 +104,7 @@ namespace SixtyThreeBits.Web.Models.Admin
 
             var repository = RepositoriesFactory.CreatePagesRepository();
             await repository.PagesDelete(pageID: pageID);
-            viewModel.IsSuccess = repository.IsError;
+            viewModel.IsSuccess = !repository.IsError;
             viewModel.Data = repository.ErrorMessage;
 
             return viewModel;

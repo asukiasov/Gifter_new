@@ -74,7 +74,7 @@ namespace SixtyThreeBits.Web.Models.Admin
                 }                
             );
 
-            viewModel.IsSuccess = repository.IsError;
+            viewModel.IsSuccess = !repository.IsError;
             viewModel.Data = repository.ErrorMessage;
 
             return viewModel;
@@ -85,7 +85,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             var viewModel = new AjaxResponse();
             var repository = RepositoriesFactory.CreateDictionariesRepository();
             await repository.DictionariesDeleteRecursive(dictionaryID);
-            viewModel.IsSuccess = repository.IsError;
+            viewModel.IsSuccess = !repository.IsError;
             viewModel.Data = repository.ErrorMessage;
             return viewModel;
         }

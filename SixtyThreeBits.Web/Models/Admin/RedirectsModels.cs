@@ -61,7 +61,7 @@ namespace SixtyThreeBits.Web.Models.Admin
                     RedirectTo = submitModel.RedirectTo
                 }                
             );
-            viewModel.IsSuccess = repository.IsError;
+            viewModel.IsSuccess = !repository.IsError;
             viewModel.Data = repository.ErrorMessage;
             return viewModel;            
         }
@@ -88,8 +88,14 @@ namespace SixtyThreeBits.Web.Models.Admin
                    .OnInitialized("model.onGridInit")
                    .Columns(columns =>
                    {
-                       columns.AddFor(m => m.RedirectFrom).Caption(Resources.TextRedirectFrom).Width(500);
-                       columns.AddFor(m => m.RedirectTo).Caption(Resources.TextRedirectTo).Width(500);
+                       columns.AddFor(m => m.RedirectFrom).Caption(Resources.TextRedirectFrom).Width(500).ValidationRules(options =>
+                       {
+                           options.AddRequired();
+                       }); 
+                       columns.AddFor(m => m.RedirectTo).Caption(Resources.TextRedirectTo).Width(500).ValidationRules(options =>
+                       {
+                           options.AddRequired();
+                       }); 
                        columns.Add();
                    });
 

@@ -25,7 +25,12 @@ namespace SixtyThreeBits.Web.Models.Admin
         public AjaxResponse ClearLogs()
         {
             var viewModel = new AjaxResponse();
-            System.IO.File.WriteAllText($"{AppDomain.CurrentDomain.BaseDirectory}App_Data\\ErrorLog.txt", "");
+            var errorLogFilePath = $"{AppDomain.CurrentDomain.BaseDirectory}App_Data\\ErrorLog.txt";
+            if (System.IO.File.Exists(errorLogFilePath))
+            {
+                System.IO.File.WriteAllText(errorLogFilePath, "");
+            }
+            
             viewModel.IsSuccess = true;
             return viewModel;
         }

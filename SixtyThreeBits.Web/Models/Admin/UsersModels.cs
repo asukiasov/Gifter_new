@@ -93,11 +93,8 @@ namespace SixtyThreeBits.Web.Models.Admin
                         UserIsActive = submitModel.UserIsActive
                     }
                 );
-
-                if (repository.IsError)
-                {
-                    viewModel.Data = repository.ErrorMessage;
-                }
+                viewModel.IsSuccess = !repository.IsError;
+                viewModel.Data = repository.ErrorMessage;                
             }
 
             return viewModel;
@@ -106,8 +103,9 @@ namespace SixtyThreeBits.Web.Models.Admin
         {
             var result = new ValidationResult63();
             var error = default(Error63);
-
-            error = await Validation63.ValidateEmail(
+            if (databaseAction is Enums.DatabaseActions.INSERT or Enums.DatabaseActions.UPDATE)
+            {
+                error = await Validation63.ValidateEmail(
                 errorKey: null,
                 userEmail: submitModel.UserEmail,
                 validateRequired: true,
@@ -119,8 +117,8 @@ namespace SixtyThreeBits.Web.Models.Admin
                     return !isEmailUnique;
                 }
             );
-            result.AddError(error);
-
+                result.AddError(error);
+            }
             return result;
         }
         async Task iudProcessUserAvatar(Enums.DatabaseActions databaseAction, int? userID)
