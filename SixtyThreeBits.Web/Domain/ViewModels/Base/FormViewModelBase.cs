@@ -7,7 +7,7 @@ namespace SixtyThreeBits.Web.Domain.ViewModels.Base
     public class FormViewModelBase
     {
         #region Properties        
-        readonly ValidationResult _validationResult = new ValidationResult();
+        readonly ValidationResult63 _validationResult = new ValidationResult63();
 
         public string ErrorMessage => HasErrors ? string.Join("<br />", _validationResult.GetErrors().Select(Item => Item.Value)) : null;
         public bool HasErrors => _validationResult?.Count > 0;
@@ -23,7 +23,7 @@ namespace SixtyThreeBits.Web.Domain.ViewModels.Base
 
             if (!string.IsNullOrWhiteSpace(errorMessage))
             {
-                _validationResult.AddError(new ErrorItem(Key: errorKey, Value: errorMessage));
+                _validationResult.AddError(new Error63(Key: errorKey, Value: errorMessage));
             }
         }
 
@@ -32,7 +32,7 @@ namespace SixtyThreeBits.Web.Domain.ViewModels.Base
             AddError(errorKey: null, errorMessage: errorMessage);
         }
 
-        public void AddError(ErrorItem error)
+        public void AddError(Error63 error)
         {
             if (error != null)
             {

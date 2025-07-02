@@ -68,7 +68,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             _showDeleteButton = User.HasPermission(ControllerActionRouteNames.Admin.MenuFooterController.Delete);
 
             var menuFooterID = await repositoryMenuFooter.MenuFooterIUD(
-                databaseAction: Enums.DatabaseActions.CREATE,
+                databaseAction: Enums.DatabaseActions.INSERT,
                 menuFooterID: null,
                 menuFooter: new MenuFooterIudDTO
                 {
@@ -234,32 +234,32 @@ namespace SixtyThreeBits.Web.Models.Admin
             return viewModel;
         }
 
-        public async Task<ValidationResult> ValidateSubmitModel(SubmitModel submitModel)
+        public async Task<ValidationResult63> ValidateSubmitModel(SubmitModel submitModel)
         {
-            var validationResult = new ValidationResult();
+            var validationResult = new ValidationResult63();
 
             if (submitModel.MenuFooterIsExternalPage)
             {
                 validationResult.AddError(
-                       Validation.ValidateRequired(errorKey: ".js-modal-MenuFooterExternalPageUrl-input", valueToValidate: submitModel.MenuFooterExternalPageUrl)
+                       Validation63.ValidateRequired(errorKey: ".js-modal-MenuFooterExternalPageUrl-input", valueToValidate: submitModel.MenuFooterExternalPageUrl)
                    );
                 validationResult.AddError(
-                    Validation.ValidateRequired(errorKey: ".js-modal-MenuFooterTitle-input", valueToValidate: submitModel.MenuFooterTitle)
+                    Validation63.ValidateRequired(errorKey: ".js-modal-MenuFooterTitle-input", valueToValidate: submitModel.MenuFooterTitle)
                 );
             }
             else
             {
                 validationResult.AddError(
-                    Validation.ValidateRequired(errorKey: ".js-modal-PageID-input", valueToValidate: submitModel.PageID)
+                    Validation63.ValidateRequired(errorKey: ".js-modal-PageID-input", valueToValidate: submitModel.PageID)
                 );
                 validationResult.AddError(
-                    Validation.ValidateRequired(errorKey: ".js-modal-PageTitle-input", valueToValidate: submitModel.PageTitle)
+                    Validation63.ValidateRequired(errorKey: ".js-modal-PageTitle-input", valueToValidate: submitModel.PageTitle)
                 );
                 validationResult.AddError(
-                    Validation.ValidateRequired(errorKey: ".js-modal-PageSlug-input", valueToValidate: submitModel.PageSlug)
+                    Validation63.ValidateRequired(errorKey: ".js-modal-PageSlug-input", valueToValidate: submitModel.PageSlug)
                 );
                 validationResult.AddError(
-                    await Validation.ValidateAsync(
+                    await Validation63.ValidateAsync(
                         errorAction: async () =>
                         {
                             var repository = RepositoriesFactory.CreatePagesRepository();

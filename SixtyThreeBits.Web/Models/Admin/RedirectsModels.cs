@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using SixtyThreeBits.Core.Infrastructure.Repositories.DTO;
 using SixtyThreeBits.Core.Properties;
 using SixtyThreeBits.Core.Utilities;
+using SixtyThreeBits.Libraries;
 using SixtyThreeBits.Web.Domain.Libraries;
 using SixtyThreeBits.Web.Domain.Utilities;
 using SixtyThreeBits.Web.Models.Base;
@@ -22,7 +23,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             var viewModel = new ViewModel();
             viewModel.ShowAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.RedirectsController.GridAdd);
 
-            viewModel.Grid = new ViewModel.GridViewModel();
+            viewModel.Grid = new ViewModel.GridModel();
             viewModel.Grid.UrlLoad = Url.RouteUrl(ControllerActionRouteNames.Admin.RedirectsController.Grid);
             viewModel.Grid.UrlAddNew = Url.RouteUrl(ControllerActionRouteNames.Admin.RedirectsController.GridAdd);
             viewModel.Grid.UrlUpdate = Url.RouteUrl(ControllerActionRouteNames.Admin.RedirectsController.GridUpdate);
@@ -34,11 +35,11 @@ namespace SixtyThreeBits.Web.Models.Admin
             return viewModel;
         }
 
-        public async Task<List<ViewModel.GridViewModel.GridItem>> ListGridItems()
+        public async Task<List<ViewModel.GridModel.GridItem>> GetGridModel()
         {
             var repository = RepositoriesFactory.CreateRedirectsRepository();
-            var viewModel = (await repository.RedirectsList())
-            ?.Select(Item => new ViewModel.GridViewModel.GridItem
+            var viewModel = (await repository.RedirectsList())?
+            .Select(Item => new ViewModel.GridModel.GridItem
             {
                 RedirectID = Item.RedirectID,
                 RedirectFrom = Item.RedirectFrom,
@@ -47,8 +48,9 @@ namespace SixtyThreeBits.Web.Models.Admin
             return viewModel;
         }
 
-        public async Task CRUD(Enums.DatabaseActions databaseAction, int? redirectID, ViewModel.GridViewModel.GridItem submitModel)
+        public async Task<AjaxResponse> IUD(Enums.DatabaseActions databaseAction, int? redirectID, ViewModel.GridModel.GridItem submitModel)
         {
+            var viewModel = new AjaxResponse();
             var repository = RepositoriesFactory.CreateRedirectsRepository();
             await repository.RedirectsIUD(
                 databaseAction: databaseAction,
@@ -59,11 +61,9 @@ namespace SixtyThreeBits.Web.Models.Admin
                     RedirectTo = submitModel.RedirectTo
                 }                
             );
-
-            if (repository.IsError)
-            {
-                Form.AddError(repository.ErrorMessage);
-            }
+            viewModel.IsSuccess = repository.IsError;
+            viewModel.Data = repository.ErrorMessage;
+            return viewModel;            
         }
         #endregion
 
@@ -72,11 +72,11 @@ namespace SixtyThreeBits.Web.Models.Admin
         {
             #region Properties
             public bool ShowAddNewButton { get; set; }
-            public GridViewModel Grid { get; set; }
+            public GridModel Grid { get; set; }
             #endregion
 
             #region Nested Classes
-            public class GridViewModel : DevExtremeGridViewModelBase<GridViewModel.GridItem>
+            public class GridModel : DevExtremeGridViewModelBase<GridModel.GridItem>
             {
                 #region Methods
                 public override DataGridBuilder<GridItem> Render(IHtmlHelper html)

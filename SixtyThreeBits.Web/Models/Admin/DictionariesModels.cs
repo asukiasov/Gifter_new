@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using SixtyThreeBits.Core.Infrastructure.Repositories.DTO;
 using SixtyThreeBits.Core.Properties;
 using SixtyThreeBits.Core.Utilities;
+using SixtyThreeBits.Libraries;
 using SixtyThreeBits.Web.Domain.Libraries;
 using SixtyThreeBits.Web.Domain.Utilities;
 using SixtyThreeBits.Web.Models.Base;
@@ -22,7 +23,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             var viewModel = new ViewModel();
             viewModel.ShowAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.DictionariesController.TreeAdd);
 
-            viewModel.Tree = new ViewModel.TreeViewModel();
+            viewModel.Tree = new ViewModel.TreeModel();
             viewModel.Tree.AllowAdd = User.HasPermission(ControllerActionRouteNames.Admin.DictionariesController.TreeAdd);
             viewModel.Tree.AllowUpdate = User.HasPermission(ControllerActionRouteNames.Admin.DictionariesController.TreeUpdate);
             viewModel.Tree.AllowDelete = User.HasPermission(ControllerActionRouteNames.Admin.DictionariesController.TreeDelete);
@@ -34,10 +35,10 @@ namespace SixtyThreeBits.Web.Models.Admin
             return viewModel;
         }
 
-        public async Task<List<ViewModel.TreeViewModel.TreeItem>> ListTreeItems()
+        public async Task<List<ViewModel.TreeModel.TreeItem>> GetTreeModel()
         {
             var repository = RepositoriesFactory.CreateDictionariesRepository();
-            var viewModel = (await repository.DictionariesList()).Select(Item => new ViewModel.TreeViewModel.TreeItem
+            var viewModel = (await repository.DictionariesList()).Select(Item => new ViewModel.TreeModel.TreeItem
             {
                 DictionaryID = Item.DictionaryID,
                 DictionaryParentID = Item.DictionaryParentID,
@@ -52,11 +53,13 @@ namespace SixtyThreeBits.Web.Models.Admin
             return viewModel;
         }
 
-        public async Task IUD(Enums.DatabaseActions DatabaseAction, int? dictionaryID, ViewModel.TreeViewModel.TreeItem submitModel)
+        public async Task<AjaxResponse> IUD(Enums.DatabaseActions databaseAction, int? dictionaryID, ViewModel.TreeModel.TreeItem submitModel)
         {
+            var viewModel = new AjaxResponse();
+
             var repository = RepositoriesFactory.CreateDictionariesRepository();
             await repository.DictionariesIUD(
-                databaseAction: DatabaseAction,
+                databaseAction: databaseAction,
                 dictionaryID: dictionaryID,
                 dictionary: new DictionarieIudDTO
                 {
@@ -71,20 +74,20 @@ namespace SixtyThreeBits.Web.Models.Admin
                 }                
             );
 
-            if (repository.IsError)
-            {
-                Form.AddError(repository.ErrorMessage);
-            }
+            viewModel.IsSuccess = repository.IsError;
+            viewModel.Data = repository.ErrorMessage;
+
+            return viewModel;
         }
 
-        public async Task DeleteRecursive(int? dictionaryID)
+        public async Task<AjaxResponse> DeleteRecursive(int? dictionaryID)
         {
+            var viewModel = new AjaxResponse();
             var repository = RepositoriesFactory.CreateDictionariesRepository();
             await repository.DictionariesDeleteRecursive(dictionaryID);
-            if (repository.IsError)
-            {
-                Form.AddError(repository.ErrorMessage);
-            }
+            viewModel.IsSuccess = repository.IsError;
+            viewModel.Data = repository.ErrorMessage;
+            return viewModel;
         }
         #endregion
 
@@ -93,11 +96,11 @@ namespace SixtyThreeBits.Web.Models.Admin
         {
             #region Properties
             public bool ShowAddNewButton { get; set; }
-            public TreeViewModel Tree { get; set; }            
+            public TreeModel Tree { get; set; }            
             #endregion
 
             #region Nested Classes
-            public class TreeViewModel : DevExtremeTreeViewModelBase<TreeViewModel.TreeItem>
+            public class TreeModel : DevExtremeTreeViewModelBase<TreeModel.TreeItem>
             {
                 #region Methods
                 public override TreeListBuilder<TreeItem> Render(IHtmlHelper html)

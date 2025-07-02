@@ -230,7 +230,7 @@ namespace SixtyThreeBits.Core.BusinessLogics
 					else
 					{
 						excelItem.ProductID = await repository.ProductsIUD(
-							databaseAction: Enums.DatabaseActions.CREATE,
+							databaseAction: Enums.DatabaseActions.INSERT,
 							productID: null,
 							product: new ProductIudDTO
 							{

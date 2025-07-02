@@ -14,7 +14,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         #region Methods
         [HttpGet]
         [Route("", Name = ControllerActionRouteNames.Admin.RolesControllers.Roles)]
-        public ActionResult Roles()
+        public IActionResult Roles()
         {
             Model.PluginsClient.EnableDevextreme(true);
             var viewModel = Model.GetViewModel();
@@ -22,57 +22,36 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         }
 
         [Route("grid", Name = ControllerActionRouteNames.Admin.RolesControllers.Grid)]
-        public async Task<ActionResult> Grid()
+        public async Task<IActionResult> Grid()
         {
-            var viewModel = await Model.ListGridItem();
+            var viewModel = await Model.GetGridModel();
             return Json(viewModel);
         }
 
         [HttpPost]
         [Route("grid/add", Name = ControllerActionRouteNames.Admin.RolesControllers.GridAdd)]
-        public async Task<ActionResult> GridAdd(int? key, string values)
+        public async Task<IActionResult> GridAdd(int? key, string values)
         {
-            var submitModel = values.DeserializeJsonTo<RolesModel.ViewModel.GridViewModel.GridItem>() ?? new RolesModel.ViewModel.GridViewModel.GridItem();
-            await Model.IUD(databaseAction: Enums.DatabaseActions.CREATE, roleID: key, submitModel: submitModel);
-            if (Model.Form.HasErrors)
-            {
-                return GetDevexpressErrorResult(Model.Form.ErrorMessage);
-            }
-            else
-            {
-                return GetDevexpressSuccessResult();
-            }
+            var submitModel = values.DeserializeJsonTo<RolesModel.ViewModel.GridModel.GridItem>() ?? new RolesModel.ViewModel.GridModel.GridItem();
+            var viewModel = await Model.IUD(databaseAction: Enums.DatabaseActions.INSERT, roleID: key, submitModel: submitModel);
+            return DevExtremeGridActionResult(viewModel);
         }
 
         [HttpPut]
         [Route("grid/update", Name = ControllerActionRouteNames.Admin.RolesControllers.GridUpdate)]
-        public async Task<ActionResult> GridUpdate(int? key, string values)
+        public async Task<IActionResult> GridUpdate(int? key, string values)
         {
-            var submitModel = values.DeserializeJsonTo<RolesModel.ViewModel.GridViewModel.GridItem>() ?? new RolesModel.ViewModel.GridViewModel.GridItem();
-            await Model.IUD(databaseAction: Enums.DatabaseActions.UPDATE, roleID: key, submitModel: submitModel);
-            if (Model.Form.HasErrors)
-            {
-                return GetDevexpressErrorResult(Model.Form.ErrorMessage);
-            }
-            else
-            {
-                return GetDevexpressSuccessResult();
-            }
+            var submitModel = values.DeserializeJsonTo<RolesModel.ViewModel.GridModel.GridItem>() ?? new RolesModel.ViewModel.GridModel.GridItem();
+            var viewModel = await Model.IUD(databaseAction: Enums.DatabaseActions.UPDATE, roleID: key, submitModel: submitModel);
+            return DevExtremeGridActionResult(viewModel);            
         }
 
         [HttpDelete]
         [Route("grid/delete", Name = ControllerActionRouteNames.Admin.RolesControllers.GridDelete)]
-        public async Task<ActionResult> GridDelete(int? key)
+        public async Task<IActionResult> GridDelete(int? key)
         {
-            await Model.IUD(databaseAction: Enums.DatabaseActions.DELETE, roleID: key, submitModel: new RolesModel.ViewModel.GridViewModel.GridItem());
-            if (Model.Form.HasErrors)
-            {
-                return GetDevexpressErrorResult(Model.Form.ErrorMessage);
-            }
-            else
-            {
-                return GetDevexpressSuccessResult();
-            }
+            var viewModel = await Model.IUD(databaseAction: Enums.DatabaseActions.DELETE, roleID: key, submitModel: new RolesModel.ViewModel.GridModel.GridItem());
+            return DevExtremeGridActionResult(viewModel);
         }
         #endregion
     }    

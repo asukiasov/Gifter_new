@@ -14,6 +14,7 @@ using SixtyThreeBits.Web.Domain.Libraries;
 using SixtyThreeBits.Web.Domain.Utilities;
 using SixtyThreeBits.Web.Domain.ViewModels.Base;
 using SixtyThreeBits.Web.Domain.ViewModels.Shared;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
@@ -54,7 +55,7 @@ namespace SixtyThreeBits.Web.Models.Base
         public UserDTO User { get; set; }
         public bool IsLoggedIn => User != null;
         public ValueWrapper<bool> IsSidebarCollapsed { get; set; }
-        public FormViewModelBase Form { get; set; }
+        
         public SystemPropertiesDTO SystemProperties { get; set; }
         public NotificationManager NotificationManager { get; set; }
 
@@ -123,12 +124,14 @@ namespace SixtyThreeBits.Web.Models.Base
 
         }
 
+        [Obsolete("NEED Refactoring")]
         public string GetUrlPages(string pageSlug, string languageCultureCode = null)
         {
             var url = GetRouteByName(routeName: ControllerActionRouteNames.Website.PagesController.Page, new { pageSlug = pageSlug }, languageCultureCode: languageCultureCode);
             return url;
         }
 
+        [Obsolete("NEED Refactoring")]
         public async Task SaveUploadedFile(IFormFile postedFile, string filename, string folderPath = null)
         {
             using (var MS = new MemoryStream())
@@ -137,12 +140,6 @@ namespace SixtyThreeBits.Web.Models.Base
                 await FileStorage.SaveUploadedFile(MS, filename, folderPath);
             }
         }
-
-        public async Task DeleteUploadedFile(string filename, string folderPath = null)
-        {
-            await FileStorage.DeleteFile(filename, folderPath);
-        }
-
         #region Success/Error Toast
         public void InitSuccessErrorToastNotificationPartialViewModel()
         {            

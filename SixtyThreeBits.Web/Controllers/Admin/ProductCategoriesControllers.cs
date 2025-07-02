@@ -24,21 +24,21 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         [Route("add", Name = ControllerActionRouteNames.Admin.ProductCategoriesController.Add)]
         public async Task<IActionResult> Add(ProductsCategoriesModel.ProductCategoryCreateSubmitModel submitModel)
         {
-            var viewModel = await Model.CreateProductCategory(submitModel);
+            var viewModel = await Model.Add(submitModel);
             return Json(viewModel);
         }
 
         [Route("sort", Name = ControllerActionRouteNames.Admin.ProductCategoriesController.Sort)]
         public async Task<IActionResult> Sort(SyncSortIndexesSubmitModel submitModel)
         {
-            var viewModel = await Model.SyncParentsAndSortIndexes(submitModel);
+            var viewModel = await Model.Sort(submitModel);
             return Json(viewModel);
         }
 
         [Route("delete", Name = ControllerActionRouteNames.Admin.ProductCategoriesController.Delete)]
         public async Task<IActionResult> Delete(ProductsCategoriesModel.ProductCategoryDeleteSubmitModel submitModel)
         {
-            var viewModel = await Model.DeleteRecursive(submitModel);
+            var viewModel = await Model.Delete(submitModel);
             return Json(viewModel);
         }
         #endregion

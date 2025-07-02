@@ -82,7 +82,6 @@ namespace SixtyThreeBits.Web.Filters.Base
             _model.Request = c.Request;
             _model.Response = c.Response;
             _model.UrlPreviousPage = _model.Request.Headers["Referer"].ToString();
-            _model.Form = new FormViewModelBase();            
         }
 
         async Task initUser()

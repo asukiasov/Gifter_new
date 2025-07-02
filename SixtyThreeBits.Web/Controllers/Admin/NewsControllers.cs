@@ -15,7 +15,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         #region Actions
         [HttpGet]
         [Route("", Name = ControllerActionRouteNames.Admin.NewsController.News)]
-        public ActionResult News()
+        public IActionResult News()
         {
             Model.PluginsClient.EnableDevextreme(true);
             var viewModel = Model.GetViewModel();
@@ -23,57 +23,36 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         }
 
         [Route("grid", Name = ControllerActionRouteNames.Admin.NewsController.Grid)]
-        public async Task<ActionResult> Grid()
+        public async Task<IActionResult> Grid()
         {
-            var viewModel = await Model.ListGridItems();
+            var viewModel = await Model.GetGridModel();
             return Json(viewModel);
         }
 
         [HttpPost]
         [Route("grid/add", Name = ControllerActionRouteNames.Admin.NewsController.GridAdd)]
-        public async Task<ActionResult> GridAdd(int? key, string values)
+        public async Task<IActionResult> GridAdd(int? key, string values)
         {
-            var submitModel = values.DeserializeJsonTo<NewsModel.ViewModel.GridViewModel.GridItem>() ?? new NewsModel.ViewModel.GridViewModel.GridItem();
-            await Model.IUD(databaseAction: Enums.DatabaseActions.CREATE, newsID: key, submitModel: submitModel);
-            if (Model.Form.HasErrors)
-            {
-                return GetDevexpressErrorResult(Model.Form.ErrorMessage);
-            }
-            else
-            {
-                return GetDevexpressSuccessResult();
-            }
+            var submitModel = values.DeserializeJsonTo<NewsModel.ViewModel.GridModel.GridItem>() ?? new NewsModel.ViewModel.GridModel.GridItem();
+            var viewModel = await Model.IUD(databaseAction: Enums.DatabaseActions.INSERT, newsID: key, submitModel: submitModel);
+            return DevExtremeGridActionResult(viewModel);
         }
 
         [HttpPut]
         [Route("grid/update", Name = ControllerActionRouteNames.Admin.NewsController.GridUpdate)]
-        public async Task<ActionResult> GridUpdate(int? key, string values)
+        public async Task<IActionResult> GridUpdate(int? key, string values)
         {
-            var submitModel = values.DeserializeJsonTo<NewsModel.ViewModel.GridViewModel.GridItem>() ?? new NewsModel.ViewModel.GridViewModel.GridItem();
-            await Model.IUD(databaseAction: Enums.DatabaseActions.UPDATE, newsID: key, submitModel: submitModel);
-            if (Model.Form.HasErrors)
-            {
-                return GetDevexpressErrorResult(Model.Form.ErrorMessage);
-            }
-            else
-            {
-                return GetDevexpressSuccessResult();
-            }
+            var submitModel = values.DeserializeJsonTo<NewsModel.ViewModel.GridModel.GridItem>() ?? new NewsModel.ViewModel.GridModel.GridItem();
+            var viewModel = await Model.IUD(databaseAction: Enums.DatabaseActions.UPDATE, newsID: key, submitModel: submitModel);
+            return DevExtremeGridActionResult(viewModel);
         }
 
         [HttpDelete]
         [Route("grid/delete", Name = ControllerActionRouteNames.Admin.NewsController.GridDelete)]
-        public async Task<ActionResult> GridDelete(int? key)
+        public async Task<IActionResult> GridDelete(int? key)
         {
-            await Model.IUD(databaseAction: Enums.DatabaseActions.DELETE, newsID: key, submitModel: new NewsModel.ViewModel.GridViewModel.GridItem());
-            if (Model.Form.HasErrors)
-            {
-                return GetDevexpressErrorResult(Model.Form.ErrorMessage);
-            }
-            else
-            {
-                return GetDevexpressSuccessResult();
-            }
+            var viewModel = await Model.IUD(databaseAction: Enums.DatabaseActions.DELETE, newsID: key, submitModel: new NewsModel.ViewModel.GridModel.GridItem());
+            return DevExtremeGridActionResult(viewModel);
         }
         #endregion
 

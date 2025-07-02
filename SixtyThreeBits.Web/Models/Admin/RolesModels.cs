@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using SixtyThreeBits.Core.Infrastructure.Repositories.DTO;
 using SixtyThreeBits.Core.Properties;
 using SixtyThreeBits.Core.Utilities;
+using SixtyThreeBits.Libraries;
 using SixtyThreeBits.Web.Domain.Libraries;
 using SixtyThreeBits.Web.Domain.Utilities;
 using SixtyThreeBits.Web.Models.Base;
@@ -22,7 +23,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             var viewModel = new ViewModel();
             viewModel.ShowAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.RolesControllers.GridAdd);
 
-            viewModel.Grid = new ViewModel.GridViewModel();
+            viewModel.Grid = new ViewModel.GridModel();
             viewModel.Grid.AllowAdd = User.HasPermission(ControllerActionRouteNames.Admin.RolesControllers.GridAdd);
             viewModel.Grid.AllowUpdate = User.HasPermission(ControllerActionRouteNames.Admin.RolesControllers.GridUpdate);
             viewModel.Grid.AllowDelete = User.HasPermission(ControllerActionRouteNames.Admin.RolesControllers.GridDelete);
@@ -34,11 +35,11 @@ namespace SixtyThreeBits.Web.Models.Admin
             return viewModel;
         }
 
-        public async Task<List<ViewModel.GridViewModel.GridItem>> ListGridItem()
+        public async Task<List<ViewModel.GridModel.GridItem>> GetGridModel()
         {
             var repository = RepositoriesFactory.CreateRolesRepository();
             var viewModel = (await repository.RolesList())
-            ?.Select(Item => new ViewModel.GridViewModel.GridItem
+            ?.Select(Item => new ViewModel.GridModel.GridItem
             {
                 RoleID = Item.RoleID,
                 RoleName = Item.RoleName,
@@ -49,8 +50,10 @@ namespace SixtyThreeBits.Web.Models.Admin
             return viewModel;
         }
 
-        public async Task IUD(Enums.DatabaseActions databaseAction, int? roleID, ViewModel.GridViewModel.GridItem submitModel)
+        public async Task<AjaxResponse> IUD(Enums.DatabaseActions databaseAction, int? roleID, ViewModel.GridModel.GridItem submitModel)
         {
+            var viewModel = new AjaxResponse();
+
             var repository = RepositoriesFactory.CreateRolesRepository();
             await repository.RolesIUD(
                 databaseAction: databaseAction,
@@ -61,11 +64,10 @@ namespace SixtyThreeBits.Web.Models.Admin
                     RoleCode = submitModel.RoleCode
                 }                
             );
+            viewModel.IsSuccess = !repository.IsError;
+            viewModel.Data = repository.ErrorMessage;
 
-            if (repository.IsError)
-            {
-                Form.AddError(repository.ErrorMessage);
-            }
+            return viewModel;
         }
         #endregion
 
@@ -74,11 +76,11 @@ namespace SixtyThreeBits.Web.Models.Admin
         {
             #region Properties
             public bool ShowAddNewButton { get; set; }
-            public GridViewModel Grid { get; set; }
+            public GridModel Grid { get; set; }
             #endregion
 
             #region Nested Classes
-            public class GridViewModel : DevExtremeGridViewModelBase<GridViewModel.GridItem>
+            public class GridModel : DevExtremeGridViewModelBase<GridModel.GridItem>
             {
                 #region Methods
                 public override DataGridBuilder<GridItem> Render(IHtmlHelper html)

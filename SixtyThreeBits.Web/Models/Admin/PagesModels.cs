@@ -45,7 +45,7 @@ namespace SixtyThreeBits.Web.Models.Admin
         {
             var viewModel = new ViewModel();
             viewModel.ShowAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.PagesController.GridAdd);
-            viewModel.Grid = new ViewModel.GridViewModel();            
+            viewModel.Grid = new ViewModel.GridModel();            
             viewModel.Grid.UrlLoad = Url.RouteUrl(ControllerActionRouteNames.Admin.PagesController.Grid);
             viewModel.Grid.UrlAddNew = Url.RouteUrl(ControllerActionRouteNames.Admin.PagesController.GridAdd);
             viewModel.Grid.UrlUpdate = Url.RouteUrl(ControllerActionRouteNames.Admin.PagesController.GridUpdate);
@@ -55,12 +55,12 @@ namespace SixtyThreeBits.Web.Models.Admin
             return viewModel;
         }
 
-        public async Task<List<ViewModel.GridViewModel.GridItem>> ListGridItems()
+        public async Task<List<ViewModel.GridModel.GridItem>> GetGridModel()
         {
             var repository = RepositoriesFactory.CreatePagesRepository();
 
             var viewModel = (await repository.PagesList())
-            ?.Select(item => new ViewModel.GridViewModel.GridItem
+            ?.Select(item => new ViewModel.GridModel.GridItem
             {
                 PageID = item.PageID,
                 PageTitle = item.PageTitle,
@@ -74,10 +74,11 @@ namespace SixtyThreeBits.Web.Models.Admin
             return viewModel;
         }
 
-        public async Task IUD(Enums.DatabaseActions databaseAction, int? pageID, ViewModel.GridViewModel.GridItem submitModel)
+        public async Task<AjaxResponse> IUD(Enums.DatabaseActions databaseAction, int? pageID, ViewModel.GridModel.GridItem submitModel)
         {
-            var repository = RepositoriesFactory.CreatePagesRepository();
+            var viewModel = new AjaxResponse();
 
+            var repository = RepositoriesFactory.CreatePagesRepository();
             await repository.PagesIUD(
                 databaseAction: databaseAction,
                 pageID: pageID,
@@ -89,28 +90,30 @@ namespace SixtyThreeBits.Web.Models.Admin
                 }
             );
 
-            if (repository.IsError)
-            {
-                Form.AddError(repository.ErrorMessage);
-            }
+            viewModel.IsSuccess = !repository.IsError;
+            viewModel.Data = repository.ErrorMessage;
+
+            return viewModel;
         }
 
-        public async Task Delete(int? pageID)
+        public async Task<AjaxResponse> Delete(int? pageID)
+        {
+            var viewModel = new AjaxResponse();
+
+            await deleteProcessPageImageFilename(pageID);
+
+            var repository = RepositoriesFactory.CreatePagesRepository();
+            await repository.PagesDelete(pageID: pageID);
+            viewModel.IsSuccess = repository.IsError;
+            viewModel.Data = repository.ErrorMessage;
+
+            return viewModel;
+        }
+        async Task deleteProcessPageImageFilename(int? pageID)
         {
             var repository = RepositoriesFactory.CreatePagesRepository();
-
-            var dbItem = await repository.PagesGetSingleByID(pageID);
-            if (dbItem != null)
-            {
-                await DeleteUploadedFile(dbItem.PageImageFilename);
-            }
-
-            await repository.PagesDelete(pageID: pageID);
-
-            if (repository.IsError)
-            {
-                Form.AddError(repository.ErrorMessage);
-            }
+            var page = await repository.PagesGetSingleByID(pageID);
+            await FileStorage.DeleteFile(page.PageImageFilename);
         }
 
         public async Task<AjaxResponse> GetPagesData()
@@ -139,11 +142,11 @@ namespace SixtyThreeBits.Web.Models.Admin
         {
             #region Properties
             public bool ShowAddNewButton { get; set; }
-            public GridViewModel Grid { get; set; }
+            public GridModel Grid { get; set; }
             #endregion
 
             #region Nested Classes
-            public class GridViewModel : DevExtremeGridViewModelBase<GridViewModel.GridItem>
+            public class GridModel : DevExtremeGridViewModelBase<GridModel.GridItem>
             {
                 #region Methods
                 public override DataGridBuilder<GridItem> Render(IHtmlHelper html)
@@ -249,10 +252,10 @@ namespace SixtyThreeBits.Web.Models.Admin
 
         public async Task ValidateViewModel(ViewModel viewModel)
         {
-            viewModel.AddError(Validation.ValidateRequired(errorKey: Validation.GetJQueryNameSelectorFor(nameof(viewModel.PageTitle)), valueToValidate: viewModel.PageTitle));
-            viewModel.AddError(Validation.ValidateRequired(errorKey: Validation.GetJQueryNameSelectorFor(nameof(viewModel.PageSlug)), valueToValidate: viewModel.PageSlug));
+            viewModel.AddError(Validation63.ValidateRequired(errorKey: Validation63.GetJQueryNameSelectorFor(nameof(viewModel.PageTitle)), valueToValidate: viewModel.PageTitle));
+            viewModel.AddError(Validation63.ValidateRequired(errorKey: Validation63.GetJQueryNameSelectorFor(nameof(viewModel.PageSlug)), valueToValidate: viewModel.PageSlug));
             viewModel.AddError(
-                await Validation.ValidateAsync(
+                await Validation63.ValidateAsync(
                         errorAction: async () =>
                         {
                             var repository = RepositoriesFactory.CreatePagesRepository();
@@ -260,7 +263,7 @@ namespace SixtyThreeBits.Web.Models.Admin
                             var isError = !isUniq;
                             return isError;
                         },
-                        errorKey: Validation.GetJQueryNameSelectorFor(nameof(viewModel.PageSlug)),
+                        errorKey: Validation63.GetJQueryNameSelectorFor(nameof(viewModel.PageSlug)),
                         errorMessage: Resources.ValidationPagesSlugNotUniq
                     )
             );
@@ -272,7 +275,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             var pageImageFilename = hasPageImage ? GetFilenameFromUploadedFile(viewModel.PageImageFile) : null;
             if (hasPageImage)
             {
-                await DeleteUploadedFile(pageImageFilename, _folderPath);
+                await FileStorage.DeleteFile(pageImageFilename, _folderPath);
             }
 
             var repository = RepositoriesFactory.CreatePagesRepository();
@@ -308,7 +311,7 @@ namespace SixtyThreeBits.Web.Models.Admin
         {
             var viewModel = new AjaxResponse();
 
-            await DeleteUploadedFile(DBItem.PageImageFilename, _folderPath);
+            await FileStorage.DeleteFile(DBItem.PageImageFilename, _folderPath);
 
             var repository = RepositoriesFactory.CreatePagesRepository();
             await repository.PagesIUD(
@@ -390,10 +393,10 @@ namespace SixtyThreeBits.Web.Models.Admin
             return viewModel;
         }
 
-        public ValidationResult Validate(SubmitModel submitModel)
+        public ValidationResult63 Validate(SubmitModel submitModel)
         {
-            var validationResult = new ValidationResult();
-            validationResult.AddError(Validation.ValidateRequired(errorKey: Validation.GetJQueryNameSelectorFor(nameof(submitModel.PageTitle)), valueToValidate: submitModel.PageTitle));
+            var validationResult = new ValidationResult63();
+            validationResult.AddError(Validation63.ValidateRequired(errorKey: Validation63.GetJQueryNameSelectorFor(nameof(submitModel.PageTitle)), valueToValidate: submitModel.PageTitle));
             return validationResult;
         }
 

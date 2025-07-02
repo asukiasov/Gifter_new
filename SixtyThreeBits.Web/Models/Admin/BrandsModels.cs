@@ -27,7 +27,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             var viewModel = new ViewModel();
             viewModel.ShowAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.BrandsController.GridAdd);
 
-            viewModel.Grid = new ViewModel.GridViewModel();
+            viewModel.Grid = new ViewModel.GridModel();
             viewModel.Grid.UrlLoad = Url.RouteUrl(ControllerActionRouteNames.Admin.BrandsController.Grid);
             viewModel.Grid.UrlAddNew = Url.RouteUrl(ControllerActionRouteNames.Admin.BrandsController.GridAdd);
             viewModel.Grid.UrlUpdate = Url.RouteUrl(ControllerActionRouteNames.Admin.BrandsController.GridUpdate);
@@ -39,10 +39,10 @@ namespace SixtyThreeBits.Web.Models.Admin
             return viewModel;
         }
 
-        public async Task<List<ViewModel.GridViewModel.GridItem>> ListGridItems()
+        public async Task<List<ViewModel.GridModel.GridItem>> GetGridModel()
         {
             var repository = RepositoriesFactory.CreateBrandsRepository();
-            var brands = (await repository.BrandsList())?.Select(item => new ViewModel.GridViewModel.GridItem
+            var brands = (await repository.BrandsList())?.Select(item => new ViewModel.GridModel.GridItem
             {
                 BrandID = item.BrandID,
                 BrandName = item.BrandName,
@@ -52,18 +52,15 @@ namespace SixtyThreeBits.Web.Models.Admin
             return brands;
         }
 
-        public async Task IUD(Enums.DatabaseActions DatabaseAction, int? brandID, ViewModel.GridViewModel.GridItem submitModel)
+        public async Task<AjaxResponse> IUD(Enums.DatabaseActions databaseAction, int? brandID, ViewModel.GridModel.GridItem submitModel)
         {
+            var viewModel = new AjaxResponse();
+
+            await iudProcessBrandImageFilename(databaseAction: databaseAction, brandID: brandID);
+
             var repository = RepositoriesFactory.CreateBrandsRepository();
-
-            if (DatabaseAction == Enums.DatabaseActions.DELETE)
-            {
-                var dbItem = await repository.BrandsGetSingleByID(brandID);
-                await DeleteUploadedFile(dbItem.BrandImageFilename);
-            }
-
             await repository.BrandsIUD(
-                databaseAction: DatabaseAction,
+                databaseAction: databaseAction,
                 brandID: brandID,
                 brand: new BrandIudDTO
                 {
@@ -72,9 +69,18 @@ namespace SixtyThreeBits.Web.Models.Admin
                 }
             );
 
-            if (repository.IsError)
+            viewModel.IsSuccess = !repository.IsError;
+            viewModel.Data = repository.ErrorMessage;
+
+            return viewModel;
+        }
+        async Task iudProcessBrandImageFilename(Enums.DatabaseActions databaseAction, int? brandID)
+        {
+            if (databaseAction == Enums.DatabaseActions.DELETE)
             {
-                Form.AddError(repository.ErrorMessage);
+                var repository = RepositoriesFactory.CreateBrandsRepository();
+                var brand = await repository.BrandsGetSingleByID(brandID);
+                await FileStorage.DeleteFile(brand.BrandImageFilename);
             }
         }
         #endregion
@@ -84,11 +90,11 @@ namespace SixtyThreeBits.Web.Models.Admin
         {
             #region Properties
             public bool ShowAddNewButton { get; set; }
-            public GridViewModel Grid { get; set; }
+            public GridModel Grid { get; set; }
             #endregion
 
             #region Nested Classes
-            public class GridViewModel : DevExtremeGridViewModelBase<GridViewModel.GridItem>
+            public class GridModel : DevExtremeGridViewModelBase<GridModel.GridItem>
             {
                 #region Methods
                 public override DataGridBuilder<GridItem> Render(IHtmlHelper html)
@@ -157,7 +163,7 @@ namespace SixtyThreeBits.Web.Models.Admin
 
         public void Validate(ViewModel viewModel)
         {
-            viewModel.AddError(Validation.ValidateRequired(errorKey: Validation.GetJQueryNameSelectorFor(nameof(viewModel.BrandName)), valueToValidate: viewModel.BrandName));
+            viewModel.AddError(Validation63.ValidateRequired(errorKey: Validation63.GetJQueryNameSelectorFor(nameof(viewModel.BrandName)), valueToValidate: viewModel.BrandName));
         }
 
         public async Task Save(ViewModel viewModel)
@@ -167,7 +173,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             var hasBrandImage = viewModel.BrandImageFile?.Length > 0;            
             if (hasBrandImage)
             {
-                await DeleteUploadedFile(viewModel.BrandImageFilename);
+                await FileStorage.DeleteFile(viewModel.BrandImageFilename);
                 brandImageFilename = GetFilenameFromUploadedFile(viewModel.BrandImageFile);
             }
 
@@ -201,7 +207,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             var viewModel = new AjaxResponse();
             var repository = RepositoriesFactory.CreateBrandsRepository();
 
-            await DeleteUploadedFile(DBItem.BrandImageFilename);
+            await FileStorage.DeleteFile(DBItem.BrandImageFilename);
 
             await repository.BrandsIUD(
                 databaseAction: Enums.DatabaseActions.UPDATE,
