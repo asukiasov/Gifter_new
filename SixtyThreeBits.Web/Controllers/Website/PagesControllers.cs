@@ -14,7 +14,7 @@ namespace SixtyThreeBits.Web.Controllers.Website
         [Route("{*pageSlug}", Name = ControllerActionRouteNames.Website.PagesController.Page, Order = 10000)]        
         public async Task<IActionResult> Page(string pageSlug)
         {
-            Model.PluginsClient.EnablePageBuilder(true).EnableSlickSlider(true).EnableJQueryAppear(true).EnableJWPlayer(true);
+            Model.PluginsClient.EnablePageBuilder(true).EnableSwiper(true).EnableJQueryAppear(true).EnableJWPlayer(true);
             var viewModel = await Model.GetViewModel(pageSlug);
             if (viewModel == null)
             {

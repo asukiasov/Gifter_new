@@ -2098,8 +2098,8 @@ var PageBuilderModel = {
                 if (sectionName == PageBuilderModel.settings.sections.slider().name) {
 
                     model.slider = {
-                        //autoplay: section.find('.js-t63-slider').attr('data-slider-autoplay') == 'true',
-                        //autoplaySpeed: section.find('.js-t63-slider').attr('data-slider-autoplay-speed'),
+                        //autoplay: section.find('.js-t63-multimedia-slider').attr('data-slider-autoplay') == 'true',
+                        //autoplaySpeed: section.find('.js-t63-multimedia-slider').attr('data-slider-autoplay-speed'),
 
                         autoplay: section.find('.js-t63-slider-autoplay-toggler input:checked').length > 0,
                         autoplaySpeed: $.trim(section.find('.js-t63-slider-autoplay-speed-input').val()) || 4000
@@ -2108,7 +2108,7 @@ var PageBuilderModel = {
                     model.contentAlignment = section.find('[data-align-content]').attr('data-align-content');
                     model.items = [];
 
-                    section.find('.js-t63-slider > div').each(function () {
+                    section.find('.js-t63-multimedia-slider .js-t63-slide').each(function () {
                         var slide = $(this);
                         var item = {
                             components: {
@@ -2394,7 +2394,7 @@ var PageBuilderModel = {
 
                     model.items = [];
 
-                    section.find('.js-t63-testimonials-slider > div').each(function () {
+                    section.find('.js-t63-testimonials-slider .js-t63-slide').each(function () {
                         var slide = $(this);
                         var item = {
                             components: {
@@ -2407,7 +2407,7 @@ var PageBuilderModel = {
                                 description: components.textPlain(slide.find('.js-t63-description-wrap'))
                             }
                         };
-
+                        
                         model.items.push(item);
                     });
                 }
@@ -3176,8 +3176,13 @@ var PageBuilderModel = {
             template:
                 `<div class="t63-section t63-slider-section js-t63-page-section{{#if isFullHeight}} t63-invisible{{/if}} {{cssClassNames}}" data-section="slider" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-is-fullscreen="{{isFullScreen}}" data-is-fullheight="{{isFullHeight}}" data-css-classes="{{cssClassNames}}">
                     <div class="container t63-padding-v{{#if animations}} t63-invisible js-animate{{/if}}" data-animation="{{animations}}" data-children-animation="false">
-                        <div class="t63-slider js-t63-slider js-t63-slider-container" data-slider-autoplay="{{slider?.autoplay}}" data-slider-autoplay-speed="{{slider?.autoplaySpeed}}">
+                        <div class="swiper t63-slider js-t63-slider-container js-t63-multimedia-slider" data-t63-slider="true" data-slider-autoplay="{{slider?.autoplay}}" data-slider-autoplay-speed="{{slider?.autoplaySpeed}}">
+                            <div class="swiper-wrapper js-t63-slider-wrapper">
                             {{> "sliderItemsPartial"}}
+                            </div>
+                            <div class="swiper-button-prev js-t63-slider-btn-prev"></div>
+                            <div class="swiper-button-next js-t63-slider-btn-next"></div>
+                            <div class="swiper-pagination js-t63-slider-pagination"></div>
                         </div>
                     </div>
                     {{> "sliderItemsControlsPartial"}}
@@ -3191,7 +3196,7 @@ var PageBuilderModel = {
             items: {
                 partial:
                     `{{#each items}}
-                    <div>
+                    <div class="swiper-slide js-t63-slide">
                         {{multimediaHepler components.multimedia ../actionButtons.multimedia}}
                         <div class="container slide-content js-t63-slide-content" data-align-content="{{contentAlignment}}">
                             <section>
@@ -3799,8 +3804,11 @@ var PageBuilderModel = {
                     <div class="container t63-padding-v">
 					    {{> "titlePartial"}}
 					
-					    <div class="t63-testimonials-slider js-t63-testimonials-slider js-t63-slider-container{{#if animations}} t63-invisible js-animate{{/if}}" data-animation="{{animations}}" data-children-animation="false">
+					    <div class="swiper t63-testimonials-slider js-t63-testimonials-slider js-t63-slider-container{{#if animations}} t63-invisible js-animate{{/if}}" data-animation="{{animations}}" data-children-animation="false">
+                            <div class="swiper-wrapper js-t63-slider-wrapper">
                             {{> "testimonialsItemsPartial"}}
+                            </div>
+                            <div class="swiper-pagination js-t63-slider-pagination"></div>
                         </div>
 				    </div>
                     {{> "sliderItemsControlsPartial"}}
@@ -3814,7 +3822,7 @@ var PageBuilderModel = {
             items: {
                 partial:
                     `{{#each items}}
-                    <div>
+                    <div class="swiper-slide js-t63-slide">
 						<article class="t63-testimonial-item">
 							<div class="avatar-wrap">
                                 {{bgImageHepler components.image ../actionButtons.image}}
@@ -6131,7 +6139,7 @@ var PageBuilderModel = {
             add: function (_this) {
                 var section = _this.closest('.js-t63-page-section');
                 var sectionName = section.data('section');
-                var slider = section.find('.js-t63-slider-container');
+                var sliderWrap = section.find('.js-t63-slider-wrapper');
                 var settingItemsContainer = section.find('.js-t63-slider-settings-container ul');
 
                 var model = {
@@ -6141,14 +6149,14 @@ var PageBuilderModel = {
                     actionButtons: PageBuilderModel.editors.actionButtons.settings
                 };
 
-                slider.append(PageBuilderModel.sections[sectionName].items.getHtml(model));
+                sliderWrap.append(PageBuilderModel.sections[sectionName].items.getHtml(model));
 
                 settingItemsContainer.append(PageBuilderModel.editors.sliderItem.controls.items.getHtml(model));
 
                 PageBuilderModel.editors.sliderItem.activeFirstSlide(section);
                 PageBuilderModel.editors.sliderItem.sortable(section);
 
-                var newSlide = slider.children('div:last-child');
+                var newSlide = sliderWrap.children('div:last-child');
                 PageBuilderModel.editors.title.tinymce.init(newSlide);
                 PageBuilderModel.editors.text.tinymce.init(newSlide);
             },
@@ -6156,7 +6164,7 @@ var PageBuilderModel = {
             remove: function (_this) {
                 var section = _this.closest('.js-t63-page-section');
 
-                section.find('.js-t63-slider-container > div').eq(_this.parent().index()).remove();
+                section.find('.js-t63-slide').eq(_this.parent().index()).remove();
                 _this.parent().remove();
 
                 PageBuilderModel.editors.sliderItem.activeFirstSlide(section);
@@ -6165,7 +6173,7 @@ var PageBuilderModel = {
 
             goToSlide: function (_this) {
                 var section = _this.closest('.js-t63-page-section');
-                var slide = section.find('.js-t63-slider-container > div');
+                var slide = section.find('.js-t63-slide');
                 var controlsItem = section.find('.js-t63-slider-settings-container li');
 
                 slide.removeClass('active');
@@ -6176,8 +6184,8 @@ var PageBuilderModel = {
             },
 
             activeFirstSlide: function (section) {
-                if ($(section).find('.js-t63-slider-container > div.active').length == 0) {
-                    $(section).find('.js-t63-slider-container > div:first-child, .js-t63-slider-settings-container li:first-child').addClass('active');
+                if ($(section).find('.js-t63-slide.active').length == 0) {
+                    $(section).find('.js-t63-slide:first-child, .js-t63-slider-settings-container li:first-child').addClass('active');
                 }
             },
 
@@ -6201,7 +6209,7 @@ var PageBuilderModel = {
                             var oldIndex = +$(evt.item).attr('data-index');
                             var newIndex = $(evt.item).index();
 
-                            var slide = section.find('.js-t63-slider-container > div');
+                            var slide = section.find('.js-t63-slide');
 
                             if (newIndex > oldIndex) {
                                 slide.eq(oldIndex).insertAfter(slide.eq(newIndex));
@@ -6220,7 +6228,7 @@ var PageBuilderModel = {
                         var oldIndex = +$(ui.item).attr('data-index');
                         var newIndex = $(ui.item).index();
 
-                        var slide = section.find('.js-t63-slider-container > div');
+                        var slide = section.find('.js-t63-slide');
 
                         if (newIndex > oldIndex) {
                             slide.eq(oldIndex).insertAfter(slide.eq(newIndex));
@@ -7167,7 +7175,8 @@ var PageBuilderModel = {
                 .removeAttr('style id contenteditable spellcheck');
 
             container.find('.js-t63-slider-settings-container').remove();
-            container.find('.js-t63-slider-container > div').removeAttr('class');
+            //container.find('.js-t63-slide').removeAttr('class');
+            container.find('.js-t63-slide').removeClass('active');
         },
 
         init: function () {

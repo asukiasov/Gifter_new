@@ -2509,10 +2509,10 @@ div.mce-edit-area,
 .t63-slider-section[data-is-fullscreen="false"] .t63-slider{
 	overflow: visible;
 }
-.t63-slider > div{
+.t63-slider .swiper-slide{
     display: none;
 }
-.t63-slider > div.active{
+.t63-slider .swiper-slide.active{
     display: block;
 }
 
@@ -2739,10 +2739,10 @@ div.mce-edit-area,
 
 
 /* ----------- testimonials ----------- */
-.t63-testimonials-slider > div{
+.t63-testimonials-slider .swiper-slide{
     display: none;
 }
-.t63-testimonials-slider > div.active{
+.t63-testimonials-slider .swiper-slide.active{
     display: block;
 }
 
