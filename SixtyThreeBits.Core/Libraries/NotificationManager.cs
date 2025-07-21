@@ -165,7 +165,7 @@ namespace SixtyThreeBits.Core.Libraries
                 var split = emailsTo.Split(',');
                 foreach (var emailTo in split)
                 {
-                    var isEmailFormatValid = Validation.IsEmailFormatValid(emailTo);
+                    var isEmailFormatValid = Validation63.IsEmailFormatValid(emailTo);
                     if (isEmailFormatValid)
                     {
                         var result = await SendNotification(
@@ -181,7 +181,7 @@ namespace SixtyThreeBits.Core.Libraries
         async Task<EmailSendResultDTO> SendNotification(string emailTo, string subject, string body, string replyTo = null, string emailGuid = null, List<EmailAttachmentDTO> attachments = null)
         {
             var result = new EmailSendResultDTO();
-            var isEmailFormatValid = Validation.IsEmailFormatValid(emailTo);
+            var isEmailFormatValid = Validation63.IsEmailFormatValid(emailTo);
             //var isEmailSent = false;
             if (isEmailFormatValid)
             {

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SixtyThreeBits.Libraries;
 using SixtyThreeBits.Web.Controllers.Base;
 using SixtyThreeBits.Web.Filters.Admin;
 
@@ -9,16 +10,17 @@ namespace SixtyThreeBits.Web.Controllers.Admin.Base
     {
         #region Methods
         [NonAction]
-        public ContentResult GetDevexpressErrorResult(string errorMessage)
+        public IActionResult DevExtremeGridActionResult(AjaxResponse viewModel)
         {
-            return new ContentResult { Content = errorMessage, StatusCode = 500 };
-        }
-
-        [NonAction]
-        public JsonResult GetDevexpressSuccessResult()
-        {
-            return Json("OK");
-        } 
+            if (viewModel.IsSuccess)
+            {
+                return Json("OK");
+            }
+            else
+            {
+                return new ContentResult { Content = viewModel.Data.ToString(), StatusCode = 500 };
+            }
+        }        
         #endregion
     }
 }

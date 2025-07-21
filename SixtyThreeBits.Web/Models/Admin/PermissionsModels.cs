@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using SixtyThreeBits.Core.Infrastructure.Repositories.DTO;
 using SixtyThreeBits.Core.Properties;
 using SixtyThreeBits.Core.Utilities;
+using SixtyThreeBits.Libraries;
 using SixtyThreeBits.Web.Domain.Libraries;
 using SixtyThreeBits.Web.Domain.Utilities;
 using SixtyThreeBits.Web.Models.Base;
@@ -22,7 +23,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             var viewModel = new ViewModel();
             viewModel.ShowAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.PermissionsController.TreeAdd);
 
-            viewModel.Tree = new ViewModel.TreeViewModel();
+            viewModel.Tree = new ViewModel.TreeModel();
             viewModel.Tree.AllowAdd = User.HasPermission(ControllerActionRouteNames.Admin.PermissionsController.TreeAdd);
             viewModel.Tree.AllowUpdate = User.HasPermission(ControllerActionRouteNames.Admin.PermissionsController.TreeUpdate);
             viewModel.Tree.AllowDelete = User.HasPermission(ControllerActionRouteNames.Admin.PermissionsController.TreeDelete);
@@ -34,11 +35,11 @@ namespace SixtyThreeBits.Web.Models.Admin
             return viewModel;
         }
 
-        public async Task<List<ViewModel.TreeViewModel.TreeItem>> ListTreeItems()
+        public async Task<List<ViewModel.TreeModel.TreeItem>> GetTreeModel()
         {
             var repository = RepositoriesFactory.CreatePermissionsRepository();
             var viewModel = (await repository.PermissionsList())
-            ?.Select(item => new ViewModel.TreeViewModel.TreeItem
+            ?.Select(item => new ViewModel.TreeModel.TreeItem
             {
                 PermissionID = item.PermissionID,
                 PermissionParentID = item.PermissionParentID,
@@ -57,8 +58,10 @@ namespace SixtyThreeBits.Web.Models.Admin
             return viewModel;
         }
 
-        public async Task CRUD(Enums.DatabaseActions databaseAction, int? permissionID, ViewModel.TreeViewModel.TreeItem submitModel)
+        public async Task<AjaxResponse> IUD(Enums.DatabaseActions databaseAction, int? permissionID, ViewModel.TreeModel.TreeItem submitModel)
         {
+            var viewModel = new AjaxResponse();
+
             var repository = RepositoriesFactory.CreatePermissionsRepository();
             await repository.PermissionsIUD(
                 databaseAction: databaseAction,
@@ -79,20 +82,20 @@ namespace SixtyThreeBits.Web.Models.Admin
                 }   
             );
 
-            if (repository.IsError)
-            {
-                Form.AddError(repository.ErrorMessage);
-            }
+            viewModel.IsSuccess=!repository.IsError;
+            viewModel.Data = repository.ErrorMessage;                 
+
+            return viewModel;
         }
 
-        public async Task DeleteRecursive(int? permissionID)
+        public async Task<AjaxResponse> DeleteRecursive(int? permissionID)
         {
+            var viewModel = new AjaxResponse();
             var repository = RepositoriesFactory.CreatePermissionsRepository();
             await repository.PermissionsDeleteRecursive(permissionID);
-            if (repository.IsError)
-            {
-                Form.AddError(repository.ErrorMessage);
-            }
+            viewModel.IsSuccess = !repository.IsError;
+            viewModel.Data = repository.ErrorMessage;
+            return viewModel;
         }
         #endregion
 
@@ -101,12 +104,12 @@ namespace SixtyThreeBits.Web.Models.Admin
         {
             #region Properties
             public bool ShowAddNewButton { get; set; }
-            public TreeViewModel Tree { get; set; }
+            public TreeModel Tree { get; set; }
             public string UrlUpdate { get; set; }
             #endregion
 
             #region Nested Classes
-            public class TreeViewModel : DevExtremeTreeViewModelBase<TreeViewModel.TreeItem>
+            public class TreeModel : DevExtremeTreeViewModelBase<TreeModel.TreeItem>
             {
                 #region Methods
                 public override TreeListBuilder<TreeItem> Render(IHtmlHelper Html)

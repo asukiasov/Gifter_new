@@ -49,36 +49,19 @@ namespace SixtyThreeBits.Web.Models.Admin
             return viewModel;
         }
 
-        public async Task<AjaxResponse> DeleteRecursive(ProductCategoryDeleteSubmitModel submitModel)
-        {
-            var viewModel = new AjaxResponse();
-            var repository = RepositoriesFactory.CreateProductsRepository();
-            await repository.ProductCategoriesDeleteRecursive(submitModel.ProductCategoryID);
-            if(repository.IsError)
-            {
-                viewModel.Data = repository.ErrorMessage;
-            }
-            else
-            {
-                viewModel.IsSuccess = true;
-            }
-            
-            return viewModel;
-        }
-
-        public async Task<AjaxResponse> CreateProductCategory(ProductCategoryCreateSubmitModel submitModel)
+        public async Task<AjaxResponse> Add(ProductCategoryCreateSubmitModel submitModel)
         {
             TreeNodeItem node = null;
 
             var repository = RepositoriesFactory.CreateProductsRepository();
             var productCategoryID = await repository.ProductCategoriesIUD(
-                databaseAction: Enums.DatabaseActions.CREATE,
+                databaseAction: Enums.DatabaseActions.INSERT,
                 productCategoryID: null,
                 productCategory: new ProductCategoryIudDTO
                 {
                     ProductCategoryParentID = submitModel.ProductCategoryParentID,
                     ProductCategoryName = submitModel.ProductCategoryName
-                }                
+                }
             );
 
             if (productCategoryID > 0)
@@ -103,7 +86,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             return viewModel;
         }
 
-        public async Task<AjaxResponse> SyncParentsAndSortIndexes(SyncSortIndexesSubmitModel submitModel)
+        public async Task<AjaxResponse> Sort(SyncSortIndexesSubmitModel submitModel)
         {
             var viewModel = new AjaxResponse();
             var repository = RepositoriesFactory.CreateProductsRepository();
@@ -111,6 +94,23 @@ namespace SixtyThreeBits.Web.Models.Admin
             viewModel.IsSuccess = !repository.IsError;
             return viewModel;
         }
+
+        public async Task<AjaxResponse> Delete(ProductCategoryDeleteSubmitModel submitModel)
+        {
+            var viewModel = new AjaxResponse();
+            var repository = RepositoriesFactory.CreateProductsRepository();
+            await repository.ProductCategoriesDeleteRecursive(submitModel.ProductCategoryID);
+            if(repository.IsError)
+            {
+                viewModel.Data = repository.ErrorMessage;
+            }
+            else
+            {
+                viewModel.IsSuccess = true;
+            }
+            
+            return viewModel;
+        }                
         #endregion
 
         #region Nested Classes
@@ -184,7 +184,7 @@ namespace SixtyThreeBits.Web.Models.Admin
 
             if (hasCategoryImage)
             {
-                await DeleteUploadedFile(viewModel.ProductCategoryImageFilename);
+                await FileStorage.DeleteFile(viewModel.ProductCategoryImageFilename);
             }
 
             var repository = RepositoriesFactory.CreateProductsRepository();
@@ -217,14 +217,14 @@ namespace SixtyThreeBits.Web.Models.Admin
 
         public void Validate(ViewModel viewModel)
         {
-            viewModel.AddError(Validation.ValidateRequired(errorKey: Validation.GetJQueryNameSelectorFor(nameof(viewModel.ProductCategoryName)), valueToValidate: viewModel.ProductCategoryName));
+            viewModel.AddError(Validation63.ValidateRequired(errorKey: Validation63.GetJQueryNameSelectorFor(nameof(viewModel.ProductCategoryName)), valueToValidate: viewModel.ProductCategoryName));
         }
 
         public async Task<AjaxResponse> DeleteImage()
         {
             var viewModel = new AjaxResponse();
 
-            await DeleteUploadedFile(DBItem.ProductCategoryImageFilename);
+            await FileStorage.DeleteFile(DBItem.ProductCategoryImageFilename);
 
             var repository = RepositoriesFactory.CreateProductsRepository();
             await repository.ProductCategoriesIUD(

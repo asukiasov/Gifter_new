@@ -36,7 +36,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             viewModel.UrlExcelUpload = Url.RouteUrl(ControllerActionRouteNames.Admin.ProductsController.ExcelUpload);
             viewModel.UrlExcelDownload = Url.RouteUrl(ControllerActionRouteNames.Admin.ProductsController.ExcelDownload);
 
-            viewModel.Grid = new ViewModel.GridViewModel();
+            viewModel.Grid = new ViewModel.GridModel();
             viewModel.Grid.UrlLoad = Url.RouteUrl(ControllerActionRouteNames.Admin.ProductsController.Grid);
             viewModel.Grid.UrlAddNew = Url.RouteUrl(ControllerActionRouteNames.Admin.ProductsController.GridAdd);
             viewModel.Grid.UrlUpdate = Url.RouteUrl(ControllerActionRouteNames.Admin.ProductsController.GridUpdate);
@@ -57,11 +57,11 @@ namespace SixtyThreeBits.Web.Models.Admin
             return viewModel;
         }
 
-        public async Task<List<ViewModel.GridViewModel.GridItem>> ListGridItems()
+        public async Task<List<ViewModel.GridModel.GridItem>> GetGridModel()
         {
             var repository = RepositoriesFactory.CreateProductsRepository();
-            var viewModel = (await repository.ProductsList())
-            ?.Select(Item => new ViewModel.GridViewModel.GridItem
+            var viewModel = (await repository.ProductsList())?
+            .Select(Item => new ViewModel.GridModel.GridItem
             {
                 ProductID = Item.ProductID,
                 ProductName = Item.ProductName,
@@ -77,21 +77,12 @@ namespace SixtyThreeBits.Web.Models.Admin
             return viewModel;
         }
 
-        public async Task IUD(Enums.DatabaseActions databaseAction, int? productID, ViewModel.GridViewModel.GridItem submitModel)
+        public async Task<AjaxResponse> IUD(Enums.DatabaseActions databaseAction, int? productID, ViewModel.GridModel.GridItem submitModel)
         {
+            var viewModel = new AjaxResponse();
             var repository = RepositoriesFactory.CreateProductsRepository();
 
-            if (databaseAction == Enums.DatabaseActions.DELETE)
-            {
-                var DBItem = await repository.ProductsGetSingleByID(productID);
-                if (DBItem?.ProductImages?.Any() == true)
-                {
-                    foreach (var Item in DBItem.ProductImages)
-                    {
-                        await DeleteUploadedFile(Item.ProductImageFilename, _folderPath);
-                    }
-                }
-            }
+            await iudProcessProductImageFilename(databaseAction: databaseAction, productID: productID);
 
             await repository.ProductsIUD(
                 databaseAction: databaseAction,
@@ -108,9 +99,24 @@ namespace SixtyThreeBits.Web.Models.Admin
                 }
             );
 
-            if (repository.IsError)
+            viewModel.IsSuccess = !repository.IsError;
+            viewModel.Data = repository.ErrorMessage;
+
+            return viewModel;
+        }
+        async Task iudProcessProductImageFilename(Enums.DatabaseActions databaseAction, int? productID)
+        {
+            var repository = RepositoriesFactory.CreateProductsRepository();
+            if (databaseAction == Enums.DatabaseActions.DELETE)
             {
-                Form.AddError(repository.ErrorMessage);
+                var product = await repository.ProductsGetSingleByID(productID);
+                if (product.ProductImages?.Any() == true)
+                {
+                    foreach (var item in product.ProductImages)
+                    {
+                        await FileStorage.DeleteFile(item.ProductImageFilename, _folderPath);
+                    }
+                }
             }
         }
 
@@ -167,7 +173,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             public bool ShowExcelUploadButton { get; set; }
             public string UrlExcelDownload { get; set; }
             public string UrlExcelUpload { get; set; }
-            public GridViewModel Grid { get; set; }
+            public GridModel Grid { get; set; }
             public readonly string TextRemainderUpload = Resources.TextRemainderUpload;
             public readonly string TextExcelUpload = Resources.TextExcelUpload;
             public readonly string TextExcelDownloadTemplate = Resources.TextExcelDownloadTemplate;
@@ -176,7 +182,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             #endregion
 
             #region Nested Classes
-            public class GridViewModel : DevExtremeGridViewModelBase<GridViewModel.GridItem>
+            public class GridModel : DevExtremeGridViewModelBase<GridModel.GridItem>
             {
                 #region Properties
                 public List<KeyValueTuple<int?, string>> Categories { get; set; }
@@ -319,7 +325,7 @@ namespace SixtyThreeBits.Web.Models.Admin
 
         public void Validate(ViewModel viewModel)
         {
-            viewModel.AddError(Validation.ValidateRequired(errorKey: Validation.GetJQueryNameSelectorFor(nameof(viewModel.ProductName)), valueToValidate: viewModel.ProductName));
+            viewModel.AddError(Validation63.ValidateRequired(errorKey: Validation63.GetJQueryNameSelectorFor(nameof(viewModel.ProductName)), valueToValidate: viewModel.ProductName));
         }
 
         public async Task Save(ViewModel viewModel)
@@ -358,7 +364,7 @@ namespace SixtyThreeBits.Web.Models.Admin
         {
             var viewModel = new AjaxResponse();
 
-            await DeleteUploadedFile(DBItem.ProductImageFilename, _folderPath);
+            await FileStorage.DeleteFile(DBItem.ProductImageFilename, _folderPath);
 
             var repository = RepositoriesFactory.CreateProductsRepository();
             await repository.ProductsIUD(
@@ -393,7 +399,7 @@ namespace SixtyThreeBits.Web.Models.Admin
 
                 var repository = RepositoriesFactory.CreateProductsRepository();
                 var productImageID = await repository.ProductsImagesIUD(
-                    databaseAction: Enums.DatabaseActions.CREATE,
+                    databaseAction: Enums.DatabaseActions.INSERT,
                     productImageID: null,
                     productImage: new ProductImageIudDTO
                     {
@@ -478,7 +484,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             var productImage = DBItem.ProductImages?.FirstOrDefault(Item => Item.ProductImageID == submitModel.ProductImageID);
             if (productImage != null)
             {
-                await DeleteUploadedFile(productImage.ProductImageFilename, _folderPath);
+                await FileStorage.DeleteFile(productImage.ProductImageFilename, _folderPath);
 
                 var repository = RepositoriesFactory.CreateProductsRepository();
                 await repository.ProductsImagesIUD(

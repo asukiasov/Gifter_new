@@ -16,7 +16,6 @@ using SixtyThreeBits.Web.Models.Base;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using static SixtyThreeBits.Core.Utilities.Constants;
 
 namespace SixtyThreeBits.Web.Models.Admin
 {
@@ -28,7 +27,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             var viewModel = new ViewModel();
 
             viewModel.ShowAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.TeamMembersController.GridAdd);
-            viewModel.Grid = new ViewModel.GridViewModel();
+            viewModel.Grid = new ViewModel.GridModel();
             viewModel.Grid.UrlLoad = Url.RouteUrl(ControllerActionRouteNames.Admin.TeamMembersController.Grid);
             viewModel.Grid.UrlAddNew = Url.RouteUrl(ControllerActionRouteNames.Admin.TeamMembersController.GridAdd);
             viewModel.Grid.UrlUpdate = Url.RouteUrl(ControllerActionRouteNames.Admin.TeamMembersController.GridUpdate);
@@ -44,11 +43,11 @@ namespace SixtyThreeBits.Web.Models.Admin
             return viewModel;
         }
 
-        public async Task<List<ViewModel.GridViewModel.GridItem>> ListGridItems()
+        public async Task<List<ViewModel.GridModel.GridItem>> GetGridModel()
         {
             var repository = RepositoriesFactory.CreateTeamMembersRepository();
-            var viewModel = (await repository.TeamMembersList())
-            ?.Select(item => new ViewModel.GridViewModel.GridItem
+            var viewModel = (await repository.TeamMembersList())?
+            .Select(item => new ViewModel.GridModel.GridItem
             {
                 TeamMemberID = item.TeamMemberID,
                 TeamMemberFirstname = item.TeamMemberFirstname,
@@ -65,16 +64,13 @@ namespace SixtyThreeBits.Web.Models.Admin
             return viewModel;
         }
 
-        public async Task IUD(Enums.DatabaseActions databaseAction, int? teamMemberID, ViewModel.GridViewModel.GridItem submitModel)
+        public async Task<AjaxResponse> IUD(Enums.DatabaseActions databaseAction, int? teamMemberID, ViewModel.GridModel.GridItem submitModel)
         {
+            var viewModel = new AjaxResponse();
+
+            await iudProcessTeamMemberImageFilename(databaseAction:databaseAction, teamMemberID: teamMemberID);
+
             var repository = RepositoriesFactory.CreateTeamMembersRepository();
-
-            if (databaseAction == Enums.DatabaseActions.DELETE)
-            {
-                var dbItem = await repository.TeamMembersGetSingleByID(teamMemberID);
-                await DeleteUploadedFile(dbItem.TeamMemberImageFilename);
-            }
-
             await repository.TeamMembersIUD(
                 databaseAction: databaseAction,                
                 teamMemberID: teamMemberID,
@@ -87,10 +83,18 @@ namespace SixtyThreeBits.Web.Models.Admin
                     TeamMemberCategoryID = submitModel.TeamMemberCategoryID
                 }                
             );
-
-            if (repository.IsError)
+            viewModel.IsSuccess = !repository.IsError;
+            viewModel.Data = repository.ErrorMessage;
+            
+            return viewModel;
+        }
+        async Task iudProcessTeamMemberImageFilename(Enums.DatabaseActions databaseAction, int? teamMemberID)
+        {
+            if (databaseAction == Enums.DatabaseActions.DELETE)
             {
-                Form.AddError(repository.ErrorMessage);
+                var repository = RepositoriesFactory.CreateTeamMembersRepository();
+                var teamMember = await repository.TeamMembersGetSingleByID(teamMemberID);
+                await FileStorage.DeleteFile(teamMember.TeamMemberImageFilename);
             }
         }
 
@@ -109,12 +113,12 @@ namespace SixtyThreeBits.Web.Models.Admin
         {
             #region Properties
             public bool ShowAddNewButton { get; set; }
-            public GridViewModel Grid { get; set; }
+            public GridModel Grid { get; set; }
             public string UrlSync { get; set; }
             #endregion
 
             #region Nested Classes
-            public class GridViewModel : DevExtremeGridViewModelBase<GridViewModel.GridItem>
+            public class GridModel : DevExtremeGridViewModelBase<GridModel.GridItem>
             {
                 #region Properties
                 public List<KeyValueTuple<int?, string>> TeamMemberCategories { get; set; }
@@ -223,8 +227,8 @@ namespace SixtyThreeBits.Web.Models.Admin
 
         public void Validate(ViewModel viewModel)
         {
-            viewModel.AddError(Validation.ValidateRequired(errorKey: Validation.GetJQueryNameSelectorFor(nameof(viewModel.TeamMemberFirstname)), valueToValidate: viewModel.TeamMemberFirstname));
-            viewModel.AddError(Validation.ValidateRequired(errorKey: Validation.GetJQueryNameSelectorFor(nameof(viewModel.TeamMemberLastname)), valueToValidate: viewModel.TeamMemberLastname));
+            viewModel.AddError(Validation63.ValidateRequired(errorKey: Validation63.GetJQueryNameSelectorFor(nameof(viewModel.TeamMemberFirstname)), valueToValidate: viewModel.TeamMemberFirstname));
+            viewModel.AddError(Validation63.ValidateRequired(errorKey: Validation63.GetJQueryNameSelectorFor(nameof(viewModel.TeamMemberLastname)), valueToValidate: viewModel.TeamMemberLastname));
         }
 
         public async Task Save(ViewModel viewModel)
@@ -233,7 +237,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             var teamMemberImageFilename = hasTeamMemberImage ? GetFilenameFromUploadedFile(viewModel.TeamMemberImageFile) : null;
             if (hasTeamMemberImage)
             {
-                await DeleteUploadedFile(DBItem.TeamMemberImageFilename);
+                await FileStorage.DeleteFile(DBItem.TeamMemberImageFilename);
             }
 
             var repository = RepositoriesFactory.CreateTeamMembersRepository();
@@ -244,9 +248,9 @@ namespace SixtyThreeBits.Web.Models.Admin
                 {
                     TeamMemberFirstname = viewModel.TeamMemberFirstname,
                     TeamMemberLastname = viewModel.TeamMemberLastname,
-                    TeamMemberPosition = viewModel.TeamMemberPosition ?? NullValueFor.String,
-                    TeamMemberShortDescription = viewModel.TeamMemberShortDescription ?? NullValueFor.String,
-                    TeamMemberLongDescription = viewModel.TeamMemberLongDescription ?? NullValueFor.String,
+                    TeamMemberPosition = viewModel.TeamMemberPosition ?? Constants.NullValueFor.String,
+                    TeamMemberShortDescription = viewModel.TeamMemberShortDescription ?? Constants.NullValueFor.String,
+                    TeamMemberLongDescription = viewModel.TeamMemberLongDescription ?? Constants.NullValueFor.String,
                     TeamMemberImageFilename = teamMemberImageFilename,
                     TeamMemberIsPublished = viewModel.TeamMemberIsPublished,
                     TeamMemberCategoryID = viewModel.TeamMemberCategoryID
@@ -269,14 +273,14 @@ namespace SixtyThreeBits.Web.Models.Admin
         public async Task<AjaxResponse> DeleteImage()
         {
             var viewModel = new AjaxResponse();
-            await DeleteUploadedFile(DBItem.TeamMemberImageFilename);
+            await FileStorage.DeleteFile(DBItem.TeamMemberImageFilename);
             var repository = RepositoriesFactory.CreateTeamMembersRepository();
             await repository.TeamMembersIUD(
                 databaseAction: Enums.DatabaseActions.UPDATE,
                 teamMemberID: DBItem.TeamMemberID,
                 teamMember: new TeamMemberIudDTO
                 {
-                    TeamMemberImageFilename = NullValueFor.String
+                    TeamMemberImageFilename = Constants.NullValueFor.String
                 }
             );
             viewModel.IsSuccess = !repository.IsError;
@@ -303,7 +307,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             public string UrlDeleteImage { get; set; }
             public IFormFile TeamMemberImageFile { get; set; }
 
-            public readonly int NullValueForInt = NullValueFor.Numeric;
+            public readonly int NullValueForInt = Constants.NullValueFor.Numeric;
 
             public readonly string TextPublished = Resources.TextPublished;
             public readonly string TextFirstname = Resources.TextFirstname;

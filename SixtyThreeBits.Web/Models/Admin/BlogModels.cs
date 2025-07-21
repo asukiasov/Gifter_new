@@ -32,7 +32,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             var viewModel = new ViewModel();
             viewModel.ShowAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.BlogPostsController.GridAdd);
 
-            viewModel.Grid = new ViewModel.GridViewModel();
+            viewModel.Grid = new ViewModel.GridModel();
             viewModel.Grid.AllowAdd = User.HasPermission(ControllerActionRouteNames.Admin.BlogPostsController.GridAdd);
             viewModel.Grid.AllowUpdate = User.HasPermission(ControllerActionRouteNames.Admin.BlogPostsController.GridUpdate);
             viewModel.Grid.AllowDelete = User.HasPermission(ControllerActionRouteNames.Admin.BlogPostsController.GridDelete);
@@ -44,11 +44,11 @@ namespace SixtyThreeBits.Web.Models.Admin
             return viewModel;
         }
 
-        public async Task<List<ViewModel.GridViewModel.GridItem>> ListGridItems()
+        public async Task<List<ViewModel.GridModel.GridItem>> GetGridModel()
         {
             var repository = RepositoriesFactory.CreateBlogRepository();
             var viewModel = (await repository.BlogPostList())
-            ?.Select(item => new ViewModel.GridViewModel.GridItem
+            ?.Select(item => new ViewModel.GridModel.GridItem
             {
                 BlogPostID = item.BlogPostID,
                 BlogPostTitle = item.BlogPostTitle,
@@ -61,16 +61,12 @@ namespace SixtyThreeBits.Web.Models.Admin
             return viewModel;
         }
 
-        public async Task IUD(Enums.DatabaseActions databaseAction, int? blogPostID, ViewModel.GridViewModel.GridItem submitModel)
+        public async Task<AjaxResponse> IUD(Enums.DatabaseActions databaseAction, int? blogPostID, ViewModel.GridModel.GridItem submitModel)
         {
+            var viewModel = new AjaxResponse();
+            await iudProcessBlogPostImageFilename(databaseAction: databaseAction, blogPostID: blogPostID);
+
             var repository = RepositoriesFactory.CreateBlogRepository();
-
-            if (databaseAction == Enums.DatabaseActions.DELETE)
-            {
-                var DBItem = await repository.BlogPostGetSingleByID(blogPostID);
-                await DeleteUploadedFile(filename: DBItem.BlogPostImageFilename, folderPath: _folderPath);
-            }
-
             await repository.BlogPostsIUD(
                 databaseAction: databaseAction,
                 blogPostID: blogPostID,
@@ -83,9 +79,18 @@ namespace SixtyThreeBits.Web.Models.Admin
                 }                
             );
 
-            if (repository.IsError)
+            viewModel.IsSuccess = !repository.IsError;
+            viewModel.Data = repository.ErrorMessage;
+
+            return viewModel;
+        }
+        async Task iudProcessBlogPostImageFilename(Enums.DatabaseActions databaseAction, int? blogPostID)
+        {
+            if (databaseAction == Enums.DatabaseActions.DELETE)
             {
-                Form.AddError(repository.ErrorMessage);
+                var repository = RepositoriesFactory.CreateBlogRepository();
+                var blogPost = await repository.BlogPostGetSingleByID(blogPostID);
+                await FileStorage.DeleteFile(filename: blogPost.BlogPostImageFilename, folderPath: _folderPath);
             }
         }
         #endregion
@@ -95,11 +100,11 @@ namespace SixtyThreeBits.Web.Models.Admin
         {
             #region Properties
             public bool ShowAddNewButton { get; set; }
-            public GridViewModel Grid { get; set; }
+            public GridModel Grid { get; set; }
             #endregion
 
             #region Nested Classes
-            public class GridViewModel : DevExtremeGridViewModelBase<GridViewModel.GridItem>
+            public class GridModel : DevExtremeGridViewModelBase<GridModel.GridItem>
             {
                 #region Methods
                 public override DataGridBuilder<GridItem> Render(IHtmlHelper html)
@@ -185,17 +190,17 @@ namespace SixtyThreeBits.Web.Models.Admin
 
         public async Task Validate(ViewModel viewModel)
         {
-            viewModel.AddError(Validation.ValidateRequired(errorKey: Validation.GetJQueryNameSelectorFor(nameof(viewModel.BlogPostTitle)), valueToValidate: viewModel.BlogPostTitle));
-            viewModel.AddError(Validation.ValidateRequired(errorKey: Validation.GetJQueryNameSelectorFor(nameof(viewModel.BlogPostSlug)), valueToValidate: viewModel.BlogPostSlug));
+            viewModel.AddError(Validation63.ValidateRequired(errorKey: Validation63.GetJQueryNameSelectorFor(nameof(viewModel.BlogPostTitle)), valueToValidate: viewModel.BlogPostTitle));
+            viewModel.AddError(Validation63.ValidateRequired(errorKey: Validation63.GetJQueryNameSelectorFor(nameof(viewModel.BlogPostSlug)), valueToValidate: viewModel.BlogPostSlug));
             viewModel.AddError(
-                await Validation.ValidateAsync(
+                await Validation63.ValidateAsync(
                     errorAction: async () =>
                     {
                         var repository = RepositoriesFactory.CreateBlogRepository();
                         var isUniq = await repository.BlogPostIsSlugUniq(blogPostSlug: viewModel.BlogPostSlug, blogPostID: DBItem.BlogPostID);
                         return !isUniq;
                     },
-                    errorKey: Validation.GetJQueryNameSelectorFor(nameof(viewModel.BlogPostSlug)),
+                    errorKey: Validation63.GetJQueryNameSelectorFor(nameof(viewModel.BlogPostSlug)),
                     errorMessage: Resources.ValidationSlugNotUniq
                 )
             );
@@ -207,7 +212,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             var blogPostImageFilename = hasBlogImage ? GetFilenameFromUploadedFile(viewModel.BlogImageFile) : null;
             if (hasBlogImage)
             {
-                await DeleteUploadedFile(DBItem.BlogPostImageFilename, _folderPath);
+                await FileStorage.DeleteFile(DBItem.BlogPostImageFilename, _folderPath);
             }
 
             var repository = RepositoriesFactory.CreateBlogRepository();
@@ -243,7 +248,7 @@ namespace SixtyThreeBits.Web.Models.Admin
         public async Task<AjaxResponse> DeleteImage()
         {
             var viewModel = new AjaxResponse();
-            await DeleteUploadedFile(DBItem.BlogPostImageFilename, _folderPath);
+            await FileStorage.DeleteFile(DBItem.BlogPostImageFilename, _folderPath);
 
             var repository = RepositoriesFactory.CreateBlogRepository();
             await repository.BlogPostsIUD(

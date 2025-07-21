@@ -20,24 +20,24 @@ namespace SixtyThreeBits.Web.Models.Website
             return viewModel;
         }
 
-        public async Task<ValidationResult> ValidateSubmitModel(SubmitModel submitModel)
+        public async Task<ValidationResult63> ValidateSubmitModel(SubmitModel submitModel)
         {
-            var result = new ValidationResult();
+            var result = new ValidationResult63();
 
-            var error = Validation.ValidateRequired(Validation.GetJQueryNameSelectorFor(nameof(submitModel.Name)), submitModel.Name);
+            var error = Validation63.ValidateRequired(Validation63.GetJQueryNameSelectorFor(nameof(submitModel.Name)), submitModel.Name);
             result.AddError(error);
 
-            error = await Validation.ValidateEmail(
-                errorKey: Validation.GetJQueryNameSelectorFor(nameof(submitModel.Email)),
+            error = await Validation63.ValidateEmail(
+                errorKey: Validation63.GetJQueryNameSelectorFor(nameof(submitModel.Email)),
                 userEmail: submitModel.Email,
                 validateRequired: true
             );
             result.AddError(error);
 
-            error = Validation.ValidateRequired(Validation.GetJQueryNameSelectorFor(nameof(submitModel.Message)), submitModel.Message);
+            error = Validation63.ValidateRequired(Validation63.GetJQueryNameSelectorFor(nameof(submitModel.Message)), submitModel.Message);
             result.AddError(error);
 
-            error = await Validation.ValidateAsync(
+            error = await Validation63.ValidateAsync(
                 errorAction: async () =>
                 {
                     var isError = false;
@@ -46,7 +46,7 @@ namespace SixtyThreeBits.Web.Models.Website
                     isError = !recaptchaResult.IsSuccess;
                     return isError;
                 },
-                errorKey: Validation.GetJQueryNameSelectorFor(nameof(submitModel.RecaptchaClientResponseToken)),
+                errorKey: Validation63.GetJQueryNameSelectorFor(nameof(submitModel.RecaptchaClientResponseToken)),
                 errorMessage: Resources.ValidationRecaptchaInvalid
             );
             result.AddError(error);

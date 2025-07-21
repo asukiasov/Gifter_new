@@ -14,7 +14,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         #region Methods
         [HttpGet]
         [Route("", Name = ControllerActionRouteNames.Admin.DictionariesController.Dictionaries)]
-        public ActionResult Dictionaries()
+        public IActionResult Dictionaries()
         {
             Model.PluginsClient.EnableDevextreme(true);
             var viewModel = Model.GetViewModel();
@@ -22,57 +22,36 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         }
 
         [Route("tree", Name = ControllerActionRouteNames.Admin.DictionariesController.Tree)]
-        public async Task<ActionResult> Tree()
+        public async Task<IActionResult> Tree()
         {
-            var viewModel = await Model.ListTreeItems();
+            var viewModel = await Model.GetTreeModel();
             return Json(viewModel);
         }
 
         [HttpPost]
         [Route("tree/add", Name = ControllerActionRouteNames.Admin.DictionariesController.TreeAdd)]
-        public async Task<ActionResult> TreeAdd(int? key, string values)
+        public async Task<IActionResult> TreeAdd(int? key, string values)
         {
-            var submitModel = values.DeserializeJsonTo<DictionariesModel.ViewModel.TreeViewModel.TreeItem>() ?? new DictionariesModel.ViewModel.TreeViewModel.TreeItem();
-            await Model.IUD(DatabaseAction: Enums.DatabaseActions.CREATE, dictionaryID: key, submitModel: submitModel);
-            if (Model.Form.HasErrors)
-            {
-                return GetDevexpressErrorResult(Model.Form.ErrorMessage);
-            }
-            else
-            {
-                return GetDevexpressSuccessResult();
-            }
+            var submitModel = values.DeserializeJsonTo<DictionariesModel.ViewModel.TreeModel.TreeItem>() ?? new DictionariesModel.ViewModel.TreeModel.TreeItem();
+            var viewModel = await Model.IUD(databaseAction: Enums.DatabaseActions.INSERT, dictionaryID: key, submitModel: submitModel);
+            return DevExtremeGridActionResult(viewModel);
         }
 
         [HttpPut]
         [Route("tree/update", Name = ControllerActionRouteNames.Admin.DictionariesController.TreeUpdate)]
-        public async Task<ActionResult> TreeUpdate(int? key, string values)
+        public async Task<IActionResult> TreeUpdate(int? key, string values)
         {
-            var submitModel = values.DeserializeJsonTo<DictionariesModel.ViewModel.TreeViewModel.TreeItem>() ?? new DictionariesModel.ViewModel.TreeViewModel.TreeItem();
-            await Model.IUD(DatabaseAction: Enums.DatabaseActions.UPDATE, dictionaryID: key, submitModel: submitModel);
-            if (Model.Form.HasErrors)
-            {
-                return GetDevexpressErrorResult(Model.Form.ErrorMessage);
-            }
-            else
-            {
-                return GetDevexpressSuccessResult();
-            }
+            var submitModel = values.DeserializeJsonTo<DictionariesModel.ViewModel.TreeModel.TreeItem>() ?? new DictionariesModel.ViewModel.TreeModel.TreeItem();
+            var viewModel = await Model.IUD(databaseAction: Enums.DatabaseActions.UPDATE, dictionaryID: key, submitModel: submitModel);
+            return DevExtremeGridActionResult(viewModel);
         }
 
         [HttpDelete]
         [Route("tree/delete", Name = ControllerActionRouteNames.Admin.DictionariesController.TreeDelete)]
-        public async Task<ActionResult> TreeDelete(int? key)
+        public async Task<IActionResult> TreeDelete(int? key)
         {
-            await Model.DeleteRecursive(dictionaryID: key);
-            if (Model.Form.HasErrors)
-            {
-                return GetDevexpressErrorResult(Model.Form.ErrorMessage);
-            }
-            else
-            {
-                return GetDevexpressSuccessResult();
-            }
+            var viewModel = await Model.DeleteRecursive(dictionaryID: key);
+            return DevExtremeGridActionResult(viewModel);
         }
         #endregion
     }

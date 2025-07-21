@@ -16,7 +16,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories.DTO
         public string UserEmail { get; init; }
         public string UserPassword { get; init; }
         public string UserPhoneNumberMobile { get; init; }
-        public bool UserIsActive { get; init; }        
+        public bool UserIsActive { get; init; } 
         public string UserAvatarFilename { get; init; }
         public DateTime? UserDateCreated { get; init; }
         public int? RoleID { get; init; }

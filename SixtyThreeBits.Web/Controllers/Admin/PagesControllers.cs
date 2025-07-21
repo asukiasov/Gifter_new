@@ -36,7 +36,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
     {
         #region Actions
         [Route("", Name = ControllerActionRouteNames.Admin.PagesController.Pages)]
-        public ActionResult Pages()
+        public IActionResult Pages()
         {
             Model.PluginsClient.EnableDevextreme(true);
             var viewModel = Model.GetViewModel();
@@ -44,68 +44,36 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         }
 
         [Route("grid", Name = ControllerActionRouteNames.Admin.PagesController.Grid)]
-        public async Task<ActionResult> Grid()
+        public async Task<IActionResult> Grid()
         {
-            var viewModel = await Model.ListGridItems();
+            var viewModel = await Model.GetGridModel();
             return Json(viewModel);
         }
 
         [HttpPost]
         [Route("grid/add", Name = ControllerActionRouteNames.Admin.PagesController.GridAdd)]
-        public async Task<ActionResult> GridAdd(int? key, string values)
+        public async Task<IActionResult> GridAdd(int? key, string values)
         {
-            var submitModel = values.DeserializeJsonTo<PagesModel.ViewModel.GridViewModel.GridItem>() ?? new PagesModel.ViewModel.GridViewModel.GridItem();
-            if (Model.Form.HasErrors)
-            {
-                return GetDevexpressErrorResult(Model.Form.ErrorMessage);
-            }
-            else
-            {
-                await Model.IUD(databaseAction: Enums.DatabaseActions.CREATE, pageID: key, submitModel: submitModel);
-                return GetDevexpressSuccessResult();
-            }
+            var submitModel = values.DeserializeJsonTo<PagesModel.ViewModel.GridModel.GridItem>() ?? new PagesModel.ViewModel.GridModel.GridItem();
+            var viewModel = await Model.IUD(databaseAction: Enums.DatabaseActions.INSERT, pageID: key, submitModel: submitModel);
+            return DevExtremeGridActionResult(viewModel);
         }
 
         [HttpPut]
         [Route("grid/update", Name = ControllerActionRouteNames.Admin.PagesController.GridUpdate)]
-        public async Task<ActionResult> GridUpdate(int? key, string values)
+        public async Task<IActionResult> GridUpdate(int? key, string values)
         {
-            var result = default(ActionResult);
-            var submitModel = values.DeserializeJsonTo<PagesModel.ViewModel.GridViewModel.GridItem>() ?? new PagesModel.ViewModel.GridViewModel.GridItem();
-
-            if (Model.Form.HasErrors)
-            {
-                result = GetDevexpressErrorResult(Model.Form.ErrorMessage);
-            }
-            else
-            {
-                await Model.IUD(databaseAction: Enums.DatabaseActions.UPDATE, pageID: key, submitModel: submitModel);
-                if (Model.Form.HasErrors)
-                {
-                    result = GetDevexpressErrorResult(Model.Form.ErrorMessage);
-                }
-                else
-                {
-                    result = GetDevexpressSuccessResult();
-                }
-            }
-
-            return result;
+            var submitModel = values.DeserializeJsonTo<PagesModel.ViewModel.GridModel.GridItem>() ?? new PagesModel.ViewModel.GridModel.GridItem();
+            var viewModel = await Model.IUD(databaseAction: Enums.DatabaseActions.UPDATE, pageID: key, submitModel: submitModel);
+            return DevExtremeGridActionResult(viewModel);
         }
 
         [HttpDelete]
         [Route("grid/delete", Name = ControllerActionRouteNames.Admin.PagesController.GridDelete)]
-        public async Task<ActionResult> GridDelete(int? key)
+        public async Task<IActionResult> GridDelete(int? key)
         {
-            await Model.Delete(pageID: key);
-            if (Model.Form.HasErrors)
-            {
-                return GetDevexpressErrorResult(Model.Form.ErrorMessage);
-            }
-            else
-            {
-                return GetDevexpressSuccessResult();
-            }
+            var viewModel = await Model.Delete(pageID: key);
+            return DevExtremeGridActionResult(viewModel);
         }
 
         [Route("get", Name = ControllerActionRouteNames.Admin.PagesController.Get)]

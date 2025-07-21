@@ -14,7 +14,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         #region Actions
         [HttpGet]
         [Route("", Name = ControllerActionRouteNames.Admin.RedirectsController.Redirects)]
-        public ActionResult Redirects()
+        public IActionResult Redirects()
         {
             Model.PluginsClient.EnableDevextreme(true).Enable63BitsForms(true).EnableTemplate7(true);
             var viewModel = Model.GetViewModel();
@@ -22,57 +22,36 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         }
 
         [Route("grid", Name = ControllerActionRouteNames.Admin.RedirectsController.Grid)]
-        public async Task<ActionResult> Grid()
+        public async Task<IActionResult> Grid()
         {
-            var viewModel = await Model.ListGridItems();
+            var viewModel = await Model.GetGridModel();
             return Json(viewModel);
         }
 
         [HttpPost]
         [Route("grid/add", Name = ControllerActionRouteNames.Admin.RedirectsController.GridAdd)]
-        public async Task<ActionResult> GridAdd(int? key, string values)
+        public async Task<IActionResult> GridAdd(int? key, string values)
         {
-            var submitModel = values.DeserializeJsonTo<RedirectsModel.ViewModel.GridViewModel.GridItem>() ?? new RedirectsModel.ViewModel.GridViewModel.GridItem();
-            await Model.CRUD(databaseAction: Enums.DatabaseActions.CREATE, redirectID: key, submitModel: submitModel);
-            if (Model.Form.HasErrors)
-            {
-                return GetDevexpressErrorResult(Model.Form.ErrorMessage);
-            }
-            else
-            {
-                return GetDevexpressSuccessResult();
-            }
+            var submitModel = values.DeserializeJsonTo<RedirectsModel.ViewModel.GridModel.GridItem>() ?? new RedirectsModel.ViewModel.GridModel.GridItem();
+            var viewModel = await Model.IUD(databaseAction: Enums.DatabaseActions.INSERT, redirectID: key, submitModel: submitModel);
+            return DevExtremeGridActionResult(viewModel);
         }
 
         [HttpPut]
         [Route("grid/update", Name = ControllerActionRouteNames.Admin.RedirectsController.GridUpdate)]
-        public async Task<ActionResult> GridUpdate(int? key, string values)
+        public async Task<IActionResult> GridUpdate(int? key, string values)
         {
-            var submitModel = values.DeserializeJsonTo<RedirectsModel.ViewModel.GridViewModel.GridItem>() ?? new RedirectsModel.ViewModel.GridViewModel.GridItem();
-            await Model.CRUD(databaseAction: Enums.DatabaseActions.UPDATE, redirectID: key, submitModel: submitModel);
-            if (Model.Form.HasErrors)
-            {
-                return GetDevexpressErrorResult(Model.Form.ErrorMessage);
-            }
-            else
-            {
-                return GetDevexpressSuccessResult();
-            }
+            var submitModel = values.DeserializeJsonTo<RedirectsModel.ViewModel.GridModel.GridItem>() ?? new RedirectsModel.ViewModel.GridModel.GridItem();
+            var viewModel = await Model.IUD(databaseAction: Enums.DatabaseActions.UPDATE, redirectID: key, submitModel: submitModel);
+            return DevExtremeGridActionResult(viewModel);
         }
 
         [HttpDelete]
         [Route("grid/delete", Name = ControllerActionRouteNames.Admin.RedirectsController.GridDelete)]
-        public async Task<ActionResult> GridDelete(int? key)
+        public async Task<IActionResult> GridDelete(int? key)
         {
-            await Model.CRUD(databaseAction: Enums.DatabaseActions.DELETE, redirectID: key, submitModel: new RedirectsModel.ViewModel.GridViewModel.GridItem());
-            if (Model.Form.HasErrors)
-            {
-                return GetDevexpressErrorResult(Model.Form.ErrorMessage);
-            }
-            else
-            {
-                return GetDevexpressSuccessResult();
-            }
+            var viewModel = await Model.IUD(databaseAction: Enums.DatabaseActions.DELETE, redirectID: key, submitModel: new RedirectsModel.ViewModel.GridModel.GridItem());
+            return DevExtremeGridActionResult(viewModel);   
         }
         #endregion
     }

@@ -28,7 +28,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             var viewModel = new ViewModel();
             viewModel.ShowAddNewButton = User.HasPermission(ControllerActionRouteNames.Admin.NewsController.GridAdd);
 
-            viewModel.Grid = new ViewModel.GridViewModel();
+            viewModel.Grid = new ViewModel.GridModel();
             viewModel.Grid.AllowAdd = User.HasPermission(ControllerActionRouteNames.Admin.NewsController.GridAdd);
             viewModel.Grid.AllowUpdate = User.HasPermission(ControllerActionRouteNames.Admin.NewsController.GridUpdate);
             viewModel.Grid.AllowDelete = User.HasPermission(ControllerActionRouteNames.Admin.NewsController.GridDelete);
@@ -40,11 +40,11 @@ namespace SixtyThreeBits.Web.Models.Admin
             return viewModel;
         }
 
-        public async Task<List<ViewModel.GridViewModel.GridItem>> ListGridItems()
+        public async Task<List<ViewModel.GridModel.GridItem>> GetGridModel()
         {
             var repository = RepositoriesFactory.CreateNewsRepository();
-            var viewModel = (await repository.NewsList())
-            ?.Select(item => new ViewModel.GridViewModel.GridItem
+            var viewModel = (await repository.NewsList())?
+            .Select(item => new ViewModel.GridModel.GridItem
             {
                 NewsID = item.NewsID,
                 NewsTitle = item.NewsTitle,
@@ -57,8 +57,12 @@ namespace SixtyThreeBits.Web.Models.Admin
             return viewModel;
         }
 
-        public async Task IUD(Enums.DatabaseActions databaseAction, int? newsID, ViewModel.GridViewModel.GridItem submitModel)
+        public async Task<AjaxResponse> IUD(Enums.DatabaseActions databaseAction, int? newsID, ViewModel.GridModel.GridItem submitModel)
         {
+            var viewModel = new AjaxResponse();
+
+            await iudProcessNewsImageFilename(databaseAction: databaseAction, newsID: newsID);
+
             var repository = RepositoriesFactory.CreateNewsRepository();
             await repository.NewsIUD(
                 databaseAction: databaseAction,
@@ -70,9 +74,19 @@ namespace SixtyThreeBits.Web.Models.Admin
                     NewsIsPublished = submitModel.NewsIsPublished
                 }                
             );
-            if (repository.IsError)
+
+            viewModel.IsSuccess = !repository.IsError;
+            viewModel.Data = repository.ErrorMessage;
+
+            return viewModel;
+        }
+        async Task iudProcessNewsImageFilename(Enums.DatabaseActions databaseAction, int? newsID)
+        {
+            if(databaseAction == Enums.DatabaseActions.DELETE)
             {
-                Form.AddError(repository.ErrorMessage);
+                var repository = RepositoriesFactory.CreateNewsRepository();
+                var newsItem = await repository.NewsGetSingleByID(newsID: newsID);
+                await FileStorage.DeleteFile(filename: newsItem.NewsImageFilename);
             }
         }
         #endregion
@@ -82,11 +96,11 @@ namespace SixtyThreeBits.Web.Models.Admin
         {
             #region Properties
             public bool ShowAddNewButton { get; set; }
-            public GridViewModel Grid { get; set; }
+            public GridModel Grid { get; set; }
             #endregion
 
             #region Nested Classes
-            public class GridViewModel : DevExtremeGridViewModelBase<GridViewModel.GridItem>
+            public class GridModel : DevExtremeGridViewModelBase<GridModel.GridItem>
             {
                 #region Methods
                 public override DataGridBuilder<GridItem> Render(IHtmlHelper html)
@@ -173,17 +187,17 @@ namespace SixtyThreeBits.Web.Models.Admin
 
         public async Task ValidateViewModel(ViewModel viewModel)
         {
-            viewModel.AddError(Validation.ValidateRequired(errorKey: Validation.GetJQueryNameSelectorFor(nameof(viewModel.NewsTitle)), valueToValidate: viewModel.NewsTitle));
-            viewModel.AddError(Validation.ValidateRequired(errorKey: Validation.GetJQueryNameSelectorFor(nameof(viewModel.NewsSlug)), valueToValidate: viewModel.NewsSlug));
+            viewModel.AddError(Validation63.ValidateRequired(errorKey: Validation63.GetJQueryNameSelectorFor(nameof(viewModel.NewsTitle)), valueToValidate: viewModel.NewsTitle));
+            viewModel.AddError(Validation63.ValidateRequired(errorKey: Validation63.GetJQueryNameSelectorFor(nameof(viewModel.NewsSlug)), valueToValidate: viewModel.NewsSlug));
             viewModel.AddError(
-                await Validation.ValidateAsync(
+                await Validation63.ValidateAsync(
                     errorAction: async () =>
                     {
                         var repository = RepositoriesFactory.CreateNewsRepository();
                         var IsUniq = await repository.NewsIsSlugUniq(newsSlug: viewModel.NewsSlug, newsID: DBItem.NewsID);
                         return !IsUniq;
                     },
-                    errorKey: Validation.GetJQueryNameSelectorFor(nameof(viewModel.NewsSlug)),
+                    errorKey: Validation63.GetJQueryNameSelectorFor(nameof(viewModel.NewsSlug)),
                     errorMessage: Resources.ValidationSlugNotUniq
                 )
             );
@@ -195,7 +209,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             var newsImageFilename = hasNewsImage ? GetFilenameFromUploadedFile(viewModel.NewsImageFile) : null;
             if (hasNewsImage)
             {
-                await DeleteUploadedFile(newsImageFilename, _folderPath);
+                await FileStorage.DeleteFile(newsImageFilename, _folderPath);
             }
 
             var repository = RepositoriesFactory.CreateNewsRepository();
@@ -234,7 +248,7 @@ namespace SixtyThreeBits.Web.Models.Admin
         {
             var viewModel = new AjaxResponse();
 
-            await DeleteUploadedFile(filename: DBItem.NewsImageFilename, folderPath: _folderPath);
+            await FileStorage.DeleteFile(filename: DBItem.NewsImageFilename, folderPath: _folderPath);
 
             var repository = RepositoriesFactory.CreateNewsRepository();
             await repository.NewsIUD(

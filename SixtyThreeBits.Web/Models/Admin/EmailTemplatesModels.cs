@@ -28,11 +28,11 @@ namespace SixtyThreeBits.Web.Models.Admin
             return viewModel;
         }
 
-        public async Task<List<ViewModel.GridViewModel.GridItem>> ListGridItems()
+        public async Task<List<ViewModel.GridModel.GridItem>> GetGridModel()
         {
             var repository = RepositoriesFactory.CreateEmailTemplatesRepository();
-            var viewModel = (await repository.EmailTemplatesList())
-            ?.Select(Item => new ViewModel.GridViewModel.GridItem
+            var viewModel = (await repository.EmailTemplatesList())?
+            .Select(Item => new ViewModel.GridModel.GridItem
             {
                 EmailTemplateID = Item.EmailTemplateID,
                 EmailTemplateName = Item.EmailTemplateName,
@@ -47,11 +47,11 @@ namespace SixtyThreeBits.Web.Models.Admin
         public class ViewModel
         {
             #region Properties            
-            public GridViewModel Grid { get; set; }
+            public GridModel Grid { get; set; }
             #endregion
 
             #region Nested Classes
-            public class GridViewModel : DevExtremeGridViewModelBase<GridViewModel.GridItem>
+            public class GridModel : DevExtremeGridViewModelBase<GridModel.GridItem>
             {
                 #region Methods
                 public override DataGridBuilder<GridItem> Render(IHtmlHelper html)
@@ -120,11 +120,11 @@ namespace SixtyThreeBits.Web.Models.Admin
 
         public void ValidateViewModel(ViewModel viewModel)
         {
-            viewModel.AddError(Validation.ValidateRequired(Validation.GetJQueryNameSelectorFor(nameof(viewModel.EmailTemplateName)), viewModel.EmailTemplateName));
-            viewModel.AddError(Validation.ValidateRequired(Validation.GetJQueryNameSelectorFor(nameof(viewModel.EmailTemplateSubject)), viewModel.EmailTemplateSubject));
-            viewModel.AddError(Validation.ValidateRequired(Validation.GetJQueryNameSelectorFor(nameof(viewModel.EmailTemplateBody)), viewModel.EmailTemplateBody));
-            viewModel.AddError(Validation.ValidateRequired(Validation.GetJQueryNameSelectorFor(nameof(viewModel.EmailTemplateSubjectEng)), viewModel.EmailTemplateSubjectEng));
-            viewModel.AddError(Validation.ValidateRequired(Validation.GetJQueryNameSelectorFor(nameof(viewModel.EmailTemplateBodyEng)), viewModel.EmailTemplateBodyEng));
+            viewModel.AddError(Validation63.ValidateRequired(Validation63.GetJQueryNameSelectorFor(nameof(viewModel.EmailTemplateName)), viewModel.EmailTemplateName));
+            viewModel.AddError(Validation63.ValidateRequired(Validation63.GetJQueryNameSelectorFor(nameof(viewModel.EmailTemplateSubject)), viewModel.EmailTemplateSubject));
+            viewModel.AddError(Validation63.ValidateRequired(Validation63.GetJQueryNameSelectorFor(nameof(viewModel.EmailTemplateBody)), viewModel.EmailTemplateBody));
+            viewModel.AddError(Validation63.ValidateRequired(Validation63.GetJQueryNameSelectorFor(nameof(viewModel.EmailTemplateSubjectEng)), viewModel.EmailTemplateSubjectEng));
+            viewModel.AddError(Validation63.ValidateRequired(Validation63.GetJQueryNameSelectorFor(nameof(viewModel.EmailTemplateBodyEng)), viewModel.EmailTemplateBodyEng));
         }
 
         public async Task Save(int? emailTemplateID, ViewModel viewModel)

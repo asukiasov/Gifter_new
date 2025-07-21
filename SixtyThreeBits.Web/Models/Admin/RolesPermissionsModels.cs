@@ -23,9 +23,9 @@ namespace SixtyThreeBits.Web.Models.Admin
             viewModel.UrlPermissionsGetByRole = Url.RouteUrl(ControllerActionRouteNames.Admin.RolePermissionsController.GetPermissionsByRole);
             viewModel.UrlSave = Url.RouteUrl(ControllerActionRouteNames.Admin.RolePermissionsController.Save);
 
-            viewModel.RolesGrid = new ViewModel.RolesGridViewModel();
+            viewModel.RolesGrid = new ViewModel.RolesGridModel();
             viewModel.RolesGrid.UrlLoad = Url.RouteUrl(ControllerActionRouteNames.Admin.RolePermissionsController.RolesGrid);
-            viewModel.PermissionsTree = new ViewModel.PermissionsTreeViewModel();
+            viewModel.PermissionsTree = new ViewModel.PermissionsTreeModel();
             viewModel.PermissionsTree.UrlLoad = Url.RouteUrl(ControllerActionRouteNames.Admin.RolePermissionsController.PermissionsTree);
 
             return viewModel;
@@ -35,9 +35,7 @@ namespace SixtyThreeBits.Web.Models.Admin
         {
             var viewModel = new AjaxResponse();
             var repository = RepositoriesFactory.CreatePermissionsRepository();
-            var permissionIDs = (await repository.PermissionsListByRoleID(roleID))
-                ?.Select(item => item.PermissionID)
-                .ToList();
+            var permissionIDs = (await repository.PermissionsListByRoleID(roleID))?.Select(item => item.PermissionID).ToList();
 
             viewModel.IsSuccess = true;
             viewModel.Data = permissionIDs;
@@ -45,11 +43,11 @@ namespace SixtyThreeBits.Web.Models.Admin
             return viewModel;
         }
 
-        public async Task<List<ViewModel.RolesGridViewModel.GridItem>> ListRolesGridItems()
+        public async Task<List<ViewModel.RolesGridModel.GridItem>> GetRolesGridModel()
         {
             var repository = RepositoriesFactory.CreateRolesRepository();
-            var viewModel = (await repository.RolesList())
-            ?.Select(Item => new ViewModel.RolesGridViewModel.GridItem
+            var viewModel = (await repository.RolesList())?
+            .Select(Item => new ViewModel.RolesGridModel.GridItem
             {
                 RoleID = Item.RoleID,
                 RoleName = Item.RoleName
@@ -59,11 +57,11 @@ namespace SixtyThreeBits.Web.Models.Admin
             return viewModel;
         }
 
-        public async Task<List<ViewModel.PermissionsTreeViewModel.TreeItem>> ListPermissionsTreeItems()
+        public async Task<List<ViewModel.PermissionsTreeModel.TreeItem>> GetPermissionsTreeModel()
         {
             var repository = RepositoriesFactory.CreatePermissionsRepository();
             var viewModel = (await repository.PermissionsList())
-            ?.Select(Item => new ViewModel.PermissionsTreeViewModel.TreeItem
+            ?.Select(Item => new ViewModel.PermissionsTreeModel.TreeItem
             {
                 PermissionID = Item.PermissionID,
                 PermissionParentID = Item.PermissionParentID,
@@ -94,8 +92,8 @@ namespace SixtyThreeBits.Web.Models.Admin
         {
             #region Properties
             public bool ShowSaveButton { get; set; }
-            public RolesGridViewModel RolesGrid { get; set; }
-            public PermissionsTreeViewModel PermissionsTree { get; set; }
+            public RolesGridModel RolesGrid { get; set; }
+            public PermissionsTreeModel PermissionsTree { get; set; }
             public string UrlPermissionsGetByRole { get; set; }
             public string UrlSave { get; set; }
 
@@ -104,7 +102,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             #endregion
 
             #region Nested Classes
-            public class RolesGridViewModel : DevExtremeGridViewModelBase<RolesGridViewModel.GridItem>
+            public class RolesGridModel : DevExtremeGridViewModelBase<RolesGridModel.GridItem>
             {
                 #region Methods
                 public override DataGridBuilder<GridItem> Render(IHtmlHelper Html)
@@ -148,7 +146,7 @@ namespace SixtyThreeBits.Web.Models.Admin
                 #endregion
             }
 
-            public class PermissionsTreeViewModel : DevExtremeTreeViewModelBase<PermissionsTreeViewModel.TreeItem>
+            public class PermissionsTreeModel : DevExtremeTreeViewModelBase<PermissionsTreeModel.TreeItem>
             {
                 #region Methods
                 public override TreeListBuilder<TreeItem> Render(IHtmlHelper Html)

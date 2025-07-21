@@ -40,7 +40,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             return viewModel;
         }
 
-        public async Task<List<ViewModel.GridModel.GridItem>> GetGridViewModel()
+        public async Task<List<ViewModel.GridModel.GridItem>> GetGridGridModel()
         {
             var repository = RepositoriesFactory.CreateUsersRepository();
 
@@ -61,46 +61,76 @@ namespace SixtyThreeBits.Web.Models.Admin
             return viewModel;
         }
 
-        public async Task ValidateUserEmail(string userEmail, int? userID)
+        public async Task<AjaxResponse> IUD(Enums.DatabaseActions databaseAction, int? userID, ViewModel.GridModel.GridItem submitModel)
         {
-            var repository = RepositoriesFactory.CreateUsersRepository();
-            var isUniq = await repository.UsersIsEmailUnique(userEmail, userID);
-            if (!isUniq)
+            var viewModel = new AjaxResponse();
+
+            var validationResult = await iudValidate(
+                databaseAction: databaseAction, 
+                userID: userID, 
+                submitModel: submitModel
+            );
+
+            if (validationResult.HasErrors)
             {
-                Form.AddError(Resources.ValidationUserEmailNotUniq);
+                viewModel.Data = validationResult.ErrorMessage;
             }
+            else
+            {
+                await iudProcessUserAvatar(databaseAction: databaseAction, userID: userID);
+
+                var repository = RepositoriesFactory.CreateUsersRepository();
+                await repository.UsersIUD(
+                    databaseAction: databaseAction,
+                    userID: userID,
+                    user: new UserIudDTO
+                    {
+                        RoleID = submitModel.RoleID ?? Constants.NullValueFor.Numeric,
+                        UserEmail = submitModel.UserEmail,
+                        UserPassword = submitModel.UserPassword,
+                        UserFirstname = submitModel.UserFirstname,
+                        UserLastname = submitModel.UserLastname,
+                        UserIsActive = submitModel.UserIsActive
+                    }
+                );
+                viewModel.IsSuccess = !repository.IsError;
+                viewModel.Data = repository.ErrorMessage;                
+            }
+
+            return viewModel;
         }
-
-        public async Task CRUD(Enums.DatabaseActions databaseAction, int? userID, ViewModel.GridModel.GridItem submitModel)
+        async Task<ValidationResult63> iudValidate(Enums.DatabaseActions databaseAction, int? userID, ViewModel.GridModel.GridItem submitModel)
         {
-            var repository = RepositoriesFactory.CreateUsersRepository();
-
+            var result = new ValidationResult63();
+            var error = default(Error63);
+            if (databaseAction is Enums.DatabaseActions.INSERT or Enums.DatabaseActions.UPDATE)
+            {
+                error = await Validation63.ValidateEmail(
+                errorKey: null,
+                userEmail: submitModel.UserEmail,
+                validateRequired: true,
+                validateUnique: true,
+                validationPredicateReturnTrueWhenError: async () =>
+                {
+                    var repository = RepositoriesFactory.CreateUsersRepository();
+                    var isEmailUnique = await repository.UsersIsEmailUnique(submitModel.UserEmail, userID);
+                    return !isEmailUnique;
+                }
+            );
+                result.AddError(error);
+            }
+            return result;
+        }
+        async Task iudProcessUserAvatar(Enums.DatabaseActions databaseAction, int? userID)
+        {
             if (databaseAction == Enums.DatabaseActions.DELETE)
             {
+                var repository = RepositoriesFactory.CreateUsersRepository();
                 var dbItem = await repository.UsersGetSingleByID(userID);
                 if (dbItem != null)
                 {
-                    await DeleteUploadedFile(dbItem.UserAvatarFilename);
+                    await FileStorage.DeleteFile(dbItem.UserAvatarFilename);
                 }
-            }
-
-            await repository.UsersIUD(
-                databaseAction: databaseAction,
-                userID: userID,
-                user: new UserIudDTO
-                {
-                    RoleID = submitModel.RoleID ?? Constants.NullValueFor.Numeric,
-                    UserEmail = submitModel.UserEmail,
-                    UserPassword = submitModel.UserPassword,
-                    UserFirstname = submitModel.UserFirstname,
-                    UserLastname = submitModel.UserLastname,
-                    UserIsActive = submitModel.UserIsActive
-                }
-            );
-
-            if (repository.IsError)
-            {
-                Form.AddError(repository.ErrorMessage);
             }
         }
         #endregion
@@ -206,8 +236,8 @@ namespace SixtyThreeBits.Web.Models.Admin
 
         public async Task ValidateViewModel(ViewModel viewModel)
         {
-            viewModel.AddError(await Validation.ValidateEmail(
-                errorKey: Validation.GetJQueryNameSelectorFor(nameof(viewModel.UserEmail)),
+            viewModel.AddError(await Validation63.ValidateEmail(
+                errorKey: Validation63.GetJQueryNameSelectorFor(nameof(viewModel.UserEmail)),
                 userEmail: viewModel.UserEmail,
                 validateRequired: true,
                 validateUnique: true,
@@ -218,8 +248,8 @@ namespace SixtyThreeBits.Web.Models.Admin
                     return !isEmailUnique;
                 }
             ));
-            viewModel.AddError(Validation.ValidateRequired(errorKey: Validation.GetJQueryNameSelectorFor(nameof(viewModel.UserFirstname)), valueToValidate: viewModel.UserFirstname));
-            viewModel.AddError(Validation.ValidateRequired(errorKey: Validation.GetJQueryNameSelectorFor(nameof(viewModel.UserLastname)), valueToValidate: viewModel.UserLastname));
+            viewModel.AddError(Validation63.ValidateRequired(errorKey: Validation63.GetJQueryNameSelectorFor(nameof(viewModel.UserFirstname)), valueToValidate: viewModel.UserFirstname));
+            viewModel.AddError(Validation63.ValidateRequired(errorKey: Validation63.GetJQueryNameSelectorFor(nameof(viewModel.UserLastname)), valueToValidate: viewModel.UserLastname));
         }
 
         public async Task Save(ViewModel viewModel)

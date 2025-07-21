@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace SixtyThreeBits.Core.Libraries
 {
-    public class Validation
+    public class Validation63
     {
         #region Methods
         public static bool IsEmailFormatValid(string email)
@@ -23,14 +23,14 @@ namespace SixtyThreeBits.Core.Libraries
             return IsValid;
         }
 
-        public static ErrorItem GetError(string errorKey, string errorMessage)
+        public static Error63 GetError(string errorKey, string errorMessage)
         {
-            return new ErrorItem(Key: errorKey, Value: errorMessage);
+            return new Error63(Key: errorKey, Value: errorMessage);
         }
 
-        public static ErrorItem Validate(Func<bool> errorAction, string errorKey, string errorMessage)
+        public static Error63 Validate(Func<bool> errorAction, string errorKey, string errorMessage)
         {
-            ErrorItem Error = null;
+            Error63 Error = null;
             if (errorAction())
             {
                 Error = GetError(errorKey, errorMessage);
@@ -39,9 +39,9 @@ namespace SixtyThreeBits.Core.Libraries
             return Error;
         }
 
-        public static async Task<ErrorItem> ValidateAsync(Func<Task<bool>> errorAction, string errorKey, string errorMessage)
+        public static async Task<Error63> ValidateAsync(Func<Task<bool>> errorAction, string errorKey, string errorMessage)
         {
-            ErrorItem Error = null;
+            Error63 Error = null;
             if (await errorAction())
             {
                 Error = GetError(errorKey, errorMessage);
@@ -50,9 +50,9 @@ namespace SixtyThreeBits.Core.Libraries
             return Error;
         }
 
-        public async static Task<ErrorItem> ValidateEmail(string errorKey, string userEmail, bool validateRequired, bool validateUnique = false, Func<Task<bool>> validationPredicateReturnTrueWhenError = null)
+        public async static Task<Error63> ValidateEmail(string errorKey, string userEmail, bool validateRequired, bool validateUnique = false, Func<Task<bool>> validationPredicateReturnTrueWhenError = null)
         {
-            ErrorItem error = null;
+            Error63 error = null;
             if (string.IsNullOrWhiteSpace(userEmail))
             {
                 if (validateRequired)
@@ -78,7 +78,7 @@ namespace SixtyThreeBits.Core.Libraries
             return error;
         }
 
-        public static ErrorItem ValidatePassword(string errorKey, string password)
+        public static Error63 ValidatePassword(string errorKey, string password)
         {
             var error = ValidateRequired(errorKey: errorKey, valueToValidate: password);
 
@@ -102,9 +102,9 @@ namespace SixtyThreeBits.Core.Libraries
             return error;
         }
 
-        public static ErrorItem ValidatePasswordRepeat(string errorKey, string password, string passwordRepeat)
+        public static Error63 ValidatePasswordRepeat(string errorKey, string password, string passwordRepeat)
         {
-            ErrorItem error = null;
+            Error63 error = null;
             if (password != passwordRepeat)
             {
                 error = GetError(errorKey, Resources.ValidationPasswordsNotMatch);
@@ -113,7 +113,7 @@ namespace SixtyThreeBits.Core.Libraries
             return error;
         }
 
-        public static ErrorItem ValidateOldPassword(string errorKey, string userPassword, string oldPassword)
+        public static Error63 ValidateOldPassword(string errorKey, string userPassword, string oldPassword)
         {
             var error = ValidateRequired(errorKey, oldPassword);
             if (error == null)
@@ -127,9 +127,9 @@ namespace SixtyThreeBits.Core.Libraries
             return error;
         }
 
-        public static ErrorItem ValidateRequired(string errorKey, object valueToValidate)
+        public static Error63 ValidateRequired(string errorKey, object valueToValidate)
         {
-            ErrorItem error = null;
+            Error63 error = null;
 
 
             if (valueToValidate == null)
@@ -162,13 +162,14 @@ namespace SixtyThreeBits.Core.Libraries
         #endregion
     }
 
-    public class ValidationResult
+    public class ValidationResult63
     {
         #region Properties
-        readonly List<ErrorItem> _errors = [];
+        readonly List<Error63> _errors = [];
         public int Count => _errors.Count;
         public bool HasErrors => _errors.Any();
         public string ErrorsJson => _errors.ToJson();
+        public string ErrorMessage => string.Join(", ", _errors.Select(item => item.Value));
         #endregion
 
         #region Methods
@@ -177,7 +178,7 @@ namespace SixtyThreeBits.Core.Libraries
 
             if (!string.IsNullOrWhiteSpace(errorMessage))
             {
-                _errors.Add(new ErrorItem(Key: errorKey, Value: errorMessage));
+                _errors.Add(new Error63(Key: errorKey, Value: errorMessage));
             }
         }
 
@@ -186,7 +187,7 @@ namespace SixtyThreeBits.Core.Libraries
             AddError(errorKey: null, errorMessage: errorMessage);
         }
 
-        public void AddError(ErrorItem errorItem)
+        public void AddError(Error63 errorItem)
         {
             if (errorItem != null)
             {
@@ -194,14 +195,14 @@ namespace SixtyThreeBits.Core.Libraries
             }
         }
 
-        public ReadOnlyCollection<ErrorItem> GetErrors()
+        public ReadOnlyCollection<Error63> GetErrors()
         {
             return _errors.AsReadOnly();
         }
         #endregion
     }
 
-    public record ErrorItem(string Key, string Value)
+    public record Error63(string Key, string Value)
     {
 
     }
