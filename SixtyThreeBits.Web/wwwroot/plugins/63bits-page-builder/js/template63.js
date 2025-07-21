@@ -145,7 +145,7 @@ $(function () {
                 selector: $(item).children('div'),
                 file: $(item).attr('data-video-url'),
                 image: $(item).attr('data-cover-url')
-            }).Init();
+            }).init();
         }
     });
 });
