@@ -1317,6 +1317,21 @@ html:not(.desktop) .editor-sidebar > div {
 .t63-section .video-container .popover .form-control{
 	text-align: left;
 }
+.t63-section .video-container .choose-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+	height: 100%;
+	border-top-left-radius: 0;
+	border-bottom-left-radius: 0;
+    padding: 0 !important;
+}
+.t63-section .video-container .choose-btn img{
+	flex-shrink: 0;
+	width: 20px;
+}
+
 
 /* jwplayer controls & action buttons  */
 .jwplayer-container > .action-buttons {
@@ -1352,6 +1367,17 @@ html:not(.desktop) .editor-sidebar > div {
 }
 .jwplayer-container .popover .form-control{
 	text-align: left;
+}
+
+.jwplayer-container .popover .btn{
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	padding: 0;
+}
+.jwplayer-container .popover .btn img{
+	width: 20px;
 }
 
 
@@ -2509,10 +2535,10 @@ div.mce-edit-area,
 .t63-slider-section[data-is-fullscreen="false"] .t63-slider{
 	overflow: visible;
 }
-.t63-slider > div{
+.t63-slider .swiper-slide{
     display: none;
 }
-.t63-slider > div.active{
+.t63-slider .swiper-slide.active{
     display: block;
 }
 
@@ -2670,9 +2696,41 @@ div.mce-edit-area,
 /* ----------- /articlesGrid ----------- */
 
 
+/* ----------- video ----------- */
+.t63-section .video-container iframe{
+    background-color: #000;
+}
+/*.t63-section .video-container .embed-responsive.is-loading{
+	z-index: 7;
+}*/
+.t63-section .video-container .embed-responsive.is-loading{
+	background: none;
+}
+.t63-section .video-container .embed-responsive.is-loading::after {
+	content: "";
+    width: 100%;
+    height: 100%;
+    background: #000 url(/images/icons/spinner_white.svg) center no-repeat;
+    background-size: 28px auto;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 5;
+}
+/* ----------- /video ----------- */
+
+
 /* ----------- jwPlayer ----------- */
 .jwplayer-container{
 	min-height: 200px;
+}
+
+.jwplayer-placeholder{
+	width: 100%;
+	height: 400px;
+	background: transparent url(data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%3E%3Cpath%20d%3D%22M4%203h16a1%201%200%200%201%201%201v16a1%201%200%200%201-1%201H4a1%201%200%200%201-1-1V4a1%201%200%200%201%201-1zm1%202v14h14V5H5zm4.79%202.565l5.64%204.028a.5.5%200%200%201%200%20.814l-5.64%204.028a.5.5%200%200%201-.79-.407V7.972a.5.5%200%200%201%20.79-.407z%22%2F%3E%3C%2Fsvg%3E%0A) no-repeat center;
+    border: 1px dashed #aaa;
+	border-radius: 16px;
 }
 /* ----------- /jwPlayer ----------- */
 
@@ -2739,10 +2797,10 @@ div.mce-edit-area,
 
 
 /* ----------- testimonials ----------- */
-.t63-testimonials-slider > div{
+.t63-testimonials-slider .swiper-slide{
     display: none;
 }
-.t63-testimonials-slider > div.active{
+.t63-testimonials-slider .swiper-slide.active{
     display: block;
 }
 

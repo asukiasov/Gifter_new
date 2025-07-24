@@ -582,7 +582,7 @@
     min-height: 400px;
 }
 
-.t63-section .t63-slider:not(.slick-initialized){
+/*.t63-section .t63-slider:not(.slick-initialized){
 	overflow: hidden;
 }
 .t63-slider-section[data-is-fullscreen="false"] .t63-slider:not(.slick-initialized){
@@ -606,7 +606,7 @@
 }
 .t63-slider-section[data-is-fullscreen="true"] .slick-dots{
 	bottom: 12px;
-}
+}*/
 
 .t63-slider-section[data-is-fullscreen="false"] .slide-content{
 	padding: 60px;

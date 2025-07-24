@@ -399,8 +399,17 @@ var PageBuilderModel = {
 
             video: {
                 isActive: true,
-                iframe: null,
-                url: 'https://www.youtube.com/embed/cVFzblT5VPE?rel=0'
+                isEmbed: true,
+
+                controls: true,
+                muted: false,
+                loop: false,
+                autoplay: false,
+
+                //iframeUrl: 'https://www.youtube.com/embed/cVFzblT5VPE?rel=0',
+                //videoUrl: '/plugins/63bits-page-builder/video/demo.mp4',
+                url: '',
+                urlPoster: '',
             },
 
             jwPlayer: {
@@ -408,6 +417,8 @@ var PageBuilderModel = {
 
                 videoUrl: '/plugins/63bits-page-builder/video/demo.mp4',
                 coverUrl: '/plugins/63bits-page-builder/video/cover.jpg',
+                posterUrl: '',
+                customPosterUrl: '',
                 markersUrl: null,
                 subTitlesUrl: null,
 
@@ -1986,17 +1997,25 @@ var PageBuilderModel = {
                     };
                 },
                 video: function (container) {
+                    const isEmbed = $(container).find('.js-t63-popover-tab-nav-btn:checked').val() == 'embed';
                     return {
-                        url: $(container).find('.js-t63-iframe-container iframe').attr('src')
+                        isEmbed,
+                        controls: $(container).find('.js-t63-video-controls-container').attr('data-controls') == 'true',
+                        muted: $(container).find('.js-t63-video-controls-container').attr('data-muted') == 'true',
+                        loop: $(container).find('.js-t63-video-controls-container').attr('data-loop') == 'true',
+                        autoplay: $(container).find('.js-t63-video-controls-container').attr('data-autoplay') == 'true',
+                        url: $(container).find('.js-t63-video-controls-container').attr('data-video-url'),
+                        urlPoster: $(container).find('.js-t63-video-controls-container').attr('data-poster-url'),
                     };
                 },
                 jwPlayer: function (container) {
                     return {
                         videoUrl: $(container).find('.js-t63-jwPlayer-wrap').attr('data-video-url'),
                         coverUrl: $(container).find('.js-t63-jwPlayer-wrap').attr('data-cover-url'),
+                        posterUrl: $(container).find('.js-t63-jwPlayer-wrap').attr('data-poster-url'),
+                        customPosterUrl: $(container).find('.js-t63-jwPlayer-wrap').attr('data-custom-poster-url'),
                         markersUrl: $(container).find('.js-t63-jwPlayer-wrap').attr('data-markers-url'),
                         subTitlesUrl: $(container).find('.js-t63-jwPlayer-wrap').attr('data-subtitles-url'),
-
                         isPrivate: false,
                         privateUrl: null
                     };
@@ -2098,8 +2117,8 @@ var PageBuilderModel = {
                 if (sectionName == PageBuilderModel.settings.sections.slider().name) {
 
                     model.slider = {
-                        //autoplay: section.find('.js-t63-slider').attr('data-slider-autoplay') == 'true',
-                        //autoplaySpeed: section.find('.js-t63-slider').attr('data-slider-autoplay-speed'),
+                        //autoplay: section.find('.js-t63-multimedia-slider').attr('data-slider-autoplay') == 'true',
+                        //autoplaySpeed: section.find('.js-t63-multimedia-slider').attr('data-slider-autoplay-speed'),
 
                         autoplay: section.find('.js-t63-slider-autoplay-toggler input:checked').length > 0,
                         autoplaySpeed: $.trim(section.find('.js-t63-slider-autoplay-speed-input').val()) || 4000
@@ -2108,7 +2127,7 @@ var PageBuilderModel = {
                     model.contentAlignment = section.find('[data-align-content]').attr('data-align-content');
                     model.items = [];
 
-                    section.find('.js-t63-slider > div').each(function () {
+                    section.find('.js-t63-multimedia-slider .js-t63-slide').each(function () {
                         var slide = $(this);
                         var item = {
                             components: {
@@ -2394,7 +2413,7 @@ var PageBuilderModel = {
 
                     model.items = [];
 
-                    section.find('.js-t63-testimonials-slider > div').each(function () {
+                    section.find('.js-t63-testimonials-slider .js-t63-slide').each(function () {
                         var slide = $(this);
                         var item = {
                             components: {
@@ -2407,7 +2426,7 @@ var PageBuilderModel = {
                                 description: components.textPlain(slide.find('.js-t63-description-wrap'))
                             }
                         };
-
+                        
                         model.items.push(item);
                     });
                 }
@@ -2992,8 +3011,11 @@ var PageBuilderModel = {
             video: {
                 partial:
                     `<div class="section-row video-container js-t63-section--container{{#if animations}} t63-invisible js-animate{{/if}}" data-container="video" data-animation="{{animations}}">
-                        <div class="embed-responsive js-t63-iframe-container">
-                            <iframe class="embed-responsive-item" src="{{components.video.url}}" frameborder="0" allow="encrypted-media" allowfullscreen=""></iframe>
+                        <div class="embed-responsive js-t63-video-container">
+                            <iframe class="embed-responsive-item {{#unless components.video.isEmbed}}d-none{{/unless}}" src="{{#if components.video.isEmbed}}{{components.video.url}}{{/if}}" frameborder="0" allow="encrypted-media" allowfullscreen=""></iframe>
+                            <video class="embed-responsive-item {{#if components.video.isEmbed}}d-none{{/if}}" controls="{{components.video.controls}}" poster="{{components.video.urlCover}}" {{#if components.video.muted}}muted{{/if}} {{#if components.video.autoplay}}autoplay{{/if}} {{#if components.video.loop}}loop{{/if}}" playsinline>
+                                <source src="{{#unless components.video.isEmbed}}{{components.video.url}}{{/unless}}" type="video/mp4">
+                            </video>
                         </div>
                         {{actionButtonsHepler actionButtons.video }}
 						{{videoControlsHepler components.video}}
@@ -3001,8 +3023,11 @@ var PageBuilderModel = {
 
                 template:
                     `<div class="section-row video-container js-t63-section--container{{#if animations}} t63-invisible js-animate{{/if}}" data-container="video" data-animation="{{animations}}">
-                        <div class="embed-responsive js-t63-iframe-container">
-                            <iframe class="embed-responsive-item" src="{{video.url}}" frameborder="0" allow="encrypted-media" allowfullscreen=""></iframe>
+                        <div class="embed-responsive js-t63-video-container">
+                            <iframe class="embed-responsive-item {{#unless video.isEmbed}}d-none{{/unless}}" src="{{#if video.isEmbed}}{{video.url}}{{/if}}" frameborder="0" allow="encrypted-media" allowfullscreen=""></iframe>
+                            <video class="embed-responsive-item {{#if video.isEmbed}}d-none{{/if}}" controls="{{video.controls}}" poster="{{video.urlCover}}" {{#if video.muted}}muted{{/if}} {{#if video.autoplay}}autoplay{{/if}} {{#if video.loop}}loop{{/if}}" playsinline>
+                                <source src="{{#unless video.isEmbed}}{{video.url}}{{/unless}}" type="video/mp4">
+                            </video>
                         </div>
                         {{actionButtonsHepler actionButtons }}
 						{{videoControlsHepler video}}
@@ -3042,7 +3067,7 @@ var PageBuilderModel = {
             jwPlayer: {
                 partial:
                     `<div class="section-row jwplayer-container js-t63-section--container{{#if animations}} t63-invisible js-animate{{/if}}" data-container="jwPlayer" data-animation="{{animations}}">
-                        <div class="js-t63-jwPlayer-wrap" data-video-url="{{components.jwPlayer.videoUrl}}" data-cover-url="{{components.jwPlayer.coverUrl}}" data-markers-url="{{components.jwPlayer.markersUrl}}" data-subtitles-url="{{components.jwPlayer.subTitlesUrl}}" data-player-id="{{id}}">
+                        <div class="js-t63-jwPlayer-wrap" data-video-url="{{components.jwPlayer.videoUrl}}" data-cover-url="{{components.jwPlayer.coverUrl}}" data-poster-url="{{components.jwPlayer.posterUrl}}" data-custom-poster-url="{{components.jwPlayer.customPosterUrl}}" data-markers-url="{{components.jwPlayer.markersUrl}}" data-subtitles-url="{{components.jwPlayer.subTitlesUrl}}" data-player-id="{{id}}">
                             <div>JW Player.</div>
                         </div>
                         {{actionButtonsHepler actionButtons.jwPlayer }}
@@ -3051,7 +3076,7 @@ var PageBuilderModel = {
 
                 template:
                     `<div class="section-row jwplayer-container js-t63-section--container{{#if animations}} t63-invisible js-animate{{/if}}" data-container="jwPlayer" data-animation="{{animations}}">
-                        <div class="js-t63-jwPlayer-wrap" data-video-url="{{jwPlayer.videoUrl}}" data-cover-url="{{jwPlayer.coverUrl}}" data-markers-url="{{jwPlayer.markersUrl}}" data-subtitles-url="{{jwPlayer.subTitlesUrl}}" data-player-id="{{id}}">
+                        <div class="js-t63-jwPlayer-wrap" data-video-url="{{jwPlayer.videoUrl}}" data-cover-url="{{jwPlayer.coverUrl}}" data-poster-url="{{jwPlayer.posterUrl}}" data-custom-poster-url="{{jwPlayer.customPosterUrl}}" data-markers-url="{{jwPlayer.markersUrl}}" data-subtitles-url="{{jwPlayer.subTitlesUrl}}" data-player-id="{{id}}">
                             <div>JW Player.</div>
                         </div>
                         {{actionButtonsHepler actionButtons }}
@@ -3176,8 +3201,13 @@ var PageBuilderModel = {
             template:
                 `<div class="t63-section t63-slider-section js-t63-page-section{{#if isFullHeight}} t63-invisible{{/if}} {{cssClassNames}}" data-section="slider" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-is-fullscreen="{{isFullScreen}}" data-is-fullheight="{{isFullHeight}}" data-css-classes="{{cssClassNames}}">
                     <div class="container t63-padding-v{{#if animations}} t63-invisible js-animate{{/if}}" data-animation="{{animations}}" data-children-animation="false">
-                        <div class="t63-slider js-t63-slider js-t63-slider-container" data-slider-autoplay="{{slider?.autoplay}}" data-slider-autoplay-speed="{{slider?.autoplaySpeed}}">
+                        <div class="swiper t63-slider js-t63-slider-container js-t63-multimedia-slider" data-t63-slider="true" data-slider-autoplay="{{slider?.autoplay}}" data-slider-autoplay-speed="{{slider?.autoplaySpeed}}">
+                            <div class="swiper-wrapper js-t63-slider-wrapper">
                             {{> "sliderItemsPartial"}}
+                            </div>
+                            <div class="swiper-button-prev js-t63-slider-btn-prev"></div>
+                            <div class="swiper-button-next js-t63-slider-btn-next"></div>
+                            <div class="swiper-pagination js-t63-slider-pagination"></div>
                         </div>
                     </div>
                     {{> "sliderItemsControlsPartial"}}
@@ -3191,7 +3221,7 @@ var PageBuilderModel = {
             items: {
                 partial:
                     `{{#each items}}
-                    <div>
+                    <div class="swiper-slide js-t63-slide">
                         {{multimediaHepler components.multimedia ../actionButtons.multimedia}}
                         <div class="container slide-content js-t63-slide-content" data-align-content="{{contentAlignment}}">
                             <section>
@@ -3396,7 +3426,7 @@ var PageBuilderModel = {
 
         video: {
             template:
-                `<section class="t63-section js-t63-page-section {{cssClassNames}}" data-section="video" data-type="{{type}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-css-classes="{{cssClassNames}}" data-ratio="{{ratioSelected}}">
+                `<section class="t63-section js-t63-page-section {{cssClassNames}}" data-section="video" data-type="{{type}}" data-id="{{id}}" data-isScrolltoNavItem="{{isScrollToNavItem}}" data-display-name="{{displayName}}" data-content-size="{{contentSizeSelected}}" data-spacing-v="{{verticalSpacingSelected}}" data-background-color="{{#if backgroundColor}}true{{else}}false{{/if}}" data-css-classes="{{cssClassNames}}" data-ratio="{{ratioSelected}}">
 					<div class="container t63-padding-v">
                         {{> "videoPartial"}}
                     </div>
@@ -3799,8 +3829,11 @@ var PageBuilderModel = {
                     <div class="container t63-padding-v">
 					    {{> "titlePartial"}}
 					
-					    <div class="t63-testimonials-slider js-t63-testimonials-slider js-t63-slider-container{{#if animations}} t63-invisible js-animate{{/if}}" data-animation="{{animations}}" data-children-animation="false">
+					    <div class="swiper t63-testimonials-slider js-t63-testimonials-slider js-t63-slider-container{{#if animations}} t63-invisible js-animate{{/if}}" data-animation="{{animations}}" data-children-animation="false">
+                            <div class="swiper-wrapper js-t63-slider-wrapper">
                             {{> "testimonialsItemsPartial"}}
+                            </div>
+                            <div class="swiper-pagination js-t63-slider-pagination"></div>
                         </div>
 				    </div>
                     {{> "sliderItemsControlsPartial"}}
@@ -3814,7 +3847,7 @@ var PageBuilderModel = {
             items: {
                 partial:
                     `{{#each items}}
-                    <div>
+                    <div class="swiper-slide js-t63-slide">
 						<article class="t63-testimonial-item">
 							<div class="avatar-wrap">
                                 {{bgImageHepler components.image ../actionButtons.image}}
@@ -5426,9 +5459,31 @@ var PageBuilderModel = {
         video: {
             helper: function (model) {
                 return (
-                    `<div class="controls popover js-t63-section-controls hidden">
-                        <div class="form-group">
-                            <input class="form-control js-t63-video-input" placeholder="Video url" />
+                    `<div class="controls popover js-t63-section-controls js-t63-video-controls-container hidden" data-video-url="${model.url}" data-poster-url="${model.urlCover}" data-controls="${model.controls}" data-muted="${model.muted}" data-autoplay="${model.autoplay}" data-loop="${model.loop}">
+                        <div class="custom-input-group mb-3">
+                            <label>
+                                <input class="js-t63-popover-tab-nav-btn" type="radio" name="" value="embed" ${model.isEmbed ? 'checked' : ''}>
+                                <span>Youtube, Vimeo</span>
+                            </label>
+                            <label>
+                                <input class="js-t63-popover-tab-nav-btn" type="radio" name="" value="html5video" ${model.isEmbed ? '' : 'checked'}>
+                                <span>Upload</span>
+                            </label>
+                        </div>
+                        
+                        <div class="form-group mb-3 ${model.isEmbed ? '' : 'd-none'}" data-popover-tab="embed">
+                            <label class="form-label">Url</label>
+                            <input class="form-control js-t63-iframe-url-input" type="text" placeholder="" />
+                        </div>
+                        <div class="form-group mb-3 ${model.isEmbed ? 'd-none' : ''}" data-popover-tab="html5video">
+                            <label class="form-label">Upload (.mp4)</label>
+                            <div class="input-group">
+                                <input class="form-control disabled-click js-t63-video-name-input" type="text" placeholder="Choose" />
+                                <div class="input-group-append">
+                                    <button class="btn btn-sm btn-secondary choose-btn js-t63-video-choose-btn"><img src="/plugins/63bits-page-builder/images/icons/upload_white.svg" alt=""></button>
+                                </div>
+                            </div>
+                            <input class="js-t63-video-url-input" type="hidden" />
                         </div>
                     </div>`
                 )
@@ -5451,39 +5506,139 @@ var PageBuilderModel = {
                 };
             },
 
+
+
+            fileManager: {
+                onSelectedFilesChooseClientCallback: function (files) {
+                    if (files) {
+                        const container = PageBuilderModel.editors.video.container;
+                        const controlsContainer = $(container).find('.js-t63-video-controls-container');
+                        //PageBuilderModel.editors.jwPlayer.add(files);
+                        const fileName = files[0].name;
+                        const fileExtension = fileName.slice(fileName.lastIndexOf('.') + 1);
+
+                        if (fileExtension == 'mp4') {
+                            const videoUrl = files[0].urlDownload;
+                            //const posterUrl = files[0].urlThumbnail;
+
+                            //controlsContainer.attr('data-video-url', videoUrl);
+                            //controlsContainer.attr('data-poster-url', posterUrl);
+                            controlsContainer.find('.js-t63-video-url-input').val(videoUrl);
+                            controlsContainer.find('.js-t63-video-name-input').val(fileName);
+                            /*$(container).find('video source').attr('src', videoUrl);
+
+                            const html5Video = container.find('.js-t63-video-container > video');
+                            html5Video[0].load();*/
+                        } else {
+                            /*const customPosterUrl = files[0].urlDownload;
+                            controlsContainer.attr('data-custom-poster-url', customPosterUrl);
+                            controlsContainer.find('.js-t63-jwPlayer-custom-poster-url-input').val(customPosterUrl)
+                            $('.js-t63-jwPlayer-custom-poster-remove-btn').removeClass('d-none');*/
+                        }
+
+                    }
+                    PageBuilderModel.plugins.fileManager.hide();
+                }
+            },
+
             edit: function (container) {
                 PageBuilderModel.editors.actionButtons.toggleVisibility(container);
                 PageBuilderModel.editors.show(container);
 
-                var url = container.find('.js-t63-iframe-container iframe').attr('src');
-                if (url != '') {
-                    container.find('.js-t63-video-input').val(url);
+                PageBuilderModel.editors.video.container = container;
+
+                //--
+                const tabBtn = container.find('.js-t63-popover-tab-nav-btn');
+                const tabBtnId = container.closest('[data-id]').attr('data-id')
+                
+                tabBtn.attr('name', 'popover-tab-' + tabBtnId);
+
+                //--
+                tabBtn.off('change');
+                tabBtn.change(function () {
+                    const tabName = $(this).val();
+                    container.find('[data-popover-tab]').addClass('d-none');
+                    container.find('[data-popover-tab="' + tabName + '"]').removeClass('d-none');
+
+                    container.find('.js-t63-video-container > *').toggleClass('d-none');
+                });
+
+                //--
+                const controlsContainer = container.find('.js-t63-video-controls-container');
+                const isIframe = $(container).find('.js-t63-popover-tab-nav-btn:checked').val() == 'embed';
+                const url = controlsContainer.attr('data-video-url');
+
+                if (isIframe) {
+                    controlsContainer.find('.js-t63-iframe-url-input').val(url);
+
+                    controlsContainer.find('.js-t63-video-name-input').val('');
+                    controlsContainer.find('.js-t63-video-url-input').val('');
+                } else {
+                    let name = url.slice(url.lastIndexOf('/') + 1);
+                    controlsContainer.find('.js-t63-video-name-input').val(name);
+                    controlsContainer.find('.js-t63-video-url-input').val(url);
+
+                    controlsContainer.find('.js-t63-iframe-url-input').val('');
                 }
+
+                controlsContainer.find('.js-t63-video-choose-btn').off('click');
+                controlsContainer.find('.js-t63-video-choose-btn').click(function () {
+                    PageBuilderModel.plugins.fileManager.show(PageBuilderModel.plugins.fileManager.getVideoUrl());
+                });
+
+                /*let url = container.find('.js-t63-iframe-container iframe').attr('src');
+                if (url != '') {
+                    container.find('.js-t63-iframe-url-input').val(url);
+                }*/
             },
             done: function (container) {
                 PageBuilderModel.editors.actionButtons.toggleVisibility(container);
 
-                //
-                var url = $.trim(container.find('.js-t63-video-input').val());
+                //--
+                const controlsContainer = container.find('.js-t63-video-controls-container');
+                const isIframe = $(container).find('.js-t63-popover-tab-nav-btn:checked').val() == 'embed';
+                let videoUrl;
 
-                if (url != '') {
+                if (isIframe) {
+                    const url = $.trim(container.find('.js-t63-iframe-url-input').val());
 
-                    var newUrl, params = '';
+                    if (url != '') {
+                        container.find('.js-t63-video-container iframe').attr('src', '');
+                        container.find('.js-t63-video-container').addClass('is-loading');
 
-                    var type = PageBuilderModel.editors.video.getInfo(url).type;
-                    var id = PageBuilderModel.editors.video.getInfo(url).id;
+                        let newUrl, params = '';
 
-                    if (type == 'youtube') {
-                        newUrl = 'https://www.youtube.com/embed/' + id + params;
+                        const type = PageBuilderModel.editors.video.getInfo(url).type;
+                        const id = PageBuilderModel.editors.video.getInfo(url).id;
+
+                        if (type == 'youtube') {
+                            newUrl = 'https://www.youtube.com/embed/' + id + params;
+                        }
+                        else {
+                            newUrl = 'https://player.vimeo.com/video/' + id;
+                        }
+
+                        container.find('.js-t63-video-container iframe').attr('src', newUrl);
+
+                        videoUrl = newUrl;
                     }
-                    else {
-                        newUrl = 'https://player.vimeo.com/video/' + id;
-                    }
+                } else {
+                    videoUrl = container.find('.js-t63-video-url-input').val();
 
-                    container.find('.js-t63-iframe-container iframe').attr('src', newUrl);
+                    $(container).find('video source').attr('src', videoUrl);
+
+                    const html5Video = container.find('.js-t63-video-container > video');
+                    html5Video[0].load();
                 }
+                
+                controlsContainer.attr('data-video-url', videoUrl);
+                //controlsContainer.attr('data-poster-url', posterUrl);
 
-                //
+                container.find('.js-t63-video-container iframe').on('load', function () {
+                    container.find('.js-t63-video-container').removeClass('is-loading');
+                });
+
+                //--
                 PageBuilderModel.editors.hide(container);
             }
         },
@@ -5491,57 +5646,123 @@ var PageBuilderModel = {
         jwPlayer: {
             helper: function (model) {
                 return (
-                    `<div class="controls popover js-t63-section-controls hidden">
+                    `<div class="controls popover js-t63-section-controls js-t63-jwPlayer-controls-container hidden">
                         <div class="form-group">
-                            <label class="form-label">Video url</label>
-                            <input class="form-control js-t63-jwPlayer-video-url-input" placeholder="Video url" />
+                            <label class="form-label">Video</label>
+                            <button class="btn btn-sm btn-primary js-t63-jwPlayer-video-choose-btn">Choose video (mp4)</button>
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Cover url</label>
-                            <input class="form-control js-t63-jwPlayer-cover-url-input" placeholder="Cover url" />
+                            <label class="form-label">Poster</label>
+                            <div class="input-group">
+                                <input class="form-control disabled-click js-t63-jwPlayer-custom-poster-url-input" placeholder="Custom poster" value="" />
+                                <div class="input-group-append">
+                                    <button class="btn btn-sm btn-danger js-t63-jwPlayer-custom-poster-remove-btn d-none"><img src="/plugins/63bits-page-builder/images/icons/trash_white.svg" alt=""></button>
+                                    <button class="btn btn-sm btn-secondary js-t63-jwPlayer-custom-poster-choose-btn"><img src="/plugins/63bits-page-builder/images/icons/upload_white.svg" alt=""></button>
+                                </div>
+                            </div>
                         </div>
                     </div>`
                 )
+            },
+
+            fileManager: {
+                onSelectedFilesChooseClientCallback: function (files) {
+                    if (files) {
+                        const controlsContainer = $(PageBuilderModel.editors.jwPlayer.container).find('.js-t63-jwPlayer-controls-container');
+                        //PageBuilderModel.editors.jwPlayer.add(files);
+                        const fileName = files[0].name;
+                        const fileExtension = fileName.slice(fileName.lastIndexOf('.') + 1);
+
+                        if (fileExtension == 'mp4') {
+                            const videoUrl = files[0].urlDownload;
+                            const posterUrl = files[0].urlThumbnail;
+
+                            controlsContainer.attr('data-video-url', videoUrl);
+                            controlsContainer.attr('data-poster-url', posterUrl);
+
+                        } else {
+                            const customPosterUrl = files[0].urlDownload;
+                            controlsContainer.attr('data-custom-poster-url', customPosterUrl);
+                            controlsContainer.find('.js-t63-jwPlayer-custom-poster-url-input').val(customPosterUrl)
+                            $('.js-t63-jwPlayer-custom-poster-remove-btn').removeClass('d-none');
+                        }
+                    }
+                    PageBuilderModel.plugins.fileManager.hide();
+                }
             },
 
             edit: function (container) {
                 PageBuilderModel.editors.actionButtons.toggleVisibility(container);
                 PageBuilderModel.editors.show(container);
 
-                var jwPlayer = container.children('.js-t63-jwPlayer-wrap');
-                var videoUrl = jwPlayer.attr('data-video-url');
-                var coverUrl = jwPlayer.attr('data-cover-url');
+                PageBuilderModel.editors.jwPlayer.container = container;
 
-                if (videoUrl != '') {
-                    container.find('.js-t63-jwPlayer-video-url-input').val(videoUrl);
-                }
-                container.find('.js-t63-jwPlayer-cover-url-input').val(coverUrl);
+                //--
+                const jwPlayer = container.children('.js-t63-jwPlayer-wrap');
+                const videoUrl = jwPlayer.attr('data-video-url') || '';
+                const posterUrl = jwPlayer.attr('data-poster-url') || jwPlayer.attr('data-cover-url') || '';
+                const customPosterUrl = jwPlayer.attr('data-custom-poster-url') || '';
+
+                const controlsContainer = container.find('.js-t63-jwPlayer-controls-container');
+                controlsContainer.attr('data-video-url', videoUrl).attr('data-poster-url', posterUrl).attr('data-custom-poster-url', customPosterUrl);
+
+                container.find('.js-t63-jwPlayer-custom-poster-url-input').val(customPosterUrl)
+
+                //--
+                container.find('.js-t63-jwPlayer-video-choose-btn').off('click');
+                container.find('.js-t63-jwPlayer-video-choose-btn').click(function () {
+                    PageBuilderModel.plugins.fileManager.show(PageBuilderModel.plugins.fileManager.getJwPlayerUrl());
+                });
+
+                container.find('.js-t63-jwPlayer-custom-poster-choose-btn').off('click');
+                container.find('.js-t63-jwPlayer-custom-poster-choose-btn').click(function () {
+                    PageBuilderModel.plugins.fileManager.show(PageBuilderModel.plugins.fileManager.getJwPlayerUrl(true));
+                });
+
+                //--
+                PageBuilderModel.editors.jwPlayer.customPosterRemoveBtnVisibilityToggle(customPosterUrl);
+
+                container.find('.js-t63-jwPlayer-custom-poster-remove-btn').off('click');
+                container.find('.js-t63-jwPlayer-custom-poster-remove-btn').click(function () {
+                    container.find('.js-t63-jwPlayer-controls-container').attr('data-custom-poster-url', '');
+                    container.find('.js-t63-jwPlayer-custom-poster-url-input').val('');
+                    PageBuilderModel.editors.jwPlayer.customPosterRemoveBtnVisibilityToggle();
+                });
             },
             done: function (container) {
                 PageBuilderModel.editors.actionButtons.toggleVisibility(container);
 
-                //
-                var videoUrl = $.trim(container.find('.js-t63-jwPlayer-video-url-input').val());
-                var coverUrl = $.trim(container.find('.js-t63-jwPlayer-cover-url-input').val());
+                const controlsContainer = container.find('.js-t63-jwPlayer-controls-container');
 
-                var jwPlayer = container.children('.js-t63-jwPlayer-wrap');
+                const videoUrl = controlsContainer.attr('data-video-url');
+                const posterUrl = controlsContainer.attr('data-poster-url');
+                const customPosterUrl = controlsContainer.attr('data-custom-poster-url');
 
+                let coverUrl = customPosterUrl.length > 0 ? customPosterUrl : posterUrl;
+
+                const jwPlayer = PageBuilderModel.editors.jwPlayer.container.children('.js-t63-jwPlayer-wrap');
+
+                jwPlayer.attr('data-video-url', videoUrl);
                 jwPlayer.attr('data-cover-url', coverUrl);
+                jwPlayer.attr('data-poster-url', posterUrl);
+                jwPlayer.attr('data-custom-poster-url', customPosterUrl);
 
-                if (videoUrl != '') {
-                    jwPlayer.attr('data-video-url', videoUrl);
+                new VideoPlayer({
+                    selector: jwPlayer.children(),
+                    file: videoUrl,
+                    image: coverUrl
+                }).init();
 
-                    new VideoPlayer({
-                        selector: jwPlayer.children(),
-                        file: videoUrl,
-                        image: coverUrl
-                    }).init();
-
-                    //container.find('.js-t63-jwPlayer-video-url-input').val('');
-                }
-
-                //
+                //--
                 PageBuilderModel.editors.hide(container);
+            },
+
+            customPosterRemoveBtnVisibilityToggle: function (url) {
+                if (!url || url == '') {
+                    $('.js-t63-jwPlayer-custom-poster-remove-btn').addClass('d-none');
+                } else {
+                    $('.js-t63-jwPlayer-custom-poster-remove-btn').removeClass('d-none');
+                }
             }
 
             //--- filemanager
@@ -6131,7 +6352,7 @@ var PageBuilderModel = {
             add: function (_this) {
                 var section = _this.closest('.js-t63-page-section');
                 var sectionName = section.data('section');
-                var slider = section.find('.js-t63-slider-container');
+                var sliderWrap = section.find('.js-t63-slider-wrapper');
                 var settingItemsContainer = section.find('.js-t63-slider-settings-container ul');
 
                 var model = {
@@ -6141,14 +6362,14 @@ var PageBuilderModel = {
                     actionButtons: PageBuilderModel.editors.actionButtons.settings
                 };
 
-                slider.append(PageBuilderModel.sections[sectionName].items.getHtml(model));
+                sliderWrap.append(PageBuilderModel.sections[sectionName].items.getHtml(model));
 
                 settingItemsContainer.append(PageBuilderModel.editors.sliderItem.controls.items.getHtml(model));
 
                 PageBuilderModel.editors.sliderItem.activeFirstSlide(section);
                 PageBuilderModel.editors.sliderItem.sortable(section);
 
-                var newSlide = slider.children('div:last-child');
+                var newSlide = sliderWrap.children('div:last-child');
                 PageBuilderModel.editors.title.tinymce.init(newSlide);
                 PageBuilderModel.editors.text.tinymce.init(newSlide);
             },
@@ -6156,7 +6377,7 @@ var PageBuilderModel = {
             remove: function (_this) {
                 var section = _this.closest('.js-t63-page-section');
 
-                section.find('.js-t63-slider-container > div').eq(_this.parent().index()).remove();
+                section.find('.js-t63-slide').eq(_this.parent().index()).remove();
                 _this.parent().remove();
 
                 PageBuilderModel.editors.sliderItem.activeFirstSlide(section);
@@ -6165,7 +6386,7 @@ var PageBuilderModel = {
 
             goToSlide: function (_this) {
                 var section = _this.closest('.js-t63-page-section');
-                var slide = section.find('.js-t63-slider-container > div');
+                var slide = section.find('.js-t63-slide');
                 var controlsItem = section.find('.js-t63-slider-settings-container li');
 
                 slide.removeClass('active');
@@ -6176,8 +6397,8 @@ var PageBuilderModel = {
             },
 
             activeFirstSlide: function (section) {
-                if ($(section).find('.js-t63-slider-container > div.active').length == 0) {
-                    $(section).find('.js-t63-slider-container > div:first-child, .js-t63-slider-settings-container li:first-child').addClass('active');
+                if ($(section).find('.js-t63-slide.active').length == 0) {
+                    $(section).find('.js-t63-slide:first-child, .js-t63-slider-settings-container li:first-child').addClass('active');
                 }
             },
 
@@ -6201,7 +6422,7 @@ var PageBuilderModel = {
                             var oldIndex = +$(evt.item).attr('data-index');
                             var newIndex = $(evt.item).index();
 
-                            var slide = section.find('.js-t63-slider-container > div');
+                            var slide = section.find('.js-t63-slide');
 
                             if (newIndex > oldIndex) {
                                 slide.eq(oldIndex).insertAfter(slide.eq(newIndex));
@@ -6220,7 +6441,7 @@ var PageBuilderModel = {
                         var oldIndex = +$(ui.item).attr('data-index');
                         var newIndex = $(ui.item).index();
 
-                        var slide = section.find('.js-t63-slider-container > div');
+                        var slide = section.find('.js-t63-slide');
 
                         if (newIndex > oldIndex) {
                             slide.eq(oldIndex).insertAfter(slide.eq(newIndex));
@@ -7167,7 +7388,8 @@ var PageBuilderModel = {
                 .removeAttr('style id contenteditable spellcheck');
 
             container.find('.js-t63-slider-settings-container').remove();
-            container.find('.js-t63-slider-container > div').removeAttr('class');
+            //container.find('.js-t63-slide').removeAttr('class');
+            container.find('.js-t63-slide').removeClass('active');
         },
 
         init: function () {
@@ -7792,9 +8014,25 @@ var PageBuilderModel = {
                     return PageBuilderModel.plugins.fileManager.url + '?' + QueryString;
                 }
             },
-            getJwPlayerUrl: function () {
+            getVideoUrl: function (isCustomPoster) {
                 if (PageBuilderModel.plugins.fileManager.url) {
+                    const extensions = isCustomPoster ? '.jpg,.jpeg,.png,.gif&' : '.mp4&';
                     const QueryString =
+                        (PageBuilderModel.queryStringKeys.fileManagerAllowedExtensions + '=' + extensions)
+                        +
+                        (PageBuilderModel.queryStringKeys.fileManagerAllowChooseMultiple + '=false&')
+                        +
+                        (PageBuilderModel.queryStringKeys.fileManagerOnSelectedFilesChooseClientCallback + '=PageBuilderModel.editors.video.fileManager.onSelectedFilesChooseClientCallback');
+                    
+                    return PageBuilderModel.plugins.fileManager.url + '?' + QueryString;
+                }
+            },
+            getJwPlayerUrl: function (isCustomPoster) {
+                if (PageBuilderModel.plugins.fileManager.url) {
+                    const extensions = isCustomPoster ? '.jpg,.jpeg,.png,.gif&' : '.mp4&';
+                    const QueryString =
+                        (PageBuilderModel.queryStringKeys.fileManagerAllowedExtensions + '=' + extensions)
+                        +
                         (PageBuilderModel.queryStringKeys.fileManagerAllowChooseMultiple + '=false&')
                         +
                         (PageBuilderModel.queryStringKeys.fileManagerOnSelectedFilesChooseClientCallback + '=PageBuilderModel.editors.jwPlayer.fileManager.onSelectedFilesChooseClientCallback');
@@ -8021,6 +8259,9 @@ var PageBuilderModel = {
                     $(item).find('.t63-icon-wrap a').remove();
                 }
             });
+
+            //video
+            pageContent.find('.js-t63-video-container > .d-none').remove();
 
             //multimedia
             pageContent.find('[data-multimedia-type="image"] .js-t63-multimedia-video-container').remove();

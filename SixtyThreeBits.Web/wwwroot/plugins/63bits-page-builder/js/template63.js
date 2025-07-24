@@ -59,30 +59,44 @@ $(function () {
     
 
     //--- slider
-    if ($('.js-t63-slider').length > 0) {
-        $('.js-t63-slider').each(function (index, item) {
-            const autoplay = $(item).attr('data-slider-autoplay') == 'true';
-            const autoplaySpeed = $(item).attr('data-slider-autoplay-speed');
-            $(item).slick({
-                dots: true,
-                adaptiveHeight: true,
-                pauseOnFocus: false,
-                pauseOnHover: false,
+    if ($('.js-t63-multimedia-slider').length > 0) {
+        $('.js-t63-multimedia-slider').each(function (index, item) {
+            const id = $(item).closest('.js-t63-page-section').attr('data-id');
+
+            const autoplayEnapled = $(item).attr('data-slider-autoplay') == 'true';
+            const autoplaySpeed = +$(item).attr('data-slider-autoplay-speed');
+
+            let autoplay = false;
+
+            if (autoplayEnapled) {
+                autoplay = {
+                    delay: autoplaySpeed || 400,
+                };
+            }
+
+            new Swiper('[data-id="'+id+'"] .js-t63-multimedia-slider', {
+                loop: true,
                 autoplay: autoplay,
-                autoplaySpeed: autoplaySpeed,
+                pagination: {
+                    el: '.js-t63-slider-pagination',
+                },
+                navigation: {
+                    nextEl: '.js-t63-slider-btn-next',
+                    prevEl: '.js-t63-slider-btn-prev',
+                },
             });
-        })
+
+        });
     }
 
     if ($('.js-t63-testimonials-slider').length > 0) {
-        $('.js-t63-testimonials-slider').slick({
-            fade: true,
-            arrows: false,
-            dots: true,
-            autoplay: true,
-            autoplaySpeed: 5000,
-            pauseOnHover: false,
-            pauseOnFocus: false
+        new Swiper('.js-t63-testimonials-slider', {
+            loop: true,
+            autoHeight: true,
+            pagination: {
+                el: '.js-t63-slider-pagination',
+                clickable: true
+            },
         });
     }
 
@@ -131,7 +145,7 @@ $(function () {
                 selector: $(item).children('div'),
                 file: $(item).attr('data-video-url'),
                 image: $(item).attr('data-cover-url')
-            }).Init();
+            }).init();
         }
     });
 });

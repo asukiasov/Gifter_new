@@ -35,7 +35,7 @@ namespace SixtyThreeBits.Web.Domain.ViewModels.Shared
         public bool IsPageBuilderEditorEnabled { get; private set; }
         public bool IsPreloaderEnabled { get; private set; }
         public bool IsGoogleRecaptchaEnabled { get; private set; }
-        public bool IsSlickSliderEnabled { get; private set; }
+        public bool IsSwiperEnabled { get; private set; }
         public bool IsSortableJSEnabled { get; private set; }
         
         public bool IsTemplate7Enabled { get; private set; }
@@ -234,9 +234,9 @@ namespace SixtyThreeBits.Web.Domain.ViewModels.Shared
             return this;
         }
 
-        public PluginsClientViewModel EnableSlickSlider(bool value)
+        public PluginsClientViewModel EnableSwiper(bool value)
         {
-            IsSlickSliderEnabled = value;
+            IsSwiperEnabled = value;
             return this;
         }
 
