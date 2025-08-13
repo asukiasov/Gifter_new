@@ -7,7 +7,7 @@
             public static class EmailTemplatePropertiesController
             {
                 #region Properties
-                public const string Properties = "AdminEmailTemplateControllerProperties";
+                public const string Properties = $"{nameof(Admin)}{nameof(EmailTemplatePropertiesController)}{nameof(Properties)}";
                 #endregion
             }
         }

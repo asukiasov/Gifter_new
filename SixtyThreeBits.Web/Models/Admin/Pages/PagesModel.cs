@@ -94,7 +94,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             await FileStorage.DeleteFile(page.PageImageFilename);
         }
 
-        public async Task<AjaxResponse> GetPagesData()
+        public async Task<AjaxResponse> GetPagesJson()
         {
             var viewModel = new AjaxResponse();
             var repository = RepositoriesFactory.CreatePagesRepository();

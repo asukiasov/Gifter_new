@@ -12,8 +12,8 @@ namespace SixtyThreeBits.Web.Controllers.Admin
     {
         #region Actions
         [HttpGet]
-        [Route("", Name = ControllerActionRouteNames.Admin.PageMetaDataController.Get)]
-        public IActionResult Get()
+        [Route("", Name = ControllerActionRouteNames.Admin.PageMetaDataController.MetaData)]
+        public IActionResult MetaData()
         {            
             var viewModel = Model.GetPageData();
             return Json(viewModel);

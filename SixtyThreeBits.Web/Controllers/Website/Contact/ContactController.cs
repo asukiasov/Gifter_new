@@ -25,22 +25,7 @@ namespace SixtyThreeBits.Web.Controllers.Website
         [Route($"{RouteValueLanguageCode}/contact")]
         public async Task<IActionResult> ContactSubmit(ContactModel.SubmitModel submitModel)
         {
-            var viewModel = default(AjaxResponse);
-
-            var validationResult = await Model.ValidateSubmitModel(submitModel);
-            if (validationResult.HasErrors)
-            {
-                viewModel = new AjaxResponse();
-                viewModel.Data = new
-                {
-                    ErrorsJson = validationResult.ErrorsJson
-                };
-            }
-            else
-            {
-                viewModel = await Model.SendContactEmail(submitModel);
-            }
-
+            var viewModel = await Model.SendContactEmail(submitModel);
             return Json(viewModel);
         }
         #endregion

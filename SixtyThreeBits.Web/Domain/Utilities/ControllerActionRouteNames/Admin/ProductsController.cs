@@ -7,13 +7,13 @@
             public static class ProductsController
             {
                 #region Properties
-                public const string Products = "AdminProductsControllerProducts";
-                public const string Grid = "AdminProductsControllerGrid";
-                public const string GridAdd = "AdminProductsControllerGridAdd";
-                public const string GridUpdate = "AdminProductsControllerGridUpdate";
-                public const string GridDelete = "AdminProductsControllerGridDelete";
-                public const string ExcelDownload = "AdminProductsControllerExcelDownload";
-                public const string ExcelUpload = "AdminProductsControllerExcelUpload";
+                public const string Products = $"{nameof(Admin)}{nameof(ProductsController)}{nameof(Products)}";
+                public const string Grid = $"{nameof(Admin)}{nameof(ProductsController)}{nameof(Grid)}";
+                public const string GridAdd = $"{nameof(Admin)}{nameof(ProductsController)}{nameof(GridAdd)}";
+                public const string GridUpdate = $"{nameof(Admin)}{nameof(ProductsController)}{nameof(GridUpdate)}";
+                public const string GridDelete = $"{nameof(Admin)}{nameof(ProductsController)}{nameof(GridDelete)}";
+                public const string ExcelDownload = $"{nameof(Admin)}{nameof(ProductsController)}{nameof(ExcelDownload)}";
+                public const string ExcelUpload = $"{nameof(Admin)}{nameof(ProductsController)}{nameof(ExcelUpload)}";
                 #endregion                
             }
         }

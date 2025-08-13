@@ -53,7 +53,7 @@ namespace SixtyThreeBits.Web.Models.Admin
                 TeamMemberIsPublished = item.TeamMemberIsPublished,
                 TeamMemberCategoryID = item.TeamMemberCategoryID,
                 TeamMemberSortIndex = item.TeamMemberSortIndex,
-                UrlTeamMemberProperties = Url.RouteUrl(ControllerActionRouteNames.Admin.TeamMembersPropertiesController.Properties, new { teamMemberID = item.TeamMemberID })
+                UrlTeamMemberProperties = Url.RouteUrl(ControllerActionRouteNames.Admin.TeamMemberPropertiesController.Properties, new { teamMemberID = item.TeamMemberID })
             })
             .OrderBy(item => item.TeamMemberSortIndex)
             .ToList();

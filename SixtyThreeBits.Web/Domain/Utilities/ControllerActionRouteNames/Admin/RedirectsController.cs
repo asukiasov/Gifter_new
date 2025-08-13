@@ -7,11 +7,11 @@
             public static class RedirectsController
             {
                 #region Properties
-                public const string Redirects = "AdminRedirectsControllerRedirects";
-                public const string Grid = "AdminRedirectsControllerGrid";
-                public const string GridAdd = "AdminRedirectsControllerGridAdd";
-                public const string GridUpdate = "AdminRedirectsControllerGridUpdate";
-                public const string GridDelete = "AdminRedirectsControllerGridDelete";
+                public const string Redirects = $"{nameof(Admin)}{nameof(RedirectsController)}{nameof(Redirects)}";
+                public const string Grid = $"{nameof(Admin)}{nameof(RedirectsController)}{nameof(Grid)}";
+                public const string GridAdd = $"{nameof(Admin)}{nameof(RedirectsController)}{nameof(GridAdd)}";
+                public const string GridUpdate = $"{nameof(Admin)}{nameof(RedirectsController)}{nameof(GridUpdate)}";
+                public const string GridDelete = $"{nameof(Admin)}{nameof(RedirectsController)}{nameof(GridDelete)}";
                 #endregion
             }
         }

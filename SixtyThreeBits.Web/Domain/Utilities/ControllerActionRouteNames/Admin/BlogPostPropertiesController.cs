@@ -6,9 +6,9 @@
         {
             public static class BlogPostPropertiesController
             {
-                #region properties
-                public const string Properties = "AdminBlogPostPropertiesControllerProperties";
-                public const string DeleteImage = "AdminBlogPostPropertiesControllerDeleteImage";
+                #region Properties
+                public const string Properties = $"{nameof(Admin)}{nameof(BlogPostPropertiesController)}{nameof(Properties)}";
+                public const string DeleteImage = $"{nameof(Admin)}{nameof(BlogPostPropertiesController)}{nameof(DeleteImage)}";
                 #endregion
             }
         }

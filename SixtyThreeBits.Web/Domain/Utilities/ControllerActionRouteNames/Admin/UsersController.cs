@@ -7,11 +7,11 @@
             public static class UsersController
             {
                 #region Properties
-                public const string Users = "AdminUsersControllerUsers";
-                public const string Grid = "AdminUsersControllerGrid";
-                public const string GridAdd = "AdminUsersControllerGridAdd";
-                public const string GridUpdate = "AdminUsersControllerGridUpdate";
-                public const string GridDelete = "AdminUsersControllerGridDelete";
+                public const string Users = $"{nameof(Admin)}{nameof(UsersController)}{nameof(Users)}";
+                public const string Grid = $"{nameof(Admin)}{nameof(UsersController)}{nameof(Grid)}";
+                public const string GridAdd = $"{nameof(Admin)}{nameof(UsersController)}{nameof(GridAdd)}";
+                public const string GridUpdate = $"{nameof(Admin)}{nameof(UsersController)}{nameof(GridUpdate)}";
+                public const string GridDelete = $"{nameof(Admin)}{nameof(UsersController)}{nameof(GridDelete)}";
                 #endregion
             }
 

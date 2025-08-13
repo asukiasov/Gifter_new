@@ -13,7 +13,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
     {
         #region Methods
         [HttpGet]
-        [Route("", Name = ControllerActionRouteNames.Admin.RolesControllers.Roles)]
+        [Route("", Name = ControllerActionRouteNames.Admin.RolesController.Roles)]
         public IActionResult Roles()
         {
             Model.PluginsClient.EnableDevextreme(true);
@@ -21,7 +21,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
             return View(ViewNames.Admin.Roles.RolesView, viewModel);
         }
 
-        [Route("grid", Name = ControllerActionRouteNames.Admin.RolesControllers.Grid)]
+        [Route("grid", Name = ControllerActionRouteNames.Admin.RolesController.Grid)]
         public async Task<IActionResult> Grid()
         {
             var viewModel = await Model.GetGridModel();
@@ -29,7 +29,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         }
 
         [HttpPost]
-        [Route("grid/add", Name = ControllerActionRouteNames.Admin.RolesControllers.GridAdd)]
+        [Route("grid/add", Name = ControllerActionRouteNames.Admin.RolesController.GridAdd)]
         public async Task<IActionResult> GridAdd(int? key, string values)
         {
             var submitModel = values.DeserializeJsonTo<RolesModel.ViewModel.GridModel.GridItem>() ?? new RolesModel.ViewModel.GridModel.GridItem();
@@ -38,7 +38,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         }
 
         [HttpPut]
-        [Route("grid/update", Name = ControllerActionRouteNames.Admin.RolesControllers.GridUpdate)]
+        [Route("grid/update", Name = ControllerActionRouteNames.Admin.RolesController.GridUpdate)]
         public async Task<IActionResult> GridUpdate(int? key, string values)
         {
             var submitModel = values.DeserializeJsonTo<RolesModel.ViewModel.GridModel.GridItem>() ?? new RolesModel.ViewModel.GridModel.GridItem();
@@ -47,7 +47,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         }
 
         [HttpDelete]
-        [Route("grid/delete", Name = ControllerActionRouteNames.Admin.RolesControllers.GridDelete)]
+        [Route("grid/delete", Name = ControllerActionRouteNames.Admin.RolesController.GridDelete)]
         public async Task<IActionResult> GridDelete(int? key)
         {
             var viewModel = await Model.IUD(databaseAction: Enums.DatabaseActions.DELETE, roleID: key, submitModel: new RolesModel.ViewModel.GridModel.GridItem());

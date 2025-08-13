@@ -8,7 +8,7 @@
             public static class PdfFileViewerController
             {
                 #region Properties
-                public const string PdfFileViewer = "FileViewerControllerPdfFileViewer";
+                public const string PdfFileViewer = $"{nameof(Website)}{nameof(PdfFileViewerController)}{nameof(PdfFileViewer)}";
                 #endregion
             }
             #endregion

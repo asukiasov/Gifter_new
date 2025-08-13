@@ -13,7 +13,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
     {
         #region Actions
         [HttpGet]
-        [Route("properties", Name = ControllerActionRouteNames.Admin.TeamMembersPropertiesController.Properties)]
+        [Route("properties", Name = ControllerActionRouteNames.Admin.TeamMemberPropertiesController.Properties)]
         public async Task<IActionResult> Properties()
         {
             Model.PluginsClient.EnableTinyMce(true).Enable63BitsForms(true).EnableFancybox(true).Enable63BitsSuccessErrorToast(true);
@@ -38,7 +38,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
                 if (viewModel.IsValid)
                 {
                     Model.ShowSuccessToastNotification();
-                    result = Redirect(Url.RouteUrl(ControllerActionRouteNames.Admin.TeamMembersPropertiesController.Properties, new { teamMemberID = Model.DBItem.TeamMemberID }));
+                    result = Redirect(Url.RouteUrl(ControllerActionRouteNames.Admin.TeamMemberPropertiesController.Properties, new { teamMemberID = Model.DBItem.TeamMemberID }));
                 }
                 else
                 {
@@ -54,7 +54,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         }
 
         [HttpPost]
-        [Route("properties/delete-image", Name = ControllerActionRouteNames.Admin.TeamMembersPropertiesController.DeleteImage)]
+        [Route("properties/delete-image", Name = ControllerActionRouteNames.Admin.TeamMemberPropertiesController.DeleteImage)]
         public async Task<IActionResult> DeleteImage()
         {
             var viewModel = await Model.DeleteImage();

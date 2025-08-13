@@ -11,7 +11,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
     {
         #region Actions
         [HttpGet]
-        [Route("", Name = ControllerActionRouteNames.Admin.SystemPropertiesController.SystemProperies)]
+        [Route("", Name = ControllerActionRouteNames.Admin.SystemPropertiesController.SystemProperties)]
         public async Task<IActionResult> SystemProperies()
         {
             Model.PluginsClient.Enable63BitsForms(true).EnableFancybox(true).Enable63BitsSuccessErrorToast(true);
@@ -60,7 +60,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
             if (viewModel.IsValid)
             {
                 Model.ShowSuccessToastNotification();
-                return Redirect(Url.RouteUrl(ControllerActionRouteNames.Admin.SystemPropertiesController.SystemProperies));
+                return Redirect(Url.RouteUrl(ControllerActionRouteNames.Admin.SystemPropertiesController.SystemProperties));
             }
             else
             {

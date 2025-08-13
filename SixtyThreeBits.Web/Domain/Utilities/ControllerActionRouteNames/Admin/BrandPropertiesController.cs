@@ -7,8 +7,8 @@
             public static class BrandPropertiesController
             {
                 #region Properties                
-                public const string Properties = "AdminBrandPropertiesControllerProperties";
-                public const string DeleteImage = "AdminBrandPropertiesControllerDeleteImage";
+                public const string Properties = $"{nameof(Admin)}{nameof(BrandPropertiesController)}{nameof(Properties)}";
+                public const string DeleteImage = $"{nameof(Admin)}{nameof(BrandPropertiesController)}{nameof(DeleteImage)}";
                 #endregion
             }
         }

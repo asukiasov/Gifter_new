@@ -69,6 +69,7 @@
         },
         prompt: function (options) {
             const title = options.title
+            const textPrompt = options.textPrompt;
             const label = options.label ? options.label : '';
             const inputPlaceHolder = options.inputPlaceHolder ? options.inputPlaceHolder : '';
             const buttonColor = options.buttonColor ? options.buttonColor : components63Bits.dialog.buttonColors.blue;
@@ -76,7 +77,7 @@
 
             $.confirm({
                 title: title,
-                content: '<div class="form-group"><label>' + label + '</label><input type="text" placeholder="' + inputPlaceHolder +'" class="form-control js-63bits-components-prompt" /></div>',
+                content: '<p>' + textPrompt +'</p><div class="form-group"><label>' + label + '</label><input type="text" placeholder="' + inputPlaceHolder +'" class="form-control js-63bits-components-prompt" /></div>',
                 buttons: {
                     OK: {
                         text: 'OK',

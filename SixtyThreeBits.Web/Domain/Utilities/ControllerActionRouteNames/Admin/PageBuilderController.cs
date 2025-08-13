@@ -7,8 +7,8 @@
             public static class PageBuilderController
             {
                 #region Properties
-                public const string Builder = "AdminPageBuilderControllerBuilder";
-                public const string BuilderLanguage = "AdminPageBuilderControllerBuilderLanguage";
+                public const string Builder = $"{nameof(Admin)}{nameof(PageBuilderController)}{nameof(Builder)}";
+                public const string BuilderLanguage = $"{nameof(Admin)}{nameof(PageBuilderController)}{nameof(BuilderLanguage)}";
                 #endregion
             }
         }

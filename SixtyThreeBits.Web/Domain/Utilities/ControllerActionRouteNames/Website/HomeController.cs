@@ -8,8 +8,8 @@
             public static class HomeController
             {
                 #region Properties
-                public const string Index = "WebsiteHomeIndex";
-                public const string IndexCulture = "WebsiteHomeIndexCulture";
+                public const string Index = $"{nameof(Website)}{nameof(HomeController)}{nameof(Index)}";
+                public const string IndexCulture = $"{nameof(Website)}{nameof(HomeController)}{nameof(IndexCulture)}";
                 #endregion
             }
             #endregion

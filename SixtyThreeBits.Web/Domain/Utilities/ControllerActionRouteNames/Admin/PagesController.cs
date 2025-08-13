@@ -7,12 +7,12 @@
             public static class PagesController
             {
                 #region Properties
-                public const string Pages = "AdminPagesControllerPages";
-                public const string Grid = "AdminPagesControllerGrid";
-                public const string GridAdd = "AdminPagesControllerGridAdd";
-                public const string GridUpdate = "AdminPagesControllerGridUpdate";
-                public const string GridDelete = "AdminPagesControllerGridDelete";
-                public const string Get = "AdminPagesControllerGet";
+                public const string Pages = $"{nameof(Admin)}{nameof(PagesController)}{nameof(Pages)}";
+                public const string Grid = $"{nameof(Admin)}{nameof(PagesController)}{nameof(Grid)}";
+                public const string GridAdd = $"{nameof(Admin)}{nameof(PagesController)}{nameof(GridAdd)}";
+                public const string GridUpdate = $"{nameof(Admin)}{nameof(PagesController)}{nameof(GridUpdate)}";
+                public const string GridDelete = $"{nameof(Admin)}{nameof(PagesController)}{nameof(GridDelete)}";
+                public const string Json = $"{nameof(Admin)}{nameof(PagesController)}{nameof(Json)}";
                 #endregion                
             }
         }

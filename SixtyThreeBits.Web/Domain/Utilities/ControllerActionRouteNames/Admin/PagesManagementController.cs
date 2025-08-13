@@ -7,7 +7,7 @@
             public static class PagesManagementController
             {
                 #region Properties
-                public const string RedirectToChild = "AdminPagesManagementControllerRedirectToChild";
+                public const string PagesManagement = $"{nameof(Admin)}{nameof(PagesManagementController)}{nameof(PagesManagement)}";
                 #endregion
             }
         }

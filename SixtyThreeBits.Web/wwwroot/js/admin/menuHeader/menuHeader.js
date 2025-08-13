@@ -369,7 +369,7 @@ $(function () {
         const childrenCount = $(this).closest('.js-tree-node').find('.js-tree-node').length;
         if (childrenCount > 0) {
             components63Bits.dialog.prompt({
-                text: model.textConfirmDeleteRecursiveWithTypeDelete,
+                textPrompt: model.textConfirmDeleteRecursiveWithTypeDelete,
                 size: components63Bits.dialog.sizes.medium,
                 buttonColor: components63Bits.dialog.buttonColors.red,
                 resolve: function (e) {

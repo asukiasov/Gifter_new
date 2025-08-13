@@ -7,8 +7,8 @@
             public static class PagePropertiesController
             {
                 #region Properties
-                public const string Properties = "AdminPagePropertiesControllerProperties";
-                public const string DeleteImage = "AdminPagePropertiesControllerDeleteImage";
+                public const string Properties = $"{nameof(Admin)}{nameof(PagePropertiesController)}{nameof(Properties)}";
+                public const string DeleteImage = $"{nameof(Admin)}{nameof(PagePropertiesController)}{nameof(DeleteImage)}";
                 #endregion
             }
         }

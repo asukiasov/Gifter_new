@@ -54,6 +54,5 @@ namespace SixtyThreeBits.Web.Controllers.Admin
             return DevExtremeGridActionResult(viewModel);
         }
         #endregion
-
     }
 }

@@ -33,7 +33,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             viewModel.TeamMemberCategories = await repository.DictionariesListAsKeyValueSelectedTuple(dictionaryCode: Enums.DictionaryCodes.TeamMemberCategories, selectedValue: viewModel.TeamMemberCategoryID);
             viewModel.TeamMemberImageFilename = DBItem.TeamMemberImageFilename;
             viewModel.TeamMemberImageHttpPath = FileStorage.GetUploadedFileHttpPath(DBItem.TeamMemberImageFilename);
-            viewModel.UrlDeleteImage = Url.RouteUrl(ControllerActionRouteNames.Admin.TeamMembersPropertiesController.DeleteImage, new { teamMemberID = DBItem.TeamMemberID });
+            viewModel.UrlDeleteImage = Url.RouteUrl(ControllerActionRouteNames.Admin.TeamMemberPropertiesController.DeleteImage, new { teamMemberID = DBItem.TeamMemberID });
             return viewModel;
         }
 

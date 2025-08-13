@@ -39,8 +39,8 @@ namespace SixtyThreeBits.Web.Models.Admin
             viewModel.UrlDelete = Url.RouteUrl(ControllerActionRouteNames.Admin.MenuHeaderController.Delete);
             viewModel.UrlSort = Url.RouteUrl(ControllerActionRouteNames.Admin.MenuHeaderController.Sort);
             viewModel.UrlGet = Url.RouteUrl(ControllerActionRouteNames.Admin.MenuHeaderController.Get, new { menuHeaderID = 0 }).TrimEnd('0').TrimEnd('/');
-            viewModel.UrlGetPage = Url.RouteUrl(ControllerActionRouteNames.Admin.PageMetaDataController.Get, new { pageID = 0 }).TrimEnd('0').TrimEnd('/');
-            viewModel.UrlGetPages = Url.RouteUrl(ControllerActionRouteNames.Admin.PagesController.Get);
+            viewModel.UrlGetPage = Url.RouteUrl(ControllerActionRouteNames.Admin.PageMetaDataController.MetaData, new { pageID = 0 }).TrimEnd('0').TrimEnd('/');
+            viewModel.UrlGetPages = Url.RouteUrl(ControllerActionRouteNames.Admin.PagesController.Json);
 
             viewModel.Pages = (await repositoryPages.PagesList())?
             .OrderBy(item => item.PageTitle)

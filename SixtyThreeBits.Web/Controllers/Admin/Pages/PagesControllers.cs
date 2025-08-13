@@ -55,10 +55,10 @@ namespace SixtyThreeBits.Web.Controllers.Admin
             return DevExtremeGridActionResult(viewModel);
         }
 
-        [Route("get", Name = ControllerActionRouteNames.Admin.PagesController.Get)]
-        public async Task<ActionResult> Get()
+        [Route("json", Name = ControllerActionRouteNames.Admin.PagesController.Json)]
+        public async Task<ActionResult> Json()
         {
-            var viewModel = await Model.GetPagesData();
+            var viewModel = await Model.GetPagesJson();
             return Json(viewModel);
         }
         #endregion

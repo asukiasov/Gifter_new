@@ -10,7 +10,7 @@ namespace SixtyThreeBits.Web.Models.Admin
         public string GetRedirectUrl()
         {
             var redirectUrl = default(string);
-            var permissionIDParent = User.Permissions.FindLast(Item => Item.PermissionCodeName == ControllerActionRouteNames.Admin.PagesManagementController.RedirectToChild)?.PermissionID;
+            var permissionIDParent = User.Permissions.FindLast(Item => Item.PermissionCodeName == ControllerActionRouteNames.Admin.PagesManagementController.PagesManagement)?.PermissionID;
             if (permissionIDParent.HasValue)
             {
                 var firstPermission = User.Permissions.FirstOrDefault(item => item.PermissionParentID == permissionIDParent);

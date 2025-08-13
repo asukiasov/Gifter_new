@@ -7,8 +7,8 @@
             public static class ErrorLogController
             {
                 #region Properties
-                public const string ErrorLog = "AdminErrorLogControllerErrorLog";
-                public const string Clear = "AdminErrorLogControllerClear";
+                public const string ErrorLog = $"{nameof(Admin)}{nameof(ErrorLogController)}{nameof(ErrorLog)}";
+                public const string Clear = $"{nameof(Admin)}{nameof(ErrorLogController)}{nameof(Clear)}";
                 #endregion
             }
         }

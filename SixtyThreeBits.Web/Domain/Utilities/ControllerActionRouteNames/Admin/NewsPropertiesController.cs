@@ -7,8 +7,8 @@
             public static class NewsPropertiesController
             {
                 #region Properties
-                public const string Properties = "AdminNewsPropertiesControllerProperties";
-                public const string DeleteImage = "AdminNewsPropertiesControllerDeleteImage";
+                public const string Properties = $"{nameof(Admin)}{nameof(NewsPropertiesController)}{nameof(Properties)}";
+                public const string DeleteImage = $"{nameof(Admin)}{nameof(NewsPropertiesController)}{nameof(DeleteImage)}";
                 #endregion
             }
         }

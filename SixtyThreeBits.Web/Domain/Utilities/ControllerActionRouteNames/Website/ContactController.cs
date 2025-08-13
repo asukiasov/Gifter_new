@@ -8,8 +8,8 @@
             public static class ContactController
             {
                 #region Properties
-                public const string Contact = "WebsiteContactControllerContact";
-                public const string ContactCulture = "WebsiteContactControllerContactCulture";
+                public const string Contact = $"{nameof(Website)}{nameof(ContactController)}{nameof(Contact)}";
+                public const string ContactCulture = $"{nameof(Website)}{nameof(ContactController)}{nameof(ContactCulture)}";
                 #endregion
             }
             #endregion

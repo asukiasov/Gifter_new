@@ -9,8 +9,8 @@ namespace SixtyThreeBits.Web.Controllers.Admin
     public class PageManagementController : AdminControllerBase<PageManagementModel>
     {
         #region Actions
-        [Route("", Name = ControllerActionRouteNames.Admin.PagesManagementController.RedirectToChild)]
-        public IActionResult RedirectToChild()
+        [Route("", Name = ControllerActionRouteNames.Admin.PagesManagementController.PagesManagement)]
+        public IActionResult PagesManagement()
         {
             var redirectUrl = Model.GetRedirectUrl();
             if (string.IsNullOrWhiteSpace(redirectUrl))

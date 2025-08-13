@@ -12,8 +12,7 @@ namespace SixtyThreeBits.Web.Controllers.Website
         public IActionResult Error404NotFound()
         {
             return Model.GetNotFoundWebsiteViewResult();
-            
-        } 
+        }
         #endregion
     }
 }

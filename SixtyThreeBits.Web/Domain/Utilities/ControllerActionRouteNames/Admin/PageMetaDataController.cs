@@ -7,7 +7,7 @@
             public static class PageMetaDataController
             {
                 #region Properties
-                public const string Get = "AdminPageDataControllerGet";
+                public const string MetaData = $"{nameof(Admin)}{nameof(PageMetaDataController)}{nameof(MetaData)}";
                 #endregion
             }
         }

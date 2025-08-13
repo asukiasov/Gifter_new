@@ -8,8 +8,8 @@
             public static class PagesController
             {
                 #region Properties
-                public const string Page = "WebsitePagesControllerPage";
-                public const string PageCulture = "WebsitePagesControllerPageCulture";
+                public const string Page = $"{nameof(Website)}{nameof(PagesController)}{nameof(Page)}";
+                public const string PageCulture = $"{nameof(Website)}{nameof(PagesController)}{nameof(PageCulture)}";
                 #endregion
             }
             #endregion

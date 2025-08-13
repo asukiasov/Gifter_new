@@ -19,8 +19,28 @@ namespace SixtyThreeBits.Web.Models.Website
             viewModel.RecaptchaSiteKey = SystemProperties.ReCaptchaSiteKey;
             return viewModel;
         }
+        
+        public async Task<AjaxResponse> SendContactEmail(SubmitModel submitModel)
+        {
+            var viewModel = new AjaxResponse();
 
-        public async Task<ValidationResult63> ValidateSubmitModel(SubmitModel submitModel)
+            var validationResult = await _sendContactEmailValidate(submitModel);
+            if(validationResult.HasErrors)
+            {
+                viewModel.Data = new
+                {
+                    ErrorsJson = validationResult.ErrorsJson
+                };
+            }
+            else
+            {
+                var isSent = await _sendEmail(submitModel);
+                viewModel.IsSuccess = isSent;
+            }
+
+            return viewModel;
+        }
+        async Task<ValidationResult63> _sendContactEmailValidate(SubmitModel submitModel)
         {
             var result = new ValidationResult63();
 
@@ -53,20 +73,16 @@ namespace SixtyThreeBits.Web.Models.Website
 
             return result;
         }
-
-        public async Task<AjaxResponse> SendContactEmail(SubmitModel submitModel)
+        async Task<bool> _sendEmail(SubmitModel submitModel)
         {
-            var viewModel = new AjaxResponse();
-
+            var isSent = true;
             await NotificationManager.SendContactUsEmailToAdmins(
                 name: submitModel.Name,
                 email: submitModel.Email,
                 message: submitModel.Message,
                 emailsTo: SystemProperties.AdminEmails
             );
-            viewModel.IsSuccess = true;
-
-            return viewModel;
+            return isSent;
         }
         #endregion
 
