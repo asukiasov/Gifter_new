@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace SixtyThreeBits.Web.Models.Admin
 {
-    public class RolePermissionsModel : ModelBase
+    public class RolesPermissionsModel : ModelBase
     {
         #region Methods
         public ViewModel GetViewModel()

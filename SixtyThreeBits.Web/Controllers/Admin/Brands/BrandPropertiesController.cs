@@ -9,7 +9,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
 {
     [Route("admin/brands/{brandID:int}/properties")]
     [TypeFilter(typeof(BrandFilterAttribute), Order = 2)]
-    public class BrandPropertiesController : AdminControllerBase<BrandsPropertiesModel>
+    public class BrandPropertiesController : AdminControllerBase<BrandPropertiesModel>
     {
         #region Actions
         [HttpGet]
@@ -23,7 +23,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
 
         [HttpPost]
         [Route("")]
-        public async Task<IActionResult> Properties(BrandsPropertiesModel.ViewModel submitModel)
+        public async Task<IActionResult> Properties(BrandPropertiesModel.ViewModel submitModel)
         {
             var result = default(IActionResult);
             Model.PluginsClient.Enable63BitsForms(true).EnableFancybox(true).Enable63BitsSuccessErrorToast(true);

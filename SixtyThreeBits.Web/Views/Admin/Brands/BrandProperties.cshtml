@@ -1,4 +1,4 @@
-﻿@model BrandsPropertiesModel.ViewModel
+﻿@model BrandPropertiesModel.ViewModel
 <div class="card">
     <div class="card-body">
         <div class="row">
@@ -28,7 +28,7 @@
                     <label>@Html.Raw(Model.TextUploadImage)</label>
                     <div class="input-group custom-file-group js-custom-file-upload">
                         <div class="form-control">
-                            <a class="js-custom-file-upload-attachment" data-type="image" href="@Html.Raw(Model.BrandImageHttpPath)">@Html.Raw(Model.BrandImageFilename)</a>
+                            <a class="js-custom-file-upload-attachment" data-type="image" href="@Html.Raw(Model.BrandImageHttpPath)">@Html.Raw(Model.TextUploadImage)</a>
                             <span class="js-custom-file-upload-new-attachment hidden"></span>
                         </div>
                         @if (Model.HasBrandImage)

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace SixtyThreeBits.Web.Controllers.Admin
 {
     [Route("admin/product-categories")]
-    public class ProductCategoriesController : AdminControllerBase<ProductsCategoriesModel>
+    public class ProductCategoriesController : AdminControllerBase<ProductCategoriesModel>
     {
         #region Actions
         [HttpGet]
@@ -21,7 +21,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         }
 
         [Route("add", Name = ControllerActionRouteNames.Admin.ProductCategoriesController.Add)]
-        public async Task<IActionResult> Add(ProductsCategoriesModel.ProductCategoryCreateSubmitModel submitModel)
+        public async Task<IActionResult> Add(ProductCategoriesModel.ProductCategoryCreateSubmitModel submitModel)
         {
             var viewModel = await Model.Add(submitModel);
             return Json(viewModel);
@@ -35,7 +35,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         }
 
         [Route("delete", Name = ControllerActionRouteNames.Admin.ProductCategoriesController.Delete)]
-        public async Task<IActionResult> Delete(ProductsCategoriesModel.ProductCategoryDeleteSubmitModel submitModel)
+        public async Task<IActionResult> Delete(ProductCategoriesModel.ProductCategoryDeleteSubmitModel submitModel)
         {
             var viewModel = await Model.Delete(submitModel);
             return Json(viewModel);

@@ -9,13 +9,13 @@ namespace SixtyThreeBits.Web.Filters.Admin
     public class ProductCategoryFilterAttribute : IAsyncActionFilter
     {
         #region Properties
-        ProductsCategoriesModelBase _model;
+        ProductCategoryModelBase _model;
         #endregion
 
         #region Methods
         public async Task OnActionExecutionAsync(ActionExecutingContext filterContext, ActionExecutionDelegate next)
         {
-            _model = WebUtilities.GetModelFromController<ProductsCategoriesModelBase>(filterContext.Controller);
+            _model = WebUtilities.GetModelFromController<ProductCategoryModelBase>(filterContext.Controller);
             var productCategoryID = filterContext.RouteData.Values[WebConstants.RouteValues.ProductCategoryID]?.ToString().ToInt();
 
             var repository = _model.RepositoriesFactory.CreateProductsRepository();

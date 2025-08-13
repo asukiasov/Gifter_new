@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SixtyThreeBits.Web.Controllers.Website.Base;
-using SixtyThreeBits.Web.Domain.Utilities;
 using SixtyThreeBits.Web.Models.Website;
 
 namespace SixtyThreeBits.Web.Controllers.Website

@@ -10,7 +10,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
     [Obsolete("NEED TO TAKE CARE FOR ROUTING")]
     [Route("admin/pages/{PageID:int}/data")]
     [TypeFilter(typeof(PageFilterAttribute), Order = 2)]
-    public class PageMetaDataController : AdminControllerBase<PageDataModel>
+    public class PageMetaDataController : AdminControllerBase<PageMetaDataModel>
     {
         #region Actions
         [HttpGet]

@@ -6,14 +6,14 @@ using SixtyThreeBits.Web.Models.Admin;
 namespace SixtyThreeBits.Web.Controllers.Admin
 {
     [Route("admin/culture/change")]
-    public class CultureChangeController : ControllerBase<ChangeLanguageModel>
+    public class CultureChangeController : ControllerBase<CultureChangeModel>
     {
         #region Action
         [HttpGet]
         [Route("{culture:length(2)}", Name = ControllerActionRouteNames.Admin.ChangeLanguageController.ChangeLanguage)]
         public IActionResult ChangeLanguage(string culture)
         {
-            Model.ChangeLanguage(culture);
+            Model.Change(culture);
             return Redirect(Model.UrlPreviousPage);
         } 
         #endregion

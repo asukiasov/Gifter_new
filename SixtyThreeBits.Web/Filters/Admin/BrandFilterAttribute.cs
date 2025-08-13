@@ -9,13 +9,13 @@ namespace SixtyThreeBits.Web.Filters.Admin
     public class BrandFilterAttribute : IAsyncActionFilter
     {
         #region Properties
-        BrandsModelBase _model;
+        BrandModelBase _model;
         #endregion
 
         #region Methods
         public async Task OnActionExecutionAsync(ActionExecutingContext filterContext, ActionExecutionDelegate next)
         {
-            _model = WebUtilities.GetModelFromController<BrandsModelBase>(filterContext.Controller);
+            _model = WebUtilities.GetModelFromController<BrandModelBase>(filterContext.Controller);
             var brandID = filterContext.RouteData.Values[WebConstants.RouteValues.BrandID]?.ToString().ToInt();
 
             var repository = _model.RepositoriesFactory.CreateBrandsRepository();

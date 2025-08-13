@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace SixtyThreeBits.Web.Controllers.Admin
 {
     [Route("admin/roles-permissions")]
-    public class RolesPermissionsController : AdminControllerBase<RolePermissionsModel>
+    public class RolesPermissionsController : AdminControllerBase<RolesPermissionsModel>
     {
         #region Methods
         [HttpGet]
@@ -45,7 +45,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
 
         [HttpPost]
         [Route("save", Name = ControllerActionRouteNames.Admin.RolePermissionsController.Save)]
-        public async Task<IActionResult> Save(RolePermissionsModel.SubmitModelRolePermissionSave submitModel)
+        public async Task<IActionResult> Save(RolesPermissionsModel.SubmitModelRolePermissionSave submitModel)
         {
             var viewModel = await Model.Save(submitModel);
             return Json(viewModel);

@@ -4,10 +4,10 @@ using System;
 
 namespace SixtyThreeBits.Web.Models.Admin
 {
-    public class ChangeLanguageModel : ModelBase
+    public class CultureChangeModel : ModelBase
     {
         #region Methods
-        public void ChangeLanguage(string culture)
+        public void Change(string culture)
         {
             if (Utilities.SupportedLanguageStrings.Contains(culture))
             {
