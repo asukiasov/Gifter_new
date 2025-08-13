@@ -100,7 +100,11 @@ namespace SixtyThreeBits.Web.Models.Admin
             {
                 if (hasNewsImage)
                 {
-                    await SaveUploadedFile(viewModel.NewsImageFile, newsImageFilename, _folderPath);
+                    await FileStorage.SaveUploadedFile(
+                       sourceFileStream: viewModel.NewsImageFile.OpenReadStream(),
+                       filename: newsImageFilename,
+                       folderPath: _folderPath
+                   );                    
                 }
             }
         }

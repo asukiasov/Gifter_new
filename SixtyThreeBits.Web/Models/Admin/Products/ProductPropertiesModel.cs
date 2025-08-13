@@ -172,7 +172,11 @@ namespace SixtyThreeBits.Web.Models.Admin
 
                 if (productImageID > 0)
                 {
-                    await SaveUploadedFile(postedFile: postedFile, filename: productImageFilename, folderPath: _folderPath);
+                    await FileStorage.SaveUploadedFile(
+                        sourceFileStream: postedFile.OpenReadStream(),
+                        filename: productImageFilename,
+                        folderPath: _folderPath
+                    );
 
                     DBItem = await repository.ProductsGetSingleByID(DBItem.ProductID);
                     var firstImage = DBItem.ProductImages?.FirstOrDefault();

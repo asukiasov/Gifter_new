@@ -34,8 +34,8 @@ namespace SixtyThreeBits.Web.Models.Admin
 
             viewModel.PageImageFilename = DBItem.PageImageFilename;
             viewModel.PageImageHttpPath = FileStorage.GetUploadedFileHttpPath(DBItem.PageImageFilename, _folderPath);
-
-            viewModel.UrlPreview = GetUrlPages(pageSlug:DBItem.PageSlug);
+            viewModel.UrlPreview = $"{WebsiteHttpPath}{DBItem.PageSlug}";
+                
             viewModel.UrlDeleteImage = Url.RouteUrl(ControllerActionRouteNames.Admin.PagePropertiesController.DeleteImage, values: new { pageID = DBItem.PageID });
 
             return viewModel;
@@ -93,7 +93,11 @@ namespace SixtyThreeBits.Web.Models.Admin
             {
                 if (hasPageImage)
                 {
-                    await SaveUploadedFile(viewModel.PageImageFile, pageImageFilename, _folderPath);
+                    await FileStorage.SaveUploadedFile(
+                        sourceFileStream: viewModel.PageImageFile.OpenReadStream(),
+                        filename: pageImageFilename,
+                        folderPath: _folderPath
+                    );
                 }
             }
         }

@@ -67,7 +67,10 @@ namespace SixtyThreeBits.Web.Models.Admin
             {
                 if (hasCategoryImage)
                 {
-                    await SaveUploadedFile(viewModel.ProductCategoryImageFile, categoryImageFilename);
+                    await FileStorage.SaveUploadedFile(
+                        sourceFileStream: viewModel.ProductCategoryImageFile.OpenReadStream(),
+                        filename: categoryImageFilename
+                    );
                 }
             }
         }

@@ -77,7 +77,10 @@ namespace SixtyThreeBits.Web.Models.Admin
             {
                 if (hasTeamMemberImage)
                 {
-                    await SaveUploadedFile(viewModel.TeamMemberImageFile, teamMemberImageFilename);
+                    await FileStorage.SaveUploadedFile(
+                        sourceFileStream: viewModel.TeamMemberImageFile.OpenReadStream(),
+                        filename: teamMemberImageFilename
+                    );
                 }
             }
         }

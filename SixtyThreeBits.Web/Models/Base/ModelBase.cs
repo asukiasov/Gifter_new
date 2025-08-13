@@ -122,24 +122,8 @@ namespace SixtyThreeBits.Web.Models.Base
             }
             return result;
 
-        }
-
-        [Obsolete("NEED Refactoring")]
-        public string GetUrlPages(string pageSlug, string languageCultureCode = null)
-        {
-            var url = GetRouteByName(routeName: ControllerActionRouteNames.Website.PagesController.Page, new { pageSlug = pageSlug }, languageCultureCode: languageCultureCode);
-            return url;
-        }
-
-        [Obsolete("NEED Refactoring")]
-        public async Task SaveUploadedFile(IFormFile postedFile, string filename, string folderPath = null)
-        {
-            using (var MS = new MemoryStream())
-            {
-                await postedFile.CopyToAsync(MS);
-                await FileStorage.SaveUploadedFile(MS, filename, folderPath);
-            }
-        }
+        }        
+        
         #region Success/Error Toast
         public void InitSuccessErrorToastNotificationPartialViewModel()
         {            

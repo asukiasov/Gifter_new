@@ -93,7 +93,11 @@ namespace SixtyThreeBits.Web.Models.Admin
             {
                 if (hasBlogImage)
                 {
-                    await SaveUploadedFile(viewModel.BlogImageFile, blogPostImageFilename, _folderPath);
+                    await FileStorage.SaveUploadedFile(
+                        sourceFileStream: viewModel.BlogImageFile.OpenReadStream(),
+                        filename: blogPostImageFilename,
+                        folderPath: _folderPath
+                    );
                 }
             }
         }
