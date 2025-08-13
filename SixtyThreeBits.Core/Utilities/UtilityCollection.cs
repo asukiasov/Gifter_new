@@ -296,16 +296,4 @@ namespace SixtyThreeBits.Core.Utilities
         }
         #endregion
     }
-
-    public static class UtilityExtensions
-    {
-        #region Methods
-        public static T MapViaJsonSerialization<T>(this object source)
-        {
-            var json = source.ToJson();
-            var destination = json.DeserializeJsonTo<T>();
-            return destination;
-        }
-        #endregion
-    }
 }

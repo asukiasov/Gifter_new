@@ -1,10 +1,7 @@
-﻿using System;
-
-namespace SixtyThreeBits.Core.Utilities
+﻿namespace SixtyThreeBits.Core.Utilities
 {
-    public static class Constants
+    public static partial class Constants
     {
-        #region Nested Classes        
         public static class Formats
         {
             #region Properties
@@ -38,24 +35,6 @@ namespace SixtyThreeBits.Core.Utilities
             #endregion
 
             #endregion
-        }
-        
-        public static class NullValueFor
-        {
-            #region Properties
-            public const string String = "";
-            public const int Numeric = -1;
-            public static readonly DateTime Date = new (1900, 1, 1);
-            #endregion
-        }
-
-        public static class RegularExpressions
-        {
-            #region Properties
-            public const string Base64 = "^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{4}|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)$";
-            public const string Email = @"^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$";
-            #endregion
-        }        
-        #endregion
+        }              
     }
 }
