@@ -6,8 +6,9 @@ using SixtyThreeBits.Web.Models.Admin;
 namespace SixtyThreeBits.Web.Controllers.Admin
 {
     [Route("admin/error-log")]
-    public class ErrorLogControllers :  AdminControllerBase<ErrorLogModel>
+    public class ErrorLogController :  AdminControllerBase<ErrorLogModel>
     {
+        #region Actions
         [Route("", Name = ControllerActionRouteNames.Admin.ErrorLogController.ErrorLog)]
         public IActionResult ErrorLogs()
         {
@@ -21,6 +22,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         {
             var viewModel = Model.ClearLogs();
             return Json(viewModel);
-        }
+        } 
+        #endregion
     }
 }

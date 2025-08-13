@@ -9,7 +9,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
     [Route("admin/file-manager")]
     public class FileManagerController : AdminControllerBase<FileManagerModel>
     {
-        #region Methods
+        #region Actions
         [HttpGet]
         [Route("{moduleName}", Name = ControllerActionRouteNames.Admin.FileManagerController.FileManager)]
         public IActionResult FileManager(string moduleName)

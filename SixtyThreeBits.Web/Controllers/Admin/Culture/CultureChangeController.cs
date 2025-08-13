@@ -5,8 +5,8 @@ using SixtyThreeBits.Web.Models.Admin;
 
 namespace SixtyThreeBits.Web.Controllers.Admin
 {
-    [Route("admin/change-language")]
-    public class ChangeLanguageController : ControllerBase<ChangeLanguageModel>
+    [Route("admin/culture/change")]
+    public class CultureChangeController : ControllerBase<ChangeLanguageModel>
     {
         #region Action
         [HttpGet]

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace SixtyThreeBits.Web.Controllers.Admin
 {
     [Route("admin/roles-permissions")]
-    public class RolePermissionsController : AdminControllerBase<RolePermissionsModel>
+    public class RolesPermissionsController : AdminControllerBase<RolePermissionsModel>
     {
         #region Methods
         [HttpGet]

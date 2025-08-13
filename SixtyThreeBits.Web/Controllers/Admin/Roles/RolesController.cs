@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace SixtyThreeBits.Web.Controllers.Admin
 {
     [Route("admin/roles")]
-    public class RolesControllers : AdminControllerBase<RolesModel>
+    public class RolesController : AdminControllerBase<RolesModel>
     {
         #region Methods
         [HttpGet]
