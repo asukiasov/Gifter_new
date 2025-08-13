@@ -184,7 +184,7 @@ namespace SixtyThreeBits.Web.Filters.Admin
                 LanguageCultureCode = item.LanguageCultureCode,
                 LanguageName = item.LanguageName,
                 IsActive = item.LanguageCultureCode == language.LanguageCultureCode,
-                UrlChangeLanguage = _model.Url.RouteUrl(ControllerActionRouteNames.Admin.ChangeLanguageController.ChangeLanguage, new { Culture = item.LanguageCultureCode })
+                UrlChangeLanguage = _model.Url.RouteUrl(ControllerActionRouteNames.Admin.CultureChangeController.ChangeLanguage, new { Culture = item.LanguageCultureCode })
             }).ToList();
         }
         #endregion

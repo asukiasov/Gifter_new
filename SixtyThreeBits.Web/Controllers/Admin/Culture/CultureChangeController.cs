@@ -10,7 +10,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
     {
         #region Action
         [HttpGet]
-        [Route("{culture:length(2)}", Name = ControllerActionRouteNames.Admin.ChangeLanguageController.ChangeLanguage)]
+        [Route("{culture:length(2)}", Name = ControllerActionRouteNames.Admin.CultureChangeController.ChangeLanguage)]
         public IActionResult ChangeLanguage(string culture)
         {
             Model.Change(culture);

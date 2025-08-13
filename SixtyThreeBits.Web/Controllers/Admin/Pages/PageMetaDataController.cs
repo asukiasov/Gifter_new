@@ -3,18 +3,16 @@ using SixtyThreeBits.Web.Controllers.Admin.Base;
 using SixtyThreeBits.Web.Domain.Utilities;
 using SixtyThreeBits.Web.Filters.Admin;
 using SixtyThreeBits.Web.Models.Admin;
-using System;
 
 namespace SixtyThreeBits.Web.Controllers.Admin
 {
-    [Obsolete("NEED TO TAKE CARE FOR ROUTING")]
-    [Route("admin/pages/{PageID:int}/data")]
+    [Route("admin/pages/{PageID:int}/metadata")]
     [TypeFilter(typeof(PageFilterAttribute), Order = 2)]
     public class PageMetaDataController : AdminControllerBase<PageMetaDataModel>
     {
         #region Actions
         [HttpGet]
-        [Route("", Name = ControllerActionRouteNames.Admin.PageDataController.Get)]
+        [Route("", Name = ControllerActionRouteNames.Admin.PageMetaDataController.Get)]
         public IActionResult Get()
         {            
             var viewModel = Model.GetPageData();
