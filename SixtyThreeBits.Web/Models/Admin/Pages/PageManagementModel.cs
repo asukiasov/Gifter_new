@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace SixtyThreeBits.Web.Models.Admin
 {
-    public class PageRootModel : ModelBase
+    public class PageManagementModel : ModelBase
     {
         #region Methods
         public string GetRedirectUrl()
