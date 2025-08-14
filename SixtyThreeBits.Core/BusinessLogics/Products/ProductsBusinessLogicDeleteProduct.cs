@@ -1,4 +1,5 @@
 ﻿using SixtyThreeBits.Core.Abstractions;
+using SixtyThreeBits.Core.BusinessLogics.Base;
 using SixtyThreeBits.Core.Factories;
 using SixtyThreeBits.Core.Infrastructure.Repositories.DTO;
 using SixtyThreeBits.Core.Libraries.FileStorages.Enums;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SixtyThreeBits.Core.BusinessLogics
 {
-    public class ProductDeleteBusinessLogic
+    public class ProductsBusinessLogicDeleteProduct
     {
         #region Properties
         readonly int? _productID;
@@ -17,7 +18,7 @@ namespace SixtyThreeBits.Core.BusinessLogics
         #endregion
 
         #region Constructors
-        public ProductDeleteBusinessLogic(int? productID, RepositoryFactory repositoryFactory, IFileStorage fileStorage)
+        public ProductsBusinessLogicDeleteProduct(int? productID, RepositoryFactory repositoryFactory, IFileStorage fileStorage)
         {
             _productID = productID;
             _repositoryFactory = repositoryFactory;       

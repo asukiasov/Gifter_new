@@ -1,4 +1,4 @@
-﻿namespace SixtyThreeBits.Core.BusinessLogics
+﻿namespace SixtyThreeBits.Core.BusinessLogics.Base
 {
     public class BusinessLogicResultBase
     {

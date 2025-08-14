@@ -3,6 +3,7 @@ using DevExtreme.AspNet.Mvc.Builders;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using SixtyThreeBits.Core.BusinessLogics;
+using SixtyThreeBits.Core.BusinessLogics.Products;
 using SixtyThreeBits.Core.Infrastructure.Repositories.DTO;
 using SixtyThreeBits.Core.Properties;
 using SixtyThreeBits.Core.Utilities;
@@ -95,7 +96,7 @@ namespace SixtyThreeBits.Web.Models.Admin
         public async Task<AjaxResponse> Delete(int? productID)
         {
             var viewModel = new AjaxResponse();
-            var bl = new ProductDeleteBusinessLogic(
+            var bl = new ProductsBusinessLogicDeleteProduct(
                 productID: productID,
                 repositoryFactory: RepositoriesFactory,
                 fileStorage: FileStorage
@@ -114,7 +115,7 @@ namespace SixtyThreeBits.Web.Models.Admin
 
         public async Task<byte[]> GetProductsSyncExcelFileBytes()
         {
-            var bl = new ProductsBusinessLogic.GetProductsPricesAndRemaindersExcelFile(
+            var bl = new ProductsBusinessLogicCreatePricesAndRemainderExcelFile(
                 dataAccessFactory: RepositoriesFactory,
                 appSettings: AppSettings
             );
@@ -125,7 +126,7 @@ namespace SixtyThreeBits.Web.Models.Admin
         public async Task<AjaxResponse> SyncExcel(ExcelUploadSubmitModel submitModel)
         {
             var viewModel = new AjaxResponse();
-            var bl = new ProductsBusinessLogic.SyncProductPricesAndRemainders(
+            var bl = new ProductsBusinessLogicSyncPricesAndRemainders(
                 excelFileBytes: submitModel.ExcelFileBytes,
                 isXslx: submitModel.ExcelFilename?.EndsWith(".xlsx") == true,
                 dataAccessFactory: RepositoriesFactory
