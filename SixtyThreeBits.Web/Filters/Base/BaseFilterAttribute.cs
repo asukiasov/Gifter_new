@@ -44,6 +44,7 @@ namespace SixtyThreeBits.Web.Filters.Base
                 initModelBaseProperties(filterContext, c);
                 await initSystemProperties();
                 initFileStorage();
+                initUrlFactory();
                 initNotificationManager();
                 initPluginsClient();
                 await initUser();                
@@ -78,7 +79,7 @@ namespace SixtyThreeBits.Web.Filters.Base
 
             _model.SessionAssistance = new SessionAssistance(c.HttpContext.Session);
             _model.CookieAssistance = new CookieAssistance(c.Request, c.Response);
-            _model.Url = c.Url;
+            _model.Url = c.Url;            
             _model.Request = c.Request;
             _model.Response = c.Response;
             _model.UrlPreviousPage = _model.Request.Headers["Referer"].ToString();
@@ -134,6 +135,15 @@ namespace SixtyThreeBits.Web.Filters.Base
             //);
         }
 
+        void initUrlFactory()
+        {
+            _model.UrlFactory = new UrlFactory63(
+                websiteDomain: _model.WebsiteDomain,
+                protocol: _model.IsHttps ? "https" : "http",
+                url: _model.Url
+            );
+        }
+
         void initNotificationManager()
         {
             _model.NotificationManager = new NotificationManager(
@@ -143,7 +153,7 @@ namespace SixtyThreeBits.Web.Filters.Base
                 websiteHttpPath: _model.WebsiteHttpPath,
                 languageCultureCode: _model.LanguageCultureCode
             );
-        }
+        }        
 
         void initPluginsClient()
         {

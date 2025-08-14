@@ -64,7 +64,7 @@
         fancyBox.buttons = options.buttons == undefined ? fancyBox.buttons : options.buttons;
         fancyBox.smallBtn = options.smallBtn == undefined ? fancyBox.smallBtn : options.smallBtn;
 		fancyBox.customSmallBtnTpl = options.customSmallBtnTpl == undefined ? fancyBox.customSmallBtnTpl : options.customSmallBtnTpl;
-
+        
         fancyBox.width = options.width == undefined ? fancyBox.width : options.width;
         fancyBox.height = options.height == undefined ? fancyBox.height : options.height;
 
@@ -504,7 +504,8 @@
             });
     },
 	
-	showIframePopup: function () {
+    showIframePopup: function () {
+        
         $.fancybox.open({
             type: 'iframe',
             src: fancyBox.src,

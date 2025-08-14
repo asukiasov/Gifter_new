@@ -6,7 +6,7 @@ namespace SixtyThreeBits.Web.Models.Admin
     public class NewsModelBase : ModelBase
     {
         #region Properties
-        public NewsDTO DBItem { get; set; }
+        public NewsDTO NewsItem { get; set; }
         #endregion
     }
 }

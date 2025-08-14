@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SixtyThreeBits.Core.Infrastructure.Repositories.DTO;
 using SixtyThreeBits.Core.Libraries;
-using SixtyThreeBits.Core.Libraries.FileStorages;
+using SixtyThreeBits.Core.Libraries.FileStorages.Enums;
 using SixtyThreeBits.Core.Properties;
 using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries;
@@ -13,30 +13,29 @@ using System.Threading.Tasks;
 namespace SixtyThreeBits.Web.Models.Admin
 {
     public class PagePropertiesModel : PageModelBase
-    {
-        #region Properties
-        readonly string _folderPath = FileStorageManager.Modules[Enums.FileManagerModules.Pages].FolderName;
-        #endregion
-
+    {        
         #region Methods
         public ViewModel GetViewModel(ViewModel viewModel)
         {
             if (viewModel == null)
             {
                 viewModel = new ViewModel();
-                viewModel.PageIsPublished = DBItem.PageIsPublished;
-                viewModel.PageSlug = DBItem.PageSlug;
-                viewModel.PageTitle = DBItem.PageTitle;
-                viewModel.PageTitleEng = DBItem.PageTitleEng;
-                viewModel.PageShortDescription = DBItem.PageShortDescription;
-                viewModel.PageShortDescriptionEng = DBItem.PageShortDescriptionEng;
+                viewModel.PageIsPublished = Page.PageIsPublished;
+                viewModel.PageSlug = Page.PageSlug;
+                viewModel.PageTitle = Page.PageTitle;
+                viewModel.PageTitleEng = Page.PageTitleEng;
+                viewModel.PageShortDescription = Page.PageShortDescription;
+                viewModel.PageShortDescriptionEng = Page.PageShortDescriptionEng;
             }
 
-            viewModel.PageImageFilename = DBItem.PageImageFilename;
-            viewModel.PageImageHttpPath = FileStorage.GetUploadedFileHttpPath(DBItem.PageImageFilename, _folderPath);
-            viewModel.UrlPreview = $"{WebsiteHttpPath}{DBItem.PageSlug}";
+            viewModel.PageImageFilename = Page.PageImageFilename;
+            viewModel.PageImageHttpPath = FileStorage.GetUploadedFileHttpPath(
+                filename: Page.PageImageFilename,
+                folderPath: FileStorage.GetFolderPathByModule(FileManagerModules.Pages)
+            );
+            viewModel.UrlPreview = $"{WebsiteHttpPath}{Page.PageSlug}";
                 
-            viewModel.UrlDeleteImage = Url.RouteUrl(ControllerActionRouteNames.Admin.PagePropertiesController.DeleteImage, values: new { pageID = DBItem.PageID });
+            viewModel.UrlDeleteImage = Url.RouteUrl(ControllerActionRouteNames.Admin.PagePropertiesController.DeleteImage, values: new { pageID = Page.PageID });
 
             return viewModel;
         }
@@ -50,7 +49,7 @@ namespace SixtyThreeBits.Web.Models.Admin
                         errorAction: async () =>
                         {
                             var repository = RepositoriesFactory.CreatePagesRepository();
-                            var isUniq = await repository.PagesIsSlugUniq(pageSlug: viewModel.PageSlug, pageID: DBItem.PageID);
+                            var isUniq = await repository.PagesIsSlugUniq(pageSlug: viewModel.PageSlug, pageID: Page.PageID);
                             var isError = !isUniq;
                             return isError;
                         },
@@ -66,13 +65,16 @@ namespace SixtyThreeBits.Web.Models.Admin
             var pageImageFilename = hasPageImage ? GetFilenameFromUploadedFile(viewModel.PageImageFile) : null;
             if (hasPageImage)
             {
-                await FileStorage.DeleteFile(pageImageFilename, _folderPath);
+                await FileStorage.DeleteFile(
+                    filename: pageImageFilename,
+                    folderPath: FileStorage.GetFolderPathByModule(FileManagerModules.Pages)
+                );
             }
 
             var repository = RepositoriesFactory.CreatePagesRepository();
             await repository.PagesIUD(
                 databaseAction: Enums.DatabaseActions.UPDATE,
-                pageID: DBItem.PageID,
+                pageID: Page.PageID,
                 page: new PageIudDTO
                 {
                     PageSlug = viewModel.PageSlug,
@@ -96,7 +98,7 @@ namespace SixtyThreeBits.Web.Models.Admin
                     await FileStorage.SaveUploadedFile(
                         sourceFileStream: viewModel.PageImageFile.OpenReadStream(),
                         filename: pageImageFilename,
-                        folderPath: _folderPath
+                        folderPath: FileStorage.GetFolderPathByModule(FileManagerModules.Pages)
                     );
                 }
             }
@@ -106,12 +108,15 @@ namespace SixtyThreeBits.Web.Models.Admin
         {
             var viewModel = new AjaxResponse();
 
-            await FileStorage.DeleteFile(DBItem.PageImageFilename, _folderPath);
+            await FileStorage.DeleteFile(
+                filename: Page.PageImageFilename,
+                folderPath: FileStorage.GetFolderPathByModule(FileManagerModules.Pages)
+            );
 
             var repository = RepositoriesFactory.CreatePagesRepository();
             await repository.PagesIUD(
                 databaseAction: Enums.DatabaseActions.UPDATE,
-                pageID: DBItem.PageID,
+                pageID: Page.PageID,
                 page: new PageIudDTO
                 {
                     PageImageFilename = Constants.NullValueFor.String

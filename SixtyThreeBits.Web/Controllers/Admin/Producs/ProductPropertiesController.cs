@@ -37,7 +37,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
                 if (viewModel.IsValid)
                 {
                     Model.ShowSuccessToastNotification();
-                    result = Redirect(Url.RouteUrl(ControllerActionRouteNames.Admin.ProductPropertiesController.Properties, new { productID = Model.DBItem.ProductID }));
+                    result = Redirect(Url.RouteUrl(ControllerActionRouteNames.Admin.ProductPropertiesController.Properties, new { productID = Model.Product.ProductID }));
                 }
                 else
                 {

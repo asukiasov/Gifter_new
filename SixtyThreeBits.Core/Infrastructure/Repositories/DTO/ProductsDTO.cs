@@ -91,7 +91,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories.DTO
         #endregion
 
         #region Nested Classes
-        public class ProductImage
+        public record ProductImage
         {
             #region Properties
             public int? ProductImageID { get; init; }

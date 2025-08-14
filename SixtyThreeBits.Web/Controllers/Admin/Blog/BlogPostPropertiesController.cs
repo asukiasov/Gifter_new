@@ -18,8 +18,8 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         {
             Model.PluginsClient.Enable63BitsForms(true).EnableFancybox(true).EnableTinyMce(true).EnableDevextreme(true).Enable63BitsSuccessErrorToast(true);
             var viewModel = Model.GetViewModel(viewModel: null);
-            Model.PageTitle.Set(Model.DBItem.BlogPostTitle);
-            Model.Breadcrumbs.RenameLastItem(Model.DBItem.BlogPostTitle);
+            Model.PageTitle.Set(Model.BlogPost.BlogPostTitle);
+            Model.Breadcrumbs.RenameLastItem(Model.BlogPost.BlogPostTitle);
             return View(ViewNames.Admin.BlogPosts.BlogPostPropertiesView, viewModel);
         }
 
@@ -31,8 +31,8 @@ namespace SixtyThreeBits.Web.Controllers.Admin
             Model.PluginsClient.Enable63BitsForms(true).EnableFancybox(true).EnableTinyMce(true).EnableDevextreme(true).Enable63BitsSuccessErrorToast(true);
             viewModel = Model.GetViewModel(viewModel: viewModel);
 
-            Model.PageTitle.Set(Model.DBItem.BlogPostTitle);
-            Model.Breadcrumbs.RenameLastItem(Model.DBItem.BlogPostTitle);
+            Model.PageTitle.Set(Model.BlogPost.BlogPostTitle);
+            Model.Breadcrumbs.RenameLastItem(Model.BlogPost.BlogPostTitle);
 
             await Model.Validate(viewModel);
             if (viewModel.IsValid)
@@ -41,7 +41,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
                 if (viewModel.IsValid)
                 {
                     Model.ShowSuccessToastNotification();
-                    result = Redirect(Url.RouteUrl(ControllerActionRouteNames.Admin.BlogPostPropertiesController.Properties, new { blogPostID = Model.DBItem.BlogPostID }));
+                    result = Redirect(Url.RouteUrl(ControllerActionRouteNames.Admin.BlogPostPropertiesController.Properties, new { blogPostID = Model.BlogPost.BlogPostID }));
                 }
                 else
                 {

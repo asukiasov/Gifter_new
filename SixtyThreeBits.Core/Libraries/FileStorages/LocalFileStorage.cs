@@ -1,4 +1,4 @@
-﻿using SixtyThreeBits.Core.Abstractions;
+﻿using SixtyThreeBits.Core.Libraries.FileStorages.Base;
 using SixtyThreeBits.Core.Libraries.FileStorages.DTO;
 using System.Collections.Generic;
 using System.IO;
@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SixtyThreeBits.Core.Libraries.FileStorages
 {
-    public class LocalFileStorage : IFileStorage
+    public class LocalFileStorage : FileStorageBase
     {
         #region Properties
         readonly string _uploadFolderPhysicalPath;
@@ -26,27 +26,27 @@ namespace SixtyThreeBits.Core.Libraries.FileStorages
         #endregion
 
         #region Methods
-        public async Task DeleteFile(string filename, string folderPath = null)
+        public override async Task DeleteFile(string filename, string folderPath = null)
         {
-            var destinationFilePhysicalPath = GetDestinationFilePhysicalPath(filename, folderPath);
+            var destinationFilePhysicalPath = getDestinationFilePhysicalPath(filename, folderPath);
             if (File.Exists(destinationFilePhysicalPath))
             {
                 File.Delete(destinationFilePhysicalPath);
             }
-            await Task.FromResult(0);
+            await Task.CompletedTask;
         }
 
-        public async Task DeleteFolderRecursive(string folderPath)
+        public override async Task DeleteFolderRecursive(string folderPath)
         {
-            var DestinationFolderPhysicalPath = GetDestinationFolderPhysicalPath(folderPath);
+            var DestinationFolderPhysicalPath = getDestinationFolderPhysicalPath(folderPath);
             if (Directory.Exists(DestinationFolderPhysicalPath))
             {
                 Directory.Delete(DestinationFolderPhysicalPath, recursive: true);
             }
-            await Task.FromResult(0);
+            await Task.CompletedTask;
         }
 
-        public string GetUploadedFileHttpPath(string filename, string folderPath = null)
+        public override string GetUploadedFileHttpPath(string filename, string folderPath = null)
         {
             if (string.IsNullOrWhiteSpace(filename))
             {
@@ -66,7 +66,7 @@ namespace SixtyThreeBits.Core.Libraries.FileStorages
             }
         }
 
-        public string GetUploadedFileHttpPathOrDefault(string filename, string folderPath = null, string noImageHttpPath = null)
+        public override string GetUploadedFileHttpPathOrDefault(string filename, string folderPath = null, string noImageHttpPath = null)
         {
             var fileHttpPath = GetUploadedFileHttpPath(filename, folderPath);
             if (string.IsNullOrWhiteSpace(fileHttpPath))
@@ -79,23 +79,23 @@ namespace SixtyThreeBits.Core.Libraries.FileStorages
             }
         }
 
-        public string GetUploadedFileHttpPathSigned(string filename, string folderPath = null)
+        public override string GetUploadedFileHttpPathSigned(string filename, string folderPath = null)
         {
             return GetUploadedFileHttpPath(filename, folderPath);
         }
 
-        public async Task SaveUploadedFile(Stream sourceFileStream, string filename, string folderPath = null)
+        public override async Task SaveUploadedFile(Stream sourceFileStream, string filename, string folderPath = null)
         {
             if (!string.IsNullOrWhiteSpace(folderPath))
             {
-                var destinationFolderPhysicalPath = GetDestinationFolderPhysicalPath(folderPath);
+                var destinationFolderPhysicalPath = getDestinationFolderPhysicalPath(folderPath);
                 if (!Directory.Exists(destinationFolderPhysicalPath))
                 {
                     Directory.CreateDirectory(destinationFolderPhysicalPath);
                 }
             }
 
-            var destinationFilePhysicalPath = GetDestinationFilePhysicalPath(filename, folderPath);
+            var destinationFilePhysicalPath = getDestinationFilePhysicalPath(filename, folderPath);
 
             using (var destinationFileStream = new FileStream(destinationFilePhysicalPath, FileMode.Create))
             {
@@ -104,36 +104,36 @@ namespace SixtyThreeBits.Core.Libraries.FileStorages
             }
         }
 
-        public async Task SaveUploadedFile(byte[] sourceFileBytes, string filename, string folderPath = null)
+        public override async Task SaveUploadedFile(byte[] sourceFileBytes, string filename, string folderPath = null)
         {
             if (!string.IsNullOrWhiteSpace(folderPath))
             {
-                var destinationFolderPhysicalPath = GetDestinationFolderPhysicalPath(folderPath);
+                var destinationFolderPhysicalPath = getDestinationFolderPhysicalPath(folderPath);
                 if (!Directory.Exists(destinationFolderPhysicalPath))
                 {
                     Directory.CreateDirectory(destinationFolderPhysicalPath);
                 }
             }
 
-            var destinationFilePhysicalPath = GetDestinationFilePhysicalPath(filename, folderPath);
+            var destinationFilePhysicalPath = getDestinationFilePhysicalPath(filename, folderPath);
             if (!string.IsNullOrWhiteSpace(destinationFilePhysicalPath))
             {
                 await File.WriteAllBytesAsync(destinationFilePhysicalPath, sourceFileBytes);
             }
         }
 
-        public async Task SaveUploadedFile(string sourceFilePhysicalPath, string filename, string folderPath = null)
+        public override async Task SaveUploadedFile(string sourceFilePhysicalPath, string filename, string folderPath = null)
         {
             if (!string.IsNullOrWhiteSpace(folderPath))
             {
-                var destinationFolderPhysicalPath = GetDestinationFolderPhysicalPath(folderPath);
+                var destinationFolderPhysicalPath = getDestinationFolderPhysicalPath(folderPath);
                 if (!Directory.Exists(destinationFolderPhysicalPath))
                 {
                     Directory.CreateDirectory(destinationFolderPhysicalPath);
                 }
             }
 
-            var destinationFilePhysicalPath = GetDestinationFilePhysicalPath(filename, folderPath);
+            var destinationFilePhysicalPath = getDestinationFilePhysicalPath(filename, folderPath);
             if (!string.IsNullOrWhiteSpace(destinationFilePhysicalPath))
             {
                 using (var SourceStream = File.Open(sourceFilePhysicalPath, FileMode.Open))
@@ -146,11 +146,11 @@ namespace SixtyThreeBits.Core.Libraries.FileStorages
             }
         }
 
-        public async Task<List<FileStorageItemDTO>> GetFiles(string folderPath = null)
+        public override async Task<List<FileStorageItemDTO>> GetFiles(string folderPath = null)
         {
             if (!string.IsNullOrWhiteSpace(folderPath))
             {
-                var destinationFolderPhysicalPath = GetDestinationFolderPhysicalPath(folderPath);
+                var destinationFolderPhysicalPath = getDestinationFolderPhysicalPath(folderPath);
                 if (!Directory.Exists(destinationFolderPhysicalPath))
                 {
                     Directory.CreateDirectory(destinationFolderPhysicalPath);
@@ -172,18 +172,18 @@ namespace SixtyThreeBits.Core.Libraries.FileStorages
         #endregion
 
         #region Private Methods
-        string GetDestinationFilePhysicalPath(string filename, string folderPath = null)
+        string getDestinationFilePhysicalPath(string filename, string folderPath = null)
         {
             var destinationFilePhysicalPath = default(string);
             if (!string.IsNullOrWhiteSpace(filename))
             {
-                var DestinationFolderPhysicalPath = GetDestinationFolderPhysicalPath(folderPath);
+                var DestinationFolderPhysicalPath = getDestinationFolderPhysicalPath(folderPath);
                 destinationFilePhysicalPath = $"{DestinationFolderPhysicalPath}\\{filename}";
             }
             return destinationFilePhysicalPath;
         }
 
-        string GetDestinationFolderPhysicalPath(string folderPath)
+        string getDestinationFolderPhysicalPath(string folderPath)
         {
             var sb = new StringBuilder();
             sb.Append(_uploadFolderPhysicalPath);

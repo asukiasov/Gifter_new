@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SixtyThreeBits.Core.Infrastructure.Repositories.DTO;
 using SixtyThreeBits.Core.Libraries;
-using SixtyThreeBits.Core.Libraries.FileStorages;
+using SixtyThreeBits.Core.Libraries.FileStorages.Enums;
 using SixtyThreeBits.Core.Properties;
 using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries;
@@ -15,28 +15,27 @@ namespace SixtyThreeBits.Web.Models.Admin
 {
     public class BlogPropertiesModel : BlogModelBase
     {
-        #region Properties
-        readonly string _folderPath = FileStorageManager.Modules[Enums.FileManagerModules.Blog].FolderName;
-        #endregion
-
         #region Methods
         public ViewModel GetViewModel(ViewModel viewModel)
         {
             if (viewModel == null)
             {
                 viewModel = new ViewModel();
-                viewModel.BlogPostIsPublished = DBItem.BlogPostIsPublished;
-                viewModel.BlogPostSlug = DBItem.BlogPostSlug;
-                viewModel.BlogPostTitle = DBItem.BlogPostTitle;
-                viewModel.BlogPostShortText = DBItem.BlogPostShortText;
-                viewModel.BlogPostText = DBItem.BlogPostText;
-                viewModel.BlogPostAuthorName = DBItem.BlogPostAuthorName;
-                viewModel.BlogPostDate = DBItem.BlogPostDate;                
+                viewModel.BlogPostIsPublished = BlogPost.BlogPostIsPublished;
+                viewModel.BlogPostSlug = BlogPost.BlogPostSlug;
+                viewModel.BlogPostTitle = BlogPost.BlogPostTitle;
+                viewModel.BlogPostShortText = BlogPost.BlogPostShortText;
+                viewModel.BlogPostText = BlogPost.BlogPostText;
+                viewModel.BlogPostAuthorName = BlogPost.BlogPostAuthorName;
+                viewModel.BlogPostDate = BlogPost.BlogPostDate;                
             }
 
-            viewModel.BlogPostImageFilename = DBItem.BlogPostImageFilename;
-            viewModel.BlogPostImageHttpPath = FileStorage.GetUploadedFileHttpPath(DBItem.BlogPostImageFilename, _folderPath);
-            viewModel.UrlDeleteImage = Url.RouteUrl(ControllerActionRouteNames.Admin.BlogPostPropertiesController.DeleteImage, new { blogPostID = DBItem.BlogPostID });
+            viewModel.BlogPostImageFilename = BlogPost.BlogPostImageFilename;
+            viewModel.BlogPostImageHttpPath = FileStorage.GetUploadedFileHttpPath(
+                filename: BlogPost.BlogPostImageFilename, 
+                folderPath: FileStorage.GetFolderPathByModule(FileManagerModules.Blog)
+            );
+            viewModel.UrlDeleteImage = Url.RouteUrl(ControllerActionRouteNames.Admin.BlogPostPropertiesController.DeleteImage, new { blogPostID = BlogPost.BlogPostID });
 
             return viewModel;
         }
@@ -50,7 +49,7 @@ namespace SixtyThreeBits.Web.Models.Admin
                     errorAction: async () =>
                     {
                         var repository = RepositoriesFactory.CreateBlogRepository();
-                        var isUniq = await repository.BlogPostIsSlugUniq(blogPostSlug: viewModel.BlogPostSlug, blogPostID: DBItem.BlogPostID);
+                        var isUniq = await repository.BlogPostIsSlugUniq(blogPostSlug: viewModel.BlogPostSlug, blogPostID: BlogPost.BlogPostID);
                         return !isUniq;
                     },
                     errorKey: Validation63.GetJQueryNameSelectorFor(nameof(viewModel.BlogPostSlug)),
@@ -65,13 +64,16 @@ namespace SixtyThreeBits.Web.Models.Admin
             var blogPostImageFilename = hasBlogImage ? GetFilenameFromUploadedFile(viewModel.BlogImageFile) : null;
             if (hasBlogImage)
             {
-                await FileStorage.DeleteFile(DBItem.BlogPostImageFilename, _folderPath);
+                await FileStorage.DeleteFile(
+                    filename: BlogPost.BlogPostImageFilename, 
+                    folderPath: FileStorage.GetFolderPathByModule(FileManagerModules.Blog)
+                );
             }
 
             var repository = RepositoriesFactory.CreateBlogRepository();
             await repository.BlogPostsIUD(
                 databaseAction: Enums.DatabaseActions.UPDATE,
-                blogPostID: DBItem.BlogPostID,
+                blogPostID: BlogPost.BlogPostID,
                 blogPost: new BlogPostIudDTO
                 {
                     BlogPostSlug = viewModel.BlogPostSlug,
@@ -96,7 +98,7 @@ namespace SixtyThreeBits.Web.Models.Admin
                     await FileStorage.SaveUploadedFile(
                         sourceFileStream: viewModel.BlogImageFile.OpenReadStream(),
                         filename: blogPostImageFilename,
-                        folderPath: _folderPath
+                        folderPath: FileStorage.GetFolderPathByModule(FileManagerModules.Blog)
                     );
                 }
             }
@@ -105,12 +107,15 @@ namespace SixtyThreeBits.Web.Models.Admin
         public async Task<AjaxResponse> DeleteImage()
         {
             var viewModel = new AjaxResponse();
-            await FileStorage.DeleteFile(DBItem.BlogPostImageFilename, _folderPath);
+            await FileStorage.DeleteFile(
+                filename: BlogPost.BlogPostImageFilename, 
+                folderPath: FileStorage.GetFolderPathByModule(FileManagerModules.Blog)
+            );
 
             var repository = RepositoriesFactory.CreateBlogRepository();
             await repository.BlogPostsIUD(
                 databaseAction: Enums.DatabaseActions.UPDATE,
-                blogPostID: DBItem.BlogPostID,
+                blogPostID: BlogPost.BlogPostID,
                 blogPost: new BlogPostIudDTO
                 {
                     BlogPostImageFilename = Constants.NullValueFor.String

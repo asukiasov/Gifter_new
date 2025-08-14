@@ -19,8 +19,8 @@ namespace SixtyThreeBits.Web.Filters.Admin
             var blogPostID = filterContext.RouteData.Values[WebConstants.RouteValues.BlogPostID]?.ToString().ToInt();
 
             var repository = _model.RepositoriesFactory.CreateBlogRepository();
-            _model.DBItem = await repository.BlogPostGetSingleByID(blogPostID);
-            if (_model.DBItem == null)
+            _model.BlogPost = await repository.BlogPostGetSingleByID(blogPostID);
+            if (_model.BlogPost == null)
             {
                 filterContext.Result = _model.GetNotFoundAdminViewResult();
             }
@@ -37,7 +37,7 @@ namespace SixtyThreeBits.Web.Filters.Admin
         void reinitBreadCrumbs()
         {
             _model.Breadcrumbs.DeleteLastItem();
-            _model.Breadcrumbs.RenameLastItem(_model.DBItem.BlogPostTitle);
+            _model.Breadcrumbs.RenameLastItem(_model.BlogPost.BlogPostTitle);
         }
         #endregion
     }

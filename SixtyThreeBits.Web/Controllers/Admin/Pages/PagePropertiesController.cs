@@ -35,7 +35,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
                 if (viewModel.IsValid)
                 {
                     Model.ShowSuccessToastNotification();
-                    return Redirect(Url.RouteUrl(ControllerActionRouteNames.Admin.PagePropertiesController.Properties, new { pageID = Model.DBItem.PageID }));
+                    return Redirect(Url.RouteUrl(ControllerActionRouteNames.Admin.PagePropertiesController.Properties, new { pageID = Model.Page.PageID }));
                 }
                 else
                 {

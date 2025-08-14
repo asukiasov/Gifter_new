@@ -42,6 +42,7 @@ namespace SixtyThreeBits.Web.Models.Base
         public ICookieAssistance CookieAssistance { get; set; }
         public Controller Controller { get; set; }
         public IUrlHelper Url { get; set; }
+        public UrlFactory63 UrlFactory { get; set; }
         public HttpRequest Request { get; set; }
         public HttpResponse Response { get; set; }
         public IPageTitle PageTitle { get; set; }

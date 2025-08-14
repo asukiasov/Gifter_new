@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using SixtyThreeBits.Core.Infrastructure.Repositories.DTO;
 using SixtyThreeBits.Core.Libraries.FileStorages;
+using SixtyThreeBits.Core.Libraries.FileStorages.Enums;
 using SixtyThreeBits.Core.Properties;
 using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries;
@@ -19,10 +20,6 @@ namespace SixtyThreeBits.Web.Models.Admin
 {
     public class BlogModel : ModelBase
     {
-        #region Properties
-        readonly string _folderPath = FileStorageManager.Modules[Enums.FileManagerModules.Blog].FolderName;
-        #endregion
-
         #region Methods
         public ViewModel GetViewModel()
         {
@@ -61,9 +58,17 @@ namespace SixtyThreeBits.Web.Models.Admin
         public async Task<AjaxResponse> IUD(Enums.DatabaseActions databaseAction, int? blogPostID, ViewModel.GridModel.GridItem submitModel)
         {
             var viewModel = new AjaxResponse();
-            await iudProcessBlogPostImageFilename(databaseAction: databaseAction, blogPostID: blogPostID);
-
             var repository = RepositoriesFactory.CreateBlogRepository();
+
+            if (databaseAction == Enums.DatabaseActions.DELETE)
+            {
+                var blogPost = await repository.BlogPostGetSingleByID(blogPostID);
+                await FileStorage.DeleteFile(
+                    filename: blogPost.BlogPostImageFilename,
+                    folderPath: FileStorage.GetFolderPathByModule(FileManagerModules.Blog)
+                );
+            }
+
             await repository.BlogPostsIUD(
                 databaseAction: databaseAction,
                 blogPostID: blogPostID,
@@ -80,15 +85,6 @@ namespace SixtyThreeBits.Web.Models.Admin
             viewModel.Data = repository.ErrorMessage;
 
             return viewModel;
-        }
-        async Task iudProcessBlogPostImageFilename(Enums.DatabaseActions databaseAction, int? blogPostID)
-        {
-            if (databaseAction == Enums.DatabaseActions.DELETE)
-            {
-                var repository = RepositoriesFactory.CreateBlogRepository();
-                var blogPost = await repository.BlogPostGetSingleByID(blogPostID);
-                await FileStorage.DeleteFile(filename: blogPost.BlogPostImageFilename, folderPath: _folderPath);
-            }
         }
         #endregion
 

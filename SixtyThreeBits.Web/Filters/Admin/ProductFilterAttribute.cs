@@ -19,8 +19,8 @@ namespace SixtyThreeBits.Web.Filters.Admin
             var productID = filterContext.RouteData.Values[WebConstants.RouteValues.ProductID]?.ToString().ToInt();
 
             var repository = _model.RepositoriesFactory.CreateProductsRepository();
-            _model.DBItem = await repository.ProductsGetSingleByID(productID);
-            if (_model.DBItem == null)
+            _model.Product = await repository.ProductsGetSingleByID(productID);
+            if (_model.Product == null)
             {
                 filterContext.Result = _model.GetNotFoundAdminViewResult();
             }
@@ -37,13 +37,13 @@ namespace SixtyThreeBits.Web.Filters.Admin
 
         void initPageTitle()
         {
-            _model.PageTitle.Set(_model.DBItem.ProductName);
+            _model.PageTitle.Set(_model.Product.ProductName);
         }
 
         void reinitBreadCrumbs()
         {
             _model.Breadcrumbs.RemoveAt(2);
-            _model.Breadcrumbs.RenameLastItem(_model.DBItem.ProductName);
+            _model.Breadcrumbs.RenameLastItem(_model.Product.ProductName);
         }
         #endregion
     }

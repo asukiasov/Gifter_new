@@ -1,5 +1,5 @@
-﻿using SixtyThreeBits.Core.Abstractions;
-using SixtyThreeBits.Core.Infrastructure.Services;
+﻿using SixtyThreeBits.Core.Infrastructure.Services;
+using SixtyThreeBits.Core.Libraries.FileStorages.Base;
 using SixtyThreeBits.Core.Libraries.FileStorages.DTO;
 using System.Collections.Generic;
 using System.IO;
@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SixtyThreeBits.Core.Libraries.FileStorages
 {
-    public class AwsFileStorage : IFileStorage
+    public class AwsFileStorage : FileStorageBase
     {
         #region Properties
         readonly string _noImageHttpPath;
@@ -24,18 +24,18 @@ namespace SixtyThreeBits.Core.Libraries.FileStorages
         #endregion
 
         #region Methods
-        public async Task DeleteFile(string filename, string folderPath = null)
+        public override async Task DeleteFile(string filename, string folderPath = null)
         {
             var filePath = string.IsNullOrWhiteSpace(folderPath) ? filename : $"{folderPath.TrimEnd('/')}/{filename}";
             await _awsService.DeleteFileAsyncTask(filePath);
         }
 
-        public async Task DeleteFolderRecursive(string folderPath)
+        public override async Task DeleteFolderRecursive(string folderPath)
         {
             await _awsService.DeleteFolderAsyncTask(folderPath);
         }
 
-        public async Task<List<FileStorageItemDTO>> GetFiles(string folderPath = null)
+        public override async Task<List<FileStorageItemDTO>> GetFiles(string folderPath = null)
         {
             var files = string.IsNullOrWhiteSpace(folderPath) ? await _awsService.GetFilesAsyncTask() : await _awsService.GetFilesAsyncTask(folderPath);
             var result = files.Select(item => new FileStorageItemDTO(
@@ -49,7 +49,7 @@ namespace SixtyThreeBits.Core.Libraries.FileStorages
             return result;
         }
 
-        public string GetUploadedFileHttpPath(string filename, string folderPath = null)
+        public override string GetUploadedFileHttpPath(string filename, string folderPath = null)
         {
             if (string.IsNullOrWhiteSpace(filename))
             {
@@ -63,7 +63,7 @@ namespace SixtyThreeBits.Core.Libraries.FileStorages
             }
         }
 
-        public string GetUploadedFileHttpPathOrDefault(string filename, string folderPath = null, string noImageHttpPath = null)
+        public override string GetUploadedFileHttpPathOrDefault(string filename, string folderPath = null, string noImageHttpPath = null)
         {
             var fileHttpPath = GetUploadedFileHttpPath(filename, folderPath);
             if (string.IsNullOrWhiteSpace(fileHttpPath))
@@ -76,26 +76,26 @@ namespace SixtyThreeBits.Core.Libraries.FileStorages
             }
         }
 
-        public string GetUploadedFileHttpPathSigned(string filename, string folderPath = null)
+        public override string GetUploadedFileHttpPathSigned(string filename, string folderPath = null)
         {
             var filePath = string.IsNullOrWhiteSpace(folderPath) ? filename : $"{folderPath}/{filename}";
             var fileDownloadUrlSigned = _awsService.GetFileDownloadUrlSigned(filePath);
             return fileDownloadUrlSigned;
         }
 
-        public async Task SaveUploadedFile(Stream sourceFileStream, string filename, string folderPath = null)
+        public override async Task SaveUploadedFile(Stream sourceFileStream, string filename, string folderPath = null)
         {
             var filePath = string.IsNullOrWhiteSpace(folderPath) ? filename : $"{folderPath}/{filename}";
             await _awsService.UploadFileToS3AsyncTask(sourceFileStream, filePath);
         }
 
-        public async Task SaveUploadedFile(byte[] sourceFileBytes, string filename, string folderPath = null)
+        public override async Task SaveUploadedFile(byte[] sourceFileBytes, string filename, string folderPath = null)
         {
             var filePath = string.IsNullOrWhiteSpace(folderPath) ? filename : $"{folderPath}/{filename}";
             await _awsService.UploadFileToS3AsyncTask(sourceFileBytes, filePath);
         }
 
-        public async Task SaveUploadedFile(string sourceFilePhysicalPath, string filename, string folderPath = null)
+        public override async Task SaveUploadedFile(string sourceFilePhysicalPath, string filename, string folderPath = null)
         {
             var filePath = string.IsNullOrWhiteSpace(folderPath) ? filename : $"{folderPath}/{filename}";
             await _awsService.UploadFileToS3AsyncTask(sourceFilePhysicalPath, filePath);

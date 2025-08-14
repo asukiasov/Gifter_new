@@ -598,10 +598,6 @@
     @await Html.PartialAsync(ViewNames.Shared.PluginsClient.PluginsClientFooter, Model.PluginsClient)
 
     <script>
-        PageBuilderModel.queryStringKeys.fileManagerAllowedExtensions = '@Model.FileManagerAllowedExtensions';
-        PageBuilderModel.queryStringKeys.fileManagerAllowChooseMultiple = '@Model.FileManagerAllowChooseMultiple';
-        PageBuilderModel.queryStringKeys.fileManagerOnSelectedFilesChooseClientCallback = '@Model.FileManagerOnSelectedFilesChooseClientCallback';
-
         PageBuilderModel.urlSave = '@Model.UrlSave';
         PageBuilderModel.textError = '@Model.TextError';
         PageBuilderModel.language = '@Model.Language';

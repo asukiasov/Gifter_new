@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SixtyThreeBits.Core.Infrastructure.Repositories.DTO;
 using SixtyThreeBits.Core.Libraries;
-using SixtyThreeBits.Core.Libraries.FileStorages;
+using SixtyThreeBits.Core.Libraries.FileStorages.Enums;
 using SixtyThreeBits.Core.Properties;
 using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries;
@@ -17,33 +17,32 @@ namespace SixtyThreeBits.Web.Models.Admin
 {
     public class ProductPropertiesModel : ProductModelBase
     {
-        #region Properties
-        readonly string _folderPath = FileStorageManager.Modules[Enums.FileManagerModules.Products].FolderName;
-        #endregion
-
         #region Methods        
         public async Task<ViewModel> GetViewModel(ViewModel viewModel = null)
         {
             if (viewModel == null)
             {
                 viewModel = new ViewModel();
-                viewModel.ProductIsPublished = DBItem.ProductIsPublished;
-                viewModel.ProductIsFeatured = DBItem.ProductIsFeatured;
-                viewModel.BrandID = DBItem.BrandID;
-                viewModel.ProductCategoryID = DBItem.ProductCategoryID;
-                viewModel.ProductName = DBItem.ProductName;
-                viewModel.ProductNameEng = DBItem.ProductNameEng;
-                viewModel.ProductPrice = Utilities.FormatPriceValue(DBItem.ProductPrice);
-                viewModel.ProductPriceOld = Utilities.FormatPriceValue(DBItem.ProductPriceOld);
-                viewModel.ProductRemainder = Utilities.FormatQuantityValue(DBItem.ProductRemainder);
-                viewModel.ProductSKU = DBItem.ProductSKU;
-                viewModel.ProductDescriptionShort = DBItem.ProductDescriptionShort;
-                viewModel.ProductDescriptionShortEng = DBItem.ProductDescriptionShortEng;
-                viewModel.ProductDescription = DBItem.ProductDescription;
-                viewModel.ProductDescriptionEng = DBItem.ProductDescriptionEng;
+                viewModel.ProductIsPublished = Product.ProductIsPublished;
+                viewModel.ProductIsFeatured = Product.ProductIsFeatured;
+                viewModel.BrandID = Product.BrandID;
+                viewModel.ProductCategoryID = Product.ProductCategoryID;
+                viewModel.ProductName = Product.ProductName;
+                viewModel.ProductNameEng = Product.ProductNameEng;
+                viewModel.ProductPrice = Utilities.FormatPriceValue(Product.ProductPrice);
+                viewModel.ProductPriceOld = Utilities.FormatPriceValue(Product.ProductPriceOld);
+                viewModel.ProductRemainder = Utilities.FormatQuantityValue(Product.ProductRemainder);
+                viewModel.ProductSKU = Product.ProductSKU;
+                viewModel.ProductDescriptionShort = Product.ProductDescriptionShort;
+                viewModel.ProductDescriptionShortEng = Product.ProductDescriptionShortEng;
+                viewModel.ProductDescription = Product.ProductDescription;
+                viewModel.ProductDescriptionEng = Product.ProductDescriptionEng;
             }
-            viewModel.ProductImageFilename = DBItem.ProductImageFilename;
-            viewModel.ProductImageHttpPath = FileStorage.GetUploadedFileHttpPath(DBItem.ProductImageFilename, _folderPath);
+            viewModel.ProductImageFilename = Product.ProductImageFilename;
+            viewModel.ProductImageHttpPath = FileStorage.GetUploadedFileHttpPath(
+                filename: Product.ProductImageFilename, 
+                folderPath: FileStorage.GetFolderPathByModule(FileManagerModules.Products)
+            );
 
             var repositoryBrands = RepositoriesFactory.CreateBrandsRepository();
             viewModel.Brands = (await repositoryBrands.BrandsList())
@@ -66,21 +65,24 @@ namespace SixtyThreeBits.Web.Models.Admin
             .ToList();
 
             var repositoryCountries = RepositoriesFactory.CreateCountriesRepository();
-            viewModel.ProductProducerCountries = await repositoryCountries.CountriesListAsSimpleKeyValue(SelectedCountryID: DBItem.CountryIDProducer);
+            viewModel.ProductProducerCountries = await repositoryCountries.CountriesListAsSimpleKeyValue(SelectedCountryID: Product.CountryIDProducer);
 
-            viewModel.ProductImages = DBItem.ProductImages?.Select(item => new ViewModel.ProductImage
+            viewModel.ProductImages = Product.ProductImages?.Select(item => new ViewModel.ProductImage
             {
                 ProductImageID = item.ProductImageID,
                 ProductImageFilename = item.ProductImageFilename,
-                ProductImageFileHttpPath = FileStorage.GetUploadedFileHttpPath(item.ProductImageFilename, _folderPath),
+                ProductImageFileHttpPath = FileStorage.GetUploadedFileHttpPath(
+                    filename: item.ProductImageFilename, 
+                    folderPath: FileStorage.GetFolderPathByModule(FileManagerModules.Products)
+                ),
                 ProductImageAltText = item.ProductImageAltText
             })
             .ToList();
 
-            viewModel.UrlImageUpload = Url.RouteUrl(ControllerActionRouteNames.Admin.ProductPropertiesController.ProductImagesUpload, new { productID = DBItem.ProductID });
-            viewModel.UrlImageUpdate = Url.RouteUrl(ControllerActionRouteNames.Admin.ProductPropertiesController.ProductImagesUpdate, new { productID = DBItem.ProductID });
-            viewModel.UrlImageSort = Url.RouteUrl(ControllerActionRouteNames.Admin.ProductPropertiesController.ProductImagesSort, new { productID = DBItem.ProductID });
-            viewModel.UrlImageDelete = Url.RouteUrl(ControllerActionRouteNames.Admin.ProductPropertiesController.ProductImagesDelete, new { productID = DBItem.ProductID });
+            viewModel.UrlImageUpload = Url.RouteUrl(ControllerActionRouteNames.Admin.ProductPropertiesController.ProductImagesUpload, new { productID = Product.ProductID });
+            viewModel.UrlImageUpdate = Url.RouteUrl(ControllerActionRouteNames.Admin.ProductPropertiesController.ProductImagesUpdate, new { productID = Product.ProductID });
+            viewModel.UrlImageSort = Url.RouteUrl(ControllerActionRouteNames.Admin.ProductPropertiesController.ProductImagesSort, new { productID = Product.ProductID });
+            viewModel.UrlImageDelete = Url.RouteUrl(ControllerActionRouteNames.Admin.ProductPropertiesController.ProductImagesDelete, new { productID = Product.ProductID });
 
             return viewModel;
         }
@@ -95,7 +97,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             var repository = RepositoriesFactory.CreateProductsRepository();
             await repository.ProductsIUD(
                 databaseAction: Enums.DatabaseActions.UPDATE,
-                productID: DBItem.ProductID,
+                productID: Product.ProductID,
                 product: new ProductIudDTO
                 {
                     ProductCategoryID = viewModel.ProductCategoryID ?? Constants.NullValueFor.Numeric,
@@ -126,12 +128,15 @@ namespace SixtyThreeBits.Web.Models.Admin
         {
             var viewModel = new AjaxResponse();
 
-            await FileStorage.DeleteFile(DBItem.ProductImageFilename, _folderPath);
+            await FileStorage.DeleteFile(
+                filename: Product.ProductImageFilename,
+                folderPath: FileStorage.GetFolderPathByModule(FileManagerModules.Products)
+            );
 
             var repository = RepositoriesFactory.CreateProductsRepository();
             await repository.ProductsIUD(
                 databaseAction: Enums.DatabaseActions.UPDATE,
-                productID: DBItem.ProductID,
+                productID: Product.ProductID,
                 product: new ProductIudDTO
                 {
                     ProductImageFilename = Constants.NullValueFor.String
@@ -165,7 +170,7 @@ namespace SixtyThreeBits.Web.Models.Admin
                     productImageID: null,
                     productImage: new ProductImageIudDTO
                     {
-                        ProductID = DBItem.ProductID,
+                        ProductID = Product.ProductID,
                         ProductImageFilename = productImageFilename
                     }
                 );
@@ -175,16 +180,16 @@ namespace SixtyThreeBits.Web.Models.Admin
                     await FileStorage.SaveUploadedFile(
                         sourceFileStream: postedFile.OpenReadStream(),
                         filename: productImageFilename,
-                        folderPath: _folderPath
+                        folderPath: FileStorage.GetFolderPathByModule(FileManagerModules.Products)
                     );
 
-                    DBItem = await repository.ProductsGetSingleByID(DBItem.ProductID);
-                    var firstImage = DBItem.ProductImages?.FirstOrDefault();
+                    Product = await repository.ProductsGetSingleByID(Product.ProductID);
+                    var firstImage = Product.ProductImages?.FirstOrDefault();
                     if (firstImage != null)
                     {
                         await repository.ProductsIUD(
                             databaseAction: Enums.DatabaseActions.UPDATE,
-                            productID: DBItem.ProductID,
+                            productID: Product.ProductID,
                             product: new ProductIudDTO
                             {
                                 ProductImageFilename = firstImage.ProductImageFilename,
@@ -197,7 +202,10 @@ namespace SixtyThreeBits.Web.Models.Admin
                     {
                         ProductImageID = productImageID,
                         ProductImageFilename = productImageFilenameOriginal,
-                        ProductImageFileHttpPath = FileStorage.GetUploadedFileHttpPath(productImageFilename, _folderPath)
+                        ProductImageFileHttpPath = FileStorage.GetUploadedFileHttpPath(
+                            filename: productImageFilename,
+                            folderPath: FileStorage.GetFolderPathByModule(FileManagerModules.Products)
+                        )
                     };
                     viewModel.IsSuccess = true;
                 }
@@ -210,7 +218,7 @@ namespace SixtyThreeBits.Web.Models.Admin
         {
             var viewModel = new AjaxResponse();
 
-            var productImage = DBItem.ProductImages?.FirstOrDefault(Item => Item.ProductImageID == submitModel.ProductImageID);
+            var productImage = Product.ProductImages?.FirstOrDefault(Item => Item.ProductImageID == submitModel.ProductImageID);
             if (productImage != null)
             {
                 var repository = RepositoriesFactory.CreateProductsRepository();
@@ -225,12 +233,12 @@ namespace SixtyThreeBits.Web.Models.Admin
 
                 if (!repository.IsError)
                 {
-                    var firstImage = DBItem.ProductImages?.FirstOrDefault();
+                    var firstImage = Product.ProductImages?.FirstOrDefault();
                     if (firstImage != null && firstImage.ProductImageID == submitModel.ProductImageID)
                     {
                         await repository.ProductsIUD(
                             databaseAction: Enums.DatabaseActions.UPDATE,
-                            productID: DBItem.ProductID,
+                            productID: Product.ProductID,
                             product: new ProductIudDTO
                             {
                                 ProductImageAltText = submitModel.ProductImageAltText ?? Constants.NullValueFor.String
@@ -247,10 +255,13 @@ namespace SixtyThreeBits.Web.Models.Admin
         {
             var viewModel = new AjaxResponse();
 
-            var productImage = DBItem.ProductImages?.FirstOrDefault(Item => Item.ProductImageID == submitModel.ProductImageID);
+            var productImage = Product.ProductImages?.FirstOrDefault(Item => Item.ProductImageID == submitModel.ProductImageID);
             if (productImage != null)
             {
-                await FileStorage.DeleteFile(productImage.ProductImageFilename, _folderPath);
+                await FileStorage.DeleteFile(
+                    filename: productImage.ProductImageFilename,
+                    folderPath: FileStorage.GetFolderPathByModule(FileManagerModules.Products)
+                );
 
                 var repository = RepositoriesFactory.CreateProductsRepository();
                 await repository.ProductsImagesIUD(
@@ -267,7 +278,7 @@ namespace SixtyThreeBits.Web.Models.Admin
         {
             var viewModel = new AjaxResponse();
             var repository = RepositoriesFactory.CreateProductsRepository();
-            await repository.ProductsImagesSyncSortIndex(DBItem.ProductID, SubmitModel.SortIndexes);
+            await repository.ProductsImagesSyncSortIndex(Product.ProductID, SubmitModel.SortIndexes);
             viewModel.IsSuccess = !repository.IsError;
             return viewModel;
         }

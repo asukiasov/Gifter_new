@@ -1,7 +1,7 @@
 /*!
  * DevExtreme (dx.viz.debug.js)
- * Version: 24.2.7
- * Build date: Mon Apr 28 2025
+ * Version: 25.1.3
+ * Build date: Wed Jun 25 2025
  *
  * Copyright (c) 2012 - 2025 Developer Express Inc. ALL RIGHTS RESERVED
  * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -9,730 +9,10 @@
 "use strict";
 ! function() {
     var __webpack_modules__ = {
-        57329:
-            /*!**************************************************************************************************************************!*\
-              !*** ../../node_modules/.pnpm/@devextreme+runtime@3.0.13/node_modules/@devextreme/runtime/cjs/inferno/base_component.js ***!
-              \**************************************************************************************************************************/
-            function(__unused_webpack_module, exports, __webpack_require__) {
-                var __extends = this && this.__extends || (extendStatics = function(d, b) {
-                    extendStatics = Object.setPrototypeOf || {
-                        __proto__: []
-                    }
-                    instanceof Array && function(d, b) {
-                        d.__proto__ = b
-                    } || function(d, b) {
-                        for (var p in b) {
-                            if (Object.prototype.hasOwnProperty.call(b, p)) {
-                                d[p] = b[p]
-                            }
-                        }
-                    };
-                    return extendStatics(d, b)
-                }, function(d, b) {
-                    if ("function" !== typeof b && null !== b) {
-                        throw new TypeError("Class extends value " + String(b) + " is not a constructor or null")
-                    }
-                    extendStatics(d, b);
-
-                    function __() {
-                        this.constructor = d
-                    }
-                    d.prototype = null === b ? Object.create(b) : (__.prototype = b.prototype, new __)
-                });
-                var extendStatics;
-                Object.defineProperty(exports, "__esModule", {
-                    value: true
-                });
-                exports.InfernoWrapperComponent = exports.InfernoComponent = exports.BaseInfernoComponent = void 0;
-                var inferno_1 = __webpack_require__( /*! inferno */ 81167);
-                var effect_host_1 = __webpack_require__( /*! ./effect_host */ 86734);
-                var areObjectsEqual = function(firstObject, secondObject) {
-                    var bothAreObjects = firstObject instanceof Object && secondObject instanceof Object;
-                    if (!bothAreObjects) {
-                        return firstObject === secondObject
-                    }
-                    var firstObjectKeys = Object.keys(firstObject);
-                    var secondObjectKeys = Object.keys(secondObject);
-                    if (firstObjectKeys.length !== secondObjectKeys.length) {
-                        return false
-                    }
-                    var hasDifferentElement = firstObjectKeys.some((function(key) {
-                        return firstObject[key] !== secondObject[key]
-                    }));
-                    return !hasDifferentElement
-                };
-                var BaseInfernoComponent = function(_super) {
-                    __extends(BaseInfernoComponent, _super);
-
-                    function BaseInfernoComponent() {
-                        var _this = null !== _super && _super.apply(this, arguments) || this;
-                        _this._pendingContext = _this.context;
-                        return _this
-                    }
-                    BaseInfernoComponent.prototype.componentWillReceiveProps = function(_, context) {
-                        this._pendingContext = null !== context && void 0 !== context ? context : {}
-                    };
-                    BaseInfernoComponent.prototype.shouldComponentUpdate = function(nextProps, nextState) {
-                        return !areObjectsEqual(this.props, nextProps) || !areObjectsEqual(this.state, nextState) || !areObjectsEqual(this.context, this._pendingContext)
-                    };
-                    return BaseInfernoComponent
-                }(inferno_1.Component);
-                exports.BaseInfernoComponent = BaseInfernoComponent;
-                var InfernoComponent = function(_super) {
-                    __extends(InfernoComponent, _super);
-
-                    function InfernoComponent() {
-                        var _this = null !== _super && _super.apply(this, arguments) || this;
-                        _this._effects = [];
-                        return _this
-                    }
-                    InfernoComponent.prototype.createEffects = function() {
-                        return []
-                    };
-                    InfernoComponent.prototype.updateEffects = function() {};
-                    InfernoComponent.prototype.componentWillMount = function() {
-                        effect_host_1.InfernoEffectHost.lock()
-                    };
-                    InfernoComponent.prototype.componentWillUpdate = function(_nextProps, _nextState, _context) {
-                        effect_host_1.InfernoEffectHost.lock()
-                    };
-                    InfernoComponent.prototype.componentDidMount = function() {
-                        var _this = this;
-                        effect_host_1.InfernoEffectHost.callbacks.push((function() {
-                            _this._effects = _this.createEffects()
-                        }));
-                        effect_host_1.InfernoEffectHost.callEffects()
-                    };
-                    InfernoComponent.prototype.componentDidUpdate = function() {
-                        var _this = this;
-                        effect_host_1.InfernoEffectHost.callbacks.push((function() {
-                            return _this.updateEffects()
-                        }));
-                        effect_host_1.InfernoEffectHost.callEffects()
-                    };
-                    InfernoComponent.prototype.destroyEffects = function() {
-                        this._effects.forEach((function(e) {
-                            return e.dispose()
-                        }))
-                    };
-                    InfernoComponent.prototype.componentWillUnmount = function() {
-                        this.destroyEffects()
-                    };
-                    return InfernoComponent
-                }(BaseInfernoComponent);
-                exports.InfernoComponent = InfernoComponent;
-                var InfernoWrapperComponent = function(_super) {
-                    __extends(InfernoWrapperComponent, _super);
-
-                    function InfernoWrapperComponent() {
-                        var _this = null !== _super && _super.apply(this, arguments) || this;
-                        _this.vDomElement = null;
-                        return _this
-                    }
-                    InfernoWrapperComponent.prototype.vDomUpdateClasses = function() {
-                        var el = this.vDomElement;
-                        var currentClasses = el.className.length ? el.className.split(" ") : [];
-                        var addedClasses = currentClasses.filter((function(className) {
-                            return el.dxClasses.previous.indexOf(className) < 0
-                        }));
-                        var removedClasses = el.dxClasses.previous.filter((function(className) {
-                            return currentClasses.indexOf(className) < 0
-                        }));
-                        addedClasses.forEach((function(value) {
-                            var indexInRemoved = el.dxClasses.removed.indexOf(value);
-                            if (indexInRemoved > -1) {
-                                el.dxClasses.removed.splice(indexInRemoved, 1)
-                            } else if (!el.dxClasses.added.includes(value)) {
-                                el.dxClasses.added.push(value)
-                            }
-                        }));
-                        removedClasses.forEach((function(value) {
-                            var indexInAdded = el.dxClasses.added.indexOf(value);
-                            if (indexInAdded > -1) {
-                                el.dxClasses.added.splice(indexInAdded, 1)
-                            } else if (!el.dxClasses.removed.includes(value)) {
-                                el.dxClasses.removed.push(value)
-                            }
-                        }))
-                    };
-                    InfernoWrapperComponent.prototype.componentDidMount = function() {
-                        var el = inferno_1.findDOMfromVNode(this.$LI, true);
-                        this.vDomElement = el;
-                        _super.prototype.componentDidMount.call(this);
-                        el.dxClasses = el.dxClasses || {
-                            removed: [],
-                            added: [],
-                            previous: []
-                        };
-                        el.dxClasses.previous = (null === el || void 0 === el ? void 0 : el.className.length) ? el.className.split(" ") : []
-                    };
-                    InfernoWrapperComponent.prototype.componentDidUpdate = function() {
-                        _super.prototype.componentDidUpdate.call(this);
-                        var el = this.vDomElement;
-                        if (null !== el) {
-                            el.dxClasses.added.forEach((function(className) {
-                                return el.classList.add(className)
-                            }));
-                            el.dxClasses.removed.forEach((function(className) {
-                                return el.classList.remove(className)
-                            }));
-                            el.dxClasses.previous = el.className.length ? el.className.split(" ") : []
-                        }
-                    };
-                    InfernoWrapperComponent.prototype.shouldComponentUpdate = function(nextProps, nextState) {
-                        var shouldUpdate = _super.prototype.shouldComponentUpdate.call(this, nextProps, nextState);
-                        if (shouldUpdate) {
-                            this.vDomUpdateClasses()
-                        }
-                        return shouldUpdate
-                    };
-                    return InfernoWrapperComponent
-                }(InfernoComponent);
-                exports.InfernoWrapperComponent = InfernoWrapperComponent
-            },
-        83804:
-            /*!**************************************************************************************************************************!*\
-              !*** ../../node_modules/.pnpm/@devextreme+runtime@3.0.13/node_modules/@devextreme/runtime/cjs/inferno/create_context.js ***!
-              \**************************************************************************************************************************/
-            function(__unused_webpack_module, exports, __webpack_require__) {
-                var __extends = this && this.__extends || (extendStatics = function(d, b) {
-                    extendStatics = Object.setPrototypeOf || {
-                        __proto__: []
-                    }
-                    instanceof Array && function(d, b) {
-                        d.__proto__ = b
-                    } || function(d, b) {
-                        for (var p in b) {
-                            if (Object.prototype.hasOwnProperty.call(b, p)) {
-                                d[p] = b[p]
-                            }
-                        }
-                    };
-                    return extendStatics(d, b)
-                }, function(d, b) {
-                    if ("function" !== typeof b && null !== b) {
-                        throw new TypeError("Class extends value " + String(b) + " is not a constructor or null")
-                    }
-                    extendStatics(d, b);
-
-                    function __() {
-                        this.constructor = d
-                    }
-                    d.prototype = null === b ? Object.create(b) : (__.prototype = b.prototype, new __)
-                });
-                var extendStatics;
-                var __assign = this && this.__assign || function() {
-                    __assign = Object.assign || function(t) {
-                        for (var s, i = 1, n = arguments.length; i < n; i++) {
-                            s = arguments[i];
-                            for (var p in s) {
-                                if (Object.prototype.hasOwnProperty.call(s, p)) {
-                                    t[p] = s[p]
-                                }
-                            }
-                        }
-                        return t
-                    };
-                    return __assign.apply(this, arguments)
-                };
-                Object.defineProperty(exports, "__esModule", {
-                    value: true
-                });
-                exports.createContext = void 0;
-                var inferno_1 = __webpack_require__( /*! inferno */ 81167);
-                var contextId = 0;
-                exports.createContext = function(defaultValue) {
-                    var id = contextId++;
-                    return {
-                        id: id,
-                        defaultValue: defaultValue,
-                        Provider: function(_super) {
-                            __extends(class_1, _super);
-
-                            function class_1() {
-                                return null !== _super && _super.apply(this, arguments) || this
-                            }
-                            class_1.prototype.getChildContext = function() {
-                                var _a;
-                                return __assign(__assign({}, this.context), (_a = {}, _a[id] = this.props.value || defaultValue, _a))
-                            };
-                            class_1.prototype.render = function() {
-                                return this.props.children
-                            };
-                            return class_1
-                        }(inferno_1.Component)
-                    }
-                }
-            },
-        43017:
-            /*!******************************************************************************************************************!*\
-              !*** ../../node_modules/.pnpm/@devextreme+runtime@3.0.13/node_modules/@devextreme/runtime/cjs/inferno/effect.js ***!
-              \******************************************************************************************************************/
-            function(__unused_webpack_module, exports) {
-                Object.defineProperty(exports, "__esModule", {
-                    value: true
-                });
-                exports.InfernoEffect = void 0;
-                var InfernoEffect = function() {
-                    function InfernoEffect(effect, dependency) {
-                        this.dependency = dependency;
-                        this.effect = effect;
-                        this.destroy = effect()
-                    }
-                    InfernoEffect.prototype.update = function(dependency) {
-                        var currentDependency = this.dependency;
-                        if (dependency) {
-                            this.dependency = dependency
-                        }
-                        if (!dependency || dependency.some((function(d, i) {
-                                return currentDependency[i] !== d
-                            }))) {
-                            this.dispose();
-                            this.destroy = this.effect()
-                        }
-                    };
-                    InfernoEffect.prototype.dispose = function() {
-                        if (this.destroy) {
-                            this.destroy()
-                        }
-                    };
-                    return InfernoEffect
-                }();
-                exports.InfernoEffect = InfernoEffect
-            },
-        86734:
-            /*!***********************************************************************************************************************!*\
-              !*** ../../node_modules/.pnpm/@devextreme+runtime@3.0.13/node_modules/@devextreme/runtime/cjs/inferno/effect_host.js ***!
-              \***********************************************************************************************************************/
-            function(__unused_webpack_module, exports) {
-                Object.defineProperty(exports, "__esModule", {
-                    value: true
-                });
-                exports.InfernoEffectHost = void 0;
-                exports.InfernoEffectHost = {
-                    lockCount: 0,
-                    lock: function() {
-                        this.lockCount++
-                    },
-                    callbacks: [],
-                    callEffects: function() {
-                        this.lockCount--;
-                        if (this.lockCount < 0) {
-                            throw new Error("Unexpected Effect Call")
-                        }
-                        if (0 === this.lockCount) {
-                            var effects = this.callbacks;
-                            this.callbacks = [];
-                            effects.forEach((function(callback) {
-                                return callback()
-                            }))
-                        }
-                    }
-                }
-            },
-        49714:
-            /*!*****************************************************************************************************************!*\
-              !*** ../../node_modules/.pnpm/@devextreme+runtime@3.0.13/node_modules/@devextreme/runtime/cjs/inferno/index.js ***!
-              \*****************************************************************************************************************/
-            function(__unused_webpack_module, exports, __webpack_require__) {
-                var __createBinding = this && this.__createBinding || (Object.create ? function(o, m, k, k2) {
-                    if (void 0 === k2) {
-                        k2 = k
-                    }
-                    Object.defineProperty(o, k2, {
-                        enumerable: true,
-                        get: function() {
-                            return m[k]
-                        }
-                    })
-                } : function(o, m, k, k2) {
-                    if (void 0 === k2) {
-                        k2 = k
-                    }
-                    o[k2] = m[k]
-                });
-                var __exportStar = this && this.__exportStar || function(m, exports) {
-                    for (var p in m) {
-                        if ("default" !== p && !Object.prototype.hasOwnProperty.call(exports, p)) {
-                            __createBinding(exports, m, p)
-                        }
-                    }
-                };
-                Object.defineProperty(exports, "__esModule", {
-                    value: true
-                });
-                __exportStar(__webpack_require__( /*! ./base_component */ 57329), exports);
-                __exportStar(__webpack_require__( /*! ./create_context */ 83804), exports);
-                __exportStar(__webpack_require__( /*! ./effect */ 43017), exports);
-                __exportStar(__webpack_require__( /*! ./effect_host */ 86734), exports);
-                __exportStar(__webpack_require__( /*! ./portal */ 38034), exports);
-                __exportStar(__webpack_require__( /*! ./ref_object */ 8865), exports);
-                __exportStar(__webpack_require__( /*! ./re_render_effect */ 17526), exports);
-                __exportStar(__webpack_require__( /*! ./mocked/hydrate */ 86059), exports);
-                __exportStar(__webpack_require__( /*! ./render_template */ 74757), exports);
-                __exportStar(__webpack_require__( /*! ./normalize_styles */ 43262), exports)
-            },
-        86059:
-            /*!**************************************************************************************************************************!*\
-              !*** ../../node_modules/.pnpm/@devextreme+runtime@3.0.13/node_modules/@devextreme/runtime/cjs/inferno/mocked/hydrate.js ***!
-              \**************************************************************************************************************************/
-            function(__unused_webpack_module, exports, __webpack_require__) {
-                Object.defineProperty(exports, "__esModule", {
-                    value: true
-                });
-                exports.hydrate = void 0;
-                var inferno_1 = __webpack_require__( /*! inferno */ 81167);
-                var shared_1 = __webpack_require__( /*! ./shared */ 93055);
-
-                function isSamePropsInnerHTML(dom, props) {
-                    return Boolean(props && props.dangerouslySetInnerHTML && props.dangerouslySetInnerHTML.__html && function(dom, innerHTML) {
-                        var tempdom = document.createElement("i");
-                        tempdom.innerHTML = innerHTML;
-                        return tempdom.innerHTML === dom.innerHTML
-                    }(dom, props.dangerouslySetInnerHTML.__html))
-                }
-
-                function hydrateChildren(parentVNode, parentNode, currentNode, context, isSVG, lifecycle) {
-                    var childFlags = parentVNode.childFlags;
-                    var children = parentVNode.children;
-                    var props = parentVNode.props;
-                    var flags = parentVNode.flags;
-                    if (1 !== childFlags) {
-                        if (2 === childFlags) {
-                            if (shared_1.isNull(currentNode)) {
-                                inferno_1._M(children, parentNode, context, isSVG, null, lifecycle)
-                            } else {
-                                currentNode = hydrateVNode(children, parentNode, currentNode, context, isSVG, lifecycle);
-                                currentNode = currentNode ? currentNode.nextSibling : null
-                            }
-                        } else if (16 === childFlags) {
-                            if (shared_1.isNull(currentNode)) {
-                                parentNode.appendChild(document.createTextNode(children))
-                            } else if (1 !== parentNode.childNodes.length || 3 !== currentNode.nodeType) {
-                                parentNode.textContent = children
-                            } else if (currentNode.nodeValue !== children) {
-                                currentNode.nodeValue = children
-                            }
-                            currentNode = null
-                        } else if (12 & childFlags) {
-                            var prevVNodeIsTextNode = false;
-                            for (var i = 0, len = children.length; i < len; ++i) {
-                                var child = children[i];
-                                if (shared_1.isNull(currentNode) || prevVNodeIsTextNode && (16 & child.flags) > 0) {
-                                    inferno_1._M(child, parentNode, context, isSVG, currentNode, lifecycle)
-                                } else {
-                                    currentNode = hydrateVNode(child, parentNode, currentNode, context, isSVG, lifecycle);
-                                    currentNode = currentNode ? currentNode.nextSibling : null
-                                }
-                                prevVNodeIsTextNode = (16 & child.flags) > 0
-                            }
-                        }
-                        if (0 === (8192 & flags)) {
-                            var nextSibling = null;
-                            while (currentNode) {
-                                nextSibling = currentNode.nextSibling;
-                                parentNode.removeChild(currentNode);
-                                currentNode = nextSibling
-                            }
-                        }
-                    } else if (!shared_1.isNull(parentNode.firstChild) && !isSamePropsInnerHTML(parentNode, props)) {
-                        parentNode.textContent = "";
-                        if (448 & flags) {
-                            parentNode.defaultValue = ""
-                        }
-                    }
-                }
-
-                function hydrateText(vNode, parentDOM, dom) {
-                    if (3 !== dom.nodeType) {
-                        parentDOM.replaceChild(vNode.dom = document.createTextNode(vNode.children), dom)
-                    } else {
-                        var text = vNode.children;
-                        if (dom.nodeValue !== text) {
-                            dom.nodeValue = text
-                        }
-                        vNode.dom = dom
-                    }
-                    return vNode.dom
-                }
-
-                function hydrateVNode(vNode, parentDOM, currentDom, context, isSVG, lifecycle) {
-                    var flags = vNode.flags |= 16384;
-                    if (14 & flags) {
-                        return function(vNode, parentDOM, dom, context, isSVG, isClass, lifecycle) {
-                            var type = vNode.type;
-                            var ref = vNode.ref;
-                            var props = vNode.props || inferno_1.EMPTY_OBJ;
-                            var currentNode;
-                            if (isClass) {
-                                var instance = inferno_1._CI(vNode, type, props, context, isSVG, lifecycle);
-                                var input = instance.$LI;
-                                currentNode = hydrateVNode(input, parentDOM, dom, instance.$CX, isSVG, lifecycle);
-                                inferno_1._MCCC(ref, instance, lifecycle)
-                            } else {
-                                input = inferno_1._HI(inferno_1._RFC(vNode, context));
-                                currentNode = hydrateVNode(input, parentDOM, dom, context, isSVG, lifecycle);
-                                vNode.children = input;
-                                inferno_1._MFCC(vNode, lifecycle)
-                            }
-                            return currentNode
-                        }(vNode, parentDOM, currentDom, context, isSVG, (4 & flags) > 0, lifecycle)
-                    }
-                    if (481 & flags) {
-                        return function(vNode, parentDOM, dom, context, isSVG, lifecycle) {
-                            var props = vNode.props;
-                            var className = vNode.className;
-                            var flags = vNode.flags;
-                            var ref = vNode.ref;
-                            isSVG = isSVG || (32 & flags) > 0;
-                            if (1 !== dom.nodeType) {
-                                inferno_1._ME(vNode, null, context, isSVG, null, lifecycle);
-                                parentDOM.replaceChild(vNode.dom, dom)
-                            } else {
-                                vNode.dom = dom;
-                                hydrateChildren(vNode, dom, dom.firstChild, context, isSVG, lifecycle);
-                                if (!shared_1.isNull(props)) {
-                                    inferno_1._MP(vNode, flags, props, dom, isSVG)
-                                }
-                                if (shared_1.isNullOrUndef(className)) {
-                                    if ("" !== dom.className) {
-                                        dom.removeAttribute("class")
-                                    }
-                                } else if (isSVG) {
-                                    dom.setAttribute("class", className)
-                                } else {
-                                    dom.className = className
-                                }
-                                inferno_1._MR(ref, dom, lifecycle)
-                            }
-                            return vNode.dom
-                        }(vNode, parentDOM, currentDom, context, isSVG, lifecycle)
-                    }
-                    if (16 & flags) {
-                        return hydrateText(vNode, parentDOM, currentDom)
-                    }
-                    if (512 & flags) {
-                        return vNode.dom = currentDom
-                    }
-                    if (8192 & flags) {
-                        return function(vNode, parentDOM, dom, context, isSVG, lifecycle) {
-                            var children = vNode.children;
-                            if (2 === vNode.childFlags) {
-                                hydrateText(children, parentDOM, dom);
-                                return children.dom
-                            }
-                            hydrateChildren(vNode, parentDOM, dom, context, isSVG, lifecycle);
-                            return function(vNode) {
-                                var flags;
-                                var children;
-                                while (vNode) {
-                                    flags = vNode.flags;
-                                    if (2033 & flags) {
-                                        return vNode.dom
-                                    }
-                                    children = vNode.children;
-                                    if (8192 & flags) {
-                                        vNode = 2 === vNode.childFlags ? children : children[children.length - 1]
-                                    } else if (4 & flags) {
-                                        vNode = children.$LI
-                                    } else {
-                                        vNode = children
-                                    }
-                                }
-                                return null
-                            }(children[children.length - 1])
-                        }(vNode, parentDOM, currentDom, context, isSVG, lifecycle)
-                    }
-                    shared_1.throwError();
-                    return null
-                }
-                exports.hydrate = function(input, parentDOM, callback) {
-                    var dom = parentDOM.firstChild;
-                    if (shared_1.isNull(dom)) {
-                        inferno_1.render(input, parentDOM, callback)
-                    } else {
-                        var lifecycle = [];
-                        if (!shared_1.isInvalid(input)) {
-                            dom = hydrateVNode(input, parentDOM, dom, {}, false, lifecycle)
-                        }
-                        while (dom && (dom = dom.nextSibling)) {
-                            parentDOM.removeChild(dom)
-                        }
-                        if (lifecycle.length > 0) {
-                            var listener = void 0;
-                            while (void 0 !== (listener = lifecycle.shift())) {
-                                listener()
-                            }
-                        }
-                    }
-                    parentDOM.$V = input;
-                    if (shared_1.isFunction(callback)) {
-                        callback()
-                    }
-                }
-            },
-        93055:
-            /*!*************************************************************************************************************************!*\
-              !*** ../../node_modules/.pnpm/@devextreme+runtime@3.0.13/node_modules/@devextreme/runtime/cjs/inferno/mocked/shared.js ***!
-              \*************************************************************************************************************************/
-            function(__unused_webpack_module, exports) {
-                Object.defineProperty(exports, "__esModule", {
-                    value: true
-                });
-                exports.throwError = exports.isNull = exports.isFunction = exports.isInvalid = exports.isNullOrUndef = exports.ERROR_MSG = void 0;
-                exports.ERROR_MSG = "a runtime error occured! Use Inferno in development environment to find the error.";
-                exports.isNullOrUndef = function(o) {
-                    return void 0 === o || null === o
-                };
-                exports.isInvalid = function(o) {
-                    return null === o || false === o || true === o || void 0 === o
-                };
-                exports.isFunction = function(o) {
-                    return "function" === typeof o
-                };
-                exports.isNull = function(o) {
-                    return null === o
-                };
-                exports.throwError = function(message) {
-                    if (!message) {
-                        message = exports.ERROR_MSG
-                    }
-                    throw new Error("Inferno Error: " + message)
-                }
-            },
-        43262:
-            /*!****************************************************************************************************************************!*\
-              !*** ../../node_modules/.pnpm/@devextreme+runtime@3.0.13/node_modules/@devextreme/runtime/cjs/inferno/normalize_styles.js ***!
-              \****************************************************************************************************************************/
-            function(__unused_webpack_module, exports) {
-                var __read = this && this.__read || function(o, n) {
-                    var m = "function" === typeof Symbol && o[Symbol.iterator];
-                    if (!m) {
-                        return o
-                    }
-                    var r, e, i = m.call(o),
-                        ar = [];
-                    try {
-                        while ((void 0 === n || n-- > 0) && !(r = i.next()).done) {
-                            ar.push(r.value)
-                        }
-                    } catch (error) {
-                        e = {
-                            error: error
-                        }
-                    } finally {
-                        try {
-                            if (r && !r.done && (m = i.return)) {
-                                m.call(i)
-                            }
-                        } finally {
-                            if (e) {
-                                throw e.error
-                            }
-                        }
-                    }
-                    return ar
-                };
-                Object.defineProperty(exports, "__esModule", {
-                    value: true
-                });
-                exports.normalizeStyles = void 0;
-                var NUMBER_STYLES = new Set(["animationIterationCount", "borderImageOutset", "borderImageSlice", "border-imageWidth", "boxFlex", "boxFlexGroup", "boxOrdinalGroup", "columnCount", "fillOpacity", "flex", "flexGrow", "flexNegative", "flexOrder", "flexPositive", "flexShrink", "floodOpacity", "fontWeight", "gridColumn", "gridRow", "lineClamp", "lineHeight", "opacity", "order", "orphans", "stopOpacity", "strokeDasharray", "strokeDashoffset", "strokeMiterlimit", "strokeOpacity", "strokeWidth", "tabSize", "widows", "zIndex", "zoom"]);
-                var uppercasePattern = /[A-Z]/g;
-                exports.normalizeStyles = function(styles) {
-                    if (!(styles instanceof Object)) {
-                        return
-                    }
-                    return Object.entries(styles).reduce((function(acc, _a) {
-                        var _b = __read(_a, 2),
-                            key = _b[0],
-                            value = _b[1];
-                        acc[(str = key, str.replace(uppercasePattern, "-$&").toLowerCase())] = function(value) {
-                            if ("number" === typeof value) {
-                                return true
-                            }
-                            return !Number.isNaN(Number(value))
-                        }(value) ? function(style, value) {
-                            return NUMBER_STYLES.has(style) ? value : value + "px"
-                        }(key, value) : value;
-                        var str;
-                        return acc
-                    }), {})
-                }
-            },
-        38034:
-            /*!******************************************************************************************************************!*\
-              !*** ../../node_modules/.pnpm/@devextreme+runtime@3.0.13/node_modules/@devextreme/runtime/cjs/inferno/portal.js ***!
-              \******************************************************************************************************************/
-            function(__unused_webpack_module, exports, __webpack_require__) {
-                Object.defineProperty(exports, "__esModule", {
-                    value: true
-                });
-                exports.Portal = void 0;
-                var inferno_1 = __webpack_require__( /*! inferno */ 81167);
-                exports.Portal = function(_a) {
-                    var container = _a.container,
-                        children = _a.children;
-                    if (container) {
-                        return inferno_1.createPortal(children, container)
-                    }
-                    return null
-                }
-            },
-        17526:
-            /*!****************************************************************************************************************************!*\
-              !*** ../../node_modules/.pnpm/@devextreme+runtime@3.0.13/node_modules/@devextreme/runtime/cjs/inferno/re_render_effect.js ***!
-              \****************************************************************************************************************************/
-            function(__unused_webpack_module, exports, __webpack_require__) {
-                Object.defineProperty(exports, "__esModule", {
-                    value: true
-                });
-                exports.createReRenderEffect = void 0;
-                var inferno_1 = __webpack_require__( /*! inferno */ 81167);
-                var effect_1 = __webpack_require__( /*! ./effect */ 43017);
-                exports.createReRenderEffect = function() {
-                    return new effect_1.InfernoEffect((function() {
-                        inferno_1.rerender()
-                    }), [])
-                }
-            },
-        8865:
-            /*!**********************************************************************************************************************!*\
-              !*** ../../node_modules/.pnpm/@devextreme+runtime@3.0.13/node_modules/@devextreme/runtime/cjs/inferno/ref_object.js ***!
-              \**********************************************************************************************************************/
-            function(__unused_webpack_module, exports) {
-                Object.defineProperty(exports, "__esModule", {
-                    value: true
-                })
-            },
-        74757:
-            /*!***************************************************************************************************************************!*\
-              !*** ../../node_modules/.pnpm/@devextreme+runtime@3.0.13/node_modules/@devextreme/runtime/cjs/inferno/render_template.js ***!
-              \***************************************************************************************************************************/
-            function(__unused_webpack_module, exports, __webpack_require__) {
-                Object.defineProperty(exports, "__esModule", {
-                    value: true
-                });
-                exports.hasTemplate = exports.renderTemplate = void 0;
-                var inferno_1 = __webpack_require__( /*! inferno */ 81167);
-                var inferno_create_element_1 = __webpack_require__( /*! inferno-create-element */ 63935);
-                exports.renderTemplate = function(template, props, _component) {
-                    setTimeout((function() {
-                        inferno_1.render(inferno_create_element_1.createElement(template, props), function(props) {
-                            var _a, _b;
-                            return (null === (_a = props.container) || void 0 === _a ? void 0 : _a.get(0)) || (null === (_b = props.item) || void 0 === _b ? void 0 : _b.get(0))
-                        }(props))
-                    }), 0)
-                };
-                exports.hasTemplate = function(name, properties, _component) {
-                    var value = properties[name];
-                    return !!value && "string" !== typeof value
-                }
-            },
-        63935:
-            /*!********************************************************************************************************************!*\
-              !*** ../../node_modules/.pnpm/inferno-create-element@7.4.11/node_modules/inferno-create-element/dist/index.esm.js ***!
-              \********************************************************************************************************************/
+        12887:
+            /*!*******************************************************************************************************************!*\
+              !*** ../../node_modules/.pnpm/inferno-create-element@8.2.3/node_modules/inferno-create-element/dist/index.esm.js ***!
+              \*******************************************************************************************************************/
             function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
                 __webpack_require__.r(__webpack_exports__);
                 __webpack_require__.d(__webpack_exports__, {
@@ -740,7 +20,7 @@
                         return createElement
                     }
                 });
-                var inferno__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__( /*! inferno */ 81167);
+                var inferno__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__( /*! inferno */ 76231);
 
                 function isNullOrUndef(o) {
                     return void 0 === o || null === o
@@ -750,21 +30,22 @@
                     return void 0 === o
                 }
                 var componentHooks = {
+                    onComponentDidAppear: 1,
                     onComponentDidMount: 1,
                     onComponentDidUpdate: 1,
                     onComponentShouldUpdate: 1,
+                    onComponentWillDisappear: 1,
                     onComponentWillMount: 1,
                     onComponentWillUnmount: 1,
                     onComponentWillUpdate: 1
                 };
 
                 function createElement(type, props, _children) {
-                    var arguments$1 = arguments;
                     var children;
                     var ref = null;
                     var key = null;
                     var className = null;
-                    var flags = 0;
+                    var flags;
                     var newProps;
                     var childLen = arguments.length - 2;
                     if (1 === childLen) {
@@ -772,7 +53,7 @@
                     } else if (childLen > 1) {
                         children = [];
                         while (childLen-- > 0) {
-                            children[childLen] = arguments$1[childLen + 2]
+                            children[childLen] = arguments[childLen + 2]
                         }
                     }
                     if (o = type, "string" === typeof o) {
@@ -806,18 +87,18 @@
                         }
                         if (!isNullOrUndef(props)) {
                             newProps = {};
-                            for (var prop$1 in props) {
-                                if ("key" === prop$1) {
+                            for (var _prop in props) {
+                                if ("key" === _prop) {
                                     key = props.key
-                                } else if ("ref" === prop$1) {
+                                } else if ("ref" === _prop) {
                                     ref = props.ref
-                                } else if (1 === componentHooks[prop$1]) {
+                                } else if (1 === componentHooks[_prop]) {
                                     if (!ref) {
                                         ref = {}
                                     }
-                                    ref[prop$1] = props[prop$1]
+                                    ref[_prop] = props[_prop]
                                 } else {
-                                    newProps[prop$1] = props[prop$1]
+                                    newProps[_prop] = props[_prop]
                                 }
                             }
                         }
@@ -830,13 +111,16 @@
                     return (0, inferno__WEBPACK_IMPORTED_MODULE_0__.createVNode)(flags, type, className, children, 0, newProps, key, ref)
                 }
             },
-        81167:
-            /*!*********************************************************************************************!*\
-              !*** ../../node_modules/.pnpm/inferno@7.4.11/node_modules/inferno/index.esm.js + 1 modules ***!
-              \*********************************************************************************************/
+        76231:
+            /*!********************************************************************************************!*\
+              !*** ../../node_modules/.pnpm/inferno@8.2.3/node_modules/inferno/index.esm.js + 1 modules ***!
+              \********************************************************************************************/
             function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
                 __webpack_require__.r(__webpack_exports__);
                 __webpack_require__.d(__webpack_exports__, {
+                    AnimationQueues: function() {
+                        return AnimationQueues
+                    },
                     Component: function() {
                         return Component
                     },
@@ -900,8 +184,8 @@
                     directClone: function() {
                         return directClone
                     },
-                    findDOMfromVNode: function() {
-                        return findDOMfromVNode
+                    findDOMFromVNode: function() {
+                        return findDOMFromVNode
                     },
                     forwardRef: function() {
                         return forwardRef
@@ -963,8 +247,8 @@
                         }
                     }
                     if (second) {
-                        for (var key$1 in second) {
-                            out[key$1] = second[key$1]
+                        for (var _key in second) {
+                            out[_key] = second[_key]
                         }
                     }
                     return out
@@ -985,9 +269,14 @@
                 }
                 var EMPTY_OBJ = {};
                 var Fragment = "$F";
+                var AnimationQueues = function() {
+                    this.componentDidAppear = [];
+                    this.componentWillDisappear = [];
+                    this.componentWillMove = []
+                };
 
                 function normalizeEventName(name) {
-                    return name.substr(2).toLowerCase()
+                    return name.substring(2).toLowerCase()
                 }
 
                 function appendChild(parentDOM, dom) {
@@ -1023,11 +312,11 @@
                     return children
                 }
 
-                function findDOMfromVNode(vNode, startEdge) {
+                function findDOMFromVNode(vNode, startEdge) {
                     var flags;
                     while (vNode) {
                         flags = vNode.flags;
-                        if (2033 & flags) {
+                        if (1521 & flags) {
                             return vNode.dom
                         }
                         vNode = findChildVNode(vNode, startEdge, flags)
@@ -1035,11 +324,25 @@
                     return null
                 }
 
-                function removeVNodeDOM(vNode, parentDOM) {
+                function callAllAnimationHooks(animationQueue, callback) {
+                    var animationsLeft = animationQueue.length;
+                    var fn;
+                    while (void 0 !== (fn = animationQueue.pop())) {
+                        fn((function() {
+                            if (--animationsLeft <= 0 && isFunction(callback)) {
+                                callback()
+                            }
+                        }))
+                    }
+                }
+
+                function clearVNodeDOM(vNode, parentDOM, deferredRemoval) {
                     do {
                         var flags = vNode.flags;
-                        if (2033 & flags) {
-                            removeChild(parentDOM, vNode.dom);
+                        if (1521 & flags) {
+                            if (!deferredRemoval || vNode.dom.parentNode === parentDOM) {
+                                removeChild(parentDOM, vNode.dom)
+                            }
                             return
                         }
                         var children = vNode.children;
@@ -1054,7 +357,7 @@
                                 vNode = children
                             } else {
                                 for (var i = 0, len = children.length; i < len; ++i) {
-                                    removeVNodeDOM(children[i], parentDOM)
+                                    clearVNodeDOM(children[i], parentDOM, false)
                                 }
                                 return
                             }
@@ -1062,26 +365,62 @@
                     } while (vNode)
                 }
 
-                function moveVNodeDOM(vNode, parentDOM, nextNode) {
+                function removeVNodeDOM(vNode, parentDOM, animations) {
+                    if (animations.componentWillDisappear.length > 0) {
+                        callAllAnimationHooks(animations.componentWillDisappear, function(vNode, parentDOM) {
+                            return function() {
+                                clearVNodeDOM(vNode, parentDOM, true)
+                            }
+                        }(vNode, parentDOM))
+                    } else {
+                        clearVNodeDOM(vNode, parentDOM, false)
+                    }
+                }
+
+                function addMoveAnimationHook(animations, parentVNode, refOrInstance, dom, parentDOM, nextNode, flags, props) {
+                    animations.componentWillMove.push({
+                        dom: dom,
+                        fn: function() {
+                            if (4 & flags) {
+                                refOrInstance.componentWillMove(parentVNode, parentDOM, dom)
+                            } else if (8 & flags) {
+                                refOrInstance.onComponentWillMove(parentVNode, parentDOM, dom, props)
+                            }
+                        },
+                        next: nextNode,
+                        parent: parentDOM
+                    })
+                }
+
+                function moveVNodeDOM(parentVNode, vNode, parentDOM, nextNode, animations) {
+                    var refOrInstance;
+                    var instanceProps;
+                    var instanceFlags = vNode.flags;
                     do {
                         var flags = vNode.flags;
-                        if (2033 & flags) {
-                            insertOrAppend(parentDOM, vNode.dom, nextNode);
+                        if (1521 & flags) {
+                            if (!isNullOrUndef(refOrInstance) && (isFunction(refOrInstance.componentWillMove) || isFunction(refOrInstance.onComponentWillMove))) {
+                                addMoveAnimationHook(animations, parentVNode, refOrInstance, vNode.dom, parentDOM, nextNode, instanceFlags, instanceProps)
+                            } else {
+                                insertOrAppend(parentDOM, vNode.dom, nextNode)
+                            }
                             return
                         }
                         var children = vNode.children;
                         if (4 & flags) {
+                            refOrInstance = vNode.children;
+                            instanceProps = vNode.props;
                             vNode = children.$LI
-                        }
-                        if (8 & flags) {
+                        } else if (8 & flags) {
+                            refOrInstance = vNode.ref;
+                            instanceProps = vNode.props;
                             vNode = children
-                        }
-                        if (8192 & flags) {
+                        } else if (8192 & flags) {
                             if (2 === vNode.childFlags) {
                                 vNode = children
                             } else {
                                 for (var i = 0, len = children.length; i < len; ++i) {
-                                    moveVNodeDOM(children[i], parentDOM, nextNode)
+                                    moveVNodeDOM(parentVNode, children[i], parentDOM, nextNode, animations)
                                 }
                                 return
                             }
@@ -1585,7 +924,7 @@
                     return "checkbox" === type || "radio" === type
                 }
                 var onTextInputChange = createWrappedFunction("onInput", applyValueInput);
-                var wrappedOnChange = createWrappedFunction(["onClick", "onChange"], applyValueInput);
+                var wrappedOnChange$1 = createWrappedFunction(["onClick", "onChange"], applyValueInput);
 
                 function emptywrapper(event) {
                     event.stopPropagation()
@@ -1676,7 +1015,7 @@
                     var o
                 }
                 var onTextareaInputChange = createWrappedFunction("onInput", applyValueTextArea);
-                var wrappedOnChange$1 = createWrappedFunction("onChange");
+                var wrappedOnChange = createWrappedFunction("onChange");
 
                 function applyValueTextArea(nextPropsOrEmpty, dom, mounting) {
                     var value = nextPropsOrEmpty.value;
@@ -1712,7 +1051,7 @@
                     if (64 & flags) {
                         ! function(dom, nextPropsOrEmpty) {
                             if (isCheckedType(nextPropsOrEmpty.type)) {
-                                attachEvent(dom, "change", wrappedOnChange);
+                                attachEvent(dom, "change", wrappedOnChange$1);
                                 attachEvent(dom, "click", emptywrapper)
                             } else {
                                 attachEvent(dom, "input", onTextInputChange)
@@ -1726,7 +1065,7 @@
                         ! function(dom, nextPropsOrEmpty) {
                             attachEvent(dom, "input", onTextareaInputChange);
                             if (nextPropsOrEmpty.onChange) {
-                                attachEvent(dom, "change", wrappedOnChange$1)
+                                attachEvent(dom, "change", wrappedOnChange)
                             }
                         }(dom, nextPropsOrEmpty)
                     }
@@ -1743,9 +1082,10 @@
                 }
 
                 function forwardRef(render) {
-                    return {
+                    var ref = {
                         render: render
-                    }
+                    };
+                    return ref
                 }
 
                 function unmountRef(ref) {
@@ -1766,12 +1106,12 @@
                     }
                 }
 
-                function remove(vNode, parentDOM) {
-                    unmount(vNode);
-                    removeVNodeDOM(vNode, parentDOM)
+                function remove(vNode, parentDOM, animations) {
+                    unmount(vNode, animations);
+                    removeVNodeDOM(vNode, parentDOM, animations)
                 }
 
-                function unmount(vNode) {
+                function unmount(vNode, animations) {
                     var flags = vNode.flags;
                     var children = vNode.children;
                     var ref;
@@ -1790,54 +1130,92 @@
                             }
                         }
                         if (12 & childFlags) {
-                            unmountAllChildren(children)
+                            unmountAllChildren(children, animations)
                         } else if (2 === childFlags) {
-                            unmount(children)
+                            unmount(children, animations)
                         }
                     } else if (children) {
                         if (4 & flags) {
                             if (isFunction(children.componentWillUnmount)) {
                                 children.componentWillUnmount()
                             }
+                            var childAnimations = animations;
+                            if (isFunction(children.componentWillDisappear)) {
+                                childAnimations = new AnimationQueues;
+                                addDisappearAnimationHook(animations, children, children.$LI.dom, flags, void 0)
+                            }
                             unmountRef(vNode.ref);
                             children.$UN = true;
-                            unmount(children.$LI)
+                            unmount(children.$LI, childAnimations)
                         } else if (8 & flags) {
+                            var _childAnimations = animations;
                             ref = vNode.ref;
-                            if (!isNullOrUndef(ref) && isFunction(ref.onComponentWillUnmount)) {
-                                ref.onComponentWillUnmount(findDOMfromVNode(vNode, true), vNode.props || EMPTY_OBJ)
+                            if (!isNullOrUndef(ref)) {
+                                var domEl = null;
+                                if (isFunction(ref.onComponentWillUnmount)) {
+                                    domEl = findDOMFromVNode(vNode, true);
+                                    ref.onComponentWillUnmount(domEl, vNode.props || EMPTY_OBJ)
+                                }
+                                if (isFunction(ref.onComponentWillDisappear)) {
+                                    _childAnimations = new AnimationQueues;
+                                    domEl = domEl || findDOMFromVNode(vNode, true);
+                                    addDisappearAnimationHook(animations, ref, domEl, flags, vNode.props)
+                                }
                             }
-                            unmount(children)
+                            unmount(children, _childAnimations)
                         } else if (1024 & flags) {
-                            remove(children, vNode.ref)
+                            remove(children, vNode.ref, animations)
                         } else if (8192 & flags) {
                             if (12 & vNode.childFlags) {
-                                unmountAllChildren(children)
+                                unmountAllChildren(children, animations)
                             }
                         }
                     }
                 }
 
-                function unmountAllChildren(children) {
+                function unmountAllChildren(children, animations) {
                     for (var i = 0, len = children.length; i < len; ++i) {
-                        unmount(children[i])
+                        unmount(children[i], animations)
                     }
                 }
 
-                function clearDOM(dom) {
-                    dom.textContent = ""
-                }
-
-                function removeAllChildren(dom, vNode, children) {
-                    unmountAllChildren(children);
-                    if (8192 & vNode.flags) {
-                        removeVNodeDOM(vNode, dom)
+                function clearDOM(parentDOM, children, animations) {
+                    if (animations.componentWillDisappear.length > 0) {
+                        callAllAnimationHooks(animations.componentWillDisappear, function(children, parentDOM) {
+                            return function() {
+                                if (parentDOM) {
+                                    for (var i = 0; i < children.length; i++) {
+                                        var vNode = children[i];
+                                        clearVNodeDOM(vNode, parentDOM, false)
+                                    }
+                                }
+                            }
+                        }(children, parentDOM))
                     } else {
-                        clearDOM(dom)
+                        parentDOM.textContent = ""
                     }
                 }
 
-                function patchDangerInnerHTML(lastValue, nextValue, lastVNode, dom) {
+                function removeAllChildren(dom, vNode, children, animations) {
+                    unmountAllChildren(children, animations);
+                    if (8192 & vNode.flags) {
+                        removeVNodeDOM(vNode, dom, animations)
+                    } else {
+                        clearDOM(dom, children, animations)
+                    }
+                }
+
+                function addDisappearAnimationHook(animations, instanceOrRef, dom, flags, props) {
+                    animations.componentWillDisappear.push((function(callback) {
+                        if (4 & flags) {
+                            instanceOrRef.componentWillDisappear(dom, callback)
+                        } else if (8 & flags) {
+                            instanceOrRef.onComponentWillDisappear(dom, props, callback)
+                        }
+                    }))
+                }
+
+                function patchDangerInnerHTML(lastValue, nextValue, lastVNode, dom, animations) {
                     var lastHtml = lastValue && lastValue.__html || "";
                     var nextHtml = nextValue && nextValue.__html || "";
                     if (lastHtml !== nextHtml) {
@@ -1848,9 +1226,9 @@
                             }(dom, nextHtml)) {
                             if (!isNull(lastVNode)) {
                                 if (12 & lastVNode.childFlags) {
-                                    unmountAllChildren(lastVNode.children)
+                                    unmountAllChildren(lastVNode.children, animations)
                                 } else if (2 === lastVNode.childFlags) {
-                                    unmount(lastVNode.children)
+                                    unmount(lastVNode.children, animations)
                                 }
                                 lastVNode.children = null;
                                 lastVNode.childFlags = 1
@@ -1860,7 +1238,7 @@
                     }
                 }
 
-                function patchProp(prop, lastValue, nextValue, dom, isSVG, hasControlledValue, lastVNode) {
+                function patchProp(prop, lastValue, nextValue, dom, isSVG, hasControlledValue, lastVNode, animations) {
                     switch (prop) {
                         case "children":
                         case "childrenType":
@@ -1940,7 +1318,7 @@
                             }(lastValue, nextValue, dom);
                             break;
                         case "dangerouslySetInnerHTML":
-                            patchDangerInnerHTML(lastValue, nextValue, lastVNode, dom);
+                            patchDangerInnerHTML(lastValue, nextValue, lastVNode, dom, animations);
                             break;
                         default:
                             if (syntheticEvents[prop]) {
@@ -1981,7 +1359,7 @@
                     }
                 }
 
-                function mountProps(vNode, flags, props, dom, isSVG) {
+                function mountProps(vNode, flags, props, dom, isSVG, animations) {
                     var hasControlledValue = false;
                     var isFormElement = (448 & flags) > 0;
                     if (isFormElement) {
@@ -1991,7 +1369,7 @@
                         }
                     }
                     for (var prop in props) {
-                        patchProp(prop, null, props[prop], dom, isSVG, hasControlledValue, null)
+                        patchProp(prop, null, props[prop], dom, isSVG, hasControlledValue, null, animations)
                     }
                     if (isFormElement) {
                         processElement(flags, vNode, dom, props, true, hasControlledValue)
@@ -2049,25 +1427,34 @@
                     return 32768 & vNode.flags ? vNode.type.render(props, vNode.ref, context) : vNode.type(props, context)
                 }
 
-                function mount(vNode, parentDOM, context, isSVG, nextNode, lifecycle) {
+                function mount(vNode, parentDOM, context, isSVG, nextNode, lifecycle, animations) {
                     var flags = vNode.flags |= 16384;
                     if (481 & flags) {
-                        mountElement(vNode, parentDOM, context, isSVG, nextNode, lifecycle)
+                        mountElement(vNode, parentDOM, context, isSVG, nextNode, lifecycle, animations)
                     } else if (4 & flags) {
-                        ! function(vNode, parentDOM, context, isSVG, nextNode, lifecycle) {
+                        ! function(vNode, parentDOM, context, isSVG, nextNode, lifecycle, animations) {
                             var instance = createClassComponentInstance(vNode, vNode.type, vNode.props || EMPTY_OBJ, context, isSVG, lifecycle);
-                            mount(instance.$LI, parentDOM, instance.$CX, isSVG, nextNode, lifecycle);
-                            mountClassComponentCallbacks(vNode.ref, instance, lifecycle)
-                        }(vNode, parentDOM, context, isSVG, nextNode, lifecycle)
+                            var childAnimations = animations;
+                            if (isFunction(instance.componentDidAppear)) {
+                                childAnimations = new AnimationQueues
+                            }
+                            mount(instance.$LI, parentDOM, instance.$CX, isSVG, nextNode, lifecycle, childAnimations);
+                            mountClassComponentCallbacks(vNode.ref, instance, lifecycle, animations)
+                        }(vNode, parentDOM, context, isSVG, nextNode, lifecycle, animations)
                     } else if (8 & flags) {
-                        ! function(vNode, parentDOM, context, isSVG, nextNode, lifecycle) {
-                            mount(vNode.children = normalizeRoot(renderFunctionalComponent(vNode, context)), parentDOM, context, isSVG, nextNode, lifecycle)
-                        }(vNode, parentDOM, context, isSVG, nextNode, lifecycle);
-                        mountFunctionalComponentCallbacks(vNode, lifecycle)
-                    } else if (512 & flags || 16 & flags) {
+                        ! function(vNode, parentDOM, context, isSVG, nextNode, lifecycle, animations) {
+                            var ref = vNode.ref;
+                            var childAnimations = animations;
+                            if (!isNullOrUndef(ref) && isFunction(ref.onComponentDidAppear)) {
+                                childAnimations = new AnimationQueues
+                            }
+                            mount(vNode.children = normalizeRoot(renderFunctionalComponent(vNode, context)), parentDOM, context, isSVG, nextNode, lifecycle, childAnimations);
+                            mountFunctionalComponentCallbacks(vNode, lifecycle, animations)
+                        }(vNode, parentDOM, context, isSVG, nextNode, lifecycle, animations)
+                    } else if (16 & flags) {
                         mountText(vNode, parentDOM, nextNode)
                     } else if (8192 & flags) {
-                        ! function(vNode, context, parentDOM, isSVG, nextNode, lifecycle) {
+                        ! function(vNode, context, parentDOM, isSVG, nextNode, lifecycle, animations) {
                             var children = vNode.children;
                             var childFlags = vNode.childFlags;
                             if (12 & childFlags && 0 === children.length) {
@@ -2075,18 +1462,18 @@
                                 children = vNode.children = createVoidVNode()
                             }
                             if (2 === childFlags) {
-                                mount(children, parentDOM, context, isSVG, nextNode, lifecycle)
+                                mount(children, parentDOM, context, isSVG, nextNode, lifecycle, animations)
                             } else {
-                                mountArrayChildren(children, parentDOM, context, isSVG, nextNode, lifecycle)
+                                mountArrayChildren(children, parentDOM, context, isSVG, nextNode, lifecycle, animations)
                             }
-                        }(vNode, context, parentDOM, isSVG, nextNode, lifecycle)
+                        }(vNode, context, parentDOM, isSVG, nextNode, lifecycle, animations)
                     } else if (1024 & flags) {
-                        ! function(vNode, context, parentDOM, nextNode, lifecycle) {
-                            mount(vNode.children, vNode.ref, context, false, null, lifecycle);
+                        ! function(vNode, context, parentDOM, nextNode, lifecycle, animations) {
+                            mount(vNode.children, vNode.ref, context, false, null, lifecycle, animations);
                             var placeHolderVNode = createVoidVNode();
                             mountText(placeHolderVNode, parentDOM, nextNode);
                             vNode.dom = placeHolderVNode.dom
-                        }(vNode, context, parentDOM, nextNode, lifecycle)
+                        }(vNode, context, parentDOM, nextNode, lifecycle, animations)
                     }
                 }
 
@@ -2097,7 +1484,7 @@
                     }
                 }
 
-                function mountElement(vNode, parentDOM, context, isSVG, nextNode, lifecycle) {
+                function mountElement(vNode, parentDOM, context, isSVG, nextNode, lifecycle, animations) {
                     var flags = vNode.flags;
                     var props = vNode.props;
                     var className = vNode.className;
@@ -2124,31 +1511,41 @@
                             if (16384 & children.flags) {
                                 vNode.children = children = directClone(children)
                             }
-                            mount(children, dom, context, childrenIsSVG, null, lifecycle)
+                            mount(children, dom, context, childrenIsSVG, null, lifecycle, animations)
                         } else if (8 === childFlags || 4 === childFlags) {
-                            mountArrayChildren(children, dom, context, childrenIsSVG, null, lifecycle)
+                            mountArrayChildren(children, dom, context, childrenIsSVG, null, lifecycle, animations)
                         }
                     }
                     if (!isNull(parentDOM)) {
                         insertOrAppend(parentDOM, dom, nextNode)
                     }
                     if (!isNull(props)) {
-                        mountProps(vNode, flags, props, dom, isSVG)
+                        mountProps(vNode, flags, props, dom, isSVG, animations)
                     }
                     mountRef(vNode.ref, dom, lifecycle)
                 }
 
-                function mountArrayChildren(children, dom, context, isSVG, nextNode, lifecycle) {
+                function mountArrayChildren(children, dom, context, isSVG, nextNode, lifecycle, animations) {
                     for (var i = 0; i < children.length; ++i) {
                         var child = children[i];
                         if (16384 & child.flags) {
                             children[i] = child = directClone(child)
                         }
-                        mount(child, dom, context, isSVG, nextNode, lifecycle)
+                        mount(child, dom, context, isSVG, nextNode, lifecycle, animations)
                     }
                 }
 
-                function mountClassComponentCallbacks(ref, instance, lifecycle) {
+                function addAppearAnimationHook(animations, instanceOrRef, dom, flags, props) {
+                    animations.componentDidAppear.push((function() {
+                        if (4 & flags) {
+                            instanceOrRef.componentDidAppear(dom)
+                        } else if (8 & flags) {
+                            instanceOrRef.onComponentDidAppear(dom, props)
+                        }
+                    }))
+                }
+
+                function mountClassComponentCallbacks(ref, instance, lifecycle, animations) {
                     mountRef(ref, instance, lifecycle);
                     if (isFunction(instance.componentDidMount)) {
                         lifecycle.push(function(instance) {
@@ -2157,43 +1554,49 @@
                             }
                         }(instance))
                     }
+                    if (isFunction(instance.componentDidAppear)) {
+                        addAppearAnimationHook(animations, instance, instance.$LI.dom, 4, void 0)
+                    }
                 }
 
-                function mountFunctionalComponentCallbacks(vNode, lifecycle) {
+                function mountFunctionalComponentCallbacks(vNode, lifecycle, animations) {
                     var ref = vNode.ref;
                     if (!isNullOrUndef(ref)) {
                         safeCall1(ref.onComponentWillMount, vNode.props || EMPTY_OBJ);
                         if (isFunction(ref.onComponentDidMount)) {
                             lifecycle.push(function(ref, vNode) {
                                 return function() {
-                                    ref.onComponentDidMount(findDOMfromVNode(vNode, true), vNode.props || EMPTY_OBJ)
+                                    ref.onComponentDidMount(findDOMFromVNode(vNode, true), vNode.props || EMPTY_OBJ)
                                 }
                             }(ref, vNode))
+                        }
+                        if (isFunction(ref.onComponentDidAppear)) {
+                            addAppearAnimationHook(animations, ref, findDOMFromVNode(vNode, true), 8, vNode.props)
                         }
                     }
                 }
 
-                function patch(lastVNode, nextVNode, parentDOM, context, isSVG, nextNode, lifecycle) {
+                function patch(lastVNode, nextVNode, parentDOM, context, isSVG, nextNode, lifecycle, animations) {
                     var nextFlags = nextVNode.flags |= 16384;
                     if (lastVNode.flags !== nextFlags || lastVNode.type !== nextVNode.type || lastVNode.key !== nextVNode.key || 2048 & nextFlags) {
                         if (16384 & lastVNode.flags) {
-                            ! function(lastVNode, nextVNode, parentDOM, context, isSVG, lifecycle) {
-                                unmount(lastVNode);
-                                if (0 !== (nextVNode.flags & lastVNode.flags & 2033)) {
-                                    mount(nextVNode, null, context, isSVG, null, lifecycle);
+                            ! function(lastVNode, nextVNode, parentDOM, context, isSVG, lifecycle, animations) {
+                                unmount(lastVNode, animations);
+                                if (0 !== (nextVNode.flags & lastVNode.flags & 1521)) {
+                                    mount(nextVNode, null, context, isSVG, null, lifecycle, animations);
                                     ! function(parentDOM, newDom, lastDom) {
                                         parentDOM.replaceChild(newDom, lastDom)
                                     }(parentDOM, nextVNode.dom, lastVNode.dom)
                                 } else {
-                                    mount(nextVNode, parentDOM, context, isSVG, findDOMfromVNode(lastVNode, true), lifecycle);
-                                    removeVNodeDOM(lastVNode, parentDOM)
+                                    mount(nextVNode, parentDOM, context, isSVG, findDOMFromVNode(lastVNode, true), lifecycle, animations);
+                                    removeVNodeDOM(lastVNode, parentDOM, animations)
                                 }
-                            }(lastVNode, nextVNode, parentDOM, context, isSVG, lifecycle)
+                            }(lastVNode, nextVNode, parentDOM, context, isSVG, lifecycle, animations)
                         } else {
-                            mount(nextVNode, parentDOM, context, isSVG, nextNode, lifecycle)
+                            mount(nextVNode, parentDOM, context, isSVG, nextNode, lifecycle, animations)
                         }
                     } else if (481 & nextFlags) {
-                        ! function(lastVNode, nextVNode, context, isSVG, nextFlags, lifecycle) {
+                        ! function(lastVNode, nextVNode, context, isSVG, nextFlags, lifecycle, animations) {
                             var dom = nextVNode.dom = lastVNode.dom;
                             var lastProps = lastVNode.props;
                             var nextProps = nextVNode.props;
@@ -2213,14 +1616,14 @@
                                         var lastValue = lastPropsOrEmpty[prop];
                                         var nextValue = nextPropsOrEmpty[prop];
                                         if (lastValue !== nextValue) {
-                                            patchProp(prop, lastValue, nextValue, dom, isSVG, hasControlledValue, lastVNode)
+                                            patchProp(prop, lastValue, nextValue, dom, isSVG, hasControlledValue, lastVNode, animations)
                                         }
                                     }
                                 }
                                 if (lastPropsOrEmpty !== EMPTY_OBJ) {
-                                    for (var prop$1 in lastPropsOrEmpty) {
-                                        if (isNullOrUndef(nextPropsOrEmpty[prop$1]) && !isNullOrUndef(lastPropsOrEmpty[prop$1])) {
-                                            patchProp(prop$1, lastPropsOrEmpty[prop$1], null, dom, isSVG, hasControlledValue, lastVNode)
+                                    for (var _prop in lastPropsOrEmpty) {
+                                        if (isNullOrUndef(nextPropsOrEmpty[_prop]) && !isNullOrUndef(lastPropsOrEmpty[_prop])) {
+                                            patchProp(_prop, lastPropsOrEmpty[_prop], null, dom, isSVG, hasControlledValue, lastVNode, animations)
                                         }
                                     }
                                 }
@@ -2243,7 +1646,7 @@
                                     }
                                 }(dom, nextChildren)
                             } else {
-                                patchChildren(lastVNode.childFlags, nextVNode.childFlags, lastVNode.children, nextChildren, dom, context, isSVG && "foreignObject" !== nextVNode.type, null, lastVNode, lifecycle)
+                                patchChildren(lastVNode.childFlags, nextVNode.childFlags, lastVNode.children, nextChildren, dom, context, isSVG && "foreignObject" !== nextVNode.type, null, lastVNode, lifecycle, animations)
                             }
                             if (isFormElement) {
                                 processElement(nextFlags, nextVNode, dom, nextPropsOrEmpty, false, hasControlledValue)
@@ -2254,9 +1657,9 @@
                                 unmountRef(lastRef);
                                 mountRef(nextRef, dom, lifecycle)
                             }
-                        }(lastVNode, nextVNode, context, isSVG, nextFlags, lifecycle)
+                        }(lastVNode, nextVNode, context, isSVG, nextFlags, lifecycle, animations)
                     } else if (4 & nextFlags) {
-                        ! function(lastVNode, nextVNode, parentDOM, context, isSVG, nextNode, lifecycle) {
+                        ! function(lastVNode, nextVNode, parentDOM, context, isSVG, nextNode, lifecycle, animations) {
                             var instance = nextVNode.children = lastVNode.children;
                             if (isNull(instance)) {
                                 return
@@ -2280,14 +1683,14 @@
                                     instance.$PS = null
                                 }
                             }
-                            updateClassComponent(instance, nextState, nextProps, parentDOM, context, isSVG, false, nextNode, lifecycle);
+                            updateClassComponent(instance, nextState, nextProps, parentDOM, context, isSVG, false, nextNode, lifecycle, animations);
                             if (lastRef !== nextRef) {
                                 unmountRef(lastRef);
                                 mountRef(nextRef, instance, lifecycle)
                             }
-                        }(lastVNode, nextVNode, parentDOM, context, isSVG, nextNode, lifecycle)
+                        }(lastVNode, nextVNode, parentDOM, context, isSVG, nextNode, lifecycle, animations)
                     } else if (8 & nextFlags) {
-                        ! function(lastVNode, nextVNode, parentDOM, context, isSVG, nextNode, lifecycle) {
+                        ! function(lastVNode, nextVNode, parentDOM, context, isSVG, nextNode, lifecycle, animations) {
                             var shouldUpdate = true;
                             var nextProps = nextVNode.props || EMPTY_OBJ;
                             var nextRef = nextVNode.ref;
@@ -2302,7 +1705,7 @@
                                     nextRef.onComponentWillUpdate(lastProps, nextProps)
                                 }
                                 var nextInput = normalizeRoot(renderFunctionalComponent(nextVNode, context));
-                                patch(lastInput, nextInput, parentDOM, context, isSVG, nextNode, lifecycle);
+                                patch(lastInput, nextInput, parentDOM, context, isSVG, nextNode, lifecycle, animations);
                                 nextVNode.children = nextInput;
                                 if (nextHooksDefined && isFunction(nextRef.onComponentDidUpdate)) {
                                     nextRef.onComponentDidUpdate(lastProps, nextProps)
@@ -2310,7 +1713,7 @@
                             } else {
                                 nextVNode.children = lastInput
                             }
-                        }(lastVNode, nextVNode, parentDOM, context, isSVG, nextNode, lifecycle)
+                        }(lastVNode, nextVNode, parentDOM, context, isSVG, nextNode, lifecycle, animations)
                     } else if (16 & nextFlags) {
                         ! function(lastVNode, nextVNode) {
                             var nextText = nextVNode.children;
@@ -2319,10 +1722,8 @@
                                 dom.nodeValue = nextText
                             }
                         }(lastVNode, nextVNode)
-                    } else if (512 & nextFlags) {
-                        nextVNode.dom = lastVNode.dom
                     } else if (8192 & nextFlags) {
-                        ! function(lastVNode, nextVNode, parentDOM, context, isSVG, lifecycle) {
+                        ! function(lastVNode, nextVNode, parentDOM, context, isSVG, lifecycle, animations) {
                             var lastChildren = lastVNode.children;
                             var nextChildren = nextVNode.children;
                             var lastChildFlags = lastVNode.childFlags;
@@ -2336,53 +1737,53 @@
                             if (12 & lastChildFlags) {
                                 var lastLen = lastChildren.length;
                                 if (8 & lastChildFlags && 8 & nextChildFlags || nextIsSingle || !nextIsSingle && nextChildren.length > lastLen) {
-                                    nextNode = findDOMfromVNode(lastChildren[lastLen - 1], false).nextSibling
+                                    nextNode = findDOMFromVNode(lastChildren[lastLen - 1], false).nextSibling
                                 }
                             }
-                            patchChildren(lastChildFlags, nextChildFlags, lastChildren, nextChildren, parentDOM, context, isSVG, nextNode, lastVNode, lifecycle)
-                        }(lastVNode, nextVNode, parentDOM, context, isSVG, lifecycle)
+                            patchChildren(lastChildFlags, nextChildFlags, lastChildren, nextChildren, parentDOM, context, isSVG, nextNode, lastVNode, lifecycle, animations)
+                        }(lastVNode, nextVNode, parentDOM, context, isSVG, lifecycle, animations)
                     } else {
-                        ! function(lastVNode, nextVNode, context, lifecycle) {
+                        ! function(lastVNode, nextVNode, context, lifecycle, animations) {
                             var lastContainer = lastVNode.ref;
                             var nextContainer = nextVNode.ref;
                             var nextChildren = nextVNode.children;
-                            patchChildren(lastVNode.childFlags, nextVNode.childFlags, lastVNode.children, nextChildren, lastContainer, context, false, null, lastVNode, lifecycle);
+                            patchChildren(lastVNode.childFlags, nextVNode.childFlags, lastVNode.children, nextChildren, lastContainer, context, false, null, lastVNode, lifecycle, animations);
                             nextVNode.dom = lastVNode.dom;
                             if (lastContainer !== nextContainer && !isInvalid(nextChildren)) {
                                 var node = nextChildren.dom;
                                 removeChild(lastContainer, node);
                                 appendChild(nextContainer, node)
                             }
-                        }(lastVNode, nextVNode, context, lifecycle)
+                        }(lastVNode, nextVNode, context, lifecycle, animations)
                     }
                 }
 
-                function patchChildren(lastChildFlags, nextChildFlags, lastChildren, nextChildren, parentDOM, context, isSVG, nextNode, parentVNode, lifecycle) {
+                function patchChildren(lastChildFlags, nextChildFlags, lastChildren, nextChildren, parentDOM, context, isSVG, nextNode, parentVNode, lifecycle, animations) {
                     switch (lastChildFlags) {
                         case 2:
                             switch (nextChildFlags) {
                                 case 2:
-                                    patch(lastChildren, nextChildren, parentDOM, context, isSVG, nextNode, lifecycle);
+                                    patch(lastChildren, nextChildren, parentDOM, context, isSVG, nextNode, lifecycle, animations);
                                     break;
                                 case 1:
-                                    remove(lastChildren, parentDOM);
+                                    remove(lastChildren, parentDOM, animations);
                                     break;
                                 case 16:
-                                    unmount(lastChildren);
+                                    unmount(lastChildren, animations);
                                     setTextContent(parentDOM, nextChildren);
                                     break;
                                 default:
-                                    ! function(lastChildren, nextChildren, parentDOM, context, isSVG, lifecycle) {
-                                        unmount(lastChildren);
-                                        mountArrayChildren(nextChildren, parentDOM, context, isSVG, findDOMfromVNode(lastChildren, true), lifecycle);
-                                        removeVNodeDOM(lastChildren, parentDOM)
-                                    }(lastChildren, nextChildren, parentDOM, context, isSVG, lifecycle)
+                                    ! function(lastChildren, nextChildren, parentDOM, context, isSVG, lifecycle, animations) {
+                                        unmount(lastChildren, animations);
+                                        mountArrayChildren(nextChildren, parentDOM, context, isSVG, findDOMFromVNode(lastChildren, true), lifecycle, animations);
+                                        removeVNodeDOM(lastChildren, parentDOM, animations)
+                                    }(lastChildren, nextChildren, parentDOM, context, isSVG, lifecycle, animations)
                             }
                             break;
                         case 1:
                             switch (nextChildFlags) {
                                 case 2:
-                                    mount(nextChildren, parentDOM, context, isSVG, nextNode, lifecycle);
+                                    mount(nextChildren, parentDOM, context, isSVG, nextNode, lifecycle, animations);
                                     break;
                                 case 1:
                                     break;
@@ -2390,7 +1791,7 @@
                                     setTextContent(parentDOM, nextChildren);
                                     break;
                                 default:
-                                    mountArrayChildren(nextChildren, parentDOM, context, isSVG, nextNode, lifecycle)
+                                    mountArrayChildren(nextChildren, parentDOM, context, isSVG, nextNode, lifecycle, animations)
                             }
                             break;
                         case 16:
@@ -2407,41 +1808,41 @@
                                     }(lastChildren, nextChildren, parentDOM);
                                     break;
                                 case 2:
-                                    clearDOM(parentDOM);
-                                    mount(nextChildren, parentDOM, context, isSVG, nextNode, lifecycle);
+                                    clearDOM(parentDOM, lastChildren, animations);
+                                    mount(nextChildren, parentDOM, context, isSVG, nextNode, lifecycle, animations);
                                     break;
                                 case 1:
-                                    clearDOM(parentDOM);
+                                    clearDOM(parentDOM, lastChildren, animations);
                                     break;
                                 default:
-                                    clearDOM(parentDOM);
-                                    mountArrayChildren(nextChildren, parentDOM, context, isSVG, nextNode, lifecycle)
+                                    clearDOM(parentDOM, lastChildren, animations);
+                                    mountArrayChildren(nextChildren, parentDOM, context, isSVG, nextNode, lifecycle, animations)
                             }
                             break;
                         default:
                             switch (nextChildFlags) {
                                 case 16:
-                                    unmountAllChildren(lastChildren);
+                                    unmountAllChildren(lastChildren, animations);
                                     setTextContent(parentDOM, nextChildren);
                                     break;
                                 case 2:
-                                    removeAllChildren(parentDOM, parentVNode, lastChildren);
-                                    mount(nextChildren, parentDOM, context, isSVG, nextNode, lifecycle);
+                                    removeAllChildren(parentDOM, parentVNode, lastChildren, animations);
+                                    mount(nextChildren, parentDOM, context, isSVG, nextNode, lifecycle, animations);
                                     break;
                                 case 1:
-                                    removeAllChildren(parentDOM, parentVNode, lastChildren);
+                                    removeAllChildren(parentDOM, parentVNode, lastChildren, animations);
                                     break;
                                 default:
                                     var lastLength = 0 | lastChildren.length;
                                     var nextLength = 0 | nextChildren.length;
                                     if (0 === lastLength) {
                                         if (nextLength > 0) {
-                                            mountArrayChildren(nextChildren, parentDOM, context, isSVG, nextNode, lifecycle)
+                                            mountArrayChildren(nextChildren, parentDOM, context, isSVG, nextNode, lifecycle, animations)
                                         }
                                     } else if (0 === nextLength) {
-                                        removeAllChildren(parentDOM, parentVNode, lastChildren)
+                                        removeAllChildren(parentDOM, parentVNode, lastChildren, animations)
                                     } else if (8 === nextChildFlags && 8 === lastChildFlags) {
-                                        ! function(a, b, dom, context, isSVG, aLength, bLength, outerEdge, parentVNode, lifecycle) {
+                                        ! function(a, b, dom, context, isSVG, aLength, bLength, outerEdge, parentVNode, lifecycle, animations) {
                                             var aEnd = aLength - 1;
                                             var bEnd = bLength - 1;
                                             var j = 0;
@@ -2454,7 +1855,7 @@
                                                     if (16384 & bNode.flags) {
                                                         b[j] = bNode = directClone(bNode)
                                                     }
-                                                    patch(aNode, bNode, dom, context, isSVG, outerEdge, lifecycle);
+                                                    patch(aNode, bNode, dom, context, isSVG, outerEdge, lifecycle, animations);
                                                     a[j] = bNode;
                                                     ++j;
                                                     if (j > aEnd || j > bEnd) {
@@ -2468,7 +1869,7 @@
                                                     if (16384 & bNode.flags) {
                                                         b[bEnd] = bNode = directClone(bNode)
                                                     }
-                                                    patch(aNode, bNode, dom, context, isSVG, outerEdge, lifecycle);
+                                                    patch(aNode, bNode, dom, context, isSVG, outerEdge, lifecycle, animations);
                                                     a[aEnd] = bNode;
                                                     aEnd--;
                                                     bEnd--;
@@ -2482,24 +1883,24 @@
                                             if (j > aEnd) {
                                                 if (j <= bEnd) {
                                                     nextPos = bEnd + 1;
-                                                    nextNode = nextPos < bLength ? findDOMfromVNode(b[nextPos], true) : outerEdge;
+                                                    nextNode = nextPos < bLength ? findDOMFromVNode(b[nextPos], true) : outerEdge;
                                                     while (j <= bEnd) {
                                                         bNode = b[j];
                                                         if (16384 & bNode.flags) {
                                                             b[j] = bNode = directClone(bNode)
                                                         }++j;
-                                                        mount(bNode, dom, context, isSVG, nextNode, lifecycle)
+                                                        mount(bNode, dom, context, isSVG, nextNode, lifecycle, animations)
                                                     }
                                                 }
                                             } else if (j > bEnd) {
                                                 while (j <= aEnd) {
-                                                    remove(a[j++], dom)
+                                                    remove(a[j++], dom, animations)
                                                 }
                                             } else {
-                                                ! function(a, b, context, aLength, bLength, aEnd, bEnd, j, dom, isSVG, outerEdge, parentVNode, lifecycle) {
+                                                ! function(a, b, context, aLength, bLength, aEnd, bEnd, j, dom, isSVG, outerEdge, parentVNode, lifecycle, animations) {
                                                     var aNode;
                                                     var bNode;
-                                                    var nextPos;
+                                                    var nextPos = 0;
                                                     var i = 0;
                                                     var aStart = j;
                                                     var bStart = j;
@@ -2521,7 +1922,7 @@
                                                                         if (canRemoveWholeContent) {
                                                                             canRemoveWholeContent = false;
                                                                             while (aStart < i) {
-                                                                                remove(a[aStart++], dom)
+                                                                                remove(a[aStart++], dom, animations)
                                                                             }
                                                                         }
                                                                         if (pos > j) {
@@ -2532,16 +1933,16 @@
                                                                         if (16384 & bNode.flags) {
                                                                             b[j] = bNode = directClone(bNode)
                                                                         }
-                                                                        patch(aNode, bNode, dom, context, isSVG, outerEdge, lifecycle);
+                                                                        patch(aNode, bNode, dom, context, isSVG, outerEdge, lifecycle, animations);
                                                                         ++patched;
                                                                         break
                                                                     }
                                                                 }
                                                                 if (!canRemoveWholeContent && j > bEnd) {
-                                                                    remove(aNode, dom)
+                                                                    remove(aNode, dom, animations)
                                                                 }
                                                             } else if (!canRemoveWholeContent) {
-                                                                remove(aNode, dom)
+                                                                remove(aNode, dom, animations)
                                                             }
                                                         }
                                                     } else {
@@ -2557,7 +1958,7 @@
                                                                     if (canRemoveWholeContent) {
                                                                         canRemoveWholeContent = false;
                                                                         while (i > aStart) {
-                                                                            remove(a[aStart++], dom)
+                                                                            remove(a[aStart++], dom, animations)
                                                                         }
                                                                     }
                                                                     sources[j - bStart] = i + 1;
@@ -2570,19 +1971,19 @@
                                                                     if (16384 & bNode.flags) {
                                                                         b[j] = bNode = directClone(bNode)
                                                                     }
-                                                                    patch(aNode, bNode, dom, context, isSVG, outerEdge, lifecycle);
+                                                                    patch(aNode, bNode, dom, context, isSVG, outerEdge, lifecycle, animations);
                                                                     ++patched
                                                                 } else if (!canRemoveWholeContent) {
-                                                                    remove(aNode, dom)
+                                                                    remove(aNode, dom, animations)
                                                                 }
                                                             } else if (!canRemoveWholeContent) {
-                                                                remove(aNode, dom)
+                                                                remove(aNode, dom, animations)
                                                             }
                                                         }
                                                     }
                                                     if (canRemoveWholeContent) {
-                                                        removeAllChildren(dom, parentVNode, a);
-                                                        mountArrayChildren(b, dom, context, isSVG, outerEdge, lifecycle)
+                                                        removeAllChildren(dom, parentVNode, a, animations);
+                                                        mountArrayChildren(b, dom, context, isSVG, outerEdge, lifecycle, animations)
                                                     } else if (moved) {
                                                         var seq = function(arr) {
                                                             var arrI = 0;
@@ -2644,15 +2045,27 @@
                                                                     b[pos] = bNode = directClone(bNode)
                                                                 }
                                                                 nextPos = pos + 1;
-                                                                mount(bNode, dom, context, isSVG, nextPos < bLength ? findDOMfromVNode(b[nextPos], true) : outerEdge, lifecycle)
+                                                                mount(bNode, dom, context, isSVG, nextPos < bLength ? findDOMFromVNode(b[nextPos], true) : outerEdge, lifecycle, animations)
                                                             } else if (j < 0 || i !== seq[j]) {
                                                                 pos = i + bStart;
                                                                 bNode = b[pos];
                                                                 nextPos = pos + 1;
-                                                                moveVNodeDOM(bNode, dom, nextPos < bLength ? findDOMfromVNode(b[nextPos], true) : outerEdge)
+                                                                moveVNodeDOM(parentVNode, bNode, dom, nextPos < bLength ? findDOMFromVNode(b[nextPos], true) : outerEdge, animations)
                                                             } else {
                                                                 j--
                                                             }
+                                                        }
+                                                        if (animations.componentWillMove.length > 0) {
+                                                            ! function(animationQueue) {
+                                                                for (var i = 0; i < animationQueue.length; i++) {
+                                                                    animationQueue[i].fn()
+                                                                }
+                                                                for (var _i = 0; _i < animationQueue.length; _i++) {
+                                                                    var tmp = animationQueue[_i];
+                                                                    insertOrAppend(tmp.parent, tmp.dom, tmp.next)
+                                                                }
+                                                                animationQueue.splice(0, animationQueue.length)
+                                                            }(animations.componentWillMove)
                                                         }
                                                     } else if (patched !== bLeft) {
                                                         for (i = bLeft - 1; i >= 0; i--) {
@@ -2663,15 +2076,15 @@
                                                                     b[pos] = bNode = directClone(bNode)
                                                                 }
                                                                 nextPos = pos + 1;
-                                                                mount(bNode, dom, context, isSVG, nextPos < bLength ? findDOMfromVNode(b[nextPos], true) : outerEdge, lifecycle)
+                                                                mount(bNode, dom, context, isSVG, nextPos < bLength ? findDOMFromVNode(b[nextPos], true) : outerEdge, lifecycle, animations)
                                                             }
                                                         }
                                                     }
-                                                }(a, b, context, aLength, bLength, aEnd, bEnd, j, dom, isSVG, outerEdge, parentVNode, lifecycle)
+                                                }(a, b, context, aLength, bLength, aEnd, bEnd, j, dom, isSVG, outerEdge, parentVNode, lifecycle, animations)
                                             }
-                                        }(lastChildren, nextChildren, parentDOM, context, isSVG, lastLength, nextLength, nextNode, parentVNode, lifecycle)
+                                        }(lastChildren, nextChildren, parentDOM, context, isSVG, lastLength, nextLength, nextNode, parentVNode, lifecycle, animations)
                                     } else {
-                                        ! function(lastChildren, nextChildren, dom, context, isSVG, lastChildrenLength, nextChildrenLength, nextNode, lifecycle) {
+                                        ! function(lastChildren, nextChildren, dom, context, isSVG, lastChildrenLength, nextChildrenLength, nextNode, lifecycle, animations) {
                                             var commonLength = lastChildrenLength > nextChildrenLength ? nextChildrenLength : lastChildrenLength;
                                             var i = 0;
                                             var nextChild;
@@ -2682,7 +2095,7 @@
                                                 if (16384 & nextChild.flags) {
                                                     nextChild = nextChildren[i] = directClone(nextChild)
                                                 }
-                                                patch(lastChild, nextChild, dom, context, isSVG, nextNode, lifecycle);
+                                                patch(lastChild, nextChild, dom, context, isSVG, nextNode, lifecycle, animations);
                                                 lastChildren[i] = nextChild
                                             }
                                             if (lastChildrenLength < nextChildrenLength) {
@@ -2691,20 +2104,20 @@
                                                     if (16384 & nextChild.flags) {
                                                         nextChild = nextChildren[i] = directClone(nextChild)
                                                     }
-                                                    mount(nextChild, dom, context, isSVG, nextNode, lifecycle)
+                                                    mount(nextChild, dom, context, isSVG, nextNode, lifecycle, animations)
                                                 }
                                             } else if (lastChildrenLength > nextChildrenLength) {
                                                 for (i = commonLength; i < lastChildrenLength; ++i) {
-                                                    remove(lastChildren[i], dom)
+                                                    remove(lastChildren[i], dom, animations)
                                                 }
                                             }
-                                        }(lastChildren, nextChildren, parentDOM, context, isSVG, lastLength, nextLength, nextNode, lifecycle)
+                                        }(lastChildren, nextChildren, parentDOM, context, isSVG, lastLength, nextLength, nextNode, lifecycle, animations)
                                     }
                             }
                     }
                 }
 
-                function updateClassComponent(instance, nextState, nextProps, parentDOM, context, isSVG, force, nextNode, lifecycle) {
+                function updateClassComponent(instance, nextState, nextProps, parentDOM, context, isSVG, force, nextNode, lifecycle, animations) {
                     var lastState = instance.state;
                     var lastProps = instance.props;
                     var usesNewAPI = Boolean(instance.$N);
@@ -2724,7 +2137,7 @@
                         if (usesNewAPI && isFunction(instance.getSnapshotBeforeUpdate)) {
                             snapshot = instance.getSnapshotBeforeUpdate(lastProps, lastState)
                         }
-                        patch(instance.$LI, nextInput, parentDOM, instance.$CX, isSVG, nextNode, lifecycle);
+                        patch(instance.$LI, nextInput, parentDOM, instance.$CX, isSVG, nextNode, lifecycle, animations);
                         instance.$LI = nextInput;
                         if (isFunction(instance.componentDidUpdate)) {
                             ! function(instance, lastProps, lastState, snapshot, lifecycle) {
@@ -2752,6 +2165,7 @@
 
                 function __render(input, parentDOM, callback, context) {
                     var lifecycle = [];
+                    var animations = new AnimationQueues;
                     var rootInput = parentDOM.$V;
                     renderCheck.v = true;
                     if (isNullOrUndef(rootInput)) {
@@ -2759,21 +2173,22 @@
                             if (16384 & input.flags) {
                                 input = directClone(input)
                             }
-                            mount(input, parentDOM, context, false, null, lifecycle);
+                            mount(input, parentDOM, context, false, null, lifecycle, animations);
                             parentDOM.$V = input;
                             rootInput = input
                         }
                     } else if (isNullOrUndef(input)) {
-                        remove(rootInput, parentDOM);
+                        remove(rootInput, parentDOM, animations);
                         parentDOM.$V = null
                     } else {
                         if (16384 & input.flags) {
                             input = directClone(input)
                         }
-                        patch(rootInput, input, parentDOM, context, false, null, lifecycle);
+                        patch(rootInput, input, parentDOM, context, false, null, lifecycle, animations);
                         rootInput = parentDOM.$V = input
                     }
                     callAll(lifecycle);
+                    callAllAnimationHooks(animations.componentDidAppear);
                     renderCheck.v = false;
                     if (isFunction(callback)) {
                         callback()
@@ -2801,7 +2216,7 @@
                         render(nextInput, parentDOM, callback, context)
                     }
                 }
-                var QUEUE = [];
+                var COMPONENTS_QUEUE = [];
                 var nextTick = "undefined" !== typeof Promise ? Promise.resolve().then.bind(Promise.resolve()) : function(a) {
                     window.setTimeout(a, 0)
                 };
@@ -2821,7 +2236,7 @@
                     }
                     if (!component.$BR) {
                         if (!renderCheck.v) {
-                            if (0 === QUEUE.length) {
+                            if (0 === COMPONENTS_QUEUE.length) {
                                 applyState(component, force);
                                 if (isFunction(callback)) {
                                     callback.call(component)
@@ -2829,8 +2244,8 @@
                                 return
                             }
                         }
-                        if (-1 === QUEUE.indexOf(component)) {
-                            QUEUE.push(component)
+                        if (-1 === COMPONENTS_QUEUE.indexOf(component)) {
+                            COMPONENTS_QUEUE.push(component)
                         }
                         if (force) {
                             component.$F = true
@@ -2862,7 +2277,7 @@
                 function rerender() {
                     var component;
                     microTaskPending = false;
-                    while (component = QUEUE.shift()) {
+                    while (component = COMPONENTS_QUEUE.shift()) {
                         if (!component.$UN) {
                             var force = component.$F;
                             component.$F = false;
@@ -2879,49 +2294,60 @@
                         var pendingState = component.$PS;
                         component.$PS = null;
                         var lifecycle = [];
+                        var animations = new AnimationQueues;
                         renderCheck.v = true;
-                        updateClassComponent(component, combineFrom(component.state, pendingState), component.props, findDOMfromVNode(component.$LI, true).parentNode, component.context, component.$SVG, force, null, lifecycle);
+                        updateClassComponent(component, combineFrom(component.state, pendingState), component.props, findDOMFromVNode(component.$LI, true).parentNode, component.context, component.$SVG, force, null, lifecycle, animations);
                         callAll(lifecycle);
+                        callAllAnimationHooks(animations.componentDidAppear);
                         renderCheck.v = false
                     } else {
                         component.state = component.$PS;
                         component.$PS = null
                     }
                 }
-                var Component = function(props, context) {
-                    this.state = null;
-                    this.$BR = false;
-                    this.$BS = true;
-                    this.$PS = null;
-                    this.$LI = null;
-                    this.$UN = false;
-                    this.$CX = null;
-                    this.$QU = null;
-                    this.$N = false;
-                    this.$L = null;
-                    this.$SVG = false;
-                    this.$F = false;
-                    this.props = props || EMPTY_OBJ;
-                    this.context = context || EMPTY_OBJ
-                };
-                Component.prototype.forceUpdate = function(callback) {
-                    if (this.$UN) {
-                        return
+                var Component = function() {
+                    function Component(props, context) {
+                        this.state = null;
+                        this.props = void 0;
+                        this.context = void 0;
+                        this.displayName = void 0;
+                        this.$BR = false;
+                        this.$BS = true;
+                        this.$PS = null;
+                        this.$LI = null;
+                        this.$UN = false;
+                        this.$CX = null;
+                        this.$QU = null;
+                        this.$N = false;
+                        this.$SSR = void 0;
+                        this.$L = null;
+                        this.$SVG = false;
+                        this.$F = false;
+                        this.props = props || EMPTY_OBJ;
+                        this.context = context || EMPTY_OBJ
                     }
-                    queueStateChanges(this, {}, callback, true)
-                };
-                Component.prototype.setState = function(newState, callback) {
-                    if (this.$UN) {
-                        return
-                    }
-                    if (!this.$BS) {
-                        queueStateChanges(this, newState, callback, false)
-                    }
-                };
-                Component.prototype.render = function(_nextProps, _nextState, _nextContext) {
-                    return null
-                };
-                var version = "7.4.11";
+                    var _proto = Component.prototype;
+                    _proto.forceUpdate = function(callback) {
+                        if (this.$UN) {
+                            return
+                        }
+                        queueStateChanges(this, {}, callback, true)
+                    };
+                    _proto.setState = function(newState, callback) {
+                        if (this.$UN) {
+                            return
+                        }
+                        if (!this.$BS) {
+                            queueStateChanges(this, newState, callback, false)
+                        }
+                    };
+                    _proto.render = function(props, state, context) {
+                        return null
+                    };
+                    return Component
+                }();
+                Component.defaultProps = null;
+                var version = "8.2.3";
                 if (false) {}
             },
         55351:
@@ -3030,7 +2456,7 @@
                     e: 65537,
                     n: new Uint8Array([200, 219, 153, 203, 140, 7, 228, 253, 193, 243, 62, 137, 139, 60, 68, 242, 48, 142, 113, 88, 185, 235, 253, 105, 80, 74, 32, 170, 96, 74, 111, 250, 7, 205, 154, 3, 146, 115, 153, 53, 45, 132, 123, 56, 61, 208, 184, 201, 63, 24, 109, 223, 0, 179, 169, 102, 139, 224, 73, 233, 45, 173, 138, 66, 98, 88, 69, 76, 177, 111, 113, 218, 192, 33, 101, 152, 25, 134, 34, 173, 32, 82, 230, 44, 247, 200, 253, 170, 192, 246, 30, 12, 96, 205, 100, 249, 181, 93, 0, 231])
                 };
-                exports.INTERNAL_USAGE_ID = "Q3aoqHsRD3vXeUMPdXH7q5"
+                exports.INTERNAL_USAGE_ID = "V2QpQmJVXWy6Nexkq9Xk9o"
             },
         93391:
             /*!*******************************************************************************************!*\
@@ -3496,7 +2922,6 @@
                         super();
                         this._observer = null;
                         this._inReassign = false;
-                        this._hidden = false;
                         this._spanStyles = createImportantStyles(textStyles, null === (_DxLicense$customStyl = DxLicense.customStyles) || void 0 === _DxLicense$customStyl ? void 0 : _DxLicense$customStyl.textStyles);
                         this._linkStyles = createImportantStyles(textStyles, null === (_DxLicense$customStyl2 = DxLicense.customStyles) || void 0 === _DxLicense$customStyl2 ? void 0 : _DxLicense$customStyl2.linkStyles);
                         this._containerStyles = createImportantStyles(containerStyles, null === (_DxLicense$customStyl3 = DxLicense.customStyles) || void 0 === _DxLicense$customStyl3 ? void 0 : _DxLicense$customStyl3.containerStyles);
@@ -3538,7 +2963,7 @@
                         svg.appendChild(polygon);
                         button.appendChild(svg);
                         button.onclick = () => {
-                            this._hidden = true;
+                            DxLicense.closed = true;
                             this.style.cssText = createImportantStyles({
                                 display: "none"
                             })
@@ -3560,7 +2985,7 @@
                         this._reassignComponent();
                         if (!this._observer) {
                             this._observer = new MutationObserver((() => {
-                                if (this._hidden) {
+                                if (DxLicense.closed) {
                                     var _this$_observer;
                                     null === (_this$_observer = this._observer) || void 0 === _this$_observer || _this$_observer.disconnect();
                                     return
@@ -3580,27 +3005,34 @@
                         }
                     }
                     disconnectedCallback() {
-                        setTimeout((() => {
+                        if (DxLicense.closed) {
+                            return
+                        }
+                        Promise.resolve().then((() => {
+                            if (!document) {
+                                return
+                            }
                             const licensePanel = document.getElementsByTagName(componentNames.panel);
                             if (!licensePanel.length) {
                                 document.body.prepend(this)
                             }
-                        }), 100)
+                        }))
                     }
                 }
                 DxLicense.customStyles = void 0;
+                DxLicense.closed = false;
                 class DxLicenseTrigger extends SafeHTMLElement {
                     connectedCallback() {
                         this.style.cssText = createImportantStyles({
                             display: "none"
                         });
                         const licensePanel = document.getElementsByTagName(componentNames.panel);
-                        if (!licensePanel.length) {
+                        if (!licensePanel.length && !DxLicense.closed) {
                             const license = document.createElement(componentNames.panel);
                             license.setAttribute(attributeNames.version, this.getAttribute(attributeNames.version));
                             license.setAttribute(attributeNames.buyNow, this.getAttribute(attributeNames.buyNow));
                             license.setAttribute(attributeNames.licensingDoc, this.getAttribute(attributeNames.licensingDoc));
-                            license.setAttribute("data-permanent", "true");
+                            license.setAttribute("data-permanent", "");
                             document.body.prepend(license)
                         }
                     }
@@ -4724,6 +4156,7 @@
                     E0110: "Unknown validation group is detected",
                     E0120: "Adapter for a DevExpressValidator component cannot be configured",
                     E0121: "The 'customItem' parameter of the 'onCustomItemCreating' function is empty or contains invalid data. Assign a custom object or a Promise that is resolved after the item is created.",
+                    E0122: "AIIntegration: The sendRequest method is missing.",
                     W0000: "'{0}' is deprecated in {1}. {2}",
                     W0001: "{0} - '{1}' option is deprecated in {2}. {3}",
                     W0002: "{0} - '{1}' method is deprecated in {2}. {3}",
@@ -4898,12 +4331,12 @@
                     value: true
                 });
                 exports.infernoRenderer = void 0;
-                var _inferno = __webpack_require__( /*! @devextreme/runtime/inferno */ 49714);
                 var _dom_adapter = _interopRequireDefault(__webpack_require__( /*! ../../core/dom_adapter */ 64960));
                 var _element_data = __webpack_require__( /*! ../../core/element_data */ 74663);
                 var _dependency_injector = _interopRequireDefault(__webpack_require__( /*! ../../core/utils/dependency_injector */ 89656));
-                var _inferno2 = __webpack_require__( /*! inferno */ 81167);
-                var _infernoCreateElement = __webpack_require__( /*! inferno-create-element */ 63935);
+                var _index = __webpack_require__( /*! ../core/r1/runtime/inferno/index */ 6257);
+                var _inferno = __webpack_require__( /*! inferno */ 76231);
+                var _infernoCreateElement = __webpack_require__( /*! inferno-create-element */ 12887);
 
                 function _interopRequireDefault(e) {
                     return e && e.__esModule ? e : {
@@ -4920,7 +4353,7 @@
                         } = element;
                         (0, _element_data.cleanDataRecursive)(element);
                         parentNode.$V = element.$V;
-                        (0, _inferno2.render)(null, parentNode);
+                        (0, _inferno.render)(null, parentNode);
                         parentNode.insertBefore(element, nextSibling);
                         element.innerHTML = "";
                         delete parentNode.$V
@@ -4931,10 +4364,10 @@
                     createElement: (component, props) => (0, _infernoCreateElement.createElement)(component, props),
                     remove: remove,
                     onAfterRender: () => {
-                        _inferno.InfernoEffectHost.callEffects()
+                        _index.InfernoEffectHost.callEffects()
                     },
                     onPreRender: () => {
-                        _inferno.InfernoEffectHost.lock()
+                        _index.InfernoEffectHost.lock()
                     },
                     render: (component, props, container, replace) => {
                         if (!replace) {
@@ -4947,13 +4380,20 @@
                             const mountNode = _dom_adapter.default.createDocumentFragment().appendChild(rootNode);
                             const vNodeAlreadyExists = !!container.$V;
                             vNodeAlreadyExists && remove(container);
-                            (0, _inferno.hydrate)((0, _infernoCreateElement.createElement)(component, props), mountNode);
+                            (0, _index.hydrate)((0, _infernoCreateElement.createElement)(component, props), mountNode);
                             container.$V = mountNode.$V;
                             if (parentNode) {
                                 parentNode.insertBefore(container, nextNode)
                             }
                         } else {
-                            (0, _inferno2.render)((0, _infernoCreateElement.createElement)(component, props), container)
+                            (0, _inferno.render)((0, _infernoCreateElement.createElement)(component, props), container)
+                        }
+                    },
+                    renderIntoContainer: (jsx, container, replace) => {
+                        if (!replace) {
+                            (0, _index.hydrate)(jsx, container)
+                        } else {
+                            (0, _inferno.render)(jsx, container)
                         }
                     }
                 })
@@ -6352,7 +5792,7 @@
                 var _renderer = _interopRequireDefault(__webpack_require__( /*! ../../../core/renderer */ 64553));
                 var _extend = __webpack_require__( /*! ../../../core/utils/extend */ 52576);
                 var _type = __webpack_require__( /*! ../../../core/utils/type */ 11528);
-                var _inferno = __webpack_require__( /*! inferno */ 81167);
+                var _inferno = __webpack_require__( /*! inferno */ 76231);
                 var _keyboard_processor = _interopRequireDefault(__webpack_require__( /*! ../../../common/core/events/core/keyboard_processor */ 52818));
                 var _inferno_renderer = _interopRequireDefault(__webpack_require__( /*! ../../../core/inferno_renderer */ 16965));
                 var _template_wrapper = __webpack_require__( /*! ./template_wrapper */ 34554);
@@ -6765,6 +6205,747 @@
                 ComponentWrapper.IS_RENOVATED_WIDGET = false;
                 ComponentWrapper.IS_RENOVATED_WIDGET = true
             },
+        5428:
+            /*!**************************************************************************************************!*\
+              !*** ./artifacts/transpiled-renovation-npm/__internal/core/r1/runtime/inferno/base_component.js ***!
+              \**************************************************************************************************/
+            function(__unused_webpack_module, exports, __webpack_require__) {
+                Object.defineProperty(exports, "__esModule", {
+                    value: true
+                });
+                exports.InfernoWrapperComponent = exports.InfernoComponent = exports.BaseInfernoComponent = void 0;
+                var _inferno = __webpack_require__( /*! inferno */ 76231);
+                var _effect_host = __webpack_require__( /*! ./effect_host */ 23405);
+                const areObjectsEqual = (firstObject, secondObject) => {
+                    const bothAreObjects = firstObject instanceof Object && secondObject instanceof Object;
+                    if (!bothAreObjects) {
+                        return firstObject === secondObject
+                    }
+                    const firstObjectKeys = Object.keys(firstObject);
+                    const secondObjectKeys = Object.keys(secondObject);
+                    if (firstObjectKeys.length !== secondObjectKeys.length) {
+                        return false
+                    }
+                    const hasDifferentElement = firstObjectKeys.some((key => firstObject[key] !== secondObject[key]));
+                    return !hasDifferentElement
+                };
+                class BaseInfernoComponent extends _inferno.Component {
+                    constructor() {
+                        super(...arguments);
+                        this._pendingContext = this.context
+                    }
+                    componentWillReceiveProps(_, context) {
+                        this._pendingContext = context ?? {}
+                    }
+                    shouldComponentUpdate(nextProps, nextState) {
+                        return !areObjectsEqual(this.props, nextProps) || !areObjectsEqual(this.state, nextState) || !areObjectsEqual(this.context, this._pendingContext)
+                    }
+                }
+                exports.BaseInfernoComponent = BaseInfernoComponent;
+                class InfernoComponent extends BaseInfernoComponent {
+                    constructor() {
+                        super(...arguments);
+                        this._effects = []
+                    }
+                    createEffects() {
+                        return []
+                    }
+                    updateEffects() {}
+                    componentWillMount() {
+                        _effect_host.InfernoEffectHost.lock()
+                    }
+                    componentWillUpdate(_nextProps, _nextState, _context) {
+                        _effect_host.InfernoEffectHost.lock()
+                    }
+                    componentDidMount() {
+                        _effect_host.InfernoEffectHost.callbacks.push((() => {
+                            this._effects = this.createEffects()
+                        }));
+                        _effect_host.InfernoEffectHost.callEffects()
+                    }
+                    componentDidUpdate() {
+                        _effect_host.InfernoEffectHost.callbacks.push((() => this.updateEffects()));
+                        _effect_host.InfernoEffectHost.callEffects()
+                    }
+                    destroyEffects() {
+                        this._effects.forEach((e => e.dispose()))
+                    }
+                    componentWillUnmount() {
+                        this.destroyEffects()
+                    }
+                }
+                exports.InfernoComponent = InfernoComponent;
+                exports.InfernoWrapperComponent = class extends InfernoComponent {
+                    constructor() {
+                        super(...arguments);
+                        this.vDomElement = null
+                    }
+                    vDomUpdateClasses() {
+                        var _el$className;
+                        const el = this.vDomElement;
+                        const currentClasses = null !== (_el$className = el.className) && void 0 !== _el$className && _el$className.length ? el.className.split(" ") : [];
+                        const addedClasses = currentClasses.filter((className => !el.dxClasses.previous.includes(className)));
+                        const removedClasses = el.dxClasses.previous.filter((className => !currentClasses.includes(className)));
+                        addedClasses.forEach((value => {
+                            const indexInRemoved = el.dxClasses.removed.indexOf(value);
+                            if (indexInRemoved > -1) {
+                                el.dxClasses.removed.splice(indexInRemoved, 1)
+                            } else if (!el.dxClasses.added.includes(value)) {
+                                el.dxClasses.added.push(value)
+                            }
+                        }));
+                        removedClasses.forEach((value => {
+                            const indexInAdded = el.dxClasses.added.indexOf(value);
+                            if (indexInAdded > -1) {
+                                el.dxClasses.added.splice(indexInAdded, 1)
+                            } else if (!el.dxClasses.removed.includes(value)) {
+                                el.dxClasses.removed.push(value)
+                            }
+                        }))
+                    }
+                    componentDidMount() {
+                        var _el$className2;
+                        const el = (0, _inferno.findDOMFromVNode)(this.$LI, true);
+                        this.vDomElement = el;
+                        super.componentDidMount();
+                        el.dxClasses = el.dxClasses || {
+                            removed: [],
+                            added: [],
+                            previous: []
+                        };
+                        el.dxClasses.previous = null !== el && void 0 !== el && null !== (_el$className2 = el.className) && void 0 !== _el$className2 && _el$className2.length ? el.className.split(" ") : []
+                    }
+                    componentDidUpdate() {
+                        super.componentDidUpdate();
+                        const el = this.vDomElement;
+                        if (null !== el) {
+                            var _el$className3;
+                            el.dxClasses.added.forEach((className => el.classList.add(className)));
+                            el.dxClasses.removed.forEach((className => el.classList.remove(className)));
+                            el.dxClasses.previous = null !== (_el$className3 = el.className) && void 0 !== _el$className3 && _el$className3.length ? el.className.split(" ") : []
+                        }
+                    }
+                    shouldComponentUpdate(nextProps, nextState) {
+                        const shouldUpdate = super.shouldComponentUpdate(nextProps, nextState);
+                        if (shouldUpdate) {
+                            this.vDomUpdateClasses()
+                        }
+                        return shouldUpdate
+                    }
+                }
+            },
+        34781:
+            /*!**************************************************************************************************!*\
+              !*** ./artifacts/transpiled-renovation-npm/__internal/core/r1/runtime/inferno/create_context.js ***!
+              \**************************************************************************************************/
+            function(__unused_webpack_module, exports, __webpack_require__) {
+                Object.defineProperty(exports, "__esModule", {
+                    value: true
+                });
+                exports.createContext = void 0;
+                var _inferno = __webpack_require__( /*! inferno */ 76231);
+
+                function _extends() {
+                    return _extends = Object.assign ? Object.assign.bind() : function(n) {
+                        for (var e = 1; e < arguments.length; e++) {
+                            var t = arguments[e];
+                            for (var r in t) {
+                                ({}).hasOwnProperty.call(t, r) && (n[r] = t[r])
+                            }
+                        }
+                        return n
+                    }, _extends.apply(null, arguments)
+                }
+                let contextId = 0;
+                exports.createContext = function(defaultValue) {
+                    const id = contextId++;
+                    return {
+                        id: id,
+                        defaultValue: defaultValue,
+                        Provider: class extends _inferno.Component {
+                            getChildContext() {
+                                return _extends({}, this.context, {
+                                    [id]: this.props.value || defaultValue
+                                })
+                            }
+                            render() {
+                                return this.props.children
+                            }
+                        }
+                    }
+                }
+            },
+        2836:
+            /*!******************************************************************************************!*\
+              !*** ./artifacts/transpiled-renovation-npm/__internal/core/r1/runtime/inferno/effect.js ***!
+              \******************************************************************************************/
+            function(__unused_webpack_module, exports) {
+                Object.defineProperty(exports, "__esModule", {
+                    value: true
+                });
+                exports.InfernoEffect = void 0;
+                exports.InfernoEffect = class {
+                    constructor(effect, dependency) {
+                        this.dependency = dependency;
+                        this.effect = effect;
+                        this.destroy = effect()
+                    }
+                    update(dependency) {
+                        const currentDependency = this.dependency;
+                        if (dependency) {
+                            this.dependency = dependency
+                        }
+                        if (!dependency || dependency.some(((d, i) => currentDependency[i] !== d))) {
+                            this.dispose();
+                            this.destroy = this.effect()
+                        }
+                    }
+                    dispose() {
+                        if (this.destroy) {
+                            this.destroy()
+                        }
+                    }
+                }
+            },
+        23405:
+            /*!***********************************************************************************************!*\
+              !*** ./artifacts/transpiled-renovation-npm/__internal/core/r1/runtime/inferno/effect_host.js ***!
+              \***********************************************************************************************/
+            function(__unused_webpack_module, exports) {
+                Object.defineProperty(exports, "__esModule", {
+                    value: true
+                });
+                exports.InfernoEffectHost = void 0;
+                exports.InfernoEffectHost = {
+                    lockCount: 0,
+                    lock() {
+                        this.lockCount++
+                    },
+                    callbacks: [],
+                    callEffects() {
+                        this.lockCount--;
+                        if (this.lockCount < 0) {
+                            throw new Error("Unexpected Effect Call")
+                        }
+                        if (0 === this.lockCount) {
+                            const effects = this.callbacks;
+                            this.callbacks = [];
+                            effects.forEach((callback => callback()))
+                        }
+                    }
+                }
+            },
+        6257:
+            /*!*****************************************************************************************!*\
+              !*** ./artifacts/transpiled-renovation-npm/__internal/core/r1/runtime/inferno/index.js ***!
+              \*****************************************************************************************/
+            function(__unused_webpack_module, exports, __webpack_require__) {
+                Object.defineProperty(exports, "__esModule", {
+                    value: true
+                });
+                var _base_component = __webpack_require__( /*! ./base_component */ 5428);
+                Object.keys(_base_component).forEach((function(key) {
+                    if ("default" === key || "__esModule" === key) {
+                        return
+                    }
+                    if (key in exports && exports[key] === _base_component[key]) {
+                        return
+                    }
+                    Object.defineProperty(exports, key, {
+                        enumerable: true,
+                        get: function() {
+                            return _base_component[key]
+                        }
+                    })
+                }));
+                var _create_context = __webpack_require__( /*! ./create_context */ 34781);
+                Object.keys(_create_context).forEach((function(key) {
+                    if ("default" === key || "__esModule" === key) {
+                        return
+                    }
+                    if (key in exports && exports[key] === _create_context[key]) {
+                        return
+                    }
+                    Object.defineProperty(exports, key, {
+                        enumerable: true,
+                        get: function() {
+                            return _create_context[key]
+                        }
+                    })
+                }));
+                var _effect = __webpack_require__( /*! ./effect */ 2836);
+                Object.keys(_effect).forEach((function(key) {
+                    if ("default" === key || "__esModule" === key) {
+                        return
+                    }
+                    if (key in exports && exports[key] === _effect[key]) {
+                        return
+                    }
+                    Object.defineProperty(exports, key, {
+                        enumerable: true,
+                        get: function() {
+                            return _effect[key]
+                        }
+                    })
+                }));
+                var _effect_host = __webpack_require__( /*! ./effect_host */ 23405);
+                Object.keys(_effect_host).forEach((function(key) {
+                    if ("default" === key || "__esModule" === key) {
+                        return
+                    }
+                    if (key in exports && exports[key] === _effect_host[key]) {
+                        return
+                    }
+                    Object.defineProperty(exports, key, {
+                        enumerable: true,
+                        get: function() {
+                            return _effect_host[key]
+                        }
+                    })
+                }));
+                var _hydrate = __webpack_require__( /*! ./mocked/hydrate */ 11934);
+                Object.keys(_hydrate).forEach((function(key) {
+                    if ("default" === key || "__esModule" === key) {
+                        return
+                    }
+                    if (key in exports && exports[key] === _hydrate[key]) {
+                        return
+                    }
+                    Object.defineProperty(exports, key, {
+                        enumerable: true,
+                        get: function() {
+                            return _hydrate[key]
+                        }
+                    })
+                }));
+                var _normalize_styles = __webpack_require__( /*! ./normalize_styles */ 75467);
+                Object.keys(_normalize_styles).forEach((function(key) {
+                    if ("default" === key || "__esModule" === key) {
+                        return
+                    }
+                    if (key in exports && exports[key] === _normalize_styles[key]) {
+                        return
+                    }
+                    Object.defineProperty(exports, key, {
+                        enumerable: true,
+                        get: function() {
+                            return _normalize_styles[key]
+                        }
+                    })
+                }));
+                var _portal = __webpack_require__( /*! ./portal */ 37695);
+                Object.keys(_portal).forEach((function(key) {
+                    if ("default" === key || "__esModule" === key) {
+                        return
+                    }
+                    if (key in exports && exports[key] === _portal[key]) {
+                        return
+                    }
+                    Object.defineProperty(exports, key, {
+                        enumerable: true,
+                        get: function() {
+                            return _portal[key]
+                        }
+                    })
+                }));
+                var _re_render_effect = __webpack_require__( /*! ./re_render_effect */ 31603);
+                Object.keys(_re_render_effect).forEach((function(key) {
+                    if ("default" === key || "__esModule" === key) {
+                        return
+                    }
+                    if (key in exports && exports[key] === _re_render_effect[key]) {
+                        return
+                    }
+                    Object.defineProperty(exports, key, {
+                        enumerable: true,
+                        get: function() {
+                            return _re_render_effect[key]
+                        }
+                    })
+                }));
+                var _render_template = __webpack_require__( /*! ./render_template */ 90626);
+                Object.keys(_render_template).forEach((function(key) {
+                    if ("default" === key || "__esModule" === key) {
+                        return
+                    }
+                    if (key in exports && exports[key] === _render_template[key]) {
+                        return
+                    }
+                    Object.defineProperty(exports, key, {
+                        enumerable: true,
+                        get: function() {
+                            return _render_template[key]
+                        }
+                    })
+                }))
+            },
+        11934:
+            /*!**************************************************************************************************!*\
+              !*** ./artifacts/transpiled-renovation-npm/__internal/core/r1/runtime/inferno/mocked/hydrate.js ***!
+              \**************************************************************************************************/
+            function(__unused_webpack_module, exports, __webpack_require__) {
+                Object.defineProperty(exports, "__esModule", {
+                    value: true
+                });
+                exports.hydrate = function(input, parentDOM, callback) {
+                    let dom = parentDOM.firstChild;
+                    if ((0, _shared.isNull)(dom)) {
+                        (0, _inferno.render)(input, parentDOM, callback)
+                    } else {
+                        const lifecycle = [];
+                        const animations = new _inferno.AnimationQueues;
+                        if (!(0, _shared.isInvalid)(input)) {
+                            dom = hydrateVNode(input, parentDOM, dom, {}, false, lifecycle, animations)
+                        }
+                        while (dom && (dom = dom.nextSibling)) {
+                            parentDOM.removeChild(dom)
+                        }
+                        if (lifecycle.length > 0) {
+                            let listener;
+                            while (void 0 !== (listener = lifecycle.shift())) {
+                                listener()
+                            }
+                        }
+                    }
+                    parentDOM.$V = input;
+                    if ((0, _shared.isFunction)(callback)) {
+                        callback()
+                    }
+                };
+                var _inferno = __webpack_require__( /*! inferno */ 76231);
+                var _shared = __webpack_require__( /*! ./shared */ 54640);
+                var _vnodeFlags = __webpack_require__( /*! ./vnode-flags */ 55869);
+
+                function isSamePropsInnerHTML(dom, props) {
+                    return Boolean(props && props.dangerouslySetInnerHTML && props.dangerouslySetInnerHTML.__html && function(dom, innerHTML) {
+                        const tempdom = document.createElement("i");
+                        tempdom.innerHTML = innerHTML;
+                        return tempdom.innerHTML === dom.innerHTML
+                    }(dom, props.dangerouslySetInnerHTML.__html))
+                }
+
+                function hydrateChildren(parentVNode, parentNode, currentNode, context, isSVG, lifecycle, animations) {
+                    const childFlags = parentVNode.childFlags;
+                    const children = parentVNode.children;
+                    const props = parentVNode.props;
+                    const flags = parentVNode.flags;
+                    if (childFlags !== _vnodeFlags.ChildFlags.HasInvalidChildren) {
+                        if (childFlags === _vnodeFlags.ChildFlags.HasVNodeChildren) {
+                            if ((0, _shared.isNull)(currentNode)) {
+                                (0, _inferno._M)(children, parentNode, context, isSVG, null, lifecycle, animations)
+                            } else {
+                                currentNode = hydrateVNode(children, parentNode, currentNode, context, isSVG, lifecycle, animations);
+                                currentNode = currentNode ? currentNode.nextSibling : null
+                            }
+                        } else if (childFlags === _vnodeFlags.ChildFlags.HasTextChildren) {
+                            if ((0, _shared.isNull)(currentNode)) {
+                                parentNode.appendChild(document.createTextNode(children))
+                            } else if (1 !== parentNode.childNodes.length || 3 !== currentNode.nodeType) {
+                                parentNode.textContent = children
+                            } else if (currentNode.nodeValue !== children) {
+                                currentNode.nodeValue = children
+                            }
+                            currentNode = null
+                        } else if (childFlags & _vnodeFlags.ChildFlags.MultipleChildren) {
+                            let prevVNodeIsTextNode = false;
+                            for (let i = 0, len = children.length; i < len; ++i) {
+                                const child = children[i];
+                                if ((0, _shared.isNull)(currentNode) || prevVNodeIsTextNode && (child.flags & _vnodeFlags.VNodeFlags.Text) > 0) {
+                                    (0, _inferno._M)(child, parentNode, context, isSVG, currentNode, lifecycle, animations)
+                                } else {
+                                    currentNode = hydrateVNode(child, parentNode, currentNode, context, isSVG, lifecycle, animations);
+                                    currentNode = currentNode ? currentNode.nextSibling : null
+                                }
+                                prevVNodeIsTextNode = (child.flags & _vnodeFlags.VNodeFlags.Text) > 0
+                            }
+                        }
+                        if (0 === (flags & _vnodeFlags.VNodeFlags.Fragment)) {
+                            let nextSibling = null;
+                            while (currentNode) {
+                                nextSibling = currentNode.nextSibling;
+                                parentNode.removeChild(currentNode);
+                                currentNode = nextSibling
+                            }
+                        }
+                    } else if (!(0, _shared.isNull)(parentNode.firstChild) && !isSamePropsInnerHTML(parentNode, props)) {
+                        parentNode.textContent = "";
+                        if (flags & _vnodeFlags.VNodeFlags.FormElement) {
+                            parentNode.defaultValue = ""
+                        }
+                    }
+                }
+
+                function hydrateText(vNode, parentDOM, dom) {
+                    if (3 !== dom.nodeType) {
+                        parentDOM.replaceChild(vNode.dom = document.createTextNode(vNode.children), dom)
+                    } else {
+                        const text = vNode.children;
+                        if (dom.nodeValue !== text) {
+                            dom.nodeValue = text
+                        }
+                        vNode.dom = dom
+                    }
+                    return vNode.dom
+                }
+
+                function hydrateFragment(vNode, parentDOM, dom, context, isSVG, lifecycle, animations) {
+                    const children = vNode.children;
+                    if (vNode.childFlags === _vnodeFlags.ChildFlags.HasVNodeChildren) {
+                        hydrateText(children, parentDOM, dom);
+                        return children.dom
+                    }
+                    hydrateChildren(vNode, parentDOM, dom, context, isSVG, lifecycle, animations);
+                    return function(vNode) {
+                        let flags;
+                        let children;
+                        while (vNode) {
+                            flags = vNode.flags;
+                            if (flags & _vnodeFlags.VNodeFlags.DOMRef) {
+                                return vNode.dom
+                            }
+                            children = vNode.children;
+                            if (flags & _vnodeFlags.VNodeFlags.Fragment) {
+                                vNode = vNode.childFlags === _vnodeFlags.ChildFlags.HasVNodeChildren ? children : children[children.length - 1]
+                            } else if (flags & _vnodeFlags.VNodeFlags.ComponentClass) {
+                                vNode = children.$LI
+                            } else {
+                                vNode = children
+                            }
+                        }
+                        return null
+                    }(children[children.length - 1])
+                }
+
+                function hydrateVNode(vNode, parentDOM, currentDom, context, isSVG, lifecycle, animations) {
+                    const flags = vNode.flags |= _vnodeFlags.VNodeFlags.InUse;
+                    if (flags & _vnodeFlags.VNodeFlags.Component) {
+                        return function(vNode, parentDOM, dom, context, isSVG, isClass, lifecycle, animations) {
+                            const type = vNode.type;
+                            const ref = vNode.ref;
+                            const props = vNode.props || _inferno.EMPTY_OBJ;
+                            let currentNode;
+                            if (isClass) {
+                                const instance = (0, _inferno._CI)(vNode, type, props, context, isSVG, lifecycle);
+                                const input = instance.$LI;
+                                currentNode = hydrateVNode(input, parentDOM, dom, instance.$CX, isSVG, lifecycle, animations);
+                                (0, _inferno._MCCC)(ref, instance, lifecycle, animations)
+                            } else {
+                                const input = (0, _inferno._HI)((0, _inferno._RFC)(vNode, context));
+                                currentNode = hydrateVNode(input, parentDOM, dom, context, isSVG, lifecycle, animations);
+                                vNode.children = input;
+                                (0, _inferno._MFCC)(vNode, lifecycle, animations)
+                            }
+                            return currentNode
+                        }(vNode, parentDOM, currentDom, context, isSVG, (flags & _vnodeFlags.VNodeFlags.ComponentClass) > 0, lifecycle, animations)
+                    }
+                    if (flags & _vnodeFlags.VNodeFlags.Element) {
+                        return function(vNode, parentDOM, dom, context, isSVG, lifecycle, animations) {
+                            const props = vNode.props;
+                            const className = vNode.className;
+                            const flags = vNode.flags;
+                            const ref = vNode.ref;
+                            isSVG = isSVG || (flags & _vnodeFlags.VNodeFlags.SvgElement) > 0;
+                            if (1 !== dom.nodeType) {
+                                (0, _inferno._ME)(vNode, null, context, isSVG, null, lifecycle, animations);
+                                parentDOM.replaceChild(vNode.dom, dom)
+                            } else {
+                                vNode.dom = dom;
+                                hydrateChildren(vNode, dom, dom.firstChild, context, isSVG, lifecycle, animations);
+                                if (!(0, _shared.isNull)(props)) {
+                                    (0, _inferno._MP)(vNode, flags, props, dom, isSVG, animations)
+                                }
+                                if ((0, _shared.isNullOrUndef)(className)) {
+                                    if ("" !== dom.className) {
+                                        dom.removeAttribute("class")
+                                    }
+                                } else if (isSVG) {
+                                    dom.setAttribute("class", className)
+                                } else {
+                                    dom.className = className
+                                }(0, _inferno._MR)(ref, dom, lifecycle)
+                            }
+                            return vNode.dom
+                        }(vNode, parentDOM, currentDom, context, isSVG, lifecycle, animations)
+                    }
+                    if (flags & _vnodeFlags.VNodeFlags.Text) {
+                        return hydrateText(vNode, parentDOM, currentDom)
+                    }
+                    if (flags & _vnodeFlags.VNodeFlags.Void) {
+                        return vNode.dom = currentDom
+                    }
+                    if (flags & _vnodeFlags.VNodeFlags.Fragment) {
+                        return hydrateFragment(vNode, parentDOM, currentDom, context, isSVG, lifecycle, animations)
+                    }(0, _shared.throwError)();
+                    return null
+                }
+            },
+        54640:
+            /*!*************************************************************************************************!*\
+              !*** ./artifacts/transpiled-renovation-npm/__internal/core/r1/runtime/inferno/mocked/shared.js ***!
+              \*************************************************************************************************/
+            function(__unused_webpack_module, exports) {
+                Object.defineProperty(exports, "__esModule", {
+                    value: true
+                });
+                exports.ERROR_MSG = void 0;
+                exports.isFunction = function(o) {
+                    return "function" === typeof o
+                };
+                exports.isInvalid = function(o) {
+                    return null === o || false === o || true === o || void 0 === o
+                };
+                exports.isNull = function(o) {
+                    return null === o
+                };
+                exports.isNullOrUndef = function(o) {
+                    return void 0 === o || null === o
+                };
+                exports.throwError = function(message) {
+                    if (!message) {
+                        message = ERROR_MSG
+                    }
+                    throw new Error(`Inferno Error: ${message}`)
+                };
+                const ERROR_MSG = exports.ERROR_MSG = "a runtime error occured! Use Inferno in development environment to find the error."
+            },
+        55869:
+            /*!******************************************************************************************************!*\
+              !*** ./artifacts/transpiled-renovation-npm/__internal/core/r1/runtime/inferno/mocked/vnode-flags.js ***!
+              \******************************************************************************************************/
+            function(__unused_webpack_module, exports) {
+                Object.defineProperty(exports, "__esModule", {
+                    value: true
+                });
+                exports.VNodeFlags = exports.ChildFlags = void 0;
+                var VNodeFlags;
+                ! function(VNodeFlags) {
+                    VNodeFlags[VNodeFlags.HtmlElement = 1] = "HtmlElement";
+                    VNodeFlags[VNodeFlags.ComponentUnknown = 2] = "ComponentUnknown";
+                    VNodeFlags[VNodeFlags.ComponentClass = 4] = "ComponentClass";
+                    VNodeFlags[VNodeFlags.ComponentFunction = 8] = "ComponentFunction";
+                    VNodeFlags[VNodeFlags.Text = 16] = "Text";
+                    VNodeFlags[VNodeFlags.SvgElement = 32] = "SvgElement";
+                    VNodeFlags[VNodeFlags.InputElement = 64] = "InputElement";
+                    VNodeFlags[VNodeFlags.TextareaElement = 128] = "TextareaElement";
+                    VNodeFlags[VNodeFlags.SelectElement = 256] = "SelectElement";
+                    VNodeFlags[VNodeFlags.Void = 512] = "Void";
+                    VNodeFlags[VNodeFlags.Portal = 1024] = "Portal";
+                    VNodeFlags[VNodeFlags.ReCreate = 2048] = "ReCreate";
+                    VNodeFlags[VNodeFlags.ContentEditable = 4096] = "ContentEditable";
+                    VNodeFlags[VNodeFlags.Fragment = 8192] = "Fragment";
+                    VNodeFlags[VNodeFlags.InUse = 16384] = "InUse";
+                    VNodeFlags[VNodeFlags.ForwardRef = 32768] = "ForwardRef";
+                    VNodeFlags[VNodeFlags.Normalized = 65536] = "Normalized";
+                    VNodeFlags[VNodeFlags.ForwardRefComponent = 32776] = "ForwardRefComponent";
+                    VNodeFlags[VNodeFlags.FormElement = 448] = "FormElement";
+                    VNodeFlags[VNodeFlags.Element = 481] = "Element";
+                    VNodeFlags[VNodeFlags.Component = 14] = "Component";
+                    VNodeFlags[VNodeFlags.DOMRef = 2033] = "DOMRef";
+                    VNodeFlags[VNodeFlags.InUseOrNormalized = 81920] = "InUseOrNormalized";
+                    VNodeFlags[VNodeFlags.ClearInUse = -16385] = "ClearInUse";
+                    VNodeFlags[VNodeFlags.ComponentKnown = 12] = "ComponentKnown"
+                }(VNodeFlags || (exports.VNodeFlags = VNodeFlags = {}));
+                var ChildFlags;
+                ! function(ChildFlags) {
+                    ChildFlags[ChildFlags.UnknownChildren = 0] = "UnknownChildren";
+                    ChildFlags[ChildFlags.HasInvalidChildren = 1] = "HasInvalidChildren";
+                    ChildFlags[ChildFlags.HasVNodeChildren = 2] = "HasVNodeChildren";
+                    ChildFlags[ChildFlags.HasNonKeyedChildren = 4] = "HasNonKeyedChildren";
+                    ChildFlags[ChildFlags.HasKeyedChildren = 8] = "HasKeyedChildren";
+                    ChildFlags[ChildFlags.HasTextChildren = 16] = "HasTextChildren";
+                    ChildFlags[ChildFlags.MultipleChildren = 12] = "MultipleChildren"
+                }(ChildFlags || (exports.ChildFlags = ChildFlags = {}))
+            },
+        75467:
+            /*!****************************************************************************************************!*\
+              !*** ./artifacts/transpiled-renovation-npm/__internal/core/r1/runtime/inferno/normalize_styles.js ***!
+              \****************************************************************************************************/
+            function(__unused_webpack_module, exports) {
+                Object.defineProperty(exports, "__esModule", {
+                    value: true
+                });
+                exports.normalizeStyles = function(styles) {
+                    if (!(styles instanceof Object)) {
+                        return
+                    }
+                    return Object.entries(styles).reduce(((acc, _ref) => {
+                        let [key, value] = _ref;
+                        acc[kebabCase(key)] = isNumeric(value) ? getNumberStyleValue(key, value) : value;
+                        return acc
+                    }), {})
+                };
+                const NUMBER_STYLES = new Set(["animationIterationCount", "borderImageOutset", "borderImageSlice", "border-imageWidth", "boxFlex", "boxFlexGroup", "boxOrdinalGroup", "columnCount", "fillOpacity", "flex", "flexGrow", "flexNegative", "flexOrder", "flexPositive", "flexShrink", "floodOpacity", "fontWeight", "gridColumn", "gridRow", "lineClamp", "lineHeight", "opacity", "order", "orphans", "stopOpacity", "strokeDasharray", "strokeDashoffset", "strokeMiterlimit", "strokeOpacity", "strokeWidth", "tabSize", "widows", "zIndex", "zoom"]);
+                const isNumeric = value => {
+                    if ("number" === typeof value) {
+                        return true
+                    }
+                    return !Number.isNaN(Number(value))
+                };
+                const getNumberStyleValue = (style, value) => NUMBER_STYLES.has(style) ? value : `${value}px`;
+                const uppercasePattern = /[A-Z]/g;
+                const kebabCase = str => str.replace(uppercasePattern, "-$&").toLowerCase()
+            },
+        37695:
+            /*!******************************************************************************************!*\
+              !*** ./artifacts/transpiled-renovation-npm/__internal/core/r1/runtime/inferno/portal.js ***!
+              \******************************************************************************************/
+            function(__unused_webpack_module, exports, __webpack_require__) {
+                Object.defineProperty(exports, "__esModule", {
+                    value: true
+                });
+                exports.Portal = void 0;
+                var _inferno = __webpack_require__( /*! inferno */ 76231);
+                exports.Portal = _ref => {
+                    let {
+                        container: container,
+                        children: children
+                    } = _ref;
+                    if (container) {
+                        return (0, _inferno.createPortal)(children, container)
+                    }
+                    return null
+                }
+            },
+        31603:
+            /*!****************************************************************************************************!*\
+              !*** ./artifacts/transpiled-renovation-npm/__internal/core/r1/runtime/inferno/re_render_effect.js ***!
+              \****************************************************************************************************/
+            function(__unused_webpack_module, exports, __webpack_require__) {
+                Object.defineProperty(exports, "__esModule", {
+                    value: true
+                });
+                exports.createReRenderEffect = void 0;
+                var _inferno = __webpack_require__( /*! inferno */ 76231);
+                var _effect = __webpack_require__( /*! ./effect */ 2836);
+                exports.createReRenderEffect = () => new _effect.InfernoEffect((() => {
+                    (0, _inferno.rerender)()
+                }), [])
+            },
+        90626:
+            /*!***************************************************************************************************!*\
+              !*** ./artifacts/transpiled-renovation-npm/__internal/core/r1/runtime/inferno/render_template.js ***!
+              \***************************************************************************************************/
+            function(__unused_webpack_module, exports, __webpack_require__) {
+                Object.defineProperty(exports, "__esModule", {
+                    value: true
+                });
+                exports.hasTemplate = void 0;
+                exports.renderTemplate = function(template, props, _component) {
+                    setTimeout((() => {
+                        (0, _inferno.render)((0, _infernoCreateElement.createElement)(template, props), getContainer(props))
+                    }), 0)
+                };
+                var _inferno = __webpack_require__( /*! inferno */ 76231);
+                var _infernoCreateElement = __webpack_require__( /*! inferno-create-element */ 12887);
+                const getContainer = props => {
+                    var _props$container, _props$item;
+                    return (null === (_props$container = props.container) || void 0 === _props$container ? void 0 : _props$container.get(0)) || (null === (_props$item = props.item) || void 0 === _props$item ? void 0 : _props$item.get(0))
+                };
+                exports.hasTemplate = (name, properties, _component) => {
+                    const value = properties[name];
+                    return !!value && "string" !== typeof value
+                }
+            },
         34554:
             /*!************************************************************************************!*\
               !*** ./artifacts/transpiled-renovation-npm/__internal/core/r1/template_wrapper.js ***!
@@ -6774,13 +6955,13 @@
                     value: true
                 });
                 exports.buildTemplateArgs = exports.TemplateWrapper = void 0;
-                var _inferno = __webpack_require__( /*! @devextreme/runtime/inferno */ 49714);
                 var _dom_adapter = _interopRequireDefault(__webpack_require__( /*! ../../../core/dom_adapter */ 64960));
                 var _element = __webpack_require__( /*! ../../../core/element */ 61404);
                 var _renderer = _interopRequireDefault(__webpack_require__( /*! ../../../core/renderer */ 64553));
                 var _dom = __webpack_require__( /*! ../../../core/utils/dom */ 86858);
                 var _type = __webpack_require__( /*! ../../../core/utils/type */ 11528);
-                var _inferno2 = __webpack_require__( /*! inferno */ 81167);
+                var _index = __webpack_require__( /*! ../../core/r1/runtime/inferno/index */ 6257);
+                var _inferno = __webpack_require__( /*! inferno */ 76231);
                 var _shallow_equals = __webpack_require__( /*! ./utils/shallow_equals */ 1270);
                 const _excluded = ["isEqual"];
 
@@ -6831,13 +7012,13 @@
                     }
                     return args
                 };
-                class TemplateWrapper extends _inferno.InfernoComponent {
+                class TemplateWrapper extends _index.InfernoComponent {
                     constructor(props) {
                         super(props);
                         this.renderTemplate = this.renderTemplate.bind(this)
                     }
                     renderTemplate() {
-                        const node = (0, _inferno2.findDOMfromVNode)(this.$LI, true);
+                        const node = (0, _inferno.findDOMFromVNode)(this.$LI, true);
                         if (!(null !== node && void 0 !== node && node.parentNode)) {
                             return () => {}
                         }
@@ -6921,7 +7102,7 @@
                         return !equalityComparer(data, nextData)
                     }
                     createEffects() {
-                        return [new _inferno.InfernoEffect(this.renderTemplate, [this.props.template, this.props.model])]
+                        return [new _index.InfernoEffect(this.renderTemplate, [this.props.template, this.props.model])]
                     }
                     updateEffects() {
                         this._effects[0].update([this.props.template, this.props.model])
@@ -6942,7 +7123,7 @@
                     value: true
                 });
                 exports.getTemplate = void 0;
-                var _inferno = __webpack_require__( /*! inferno */ 81167);
+                var _inferno = __webpack_require__( /*! inferno */ 76231);
 
                 function _extends() {
                     return _extends = Object.assign ? Object.assign.bind() : function(n) {
@@ -9596,7 +9777,12 @@
                 };
                 exports.extractTemplateMarkup = extractTemplateMarkup;
                 const normalizeTemplateElement = element => {
-                    let $element = (0, _type.isDefined)(element) && (element.nodeType || (0, _type.isRenderer)(element)) ? (0, _renderer.default)(element) : (0, _renderer.default)("<div>").html(element).contents();
+                    let $element = (0, _renderer.default)();
+                    if ((0, _type.isDefined)(element) && (element.nodeType || (0, _type.isRenderer)(element))) {
+                        $element = (0, _renderer.default)(element)
+                    } else if ("object" !== typeof element) {
+                        $element = (0, _renderer.default)("<div>").html(element).contents()
+                    }
                     if (1 === $element.length) {
                         if ($element.is("script")) {
                             $element = normalizeTemplateElement($element.html().trim())
@@ -9904,11 +10090,12 @@
                 Object.defineProperty(exports, "__esModule", {
                     value: true
                 });
-                exports.getImageSourceType = exports.getImageContainer = void 0;
+                exports.getImageSourceType = exports.getImageContainer = exports.ICON_CLASS = void 0;
                 var _renderer = (e = __webpack_require__( /*! ../../../core/renderer */ 64553), e && e.__esModule ? e : {
                     default: e
                 });
                 var e;
+                const ICON_CLASS = exports.ICON_CLASS = "dx-icon";
                 const getImageSourceType = source => {
                     if (!source || "string" !== typeof source) {
                         return false
@@ -9931,13 +10118,13 @@
                 exports.getImageContainer = source => {
                     switch (getImageSourceType(source)) {
                         case "image":
-                            return (0, _renderer.default)("<img>").attr("src", source).addClass("dx-icon");
+                            return (0, _renderer.default)("<img>").attr("src", source).addClass(ICON_CLASS);
                         case "fontIcon":
-                            return (0, _renderer.default)("<i>").addClass(`dx-icon ${source}`);
+                            return (0, _renderer.default)("<i>").addClass(`${ICON_CLASS} ${source}`);
                         case "dxIcon":
-                            return (0, _renderer.default)("<i>").addClass(`dx-icon dx-icon-${source}`);
+                            return (0, _renderer.default)("<i>").addClass(`${ICON_CLASS} ${ICON_CLASS}-${source}`);
                         case "svg":
-                            return (0, _renderer.default)("<i>").addClass("dx-icon dx-svg-icon").append(source);
+                            return (0, _renderer.default)("<i>").addClass(`${ICON_CLASS} dx-svg-icon`).append(source);
                         default:
                             return null
                     }
@@ -11408,17 +11595,9 @@
 
                 function getSvgMarkup(element, backgroundColor) {
                     return function(markup) {
-                        let first = true;
                         if (-1 === markup.indexOf("xmlns:xlink")) {
                             markup = markup.replace("<svg", '<svg xmlns:xlink="http://www.w3.org/1999/xlink"')
                         }
-                        markup = markup.replace(/xmlns="[\s\S]*?"/gi, (function(match) {
-                            if (!first) {
-                                return ""
-                            }
-                            first = false;
-                            return match
-                        }));
                         return markup.replace(/xmlns:NS1="[\s\S]*?"/gi, "").replace(/NS1:xmlns:xlink="([\s\S]*?)"/gi, 'xmlns:xlink="$1"')
                     }((markup = function(element, backgroundColor) {
                         const temp = _dom_adapter.default.createElement("div");
@@ -12366,7 +12545,11 @@
                         this._initTemplateManager()
                     }
                     _setOptionsByDevice(instanceCustomRules) {
-                        super._setOptionsByDevice([].concat(this.constructor._classCustomRules || [], instanceCustomRules || []))
+                        const ctor = this.constructor;
+                        const hasOwnCustomRules = Object.prototype.hasOwnProperty.call(ctor, "_classCustomRules");
+                        const hasOwnDefaultOptions = Object.prototype.hasOwnProperty.call(ctor, "defaultOptions");
+                        const ownClassCustomRules = hasOwnCustomRules || hasOwnDefaultOptions ? ctor._classCustomRules : [];
+                        super._setOptionsByDevice([].concat(ownClassCustomRules || [], instanceCustomRules || []))
                     }
                     _isInitialOptionValue(name) {
                         const isCustomOption = this.constructor._classCustomRules && Object.prototype.hasOwnProperty.call(this._convertRulesToOptions(this.constructor._classCustomRules), name);
@@ -12707,7 +12890,7 @@
                 Object.defineProperty(exports, "__esModule", {
                     value: true
                 });
-                exports.default = exports.FOCUSED_STATE_CLASS = void 0;
+                exports.default = exports.WIDGET_CLASS = exports.HOVER_STATE_CLASS = exports.FOCUSED_STATE_CLASS = void 0;
                 __webpack_require__( /*! ../../../common/core/events/click */ 64044);
                 __webpack_require__( /*! ../../../common/core/events/core/emitter.feedback */ 69331);
                 __webpack_require__( /*! ../../../common/core/events/hover */ 638);
@@ -12728,7 +12911,9 @@
                         default: e
                     }
                 }
+                const WIDGET_CLASS = exports.WIDGET_CLASS = "dx-widget";
                 const FOCUSED_STATE_CLASS = exports.FOCUSED_STATE_CLASS = "dx-state-focused";
+                const HOVER_STATE_CLASS = exports.HOVER_STATE_CLASS = "dx-state-hover";
 
                 function setAttribute(name, value, target) {
                     name = "role" === name || "id" === name ? name : `aria-${name}`;
@@ -12823,7 +13008,7 @@
                             disabled: disabled,
                             visible: visible
                         } = this.option();
-                        this.$element().addClass("dx-widget");
+                        this.$element().addClass(WIDGET_CLASS);
                         this._toggleDisabledState(disabled);
                         this._toggleVisibility(visible);
                         this._renderHint();
@@ -13119,10 +13304,10 @@
                             isActive: isActive
                         } = this.option();
                         $previous = this._findHoverTarget($previous);
-                        $previous && $previous.toggleClass("dx-state-hover", false);
+                        $previous && $previous.toggleClass(HOVER_STATE_CLASS, false);
                         if ($el && hoverStateEnabled && !disabled && !isActive) {
                             const newHoveredElement = this._findHoverTarget($el);
-                            newHoveredElement && newHoveredElement.toggleClass("dx-state-hover", true)
+                            newHoveredElement && newHoveredElement.toggleClass(HOVER_STATE_CLASS, true)
                         }
                     }
                     _toggleDisabledState(value) {
@@ -22713,6 +22898,8 @@
                     endDate.setFullYear(nowDate.getFullYear(), 6, 1);
                     return [startDate, endDate]
                 };
+                let timeZoneDataCache = [];
+                let timeZoneDataCachePromise;
                 const utils = {
                     getDaylightOffset: getDaylightOffset,
                     getDaylightOffsetInMs: getDaylightOffsetInMs,
@@ -22797,27 +22984,27 @@
                         const daylightSecondShift = getDaylightOffsetInMs(newDate, correctLocalDate);
                         return !daylightSecondShift ? correctLocalDate : newDate
                     },
-                    getTimeZoneLabelsAsyncBatch: function() {
-                        let date = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : new Date;
-                        return _index.macroTaskArray.map(_timezone_list.default.value, (timezoneId => ({
-                            id: timezoneId,
-                            title: getTimezoneTitle(timezoneId, date)
-                        })), 20)
-                    },
-                    getTimeZoneLabel: function(timezoneId) {
-                        let date = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : new Date;
-                        return {
-                            id: timezoneId,
-                            title: getTimezoneTitle(timezoneId, date)
-                        }
-                    },
                     getTimeZones: function() {
                         let date = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : new Date;
-                        return _timezone_list.default.value.map((timezoneId => ({
+                        let timeZones = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : _timezone_list.default.value;
+                        return timeZones.map((timezoneId => ({
                             id: timezoneId,
                             title: getTimezoneTitle(timezoneId, date),
                             offset: calculateTimezoneByValue(timezoneId, date)
                         })))
+                    },
+                    getTimeZonesCache: () => timeZoneDataCache,
+                    cacheTimeZones: async function() {
+                        let date = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : new Date;
+                        if (timeZoneDataCachePromise) {
+                            return timeZoneDataCachePromise
+                        }
+                        timeZoneDataCachePromise = _index.macroTaskArray.map(_timezone_list.default.value, (timezoneId => ({
+                            id: timezoneId,
+                            title: getTimezoneTitle(timezoneId, date)
+                        })), 10);
+                        timeZoneDataCache = await timeZoneDataCachePromise;
+                        return timeZoneDataCache
                     }
                 };
                 exports.default = utils
@@ -22972,130 +23159,6 @@
                     value: ["Etc/GMT+12", "Etc/GMT+11", "Pacific/Midway", "Pacific/Niue", "Pacific/Pago_Pago", "Pacific/Samoa", "US/Samoa", "Etc/GMT+10", "HST", "Pacific/Honolulu", "Pacific/Johnston", "Pacific/Rarotonga", "Pacific/Tahiti", "US/Hawaii", "Pacific/Marquesas", "America/Adak", "America/Atka", "Etc/GMT+9", "Pacific/Gambier", "US/Aleutian", "America/Anchorage", "America/Juneau", "America/Metlakatla", "America/Nome", "America/Sitka", "America/Yakutat", "Etc/GMT+8", "Pacific/Pitcairn", "US/Alaska", "America/Creston", "America/Dawson_Creek", "America/Dawson", "America/Ensenada", "America/Fort_Nelson", "America/Hermosillo", "America/Los_Angeles", "America/Phoenix", "America/Santa_Isabel", "America/Tijuana", "America/Vancouver", "America/Whitehorse", "Canada/Pacific", "Canada/Yukon", "Etc/GMT+7", "Mexico/BajaNorte", "MST", "PST8PDT", "US/Arizona", "US/Pacific", "America/Belize", "America/Boise", "America/Cambridge_Bay", "America/Chihuahua", "America/Costa_Rica", "America/Denver", "America/Edmonton", "America/El_Salvador", "America/Guatemala", "America/Inuvik", "America/Managua", "America/Mazatlan", "America/Monterrey", "America/Ojinaga", "America/Regina", "America/Shiprock", "America/Swift_Current", "America/Tegucigalpa", "America/Yellowknife", "Canada/Mountain", "Canada/Saskatchewan", "Chile/EasterIsland", "Etc/GMT+6", "Mexico/BajaSur", "MST7MDT", "Navajo", "Pacific/Easter", "Pacific/Galapagos", "US/Mountain", "America/Atikokan", "America/Bahia_Banderas", "America/Bogota", "America/Cancun", "America/Cayman", "America/Chicago", "America/Coral_Harbour", "America/Eirunepe", "America/Guayaquil", "America/Indiana/Knox", "America/Indiana/Tell_City", "America/Jamaica", "America/Knox_IN", "America/Lima", "America/Matamoros", "America/Menominee", "America/Merida", "America/Mexico_City", "America/North_Dakota/Beulah", "America/North_Dakota/Center", "America/North_Dakota/New_Salem", "America/Panama", "America/Porto_Acre", "America/Rainy_River", "America/Rankin_Inlet", "America/Resolute", "America/Rio_Branco", "America/Winnipeg", "Brazil/Acre", "Canada/Central", "CST6CDT", "EST", "Etc/GMT+5", "Jamaica", "Mexico/General", "US/Central", "US/Indiana-Starke", "America/Anguilla", "America/Antigua", "America/Aruba", "America/Asuncion", "America/Barbados", "America/Blanc-Sablon", "America/Boa_Vista", "America/Campo_Grande", "America/Caracas", "America/Cuiaba", "America/Curacao", "America/Detroit", "America/Dominica", "America/Fort_Wayne", "America/Grand_Turk", "America/Grenada", "America/Guadeloupe", "America/Guyana", "America/Havana", "America/Indiana/Indianapolis", "America/Indiana/Marengo", "America/Indiana/Petersburg", "America/Indiana/Vevay", "America/Indiana/Vincennes", "America/Indiana/Winamac", "America/Indianapolis", "America/Iqaluit", "America/Kentucky/Louisville", "America/Kentucky/Monticello", "America/Kralendijk", "America/La_Paz", "America/Louisville", "America/Lower_Princes", "America/Manaus", "America/Marigot", "America/Martinique", "America/Montreal", "America/Montserrat", "America/Nassau", "America/New_York", "America/Nipigon", "America/Pangnirtung", "America/Port_of_Spain", "America/Port-au-Prince", "America/Porto_Velho", "America/Puerto_Rico", "America/Santiago", "America/Santo_Domingo", "America/St_Barthelemy", "America/St_Kitts", "America/St_Lucia", "America/St_Thomas", "America/St_Vincent", "America/Thunder_Bay", "America/Toronto", "America/Tortola", "America/Virgin", "Brazil/West", "Canada/Eastern", "Chile/Continental", "Cuba", "EST5EDT", "Etc/GMT+4", "US/East-Indiana", "US/Eastern", "US/Michigan", "America/Araguaina", "America/Argentina/Buenos_Aires", "America/Argentina/Catamarca", "America/Argentina/ComodRivadavia", "America/Argentina/Cordoba", "America/Argentina/Jujuy", "America/Argentina/La_Rioja", "America/Argentina/Mendoza", "America/Argentina/Rio_Gallegos", "America/Argentina/Salta", "America/Argentina/San_Juan", "America/Argentina/San_Luis", "America/Argentina/Tucuman", "America/Argentina/Ushuaia", "America/Bahia", "America/Belem", "America/Buenos_Aires", "America/Catamarca", "America/Cayenne", "America/Cordoba", "America/Fortaleza", "America/Glace_Bay", "America/Goose_Bay", "America/Halifax", "America/Jujuy", "America/Maceio", "America/Mendoza", "America/Moncton", "America/Montevideo", "America/Paramaribo", "America/Punta_Arenas", "America/Recife", "America/Rosario", "America/Santarem", "America/Sao_Paulo", "America/Thule", "Antarctica/Palmer", "Antarctica/Rothera", "Atlantic/Bermuda", "Atlantic/Stanley", "Brazil/East", "Canada/Atlantic", "Etc/GMT+3", "America/St_Johns", "Canada/Newfoundland", "America/Godthab", "America/Miquelon", "America/Noronha", "America/Nuuk", "Atlantic/South_Georgia", "Brazil/DeNoronha", "Etc/GMT+2", "Atlantic/Cape_Verde", "Etc/GMT+1", "Africa/Abidjan", "Africa/Accra", "Africa/Bamako", "Africa/Banjul", "Africa/Bissau", "Africa/Conakry", "Africa/Dakar", "Africa/Freetown", "Africa/Lome", "Africa/Monrovia", "Africa/Nouakchott", "Africa/Ouagadougou", "Africa/Sao_Tome", "Africa/Timbuktu", "America/Danmarkshavn", "America/Scoresbysund", "Atlantic/Azores", "Atlantic/Reykjavik", "Atlantic/St_Helena", "Etc/GMT-0", "Etc/GMT", "Etc/GMT+0", "Etc/GMT0", "Etc/Greenwich", "Etc/UCT", "Etc/Universal", "Etc/UTC", "Etc/Zulu", "GMT-0", "GMT", "GMT+0", "GMT0", "Greenwich", "Iceland", "UCT", "Universal", "UTC", "Zulu", "Africa/Algiers", "Africa/Bangui", "Africa/Brazzaville", "Africa/Casablanca", "Africa/Douala", "Africa/El_Aaiun", "Africa/Kinshasa", "Africa/Lagos", "Africa/Libreville", "Africa/Luanda", "Africa/Malabo", "Africa/Ndjamena", "Africa/Niamey", "Africa/Porto-Novo", "Africa/Tunis", "Atlantic/Canary", "Atlantic/Faeroe", "Atlantic/Faroe", "Atlantic/Madeira", "Eire", "Etc/GMT-1", "Europe/Belfast", "Europe/Dublin", "Europe/Guernsey", "Europe/Isle_of_Man", "Europe/Jersey", "Europe/Lisbon", "Europe/London", "GB-Eire", "GB", "Portugal", "WET", "Africa/Blantyre", "Africa/Bujumbura", "Africa/Cairo", "Africa/Ceuta", "Africa/Gaborone", "Africa/Harare", "Africa/Johannesburg", "Africa/Khartoum", "Africa/Kigali", "Africa/Lubumbashi", "Africa/Lusaka", "Africa/Maputo", "Africa/Maseru", "Africa/Mbabane", "Africa/Tripoli", "Africa/Windhoek", "Antarctica/Troll", "Arctic/Longyearbyen", "Atlantic/Jan_Mayen", "CET", "Egypt", "Etc/GMT-2", "Europe/Amsterdam", "Europe/Andorra", "Europe/Belgrade", "Europe/Berlin", "Europe/Bratislava", "Europe/Brussels", "Europe/Budapest", "Europe/Busingen", "Europe/Copenhagen", "Europe/Gibraltar", "Europe/Kaliningrad", "Europe/Ljubljana", "Europe/Luxembourg", "Europe/Madrid", "Europe/Malta", "Europe/Monaco", "Europe/Oslo", "Europe/Paris", "Europe/Podgorica", "Europe/Prague", "Europe/Rome", "Europe/San_Marino", "Europe/Sarajevo", "Europe/Skopje", "Europe/Stockholm", "Europe/Tirane", "Europe/Vaduz", "Europe/Vatican", "Europe/Vienna", "Europe/Warsaw", "Europe/Zagreb", "Europe/Zurich", "Libya", "MET", "Poland", "Africa/Addis_Ababa", "Africa/Asmara", "Africa/Asmera", "Africa/Dar_es_Salaam", "Africa/Djibouti", "Africa/Juba", "Africa/Kampala", "Africa/Mogadishu", "Africa/Nairobi", "Antarctica/Syowa", "Asia/Aden", "Asia/Amman", "Asia/Baghdad", "Asia/Bahrain", "Asia/Beirut", "Asia/Damascus", "Asia/Famagusta", "Asia/Gaza", "Asia/Hebron", "Asia/Istanbul", "Asia/Jerusalem", "Asia/Kuwait", "Asia/Nicosia", "Asia/Qatar", "Asia/Riyadh", "Asia/Tel_Aviv", "EET", "Etc/GMT-3", "Europe/Athens", "Europe/Bucharest", "Europe/Chisinau", "Europe/Helsinki", "Europe/Istanbul", "Europe/Kiev", "Europe/Kirov", "Europe/Mariehamn", "Europe/Minsk", "Europe/Moscow", "Europe/Nicosia", "Europe/Riga", "Europe/Simferopol", "Europe/Sofia", "Europe/Tallinn", "Europe/Tiraspol", "Europe/Uzhgorod", "Europe/Vilnius", "Europe/Zaporozhye", "Indian/Antananarivo", "Indian/Comoro", "Indian/Mayotte", "Israel", "Turkey", "W-SU", "Asia/Baku", "Asia/Dubai", "Asia/Muscat", "Asia/Tbilisi", "Asia/Yerevan", "Etc/GMT-4", "Europe/Astrakhan", "Europe/Samara", "Europe/Saratov", "Europe/Ulyanovsk", "Europe/Volgograd", "Indian/Mahe", "Indian/Mauritius", "Indian/Reunion", "Asia/Kabul", "Asia/Tehran", "Iran", "Antarctica/Mawson", "Asia/Aqtau", "Asia/Aqtobe", "Asia/Ashgabat", "Asia/Ashkhabad", "Asia/Atyrau", "Asia/Dushanbe", "Asia/Karachi", "Asia/Oral", "Asia/Qyzylorda", "Asia/Samarkand", "Asia/Tashkent", "Asia/Yekaterinburg", "Etc/GMT-5", "Indian/Kerguelen", "Indian/Maldives", "Asia/Calcutta", "Asia/Colombo", "Asia/Kolkata", "Asia/Kathmandu", "Asia/Katmandu", "Antarctica/Vostok", "Asia/Almaty", "Asia/Bishkek", "Asia/Dacca", "Asia/Dhaka", "Asia/Kashgar", "Asia/Omsk", "Asia/Qostanay", "Asia/Thimbu", "Asia/Thimphu", "Asia/Urumqi", "Etc/GMT-6", "Indian/Chagos", "Asia/Rangoon", "Asia/Yangon", "Indian/Cocos", "Antarctica/Davis", "Asia/Bangkok", "Asia/Barnaul", "Asia/Ho_Chi_Minh", "Asia/Hovd", "Asia/Jakarta", "Asia/Krasnoyarsk", "Asia/Novokuznetsk", "Asia/Novosibirsk", "Asia/Phnom_Penh", "Asia/Pontianak", "Asia/Saigon", "Asia/Tomsk", "Asia/Vientiane", "Etc/GMT-7", "Indian/Christmas", "Antarctica/Casey", "Asia/Brunei", "Asia/Choibalsan", "Asia/Chongqing", "Asia/Chungking", "Asia/Harbin", "Asia/Hong_Kong", "Asia/Irkutsk", "Asia/Kuala_Lumpur", "Asia/Kuching", "Asia/Macao", "Asia/Macau", "Asia/Makassar", "Asia/Manila", "Asia/Shanghai", "Asia/Singapore", "Asia/Taipei", "Asia/Ujung_Pandang", "Asia/Ulaanbaatar", "Asia/Ulan_Bator", "Australia/Perth", "Australia/West", "Etc/GMT-8", "Hongkong", "PRC", "ROC", "Singapore", "Australia/Eucla", "Asia/Chita", "Asia/Dili", "Asia/Jayapura", "Asia/Khandyga", "Asia/Pyongyang", "Asia/Seoul", "Asia/Tokyo", "Asia/Yakutsk", "Etc/GMT-9", "Japan", "Pacific/Palau", "ROK", "Australia/Adelaide", "Australia/Broken_Hill", "Australia/Darwin", "Australia/North", "Australia/South", "Australia/Yancowinna", "Antarctica/DumontDUrville", "Asia/Ust-Nera", "Asia/Vladivostok", "Australia/ACT", "Australia/Brisbane", "Australia/Canberra", "Australia/Currie", "Australia/Hobart", "Australia/Lindeman", "Australia/Melbourne", "Australia/NSW", "Australia/Queensland", "Australia/Sydney", "Australia/Tasmania", "Australia/Victoria", "Etc/GMT-10", "Pacific/Chuuk", "Pacific/Guam", "Pacific/Port_Moresby", "Pacific/Saipan", "Pacific/Truk", "Pacific/Yap", "Australia/LHI", "Australia/Lord_Howe", "Antarctica/Macquarie", "Asia/Magadan", "Asia/Sakhalin", "Asia/Srednekolymsk", "Etc/GMT-11", "Pacific/Bougainville", "Pacific/Efate", "Pacific/Guadalcanal", "Pacific/Kosrae", "Pacific/Norfolk", "Pacific/Noumea", "Pacific/Pohnpei", "Pacific/Ponape", "Antarctica/McMurdo", "Antarctica/South_Pole", "Asia/Anadyr", "Asia/Kamchatka", "Etc/GMT-12", "Kwajalein", "NZ", "Pacific/Auckland", "Pacific/Fiji", "Pacific/Funafuti", "Pacific/Kwajalein", "Pacific/Majuro", "Pacific/Nauru", "Pacific/Tarawa", "Pacific/Wake", "Pacific/Wallis", "NZ-CHAT", "Pacific/Chatham", "Etc/GMT-13", "Pacific/Apia", "Pacific/Enderbury", "Pacific/Fakaofo", "Pacific/Tongatapu", "Etc/GMT-14", "Pacific/Kiritimati"]
                 }
             },
-        94077:
-            /*!*******************************************************************************************************************!*\
-              !*** ./artifacts/transpiled-renovation-npm/__internal/scheduler/utils/data_accessor/appointment_data_accessor.js ***!
-              \*******************************************************************************************************************/
-            function(__unused_webpack_module, exports, __webpack_require__) {
-                Object.defineProperty(exports, "__esModule", {
-                    value: true
-                });
-                exports.AppointmentDataAccessor = void 0;
-                var _data = __webpack_require__( /*! ../../../../core/utils/data */ 31e3);
-                var _date_serialization = (e = __webpack_require__( /*! ../../../../core/utils/date_serialization */ 71051), e && e.__esModule ? e : {
-                    default: e
-                });
-                var e;
-                var _data_accessor = __webpack_require__( /*! ./data_accessor */ 83811);
-
-                function _extends() {
-                    return _extends = Object.assign ? Object.assign.bind() : function(n) {
-                        for (var e = 1; e < arguments.length; e++) {
-                            var t = arguments[e];
-                            for (var r in t) {
-                                ({}).hasOwnProperty.call(t, r) && (n[r] = t[r])
-                            }
-                        }
-                        return n
-                    }, _extends.apply(null, arguments)
-                }
-                class AppointmentDataAccessor extends _data_accessor.DataAccessor {
-                    constructor(fields) {
-                        let forceIsoDateParsing = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : true;
-                        let dateSerializationFormat = arguments.length > 2 ? arguments[2] : void 0;
-                        super();
-                        this.forceIsoDateParsing = forceIsoDateParsing;
-                        this.dateSerializationFormat = dateSerializationFormat;
-                        this.expr = _extends({}, fields);
-                        this.updateExpressions(fields)
-                    }
-                    getCommonAccessExpressions(expr) {
-                        return {
-                            getter: (0, _data.compileGetter)(expr),
-                            setter: (0, _data.compileSetter)(expr)
-                        }
-                    }
-                    getDateFieldAccessExpressions(expr) {
-                        const {
-                            getter: commonGetter,
-                            setter: commonSetter
-                        } = this.getCommonAccessExpressions(expr);
-                        let serializationFormatCache;
-                        return {
-                            getter: object => this.forceIsoDateParsing ? _date_serialization.default.deserializeDate(commonGetter(object)) : commonGetter(object),
-                            setter: (object, value) => {
-                                if (this.dateSerializationFormat) {
-                                    serializationFormatCache = this.dateSerializationFormat
-                                } else if (this.forceIsoDateParsing && !serializationFormatCache) {
-                                    const oldValue = commonGetter(object);
-                                    serializationFormatCache = _date_serialization.default.getDateSerializationFormat(oldValue)
-                                }
-                                const newValue = _date_serialization.default.serializeDate(value, serializationFormatCache);
-                                commonSetter(object, newValue)
-                            }
-                        }
-                    }
-                    getAccessExpressions(name, expr) {
-                        return (field = name, "startDate" === field || "endDate" === field) ? this.getDateFieldAccessExpressions(expr) : this.getCommonAccessExpressions(expr);
-                        var field
-                    }
-                    updateExpression(field, expr) {
-                        const name = field.replace("Expr", "");
-                        if (!expr) {
-                            delete this.getter[name];
-                            delete this.setter[name];
-                            delete this.expr[field];
-                            return
-                        }
-                        const {
-                            getter: getter,
-                            setter: setter
-                        } = this.getAccessExpressions(name, expr);
-                        this.getter[name] = getter;
-                        this.setter[name] = setter;
-                        this.expr[field] = expr
-                    }
-                }
-                exports.AppointmentDataAccessor = AppointmentDataAccessor
-            },
-        83811:
-            /*!*******************************************************************************************************!*\
-              !*** ./artifacts/transpiled-renovation-npm/__internal/scheduler/utils/data_accessor/data_accessor.js ***!
-              \*******************************************************************************************************/
-            function(__unused_webpack_module, exports, __webpack_require__) {
-                Object.defineProperty(exports, "__esModule", {
-                    value: true
-                });
-                exports.DataAccessor = void 0;
-                var _m_type = __webpack_require__( /*! ../../../core/utils/m_type */ 39918);
-                exports.DataAccessor = class {
-                    constructor() {
-                        this.getter = {};
-                        this.setter = {}
-                    }
-                    updateExpressions(fields) {
-                        Object.entries(fields).forEach((_ref => {
-                            let [key, value] = _ref;
-                            return this.updateExpression(key, value)
-                        }))
-                    }
-                    get(field, obj) {
-                        if (this.getter[field]) {
-                            return this.getter[field](obj)
-                        }
-                        return
-                    }
-                    set(field, obj, value) {
-                        if (this.setter[field]) {
-                            this.setter[field](obj, value)
-                        }
-                        return this
-                    }
-                    has(field) {
-                        return (0, _m_type.isDefined)(this.getter[field])
-                    }
-                }
-            },
         80356:
             /*!*********************************************************************************!*\
               !*** ./artifacts/transpiled-renovation-npm/__internal/scheduler/utils/index.js ***!
@@ -23104,19 +23167,12 @@
                 Object.defineProperty(exports, "__esModule", {
                     value: true
                 });
-                Object.defineProperty(exports, "AppointmentDataAccessor", {
-                    enumerable: true,
-                    get: function() {
-                        return _appointment_data_accessor.AppointmentDataAccessor
-                    }
-                });
                 Object.defineProperty(exports, "macroTaskArray", {
                     enumerable: true,
                     get: function() {
                         return _index.default
                     }
                 });
-                var _appointment_data_accessor = __webpack_require__( /*! ./data_accessor/appointment_data_accessor */ 94077);
                 var _index = (e = __webpack_require__( /*! ./macro_task_array/index */ 4203), e && e.__esModule ? e : {
                     default: e
                 });
@@ -23471,8 +23527,14 @@
                             isDirty: false
                         })
                     }
+                    _shouldAttachKeyboardEvents() {
+                        const {
+                            readOnly: readOnly
+                        } = this.option();
+                        return !readOnly
+                    }
                     _attachKeyboardEvents() {
-                        if (!this.option("readOnly")) {
+                        if (this._shouldAttachKeyboardEvents()) {
                             super._attachKeyboardEvents()
                         }
                     }
@@ -23777,13 +23839,11 @@
                 Object.defineProperty(exports, "__esModule", {
                     value: true
                 });
-                exports.default = void 0;
+                exports.default = exports.LOADINDICATOR_WRAPPER_CLASS = exports.LOADINDICATOR_SEGMENT_INNER_CLASS = exports.LOADINDICATOR_SEGMENT_CLASS = exports.LOADINDICATOR_IMAGE_CLASS = exports.LOADINDICATOR_ICON_CLASS = exports.LOADINDICATOR_CONTENT_CLASS = exports.LOADINDICATOR_CLASS = exports.AnimationType = exports.ANIMATION_TYPE_CLASSES = void 0;
                 var _message = _interopRequireDefault(__webpack_require__( /*! ../../common/core/localization/message */ 4671));
                 var _component_registrator = _interopRequireDefault(__webpack_require__( /*! ../../core/component_registrator */ 92848));
-                var _devices = _interopRequireDefault(__webpack_require__( /*! ../../core/devices */ 65951));
                 var _renderer = _interopRequireDefault(__webpack_require__( /*! ../../core/renderer */ 64553));
                 var _size = __webpack_require__( /*! ../../core/utils/size */ 57653);
-                var _window = __webpack_require__( /*! ../../core/utils/window */ 3104);
                 var _themes = __webpack_require__( /*! ../../ui/themes */ 52071);
                 var _widget = _interopRequireDefault(__webpack_require__( /*! ../core/widget/widget */ 89275));
                 var _m_support = _interopRequireDefault(__webpack_require__( /*! ../core/utils/m_support */ 85991));
@@ -23805,29 +23865,36 @@
                         return n
                     }, _extends.apply(null, arguments)
                 }
-                const navigator = (0, _window.getNavigator)();
+                const LOADINDICATOR_CLASS = exports.LOADINDICATOR_CLASS = "dx-loadindicator";
+                const LOADINDICATOR_WRAPPER_CLASS = exports.LOADINDICATOR_WRAPPER_CLASS = "dx-loadindicator-wrapper";
+                const LOADINDICATOR_CONTENT_CLASS = exports.LOADINDICATOR_CONTENT_CLASS = "dx-loadindicator-content";
+                const LOADINDICATOR_ICON_CLASS = exports.LOADINDICATOR_ICON_CLASS = "dx-loadindicator-icon";
+                const LOADINDICATOR_SEGMENT_CLASS = exports.LOADINDICATOR_SEGMENT_CLASS = "dx-loadindicator-segment";
+                const LOADINDICATOR_SEGMENT_INNER_CLASS = exports.LOADINDICATOR_SEGMENT_INNER_CLASS = "dx-loadindicator-segment-inner";
+                const LOADINDICATOR_IMAGE_CLASS = exports.LOADINDICATOR_IMAGE_CLASS = "dx-loadindicator-image";
+                var AnimationType;
+                ! function(AnimationType) {
+                    AnimationType.Circle = "circle";
+                    AnimationType.Sparkle = "sparkle"
+                }(AnimationType || (exports.AnimationType = AnimationType = {}));
+                const ANIMATION_TYPE_CLASSES = exports.ANIMATION_TYPE_CLASSES = {
+                    [AnimationType.Circle]: "dx-loadindicator-content-circle",
+                    [AnimationType.Sparkle]: "dx-loadindicator-content-sparkle"
+                };
                 class LoadIndicator extends _widget.default {
                     _getDefaultOptions() {
                         return _extends({}, super._getDefaultOptions(), {
-                            indicatorSrc: "",
+                            _animatingSegmentCount: 1,
+                            _animatingSegmentInner: false,
+                            _animationType: AnimationType.Circle,
                             activeStateEnabled: false,
                             hoverStateEnabled: false,
-                            _animatingSegmentCount: 1,
-                            _animatingSegmentInner: false
+                            indicatorSrc: ""
                         })
                     }
                     _defaultOptionsRules() {
                         const themeName = (0, _themes.current)();
                         return super._defaultOptionsRules().concat([{
-                            device() {
-                                const realDevice = _devices.default.real();
-                                const obsoleteAndroid = "android" === realDevice.platform && !/chrome/i.test(navigator.userAgent);
-                                return obsoleteAndroid
-                            },
-                            options: {
-                                viaImage: true
-                            }
-                        }, {
                             device: () => (0, _themes.isMaterialBased)(themeName),
                             options: {
                                 _animatingSegmentCount: 2,
@@ -23845,7 +23912,7 @@
                     }
                     _init() {
                         super._init();
-                        this.$element().addClass("dx-loadindicator");
+                        this.$element().addClass(LOADINDICATOR_CLASS);
                         const label = _message.default.format("Loading");
                         const aria = {
                             role: "alert",
@@ -23860,46 +23927,77 @@
                         this._renderMarkup()
                     }
                     _renderWrapper() {
-                        this._$wrapper = (0, _renderer.default)("<div>").addClass("dx-loadindicator-wrapper");
+                        this._$wrapper = (0, _renderer.default)("<div>").addClass(LOADINDICATOR_WRAPPER_CLASS);
                         this.$element().append(this._$wrapper)
                     }
+                    _getAnimationTypeContentClass() {
+                        const {
+                            _animationType: animationType
+                        } = this.option();
+                        return ANIMATION_TYPE_CLASSES[animationType]
+                    }
                     _renderIndicatorContent() {
-                        this._$content = (0, _renderer.default)("<div>").addClass("dx-loadindicator-content");
+                        const animationClass = this._getAnimationTypeContentClass() ?? "";
+                        const contentClasses = [LOADINDICATOR_CONTENT_CLASS, animationClass].join(" ");
+                        this._$content = (0, _renderer.default)("<div>").addClass(contentClasses);
                         this._$wrapper.append(this._$content)
                     }
                     _renderMarkup() {
                         const {
-                            viaImage: viaImage,
                             indicatorSrc: indicatorSrc
                         } = this.option();
-                        if (_m_support.default.animation() && !viaImage && !indicatorSrc) {
-                            this._renderMarkupForAnimation()
-                        } else {
-                            this._renderMarkupForImage()
+                        const isAnimationAvailable = _m_support.default.animation();
+                        if (indicatorSrc) {
+                            this._renderImageMarkup()
+                        } else if (isAnimationAvailable) {
+                            this._renderAnimationMarkup()
                         }
                     }
-                    _renderMarkupForAnimation() {
-                        const animatingSegmentInner = this.option("_animatingSegmentInner");
-                        this._$indicator = (0, _renderer.default)("<div>").addClass("dx-loadindicator-icon");
+                    _getSegmentParams() {
+                        const {
+                            _animationType: animationType,
+                            _animatingSegmentCount: animatingSegmentCount,
+                            _animatingSegmentInner: animatingSegmentInner
+                        } = this.option();
+                        switch (animationType) {
+                            case AnimationType.Sparkle:
+                                return {
+                                    segmentCount: 2, segmentInner: false
+                                };
+                            case AnimationType.Circle:
+                            default:
+                                return {
+                                    segmentCount: animatingSegmentCount ?? 0, segmentInner: Boolean(animatingSegmentInner)
+                                }
+                        }
+                    }
+                    _renderAnimationMarkup() {
+                        this._$indicator = (0, _renderer.default)("<div>").addClass(LOADINDICATOR_ICON_CLASS);
                         this._$content.append(this._$indicator);
-                        for (let i = this.option("_animatingSegmentCount"); i >= 0; --i) {
-                            const $segment = (0, _renderer.default)("<div>").addClass("dx-loadindicator-segment").addClass("dx-loadindicator-segment" + i);
-                            if (animatingSegmentInner) {
-                                $segment.append((0, _renderer.default)("<div>").addClass("dx-loadindicator-segment-inner"))
+                        const params = this._getSegmentParams();
+                        this._renderSegments(params)
+                    }
+                    _renderSegments(params) {
+                        const {
+                            segmentCount: segmentCount,
+                            segmentInner: segmentInner
+                        } = params;
+                        for (let i = segmentCount; i >= 0; i -= 1) {
+                            var _this$_$indicator;
+                            const $segment = (0, _renderer.default)("<div>").addClass(LOADINDICATOR_SEGMENT_CLASS).addClass(`${LOADINDICATOR_SEGMENT_CLASS}${i}`);
+                            if (segmentInner) {
+                                const $segmentInner = (0, _renderer.default)("<div>").addClass(LOADINDICATOR_SEGMENT_INNER_CLASS);
+                                $segment.append($segmentInner)
                             }
-                            this._$indicator.append($segment)
+                            null === (_this$_$indicator = this._$indicator) || void 0 === _this$_$indicator || _this$_$indicator.append($segment)
                         }
                     }
-                    _renderMarkupForImage() {
+                    _renderImageMarkup() {
                         const {
                             indicatorSrc: indicatorSrc
                         } = this.option();
-                        if (indicatorSrc) {
-                            this._$wrapper.addClass("dx-loadindicator-image");
-                            this._$wrapper.css("backgroundImage", `url(${indicatorSrc})`)
-                        } else if (_m_support.default.animation()) {
-                            this._renderMarkupForAnimation()
-                        }
+                        this._$wrapper.addClass(LOADINDICATOR_IMAGE_CLASS);
+                        this._$wrapper.css("backgroundImage", `url(${indicatorSrc})`)
                     }
                     _renderDimensions() {
                         super._renderDimensions();
@@ -23909,8 +24007,10 @@
                         if (!this._$indicator) {
                             return
                         }
-                        let width = this.option("width");
-                        let height = this.option("height");
+                        let {
+                            width: width,
+                            height: height
+                        } = this.option();
                         if (width || height) {
                             width = (0, _size.getWidth)(this.$element());
                             height = (0, _size.getHeight)(this.$element());
@@ -23941,6 +24041,7 @@
                         switch (args.name) {
                             case "_animatingSegmentCount":
                             case "_animatingSegmentInner":
+                            case "_animationType":
                             case "indicatorSrc":
                                 this._invalidate();
                                 break;
@@ -25193,7 +25294,7 @@
                 Object.defineProperty(exports, "__esModule", {
                     value: true
                 });
-                exports.default = void 0;
+                exports.default = exports.OVERLAY_CONTENT_CLASS = void 0;
                 var _animation = __webpack_require__( /*! ../../../common/core/animation */ 16826);
                 var _hide_callback = __webpack_require__( /*! ../../../common/core/environment/hide_callback */ 83916);
                 var _events_engine = _interopRequireDefault(__webpack_require__( /*! ../../../common/core/events/core/events_engine */ 92774));
@@ -25281,6 +25382,7 @@
                 const ready = _ready_callbacks.default.add;
                 const window = _m_window.default.getWindow();
                 const viewPortChanged = _view_port.changeCallback;
+                const OVERLAY_CONTENT_CLASS = exports.OVERLAY_CONTENT_CLASS = "dx-overlay-content";
                 const OVERLAY_STACK = [];
                 ready((() => {
                     _events_engine.default.subscribeGlobal(_dom_adapter.default.getDocument(), _pointer.default.down, (e => {
@@ -25335,7 +25437,6 @@
                                     }
                                 }
                             },
-                            closeOnOutsideClick: false,
                             hideOnOutsideClick: false,
                             _ignorePreventScrollEventsDeprecation: false,
                             onShowing: null,
@@ -25381,15 +25482,6 @@
                     _eventBindingTarget() {
                         return this._$content
                     }
-                    _setDeprecatedOptions() {
-                        super._setDeprecatedOptions();
-                        (0, _extend.extend)(this._deprecatedOptions, {
-                            closeOnOutsideClick: {
-                                since: "22.1",
-                                alias: "hideOnOutsideClick"
-                            }
-                        })
-                    }
                     ctor(element, options) {
                         super.ctor(element, options);
                         if (options) {
@@ -25411,7 +25503,7 @@
                         this._initTabTerminatorHandler();
                         this._customWrapperClass = null;
                         this._$wrapper = (0, _renderer.default)("<div>").addClass("dx-overlay-wrapper");
-                        this._$content = (0, _renderer.default)("<div>").addClass("dx-overlay-content");
+                        this._$content = (0, _renderer.default)("<div>").addClass(OVERLAY_CONTENT_CLASS);
                         this._initInnerOverlayClass();
                         const $element = this.$element();
                         $element.addClass("dx-overlay");
@@ -25815,8 +25907,12 @@
                         if (_loopFocus || enabled) {
                             _events_engine.default.on(_dom_adapter.default.getDocument(), eventName, this._proxiedTabTerminatorHandler)
                         } else {
-                            _events_engine.default.off(_dom_adapter.default.getDocument(), eventName, this._proxiedTabTerminatorHandler)
+                            this._destroyTabTerminator()
                         }
+                    }
+                    _destroyTabTerminator() {
+                        const eventName = (0, _index.addNamespace)("keydown", this.NAME);
+                        _events_engine.default.off(_dom_adapter.default.getDocument(), eventName, this._proxiedTabTerminatorHandler)
                     }
                     _findTabbableBounds() {
                         const $elements = this._$wrapper.find("*");
@@ -26135,7 +26231,7 @@
                         return this._$content
                     }
                     _attachKeyboardEvents() {
-                        this._keyboardListenerId = _short.keyboard.on(this._$content, null, (opts => this._keyboardHandler(opts)))
+                        this._keyboardListenerId = _short.keyboard.on(this._$content, null, (options => this._keyboardHandler(options)))
                     }
                     _keyboardHandler(options) {
                         const e = options.originalEvent;
@@ -26184,14 +26280,14 @@
                         this._toggleViewPortSubscription(false);
                         this._toggleSubscriptions(false);
                         this._updateZIndexStackPosition(false);
-                        this._toggleTabTerminator(false);
                         this._actions = null;
                         this._parentsScrollSubscriptionInfo = null;
                         super._dispose();
                         this._toggleSafariScrolling();
                         this.option("visible") && zIndexPool.remove(this._zIndex);
                         this._$wrapper.remove();
-                        this._$content.remove()
+                        this._$content.remove();
+                        this._destroyTabTerminator()
                     }
                     _toggleRTLDirection(rtl) {
                         this._$content.toggleClass("dx-rtl", rtl)
@@ -26207,7 +26303,6 @@
                         }
                         switch (name) {
                             case "animation":
-                            case "closeOnOutsideClick":
                             case "hideOnOutsideClick":
                             case "propagateOutsideClick":
                                 break;
@@ -32592,6 +32687,16 @@
                         name: "fluent.blue.light.compact"
                     }
                 }, {
+                    baseThemeName: "fluent.blue.light",
+                    theme: {
+                        name: "fluent.saas.light"
+                    }
+                }, {
+                    baseThemeName: "fluent.saas.light",
+                    theme: {
+                        name: "fluent.saas.light.compact"
+                    }
+                }, {
                     baseThemeName: "material.blue.dark",
                     theme: {
                         name: "fluent.blue.dark"
@@ -32600,6 +32705,16 @@
                     baseThemeName: "fluent.blue.dark",
                     theme: {
                         name: "fluent.blue.dark.compact"
+                    }
+                }, {
+                    baseThemeName: "fluent.blue.dark",
+                    theme: {
+                        name: "fluent.saas.dark"
+                    }
+                }, {
+                    baseThemeName: "fluent.saas.dark",
+                    theme: {
+                        name: "fluent.saas.dark.compact"
                     }
                 }]
             },
@@ -34541,7 +34656,6 @@
                         },
                         argumentAxis: {
                             endOnTick: false,
-                            aggregateByCategory: true,
                             workWeek: [1, 2, 3, 4, 5]
                         },
                         valueAxis: {
@@ -35364,7 +35478,6 @@
                             color: _contants.BLACK,
                             opacity: .1,
                             showCustomBoundaryTicks: true,
-                            aggregateByCategory: true,
                             label: {
                                 overlappingBehavior: "hide",
                                 alignment: _contants.CENTER,
@@ -35509,7 +35622,7 @@
                                 width: 2,
                                 color: _contants.WHITE
                             },
-                            customizeText: info => info.title,
+                            customizeText: info => info.label,
                             shadow: {
                                 opacity: .2,
                                 offsetX: 0,
@@ -36726,15 +36839,6 @@
                     },
                     _correctAxes() {
                         this._correctValueAxes(true)
-                    },
-                    _setDeprecatedOptions() {
-                        this.callBase();
-                        (0, _extend2.extend)(this._deprecatedOptions, {
-                            "argumentAxis.aggregateByCategory": {
-                                since: "23.1",
-                                message: "Use the aggregation.enabled property"
-                            }
-                        })
                     },
                     _getExtraOptions: _common.noop,
                     _createPanes() {
@@ -51483,6 +51587,8 @@
                         "dxDataGrid-filterPanelClearFilter": "Clear",
                         "dxDataGrid-filterPanelFilterEnabledHint": "Enable the filter",
                         "dxDataGrid-masterDetail": "Cell with details",
+                        "dxDataGrid-moveColumnToTheRight": "Move to the right",
+                        "dxDataGrid-moveColumnToTheLeft": "Move to the left",
                         "dxTreeList-ariaTreeList": "Tree list with {0} rows and {1} columns",
                         "dxTreeList-ariaExpandableInstruction": "Press Ctrl + right arrow to expand the focused node and Ctrl + left arrow to collapse it",
                         "dxTreeList-ariaSearchInGrid": "Search in the tree list",
@@ -51527,7 +51633,10 @@
                         "dxPivotGrid-dataFieldArea": "Drop Data Fields Here",
                         "dxPivotGrid-rowFieldArea": "Drop Row Fields Here",
                         "dxPivotGrid-filterFieldArea": "Drop Filter Fields Here",
-                        "dxScheduler-ariaLabel": "Scheduler. {0} view",
+                        "dxScheduler-dateRange": "from {0} to {1}",
+                        "dxScheduler-ariaLabel": "Scheduler. {0} view: {1} with {2} appointments",
+                        "dxScheduler-ariaLabel-currentIndicator-present": "The current time indicator is visible in the view",
+                        "dxScheduler-ariaLabel-currentIndicator-not-present": "The current time indicator is not visible on the screen",
                         "dxScheduler-appointmentAriaLabel-group": "Group: {0}",
                         "dxScheduler-appointmentAriaLabel-recurring": "Recurring appointment",
                         "dxScheduler-appointmentListAriaLabel": "Appointment list",
@@ -51536,6 +51645,7 @@
                         "dxScheduler-editorLabelEndDate": "End Date",
                         "dxScheduler-editorLabelDescription": "Description",
                         "dxScheduler-editorLabelRecurrence": "Repeat",
+                        "dxScheduler-navigationToday": "Today",
                         "dxScheduler-navigationPrevious": "Previous page",
                         "dxScheduler-navigationNext": "Next page",
                         "dxScheduler-openAppointment": "Open appointment",
@@ -51551,6 +51661,8 @@
                         "dxScheduler-recurrenceEnd": "End repeat",
                         "dxScheduler-recurrenceAfter": "After",
                         "dxScheduler-recurrenceOn": "On",
+                        "dxScheduler-recurrenceUntilDateLabel": "Date when repeat ends",
+                        "dxScheduler-recurrenceOccurrenceLabel": "Number of occurrences",
                         "dxScheduler-recurrenceRepeatMinutely": "minute(s)",
                         "dxScheduler-recurrenceRepeatHourly": "hour(s)",
                         "dxScheduler-recurrenceRepeatDaily": "day(s)",
@@ -51604,10 +51716,31 @@
                         "dxCalendar-selectedMultipleDateRange": "from {0} to {1}",
                         "dxCalendar-selectedDateRangeCount": "There are {0} selected date ranges",
                         "dxCalendar-readOnlyLabel": "Read-only calendar",
+                        "dxCardView-ariaSearchInGrid": "Search in the card view",
+                        "dxCardView-ariaHeaderItemLabel": "Field name {0}",
+                        "dxCardView-ariaHeaderItemSortingAscendingLabel": "Sorted in ascending order",
+                        "dxCardView-ariaHeaderItemSortingDescendingLabel": "Sorted in descending order",
+                        "dxCardView-ariaHeaderItemSortingIndexLabel": "Sort index {0}",
+                        "dxCardView-ariaHeaderHasHeaderFilterLabel": "Header filter applied",
+                        "dxCardView-ariaSelectCard": "Select card",
+                        "dxCardView-ariaCardView": "Card view with {0} cards. Each card has {1} fields",
+                        "dxCardView-ariaCard": "Card",
+                        "dxCardView-ariaEditableCard": "Editable card",
+                        "dxCardView-ariaCardPosition": "Row {0}, column {1}",
+                        "dxCardView-ariaSelectedCardState": "Selected",
+                        "dxCardView-ariaNotSelectedCardState": "Not selected",
+                        "dxCardView-selectAll": "Select all",
+                        "dxCardView-clearSelection": "Clear selection",
+                        "dxCardView-cardNoImageAriaLabel": "No image",
+                        "dxCardView-headerItemDropZoneText": "Drop the header item here",
+                        "dxCardView-emptyHeaderPanelText": "Use {0} to display columns",
+                        "dxCardView-emptyHeaderPanelColumnChooserText": "column chooser",
                         "dxAvatar-defaultImageAlt": "Avatar",
                         "dxChat-elementAriaLabel": "Chat",
                         "dxChat-textareaPlaceholder": "Type a message",
                         "dxChat-sendButtonAriaLabel": "Send",
+                        "dxChat-cancelEditingButtonAriaLabel": "Cancel",
+                        "dxChat-editingMessageCaption": "Edit Message",
                         "dxChat-defaultUserName": "Unknown User",
                         "dxChat-messageListAriaLabel": "Message list",
                         "dxChat-alertListAriaLabel": "Error list",
@@ -51617,6 +51750,12 @@
                         "dxChat-typingMessageTwoUsers": "{0} and {1} are typing...",
                         "dxChat-typingMessageThreeUsers": "{0}, {1} and {2} are typing...",
                         "dxChat-typingMessageMultipleUsers": "{0} and others are typing...",
+                        "dxChat-editedMessageText": "Edited",
+                        "dxChat-editingEditMessage": "Edit",
+                        "dxChat-editingDeleteMessage": "Delete",
+                        "dxChat-editingDeleteConfirmText": "Are you sure you want to delete this message?",
+                        "dxChat-deletedMessageText": "This message was deleted",
+                        "dxChat-defaultImageAlt": "Image shared in chat",
                         "dxColorView-ariaRed": "Red",
                         "dxColorView-ariaGreen": "Green",
                         "dxColorView-ariaBlue": "Blue",
@@ -51757,6 +51896,19 @@
                         "dxHtmlEditor-borderStyleRidge": "ridge",
                         "dxHtmlEditor-borderStyleInset": "inset",
                         "dxHtmlEditor-borderStyleOutset": "outset",
+                        "dxHtmlEditor-aiDialogTitle": "AI Assistant",
+                        "dxHtmlEditor-aiDialogError": "Something went wrong. Please try again.",
+                        "dxHtmlEditor-aiDialogCanceled": "Generation canceled",
+                        "dxHtmlEditor-aiReplace": "Replace",
+                        "dxHtmlEditor-aiInsertAbove": "Insert above",
+                        "dxHtmlEditor-aiInsertBelow": "Insert below",
+                        "dxHtmlEditor-aiCopy": "Copy",
+                        "dxHtmlEditor-aiRegenerate": "Regenerate",
+                        "dxHtmlEditor-aiGenerate": "Generate",
+                        "dxHtmlEditor-aiCancel": "Cancel",
+                        "dxHtmlEditor-aiToolbarItemAriaLabel": "AI Assistant toolbar item",
+                        "dxHtmlEditor-aiResultTextAreaAriaLabel": "AI Assistant result",
+                        "dxHtmlEditor-aiAskPlaceholder": "Ask AI to modify text",
                         "dxFileManager-newDirectoryName": "Untitled directory",
                         "dxFileManager-rootDirectoryName": "Files",
                         "dxFileManager-errorNoAccess": "Access Denied. Operation could not be completed.",
@@ -52023,7 +52175,8 @@
                         "dxMultiView-itemAriaRoleDescription": "View",
                         "dxMultiView-itemAriaLabel": "{0} of {1}",
                         "dxSplitter-resizeHandleAriaLabel": "Split bar",
-                        "dxSplitter-resizeHandleAriaRoleDescription": "Separator"
+                        "dxSplitter-resizeHandleAriaRoleDescription": "Separator",
+                        "dxStepper-optionalMark": "(Optional)"
                     }
                 }
             },
@@ -52971,7 +53124,8 @@
                         if (!format || "function" !== typeof format && !format.type && !format.formatter) {
                             return getFormatter(format)(value)
                         }
-                        return this.callBase.apply(this, arguments)
+                        const result = this.callBase.apply(this, arguments);
+                        return result
                     },
                     _getCurrencySymbolInfo: function(currency) {
                         const formatter = (currency => new Intl.NumberFormat(_core.default.locale(), {
@@ -54569,7 +54723,9 @@
                         if (!numberConfig) {
                             const formatterConfig = this._getSeparators();
                             formatterConfig.unlimitedIntegerDigits = format.unlimitedIntegerDigits;
-                            return this.convertDigits((0, _number.getFormatter)(format.type, formatterConfig)(value))
+                            const formatter = (0, _number.getFormatter)(format.type, formatterConfig)(value);
+                            const result = this.convertDigits(formatter);
+                            return result
                         }
                         return this._formatNumber(value, numberConfig, format)
                     },
@@ -57364,8 +57520,8 @@
               \*************************************************************/
             function(__unused_webpack_module, exports) {
                 exports.version = exports.fullVersion = void 0;
-                exports.version = "24.2.7";
-                exports.fullVersion = "24.2.7"
+                exports.version = "25.1.3";
+                exports.fullVersion = "25.1.3"
             },
         48367:
             /*!*******************************************************************!*\
@@ -63897,7 +64053,10 @@
                     const getFilterSelector = function(column, target) {
                         let selector = column.dataField || column.selector;
                         if ("search" === target) {
-                            selector = column.displayField || column.calculateDisplayValue || selector
+                            selector = column.displayField || function(column) {
+                                var _column$calculateDisp;
+                                return null !== (_column$calculateDisp = column.calculateDisplayValue) && void 0 !== _column$calculateDisp && _column$calculateDisp.context ? column.calculateDisplayValue : null
+                            }(column) || selector
                         }
                         return selector
                     };
@@ -64641,7 +64800,6 @@
                     W1012: "The '{0}' key field is not found in data objects",
                     W1013: 'The "message" field in the dialog component was renamed to "messageHtml". Change your code correspondingly. In addition, if you used HTML code in the message, make sure that it is secure',
                     W1014: "The Floating Action Button exceeds the recommended speed dial action count. If you need to display more speed dial actions, increase the maxSpeedDialActionCount option value in the global config.",
-                    W1016: "The '{0}' field in the HTML Editor toolbar item configuration was renamed to '{1}'. Please make a corresponding change in your code.",
                     W1017: "The 'key' property is not specified for a lookup data source. Please specify it to prevent requests for the entire dataset when users filter data.",
                     W1018: "Infinite scrolling may not work properly with multiple selection. To use these features together, set 'selection.deferred' to true or set 'selection.selectAllMode' to 'page'.",
                     W1019: "Filter query string exceeds maximum length limit of {0} characters.",
@@ -64650,7 +64808,9 @@
                     W1022: "{0} JSON parsing error: '{1}'",
                     W1023: "Appointments require unique keys. Otherwise, the agenda view may not work correctly.",
                     W1024: "The client-side export is enabled. Implement the 'onExporting' function.",
-                    W1025: "'scrolling.mode' is set to 'virtual' or 'infinite'. Specify the height of the component."
+                    W1025: "'scrolling.mode' is set to 'virtual' or 'infinite'. Specify the height of the component.",
+                    W1026: "The 'ai' toolbar item is defined, but aiIntegration is missing.",
+                    W1027: "A prompt should be specified for a custom command."
                 });
                 module.exports = exports.default;
                 module.exports.default = exports.default
@@ -64787,7 +64947,6 @@
                 var _range = __webpack_require__( /*! ../translators/range */ 99857);
                 var _tick = __webpack_require__( /*! ./tick */ 99043);
                 var _math2 = __webpack_require__( /*! ../../core/utils/math */ 50254);
-                var _errors = _interopRequireDefault(__webpack_require__( /*! ../../core/errors */ 87129));
                 var _date = _interopRequireDefault(__webpack_require__( /*! ../../core/utils/date */ 41380));
                 var _common = __webpack_require__( /*! ../../core/utils/common */ 17781);
                 var _xy_axes = _interopRequireDefault(__webpack_require__( /*! ./xy_axes */ 9441));
@@ -65582,11 +65741,6 @@
                             options.argumentType && (options.argumentType = options.argumentType.toLowerCase());
                             options.valueType && (options.valueType = options.valueType.toLowerCase())
                         }(options);
-                        ! function(isValueAxis, options) {
-                            if (isValueAxis && "shift" === options.visualRangeUpdateMode) {
-                                _errors.default.log("W0016", "valueAxis.visualRangeUpdateMode", "shift", "23.1", "Specify another value")
-                            }
-                        }(!that.isArgumentAxis, options);
                         that._options = options;
                         options.tick = options.tick || {};
                         options.minorTick = options.minorTick || {};
@@ -66037,29 +66191,13 @@
                     },
                     getAggregationInfo(useAllAggregatedPoints, range) {
                         var _that$_seriesData;
-                        const that = this;
-                        const options = that._options;
-                        const marginOptions = that._marginOptions;
-                        const businessRange = new _range.Range(that.getTranslator().getBusinessRange()).addRange(range);
-                        const visualRange = that.getViewport();
+                        const options = this._options;
+                        const businessRange = new _range.Range(this.getTranslator().getBusinessRange()).addRange(range);
+                        const visualRange = this.getViewport();
                         const minVisible = (null === visualRange || void 0 === visualRange ? void 0 : visualRange.startValue) ?? businessRange.minVisible;
                         const maxVisible = (null === visualRange || void 0 === visualRange ? void 0 : visualRange.endValue) ?? businessRange.maxVisible;
-                        let ticks = [];
-                        if (options.type === _axes_constants.default.discrete && options.aggregateByCategory) {
-                            return {
-                                aggregateByCategory: true
-                            }
-                        }
                         const aggregationInterval = options.aggregationInterval;
-                        let aggregationGroupWidth = options.aggregationGroupWidth;
-                        if (!aggregationGroupWidth && marginOptions) {
-                            if (marginOptions.checkInterval) {
-                                aggregationGroupWidth = options.axisDivisionFactor
-                            }
-                            if (marginOptions.sizePointNormalState) {
-                                aggregationGroupWidth = Math.min(marginOptions.sizePointNormalState, options.axisDivisionFactor)
-                            }
-                        }
+                        const aggregationGroupWidth = this._getAggregationGroupWidth();
                         const minInterval = !options.aggregationGroupWidth && !aggregationInterval && range.interval;
                         const generateTicks = function(options, axisDivisionFactor, viewPort, screenDelta, minTickInterval) {
                             const tickGeneratorOptions = (0, _extend.extend)({}, options, {
@@ -66077,42 +66215,66 @@
                                     isSpacedMargin: viewPort.isSpacedMargin
                                 }, screenDelta, tickInterval, (0, _type.isDefined)(tickInterval), void 0, void 0, void 0, breaks)
                             }
-                        }(options, aggregationGroupWidth, businessRange, that._getScreenDelta(), minInterval);
-                        const tickInterval = generateTicks(aggregationInterval, true, minVisible, maxVisible, null === (_that$_seriesData = that._seriesData) || void 0 === _that$_seriesData ? void 0 : _that$_seriesData.breaks).tickInterval;
-                        if (options.type !== _axes_constants.default.discrete) {
-                            const min = useAllAggregatedPoints ? businessRange.min : minVisible;
-                            const max = useAllAggregatedPoints ? businessRange.max : maxVisible;
-                            if ((0, _type.isDefined)(min) && (0, _type.isDefined)(max)) {
-                                const add = (0, _utils.getAddFunction)({
-                                    base: options.logarithmBase,
-                                    axisType: options.type,
-                                    dataType: options.dataType
-                                }, false);
-                                let start = min;
-                                let end = max;
-                                if (!useAllAggregatedPoints && (0, _type.isDefined)(tickInterval)) {
-                                    const maxMinDistance = Math.max(that.calculateInterval(max, min), "datetime" === options.dataType ? _date.default.dateToMilliseconds(tickInterval) : tickInterval);
-                                    start = add(min, maxMinDistance, -1);
-                                    end = add(max, maxMinDistance)
-                                }
-                                start = start < businessRange.min ? businessRange.min : start;
-                                end = end > businessRange.max ? businessRange.max : end;
-                                const breaks = that._getScaleBreaks(options, {
-                                    minVisible: start,
-                                    maxVisible: end
-                                }, that._series, that.isArgumentAxis);
-                                const filteredBreaks = that._filterBreaks(breaks, {
-                                    minVisible: start,
-                                    maxVisible: end
-                                }, options.breakStyle);
-                                ticks = generateTicks(tickInterval, false, start, end, filteredBreaks).ticks
-                            }
-                        }
-                        that._aggregationInterval = tickInterval;
+                        }(options, aggregationGroupWidth, businessRange, this._getScreenDelta(), minInterval);
+                        const tickInterval = generateTicks(aggregationInterval, true, minVisible, maxVisible, null === (_that$_seriesData = this._seriesData) || void 0 === _that$_seriesData ? void 0 : _that$_seriesData.breaks).tickInterval;
+                        const ticks = this._generateTick(useAllAggregatedPoints, businessRange, minVisible, maxVisible, tickInterval, generateTicks);
+                        this._aggregationInterval = tickInterval;
                         return {
                             interval: tickInterval,
                             ticks: ticks
                         }
+                    },
+                    _getAggregationGroupWidth() {
+                        const {
+                            checkInterval: checkInterval,
+                            sizePointNormalState: sizePointNormalState
+                        } = this._marginOptions || {};
+                        const {
+                            aggregationGroupWidth: aggregationGroupWidth,
+                            axisDivisionFactor: axisDivisionFactor
+                        } = this._options;
+                        if (aggregationGroupWidth) {
+                            return aggregationGroupWidth
+                        }
+                        if (sizePointNormalState) {
+                            return Math.min(sizePointNormalState, axisDivisionFactor)
+                        }
+                        if (checkInterval) {
+                            return axisDivisionFactor
+                        }
+                        return aggregationGroupWidth
+                    },
+                    _generateTick(useAllAggregatedPoints, businessRange, minVisible, maxVisible, tickInterval, generateTicks) {
+                        const min = useAllAggregatedPoints ? businessRange.min : minVisible;
+                        const max = useAllAggregatedPoints ? businessRange.max : maxVisible;
+                        if (!(0, _type.isDefined)(min) || !(0, _type.isDefined)(max)) {
+                            return []
+                        }
+                        const that = this;
+                        const options = that._options;
+                        const add = (0, _utils.getAddFunction)({
+                            base: options.logarithmBase,
+                            axisType: options.type,
+                            dataType: options.dataType
+                        }, false);
+                        let start = min;
+                        let end = max;
+                        if (!useAllAggregatedPoints && (0, _type.isDefined)(tickInterval)) {
+                            const maxMinDistance = Math.max(that.calculateInterval(max, min), "datetime" === options.dataType ? _date.default.dateToMilliseconds(tickInterval) : tickInterval);
+                            start = add(min, maxMinDistance, -1);
+                            end = add(max, maxMinDistance)
+                        }
+                        start = start < businessRange.min ? businessRange.min : start;
+                        end = end > businessRange.max ? businessRange.max : end;
+                        const breaks = that._getScaleBreaks(options, {
+                            minVisible: start,
+                            maxVisible: end
+                        }, that._series, that.isArgumentAxis);
+                        const filteredBreaks = that._filterBreaks(breaks, {
+                            minVisible: start,
+                            maxVisible: end
+                        }, options.breakStyle);
+                        return generateTicks(tickInterval, false, start, end, filteredBreaks).ticks
                     },
                     getTickInterval() {
                         return this._tickInterval
@@ -72019,7 +72181,6 @@
                 var _index = __webpack_require__( /*! ../../common/core/events/utils/index */ 98834);
                 var _type = __webpack_require__( /*! ../../core/utils/type */ 11528);
                 var _common = __webpack_require__( /*! ../../core/utils/common */ 17781);
-                var _errors = _interopRequireDefault(__webpack_require__( /*! ../../core/errors */ 87129));
 
                 function _interopRequireDefault(e) {
                     return e && e.__esModule ? e : {
@@ -72058,17 +72219,11 @@
                     return data
                 }
 
-                function eventCanceled(_ref, target, clickTarget) {
+                function eventCanceled(_ref, target) {
                     let {
-                        event: event,
                         cancel: cancel
                     } = _ref;
-                    const deprecatedCancel = event.cancel;
-                    const eventCanceled = cancel || deprecatedCancel;
-                    if (deprecatedCancel) {
-                        _errors.default.log("W0003", `${clickTarget}Click handler argument`, "event.cancel", "22.1", "Use the 'cancel' field instead")
-                    }
-                    return eventCanceled || !target.getOptions()
+                    return cancel || !target.getOptions()
                 }
 
                 function correctHoverMode(target) {
@@ -72244,7 +72399,7 @@
                     _triggerLegendClick: function(eventArgs, elementClick) {
                         const eventTrigger = this._eventTrigger;
                         eventTrigger("legendClick", eventArgs, (function() {
-                            !eventCanceled(eventArgs, eventArgs.target, "legend") && eventTrigger(elementClick, eventArgs)
+                            !eventCanceled(eventArgs, eventArgs.target) && eventTrigger(elementClick, eventArgs)
                         }))
                     },
                     _hoverLegendItem: function(x, y) {
@@ -72451,7 +72606,7 @@
                             event: event
                         };
                         eventTrigger("pointClick", eventArgs, (function() {
-                            !eventCanceled(eventArgs, series, "point") && eventTrigger("seriesClick", {
+                            !eventCanceled(eventArgs, series) && eventTrigger("seriesClick", {
                                 target: series,
                                 event: event
                             })
@@ -72475,8 +72630,8 @@
                         }
                         return null
                     },
-                    _isPointerOut: function(canvas) {
-                        return !canvas && this._stuckSeries
+                    _isPointerOut: function(canvas, point) {
+                        return !canvas && this._stuckSeries && (null === point || void 0 === point ? void 0 : point.series) !== this._stuckSeries
                     },
                     _hideCrosshair: function() {
                         var _this$_crosshair;
@@ -80849,6 +81004,7 @@
             function(__unused_webpack_module, exports, __webpack_require__) {
                 exports.plugin = exports.Tooltip = void 0;
                 var _size = __webpack_require__( /*! ../../core/utils/size */ 57653);
+                var _style = __webpack_require__( /*! ../../core/utils/style */ 58515);
                 var _dom_adapter = _interopRequireDefault(__webpack_require__( /*! ../../core/dom_adapter */ 64960));
                 var _window = __webpack_require__( /*! ../../core/utils/window */ 3104);
                 var _dom = __webpack_require__( /*! ../../core/utils/dom */ 86858);
@@ -81084,7 +81240,8 @@
                         hideElement(that._wrapper);
                         const normalizedCSS = {};
                         for (const name in that._textFontStyles) {
-                            normalizedCSS[(0, _inflector.camelize)(name)] = that._textFontStyles[name]
+                            const normalizedName = (0, _inflector.camelize)(name);
+                            normalizedCSS[normalizedName] = (0, _style.normalizeStyleProp)(normalizedName, that._textFontStyles[name])
                         }
                         that._textGroupHtml.css(normalizedCSS);
                         that._text.css(that._textFontStyles);
@@ -83443,6 +83600,9 @@
                     _factory: (0, _object.clone)(_base_gauge.BaseGauge.prototype._factory),
                     _optionChangesOrder: ["VALUES", "NODES"],
                     _initialChanges: ["VALUES"],
+                    _getChangesRequireCoreUpdate: function() {
+                        return [...this.callBase(), "LEGEND"]
+                    },
                     _change_NODES() {
                         this._buildNodes()
                     },
@@ -83779,12 +83939,25 @@
                         default: e
                     }
                 }
+
+                function _extends() {
+                    return _extends = Object.assign ? Object.assign.bind() : function(n) {
+                        for (var e = 1; e < arguments.length; e++) {
+                            var t = arguments[e];
+                            for (var r in t) {
+                                ({}).hasOwnProperty.call(t, r) && (n[r] = t[r])
+                            }
+                        }
+                        return n
+                    }, _extends.apply(null, arguments)
+                }
                 const _Number = Number;
                 const _extend = _extend2.extend;
                 const _format = _format_helper.default.format;
                 const BaseGauge = exports.BaseGauge = _m_base_widget.default.inherit({
                     _rootClassPrefix: "dxg",
                     _themeSection: "gauge",
+                    _titleBBoxCache: null,
                     _createThemeManager: function() {
                         return new _theme_manager.default.ThemeManager(this._getThemeManagerOptions())
                     },
@@ -83865,18 +84038,40 @@
                         this._resizing = this._noAnimation = 2 === this._changes.count();
                         this.callBase.apply(this, arguments)
                     },
+                    _getChangesRequireCoreUpdate: function() {
+                        return ["DOMAIN", "MOSTLY_TOTAL", "EXPORT"]
+                    },
+                    _isTitleBBoxChanged: function() {
+                        var _this$_titleBBoxCache, _this$_titleBBoxCache2, _this$_titleBBoxCache3;
+                        const titleBBox = this._title.getLayoutOptions();
+                        const hasTitleHeightChanged = titleBBox.height !== (null === (_this$_titleBBoxCache = this._titleBBoxCache) || void 0 === _this$_titleBBoxCache ? void 0 : _this$_titleBBoxCache.height);
+                        const hasTitleYChanged = titleBBox.y !== (null === (_this$_titleBBoxCache2 = this._titleBBoxCache) || void 0 === _this$_titleBBoxCache2 ? void 0 : _this$_titleBBoxCache2.y);
+                        const hasVerticalAlignmentChanged = titleBBox.verticalAlignment !== (null === (_this$_titleBBoxCache3 = this._titleBBoxCache) || void 0 === _this$_titleBBoxCache3 ? void 0 : _this$_titleBBoxCache3.verticalAlignment);
+                        this._titleBBoxCache = null;
+                        return hasTitleHeightChanged || hasTitleYChanged || hasVerticalAlignmentChanged
+                    },
+                    _forceCoreUpdate: function() {
+                        const isTriggeredByTitleOnly = this._changes.has("TITLE") && !this._getChangesRequireCoreUpdate().some((change => this._changes.has(change)));
+                        if (isTriggeredByTitleOnly) {
+                            return this._isTitleBBoxChanged()
+                        }
+                        return true
+                    },
                     _applySize: function(rect) {
-                        this._innerRect = {
+                        const that = this;
+                        that._innerRect = {
                             left: rect[0],
                             top: rect[1],
                             right: rect[2],
                             bottom: rect[3]
                         };
-                        const layoutCache = this._layout._cache;
-                        this._cleanCore();
-                        this._renderCore();
-                        this._layout._cache = this._layout._cache || layoutCache;
-                        return [rect[0], this._innerRect.top, rect[2], this._innerRect.bottom]
+                        const layoutCache = that._layout._cache;
+                        if (that._forceCoreUpdate()) {
+                            that._cleanCore();
+                            that._renderCore()
+                        }
+                        that._layout._cache = that._layout._cache || layoutCache;
+                        return [rect[0], that._innerRect.top, rect[2], that._innerRect.bottom]
                     },
                     _initialChanges: ["DOMAIN"],
                     _themeDependentChanges: ["DOMAIN"],
@@ -83979,6 +84174,13 @@
                 BaseGauge.prototype._setTooltipOptions = function() {
                     _setTooltipOptions.apply(this, arguments);
                     this._tracker && this._tracker.setTooltipState(this._tooltip.isEnabled())
+                };
+                const {
+                    _change_TITLE: _change_TITLE
+                } = BaseGauge.prototype;
+                BaseGauge.prototype._change_TITLE = function() {
+                    this._titleBBoxCache = _extends({}, this._title.getLayoutOptions());
+                    _change_TITLE.apply(this, arguments)
                 }
             },
         93473:
@@ -87995,19 +88197,6 @@
                     _themeDependentChanges: ["MOSTLY_TOTAL"],
                     _themeSection: "rangeSelector",
                     _fontFields: ["scale.label.font", "sliderMarker.font"],
-                    _setDeprecatedOptions() {
-                        this.callBase();
-                        (0, _extend.extend)(this._deprecatedOptions, {
-                            "behavior.callValueChanged": {
-                                since: "23.1",
-                                message: 'Use the "behavior.valueChangeMode" property instead'
-                            },
-                            "scale.aggregateByCategory": {
-                                since: "23.1",
-                                message: "Use the aggregation.enabled property"
-                            }
-                        })
-                    },
                     _initCore: function() {
                         const that = this;
                         const renderer = that._renderer;
@@ -89414,7 +89603,7 @@
                         this._isCompactMode = isCompactMode;
                         this._shutterOffset = sliderHandleOptions.width / 2;
                         this._updateSelectedView(shutterOptions, selectedRangeColor);
-                        this._isOnMoving = "onhandlemove" === (0, _utils.normalizeEnum)(behavior.valueChangeMode) || "onmoving" === (0, _utils.normalizeEnum)(behavior.callValueChanged);
+                        this._isOnMoving = "onhandlemove" === (0, _utils.normalizeEnum)(behavior.valueChangeMode);
                         this._updateSelectedRange();
                         this._applyTotalPosition(false)
                     },
@@ -90634,7 +90823,7 @@
                     this.color = params.color;
                     this.options = params.options;
                     this.rect = params.rect;
-                    this.label = this.title = params.rect._name;
+                    this.label = params.rect._name;
                     this.coords = {
                         x: params.rect.x + params.rect.width / 2 + widgetOffset.left,
                         y: params.rect.y + params.rect.height / 2 + widgetOffset.top
@@ -92044,8 +92233,9 @@
                     _getData() {
                         let data = this._data || [];
                         if (this.useAggregation()) {
-                            const argumentRange = "discrete" !== this.argumentAxisType ? this.getArgumentRange() : {};
-                            const aggregationInfo = this.getArgumentAxis().getAggregationInfo(this._useAllAggregatedPoints, argumentRange);
+                            const aggregateByCategory = "discrete" === this.argumentAxisType;
+                            const argumentRange = aggregateByCategory ? {} : this.getArgumentRange();
+                            const aggregationInfo = aggregateByCategory ? {} : this.getArgumentAxis().getAggregationInfo(this._useAllAggregatedPoints, argumentRange);
                             data = this._resample(aggregationInfo, data)
                         }
                         return data
@@ -92461,34 +92651,31 @@
                             selectionStyle: {}
                         })
                     },
-                    _getAggregationMethod: function(isDiscrete, aggregateByCategory) {
+                    _getAggregationMethod: function(isValueAxisDiscrete) {
                         const options = this.getOptions().aggregation;
                         const method = (0, _utils.normalizeEnum)(options.method);
                         const customAggregator = "custom" === method && options.calculate;
-                        let aggregator;
-                        if (isDiscrete && !aggregateByCategory) {
-                            aggregator = _ref => {
+                        if (customAggregator) {
+                            return customAggregator
+                        }
+                        if (isValueAxisDiscrete) {
+                            return _ref => {
                                 let {
                                     data: data
                                 } = _ref;
                                 return data[0]
                             }
-                        } else {
-                            aggregator = this._aggregators[method] || this._aggregators[this._defaultAggregator]
                         }
-                        return customAggregator || aggregator
+                        return this._aggregators[method] || this._aggregators[this._defaultAggregator]
                     },
                     _resample(_ref2, data) {
                         let {
                             interval: interval,
-                            ticks: ticks,
-                            aggregateByCategory: aggregateByCategory
+                            ticks: ticks
                         } = _ref2;
                         const that = this;
-                        const isDiscrete = "discrete" === that.argumentAxisType || "discrete" === that.valueAxisType;
-                        let dataIndex = 0;
-                        const dataSelector = this._getPointDataSelector();
                         const options = that.getOptions();
+                        const dataSelector = this._getPointDataSelector();
                         const addAggregatedData = (target, data, aggregationInfo) => {
                             if (!data) {
                                 return
@@ -92506,44 +92693,45 @@
                                 processData(data)
                             }
                         };
-                        const aggregationMethod = this._getAggregationMethod(isDiscrete, aggregateByCategory);
-                        if (isDiscrete) {
-                            if (aggregateByCategory) {
-                                const categories = this.getArgumentAxis().getTranslator().getBusinessRange().categories;
-                                const groups = categories.reduce(((g, category) => {
-                                    g[category.valueOf()] = [];
-                                    return g
-                                }), {});
-                                data.forEach((dataItem => {
-                                    groups[dataItem.argument.valueOf()].push(dataItem)
-                                }));
-                                return categories.reduce(((result, c) => {
-                                    addAggregatedData(result, aggregationMethod({
-                                        aggregationInterval: null,
-                                        intervalStart: c,
-                                        intervalEnd: c,
-                                        data: groups[c.valueOf()].map(getData)
-                                    }, that));
-                                    return result
-                                }), [])
-                            } else {
-                                return data.reduce(((result, dataItem, index, data) => {
-                                    result[1].push(dataItem);
-                                    if (index === data.length - 1 || (index + 1) % interval === 0) {
-                                        const dataInInterval = result[1];
-                                        const aggregationInfo = {
-                                            aggregationInterval: interval,
-                                            data: dataInInterval.map(getData)
-                                        };
-                                        addAggregatedData(result[0], aggregationMethod(aggregationInfo, that));
-                                        result[1] = []
-                                    }
-                                    return result
-                                }), [
-                                    [],
-                                    []
-                                ])[0]
-                            }
+                        const isValueAxisDiscrete = "discrete" === that.valueAxisType;
+                        const aggregateByCategory = "discrete" === that.argumentAxisType;
+                        const aggregationMethod = this._getAggregationMethod(isValueAxisDiscrete);
+                        if (aggregateByCategory) {
+                            const categories = this.getArgumentAxis().getTranslator().getBusinessRange().categories;
+                            const groups = categories.reduce(((g, category) => {
+                                g[category.valueOf()] = [];
+                                return g
+                            }), {});
+                            data.forEach((dataItem => {
+                                groups[dataItem.argument.valueOf()].push(dataItem)
+                            }));
+                            return categories.reduce(((result, c) => {
+                                addAggregatedData(result, aggregationMethod({
+                                    aggregationInterval: null,
+                                    intervalStart: c,
+                                    intervalEnd: c,
+                                    data: groups[c.valueOf()].map(getData)
+                                }, that));
+                                return result
+                            }), [])
+                        }
+                        if (isValueAxisDiscrete) {
+                            return data.reduce(((result, dataItem, index, data) => {
+                                result[1].push(dataItem);
+                                if (index === data.length - 1 || (index + 1) % interval === 0) {
+                                    const dataInInterval = result[1];
+                                    const aggregationInfo = {
+                                        aggregationInterval: interval,
+                                        data: dataInInterval.map(getData)
+                                    };
+                                    addAggregatedData(result[0], aggregationMethod(aggregationInfo, that));
+                                    result[1] = []
+                                }
+                                return result
+                            }), [
+                                [],
+                                []
+                            ])[0]
                         }
                         const aggregatedData = [];
                         if (1 === ticks.length) {
@@ -92555,6 +92743,7 @@
                             };
                             addAggregatedData(aggregatedData, aggregationMethod(aggregationInfo, that), aggregationInfo)
                         } else {
+                            let dataIndex = 0;
                             for (let i = 1; i < ticks.length; i++) {
                                 const intervalEnd = ticks[i];
                                 const intervalStart = ticks[i - 1];
@@ -107415,10 +107604,6 @@
                             return that
                         }
                     },
-                    convertCoordinates: function(coordinates) {
-                        coordinates = coordinates && coordinates.length ? coordinates : [arguments[0], arguments[1]];
-                        return this.convertToGeo(coordinates[0], coordinates[1])
-                    },
                     convertToGeo: function(x, y) {
                         return this._projection.fromScreenPoint([x, y])
                     },
@@ -107486,7 +107671,7 @@
         var module = __webpack_module_cache__[moduleId] = {
             exports: {}
         };
-        __webpack_modules__[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+        __webpack_modules__[moduleId](module, module.exports, __webpack_require__);
         return module.exports
     }!void(__webpack_require__.d = function(exports, definition) {
         for (var key in definition) {

@@ -33,7 +33,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         public async Task<IActionResult> GridAdd(int? key, string values)
         {
             var submitModel = values.DeserializeJsonTo<ProductsModel.ViewModel.GridModel.GridItem>() ?? new ProductsModel.ViewModel.GridModel.GridItem();
-            var viewModel = await Model.IUD(databaseAction: Enums.DatabaseActions.INSERT, productID: key, submitModel: submitModel);
+            var viewModel = await Model.InsertOrUpdate(databaseAction: Enums.DatabaseActions.INSERT, productID: key, submitModel: submitModel);
             return DevExtremeGridActionResult(viewModel);            
         }
 
@@ -42,7 +42,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         public async Task<IActionResult> GridUpdate(int? key, string values)
         {
             var submitModel = values.DeserializeJsonTo<ProductsModel.ViewModel.GridModel.GridItem>() ?? new ProductsModel.ViewModel.GridModel.GridItem();
-            var viewModel = await Model.IUD(databaseAction: Enums.DatabaseActions.UPDATE, productID: key, submitModel: submitModel);
+            var viewModel = await Model.InsertOrUpdate(databaseAction: Enums.DatabaseActions.UPDATE, productID: key, submitModel: submitModel);
             return DevExtremeGridActionResult(viewModel);
         }
 
@@ -50,7 +50,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         [Route("grid/delete", Name = ControllerActionRouteNames.Admin.ProductsController.GridDelete)]
         public async Task<IActionResult> GridDelete(int? key)
         {
-            var viewModel = await Model.IUD(databaseAction: Enums.DatabaseActions.DELETE, productID: key, submitModel: new ProductsModel.ViewModel.GridModel.GridItem());
+            var viewModel = await Model.Delete(productID: key);
             return DevExtremeGridActionResult(viewModel);
         }
 

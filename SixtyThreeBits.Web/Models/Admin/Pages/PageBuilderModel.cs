@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SixtyThreeBits.Core.Infrastructure.Repositories.DTO;
 using SixtyThreeBits.Core.Libraries;
+using SixtyThreeBits.Core.Libraries.FileStorages.Enums;
 using SixtyThreeBits.Core.Properties;
 using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries;
@@ -22,15 +23,15 @@ namespace SixtyThreeBits.Web.Models.Admin
             }
 
             var viewModel = new ViewModel();
-            viewModel.PageTitle = Utilities.GetValuesByLanguage(languageCultureCode, DBItem.PageTitle, DBItem.PageTitleEng);
-            viewModel.PageText = Utilities.GetValuesByLanguage(languageCultureCode, DBItem.PageText, DBItem.PageTextEng);
-            viewModel.PageData = Utilities.GetValuesByLanguage(languageCultureCode, DBItem.PageData, DBItem.PageDataEng) ?? "[]";
-            viewModel.IsPublished = DBItem.PageIsPublished;
+            viewModel.PageTitle = Utilities.GetValuesByLanguage(languageCultureCode, Page.PageTitle, Page.PageTitleEng);
+            viewModel.PageText = Utilities.GetValuesByLanguage(languageCultureCode, Page.PageText, Page.PageTextEng);
+            viewModel.PageData = Utilities.GetValuesByLanguage(languageCultureCode, Page.PageData, Page.PageDataEng) ?? "[]";
+            viewModel.IsPublished = Page.PageIsPublished;
             viewModel.Language = languageCultureCode;
-            viewModel.UrlBack = Url.RouteUrl(ControllerActionRouteNames.Admin.PagePropertiesController.Properties, new { pageID = DBItem.PageID });
-            viewModel.UrlPreview = GetRouteByName(ControllerActionRouteNames.Website.PagesController.Page, new { pageSlug = DBItem.PageSlug });
+            viewModel.UrlBack = Url.RouteUrl(ControllerActionRouteNames.Admin.PagePropertiesController.Properties, new { pageID = Page.PageID });
+            viewModel.UrlPreview = GetRouteByName(ControllerActionRouteNames.Website.PagesController.Page, new { pageSlug = Page.PageSlug });
             viewModel.UrlSave = UrlCurrentPageWithDomain;
-            viewModel.UrlFileManager = Url.RouteUrl(ControllerActionRouteNames.Admin.FileManagerController.FileManager, new { moduleName = Enums.FileManagerModules.Pages });
+            viewModel.UrlFileManager = UrlFactory.CreateFileManagerAdminUrl(fileManagerModule: FileManagerModules.Pages);
 
             viewModel.SelectedLanguage = Utilities.GetValuesByLanguage(languageCultureCode, Enums.Languages.GEORGIAN, Enums.Languages.ENGLISH);
             viewModel.LanguageOptions =
@@ -61,7 +62,7 @@ namespace SixtyThreeBits.Web.Models.Admin
                     {
                         await repository.PagesIUD(
                             databaseAction: Enums.DatabaseActions.UPDATE,
-                            pageID: DBItem.PageID,
+                            pageID: Page.PageID,
                             page: new PageIudDTO
                             {
                                 PageText = submitModel.PageText ?? Constants.NullValueFor.String,
@@ -76,7 +77,7 @@ namespace SixtyThreeBits.Web.Models.Admin
                     {
                         await repository.PagesIUD(
                             databaseAction: Enums.DatabaseActions.UPDATE,
-                            pageID: DBItem.PageID,
+                            pageID: Page.PageID,
                             page: new PageIudDTO
                             {
                                 PageTextEng = submitModel.PageText ?? Constants.NullValueFor.String,
@@ -112,10 +113,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             public string SelectedLanguage { get; set; }
             public List<KeyValueSelectedTuple<string, string>> LanguageOptions { get; set; }
             public bool HasLanguageOptions => LanguageOptions?.Count > 0;
-
-            public readonly string FileManagerAllowedExtensions = WebConstants.QueryStringKeys.FileManagerAllowedExtensions;
-            public readonly string FileManagerAllowChooseMultiple = WebConstants.QueryStringKeys.FileManagerAllowChooseMultiple;
-            public readonly string FileManagerOnSelectedFilesChooseClientCallback = WebConstants.QueryStringKeys.FileManagerOnSelectedFilesChooseClientCallback;
+            
             public readonly string TextError = Resources.TextError;
             #endregion
         }

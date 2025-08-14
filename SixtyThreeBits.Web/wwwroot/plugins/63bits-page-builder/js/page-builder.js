@@ -16,13 +16,7 @@ var PageBuilderModel = {
     language: null,
 
     currentViewSelector: '.js-t63-editor-page',
-
-    queryStringKeys: {
-        fileManagerAllowedExtensions: null,
-        fileManagerAllowChooseMultiple: null,
-        fileManagerOnSelectedFilesChooseClientCallback: null,
-    },
-
+    
     guid: {
         generateRandomString: function () {
             return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
@@ -7991,111 +7985,146 @@ var PageBuilderModel = {
         },
         fileManager: {
             url: null,
+            queryStringKeys: {
+                allowedExtensions: 'ext',
+                allowChooseMultiple: 'multichoice',
+                callback: 'callback'
+            },
             getSingleImageUrl: function () {
                 if (PageBuilderModel.plugins.fileManager.url) {
 
-                    const QueryString =
-                        (PageBuilderModel.queryStringKeys.fileManagerAllowedExtensions + '=.jpg,.jpeg,.png,.gif&')
-                        +
-                        (PageBuilderModel.queryStringKeys.fileManagerAllowChooseMultiple + '=false&')
-                        +
-                        (PageBuilderModel.queryStringKeys.fileManagerOnSelectedFilesChooseClientCallback + '=PageBuilderModel.plugins.fileManager.onSelectedFilesChooseClientCallback');
+                    const queryStringArray = [];
+                    queryStringArray.push(PageBuilderModel.plugins.fileManager.queryStringKeys.allowedExtensions + '=' + '.jpg,.jpeg,.png,.gif');
+                    queryStringArray.push(PageBuilderModel.plugins.fileManager.queryStringKeys.allowChooseMultiple + '=' + 'false');
+                    queryStringArray.push(PageBuilderModel.plugins.fileManager.queryStringKeys.callback + '=' + 'PageBuilderModel.plugins.fileManager.onSelectedFilesChooseClientCallback');
 
-                    return PageBuilderModel.plugins.fileManager.url + '?' + QueryString;
+                    const queryString = queryStringArray.join('&')
+                    const separator = PageBuilderModel.plugins.fileManager.url.indexOf('?') == -1 ? '?' : '&';
+                    const url = PageBuilderModel.plugins.fileManager.url + separator + queryString;
+
+                    return url;
                 }
             },
             getSingleFileUrl: function () {
                 if (PageBuilderModel.plugins.fileManager.url) {
-                    const QueryString =
-                        (PageBuilderModel.queryStringKeys.fileManagerAllowChooseMultiple + '=false&')
-                        +
-                        (PageBuilderModel.queryStringKeys.fileManagerOnSelectedFilesChooseClientCallback + '=PageBuilderModel.plugins.fileManager.onSelectedFilesChooseClientCallback');
 
-                    return PageBuilderModel.plugins.fileManager.url + '?' + QueryString;
+                    const queryStringArray = [];
+                    queryStringArray.push(PageBuilderModel.plugins.fileManager.queryStringKeys.allowChooseMultiple + '=' + 'false');
+                    queryStringArray.push(PageBuilderModel.plugins.fileManager.queryStringKeys.callback + '=' + 'PageBuilderModel.plugins.fileManager.onSelectedFilesChooseClientCallback');
+
+                    const queryString = queryStringArray.join('&')
+                    const separator = PageBuilderModel.plugins.fileManager.url.indexOf('?') == -1 ? '?' : '&';
+                    const url = PageBuilderModel.plugins.fileManager.url + separator + queryString;
+
+                    return url;
                 }
             },
             getVideoUrl: function (isCustomPoster) {
                 if (PageBuilderModel.plugins.fileManager.url) {
-                    const extensions = isCustomPoster ? '.jpg,.jpeg,.png,.gif&' : '.mp4&';
-                    const QueryString =
-                        (PageBuilderModel.queryStringKeys.fileManagerAllowedExtensions + '=' + extensions)
-                        +
-                        (PageBuilderModel.queryStringKeys.fileManagerAllowChooseMultiple + '=false&')
-                        +
-                        (PageBuilderModel.queryStringKeys.fileManagerOnSelectedFilesChooseClientCallback + '=PageBuilderModel.editors.video.fileManager.onSelectedFilesChooseClientCallback');
-                    
-                    return PageBuilderModel.plugins.fileManager.url + '?' + QueryString;
+
+                    const extensions = isCustomPoster ? '.jpg,.jpeg,.png,.gif' : '.mp4';
+
+                    const queryStringArray = [];
+                    queryStringArray.push(PageBuilderModel.plugins.fileManager.queryStringKeys.allowedExtensions + '=' + extensions);
+                    queryStringArray.push(PageBuilderModel.plugins.fileManager.queryStringKeys.allowChooseMultiple + '=' + 'false');
+                    queryStringArray.push(PageBuilderModel.plugins.fileManager.queryStringKeys.callback + '=' + 'PageBuilderModel.editors.video.fileManager.onSelectedFilesChooseClientCallback');
+
+                    const queryString = queryStringArray.join('&')
+                    const separator = PageBuilderModel.plugins.fileManager.url.indexOf('?') == -1 ? '?' : '&';
+                    const url = PageBuilderModel.plugins.fileManager.url + separator + queryString;
+
+                    return url;
                 }
             },
             getJwPlayerUrl: function (isCustomPoster) {
                 if (PageBuilderModel.plugins.fileManager.url) {
-                    const extensions = isCustomPoster ? '.jpg,.jpeg,.png,.gif&' : '.mp4&';
-                    const QueryString =
-                        (PageBuilderModel.queryStringKeys.fileManagerAllowedExtensions + '=' + extensions)
-                        +
-                        (PageBuilderModel.queryStringKeys.fileManagerAllowChooseMultiple + '=false&')
-                        +
-                        (PageBuilderModel.queryStringKeys.fileManagerOnSelectedFilesChooseClientCallback + '=PageBuilderModel.editors.jwPlayer.fileManager.onSelectedFilesChooseClientCallback');
 
-                    return PageBuilderModel.plugins.fileManager.url + '?' + QueryString;
+                    const extensions = isCustomPoster ? '.jpg,.jpeg,.png,.gif' : '.mp4';
+
+                    const queryStringArray = [];
+                    queryStringArray.push(PageBuilderModel.plugins.fileManager.queryStringKeys.allowedExtensions + '=' + extensions);
+                    queryStringArray.push(PageBuilderModel.plugins.fileManager.queryStringKeys.allowChooseMultiple + '=' + 'false');
+                    queryStringArray.push(PageBuilderModel.plugins.fileManager.queryStringKeys.callback + '=' + 'PageBuilderModel.editors.jwPlayer.fileManager.onSelectedFilesChooseClientCallback');
+
+                    const queryString = queryStringArray.join('&')
+                    const separator = PageBuilderModel.plugins.fileManager.url.indexOf('?') == -1 ? '?' : '&';
+                    const url = PageBuilderModel.plugins.fileManager.url + separator + queryString;
+
+                    return url;                   
                 }
             },
             getMultipleFilesUrl: function () {
                 if (PageBuilderModel.plugins.fileManager.url) {
-                    const QueryString =
-                        (PageBuilderModel.queryStringKeys.fileManagerAllowChooseMultiple + '=true&')
-                        +
-                        (PageBuilderModel.queryStringKeys.fileManagerOnSelectedFilesChooseClientCallback + '=PageBuilderModel.plugins.fileManager.onSelectedFilesChooseClientCallback')
 
-                    return PageBuilderModel.plugins.fileManager.url + '?' + QueryString;
+                    const queryStringArray = [];
+                    queryStringArray.push(PageBuilderModel.plugins.fileManager.queryStringKeys.allowChooseMultiple + '=' + 'true');
+                    queryStringArray.push(PageBuilderModel.plugins.fileManager.queryStringKeys.callback + '=' + 'PageBuilderModel.plugins.fileManager.onSelectedFilesChooseClientCallback');
+
+                    const queryString = queryStringArray.join('&')
+                    const separator = PageBuilderModel.plugins.fileManager.url.indexOf('?') == -1 ? '?' : '&';
+                    const url = PageBuilderModel.plugins.fileManager.url + separator + queryString;
+
+                    return url;                    
                 }
             },
             getCssFilesUrl: function () {
                 if (PageBuilderModel.plugins.fileManager.url) {
-                    const QueryString =
-                        (PageBuilderModel.queryStringKeys.fileManagerAllowedExtensions + '=.css&')
-                        +
-                        (PageBuilderModel.queryStringKeys.fileManagerAllowChooseMultiple + '=true&')
-                        +
-                        (PageBuilderModel.queryStringKeys.fileManagerOnSelectedFilesChooseClientCallback + '=PageBuilderModel.pageScripts.fileManager.onSelectedFilesChooseClientCallback');
 
-                    return PageBuilderModel.plugins.fileManager.url + '?' + QueryString;
+                    const queryStringArray = [];
+                    queryStringArray.push(PageBuilderModel.plugins.fileManager.queryStringKeys.allowedExtensions + '=' + '.css');
+                    queryStringArray.push(PageBuilderModel.plugins.fileManager.queryStringKeys.allowChooseMultiple + '=' + 'true');
+                    queryStringArray.push(PageBuilderModel.plugins.fileManager.queryStringKeys.callback + '=' + 'PageBuilderModel.pageScripts.fileManager.onSelectedFilesChooseClientCallback');
+
+                    const queryString = queryStringArray.join('&')
+                    const separator = PageBuilderModel.plugins.fileManager.url.indexOf('?') == -1 ? '?' : '&';
+                    const url = PageBuilderModel.plugins.fileManager.url + separator + queryString;
+
+                    return url;                 
                 }
             },
             getJsFilesUrl: function () {
                 if (PageBuilderModel.plugins.fileManager.url) {
-                    const QueryString =
-                        (PageBuilderModel.queryStringKeys.fileManagerAllowedExtensions + '=.js&')
-                        +
-                        (PageBuilderModel.queryStringKeys.fileManagerAllowChooseMultiple + '=true&')
-                        +
-                        (PageBuilderModel.queryStringKeys.fileManagerOnSelectedFilesChooseClientCallback + '=PageBuilderModel.pageScripts.fileManager.onSelectedFilesChooseClientCallback');
 
-                    return PageBuilderModel.plugins.fileManager.url + '?' + QueryString;
+                    const queryStringArray = [];
+                    queryStringArray.push(PageBuilderModel.plugins.fileManager.queryStringKeys.allowedExtensions + '=' + '.js');
+                    queryStringArray.push(PageBuilderModel.plugins.fileManager.queryStringKeys.allowChooseMultiple + '=' + 'true');
+                    queryStringArray.push(PageBuilderModel.plugins.fileManager.queryStringKeys.callback + '=' + 'PageBuilderModel.pageScripts.fileManager.onSelectedFilesChooseClientCallback');
+
+                    const queryString = queryStringArray.join('&')
+                    const separator = PageBuilderModel.plugins.fileManager.url.indexOf('?') == -1 ? '?' : '&';
+                    const url = PageBuilderModel.plugins.fileManager.url + separator + queryString;
+
+                    return url;                 
                 }
             },
             getIconUrl: function () {
                 if (PageBuilderModel.plugins.fileManager.url) {
-                    const QueryString =
-                        (PageBuilderModel.queryStringKeys.fileManagerAllowedExtensions + '=.jpg,.jpeg,.png,.svg&')
-                        +
-                        (PageBuilderModel.queryStringKeys.fileManagerAllowChooseMultiple + '=false&')
-                        +
-                        (PageBuilderModel.queryStringKeys.fileManagerOnSelectedFilesChooseClientCallback + '=PageBuilderModel.editors.icon.fileManager.onSelectedFilesChooseClientCallback');
 
-                    return PageBuilderModel.plugins.fileManager.url + '?' + QueryString;
+                    const queryStringArray = [];
+                    queryStringArray.push(PageBuilderModel.plugins.fileManager.queryStringKeys.allowedExtensions + '=' + '.jpg,.jpeg,.png,.svg');
+                    queryStringArray.push(PageBuilderModel.plugins.fileManager.queryStringKeys.allowChooseMultiple + '=' + 'false');
+                    queryStringArray.push(PageBuilderModel.plugins.fileManager.queryStringKeys.callback + '=' + 'PageBuilderModel.editors.icon.fileManager.onSelectedFilesChooseClientCallback');
+
+                    const queryString = queryStringArray.join('&')
+                    const separator = PageBuilderModel.plugins.fileManager.url.indexOf('?') == -1 ? '?' : '&';
+                    const url = PageBuilderModel.plugins.fileManager.url + separator + queryString;
+
+                    return url;                                     
                 }
             },
             getMultimediaFilesUrl: function () {
                 if (PageBuilderModel.plugins.fileManager.url) {
-                    const QueryString =
-                        (PageBuilderModel.queryStringKeys.fileManagerAllowedExtensions + '=.jpg,.jpeg,.png,.gif,.mp4&')
-                        +
-                        (PageBuilderModel.queryStringKeys.fileManagerAllowChooseMultiple + '=false&')
-                        +
-                        (PageBuilderModel.queryStringKeys.fileManagerOnSelectedFilesChooseClientCallback + '=PageBuilderModel.editors.multimedia.fileManager.onSelectedFilesChooseClientCallback');
 
-                    return PageBuilderModel.plugins.fileManager.url + '?' + QueryString;
+                    const queryStringArray = [];
+                    queryStringArray.push(PageBuilderModel.plugins.fileManager.queryStringKeys.allowedExtensions + '=' + '.jpg,.jpeg,.png,.gif,.mp4');
+                    queryStringArray.push(PageBuilderModel.plugins.fileManager.queryStringKeys.allowChooseMultiple + '=' + 'false');
+                    queryStringArray.push(PageBuilderModel.plugins.fileManager.queryStringKeys.callback + '=' + 'PageBuilderModel.editors.multimedia.fileManager.onSelectedFilesChooseClientCallback');
+
+                    const queryString = queryStringArray.join('&')
+                    const separator = PageBuilderModel.plugins.fileManager.url.indexOf('?') == -1 ? '?' : '&';
+                    const url = PageBuilderModel.plugins.fileManager.url + separator + queryString;
+
+                    return url;
                 }
             },
             file: {
@@ -8111,7 +8140,9 @@ var PageBuilderModel = {
                 fancyBox.init({
                     slideClass: 'fileManager-iframe',
                     src: fileManagerUrl,
-                    smallBtn: true
+                    smallBtn: true,
+                    width: window.width,
+                    height: window.height,
                 }).showIframePopup();
             },
             hide: function () {
@@ -8137,7 +8168,17 @@ var PageBuilderModel = {
             url: null,
             getFileUrl: function () {
                 if (PageBuilderModel.plugins.fileManager.url) {
-                    return PageBuilderModel.plugins.fileManager.url + '&AllowedExtensions=.pdf&AllowSelectMultiple=false&OnSelectedFilesChooseClientCallback=PageBuilderModel.editors.pdfViewerIframe.fileManager.onSelectedFilesChooseClientCallback';
+
+                    const queryStringArray = [];
+                    queryStringArray.push(PageBuilderModel.plugins.fileManager.queryStringKeys.allowedExtensions + '=' + '..pdf');
+                    queryStringArray.push(PageBuilderModel.plugins.fileManager.queryStringKeys.allowChooseMultiple + '=' + 'false');
+                    queryStringArray.push(PageBuilderModel.plugins.fileManager.queryStringKeys.callback + '=' + 'PageBuilderModel.editors.pdfViewerIframe.fileManager.onSelectedFilesChooseClientCallback');
+
+                    const queryString = queryStringArray.join('&')
+                    const separator = PageBuilderModel.plugins.fileManager.url.indexOf('?') == -1 ? '?' : '&';
+                    const url = PageBuilderModel.plugins.fileManager.url + separator + queryString;
+
+                    return url;                    
                 }
             },
         },

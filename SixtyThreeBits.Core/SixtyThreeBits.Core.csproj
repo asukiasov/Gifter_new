@@ -18,7 +18,7 @@
 
   <ItemGroup>
     <PackageReference Include="63BITS.Libraries.DotNetCore" Version="1.0.8" />
-    <PackageReference Include="AWSSDK.S3" Version="4.0.6.4" />
+    <PackageReference Include="AWSSDK.S3" Version="4.0.6.5" />
     <PackageReference Include="Azure.Storage.Blobs" Version="12.25.0" />
     <PackageReference Include="EPPlus" Version="8.0.8" />
     <PackageReference Include="ExcelDataReader" Version="3.7.0" />

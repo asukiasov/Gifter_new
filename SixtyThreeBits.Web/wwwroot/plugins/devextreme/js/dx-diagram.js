@@ -1,7 +1,7 @@
 /*!
  * DevExpress Diagram (dx-diagram)
- * Version: 2.2.16
- * Build date: Fri Apr 04 2025
+ * Version: 2.2.18
+ * Build date: Wed Jun 18 2025
  *
  * Copyright (c) 2012 - 2025 Developer Express Inc. ALL RIGHTS RESERVED
  * Read about DevExpress licensing here: https://www.devexpress.com/Support/EULAs
@@ -11720,6 +11720,7 @@ var EventManager = (function () {
     EventManager.prototype.initialize = function () {
         this.visualizersManager.initialize(this.control.model);
         this.mouseHandler.initialize(this.control.model);
+        this.textInputHandler.reset();
     };
     EventManager.prototype.beginUpdate = function (lockUpdateCanvas) {
         this.contextMenuHandler.beginUpdate();
@@ -14816,7 +14817,10 @@ var TextInputHandler = (function () {
         if (this.isTextInputActive())
             this.applyTextInput(evt.inputText);
     };
-    TextInputHandler.prototype.onFocus = function (evt) {
+    TextInputHandler.prototype.onFocus = function (_) {
+    };
+    TextInputHandler.prototype.reset = function () {
+        delete this.textInputItem;
     };
     TextInputHandler.prototype.hasCtrlModifier = function (key) {
         return (key & key_1.ModifierKey.Ctrl) > 0;
@@ -35699,6 +35703,9 @@ var InputManager = (function () {
         else
             Utils_2.HtmlFocusUtils.focusWithPreventScroll(this.inputElement);
     };
+    InputManager.prototype.clear = function () {
+        this.setInputElementFocusHandlerMode(false);
+    };
     InputManager.prototype.setClipboardData = function (data) {
         this.clipboardInputElement.value = data;
         Utils_2.HtmlFocusUtils.focusWithPreventScroll(this.clipboardInputElement);
@@ -37526,6 +37533,7 @@ var RenderManager = (function () {
     RenderManager.prototype.clear = function () {
         this.items.clear();
         this.selection.clear();
+        this.input.clear();
     };
     RenderManager.prototype.attachPointerEvents = function (svgElement) {
         dom_1.DomUtils.addClassName(svgElement, TOUCH_ACTION_CSSCLASS);
@@ -38359,7 +38367,7 @@ var CanvasItemsManager_1 = __webpack_require__(8693);
 var TOOLBOX_CSSCLASS = "dxdi-toolbox";
 var DRAG_CAPTURED_CSSCLASS = "dxdi-tb-drag-captured";
 var START_DRAG_CSSCLASS = "dxdi-tb-start-drag-flag";
-var TOUCH_DRAGTIMEOUT_MS = 800;
+var TOUCH_DRAGTIMEOUT_MS = 300;
 var Toolbox = (function () {
     function Toolbox(parent, readOnly, allowDragging, shapeDescriptionManager, shapeTypes, getAllowedShapeTypes) {
         this.readOnly = readOnly;
@@ -38384,7 +38392,9 @@ var Toolbox = (function () {
     };
     Toolbox.prototype.createMainElement = function (parent) {
         var element = document.createElement("div");
-        element.setAttribute("class", TOOLBOX_CSSCLASS);
+        element.classList.add(TOOLBOX_CSSCLASS);
+        if (browser_1.Browser.AndroidMobilePlatform)
+            element.classList.add("dxdi-nodrag");
         element.draggable = true;
         if (this.emulateDragEvents)
             element.tabIndex = 0;

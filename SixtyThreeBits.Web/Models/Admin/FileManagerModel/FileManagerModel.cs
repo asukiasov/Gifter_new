@@ -2,9 +2,10 @@
 using DevExtreme.AspNet.Mvc.Builders;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Routing;
 using Newtonsoft.Json;
 using SixtyThreeBits.Core.Libraries;
-using SixtyThreeBits.Core.Libraries.FileStorages;
+using SixtyThreeBits.Core.Libraries.FileStorages.Enums;
 using SixtyThreeBits.Libraries;
 using SixtyThreeBits.Libraries.Extensions;
 using SixtyThreeBits.Web.Domain.Utilities;
@@ -21,36 +22,40 @@ namespace SixtyThreeBits.Web.Models.Admin
     public class FileManagerModel : ModelBase
     {
         #region Methods
-        public ViewModel GetViewModel(string moduleName)
+        public ViewModel GetViewModel()
         {
             var viewModel = new ViewModel();
             viewModel.PluginClient = new PluginsClientViewModel();
 
+            Enum.TryParse(Request.Query[WebConstants.QueryStringKeys.FileManagerModule].ToString(), out FileManagerModules fileManagerModule);
             var allowedExtensions = Request.Query[WebConstants.QueryStringKeys.FileManagerAllowedExtensions].ToString();
             var allowChooseMultiple = Request.Query[WebConstants.QueryStringKeys.FileManagerAllowChooseMultiple].ToString().ToLower().ToBooleanValue();
             var onSelectedFilesChooseClientCallback = Request.Query[WebConstants.QueryStringKeys.FileManagerOnSelectedFilesChooseClientCallback].ToString();
 
-            viewModel.UrlGetFiles = Url.RouteUrl(ControllerActionRouteNames.Admin.FileManagerController.Files, new { moduleName });
-            viewModel.UrlUpload = Url.RouteUrl(ControllerActionRouteNames.Admin.FileManagerController.Upload, new { moduleName });
-            viewModel.UrlDelete = Url.RouteUrl(ControllerActionRouteNames.Admin.FileManagerController.Delete, new { moduleName });
+            viewModel.UrlGetFiles = Url.RouteUrl(ControllerActionRouteNames.Admin.FileManagerController.Files, new RouteValueDictionary { { WebConstants.QueryStringKeys.FileManagerModule, fileManagerModule } });
+            viewModel.UrlUpload = Url.RouteUrl(ControllerActionRouteNames.Admin.FileManagerController.Upload, new RouteValueDictionary { { WebConstants.QueryStringKeys.FileManagerModule, fileManagerModule } });
+            viewModel.UrlDelete = Url.RouteUrl(ControllerActionRouteNames.Admin.FileManagerController.Delete, new RouteValueDictionary { { WebConstants.QueryStringKeys.FileManagerModule, fileManagerModule } });
 
             viewModel.OnSelectedFilesChooseClientCallback = onSelectedFilesChooseClientCallback;
 
-            viewModel.FileManager = new ViewModel.FileManagerPartialViewModel();
-            viewModel.FileManager.ModuleName = moduleName;
-            viewModel.FileManager.AllowedExtensions = string.IsNullOrWhiteSpace(allowedExtensions) ? new string[0] : allowedExtensions.Split(',');
+            viewModel.FileManager = new ViewModel.FileManagerModel();
+            viewModel.FileManager.AllowedExtensions = string.IsNullOrWhiteSpace(allowedExtensions) ? Array.Empty<string>() : allowedExtensions.Split(',');
             viewModel.FileManager.AllowChooseMultiple = allowChooseMultiple;
 
 
             return viewModel;
         }
 
-        public async Task<AjaxResponse> GetFiles(string moduleName)
+        public async Task<AjaxResponse> GetFiles()
         {
             var viewModel = new AjaxResponse();
-            var fileStorageModule = FileStorageManager.Modules[moduleName];
 
-            var files = await FileStorage.GetFiles(folderPath: fileStorageModule.FolderName);
+            Enum.TryParse(Request.Query[WebConstants.QueryStringKeys.FileManagerModule].ToString(), out FileManagerModules fileManagerModule);
+
+            var folderPath = FileStorage.GetFolderPathByModule(fileManagerModule);
+            var thumbnailFolderPath = FileStorage.GetThumbnailFolderPathByModule(fileManagerModule);
+
+            var files = await FileStorage.GetFiles(folderPath: folderPath);
             var fileManagerItems = files
             .OrderByDescending(item => item.FileDateCreated)
             .Select((Item, Index) => new FileManagerItem
@@ -58,8 +63,8 @@ namespace SixtyThreeBits.Web.Models.Admin
                 Name = Item.Filename,
                 Size = Item.FilesizeBytes,
                 SizeString = Utilities.FormatFileSizeBytes(Item.FilesizeBytes),
-                UrlDownload = FileStorage.GetUploadedFileHttpPath(filename: Item.Filename, folderPath: fileStorageModule.FolderName),
-                UrlThumbnail = GetUrlThumbnail(Item.Filename, fileStorageModule.ThumbnailFolderPath),
+                UrlDownload = FileStorage.GetUploadedFileHttpPath(filename: Item.Filename, folderPath: folderPath),
+                UrlThumbnail = getUrlThumbnail(filename: Item.Filename, thumbnailFolderPath: thumbnailFolderPath),
                 DateModified = Item.FileDateUpdated,
                 DateModifiedString = Utilities.FormatDateTime(Item.FileDateUpdated),
                 IsLastItem = Index == files.Count - 1
@@ -70,7 +75,7 @@ namespace SixtyThreeBits.Web.Models.Admin
 
             return viewModel;
         }
-        string GetUrlThumbnail(string filename, string thumbnailFolderPath)
+        string getUrlThumbnail(string filename, string thumbnailFolderPath)
         {
             string urlThumbnail;
             var ext = Path.GetExtension(filename);
@@ -116,10 +121,14 @@ namespace SixtyThreeBits.Web.Models.Admin
             return urlThumbnail;
         }
 
-        public async Task<AjaxResponse> UploadFile(string moduleName)
+        public async Task<AjaxResponse> UploadFile()
         {
             var viewModel = new AjaxResponse();
-            var fileManagerModule = FileStorageManager.Modules[moduleName];
+
+            Enum.TryParse(Request.Query[WebConstants.QueryStringKeys.FileManagerModule].ToString(), out FileManagerModules fileManagerModule);
+
+            var folderPath = FileStorage.GetFolderPathByModule(fileManagerModule);
+            var thumbnailFolderPath = FileStorage.GetThumbnailFolderPathByModule(fileManagerModule);
 
             var postedFile = Request.Form.Files[0];
             var filename = Request.Form["Filename"].ToString();
@@ -134,14 +143,14 @@ namespace SixtyThreeBits.Web.Models.Admin
 
             if (chunkIndex == chunkCount - 1)
             {
-                await FileStorage.SaveUploadedFile(sourceFilePhysicalPath: tempFilePath, filename: filename, folderPath: fileManagerModule.FolderName);
+                await FileStorage.SaveUploadedFile(sourceFilePhysicalPath: tempFilePath, filename: filename, folderPath: folderPath);
 
                 var tg = new ThumbnailGenerator(tempFilePath);
                 var thumbnailBytes = await tg.GetThumbnail(128, 128);
                 if (thumbnailBytes != null)
                 {
                     var thumbnailFilename = tg.GetThumbnailFilename();
-                    await FileStorage.SaveUploadedFile(sourceFileBytes: thumbnailBytes, filename: thumbnailFilename, folderPath: fileManagerModule.ThumbnailFolderPath);
+                    await FileStorage.SaveUploadedFile(sourceFileBytes: thumbnailBytes, filename: thumbnailFilename, folderPath: thumbnailFolderPath);
                 }
 
                 File.Delete(tempFilePath);
@@ -151,23 +160,27 @@ namespace SixtyThreeBits.Web.Models.Admin
             return viewModel;
         }
 
-        public async Task<AjaxResponse> DeleteFile(string moduleName, string filename)
+        public async Task<AjaxResponse> DeleteFile(string filename)
         {
             var viewModel = new AjaxResponse();
-            var fileManagerModule = FileStorageManager.Modules[moduleName];
+
+            Enum.TryParse(Request.Query[WebConstants.QueryStringKeys.FileManagerModule].ToString(), out FileManagerModules fileManagerModule);
+
+            var folderPath = FileStorage.GetFolderPathByModule(fileManagerModule);
+            var thumbnailFolderPath = FileStorage.GetThumbnailFolderPathByModule(fileManagerModule);
 
             var tg = new ThumbnailGenerator(filename);
             var thumbnailFilename = tg.GetThumbnailFilename();
 
-            await FileStorage.DeleteFile(filename: filename, folderPath: fileManagerModule.FolderName);
-            await FileStorage.DeleteFile(filename: thumbnailFilename, folderPath: fileManagerModule.ThumbnailFolderPath);
+            await FileStorage.DeleteFile(filename: filename, folderPath: folderPath);
+            await FileStorage.DeleteFile(filename: thumbnailFilename, folderPath: thumbnailFolderPath);
 
             viewModel.IsSuccess = true;
             return viewModel;
         }
         #endregion
 
-        #region Nested Classes
+        #region Nested Classes   
         public class ViewModel
         {
             #region Properties
@@ -177,14 +190,13 @@ namespace SixtyThreeBits.Web.Models.Admin
             public string UrlDelete { get; set; }
             public string OnSelectedFilesChooseClientCallback { get; set; }
             public bool HasOnSelectedFilesChooseClientCallback => !string.IsNullOrWhiteSpace(OnSelectedFilesChooseClientCallback);
-            public FileManagerPartialViewModel FileManager { get; set; }
+            public FileManagerModel FileManager { get; set; }
             #endregion
 
             #region Nested Classes
-            public class FileManagerPartialViewModel
+            public class FileManagerModel
             {
-                #region Properties
-                public string ModuleName { get; set; }
+                #region Properties                
                 public bool AllowChooseMultiple { get; set; }
                 public string[] AllowedExtensions { get; set; }
                 #endregion

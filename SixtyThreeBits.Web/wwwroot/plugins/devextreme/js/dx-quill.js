@@ -1,5 +1,5 @@
 /*!
- * DevExtreme-Quill Editor v.1.7.2
+ * DevExtreme-Quill Editor v.1.7.3
  * https://js.devexpress.com/
  * Copyright (c) 2020, Developer Express Inc.
  * Copyright (c) 2017, Slab
@@ -1476,9 +1476,6 @@ __webpack_require__.d(__webpack_exports__, {
 // EXTERNAL MODULE: ./node_modules/lodash.clonedeep/index.js
 var lodash_clonedeep = __webpack_require__(8805);
 var lodash_clonedeep_default = /*#__PURE__*/__webpack_require__.n(lodash_clonedeep);
-// EXTERNAL MODULE: ./node_modules/lodash.isequal/index.js
-var lodash_isequal = __webpack_require__(2722);
-var lodash_isequal_default = /*#__PURE__*/__webpack_require__.n(lodash_isequal);
 // EXTERNAL MODULE: ./node_modules/lodash.merge/index.js
 var lodash_merge = __webpack_require__(732);
 var lodash_merge_default = /*#__PURE__*/__webpack_require__.n(lodash_merge);
@@ -1487,6 +1484,8 @@ var Delta = __webpack_require__(9098);
 var Delta_default = /*#__PURE__*/__webpack_require__.n(Delta);
 // EXTERNAL MODULE: ./node_modules/parchment/src/parchment.ts + 17 modules
 var parchment = __webpack_require__(1233);
+// EXTERNAL MODULE: ./utils/is_equal.js
+var is_equal = __webpack_require__(4506);
 // EXTERNAL MODULE: ./core/selection.js
 var selection = __webpack_require__(7800);
 // EXTERNAL MODULE: ./blots/cursor.js
@@ -1793,7 +1792,7 @@ var Editor = /*#__PURE__*/function () {
         this.delta = oldDelta.compose(change);
       } else {
         this.delta = this.getDelta();
-        if (!change || !lodash_isequal_default()(oldDelta.compose(change), this.delta)) {
+        if (!change || !(0,is_equal/* default */.Z)(oldDelta.compose(change), this.delta)) {
           if (!this.deltaContainsRetain(oldDelta)) {
             change = oldDelta.diff(this.delta, selectionInfo);
           }
@@ -2730,7 +2729,7 @@ Quill.DEFAULTS = {
 Quill.events = _emitter__WEBPACK_IMPORTED_MODULE_5__/* ["default"].events */ .Z.events;
 Quill.sources = _emitter__WEBPACK_IMPORTED_MODULE_5__/* ["default"].sources */ .Z.sources;
 // eslint-disable-next-line no-undef
-Quill.version =  false ? 0 : "1.7.2";
+Quill.version =  false ? 0 : "1.7.3";
 Quill.MS_LIST_DATA_KEY = 'mso-list-data';
 Quill.replaceStyleAttribute = function (html) {
   var tagAttrsRegex = /(?:(<[a-z0-9]+\s*))([\s\S]*?)(>|\/>)/gi;
@@ -2920,10 +2919,9 @@ function shiftRange(range, index, length, source) {
 /* harmony import */ var parchment__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1233);
 /* harmony import */ var lodash_clonedeep__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(8805);
 /* harmony import */ var lodash_clonedeep__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(lodash_clonedeep__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var lodash_isequal__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(2722);
-/* harmony import */ var lodash_isequal__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(lodash_isequal__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _emitter__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(2069);
-/* harmony import */ var _logger__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(3122);
+/* harmony import */ var _utils_is_equal__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(4506);
+/* harmony import */ var _emitter__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(2069);
+/* harmony import */ var _logger__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(3122);
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -2945,7 +2943,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 
 
-var debug = (0,_logger__WEBPACK_IMPORTED_MODULE_4__/* ["default"] */ .Z)('quill:selection');
+var debug = (0,_logger__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .Z)('quill:selection');
 function toNotNegative(value) {
   if (value < 0) {
     return 0;
@@ -2975,26 +2973,26 @@ var Selection = /*#__PURE__*/function () {
     this.handleDragging();
     this.emitter.listenDOM('selectionchange', document, function () {
       if (!_this.mouseDown && !_this.composition.isCompositionInProgress()) {
-        setTimeout(_this.update.bind(_this, _emitter__WEBPACK_IMPORTED_MODULE_3__/* ["default"].sources.USER */ .Z.sources.USER), 1);
+        setTimeout(_this.update.bind(_this, _emitter__WEBPACK_IMPORTED_MODULE_2__/* ["default"].sources.USER */ .Z.sources.USER), 1);
       }
     });
-    this.emitter.on(_emitter__WEBPACK_IMPORTED_MODULE_3__/* ["default"].events.SCROLL_BEFORE_UPDATE */ .Z.events.SCROLL_BEFORE_UPDATE, function () {
+    this.emitter.on(_emitter__WEBPACK_IMPORTED_MODULE_2__/* ["default"].events.SCROLL_BEFORE_UPDATE */ .Z.events.SCROLL_BEFORE_UPDATE, function () {
       if (!_this.hasFocus()) return;
       var native = _this.getNativeRange();
       if (native == null) return;
       if (native.start.node === _this.cursor.textNode) return; // cursor.restore() will handle
-      _this.emitter.once(_emitter__WEBPACK_IMPORTED_MODULE_3__/* ["default"].events.SCROLL_UPDATE */ .Z.events.SCROLL_UPDATE, function () {
+      _this.emitter.once(_emitter__WEBPACK_IMPORTED_MODULE_2__/* ["default"].events.SCROLL_UPDATE */ .Z.events.SCROLL_UPDATE, function () {
         try {
           if (_this.root.contains(native.start.node) && _this.root.contains(native.end.node)) {
             _this.setNativeRange(native.start.node, native.start.offset, native.end.node, native.end.offset);
           }
-          _this.update(_emitter__WEBPACK_IMPORTED_MODULE_3__/* ["default"].sources.SILENT */ .Z.sources.SILENT);
+          _this.update(_emitter__WEBPACK_IMPORTED_MODULE_2__/* ["default"].sources.SILENT */ .Z.sources.SILENT);
         } catch (ignored) {
           // ignore
         }
       });
     });
-    this.emitter.on(_emitter__WEBPACK_IMPORTED_MODULE_3__/* ["default"].events.SCROLL_OPTIMIZE */ .Z.events.SCROLL_OPTIMIZE, function (mutations, context) {
+    this.emitter.on(_emitter__WEBPACK_IMPORTED_MODULE_2__/* ["default"].events.SCROLL_OPTIMIZE */ .Z.events.SCROLL_OPTIMIZE, function (mutations, context) {
       if (context.range) {
         var _context$range = context.range,
           startNode = _context$range.startNode,
@@ -3002,10 +3000,10 @@ var Selection = /*#__PURE__*/function () {
           endNode = _context$range.endNode,
           endOffset = _context$range.endOffset;
         _this.setNativeRange(startNode, startOffset, endNode, endOffset);
-        _this.update(_emitter__WEBPACK_IMPORTED_MODULE_3__/* ["default"].sources.SILENT */ .Z.sources.SILENT);
+        _this.update(_emitter__WEBPACK_IMPORTED_MODULE_2__/* ["default"].sources.SILENT */ .Z.sources.SILENT);
       }
     });
-    this.update(_emitter__WEBPACK_IMPORTED_MODULE_3__/* ["default"].sources.SILENT */ .Z.sources.SILENT);
+    this.update(_emitter__WEBPACK_IMPORTED_MODULE_2__/* ["default"].sources.SILENT */ .Z.sources.SILENT);
   }
   _createClass(Selection, [{
     key: "handleDragging",
@@ -3016,7 +3014,7 @@ var Selection = /*#__PURE__*/function () {
       });
       this.emitter.listenDOM('mouseup', document.body, function () {
         _this2.mouseDown = false;
-        _this2.update(_emitter__WEBPACK_IMPORTED_MODULE_3__/* ["default"].sources.USER */ .Z.sources.USER);
+        _this2.update(_emitter__WEBPACK_IMPORTED_MODULE_2__/* ["default"].sources.USER */ .Z.sources.USER);
       });
     }
   }, {
@@ -3308,7 +3306,7 @@ var Selection = /*#__PURE__*/function () {
     key: "setRange",
     value: function setRange(range) {
       var force = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-      var source = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : _emitter__WEBPACK_IMPORTED_MODULE_3__/* ["default"].sources.API */ .Z.sources.API;
+      var source = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : _emitter__WEBPACK_IMPORTED_MODULE_2__/* ["default"].sources.API */ .Z.sources.API;
       if (typeof force === 'string') {
         source = force;
         force = false;
@@ -3325,7 +3323,7 @@ var Selection = /*#__PURE__*/function () {
   }, {
     key: "update",
     value: function update() {
-      var source = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _emitter__WEBPACK_IMPORTED_MODULE_3__/* ["default"].sources.USER */ .Z.sources.USER;
+      var source = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _emitter__WEBPACK_IMPORTED_MODULE_2__/* ["default"].sources.USER */ .Z.sources.USER;
       var oldRange = this.lastRange;
       var _this$getRange = this.getRange(),
         _this$getRange2 = _slicedToArray(_this$getRange, 2),
@@ -3336,7 +3334,7 @@ var Selection = /*#__PURE__*/function () {
       if (this.lastRange != null) {
         this.savedRange = this.lastRange;
       }
-      if (!lodash_isequal__WEBPACK_IMPORTED_MODULE_2___default()(oldRange, this.lastRange)) {
+      if (!(0,_utils_is_equal__WEBPACK_IMPORTED_MODULE_4__/* ["default"] */ .Z)(oldRange, this.lastRange)) {
         var _this$emitter;
         if (!this.composition.isCompositionInProgress() && nativeRange != null && nativeRange.native.collapsed && nativeRange.start.node !== this.cursor.textNode) {
           var range = this.cursor.restore();
@@ -3344,9 +3342,9 @@ var Selection = /*#__PURE__*/function () {
             this.setNativeRange(range.startNode, range.startOffset, range.endNode, range.endOffset);
           }
         }
-        var args = [_emitter__WEBPACK_IMPORTED_MODULE_3__/* ["default"].events.SELECTION_CHANGE */ .Z.events.SELECTION_CHANGE, lodash_clonedeep__WEBPACK_IMPORTED_MODULE_1___default()(this.lastRange), lodash_clonedeep__WEBPACK_IMPORTED_MODULE_1___default()(oldRange), source];
-        (_this$emitter = this.emitter).emit.apply(_this$emitter, [_emitter__WEBPACK_IMPORTED_MODULE_3__/* ["default"].events.EDITOR_CHANGE */ .Z.events.EDITOR_CHANGE].concat(args));
-        if (source !== _emitter__WEBPACK_IMPORTED_MODULE_3__/* ["default"].sources.SILENT */ .Z.sources.SILENT) {
+        var args = [_emitter__WEBPACK_IMPORTED_MODULE_2__/* ["default"].events.SELECTION_CHANGE */ .Z.events.SELECTION_CHANGE, lodash_clonedeep__WEBPACK_IMPORTED_MODULE_1___default()(this.lastRange), lodash_clonedeep__WEBPACK_IMPORTED_MODULE_1___default()(oldRange), source];
+        (_this$emitter = this.emitter).emit.apply(_this$emitter, [_emitter__WEBPACK_IMPORTED_MODULE_2__/* ["default"].events.EDITOR_CHANGE */ .Z.events.EDITOR_CHANGE].concat(args));
+        if (source !== _emitter__WEBPACK_IMPORTED_MODULE_2__/* ["default"].sources.SILENT */ .Z.sources.SILENT) {
           var _this$emitter2;
           (_this$emitter2 = this.emitter).emit.apply(_this$emitter2, args);
         }
@@ -5762,14 +5760,13 @@ __webpack_require__.d(__webpack_exports__, {
 // EXTERNAL MODULE: ./node_modules/lodash.clonedeep/index.js
 var lodash_clonedeep = __webpack_require__(8805);
 var lodash_clonedeep_default = /*#__PURE__*/__webpack_require__.n(lodash_clonedeep);
-// EXTERNAL MODULE: ./node_modules/lodash.isequal/index.js
-var lodash_isequal = __webpack_require__(2722);
-var lodash_isequal_default = /*#__PURE__*/__webpack_require__.n(lodash_isequal);
 // EXTERNAL MODULE: ./node_modules/quill-delta/dist/Delta.js
 var Delta = __webpack_require__(9098);
 var Delta_default = /*#__PURE__*/__webpack_require__.n(Delta);
 // EXTERNAL MODULE: ./node_modules/parchment/src/parchment.ts + 17 modules
 var parchment = __webpack_require__(1233);
+// EXTERNAL MODULE: ./utils/is_equal.js
+var is_equal = __webpack_require__(4506);
 // EXTERNAL MODULE: ./core/quill.js
 var core_quill = __webpack_require__(281);
 // EXTERNAL MODULE: ./core/logger.js
@@ -6057,7 +6054,7 @@ var Keyboard = /*#__PURE__*/function (_Module) {
             if (!Object.keys(binding.format).every(function (name) {
               if (binding.format[name] === true) return curContext.format[name] != null;
               if (binding.format[name] === false) return curContext.format[name] == null;
-              return lodash_isequal_default()(binding.format[name], curContext.format[name]);
+              return (0,is_equal/* default */.Z)(binding.format[name], curContext.format[name]);
             })) {
               return false;
             }
@@ -8709,6 +8706,38 @@ var hasWindow = function hasWindow() {
 /* harmony export */ });
 function isDefined(object) {
   return object !== null && object !== undefined;
+}
+
+/***/ }),
+
+/***/ 4506:
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Z": () => (/* binding */ isEqual)
+/* harmony export */ });
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function isEqual(a, b) {
+  if (a === b) return true;
+  if (a == null || b == null || _typeof(a) !== 'object' || _typeof(b) !== 'object') {
+    return false;
+  }
+  if (Array.isArray(a)) {
+    if (!Array.isArray(b) || a.length !== b.length) {
+      return false;
+    }
+    return a.every(function (item, index) {
+      return isEqual(item, b[index]);
+    });
+  }
+  if (Array.isArray(b)) return false;
+  var aKeys = Object.keys(a);
+  var bKeys = Object.keys(b);
+  if (aKeys.length !== bKeys.length) return false;
+  return aKeys.every(function (key) {
+    return Object.prototype.hasOwnProperty.call(b, key) && isEqual(a[key], b[key]);
+  });
 }
 
 /***/ }),

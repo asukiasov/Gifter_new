@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using SixtyThreeBits.Core.BusinessLogics;
 using SixtyThreeBits.Core.Infrastructure.Repositories.DTO;
-using SixtyThreeBits.Core.Libraries.FileStorages;
 using SixtyThreeBits.Core.Properties;
 using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries;
@@ -19,10 +18,6 @@ namespace SixtyThreeBits.Web.Models.Admin
 {
     public class ProductsModel : ModelBase
     {
-        #region Properties
-        readonly string _folderPath = FileStorageManager.Modules[Enums.FileManagerModules.Products].FolderName;
-        #endregion
-
         #region Methods
         public async Task<ViewModel> GetViewModel()
         {
@@ -42,13 +37,12 @@ namespace SixtyThreeBits.Web.Models.Admin
             viewModel.Grid.AllowDelete = User.HasPermission(ControllerActionRouteNames.Admin.ProductsController.GridDelete);
 
             var repository = RepositoriesFactory.CreateProductsRepository();
-            viewModel.Grid.Categories = (await repository.ProductCategoriesListWithTitlePaddindHierarchy(padChar: '-'))
-            ?.Select(item => new KeyValueTuple<int?, string>
+            viewModel.Grid.Categories = (await repository.ProductCategoriesListWithTitlePaddindHierarchy(padChar: '-'))?
+            .Select(item => new KeyValueTuple<int?, string>
             {
                 Key = item.ProductCategoryID,
                 Value = item.ProductCategoryName
-            })
-            .ToList();
+            }).ToList();
 
             return viewModel;
         }
@@ -68,17 +62,14 @@ namespace SixtyThreeBits.Web.Models.Admin
                 ProductIsFeatured = Item.ProductIsFeatured,
                 ProductCategoryID = Item.ProductCategoryID,
                 UrlProductsProperties = Url.RouteUrl(ControllerActionRouteNames.Admin.ProductPropertiesController.Properties, new { productID = Item.ProductID })
-            })
-            .ToList();
+            }).ToList();
             return viewModel;
         }
 
-        public async Task<AjaxResponse> IUD(Enums.DatabaseActions databaseAction, int? productID, ViewModel.GridModel.GridItem submitModel)
+        public async Task<AjaxResponse> InsertOrUpdate(Enums.DatabaseActions databaseAction, int? productID, ViewModel.GridModel.GridItem submitModel)
         {
             var viewModel = new AjaxResponse();
             var repository = RepositoriesFactory.CreateProductsRepository();
-
-            await iudProcessProductImageFilename(databaseAction: databaseAction, productID: productID);
 
             await repository.ProductsIUD(
                 databaseAction: databaseAction,
@@ -100,20 +91,25 @@ namespace SixtyThreeBits.Web.Models.Admin
 
             return viewModel;
         }
-        async Task iudProcessProductImageFilename(Enums.DatabaseActions databaseAction, int? productID)
+
+        public async Task<AjaxResponse> Delete(int? productID)
         {
-            var repository = RepositoriesFactory.CreateProductsRepository();
-            if (databaseAction == Enums.DatabaseActions.DELETE)
+            var viewModel = new AjaxResponse();
+            var bl = new ProductDeleteBusinessLogic(
+                productID: productID,
+                repositoryFactory: RepositoriesFactory,
+                fileStorage: FileStorage
+            );
+            var result = await bl.Execute();
+            if (result.IsError)
             {
-                var product = await repository.ProductsGetSingleByID(productID);
-                if (product.ProductImages?.Any() == true)
-                {
-                    foreach (var item in product.ProductImages)
-                    {
-                        await FileStorage.DeleteFile(item.ProductImageFilename, _folderPath);
-                    }
-                }
+                viewModel.Data = result.ErrorMessage;
             }
+            else
+            {
+                viewModel.IsSuccess = true;
+            }
+            return viewModel;
         }
 
         public async Task<byte[]> GetProductsSyncExcelFileBytes()

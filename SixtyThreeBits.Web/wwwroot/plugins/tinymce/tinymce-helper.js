@@ -77,7 +77,7 @@ var TinyMCEClass = {
 
         const toolbar = hasFileManager ? ',| image | media | filemanager' : ''
         const plugins = (hasFileManager ? ' image, media, filemanager' : '') + (this.autoSize ? ', autoresize' : '')
-
+        
         $(this.selector).tinymce({
             width: this.width,
             height: this.height,
@@ -98,13 +98,14 @@ var TinyMCEClass = {
             image_advtab: true,
             file_picker_types: 'image',
             file_picker_callback: function (callback, value, meta) {
-
+                
                 let url = fileManagerPath;
-                if (url.indexOf('callback=') == -1) {
+                
+                if (url.indexOf('callback=') == -1) {                    
                     const parameterSeparator = url.indexOf('?') == -1 ? '?' : '&';
                     url += (parameterSeparator + 'multichoice=false&ext=.jpg,.jpeg,.png,.gif,.svg&callback=tinyMCEHelper.onSelectedImageChoose')
                 }
-
+                
                 tinyMCEHelper.filePickerCallback = callback;
                 tinyMCEHelper.filePickerDialog = tinyMCE.activeEditor.windowManager.openUrl({
                     title: 'File Manager',                    

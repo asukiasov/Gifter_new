@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SixtyThreeBits.Core.Infrastructure.Repositories.DTO;
 using SixtyThreeBits.Core.Libraries;
-using SixtyThreeBits.Core.Libraries.FileStorages;
+using SixtyThreeBits.Core.Libraries.FileStorages.Enums;
 using SixtyThreeBits.Core.Properties;
 using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries;
@@ -15,33 +15,30 @@ namespace SixtyThreeBits.Web.Models.Admin
 {
     public class NewsPropertiesModel : NewsModelBase
     {
-        #region Properties
-        readonly string _folderPath = FileStorageManager.Modules[Enums.FileManagerModules.News].FolderName;
-        #endregion
-
         #region Methods
         public ViewModel GetViewModel(ViewModel viewModel)
         {
             if (viewModel == null)
             {
                 viewModel = new ViewModel();
-                viewModel.NewsSlug = DBItem.NewsSlug;
-                viewModel.NewsTitle = DBItem.NewsTitle;
-                viewModel.NewsTitleEng = DBItem.NewsTitleEng;
-                viewModel.NewsShortDescription = DBItem.NewsShortDescription;
-                viewModel.NewsShortDescriptionEng = DBItem.NewsShortDescriptionEng;
-                viewModel.NewsText = DBItem.NewsText;
-                viewModel.NewsTextEng = DBItem.NewsTextEng;
-                viewModel.NewsIsPublished = DBItem.NewsIsPublished;
-                viewModel.NewsDatePublished = DBItem.NewsDatePublished;
+                viewModel.NewsSlug = NewsItem.NewsSlug;
+                viewModel.NewsTitle = NewsItem.NewsTitle;
+                viewModel.NewsTitleEng = NewsItem.NewsTitleEng;
+                viewModel.NewsShortDescription = NewsItem.NewsShortDescription;
+                viewModel.NewsShortDescriptionEng = NewsItem.NewsShortDescriptionEng;
+                viewModel.NewsText = NewsItem.NewsText;
+                viewModel.NewsTextEng = NewsItem.NewsTextEng;
+                viewModel.NewsIsPublished = NewsItem.NewsIsPublished;
+                viewModel.NewsDatePublished = NewsItem.NewsDatePublished;
             }
 
-            viewModel.NewsImageFilename = DBItem.NewsImageFilename;
-            viewModel.NewsImageHttpPath = FileStorage.GetUploadedFileHttpPath(DBItem.NewsImageFilename, _folderPath);
-            viewModel.UrlDeleteImage = Url.RouteUrl(ControllerActionRouteNames.Admin.NewsPropertiesController.DeleteImage, new { newsID = DBItem.NewsID });
-
-            var urlFileManager = Url.RouteUrl(ControllerActionRouteNames.Admin.FileManagerController.FileManager, new { ModuleName = Enums.FileManagerModules.News });
-            viewModel.UrlFileManager = urlFileManager;
+            viewModel.NewsImageFilename = NewsItem.NewsImageFilename;
+            viewModel.NewsImageHttpPath = FileStorage.GetUploadedFileHttpPath(
+                filename: NewsItem.NewsImageFilename, 
+                folderPath: FileStorage.GetFolderPathByModule(FileManagerModules.News)
+            );
+            viewModel.UrlDeleteImage = Url.RouteUrl(ControllerActionRouteNames.Admin.NewsPropertiesController.DeleteImage, new { newsID = NewsItem.NewsID });            
+            viewModel.UrlFileManager = UrlFactory.CreateFileManagerAdminUrl(fileManagerModule: FileManagerModules.News);
 
             return viewModel;
         }
@@ -55,7 +52,7 @@ namespace SixtyThreeBits.Web.Models.Admin
                     errorAction: async () =>
                     {
                         var repository = RepositoriesFactory.CreateNewsRepository();
-                        var IsUniq = await repository.NewsIsSlugUniq(newsSlug: viewModel.NewsSlug, newsID: DBItem.NewsID);
+                        var IsUniq = await repository.NewsIsSlugUniq(newsSlug: viewModel.NewsSlug, newsID: NewsItem.NewsID);
                         return !IsUniq;
                     },
                     errorKey: Validation63.GetJQueryNameSelectorFor(nameof(viewModel.NewsSlug)),
@@ -70,13 +67,16 @@ namespace SixtyThreeBits.Web.Models.Admin
             var newsImageFilename = hasNewsImage ? GetFilenameFromUploadedFile(viewModel.NewsImageFile) : null;
             if (hasNewsImage)
             {
-                await FileStorage.DeleteFile(newsImageFilename, _folderPath);
+                await FileStorage.DeleteFile(
+                    filename: newsImageFilename,
+                    folderPath: FileStorage.GetFolderPathByModule(FileManagerModules.News)
+                );
             }
 
             var repository = RepositoriesFactory.CreateNewsRepository();
             await repository.NewsIUD(
                 databaseAction: Enums.DatabaseActions.UPDATE,
-                newsID: DBItem.NewsID,
+                newsID: NewsItem.NewsID,
                 news: new NewsIudDTO
                 {
                     NewsSlug = viewModel.NewsSlug,
@@ -103,7 +103,7 @@ namespace SixtyThreeBits.Web.Models.Admin
                     await FileStorage.SaveUploadedFile(
                        sourceFileStream: viewModel.NewsImageFile.OpenReadStream(),
                        filename: newsImageFilename,
-                       folderPath: _folderPath
+                       folderPath: FileStorage.GetFolderPathByModule(FileManagerModules.News)
                    );                    
                 }
             }
@@ -113,12 +113,15 @@ namespace SixtyThreeBits.Web.Models.Admin
         {
             var viewModel = new AjaxResponse();
 
-            await FileStorage.DeleteFile(filename: DBItem.NewsImageFilename, folderPath: _folderPath);
+            await FileStorage.DeleteFile(
+                filename: NewsItem.NewsImageFilename,
+                folderPath: FileStorage.GetFolderPathByModule(FileManagerModules.News)
+            );
 
             var repository = RepositoriesFactory.CreateNewsRepository();
             await repository.NewsIUD(
                 databaseAction: Enums.DatabaseActions.UPDATE,
-                newsID: DBItem.NewsID,
+                newsID: NewsItem.NewsID,
                 news: new NewsIudDTO
                 {
                     NewsImageFilename = Constants.NullValueFor.String

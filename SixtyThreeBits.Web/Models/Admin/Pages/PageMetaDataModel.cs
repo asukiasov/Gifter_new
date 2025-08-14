@@ -11,11 +11,11 @@ namespace SixtyThreeBits.Web.Models.Admin
             viewModel.IsSuccess = true;
             viewModel.Data = new
             {
-                PageID = DBItem.PageID,
-                PageTitle = DBItem.PageTitle,
-                PageTitleEng = DBItem.PageTitleEng,
-                PageSlug = DBItem.PageSlug,
-                PageIsPublished = DBItem.PageIsPublished
+                PageID = Page.PageID,
+                PageTitle = Page.PageTitle,
+                PageTitleEng = Page.PageTitleEng,
+                PageSlug = Page.PageSlug,
+                PageIsPublished = Page.PageIsPublished
             };
             return viewModel;
         }

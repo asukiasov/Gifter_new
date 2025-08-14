@@ -27,8 +27,8 @@ namespace SixtyThreeBits.Web.Filters.Admin
             var pageID = filterContext.RouteData.Values[WebConstants.RouteValues.PageID]?.ToString().ToInt();
 
             var repository = _model.RepositoriesFactory.CreatePagesRepository();
-            _model.DBItem = await repository.PagesGetSingleByID(pageID);
-            if (_model.DBItem == null)
+            _model.Page = await repository.PagesGetSingleByID(pageID);
+            if (_model.Page == null)
             {
                 filterContext.Result = _model.GetNotFoundAdminViewResult();
             }
@@ -47,7 +47,7 @@ namespace SixtyThreeBits.Web.Filters.Admin
         {
             _model.Breadcrumbs.DeleteLastItem();
             _model.Breadcrumbs.RemoveAt(1);
-            _model.Breadcrumbs.RenameLastItem(_model.DBItem.PageTitle);
+            _model.Breadcrumbs.RenameLastItem(_model.Page.PageTitle);
         }
 
         void initTabs()
@@ -62,7 +62,7 @@ namespace SixtyThreeBits.Web.Filters.Admin
                 .Select(item => new ProjectMenuViewItem
                 {
                     Caption = _model.Utilities.GetValuesByLanguage(_model.LanguageCultureCode, item.PermissionMenuTitleOrCaption, item.PermissionMenuTitleOrCaptionEng),
-                    NavigateUrl = _model.Url.RouteUrl(item.PermissionCodeName, new { pageID = _model.DBItem.PageID }),
+                    NavigateUrl = _model.Url.RouteUrl(item.PermissionCodeName, new { pageID = _model.Page.PageID }),
                     IsSelected = Regex.IsMatch(_model.UrlCurrentPageWithDomain, item.PermissionPagePath)
                 }).ToList();
 
