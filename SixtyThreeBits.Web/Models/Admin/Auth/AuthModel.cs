@@ -25,7 +25,7 @@ namespace SixtyThreeBits.Web.Models.Admin
 
         public bool IsUserLoggedIn()
         {
-            var isLoggedIn = SessionAssistance.Get<UserDTO>(key: WebConstants.Session.User) != null;
+            var isLoggedIn = SessionAssistance.Get<UserDTO>(key: WebConstants.SessionKeys.User) != null;
             return isLoggedIn;
         }
 
@@ -42,7 +42,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             else
             {
                 isAuthenticated = true;
-                SessionAssistance.Set(key: WebConstants.Session.User, value: user);
+                SessionAssistance.Set(key: WebConstants.SessionKeys.User, value: user);
                 if (viewModel.IsRememberMeChecked)
                 {
                     CookieAssistance.Set(
@@ -58,14 +58,14 @@ namespace SixtyThreeBits.Web.Models.Admin
 
         public async Task ReloginUser()
         {
-            var sessionUser = SessionAssistance.Get<UserDTO>(WebConstants.Session.User);
+            var sessionUser = SessionAssistance.Get<UserDTO>(WebConstants.SessionKeys.User);
             if (sessionUser != null)
             {
                 var repository = RepositoriesFactory.CreateUsersRepository();
                 var user = await repository.UsersGetSingleByID(sessionUser.UserID);
                 if (user != null && user.UserIsActive)
                 {
-                    SessionAssistance.Set(WebConstants.Session.User, user);
+                    SessionAssistance.Set(WebConstants.SessionKeys.User, user);
                 }
             }
         }

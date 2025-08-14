@@ -87,7 +87,7 @@ namespace SixtyThreeBits.Web.Filters.Base
 
         async Task initUser()
         {
-            _model.User = _model.SessionAssistance.Get<UserDTO>(WebConstants.Session.User);
+            _model.User = _model.SessionAssistance.Get<UserDTO>(WebConstants.SessionKeys.User);
 
             if (_model.User == null)
             {
@@ -99,7 +99,7 @@ namespace SixtyThreeBits.Web.Filters.Base
                     _model.User = await repository.UsersGetSingleByID(userID);
                     if (_model.User != null)
                     {
-                        _model.SessionAssistance.Set(WebConstants.Session.User, _model.User);
+                        _model.SessionAssistance.Set(WebConstants.SessionKeys.User, _model.User);
                     }
                 }
             }
