@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace SixtyThreeBits.Web.Controllers.Admin
 {
     [Route("admin/blog")]
-    public class BlogPostsController : AdminControllerBase<BlogModel>
+    public class BlogPostsController : AdminControllerBase<BlogPostsModel>
     {
         #region Actions
         [HttpGet]
@@ -24,15 +24,15 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         [Route("grid", Name = ControllerActionRouteNames.Admin.BlogPostsController.Grid)]
         public async Task<IActionResult> Grid()
         {
-            var viewModel = await Model.GetGridModel();
-            return Json(viewModel);
+            var viewModel = await Model.GetGridItems();
+            return DevExtremeGridResult(viewModel);
         }
 
         [HttpPost]
         [Route("grid/add", Name = ControllerActionRouteNames.Admin.BlogPostsController.GridAdd)]
         public async Task<IActionResult> GridAdd(int? key, string values)
         {
-            var submitModel = values.DeserializeJsonTo<BlogModel.ViewModel.GridModel.GridItem>() ?? new BlogModel.ViewModel.GridModel.GridItem();
+            var submitModel = values.DeserializeJsonTo<BlogPostsModel.ViewModel.GridModel.GridItem>() ?? new BlogPostsModel.ViewModel.GridModel.GridItem();
             var viewModel = await Model.IUD(databaseAction: Enums.DatabaseActions.INSERT, blogPostID: key, submitModel: submitModel);
             return DevExtremeGridActionResult(viewModel);
         }
@@ -41,7 +41,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         [Route("grid/update", Name = ControllerActionRouteNames.Admin.BlogPostsController.GridUpdate)]
         public async Task<IActionResult> GridUpdate(int? key, string values)
         {
-            var submitModel = values.DeserializeJsonTo<BlogModel.ViewModel.GridModel.GridItem>() ?? new BlogModel.ViewModel.GridModel.GridItem();
+            var submitModel = values.DeserializeJsonTo<BlogPostsModel.ViewModel.GridModel.GridItem>() ?? new BlogPostsModel.ViewModel.GridModel.GridItem();
             var viewModel = await Model.IUD(databaseAction: Enums.DatabaseActions.UPDATE, blogPostID: key, submitModel: submitModel);
             return DevExtremeGridActionResult(viewModel);
         }
@@ -50,7 +50,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         [Route("grid/delete", Name = ControllerActionRouteNames.Admin.BlogPostsController.GridDelete)]
         public async Task<IActionResult> GridDelete(int? key)
         {
-            var viewModel = await Model.IUD(databaseAction: Enums.DatabaseActions.DELETE, blogPostID: key, submitModel: new BlogModel.ViewModel.GridModel.GridItem());
+            var viewModel = await Model.IUD(databaseAction: Enums.DatabaseActions.DELETE, blogPostID: key, submitModel: new BlogPostsModel.ViewModel.GridModel.GridItem());
             return DevExtremeGridActionResult(viewModel);
         }
         #endregion

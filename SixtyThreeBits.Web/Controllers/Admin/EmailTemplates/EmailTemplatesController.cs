@@ -22,8 +22,8 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         [Route("grid", Name = ControllerActionRouteNames.Admin.EmailTemplatesController.Grid)]
         public async Task<IActionResult> Grid()
         {
-            var viewModel = await Model.GetGridModel();
-            return Json(viewModel);
+            var viewModel = await Model.GetGridItems();
+            return DevExtremeGridResult(viewModel);
         }
         #endregion
     }    

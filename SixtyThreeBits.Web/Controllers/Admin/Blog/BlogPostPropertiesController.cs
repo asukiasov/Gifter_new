@@ -9,7 +9,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
 {
     [Route("admin/blog/{blogPostID:int}/properties")]
     [TypeFilter(typeof(BlogFilterAttribute), Order = 2)]
-    public class BlogPostPropertiesController : AdminControllerBase<BlogPropertiesModel>
+    public class BlogPostPropertiesController : AdminControllerBase<BlogPostPropertiesModel>
     {
         #region Actions
         [HttpGet]
@@ -25,7 +25,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
 
         [HttpPost]
         [Route("")]
-        public async Task<IActionResult> Properties(BlogPropertiesModel.ViewModel viewModel)
+        public async Task<IActionResult> Properties(BlogPostPropertiesModel.ViewModel viewModel)
         {
             var result = default(IActionResult);
             Model.PluginsClient.Enable63BitsForms(true).EnableFancybox(true).EnableTinyMce(true).EnableDevextreme(true).Enable63BitsSuccessErrorToast(true);

@@ -9,7 +9,6 @@ using SixtyThreeBits.Libraries;
 using SixtyThreeBits.Web.Domain.Libraries;
 using SixtyThreeBits.Web.Domain.Utilities;
 using SixtyThreeBits.Web.Models.Base;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -35,17 +34,20 @@ namespace SixtyThreeBits.Web.Models.Admin
             return viewModel;
         }
 
-        public async Task<List<ViewModel.GridModel.GridItem>> GetGridModel()
+        public async Task<AjaxResponse> GetGridItems()
         {
+            var viewModel = new AjaxResponse();
             var repository = RepositoriesFactory.CreateRolesRepository();
-            var viewModel = (await repository.RolesList())
-            ?.Select(Item => new ViewModel.GridModel.GridItem
+
+            var roles = await repository.RolesList();
+
+            viewModel.IsSuccess = !repository.IsError;
+            viewModel.Data = repository.IsError ? repository.ErrorMessage : roles.Select(Item => new ViewModel.GridModel.GridItem
             {
                 RoleID = Item.RoleID,
                 RoleName = Item.RoleName,
                 RoleCode = Item.RoleCode
-            })
-            .ToList();
+            }).ToList();
 
             return viewModel;
         }

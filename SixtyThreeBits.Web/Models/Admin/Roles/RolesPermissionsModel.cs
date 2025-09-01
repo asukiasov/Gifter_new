@@ -43,31 +43,37 @@ namespace SixtyThreeBits.Web.Models.Admin
             return viewModel;
         }
 
-        public async Task<List<ViewModel.RolesGridModel.GridItem>> GetRolesGridModel()
+        public async Task<AjaxResponse> GetRolesGridItems()
         {
+            var viewModel = new AjaxResponse();
             var repository = RepositoriesFactory.CreateRolesRepository();
-            var viewModel = (await repository.RolesList())?
-            .Select(Item => new ViewModel.RolesGridModel.GridItem
+
+            var roles = await repository.RolesList();
+
+            viewModel.IsSuccess = !repository.IsError;
+            viewModel.Data = repository.IsError ? repository.ErrorMessage : roles.Select(Item => new ViewModel.RolesGridModel.GridItem
             {
                 RoleID = Item.RoleID,
                 RoleName = Item.RoleName
-            })
-            .ToList();
+            }).ToList();
 
             return viewModel;
         }
 
-        public async Task<List<ViewModel.PermissionsTreeModel.TreeItem>> GetPermissionsTreeModel()
+        public async Task<AjaxResponse> GetPermissionsTreeItems()
         {
+            var viewModel = new AjaxResponse();
             var repository = RepositoriesFactory.CreatePermissionsRepository();
-            var viewModel = (await repository.PermissionsList())
-            ?.Select(Item => new ViewModel.PermissionsTreeModel.TreeItem
+
+            var permissions = await repository.PermissionsList();
+
+            viewModel.IsSuccess = !repository.IsError;
+            viewModel.Data = repository.IsError ? repository.ErrorMessage : permissions.Select(Item => new ViewModel.PermissionsTreeModel.TreeItem
             {
                 PermissionID = Item.PermissionID,
                 PermissionParentID = Item.PermissionParentID,
                 PermissionCaption = Utilities.GetValuesByLanguage(LanguageCultureCode, Item.PermissionCaption, Item.PermissionCaptionEng)
-            })
-            .ToList();
+            }).ToList();
 
             return viewModel;
         }

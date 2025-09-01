@@ -36,17 +36,23 @@ namespace SixtyThreeBits.Web.Models.Admin
             return viewModel;
         }
 
-        public async Task<List<ViewModel.GridModel.GridItem>> GetGridModel()
+        public async Task<AjaxResponse> GetGridItems()
         {
+            var viewModel = new AjaxResponse();
             var repository = RepositoriesFactory.CreateBrandsRepository();
-            var brands = (await repository.BrandsList())?.Select(item => new ViewModel.GridModel.GridItem
+
+            var brands = (await repository.BrandsList());
+
+            viewModel.IsSuccess = !repository.IsError;
+            viewModel.Data = repository.IsError ? repository.ErrorMessage : brands.Select(item => new ViewModel.GridModel.GridItem
             {
                 BrandID = item.BrandID,
                 BrandName = item.BrandName,
                 BrandNameEng = item.BrandNameEng,
                 UrlBrandProperties = Url.RouteUrl(ControllerActionRouteNames.Admin.BrandPropertiesController.Properties, new { brandID = item.BrandID })
             }).ToList();
-            return brands;
+
+            return viewModel;
         }
 
         public async Task<AjaxResponse> IUD(Enums.DatabaseActions databaseAction, int? brandID, ViewModel.GridModel.GridItem submitModel)

@@ -49,11 +49,15 @@ namespace SixtyThreeBits.Web.Models.Admin
             return viewModel;
         }
 
-        public async Task<List<ViewModel.GridModel.GridItem>> GetGridModel()
+        public async Task<AjaxResponse> GetGridItems()
         {
+            var viewModel = new AjaxResponse();
             var repository = RepositoriesFactory.CreateProductsRepository();
-            var viewModel = (await repository.ProductsList())?
-            .Select(Item => new ViewModel.GridModel.GridItem
+
+            var products = await repository.ProductsList();
+
+            viewModel.IsSuccess = !repository.IsError;
+            viewModel.Data = repository.IsError ? repository.ErrorMessage : products.Select(Item => new ViewModel.GridModel.GridItem
             {
                 ProductID = Item.ProductID,
                 ProductName = Item.ProductName,
@@ -65,6 +69,7 @@ namespace SixtyThreeBits.Web.Models.Admin
                 ProductCategoryID = Item.ProductCategoryID,
                 UrlProductsProperties = Url.RouteUrl(ControllerActionRouteNames.Admin.ProductPropertiesController.Properties, new { productID = Item.ProductID })
             }).ToList();
+
             return viewModel;
         }
 

@@ -35,10 +35,15 @@ namespace SixtyThreeBits.Web.Models.Admin
             return viewModel;
         }
 
-        public async Task<List<ViewModel.TreeModel.TreeItem>> GetTreeModel()
+        public async Task<AjaxResponse> GetTreeItems()
         {
+            var viewModel = new AjaxResponse();            
             var repository = RepositoriesFactory.CreateDictionariesRepository();
-            var viewModel = (await repository.DictionariesList()).Select(Item => new ViewModel.TreeModel.TreeItem
+
+            var dictionaries = (await repository.DictionariesList());
+
+            viewModel.IsSuccess = !repository.IsError;
+            viewModel.Data = repository.IsError ? repository.ErrorMessage : dictionaries.Select(Item => new ViewModel.TreeModel.TreeItem
             {
                 DictionaryID = Item.DictionaryID,
                 DictionaryParentID = Item.DictionaryParentID,
@@ -50,6 +55,7 @@ namespace SixtyThreeBits.Web.Models.Admin
                 DictionaryCode = Item.DictionaryCode,
                 DictionarySortIndex = Item.DictionarySortIndex
             }).ToList();
+
             return viewModel;
         }
 

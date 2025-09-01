@@ -10,6 +10,19 @@ namespace SixtyThreeBits.Web.Controllers.Admin.Base
     {
         #region Methods
         [NonAction]
+        public IActionResult DevExtremeGridResult(AjaxResponse viewModel)
+        {
+            if (viewModel.IsSuccess)
+            {
+                return Json(viewModel.Data);
+            }
+            else
+            {
+                throw new System.Exception(viewModel.Data.ToString());
+            }
+        }
+
+        [NonAction]
         public IActionResult DevExtremeGridActionResult(AjaxResponse viewModel)
         {
             if (viewModel.IsSuccess)

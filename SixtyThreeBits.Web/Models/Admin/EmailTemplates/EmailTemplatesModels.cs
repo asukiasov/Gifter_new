@@ -3,10 +3,10 @@ using DevExtreme.AspNet.Mvc.Builders;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using SixtyThreeBits.Core.Properties;
+using SixtyThreeBits.Libraries;
 using SixtyThreeBits.Web.Domain.Libraries;
 using SixtyThreeBits.Web.Domain.Utilities;
 using SixtyThreeBits.Web.Models.Base;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -23,17 +23,21 @@ namespace SixtyThreeBits.Web.Models.Admin
             return viewModel;
         }
 
-        public async Task<List<ViewModel.GridModel.GridItem>> GetGridModel()
+        public async Task<AjaxResponse> GetGridItems()
         {
+            var viewModel = new AjaxResponse();
             var repository = RepositoriesFactory.CreateEmailTemplatesRepository();
-            var viewModel = (await repository.EmailTemplatesList())?
-            .Select(Item => new ViewModel.GridModel.GridItem
+
+            var emailTemplates = (await repository.EmailTemplatesList());
+
+            viewModel.IsSuccess = !repository.IsError;
+            viewModel.Data = repository.IsError ? repository.ErrorMessage : emailTemplates.Select(Item => new ViewModel.GridModel.GridItem
             {
                 EmailTemplateID = Item.EmailTemplateID,
                 EmailTemplateName = Item.EmailTemplateName,
                 UrlProperties = Url.RouteUrl(ControllerActionRouteNames.Admin.EmailTemplatePropertiesController.Properties, new { emailTemplateID = Item.EmailTemplateID })
-            })
-            .ToList();
+            }).ToList();
+
             return viewModel;
         }
         #endregion

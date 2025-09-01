@@ -35,16 +35,21 @@ namespace SixtyThreeBits.Web.Models.Admin
             return viewModel;
         }
 
-        public async Task<List<ViewModel.GridModel.GridItem>> GetGridModel()
+        public async Task<AjaxResponse> GetGridModel()
         {
+            var viewModel = new AjaxResponse();
             var repository = RepositoriesFactory.CreateRedirectsRepository();
-            var viewModel = (await repository.RedirectsList())?
-            .Select(Item => new ViewModel.GridModel.GridItem
+
+            var redirects = await repository.RedirectsList();
+
+            viewModel.IsSuccess = !repository.IsError;
+            viewModel.Data = redirects.Select(Item => new ViewModel.GridModel.GridItem
             {
                 RedirectID = Item.RedirectID,
                 RedirectFrom = Item.RedirectFrom,
                 RedirectTo = Item.RedirectTo
             }).ToList();
+
             return viewModel;
         }
 

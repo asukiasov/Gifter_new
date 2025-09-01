@@ -33,12 +33,15 @@ namespace SixtyThreeBits.Web.Models.Admin
             return viewModel;
         }
 
-        public async Task<List<ViewModel.GridModel.GridItem>> GetGridModel()
+        public async Task<AjaxResponse> GetGridItems()
         {
+            var viewModel = new AjaxResponse();
             var repository = RepositoriesFactory.CreatePagesRepository();
 
-            var viewModel = (await repository.PagesList())
-            ?.Select(item => new ViewModel.GridModel.GridItem
+            var pages = await repository.PagesList();
+
+            viewModel.IsSuccess = !repository.IsError;
+            viewModel.Data = repository.IsError ? repository.ErrorMessage : pages.Select(item => new ViewModel.GridModel.GridItem
             {
                 PageID = item.PageID,
                 PageTitle = item.PageTitle,
@@ -46,8 +49,7 @@ namespace SixtyThreeBits.Web.Models.Admin
                 PageIsPublished = item.PageIsPublished,
                 PageDateCreated = item.PageDateCreated,
                 UrlProperties = Url.RouteUrl(ControllerActionRouteNames.Admin.PagePropertiesController.Properties, new { pageID = item.PageID })
-            })
-            .ToList();
+            }).ToList();            
 
             return viewModel;
         }

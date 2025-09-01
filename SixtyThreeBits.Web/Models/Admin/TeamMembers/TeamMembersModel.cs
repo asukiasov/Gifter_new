@@ -40,11 +40,15 @@ namespace SixtyThreeBits.Web.Models.Admin
             return viewModel;
         }
 
-        public async Task<List<ViewModel.GridModel.GridItem>> GetGridModel()
+        public async Task<AjaxResponse> GetGridItems()
         {
+            var viewModel = new AjaxResponse();
             var repository = RepositoriesFactory.CreateTeamMembersRepository();
-            var viewModel = (await repository.TeamMembersList())?
-            .Select(item => new ViewModel.GridModel.GridItem
+
+            var teamMembers = await repository.TeamMembersList();
+
+            viewModel.IsSuccess = !repository.IsError;
+            viewModel.Data = repository.IsError ? repository.ErrorMessage : teamMembers.Select(item => new ViewModel.GridModel.GridItem
             {
                 TeamMemberID = item.TeamMemberID,
                 TeamMemberFirstname = item.TeamMemberFirstname,

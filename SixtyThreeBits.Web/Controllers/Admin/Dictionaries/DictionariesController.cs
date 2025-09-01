@@ -24,8 +24,8 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         [Route("tree", Name = ControllerActionRouteNames.Admin.DictionariesController.Tree)]
         public async Task<IActionResult> Tree()
         {
-            var viewModel = await Model.GetTreeModel();
-            return Json(viewModel);
+            var viewModel = await Model.GetTreeItems();
+            return DevExtremeGridResult(viewModel);
         }
 
         [HttpPost]

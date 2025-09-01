@@ -3,7 +3,6 @@ using DevExtreme.AspNet.Mvc.Builders;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using SixtyThreeBits.Core.Infrastructure.Repositories.DTO;
-using SixtyThreeBits.Core.Libraries.FileStorages;
 using SixtyThreeBits.Core.Libraries.FileStorages.Enums;
 using SixtyThreeBits.Core.Properties;
 using SixtyThreeBits.Core.Utilities;
@@ -12,13 +11,12 @@ using SixtyThreeBits.Web.Domain.Libraries;
 using SixtyThreeBits.Web.Domain.Utilities;
 using SixtyThreeBits.Web.Models.Base;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace SixtyThreeBits.Web.Models.Admin
 {
-    public class BlogModel : ModelBase
+    public class BlogPostsModel : ModelBase
     {
         #region Methods
         public ViewModel GetViewModel()
@@ -38,11 +36,15 @@ namespace SixtyThreeBits.Web.Models.Admin
             return viewModel;
         }
 
-        public async Task<List<ViewModel.GridModel.GridItem>> GetGridModel()
+        public async Task<AjaxResponse> GetGridItems()
         {
+            var viewModel = new AjaxResponse();
             var repository = RepositoriesFactory.CreateBlogRepository();
-            var viewModel = (await repository.BlogPostList())
-            ?.Select(item => new ViewModel.GridModel.GridItem
+
+            var blogPosts = await repository.BlogPostList();
+
+            viewModel.IsSuccess = !repository.IsError;
+            viewModel.Data = repository.IsError ? repository.ErrorMessage : blogPosts.Select(item => new ViewModel.GridModel.GridItem
             {
                 BlogPostID = item.BlogPostID,
                 BlogPostTitle = item.BlogPostTitle,
@@ -52,6 +54,7 @@ namespace SixtyThreeBits.Web.Models.Admin
                 BlogPostDateCreated = item.BlogPostDateCreated,
                 UrlBlogPost = Url.RouteUrl(ControllerActionRouteNames.Admin.BlogPostPropertiesController.Properties, new { blogPostID = item.BlogPostID })
             }).ToList();
+
             return viewModel;
         }
 

@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace SixtyThreeBits.Web.Models.Admin
 {
-    public class BlogPropertiesModel : BlogModelBase
+    public class BlogPostPropertiesModel : BlogModelBase
     {
         #region Methods
         public ViewModel GetViewModel(ViewModel viewModel)

@@ -1,4 +1,5 @@
-﻿using DevExtreme.AspNet.Mvc;
+﻿using DevExpress.XtraRichEdit.Layout.Engine;
+using DevExtreme.AspNet.Mvc;
 using DevExtreme.AspNet.Mvc.Builders;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -35,11 +36,15 @@ namespace SixtyThreeBits.Web.Models.Admin
             return viewModel;
         }
 
-        public async Task<List<ViewModel.TreeModel.TreeItem>> GetTreeModel()
+        public async Task<AjaxResponse> GetTreeItems()
         {
+            var viewModel = new AjaxResponse();
             var repository = RepositoriesFactory.CreatePermissionsRepository();
-            var viewModel = (await repository.PermissionsList())
-            ?.Select(item => new ViewModel.TreeModel.TreeItem
+
+            var permissions = await repository.PermissionsList();
+
+            viewModel.IsSuccess = !repository.IsError;
+            viewModel.Data = repository.IsError ? repository.ErrorMessage : permissions.Select(item => new ViewModel.TreeModel.TreeItem
             {
                 PermissionID = item.PermissionID,
                 PermissionParentID = item.PermissionParentID,
@@ -53,8 +58,8 @@ namespace SixtyThreeBits.Web.Models.Admin
                 PermissionMenuTitle = item.PermissionMenuTitle,
                 PermissionMenuTitleEng = item.PermissionMenuTitleEng,
                 PermissionSortIndex = item.PermissionSortIndex
-            })
-            .ToList();
+            }).ToList();
+
             return viewModel;
         }
 

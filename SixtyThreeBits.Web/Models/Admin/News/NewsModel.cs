@@ -10,7 +10,6 @@ using SixtyThreeBits.Web.Domain.Libraries;
 using SixtyThreeBits.Web.Domain.Utilities;
 using SixtyThreeBits.Web.Models.Base;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -36,11 +35,15 @@ namespace SixtyThreeBits.Web.Models.Admin
             return viewModel;
         }
 
-        public async Task<List<ViewModel.GridModel.GridItem>> GetGridModel()
+        public async Task<AjaxResponse> GetGridItems()
         {
+            var viewModel = new AjaxResponse();
             var repository = RepositoriesFactory.CreateNewsRepository();
-            var viewModel = (await repository.NewsList())?
-            .Select(item => new ViewModel.GridModel.GridItem
+
+            var news = await repository.NewsList();
+
+            viewModel.IsSuccess = !repository.IsError;
+            viewModel.Data = repository.IsError ? repository.ErrorMessage : news.Select(item => new ViewModel.GridModel.GridItem
             {
                 NewsID = item.NewsID,
                 NewsTitle = item.NewsTitle,
@@ -48,8 +51,8 @@ namespace SixtyThreeBits.Web.Models.Admin
                 NewsIsPublished = item.NewsIsPublished,
                 NewsDateCreated = item.NewsDateCreated,
                 UrlNewsProperties = Url.RouteUrl(ControllerActionRouteNames.Admin.NewsPropertiesController.Properties, new { newsID = item.NewsID })
-            })
-            .ToList();
+            }).ToList();
+
             return viewModel;
         }
 

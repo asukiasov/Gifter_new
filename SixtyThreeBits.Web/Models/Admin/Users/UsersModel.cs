@@ -39,12 +39,15 @@ namespace SixtyThreeBits.Web.Models.Admin
             return viewModel;
         }
 
-        public async Task<List<ViewModel.GridModel.GridItem>> GetGridGridModel()
+        public async Task<AjaxResponse> GetGridItems()
         {
+            var viewModel = new AjaxResponse();
             var repository = RepositoriesFactory.CreateUsersRepository();
 
-            var viewModel = (await repository.UsersList())
-            ?.Select(Item => new ViewModel.GridModel.GridItem
+            var users = await repository.UsersList();
+
+            viewModel.IsSuccess = !repository.IsError;
+            viewModel.Data = repository.IsError ? repository.ErrorMessage : users.Select(Item => new ViewModel.GridModel.GridItem
             {
                 UserID = Item.UserID,
                 UserFirstname = Item.UserFirstname,
@@ -54,8 +57,7 @@ namespace SixtyThreeBits.Web.Models.Admin
                 UserIsActive = Item.UserIsActive,
                 UserDateCreated = Item.UserDateCreated,
                 UrlUserProperties = Url.RouteUrl(ControllerActionRouteNames.Admin.UserPropertiesController.Properties, new { userID = Item.UserID }),
-            })
-            .ToList();
+            }).ToList();
 
             return viewModel;
         }

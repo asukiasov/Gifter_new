@@ -23,16 +23,16 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         [Route("roles/grid", Name = ControllerActionRouteNames.Admin.RolePermissionsController.RolesGrid)]
         public async Task<IActionResult> RolesGrid()
         {
-            var viewModel = await Model.GetRolesGridModel();
-            return Json(viewModel);
+            var viewModel = await Model.GetRolesGridItems();
+            return DevExtremeGridResult(viewModel);
         }
 
         [HttpGet]
         [Route("permissions/tree", Name = ControllerActionRouteNames.Admin.RolePermissionsController.PermissionsTree)]
         public async Task<IActionResult> PermissionsTree()
         {
-            var viewModel = await Model.GetPermissionsTreeModel();
-            return Json(viewModel);
+            var viewModel = await Model.GetPermissionsTreeItems();
+            return DevExtremeGridResult(viewModel);
         }
 
         [HttpGet]
