@@ -7,8 +7,8 @@
             public static class BlogPosts
             {
                 #region Properties
-                public const string BlogPostsView = "~/Views/Admin/BlogPosts/BlogPosts.cshtml";
-                public const string BlogPostPropertiesView = "~/Views/Admin/BlogPosts/BlogPostProperties.cshtml";
+                public const string BlogPostsView = "~/Views/Admin/BlogPosts/BlogPostsView.cshtml";
+                public const string BlogPostPropertiesView = "~/Views/Admin/BlogPosts/BlogPostPropertiesView.cshtml";
                 #endregion
             }
         }

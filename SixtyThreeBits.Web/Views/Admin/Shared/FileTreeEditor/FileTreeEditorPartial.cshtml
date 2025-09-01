@@ -5,7 +5,7 @@
         {
         foreach (var Item in Model)
         {
-            @await Html.PartialAsync(ViewNames.Admin.Shared.FileTreeEditor.File, Item)            
+            @await Html.PartialAsync(ViewNames.Admin.Shared.FileTreeEditor.FilePartial, Item)            
         }
         }
     </ul>

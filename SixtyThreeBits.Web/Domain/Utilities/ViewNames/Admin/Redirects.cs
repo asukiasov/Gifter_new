@@ -7,7 +7,7 @@
             public static class Redirects
             {
                 #region Properties
-                public const string RedirectsView = "~/Views/Admin/Redirects/Redirects.cshtml";
+                public const string RedirectsView = "~/Views/Admin/Redirects/RedirectsView.cshtml";
                 #endregion               
             }
         }

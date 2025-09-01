@@ -9,8 +9,8 @@
             public static class PluginsClient
             {
                 #region Properties
-                public const string PluginsClientFooter = "~/Views/Shared/PluginsClient/PluginsClientFooter.cshtml";
-                public const string PluginsClientHeader = "~/Views/Shared/PluginsClient/PluginsClientHeader.cshtml";
+                public const string PluginsClientFooterPartial = "~/Views/Shared/PluginsClient/PluginsClientFooterPartial.cshtml";
+                public const string PluginsClientHeaderPartial = "~/Views/Shared/PluginsClient/PluginsClientHeaderPartial.cshtml";
                 #endregion
             }
             #endregion

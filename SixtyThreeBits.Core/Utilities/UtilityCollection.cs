@@ -1,5 +1,4 @@
 ﻿using SixtyThreeBits.Core.Properties;
-using SixtyThreeBits.Libraries.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

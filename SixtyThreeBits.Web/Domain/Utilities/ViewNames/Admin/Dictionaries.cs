@@ -7,7 +7,7 @@
             public static class Dictionaries
             {
                 #region Properties
-                public const string DictionariesView = "~/Views/Admin/Dictionaries/Dictionaries.cshtml";
+                public const string DictionariesView = "~/Views/Admin/Dictionaries/DictionariesView.cshtml";
                 #endregion
             }
         }

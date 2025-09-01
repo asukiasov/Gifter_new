@@ -7,7 +7,7 @@
             public static class ErrorLog
             {
                 #region Properties
-                public const string ErrorLogView = "~/Views/Admin/ErrorLog/ErrorLog.cshtml";
+                public const string ErrorLogView = "~/Views/Admin/ErrorLog/ErrorLogView.cshtml";
                 #endregion
             }
         }

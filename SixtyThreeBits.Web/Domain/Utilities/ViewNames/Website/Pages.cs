@@ -7,7 +7,7 @@
             public static class Pages
             {
                 #region Properties
-                public const string PageView = "~/Views/Website/Pages/Page.cshtml";
+                public const string PageView = "~/Views/Website/Pages/PageView.cshtml";
                 #endregion
             }
         }        

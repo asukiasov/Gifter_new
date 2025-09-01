@@ -7,22 +7,20 @@
             public static class Shared
             {
                 #region Properties
-                public const string LayoutView = "~/Views/Admin/Shared/Layout.cshtml";
-                public const string PopupLayoutView = "~/Views/Admin/Shared/PopupLayout.cshtml";
-                public const string TabsView = "~/Views/Admin/Shared/Tabs.cshtml";
-                public const string SuccessErrorToastPartialView = "~/Views/Admin/Shared/SuccessErrorToastPartialView.cshtml";
-
-                public const string ButtonAddNewPartialView = "~/Views/Admin/Shared/ButtonAddNewPartialView.cshtml";
-                public const string ButtonDeletePartialView = "~/Views/Admin/Shared/ButtonDeletePartialView.cshtml";
-                public const string ButtonSavePartialView = "~/Views/Admin/Shared/ButtonSavePartialView.cshtml";
+                public const string ButtonAddNewPartialView = "~/Views/Admin/Shared/ButtonAddNewPartial.cshtml";
+                public const string ButtonDeletePartialView = "~/Views/Admin/Shared/ButtonDeletePartial.cshtml";
+                public const string ButtonSavePartialView = "~/Views/Admin/Shared/ButtonSavePartial.cshtml";
+                public const string Layout = "~/Views/Admin/Shared/Layout.cshtml";
+                public const string TabsPartial = "~/Views/Admin/Shared/TabsPartial.cshtml";
+                public const string SuccessErrorToastPartial = "~/Views/Admin/Shared/SuccessErrorToastPartial.cshtml";
                 #endregion
 
                 #region Nested Classes
                 public static class FileTreeEditor
                 {
                     #region Properties
-                    public const string Editor = "~/Views/Admin/Shared/FileTreeEditor/FileTreeEditor.cshtml";
-                    public const string File = "~/Views/Admin/Shared/FileTreeEditor/FileTreeEditorFile.cshtml";
+                    public const string EditorPartial = "~/Views/Admin/Shared/FileTreeEditor/FileTreeEditorPartial.cshtml";
+                    public const string FilePartial = "~/Views/Admin/Shared/FileTreeEditor/FileTreeEditorFilePartial.cshtml";
                     #endregion
                 }
                 #endregion

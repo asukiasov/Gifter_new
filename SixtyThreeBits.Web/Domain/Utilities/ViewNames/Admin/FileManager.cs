@@ -7,7 +7,7 @@
             public static class FileManager
             {
                 #region Properties
-                public const string FileManagerView = "~/Views/Admin/FileManager/FileManager.cshtml";
+                public const string FileManagerView = "~/Views/Admin/FileManager/FileManagerView.cshtml";
                 #endregion
             }
         }

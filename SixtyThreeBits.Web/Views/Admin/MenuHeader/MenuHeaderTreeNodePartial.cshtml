@@ -39,7 +39,7 @@
         {
             foreach (var item in Model.Children)
             {
-                @await Html.PartialAsync(ViewNames.Admin.MenuHeader.MenuHeaderTreeNodePartialView, item)
+                @await Html.PartialAsync(ViewNames.Admin.MenuHeader.MenuHeaderTreeNodePartial, item)
             }
         }
     </ul>

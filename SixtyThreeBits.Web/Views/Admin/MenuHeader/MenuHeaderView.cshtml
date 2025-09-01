@@ -1,8 +1,8 @@
-﻿@model MenuFooterModel.ViewModel
+﻿@model MenuHeaderModel.ViewModel
 @{
-    Layout = ViewNames.Admin.Shared.TabsView;
+    Layout = ViewNames.Admin.Shared.TabsPartial;
 }
-@section HeaderSection {
+@section HeaderSection{
     <link href="/css/admin/SortableTree.css" rel="stylesheet" />
 }
 <div class="card">
@@ -18,7 +18,7 @@
     </div>
 </div>
 <div class="card">
-    <div class="card-body">
+    <div class="card-body">        
         <div class="row">
             <div class="col">
                 <div class="sortable">
@@ -27,7 +27,7 @@
                         {
                             foreach (var item in Model.MenuItems)
                             {
-                                @await Html.PartialAsync(ViewNames.Admin.MenuFooter.MenuFooterTreeNodePartialView, item)
+                                @await Html.PartialAsync(ViewNames.Admin.MenuHeader.MenuHeaderTreeNodePartial, item)
                             }
                         }
                     </ul>
@@ -45,17 +45,17 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <input type="hidden" class="js-modal-MenuFooterID-hf" />
-                <input type="hidden" class="js-modal-MenuFooterParentID-hf" />
+                <input type="hidden" class="js-modal-MenuHeaderID-hf" />
+                <input type="hidden" class="js-modal-MenuHeaderParentID-hf" />
                 <div class="row">
                     <div class="col form-group d-flex justify-content-center">
                         <div class="form-check">
-                            <input class="form-check-input js-modal-MenuFooterIsExternalPage-checkbox" type="checkbox" value="" id="js-modal-MenuFooterIsExternalPage-checkbox" />
-                            <label class="form-check-label" for="js-modal-MenuFooterIsExternalPage-checkbox">@Html.Raw(Model.TextPageIsExternal)</label>
+                            <input class="form-check-input js-modal-MenuHeaderIsExternalPage-checkbox" type="checkbox" value="" id="js-modal-MenuHeaderIsExternalPage-checkbox" />
+                            <label class="form-check-label" for="js-modal-MenuHeaderIsExternalPage-checkbox">@Html.Raw(Model.TextPageIsExternal)</label>
                         </div>
                     </div>
                 </div>
-
+                
                 <div class="row js-modal-page-components">
                     <div class="col-lg-12 form-group">
                         <label>@Html.Raw(Model.TextPageInternal)</label>
@@ -65,7 +65,7 @@
                                 .OnSelectionChanged("model.onPagesSelectBoxSelectionChanged")
                                 .DataSource(d => d.Array().Data(Model.Pages))
                                 .ValueExpr(Model.SelectBoxValueExpr)
-                                .DisplayExpr(Model.SelectBoxDisplayExpr)
+                                .DisplayExpr(Model.SelectBoxDisplayExpr)                                
                                 .ElementAttr("class", "border-0")
                                 .SearchEnabled(true)
                                 )
@@ -96,7 +96,7 @@
                     <div class="col-lg-4 form-group">
                         <label>@Html.Raw(Model.TextTitleEng)</label>
                         <input type="text" class="form-control js-modal-PageTitleEng-input" />
-                    </div>                    
+                    </div>                                 
                     <div class="col-lg-4 form-group">
                         <label>@Html.Raw(Model.TextPublished)</label>
                         <label class="toggler toggler-lg">
@@ -108,36 +108,36 @@
                 <div class="row hidden js-modal-menu-item-components">
                     <div class="col-lg-12 form-group">
                         <label>@Html.Raw(Model.TextPageExternalUrl) (https://somedomain.com ...)</label>
-                        <input type="text" class="form-control js-modal-MenuFooterExternalPageUrl-input" />
+                        <input type="text" class="form-control js-modal-MenuHeaderExternalPageUrl-input" />
                         <div class="invalid-feedback"></div>
                     </div>
                     <div class="col-lg-6 form-group">
                         <label>@Html.Raw(Model.TextTitle) *</label>
-                        <input type="text" class="form-control js-modal-MenuFooterTitle-input" />
+                        <input type="text" class="form-control js-modal-MenuHeaderTitle-input" />
                         <div class="invalid-feedback"></div>
                     </div>
                     <div class="col-lg-6 form-group">
                         <label>@Html.Raw(Model.TextTitleEng)</label>
-                        <input type="text" class="form-control js-modal-MenuFooterTitleEng-input" />
+                        <input type="text" class="form-control js-modal-MenuHeaderTitleEng-input" />
                     </div>                    
                     <div class="col-lg-6 form-group">
                         <label>@Html.Raw(Model.TextPublished)</label>
                         <label class="toggler toggler-lg">
-                            <input type="checkbox" class="js-modal-MenuFooterIsPublished-checkbox" />
+                            <input type="checkbox" class="js-modal-MenuHeaderIsPublished-checkbox" />
                             <i></i>
                         </label>
                     </div>
                     <div class="col-lg-6 form-group">
                         <label>@Html.Raw(Model.TextOpenInNewTab)</label>
                         <label class="toggler toggler-lg">
-                            <input type="checkbox" class="js-modal-MenuFooterIsTargetBlank-checkbox" />
+                            <input type="checkbox" class="js-modal-MenuHeaderIsTargetBlank-checkbox" />
                             <i></i>
                         </label>
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
-                @await Html.PartialAsync(ViewNames.Admin.Shared.ButtonSavePartialView, new ButtonSaveViewModel { JsSelector = "js-modal-save-button" })
+                @await Html.PartialAsync(ViewNames.Admin.Shared.ButtonSavePartialView, new ButtonSaveViewModel { JsSelector = "js-modal-save-button"})
             </div>
 
         </div>
@@ -145,8 +145,8 @@
 </div>
 
 
-@section FooterSection {
-    <script src="/js/admin/menuFooter/menuFooter.js"></script>
+@section FooterSection{
+    <script src="/js/admin/menuHeader/menuHeader.js"></script>
     <script>
         model.urlAdd = '@Model.UrlAdd';
         model.urlUpdate = '@Model.UrlUpdate';

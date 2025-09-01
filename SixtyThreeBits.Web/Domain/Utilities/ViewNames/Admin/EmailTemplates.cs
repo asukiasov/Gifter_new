@@ -7,8 +7,8 @@
             public static class EmailTemplates
             {
                 #region Properties
-                public const string EmailTemplatesView = "~/Views/Admin/EmailTemplates/EmailTemplates.cshtml";
-                public const string EmailTemplatePropertiesView = "~/Views/Admin/EmailTemplates/EmailTemplateProperties.cshtml";
+                public const string EmailTemplatesView = "~/Views/Admin/EmailTemplates/EmailTemplatesView.cshtml";
+                public const string EmailTemplatePropertiesView = "~/Views/Admin/EmailTemplates/EmailTemplatePropertiesView.cshtml";
                 #endregion                
             }
         }

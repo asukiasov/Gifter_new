@@ -7,7 +7,7 @@
             public static class Contact
             {
                 #region Properties
-                public const string ContactView = "~/Views/Website/Contact/Contact.cshtml";
+                public const string ContactView = "~/Views/Website/Contact/ContactView.cshtml";
                 #endregion
             }
         }

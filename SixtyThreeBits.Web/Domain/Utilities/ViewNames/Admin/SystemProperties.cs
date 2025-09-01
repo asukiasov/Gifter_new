@@ -7,7 +7,7 @@
             public static class SystemProperties
             {
                 #region Properties
-                public const string SystemPropertiesView = "~/Views/Admin/SystemProperties/SystemProperties.cshtml";
+                public const string SystemPropertiesView = "~/Views/Admin/SystemProperties/SystemPropertiesView.cshtml";
                 #endregion
             }
         }

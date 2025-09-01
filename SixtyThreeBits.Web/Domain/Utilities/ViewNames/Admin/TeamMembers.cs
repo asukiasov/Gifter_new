@@ -7,8 +7,8 @@
             public static class TeamMembers
             {
                 #region Properties
-                public const string TeamMembersView = "~/Views/Admin/TeamMembers/TeamMembers.cshtml";
-                public const string TeamMemberPropertiesView = "~/Views/Admin/TeamMembers/TeamMemberProperties.cshtml";
+                public const string TeamMembersView = "~/Views/Admin/TeamMembers/TeamMembersView.cshtml";
+                public const string TeamMemberPropertiesView = "~/Views/Admin/TeamMembers/TeamMemberPropertiesView.cshtml";
                 #endregion
             }
         }

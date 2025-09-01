@@ -1,6 +1,6 @@
 ﻿using SixtyThreeBits.Core.DevexpressReports;
 
-namespace SixtyThreeBits.Core
+namespace SixtyThreeBits.Web.Domain.Libraries.DevexpressReports
 {
     public class DevexpressReportManager
     {

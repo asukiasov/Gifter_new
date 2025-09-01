@@ -7,8 +7,8 @@
             public static class MenuFooter
             {
                 #region Properties
-                public const string Page = "~/Views/Admin/MenuFooter/MenuFooter.cshtml";
-                public const string MenuFooterTreeNodePartialView = "~/Views/Admin/MenuFooter/MenuFooterTreeNodePartialView.cshtml";
+                public const string MenuFooterView = "~/Views/Admin/MenuFooter/MenuFooterView.cshtml";
+                public const string MenuFooterTreeNodePartial = "~/Views/Admin/MenuFooter/MenuFooterTreeNodePartial.cshtml";
                 #endregion
             }
         }

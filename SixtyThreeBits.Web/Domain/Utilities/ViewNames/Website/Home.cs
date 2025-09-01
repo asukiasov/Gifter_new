@@ -7,7 +7,7 @@
             public static class Home
             {
                 #region Properties
-                public const string IndexView = "~/Views/Website/Home/Index.cshtml";
+                public const string IndexView = "~/Views/Website/Home/IndexView.cshtml";
                 #endregion
             }
         }        

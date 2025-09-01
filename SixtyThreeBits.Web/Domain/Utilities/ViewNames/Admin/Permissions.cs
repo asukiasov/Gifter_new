@@ -7,7 +7,7 @@
             public static class Permissions
             {
                 #region Properties
-                public const string PermissionsView = "~/Views/Admin/Permissions/Permissions.cshtml";
+                public const string PermissionsView = "~/Views/Admin/Permissions/PermissionsView.cshtml";
                 #endregion
             }
         }

@@ -7,7 +7,7 @@
             public static class Errors
             {
                 #region Properties
-                public const string NotFoundView = "~/Views/Admin/Errors/NotFound.cshtml";
+                public const string NotFoundView = "~/Views/Admin/Errors/NotFoundView.cshtml";
                 #endregion
             }
         }

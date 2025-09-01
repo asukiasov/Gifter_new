@@ -112,7 +112,7 @@ namespace SixtyThreeBits.Web.Models.Admin
                     viewModel.Data = await WebUtilities.RenderViewAsync(
                         controller: Controller,
                         contentRootPath: Utilities.ContentRootPath,
-                        viewName: ViewNames.Admin.MenuFooter.MenuFooterTreeNodePartialView,
+                        viewName: ViewNames.Admin.MenuFooter.MenuFooterTreeNodePartial,
                         model: partialViewModel
                     );
                 }
@@ -175,7 +175,7 @@ namespace SixtyThreeBits.Web.Models.Admin
                     viewModel.Data = await WebUtilities.RenderViewAsync(
                         controller: Controller,
                         contentRootPath: Utilities.ContentRootPath,
-                        viewName: ViewNames.Admin.MenuFooter.MenuFooterTreeNodePartialView,
+                        viewName: ViewNames.Admin.MenuFooter.MenuFooterTreeNodePartial,
                         model: partialViewModel
                     );
                 }

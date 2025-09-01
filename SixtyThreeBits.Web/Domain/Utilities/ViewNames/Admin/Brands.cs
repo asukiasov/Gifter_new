@@ -7,8 +7,8 @@
             public static class Brands
             {
                 #region Properties
-                public const string BrandsView = "~/Views/Admin/Brands/Brands.cshtml";
-                public const string BrandPropertiesView = "~/Views/Admin/Brands/BrandProperties.cshtml";
+                public const string BrandsView = "~/Views/Admin/Brands/BrandsView.cshtml";
+                public const string BrandPropertiesView = "~/Views/Admin/Brands/BrandPropertiesView.cshtml";
                 #endregion                
             }
         }

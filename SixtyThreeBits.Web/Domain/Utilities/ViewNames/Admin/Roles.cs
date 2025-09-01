@@ -7,7 +7,7 @@
             public static class Roles
             {
                 #region Properties
-                public const string RolesView = "~/Views/Admin/Roles/Roles.cshtml";
+                public const string RolesView = "~/Views/Admin/Roles/RolesView.cshtml";
                 #endregion
             }
         }

@@ -8,7 +8,7 @@
             public static class FileViewer
             {
                 #region Properties
-                public const string PdfViewerView = "~/Views/Website/FileViewer/PdfViewer.cshtml";
+                public const string PdfViewerView = "~/Views/Website/FileViewer/PdfViewerView.cshtml";
                 #endregion
             }
             #endregion

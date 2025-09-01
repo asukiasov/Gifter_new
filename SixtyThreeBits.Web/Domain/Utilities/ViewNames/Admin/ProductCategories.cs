@@ -7,8 +7,8 @@
             public static class ProductCategories
             {
                 #region Properties
-                public const string ProductCategoriesView = "~/Views/Admin/ProductCategories/ProductCategories.cshtml";
-                public const string ProductCategoryPropertiesView = "~/Views/Admin/ProductCategories/ProductCategoryProperties.cshtml";
+                public const string ProductCategoriesView = "~/Views/Admin/ProductCategories/ProductCategoriesView.cshtml";
+                public const string ProductCategoryPropertiesView = "~/Views/Admin/ProductCategories/ProductCategoryPropertiesView.cshtml";
                 #endregion                
             }
         }

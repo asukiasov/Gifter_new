@@ -20,7 +20,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         {
             Model.PluginsClient.EnableDevextreme(true).Enable63BitsForms(true).EnableSortableJS(true);
             var viewModel = await Model.GetViewModel();
-            return View(ViewNames.Admin.MenuFooter.Page, viewModel);
+            return View(ViewNames.Admin.MenuFooter.MenuFooterView, viewModel);
         }
 
         [HttpPost]

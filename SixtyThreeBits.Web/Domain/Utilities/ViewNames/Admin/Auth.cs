@@ -7,7 +7,7 @@
             public static class Auth
             {
                 #region Properties
-                public const string LoginView = "~/Views/Admin/Auth/Login.cshtml";
+                public const string LoginView = "~/Views/Admin/Auth/LoginView.cshtml";
                 #endregion
             }
         }

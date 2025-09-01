@@ -19,7 +19,7 @@ namespace SixtyThreeBits.Web.Domain.ViewModels.Base
         public bool ShowBreadCrumbs { get; set; }
         public List<ProjectMenuViewItem> Tabs { get; set; }
         public bool HasTabs => Tabs?.Count > 0;
-        public string TabsLayoutViewName { get; set; } = ViewNames.Admin.Shared.LayoutView;
+        public string TabsLayoutViewName { get; set; } = ViewNames.Admin.Shared.Layout;
         public string UrlLogout { get; set; }
         public PluginsClientViewModel PluginsClient { get; set; }
         public readonly string TextError = Resources.TextError;

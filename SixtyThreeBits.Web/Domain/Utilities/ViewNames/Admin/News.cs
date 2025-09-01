@@ -7,8 +7,8 @@
             public static class News
             {
                 #region Properties
-                public const string NewsView = "~/Views/Admin/News/News.cshtml";
-                public const string NewsPropertiesView = "~/Views/Admin/News/NewsProperties.cshtml";
+                public const string NewsView = "~/Views/Admin/News/NewsView.cshtml";
+                public const string NewsPropertiesView = "~/Views/Admin/News/NewsPropertiesView.cshtml";
                 #endregion
             }
         }

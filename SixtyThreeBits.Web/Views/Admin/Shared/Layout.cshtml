@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <link rel="icon" type="image/png" href="/images/favicon.png">
     <title>@Html.Raw(Model.PageTitle.TitleHead)</title>
-    @await Html.PartialAsync(ViewNames.Shared.PluginsClient.PluginsClientHeader, Model.PluginsClient)
+    @await Html.PartialAsync(ViewNames.Shared.PluginsClient.PluginsClientHeaderPartial, Model.PluginsClient)
     <link href="/css/admin/style.css" rel="stylesheet" />
     @RenderSection(Model.HeaderSectionName, false)
 </head>
@@ -195,9 +195,9 @@
     </div>
                                    
 
-    @await Html.PartialAsync(ViewNames.Admin.Shared.SuccessErrorToastPartialView, Model.SuccessErrorPartialViewModel)
+    @await Html.PartialAsync(ViewNames.Admin.Shared.SuccessErrorToastPartial, Model.SuccessErrorPartialViewModel)
 
-    @await Html.PartialAsync(ViewNames.Shared.PluginsClient.PluginsClientFooter, Model.PluginsClient)
+    @await Html.PartialAsync(ViewNames.Shared.PluginsClient.PluginsClientFooterPartial, Model.PluginsClient)
 
     <script src="/js/global.js?v=2025-05-16"></script>
     <script src="/js/admin/layout.js?v=2025-05-16"></script>

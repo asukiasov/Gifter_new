@@ -7,15 +7,15 @@
             public static class Users
             {
                 #region Properties
-                public const string UsersView = "~/Views/Admin/Users/Users.cshtml";
+                public const string UsersView = "~/Views/Admin/Users/UsersView.cshtml";
                 #endregion
 
                 #region Nested Classes
                 public static class User
                 {
                     #region Properties
-                    public const string UserLayoutView = "~/Views/Admin/Users/User/UserLayout.cshtml";
-                    public const string UserPropertiesView = "~/Views/Admin/Users/User/UserProperties.cshtml";
+                    public const string UserLayout = "~/Views/Admin/Users/User/UserLayout.cshtml";
+                    public const string UserPropertiesView = "~/Views/Admin/Users/User/UserPropertiesView.cshtml";
                     #endregion
                 }
                 #endregion

@@ -7,8 +7,8 @@
             public static class MenuHeader
             {
                 #region Properties
-                public const string Page = "~/Views/Admin/MenuHeader/MenuHeader.cshtml";
-                public const string MenuHeaderTreeNodePartialView = "~/Views/Admin/MenuHeader/MenuHeaderTreeNodePartialView.cshtml";
+                public const string MenuHeaderView = "~/Views/Admin/MenuHeader/MenuHeaderView.cshtml";
+                public const string MenuHeaderTreeNodePartial = "~/Views/Admin/MenuHeader/MenuHeaderTreeNodePartial.cshtml";
                 #endregion
             }
         }
