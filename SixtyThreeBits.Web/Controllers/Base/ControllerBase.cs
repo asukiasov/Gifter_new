@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SixtyThreeBits.Web.Domain.ViewModels.Shared;
 using SixtyThreeBits.Web.Filters.Base;
 
 namespace SixtyThreeBits.Web.Controllers.Base
@@ -14,6 +15,14 @@ namespace SixtyThreeBits.Web.Controllers.Base
         public ControllerBase()
         {
             Model = new T();
+        }
+        #endregion
+
+        #region Methods
+        [NonAction]
+        public IActionResult FileDownloadViewModelResult(FileDownloadViewModel viewModel)
+        {
+            return File(fileContents: viewModel.FileBytes, contentType: viewModel.MimeType, fileDownloadName: viewModel.Filename);
         }
         #endregion
     }

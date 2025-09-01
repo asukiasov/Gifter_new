@@ -58,14 +58,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         public async Task<IActionResult> ExcelDownload()
         {
             var viewModel = await Model.GetProductsSyncExcelFileBytes();
-            if (viewModel == null)
-            {
-                return Model.GetNotFoundAdminViewResult();
-            }
-            else
-            {
-                return File(viewModel, "application/force-download", "ProductsSync.xlsx");
-            }
+            return FileDownloadViewModelResult(viewModel);
         }
 
         [HttpPost]

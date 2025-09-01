@@ -10,6 +10,7 @@ using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries;
 using SixtyThreeBits.Web.Domain.Libraries;
 using SixtyThreeBits.Web.Domain.Utilities;
+using SixtyThreeBits.Web.Domain.ViewModels.Shared;
 using SixtyThreeBits.Web.Models.Base;
 using System.Collections.Generic;
 using System.Linq;
@@ -113,14 +114,19 @@ namespace SixtyThreeBits.Web.Models.Admin
             return viewModel;
         }
 
-        public async Task<byte[]> GetProductsSyncExcelFileBytes()
+        public async Task<FileDownloadViewModel> GetProductsSyncExcelFileBytes()
         {
+            var viewModel = new FileDownloadViewModel();
             var bl = new ProductsBusinessLogicCreatePricesAndRemainderExcelFile(
                 dataAccessFactory: RepositoriesFactory,
                 appSettings: AppSettings
             );
             var result = await bl.Execute();
-            return result.ExcelFileBytes;
+
+            viewModel.Filename = "ProductsSync.xlsx";
+            viewModel.FileBytes = result.ExcelFileBytes;
+
+            return viewModel;
         }
 
         public async Task<AjaxResponse> SyncExcel(ExcelUploadSubmitModel submitModel)
