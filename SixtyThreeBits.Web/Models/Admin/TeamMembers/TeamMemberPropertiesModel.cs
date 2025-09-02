@@ -36,53 +36,74 @@ namespace SixtyThreeBits.Web.Models.Admin
             viewModel.UrlDeleteImage = Url.RouteUrl(ControllerActionRouteNames.Admin.TeamMemberPropertiesController.DeleteImage, new { teamMemberID = DBItem.TeamMemberID });
             return viewModel;
         }
-
-        public void Validate(ViewModel viewModel)
+        
+        public async Task<ViewModel> Save(ViewModel submitModel)
         {
-            viewModel.AddError(Validation63.ValidateRequired(errorKey: Validation63.GetJQueryNameSelectorFor(nameof(viewModel.TeamMemberFirstname)), valueToValidate: viewModel.TeamMemberFirstname));
-            viewModel.AddError(Validation63.ValidateRequired(errorKey: Validation63.GetJQueryNameSelectorFor(nameof(viewModel.TeamMemberLastname)), valueToValidate: viewModel.TeamMemberLastname));
-        }
+            var viewModel = await GetViewModel(submitModel);
 
-        public async Task Save(ViewModel viewModel)
-        {
-            var hasTeamMemberImage = viewModel.TeamMemberImageFile?.Length > 0;
-            var teamMemberImageFilename = hasTeamMemberImage ? GetFilenameFromUploadedFile(viewModel.TeamMemberImageFile) : null;
-            if (hasTeamMemberImage)
+            var validationResult = validateSubmitModel(submitModel);
+
+            if (validationResult.HasErrors)
             {
-                await FileStorage.DeleteFile(DBItem.TeamMemberImageFilename);
-            }
-
-            var repository = RepositoriesFactory.CreateTeamMembersRepository();
-            await repository.TeamMembersIUD(
-                databaseAction: Enums.DatabaseActions.UPDATE,
-                teamMemberID: DBItem.TeamMemberID,
-                teamMember: new TeamMemberIudDTO
-                {
-                    TeamMemberFirstname = viewModel.TeamMemberFirstname,
-                    TeamMemberLastname = viewModel.TeamMemberLastname,
-                    TeamMemberPosition = viewModel.TeamMemberPosition ?? Constants.NullValueFor.String,
-                    TeamMemberShortDescription = viewModel.TeamMemberShortDescription ?? Constants.NullValueFor.String,
-                    TeamMemberLongDescription = viewModel.TeamMemberLongDescription ?? Constants.NullValueFor.String,
-                    TeamMemberImageFilename = teamMemberImageFilename,
-                    TeamMemberIsPublished = viewModel.TeamMemberIsPublished,
-                    TeamMemberCategoryID = viewModel.TeamMemberCategoryID
-                }
-            );
-
-            if (repository.IsError)
-            {
-                viewModel.AddError(repository.ErrorMessage);
+                viewModel.AddFormErrors(validationResult.Errors);
             }
             else
             {
+                var hasTeamMemberImage = submitModel.TeamMemberImageFile?.Length > 0;
+                var teamMemberImageFilename = hasTeamMemberImage ? GetFilenameFromUploadedFile(submitModel.TeamMemberImageFile) : null;
                 if (hasTeamMemberImage)
                 {
-                    await FileStorage.SaveUploadedFile(
-                        sourceFileStream: viewModel.TeamMemberImageFile.OpenReadStream(),
-                        filename: teamMemberImageFilename
-                    );
+                    await FileStorage.DeleteFile(DBItem.TeamMemberImageFilename);
+                }
+
+                var repository = RepositoriesFactory.CreateTeamMembersRepository();
+                await repository.TeamMembersIUD(
+                    databaseAction: Enums.DatabaseActions.UPDATE,
+                    teamMemberID: DBItem.TeamMemberID,
+                    teamMember: new TeamMemberIudDTO
+                    {
+                        TeamMemberFirstname = submitModel.TeamMemberFirstname,
+                        TeamMemberLastname = submitModel.TeamMemberLastname,
+                        TeamMemberPosition = submitModel.TeamMemberPosition ?? Constants.NullValueFor.String,
+                        TeamMemberShortDescription = submitModel.TeamMemberShortDescription ?? Constants.NullValueFor.String,
+                        TeamMemberLongDescription = submitModel.TeamMemberLongDescription ?? Constants.NullValueFor.String,
+                        TeamMemberImageFilename = teamMemberImageFilename,
+                        TeamMemberIsPublished = submitModel.TeamMemberIsPublished,
+                        TeamMemberCategoryID = submitModel.TeamMemberCategoryID
+                    }
+                );
+
+                if (repository.IsError)
+                {
+                    submitModel.AddToastError(repository.ErrorMessage);
+                }
+                else
+                {
+                    if (hasTeamMemberImage)
+                    {
+                        await FileStorage.SaveUploadedFile(
+                            sourceFileStream: submitModel.TeamMemberImageFile.OpenReadStream(),
+                            filename: teamMemberImageFilename
+                        );
+                    }
                 }
             }
+
+            return viewModel;
+        }
+
+        ValidationResult63 validateSubmitModel(ViewModel submitModel)
+        {
+            var validationResult = new ValidationResult63();
+            var error = default(Error63);
+
+            error = Validation63.ValidateRequired(errorKey: Validation63.GetJQueryNameSelectorFor(nameof(submitModel.TeamMemberFirstname)), valueToValidate: submitModel.TeamMemberFirstname);
+            validationResult.AddError(error);
+
+            error = Validation63.ValidateRequired(errorKey: Validation63.GetJQueryNameSelectorFor(nameof(submitModel.TeamMemberLastname)), valueToValidate: submitModel.TeamMemberLastname);
+            validationResult.AddError(error);
+
+            return validationResult;
         }
 
         public async Task<AjaxResponse> DeleteImage()

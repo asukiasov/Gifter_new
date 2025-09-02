@@ -20,57 +20,62 @@ namespace SixtyThreeBits.Web.Models.Admin
     public class SystemPropertiesModel : ModelBase
     {
         #region Methods
-        public async Task<ViewModel> GetViewModel()
+        public async Task<ViewModel> GetViewModel(ViewModel viewModel = null)
         {
-            var viewModel = new ViewModel();
-            var repository = RepositoriesFactory.CreateSystemPropertiesRepository();
-            var dbItem = await repository.SystemPropertiesGet();
-            viewModel.ProjectName = dbItem.ProjectName;
-            viewModel.AdminEmails = dbItem.AdminEmails;
-            viewModel.DeveloperEmails = dbItem.DeveloperEmails;
-            viewModel.ContactEmail = dbItem.ContactEmail;
-            viewModel.ContactPhone = dbItem.ContactPhone;
-            viewModel.ContactAddress = dbItem.ContactAddress;
-            viewModel.ContactAddressEng = dbItem.ContactAddressEng;
-            viewModel.FacebookUrl = dbItem.FacebookUrl;
-            viewModel.TwitterUrl = dbItem.TwitterUrl;
-            viewModel.InstagramUrl = dbItem.InstagramUrl;
-            viewModel.YoutubeUrl = dbItem.YoutubeUrl;
-            viewModel.LinkedInUrl = dbItem.LinkedInUrl;
-            viewModel.ReCaptchaSiteKey = dbItem.ReCaptchaSiteKey;
-            viewModel.ReCaptchaSecretKey = dbItem.ReCaptchaSecretKey;
-            viewModel.GoogleMapsIFrame = dbItem.GoogleMapsIFrame;
-            viewModel.ScriptsHeader = dbItem.ScriptsHeader;
-            viewModel.ScriptsBodyStart = dbItem.ScriptsBodyStart;
-            viewModel.ScriptsBodyEnd = dbItem.ScriptsBodyEnd;
-            viewModel.IsEmailSmtpEnabled = dbItem.IsEmailSmtpEnabled;
-            viewModel.SmtpAddress = dbItem.SmtpAddress;
-            viewModel.SmtpPort = dbItem.SmtpPort;
-            viewModel.SmtpUsername = dbItem.SmtpUsername;
-            viewModel.SmtpPassword = dbItem.SmtpPassword;
-            viewModel.SmtpUseSsl = dbItem.SmtpUseSsl;
-            viewModel.SmtpFrom = dbItem.SmtpFrom;
-            viewModel.IsEmailOffice365Enabled = dbItem.IsEmailOffice365Enabled;
-            viewModel.MicrosoftGraphServiceTenant = dbItem.MicrosoftGraphServiceTenant;
-            viewModel.MicrosoftGraphServiceClientID = dbItem.MicrosoftGraphServiceClientID;
-            viewModel.MicrosoftGraphServiceClientSecret = dbItem.MicrosoftGraphServiceClientSecret;
-            viewModel.MicrosoftGraphServiceUserID = dbItem.MicrosoftGraphServiceUserID;
-            viewModel.IsEmailMailgunEnabled = dbItem.IsEmailMailgunEnabled;
-            viewModel.MailgunBaseUrl = dbItem.MailgunBaseUrl;
-            viewModel.MailgunApiKey = dbItem.MailgunApiKey;
-            viewModel.MailgunDomain = dbItem.MailgunDomain;
-            viewModel.MailgunFrom = dbItem.MailgunFrom;
-            viewModel.MailgunWebhookWebhookSigningKey = dbItem.MailgunWebhookWebhookSigningKey;
-            viewModel.AwsAccessKeyID = dbItem.AwsAccessKeyID;
-            viewModel.AwsSecretAccessKey = dbItem.AwsSecretAccessKey;
-            viewModel.AwsS3RegionSystemName = dbItem.AwsS3RegionSystemName;
-            viewModel.AwsS3BucketNamePublic = dbItem.AwsS3BucketNamePublic;
-            viewModel.AzureConnectionString = dbItem.AzureConnectionString;
-            viewModel.AzureBlobStorageContainerName = dbItem.AzureBlobStorageContainerName;
+            if (viewModel == null)
+            {
+                viewModel = new ViewModel();
+                var repository = RepositoriesFactory.CreateSystemPropertiesRepository();
+                var dbItem = await repository.SystemPropertiesGet();
+                viewModel.ProjectName = dbItem.ProjectName;
+                viewModel.AdminEmails = dbItem.AdminEmails;
+                viewModel.DeveloperEmails = dbItem.DeveloperEmails;
+                viewModel.ContactEmail = dbItem.ContactEmail;
+                viewModel.ContactPhone = dbItem.ContactPhone;
+                viewModel.ContactAddress = dbItem.ContactAddress;
+                viewModel.ContactAddressEng = dbItem.ContactAddressEng;
+                viewModel.FacebookUrl = dbItem.FacebookUrl;
+                viewModel.TwitterUrl = dbItem.TwitterUrl;
+                viewModel.InstagramUrl = dbItem.InstagramUrl;
+                viewModel.YoutubeUrl = dbItem.YoutubeUrl;
+                viewModel.LinkedInUrl = dbItem.LinkedInUrl;
+                viewModel.ReCaptchaSiteKey = dbItem.ReCaptchaSiteKey;
+                viewModel.ReCaptchaSecretKey = dbItem.ReCaptchaSecretKey;
+                viewModel.GoogleMapsIFrame = dbItem.GoogleMapsIFrame;
+                viewModel.ScriptsHeader = dbItem.ScriptsHeader;
+                viewModel.ScriptsBodyStart = dbItem.ScriptsBodyStart;
+                viewModel.ScriptsBodyEnd = dbItem.ScriptsBodyEnd;
+                viewModel.IsEmailSmtpEnabled = dbItem.IsEmailSmtpEnabled;
+                viewModel.SmtpAddress = dbItem.SmtpAddress;
+                viewModel.SmtpPort = dbItem.SmtpPort;
+                viewModel.SmtpUsername = dbItem.SmtpUsername;
+                viewModel.SmtpPassword = dbItem.SmtpPassword;
+                viewModel.SmtpUseSsl = dbItem.SmtpUseSsl;
+                viewModel.SmtpFrom = dbItem.SmtpFrom;
+                viewModel.IsEmailOffice365Enabled = dbItem.IsEmailOffice365Enabled;
+                viewModel.MicrosoftGraphServiceTenant = dbItem.MicrosoftGraphServiceTenant;
+                viewModel.MicrosoftGraphServiceClientID = dbItem.MicrosoftGraphServiceClientID;
+                viewModel.MicrosoftGraphServiceClientSecret = dbItem.MicrosoftGraphServiceClientSecret;
+                viewModel.MicrosoftGraphServiceUserID = dbItem.MicrosoftGraphServiceUserID;
+                viewModel.IsEmailMailgunEnabled = dbItem.IsEmailMailgunEnabled;
+                viewModel.MailgunBaseUrl = dbItem.MailgunBaseUrl;
+                viewModel.MailgunApiKey = dbItem.MailgunApiKey;
+                viewModel.MailgunDomain = dbItem.MailgunDomain;
+                viewModel.MailgunFrom = dbItem.MailgunFrom;
+                viewModel.MailgunWebhookWebhookSigningKey = dbItem.MailgunWebhookWebhookSigningKey;
+                viewModel.AwsAccessKeyID = dbItem.AwsAccessKeyID;
+                viewModel.AwsSecretAccessKey = dbItem.AwsSecretAccessKey;
+                viewModel.AwsS3RegionSystemName = dbItem.AwsS3RegionSystemName;
+                viewModel.AwsS3BucketNamePublic = dbItem.AwsS3BucketNamePublic;
+                viewModel.AzureConnectionString = dbItem.AzureConnectionString;
+                viewModel.AzureBlobStorageContainerName = dbItem.AzureBlobStorageContainerName;                
+            }
+
             viewModel.UrlTestEmailSmtp = Url.RouteUrl(ControllerActionRouteNames.Admin.SystemPropertiesController.TestEmailSmtp);
             viewModel.UrlTestEmailMailgun = Url.RouteUrl(ControllerActionRouteNames.Admin.SystemPropertiesController.TestEmailMailgun);
             viewModel.UrlTestEmailOffice365 = Url.RouteUrl(ControllerActionRouteNames.Admin.SystemPropertiesController.TestEmailOffice365);
             viewModel.UrlTestAws = Url.RouteUrl(ControllerActionRouteNames.Admin.SystemPropertiesController.TestAws);
+
             return viewModel;
         }
 
@@ -205,77 +210,79 @@ namespace SixtyThreeBits.Web.Models.Admin
             return viewModel;
         }
 
-        public async Task<ViewModel> Save(ViewModel viewModel)
+        public async Task<ViewModel> Save(ViewModel submitModel)
         {
-            if (viewModel.GoogleMapsIFrame != null && viewModel.GoogleMapsIFrame.Contains("<iframe") && !viewModel.GoogleMapsIFrame.Contains("width=\"100%\""))
+            var viewModel = await GetViewModel(submitModel);
+
+            if (submitModel.GoogleMapsIFrame != null && submitModel.GoogleMapsIFrame.Contains("<iframe") && !submitModel.GoogleMapsIFrame.Contains("width=\"100%\""))
             {
-                viewModel.GoogleMapsIFrame = Regex.Replace(viewModel.GoogleMapsIFrame, "width=\"\\d+\"", "width=\"100%\"").Trim();
+                submitModel.GoogleMapsIFrame = Regex.Replace(submitModel.GoogleMapsIFrame, "width=\"\\d+\"", "width=\"100%\"").Trim();
             }
 
-            if (!string.IsNullOrWhiteSpace(viewModel.AdminEmails))
+            if (!string.IsNullOrWhiteSpace(submitModel.AdminEmails))
             {
-                viewModel.AdminEmails = string.Join(",", viewModel.AdminEmails.Split(',').Select(item => item.Trim()));
+                submitModel.AdminEmails = string.Join(",", submitModel.AdminEmails.Split(',').Select(item => item.Trim()));
             }
-            if (!string.IsNullOrWhiteSpace(viewModel.DeveloperEmails))
+            if (!string.IsNullOrWhiteSpace(submitModel.DeveloperEmails))
             {
-                viewModel.DeveloperEmails = string.Join(",", viewModel.DeveloperEmails.Split(',').Select(item => item.Trim()));
+                submitModel.DeveloperEmails = string.Join(",", submitModel.DeveloperEmails.Split(',').Select(item => item.Trim()));
             }
 
             var repository = RepositoriesFactory.CreateSystemPropertiesRepository();
             await repository.SystemPropertiesUpdate(
                 systemProperties: new SystemPropertiesIudDTO
                 {
-                    ProjectName = viewModel.ProjectName,
-                    ContactEmail = viewModel.ContactEmail ?? Constants.NullValueFor.String,
-                    ContactPhone = viewModel.ContactPhone ?? Constants.NullValueFor.String,
-                    ContactAddress = viewModel.ContactAddress ?? Constants.NullValueFor.String,
-                    ContactAddressEng = viewModel.ContactAddressEng ?? Constants.NullValueFor.String,
-                    FacebookUrl = viewModel.FacebookUrl ?? Constants.NullValueFor.String,
-                    TwitterUrl = viewModel.TwitterUrl ?? Constants.NullValueFor.String,
-                    InstagramUrl = viewModel.InstagramUrl ?? Constants.NullValueFor.String,
-                    YoutubeUrl = viewModel.YoutubeUrl ?? Constants.NullValueFor.String,
-                    LinkedInUrl = viewModel.LinkedInUrl ?? Constants.NullValueFor.String,
-                    ReCaptchaSiteKey = viewModel.ReCaptchaSiteKey ?? Constants.NullValueFor.String,
-                    ReCaptchaSecretKey = viewModel.ReCaptchaSecretKey ?? Constants.NullValueFor.String,
-                    GoogleMapsIFrame = viewModel.GoogleMapsIFrame ?? Constants.NullValueFor.String,
-                    ScriptsHeader = viewModel.ScriptsHeader ?? Constants.NullValueFor.String,
-                    ScriptsBodyStart = viewModel.ScriptsBodyStart ?? Constants.NullValueFor.String,
-                    ScriptsBodyEnd = viewModel.ScriptsBodyEnd ?? Constants.NullValueFor.String,
-                    IsEmailSmtpEnabled = viewModel.EmailTypesSelectedOption == nameof(viewModel.IsEmailSmtpEnabled),
-                    SmtpAddress = viewModel.SmtpAddress ?? Constants.NullValueFor.String,
-                    SmtpPort = viewModel.SmtpPort ?? Constants.NullValueFor.Numeric,
-                    SmtpUsername = viewModel.SmtpUsername ?? Constants.NullValueFor.String,
-                    SmtpPassword = viewModel.SmtpPassword ?? Constants.NullValueFor.String,
-                    SmtpUseSsl = viewModel.SmtpUseSsl,
-                    SmtpFrom = viewModel.SmtpFrom ?? Constants.NullValueFor.String,
-                    IsEmailMailgunEnabled = viewModel.EmailTypesSelectedOption == nameof(viewModel.IsEmailMailgunEnabled),
-                    MailgunBaseUrl = viewModel.MailgunBaseUrl ?? Constants.NullValueFor.String,
-                    MailgunApiKey = viewModel.MailgunApiKey ?? Constants.NullValueFor.String,
-                    MailgunDomain = viewModel.MailgunDomain ?? Constants.NullValueFor.String,
-                    MailgunFrom = viewModel.MailgunFrom ?? Constants.NullValueFor.String,
-                    MailgunWebhookWebhookSigningKey = viewModel.MailgunWebhookWebhookSigningKey ?? Constants.NullValueFor.String,
-                    IsEmailOffice365Enabled = viewModel.EmailTypesSelectedOption == nameof(viewModel.IsEmailOffice365Enabled),
-                    MicrosoftGraphServiceTenant = viewModel.MicrosoftGraphServiceTenant ?? Constants.NullValueFor.String,
-                    MicrosoftGraphServiceClientID = viewModel.MicrosoftGraphServiceClientID ?? Constants.NullValueFor.String,
-                    MicrosoftGraphServiceClientSecret = viewModel.MicrosoftGraphServiceClientSecret ?? Constants.NullValueFor.String,
-                    MicrosoftGraphServiceUserID = viewModel.MicrosoftGraphServiceUserID ?? Constants.NullValueFor.String,
-                    AwsAccessKeyID = viewModel.AwsAccessKeyID ?? Constants.NullValueFor.String,
-                    AwsSecretAccessKey = viewModel.AwsSecretAccessKey ?? Constants.NullValueFor.String,
-                    AwsS3RegionSystemName = viewModel.AwsS3RegionSystemName ?? Constants.NullValueFor.String,
-                    AwsS3BucketNamePublic = viewModel.AwsS3BucketNamePublic ?? Constants.NullValueFor.String,
-                    AzureConnectionString = viewModel.AzureConnectionString ?? Constants.NullValueFor.String,
-                    AzureBlobStorageContainerName = viewModel.AzureBlobStorageContainerName ?? Constants.NullValueFor.String,                    
-                    AdminEmails = viewModel.AdminEmails ?? Constants.NullValueFor.String,
-                    DeveloperEmails = viewModel.DeveloperEmails ?? Constants.NullValueFor.String
+                    ProjectName = submitModel.ProjectName,
+                    ContactEmail = submitModel.ContactEmail ?? Constants.NullValueFor.String,
+                    ContactPhone = submitModel.ContactPhone ?? Constants.NullValueFor.String,
+                    ContactAddress = submitModel.ContactAddress ?? Constants.NullValueFor.String,
+                    ContactAddressEng = submitModel.ContactAddressEng ?? Constants.NullValueFor.String,
+                    FacebookUrl = submitModel.FacebookUrl ?? Constants.NullValueFor.String,
+                    TwitterUrl = submitModel.TwitterUrl ?? Constants.NullValueFor.String,
+                    InstagramUrl = submitModel.InstagramUrl ?? Constants.NullValueFor.String,
+                    YoutubeUrl = submitModel.YoutubeUrl ?? Constants.NullValueFor.String,
+                    LinkedInUrl = submitModel.LinkedInUrl ?? Constants.NullValueFor.String,
+                    ReCaptchaSiteKey = submitModel.ReCaptchaSiteKey ?? Constants.NullValueFor.String,
+                    ReCaptchaSecretKey = submitModel.ReCaptchaSecretKey ?? Constants.NullValueFor.String,
+                    GoogleMapsIFrame = submitModel.GoogleMapsIFrame ?? Constants.NullValueFor.String,
+                    ScriptsHeader = submitModel.ScriptsHeader ?? Constants.NullValueFor.String,
+                    ScriptsBodyStart = submitModel.ScriptsBodyStart ?? Constants.NullValueFor.String,
+                    ScriptsBodyEnd = submitModel.ScriptsBodyEnd ?? Constants.NullValueFor.String,
+                    IsEmailSmtpEnabled = submitModel.EmailTypesSelectedOption == nameof(submitModel.IsEmailSmtpEnabled),
+                    SmtpAddress = submitModel.SmtpAddress ?? Constants.NullValueFor.String,
+                    SmtpPort = submitModel.SmtpPort ?? Constants.NullValueFor.Numeric,
+                    SmtpUsername = submitModel.SmtpUsername ?? Constants.NullValueFor.String,
+                    SmtpPassword = submitModel.SmtpPassword ?? Constants.NullValueFor.String,
+                    SmtpUseSsl = submitModel.SmtpUseSsl,
+                    SmtpFrom = submitModel.SmtpFrom ?? Constants.NullValueFor.String,
+                    IsEmailMailgunEnabled = submitModel.EmailTypesSelectedOption == nameof(submitModel.IsEmailMailgunEnabled),
+                    MailgunBaseUrl = submitModel.MailgunBaseUrl ?? Constants.NullValueFor.String,
+                    MailgunApiKey = submitModel.MailgunApiKey ?? Constants.NullValueFor.String,
+                    MailgunDomain = submitModel.MailgunDomain ?? Constants.NullValueFor.String,
+                    MailgunFrom = submitModel.MailgunFrom ?? Constants.NullValueFor.String,
+                    MailgunWebhookWebhookSigningKey = submitModel.MailgunWebhookWebhookSigningKey ?? Constants.NullValueFor.String,
+                    IsEmailOffice365Enabled = submitModel.EmailTypesSelectedOption == nameof(submitModel.IsEmailOffice365Enabled),
+                    MicrosoftGraphServiceTenant = submitModel.MicrosoftGraphServiceTenant ?? Constants.NullValueFor.String,
+                    MicrosoftGraphServiceClientID = submitModel.MicrosoftGraphServiceClientID ?? Constants.NullValueFor.String,
+                    MicrosoftGraphServiceClientSecret = submitModel.MicrosoftGraphServiceClientSecret ?? Constants.NullValueFor.String,
+                    MicrosoftGraphServiceUserID = submitModel.MicrosoftGraphServiceUserID ?? Constants.NullValueFor.String,
+                    AwsAccessKeyID = submitModel.AwsAccessKeyID ?? Constants.NullValueFor.String,
+                    AwsSecretAccessKey = submitModel.AwsSecretAccessKey ?? Constants.NullValueFor.String,
+                    AwsS3RegionSystemName = submitModel.AwsS3RegionSystemName ?? Constants.NullValueFor.String,
+                    AwsS3BucketNamePublic = submitModel.AwsS3BucketNamePublic ?? Constants.NullValueFor.String,
+                    AzureConnectionString = submitModel.AzureConnectionString ?? Constants.NullValueFor.String,
+                    AzureBlobStorageContainerName = submitModel.AzureBlobStorageContainerName ?? Constants.NullValueFor.String,                    
+                    AdminEmails = submitModel.AdminEmails ?? Constants.NullValueFor.String,
+                    DeveloperEmails = submitModel.DeveloperEmails ?? Constants.NullValueFor.String
                 }
             );
             
             if (repository.IsError)
             {
-                viewModel.AddError(repository.ErrorMessage);
+                viewModel.AddToastError(repository.ErrorMessage);
             }
 
-            return viewModel;
+            return submitModel;
         }
         #endregion
 

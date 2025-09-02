@@ -84,12 +84,19 @@
     <script>
         model.textPageShortDescriptionAndImageInfo = '@Html.Raw(Model.TextPageShortDescriptionAndImageInfo)';
     </script>
-    @if (Model.HasFormErrors)
+    @if (Model.HasErrors)
     {
-        <script>
-        $(function(){
-            validation.init({ errorsJson: @Html.Raw(Model.FormErrorsJson)}).showErrors();
-        });
-        </script>
+        @if (Model.HasFormErrors)
+        {
+            <script>
+                validation.init({ errorsJson: @Html.Raw(Model.FormErrorsJson) }).showErrors();
+            </script>
+        }
+        @if (Model.HasToastError)
+        {
+            <script>
+                successErrorToast63Bits.init({isError:true,message:'@Html.Raw(Model.ToastError)'});
+            </script>
+        }
     }
 }

@@ -57,15 +57,14 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         {
             Model.PluginsClient.Enable63BitsForms(true);
             var viewModel = await Model.Save(SubmitModel);
-            if (viewModel.IsValid)
+            if (viewModel.HasErrors)
             {
-                Model.ShowSuccessToastNotification();
-                return Redirect(Url.RouteUrl(ControllerActionRouteNames.Admin.SystemPropertiesController.SystemProperties));
+                return View(ViewNames.Admin.SystemProperties.SystemPropertiesView, viewModel);
             }
             else
             {
-                Model.ShowErrorToastNotification();
-                return View(ViewNames.Admin.SystemProperties.SystemPropertiesView, viewModel);
+                Model.ShowSuccessToastNotification();
+                return Redirect(Model.UrlCurrentPageWithDomain);
             }
         } 
         #endregion

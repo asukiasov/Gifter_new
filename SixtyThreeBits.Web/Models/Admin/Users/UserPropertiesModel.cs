@@ -31,51 +31,70 @@ namespace SixtyThreeBits.Web.Models.Admin
             viewModel.Roles = await repository.RolesListAsKeyValueSelectedTuple(dbItem.RoleID);
             return viewModel;
         }
-
-        public async Task ValidateViewModel(ViewModel viewModel)
+        
+        public async Task<ViewModel> Save(ViewModel submitModel)
         {
-            viewModel.AddError(await Validation63.ValidateEmail(
-                errorKey: Validation63.GetJQueryNameSelectorFor(nameof(viewModel.UserEmail)),
-                userEmail: viewModel.UserEmail,
+            var viewModel = await GetViewModel(submitModel);
+
+            var validationResult = await validateSubmitModel(submitModel);
+
+            if (validationResult.HasErrors)
+            {
+                viewModel.AddFormErrors(validationResult.Errors);
+            }
+            else
+            {
+                var repository = RepositoriesFactory.CreateUsersRepository();
+                await repository.UsersIUD(
+                    databaseAction: Enums.DatabaseActions.UPDATE,
+                    userID: dbItem.UserID,
+                    user: new UserIudDTO
+                    {
+                        RoleID = submitModel.RoleID ?? Constants.NullValueFor.Numeric,
+                        UserEmail = submitModel.UserEmail,
+                        UserPassword = submitModel.UserPassword,
+                        UserFirstname = submitModel.UserFirstname,
+                        UserLastname = submitModel.UserLastname,
+                        UserBirthdate = Utilities.FormatDateSqlParseFriendly(submitModel.UserBirthdate ?? Constants.NullValueFor.Date),
+                        UserPhoneNumberMobile = submitModel.UserPhoneNumberMobile ?? Constants.NullValueFor.String,
+                        UserIsActive = submitModel.UserIsActive
+                    }
+                );
+                if (repository.IsError)
+                {
+                    submitModel.AddToastError(repository.ErrorMessage);
+                }
+            }
+
+            return viewModel;
+        }
+
+        async Task<ValidationResult63> validateSubmitModel(ViewModel submitModel)
+        {
+            var validationResult = new ValidationResult63();
+            var error = default(Error63);
+
+            error = await Validation63.ValidateEmail(
+                errorKey: Validation63.GetJQueryNameSelectorFor(nameof(submitModel.UserEmail)),
+                userEmail: submitModel.UserEmail,
                 validateRequired: true,
                 validateUnique: true,
                 validationPredicateReturnTrueWhenError: async () =>
                 {
                     var repository = RepositoriesFactory.CreateUsersRepository();
-                    var isEmailUnique = await repository.UsersIsEmailUnique(viewModel.UserEmail, dbItem.UserID);
+                    var isEmailUnique = await repository.UsersIsEmailUnique(submitModel.UserEmail, dbItem.UserID);
                     return !isEmailUnique;
                 }
-            ));
-            viewModel.AddError(Validation63.ValidateRequired(errorKey: Validation63.GetJQueryNameSelectorFor(nameof(viewModel.UserFirstname)), valueToValidate: viewModel.UserFirstname));
-            viewModel.AddError(Validation63.ValidateRequired(errorKey: Validation63.GetJQueryNameSelectorFor(nameof(viewModel.UserLastname)), valueToValidate: viewModel.UserLastname));
-        }
-
-        public async Task Save(ViewModel viewModel)
-        {
-            var repository = RepositoriesFactory.CreateUsersRepository();
-            await repository.UsersIUD(
-                databaseAction: Enums.DatabaseActions.UPDATE,
-                userID: dbItem.UserID,
-                user: new UserIudDTO
-                {
-                    RoleID = viewModel.RoleID ?? Constants.NullValueFor.Numeric,
-                    UserEmail = viewModel.UserEmail,
-                    UserPassword = viewModel.UserPassword,
-                    UserFirstname = viewModel.UserFirstname,
-                    UserLastname = viewModel.UserLastname,
-                    UserBirthdate = Utilities.FormatDateSqlParseFriendly(viewModel.UserBirthdate ?? Constants.NullValueFor.Date),
-                    UserPhoneNumberMobile = viewModel.UserPhoneNumberMobile ?? Constants.NullValueFor.String,
-                    UserIsActive = viewModel.UserIsActive
-                }
-
             );
+            validationResult.AddError(error);
 
-            if (repository.IsError)
-            {
-                viewModel.AddError(repository.ErrorMessage);
-            }
-            
-            viewModel.AddError(repository.ErrorMessage);
+            error = Validation63.ValidateRequired(errorKey: Validation63.GetJQueryNameSelectorFor(nameof(submitModel.UserFirstname)), valueToValidate: submitModel.UserFirstname);
+            validationResult.AddError(error);
+
+            error = Validation63.ValidateRequired(errorKey: Validation63.GetJQueryNameSelectorFor(nameof(submitModel.UserLastname)), valueToValidate: submitModel.UserLastname);
+            validationResult.AddError(error);
+
+            return validationResult;
         }
         #endregion
 

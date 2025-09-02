@@ -23,33 +23,19 @@ namespace SixtyThreeBits.Web.Controllers.Admin
 
         [HttpPost]
         [Route("")]
-        public async Task<IActionResult> Properties(UserPropertiesModel.ViewModel viewModel)
+        public async Task<IActionResult> Properties(UserPropertiesModel.ViewModel submitModel)
         {
-            var result = default(IActionResult);
             Model.PluginsClient.Enable63BitsForms(true).Enable63BitsSuccessErrorToast(true).EnableDevextreme(true).EnableJQueryMaskedInput(true);
-            viewModel = await Model.GetViewModel(viewModel);
-
-            await Model.ValidateViewModel(viewModel);
-            if (viewModel.IsValid)
+            var viewModel = await Model.Save(submitModel);
+            if (viewModel.HasErrors)
             {
-                await Model.Save(viewModel);
-                if (viewModel.IsValid)
-                {
-                    Model.ShowSuccessToastNotification();
-                    result = Redirect(Model.UrlCurrentPageWithDomain);                    
-                }
-                else
-                {
-                    Model.ShowErrorToastNotification(viewModel.ErrorMessage);
-                    result = base.View(ViewNames.Admin.Users.User.UserPropertiesView, viewModel);                    
-                }
+                return View(ViewNames.Admin.Users.User.UserPropertiesView, viewModel);
             }
             else
             {
-                result = base.View(ViewNames.Admin.Users.User.UserPropertiesView, viewModel);
+                Model.ShowSuccessToastNotification();
+                return Redirect(Model.UrlCurrentPageWithDomain);
             }
-
-            return result;
         }
         #endregion
     }

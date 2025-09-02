@@ -32,29 +32,17 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         [Route("")]
         public async Task<IActionResult> Properties(ProductCategoryPropertiesModel.ViewModel submitModel)
         {
-            var result = default(IActionResult);
             Model.PluginsClient.Enable63BitsForms(true).EnableFancybox(true).EnableDevextreme(true).EnableTinyMce(true).Enable63BitsSuccessErrorToast(true);
-            var viewModel = Model.GetViewModel(submitModel);
-            Model.Validate(viewModel);
-            if (viewModel.IsValid)
+            var viewModel = await Model.Save(submitModel);
+            if(viewModel.HasFormErrors)
             {
-                await Model.Save(viewModel);
-                if (viewModel.IsValid)
-                {
-                    Model.ShowSuccessToastNotification();
-                    result = Redirect(Url.RouteUrl(ControllerActionRouteNames.Admin.ProductCategoryPropertiesController.Properties, new { productCategoryID = Model.DBItem.ProductCategoryID }));
-                }
-                else
-                {
-                    Model.ShowErrorToastNotification();
-                    result = View(ViewNames.Admin.ProductCategories.ProductCategoryPropertiesView, viewModel);
-                }
+                return View(ViewNames.Admin.ProductCategories.ProductCategoryPropertiesView, viewModel); 
             }
             else
             {
-                result = View(ViewNames.Admin.ProductCategories.ProductCategoryPropertiesView, viewModel);
+                Model.ShowSuccessToastNotification();
+                return Redirect(Model.UrlCurrentPageWithDomain);
             }
-            return result;
         }
 
         [HttpPost]
