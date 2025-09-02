@@ -9,10 +9,10 @@
                 #region Properties
                 public const string Properties = $"{nameof(Admin)}{nameof(ProductPropertiesController)}{nameof(Properties)}";
                 public const string DeleteImage = $"{nameof(Admin)}{nameof(ProductPropertiesController)}{nameof(DeleteImage)}";
-                public const string ProductImagesUpload = $"{nameof(Admin)}{nameof(ProductPropertiesController)}{nameof(ProductImagesUpload)}";
-                public const string ProductImagesUpdate = $"{nameof(Admin)}{nameof(ProductPropertiesController)}{nameof(ProductImagesUpdate)}";
-                public const string ProductImagesSort = $"{nameof(Admin)}{nameof(ProductPropertiesController)}{nameof(ProductImagesSort)}";
-                public const string ProductImagesDelete = $"{nameof(Admin)}{nameof(ProductPropertiesController)}{nameof(ProductImagesDelete)}";
+                public const string ImagesUpload = $"{nameof(Admin)}{nameof(ProductPropertiesController)}{nameof(ImagesUpload)}";
+                public const string ImagesUpdate = $"{nameof(Admin)}{nameof(ProductPropertiesController)}{nameof(ImagesUpdate)}";
+                public const string ImagesSort = $"{nameof(Admin)}{nameof(ProductPropertiesController)}{nameof(ImagesSort)}";
+                public const string ImagesDelete = $"{nameof(Admin)}{nameof(ProductPropertiesController)}{nameof(ImagesDelete)}";
                 #endregion
             }
         }

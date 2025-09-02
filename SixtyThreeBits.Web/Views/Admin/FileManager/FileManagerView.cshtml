@@ -14,7 +14,7 @@
     @await Html.PartialAsync(ViewNames.Shared.PluginsClient.PluginsClientFooterPartial, Model.PluginClient)
     
     <script src="/js/global.js?v=@Guid.NewGuid()"></script>
-    <script src="/js/admin/fileManager/fileManager.js?v=@Guid.NewGuid()"></script>
+    <script src="/js/admin/fileManager/FileManagerView.js?v=@Guid.NewGuid()"></script>
     <script>
         @if (Model.HasOnSelectedFilesChooseClientCallback)
         {

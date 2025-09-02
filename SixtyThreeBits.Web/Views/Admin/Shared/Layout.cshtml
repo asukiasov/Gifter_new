@@ -199,8 +199,8 @@
 
     @await Html.PartialAsync(ViewNames.Shared.PluginsClient.PluginsClientFooterPartial, Model.PluginsClient)
 
-    <script src="/js/global.js?v=2025-05-16"></script>
-    <script src="/js/admin/layout.js?v=2025-05-16"></script>
+    <script src="/js/global.js"></script>
+    <script src="/js/admin/shared/Layout.js"></script>
     <script>
         globals.textError = '@Html.Raw(Model.TextError)';
         globals.textSuccess = '@Html.Raw(Model.TextSuccess)';

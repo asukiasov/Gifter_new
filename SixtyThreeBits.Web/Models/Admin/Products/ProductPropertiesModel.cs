@@ -79,10 +79,10 @@ namespace SixtyThreeBits.Web.Models.Admin
             })
             .ToList();
 
-            viewModel.UrlImageUpload = Url.RouteUrl(ControllerActionRouteNames.Admin.ProductPropertiesController.ProductImagesUpload, new { productID = Product.ProductID });
-            viewModel.UrlImageUpdate = Url.RouteUrl(ControllerActionRouteNames.Admin.ProductPropertiesController.ProductImagesUpdate, new { productID = Product.ProductID });
-            viewModel.UrlImageSort = Url.RouteUrl(ControllerActionRouteNames.Admin.ProductPropertiesController.ProductImagesSort, new { productID = Product.ProductID });
-            viewModel.UrlImageDelete = Url.RouteUrl(ControllerActionRouteNames.Admin.ProductPropertiesController.ProductImagesDelete, new { productID = Product.ProductID });
+            viewModel.UrlImageUpload = Url.RouteUrl(ControllerActionRouteNames.Admin.ProductPropertiesController.ImagesUpload, new { productID = Product.ProductID });
+            viewModel.UrlImageUpdate = Url.RouteUrl(ControllerActionRouteNames.Admin.ProductPropertiesController.ImagesUpdate, new { productID = Product.ProductID });
+            viewModel.UrlImageSort = Url.RouteUrl(ControllerActionRouteNames.Admin.ProductPropertiesController.ImagesSort, new { productID = Product.ProductID });
+            viewModel.UrlImageDelete = Url.RouteUrl(ControllerActionRouteNames.Admin.ProductPropertiesController.ImagesDelete, new { productID = Product.ProductID });
 
             return viewModel;
         }

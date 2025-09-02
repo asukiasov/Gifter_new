@@ -20,7 +20,6 @@ namespace SixtyThreeBits.Web.Controllers.Admin
             Model.PluginsClient.Enable63BitsForms(true).Enable63BitsFileUploader(true).EnableFancybox(true).EnableTinyMce(true).EnableJQueryNumericInput(true).EnableTemplate7(true).EnableSortableJS(true).Enable63BitsSuccessErrorToast(true);
             var viewModel = await Model.GetViewModel();
             return View(ViewNames.Admin.Products.ProductPropertiesView, viewModel);
-
         }
 
         [HttpPost]
@@ -53,32 +52,32 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         }
 
         [HttpPost]
-        [Route("images/upload", Name = ControllerActionRouteNames.Admin.ProductPropertiesController.ProductImagesUpload)]
-        public async Task<IActionResult> PropertiesImagesUpload()
+        [Route("images/upload", Name = ControllerActionRouteNames.Admin.ProductPropertiesController.ImagesUpload)]
+        public async Task<IActionResult> ImagesUpload()
         {
             var viewModel = await Model.UploadProductImages();
             return Json(viewModel);
         }
 
         [HttpPost]
-        [Route("images/update", Name = ControllerActionRouteNames.Admin.ProductPropertiesController.ProductImagesUpdate)]
-        public async Task<IActionResult> PropertiesImagesUpdate(ProductPropertiesModel.UpdateProductImageSubmitModel submitModel)
+        [Route("images/update", Name = ControllerActionRouteNames.Admin.ProductPropertiesController.ImagesUpdate)]
+        public async Task<IActionResult> ImagesUpdate(ProductPropertiesModel.UpdateProductImageSubmitModel submitModel)
         {
             var viewModel = await Model.UpdateProductImages(submitModel);
             return Json(viewModel);
         }
 
         [HttpPost]
-        [Route("images/delete", Name = ControllerActionRouteNames.Admin.ProductPropertiesController.ProductImagesDelete)]
-        public async Task<IActionResult> PropertiesImagesDelete(ProductPropertiesModel.DeleteProductImageSubmitModel submitModel)
+        [Route("images/delete", Name = ControllerActionRouteNames.Admin.ProductPropertiesController.ImagesDelete)]
+        public async Task<IActionResult> ImagesDelete(ProductPropertiesModel.DeleteProductImageSubmitModel submitModel)
         {
             var viewModel = await Model.DeleteProductImages(submitModel);
             return Json(viewModel);
         }
 
         [HttpPost]
-        [Route("images/sort", Name = ControllerActionRouteNames.Admin.ProductPropertiesController.ProductImagesSort)]
-        public async Task<IActionResult> PropertiesImagesSort(SyncSortIndexesSubmitModel submitModel)
+        [Route("images/sort", Name = ControllerActionRouteNames.Admin.ProductPropertiesController.ImagesSort)]
+        public async Task<IActionResult> ImagesSort(SyncSortIndexesSubmitModel submitModel)
         {
             var viewModel = await Model.SortProductImages(submitModel);
             return Json(viewModel);
