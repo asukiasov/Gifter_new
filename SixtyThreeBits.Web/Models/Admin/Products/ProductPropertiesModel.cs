@@ -87,41 +87,60 @@ namespace SixtyThreeBits.Web.Models.Admin
             return viewModel;
         }
 
-        public void Validate(ViewModel viewModel)
+        public async Task<ViewModel> Save(ViewModel submitModel)
         {
-            viewModel.AddError(Validation63.ValidateRequired(errorKey: Validation63.GetJQueryNameSelectorFor(nameof(viewModel.ProductName)), valueToValidate: viewModel.ProductName));
+            var viewModel = await GetViewModel(submitModel);
+
+            var validationResult = validateSubmitModel(submitModel);
+
+            if(validationResult.HasErrors)
+            {
+                viewModel.AddFormErrors(validationResult.Errors);
+            }
+            else
+            {
+                var repository = RepositoriesFactory.CreateProductsRepository();
+                await repository.ProductsIUD(
+                    databaseAction: Enums.DatabaseActions.UPDATE,
+                    productID: Product.ProductID,
+                    product: new ProductIudDTO
+                    {
+                        ProductCategoryID = viewModel.ProductCategoryID ?? Constants.NullValueFor.Numeric,
+                        CountryIDProducer = viewModel.CountryIDProducer ?? Constants.NullValueFor.Numeric,
+                        BrandID = viewModel.BrandID ?? Constants.NullValueFor.Numeric,
+                        ProductName = viewModel.ProductName,
+                        ProductPrice = viewModel.ProductPrice.ToDecimal() ?? Constants.NullValueFor.Numeric,
+                        ProductPriceOld = viewModel.ProductPriceOld.ToDecimal() ?? Constants.NullValueFor.Numeric,
+                        ProductRemainder = viewModel.ProductRemainder.ToDecimal() ?? Constants.NullValueFor.Numeric,
+                        ProductNameEng = viewModel.ProductNameEng ?? Constants.NullValueFor.String,
+                        ProductDescriptionShort = viewModel.ProductDescriptionShort ?? Constants.NullValueFor.String,
+                        ProductDescriptionShortEng = viewModel.ProductDescriptionShortEng ?? Constants.NullValueFor.String,
+                        ProductDescription = viewModel.ProductDescription ?? Constants.NullValueFor.String,
+                        ProductDescriptionEng = viewModel.ProductDescriptionEng ?? Constants.NullValueFor.String,
+                        ProductIsPublished = viewModel.ProductIsPublished,
+                        ProductIsFeatured = viewModel.ProductIsFeatured,
+                        ProductSKU = viewModel.ProductSKU ?? Constants.NullValueFor.String
+                    }
+                );
+
+                if (repository.IsError)
+                {
+                    viewModel.AddToastError(repository.ErrorMessage);
+                }
+            }
+
+            return viewModel;
         }
 
-        public async Task Save(ViewModel viewModel)
+        ValidationResult63 validateSubmitModel(ViewModel submitModel)
         {
-            var repository = RepositoriesFactory.CreateProductsRepository();
-            await repository.ProductsIUD(
-                databaseAction: Enums.DatabaseActions.UPDATE,
-                productID: Product.ProductID,
-                product: new ProductIudDTO
-                {
-                    ProductCategoryID = viewModel.ProductCategoryID ?? Constants.NullValueFor.Numeric,
-                    CountryIDProducer = viewModel.CountryIDProducer ?? Constants.NullValueFor.Numeric,
-                    BrandID = viewModel.BrandID ?? Constants.NullValueFor.Numeric,
-                    ProductName = viewModel.ProductName,
-                    ProductPrice = viewModel.ProductPrice.ToDecimal() ?? Constants.NullValueFor.Numeric,
-                    ProductPriceOld = viewModel.ProductPriceOld.ToDecimal() ?? Constants.NullValueFor.Numeric,
-                    ProductRemainder = viewModel.ProductRemainder.ToDecimal() ?? Constants.NullValueFor.Numeric,
-                    ProductNameEng = viewModel.ProductNameEng ?? Constants.NullValueFor.String,
-                    ProductDescriptionShort = viewModel.ProductDescriptionShort ?? Constants.NullValueFor.String,
-                    ProductDescriptionShortEng = viewModel.ProductDescriptionShortEng ?? Constants.NullValueFor.String,
-                    ProductDescription = viewModel.ProductDescription ?? Constants.NullValueFor.String,
-                    ProductDescriptionEng = viewModel.ProductDescriptionEng ?? Constants.NullValueFor.String,
-                    ProductIsPublished = viewModel.ProductIsPublished,
-                    ProductIsFeatured = viewModel.ProductIsFeatured,
-                    ProductSKU = viewModel.ProductSKU ?? Constants.NullValueFor.String
-                }
-            );
+            var validationResult = new ValidationResult63();
+            var error = default(Error63);
 
-            if (repository.IsError)
-            {
-                viewModel.AddError(repository.ErrorMessage);
-            }
+            error = Validation63.ValidateRequired(errorKey: Validation63.GetJQueryNameSelectorFor(nameof(submitModel.ProductName)), valueToValidate: submitModel.ProductName);
+            validationResult.AddError(error);
+
+            return validationResult;
         }
 
         public async Task<AjaxResponse> DeleteImage()

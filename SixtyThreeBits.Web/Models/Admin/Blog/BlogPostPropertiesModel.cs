@@ -39,69 +39,88 @@ namespace SixtyThreeBits.Web.Models.Admin
 
             return viewModel;
         }
-
-        public async Task Validate(ViewModel viewModel)
+        
+        public async Task<ViewModel> Save(ViewModel submitModel)
         {
-            viewModel.AddError(Validation63.ValidateRequired(errorKey: Validation63.GetJQueryNameSelectorFor(nameof(viewModel.BlogPostTitle)), valueToValidate: viewModel.BlogPostTitle));
-            viewModel.AddError(Validation63.ValidateRequired(errorKey: Validation63.GetJQueryNameSelectorFor(nameof(viewModel.BlogPostSlug)), valueToValidate: viewModel.BlogPostSlug));
-            viewModel.AddError(
-                await Validation63.ValidateAsync(
-                    errorAction: async () =>
-                    {
-                        var repository = RepositoriesFactory.CreateBlogRepository();
-                        var isUniq = await repository.BlogPostIsSlugUniq(blogPostSlug: viewModel.BlogPostSlug, blogPostID: BlogPost.BlogPostID);
-                        return !isUniq;
-                    },
-                    errorKey: Validation63.GetJQueryNameSelectorFor(nameof(viewModel.BlogPostSlug)),
-                    errorMessage: Resources.ValidationSlugNotUniq
-                )
-            );
-        }
+            var viewModel = GetViewModel(submitModel);
 
-        public async Task Save(ViewModel viewModel)
-        {
-            var hasBlogImage = viewModel.BlogImageFile?.Length > 0;
-            var blogPostImageFilename = hasBlogImage ? GetFilenameFromUploadedFile(viewModel.BlogImageFile) : null;
-            if (hasBlogImage)
+            var validationResult = await validateSubmitModel(submitModel);
+            if (validationResult.HasErrors)
             {
-                await FileStorage.DeleteFile(
-                    filename: BlogPost.BlogPostImageFilename, 
-                    folderPath: FileStorage.GetFolderPathByModule(FileManagerModules.Blog)
-                );
-            }
-
-            var repository = RepositoriesFactory.CreateBlogRepository();
-            await repository.BlogPostsIUD(
-                databaseAction: Enums.DatabaseActions.UPDATE,
-                blogPostID: BlogPost.BlogPostID,
-                blogPost: new BlogPostIudDTO
-                {
-                    BlogPostSlug = viewModel.BlogPostSlug,
-                    BlogPostTitle = viewModel.BlogPostTitle,
-                    BlogPostShortText = viewModel.BlogPostShortText,
-                    BlogPostText = viewModel.BlogPostText,
-                    BlogPostAuthorName = viewModel.BlogPostAuthorName,
-                    BlogPostImageFilename = blogPostImageFilename,
-                    BlogPostDate = Utilities.FormatDateSqlParseFriendly(viewModel.BlogPostDate),
-                    BlogPostIsPublished = viewModel.BlogPostIsPublished
-                }                
-            );
-
-            if (repository.IsError)
-            {
-                viewModel.AddError(repository.ErrorMessage);
+                viewModel.AddFormErrors(validationResult.Errors);
             }
             else
             {
+                var hasBlogImage = submitModel.BlogImageFile?.Length > 0;
+                var blogPostImageFilename = hasBlogImage ? GetFilenameFromUploadedFile(submitModel.BlogImageFile) : null;
                 if (hasBlogImage)
                 {
-                    await FileStorage.SaveUploadedFile(
-                        sourceFileStream: viewModel.BlogImageFile.OpenReadStream(),
-                        filename: blogPostImageFilename,
+                    await FileStorage.DeleteFile(
+                        filename: BlogPost.BlogPostImageFilename,
                         folderPath: FileStorage.GetFolderPathByModule(FileManagerModules.Blog)
                     );
                 }
+
+                var repository = RepositoriesFactory.CreateBlogRepository();
+                await repository.BlogPostsIUD(
+                    databaseAction: Enums.DatabaseActions.UPDATE,
+                    blogPostID: BlogPost.BlogPostID,
+                    blogPost: new BlogPostIudDTO
+                    {
+                        BlogPostSlug = submitModel.BlogPostSlug,
+                        BlogPostTitle = submitModel.BlogPostTitle,
+                        BlogPostShortText = submitModel.BlogPostShortText,
+                        BlogPostText = submitModel.BlogPostText,
+                        BlogPostAuthorName = submitModel.BlogPostAuthorName,
+                        BlogPostImageFilename = blogPostImageFilename,
+                        BlogPostDate = Utilities.FormatDateSqlParseFriendly(submitModel.BlogPostDate),
+                        BlogPostIsPublished = submitModel.BlogPostIsPublished
+                    }
+                );
+
+                if (repository.IsError)
+                {
+                    viewModel.AddToastError(repository.ErrorMessage);
+                }
+                else
+                {
+                    if (hasBlogImage)
+                    {
+                        await FileStorage.SaveUploadedFile(
+                            sourceFileStream: submitModel.BlogImageFile.OpenReadStream(),
+                            filename: blogPostImageFilename,
+                            folderPath: FileStorage.GetFolderPathByModule(FileManagerModules.Blog)
+                        );
+                    }
+                }
             }
+
+            return viewModel;
+        }
+        async Task<ValidationResult63> validateSubmitModel(ViewModel submitModel)
+        {
+            var validationResult = new ValidationResult63();
+            var error = default(Error63);
+
+            error = Validation63.ValidateRequired(errorKey: Validation63.GetJQueryNameSelectorFor(nameof(submitModel.BlogPostTitle)), valueToValidate: submitModel.BlogPostTitle);
+            validationResult.AddError(error);
+
+            error = Validation63.ValidateRequired(errorKey: Validation63.GetJQueryNameSelectorFor(nameof(submitModel.BlogPostSlug)), valueToValidate: submitModel.BlogPostSlug);
+            validationResult.AddError(error);
+
+            error = await Validation63.ValidateAsync(
+                errorAction: async () =>
+                {
+                    var repository = RepositoriesFactory.CreateBlogRepository();
+                    var isUniq = await repository.BlogPostIsSlugUniq(blogPostSlug: submitModel.BlogPostSlug, blogPostID: BlogPost.BlogPostID);
+                    return !isUniq;
+                },
+                errorKey: Validation63.GetJQueryNameSelectorFor(nameof(submitModel.BlogPostSlug)),
+                errorMessage: Resources.ValidationSlugNotUniq
+            );
+            validationResult.AddError(error);
+
+            return validationResult;
         }
 
         public async Task<AjaxResponse> DeleteImage()

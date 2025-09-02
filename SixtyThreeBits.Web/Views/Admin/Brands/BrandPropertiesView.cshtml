@@ -49,10 +49,10 @@
 
 @section FooterSection{
     <script src="/js/admin/brands/BrandPropertiesView.js"></script>
-    @if (Model.HasErrors)
+    @if (Model.HasFormErrors)
     {
         <script>
-            validation.Init({errorsJson:@Html.Raw(Model.ErrorsJson)}).showErrors();
+            validation.Init({errorsJson:@Html.Raw(Model.FormErrorsJson)}).showErrors();
         </script>
     }
 }

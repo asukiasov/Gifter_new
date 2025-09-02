@@ -34,14 +34,16 @@ namespace SixtyThreeBits.Web.Models.Admin
             return viewModel;
         }
 
-        public async Task Save(ViewModel viewModel)
+        public async Task Save(ViewModel submitModel)
         {
-            var hasCategoryImage = viewModel.ProductCategoryImageFile?.Length > 0;
-            var categoryImageFilename = hasCategoryImage ? GetFilenameFromUploadedFile(viewModel.ProductCategoryImageFile) : null;
+            var viewModel = await GetViewModel(submitModel);
+
+            var hasCategoryImage = submitModel.ProductCategoryImageFile?.Length > 0;
+            var categoryImageFilename = hasCategoryImage ? GetFilenameFromUploadedFile(submitModel.ProductCategoryImageFile) : null;
 
             if (hasCategoryImage)
             {
-                await FileStorage.DeleteFile(viewModel.ProductCategoryImageFilename);
+                await FileStorage.DeleteFile(submitModel.ProductCategoryImageFilename);
             }
 
             var repository = RepositoriesFactory.CreateProductsRepository();
@@ -50,34 +52,35 @@ namespace SixtyThreeBits.Web.Models.Admin
                 productCategoryID: DBItem.ProductCategoryID,
                 productCategory: new ProductCategoryIudDTO
                 {
-                    ProductCategoryParentID = viewModel.ProductCategoryParentID,
-                    ProductCategoryName = viewModel.ProductCategoryName,
-                    ProductCategoryNameEng = viewModel.ProductCategoryNameEng ?? Constants.NullValueFor.String,
+                    ProductCategoryParentID = submitModel.ProductCategoryParentID,
+                    ProductCategoryName = submitModel.ProductCategoryName,
+                    ProductCategoryNameEng = submitModel.ProductCategoryNameEng ?? Constants.NullValueFor.String,
                     ProductCategoryImageFilename = categoryImageFilename,
-                    ProductCategoryDescriptionShort = viewModel.ProductCategoryDescriptionShort ?? Constants.NullValueFor.String,
-                    ProductCategoryDescriptionShortEng = viewModel.ProductCategoryDescriptionShortEng ?? Constants.NullValueFor.String
+                    ProductCategoryDescriptionShort = submitModel.ProductCategoryDescriptionShort ?? Constants.NullValueFor.String,
+                    ProductCategoryDescriptionShortEng = submitModel.ProductCategoryDescriptionShortEng ?? Constants.NullValueFor.String
                 }
             );
 
             if (repository.IsError)
             {
-                viewModel.AddError(repository.ErrorMessage);
+                submitModel.AddError(repository.ErrorMessage);
             }
             else
             {
                 if (hasCategoryImage)
                 {
                     await FileStorage.SaveUploadedFile(
-                        sourceFileStream: viewModel.ProductCategoryImageFile.OpenReadStream(),
+                        sourceFileStream: submitModel.ProductCategoryImageFile.OpenReadStream(),
                         filename: categoryImageFilename
                     );
                 }
             }
         }
 
-        public void Validate(ViewModel viewModel)
+        void validate(ViewModel viewModel)
         {
-            viewModel.AddError(Validation63.ValidateRequired(errorKey: Validation63.GetJQueryNameSelectorFor(nameof(viewModel.ProductCategoryName)), valueToValidate: viewModel.ProductCategoryName));
+            var error = Validation63.ValidateRequired(errorKey: Validation63.GetJQueryNameSelectorFor(nameof(viewModel.ProductCategoryName)), valueToValidate: viewModel.ProductCategoryName);
+            viewModel.AddError(error);
         }
 
         public async Task<AjaxResponse> DeleteImage()

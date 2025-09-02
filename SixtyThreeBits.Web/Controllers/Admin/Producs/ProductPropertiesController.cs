@@ -26,29 +26,17 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         [Route("")]
         public async Task<IActionResult> Properties(ProductPropertiesModel.ViewModel submitModel)
         {
-            var result = default(IActionResult);
             Model.PluginsClient.Enable63BitsForms(true).Enable63BitsFileUploader(true).EnableFancybox(true).EnableTinyMce(true).EnableJQueryNumericInput(true).EnableTemplate7(true).EnableSortableJS(true).Enable63BitsSuccessErrorToast(true);
-            var viewModel = await Model.GetViewModel(submitModel);
-            Model.Validate(viewModel);
-            if (viewModel.IsValid)
+            var viewModel = await Model.Save(submitModel);
+
+            if (viewModel.HasErrors)
             {
-                await Model.Save(viewModel);
-                if (viewModel.IsValid)
-                {
-                    Model.ShowSuccessToastNotification();
-                    result = Redirect(Url.RouteUrl(ControllerActionRouteNames.Admin.ProductPropertiesController.Properties, new { productID = Model.Product.ProductID }));
-                }
-                else
-                {
-                    Model.ShowErrorToastNotification();
-                    result = View(ViewNames.Admin.Products.ProductPropertiesView, viewModel);
-                }
+                return View(ViewNames.Admin.Products.ProductPropertiesView, viewModel);
             }
             else
             {
-                result = View(ViewNames.Admin.Products.ProductPropertiesView, viewModel);
+                return Redirect(Model.UrlCurrentPageWithDomain);
             }
-            return result;
         }
 
         [HttpPost]

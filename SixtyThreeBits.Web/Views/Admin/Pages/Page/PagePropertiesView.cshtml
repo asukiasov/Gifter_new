@@ -84,11 +84,11 @@
     <script>
         model.textPageShortDescriptionAndImageInfo = '@Html.Raw(Model.TextPageShortDescriptionAndImageInfo)';
     </script>
-    @if (Model.HasErrors)
+    @if (Model.HasFormErrors)
     {
         <script>
         $(function(){
-            validation.init({ errorsJson: @Html.Raw(Model.ErrorsJson)}).showErrors();
+            validation.init({ errorsJson: @Html.Raw(Model.FormErrorsJson)}).showErrors();
         });
         </script>
     }

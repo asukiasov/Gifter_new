@@ -86,10 +86,10 @@
 </div>
 @section FooterSection{
     <script src="/js/admin/users/user/UserPropertiesView.js"></script>
-    @if (Model.HasErrors)
+    @if (Model.HasFormErrors)
     {
         <script>
-            validation.init({ errorsJson: @Html.Raw(Model.ErrorsJson)}).showErrors();
+            validation.init({ errorsJson: @Html.Raw(Model.FormErrorsJson)}).showErrors();
         </script>
     }
 }

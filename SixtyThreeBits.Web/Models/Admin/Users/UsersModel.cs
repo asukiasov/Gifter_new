@@ -107,17 +107,17 @@ namespace SixtyThreeBits.Web.Models.Admin
             if (databaseAction is Enums.DatabaseActions.INSERT or Enums.DatabaseActions.UPDATE)
             {
                 error = await Validation63.ValidateEmail(
-                errorKey: null,
-                userEmail: submitModel.UserEmail,
-                validateRequired: true,
-                validateUnique: true,
-                validationPredicateReturnTrueWhenError: async () =>
-                {
-                    var repository = RepositoriesFactory.CreateUsersRepository();
-                    var isEmailUnique = await repository.UsersIsEmailUnique(submitModel.UserEmail, userID);
-                    return !isEmailUnique;
-                }
-            );
+                    errorKey: null,
+                    userEmail: submitModel.UserEmail,
+                    validateRequired: true,
+                    validateUnique: true,
+                    validationPredicateReturnTrueWhenError: async () =>
+                    {
+                        var repository = RepositoriesFactory.CreateUsersRepository();
+                        var isEmailUnique = await repository.UsersIsEmailUnique(submitModel.UserEmail, userID);
+                        return !isEmailUnique;
+                    }
+                );
                 result.AddError(error);
             }
             return result;
