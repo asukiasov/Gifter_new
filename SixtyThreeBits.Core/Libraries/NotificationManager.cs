@@ -1,6 +1,6 @@
 ﻿using SixtyThreeBits.Core.Abstractions;
 using SixtyThreeBits.Core.Infrastructure.Repositories;
-using SixtyThreeBits.Core.Infrastructure.Repositories.DTO;
+using SixtyThreeBits.Core.Libraries.EmailClients.DTO;
 using SixtyThreeBits.Core.Utilities;
 using System.Collections.Generic;
 using System.Text;

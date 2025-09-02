@@ -1,4 +1,4 @@
-﻿using SixtyThreeBits.Core.Infrastructure.Repositories.DTO;
+﻿using SixtyThreeBits.Core.Libraries.EmailClients.DTO;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

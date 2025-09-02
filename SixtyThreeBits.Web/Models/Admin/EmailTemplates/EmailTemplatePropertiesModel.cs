@@ -32,7 +32,6 @@ namespace SixtyThreeBits.Web.Models.Admin
                     viewModel.EmailTemplateBody = dbItem.EmailTemplateBody;
                     viewModel.EmailTemplateBodyEng = dbItem.EmailTemplateBodyEng;
                 }
-                viewModel.EmailTemplatePlaceHoldersJson = dbItem.EmailTemplatesPlaceHolders?.Any() == true ? dbItem.EmailTemplatesPlaceHolders.ToJson() : "[]";
             }
 
             return viewModel;

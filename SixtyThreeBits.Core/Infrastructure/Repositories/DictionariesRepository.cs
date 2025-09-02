@@ -45,7 +45,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
             );
         }
 
-        public async Task<int?> DictionariesIUD(Enums.DatabaseActions databaseAction, int? dictionaryID, DictionarieIudDTO dictionary)
+        public async Task<int?> DictionariesIUD(Enums.DatabaseActions databaseAction, int? dictionaryID, DictionariesIudDTO dictionary)
         {
             var dictionaryJson = dictionary.ToJson();
 

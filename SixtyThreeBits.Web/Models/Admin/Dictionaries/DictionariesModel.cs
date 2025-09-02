@@ -67,7 +67,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             await repository.DictionariesIUD(
                 databaseAction: databaseAction,
                 dictionaryID: dictionaryID,
-                dictionary: new DictionarieIudDTO
+                dictionary: new DictionariesIudDTO
                 {
                     DictionaryParentID = submitModel.DictionaryParentID,
                     DictionaryCaption = submitModel.DictionaryCaption,

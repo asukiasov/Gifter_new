@@ -1,0 +1,23 @@
+﻿namespace SixtyThreeBits.Core.Infrastructure.Repositories.DTO
+{
+    public record MenuHeaderDTO
+    {
+        #region Properties
+        public int? MenuHeaderID { get; init; }
+        public int? MenuHeaderParentID { get; init; }
+        public string MenuHeaderTitle { get; init; }
+        public string MenuHeaderTitleEng { get; init; }        
+        public bool MenuHeaderIsExternalPage { get; init; }
+        public string MenuHeaderExternalPageUrl { get; init; }
+        public bool MenuHeaderIsPublished { get; init; }
+        public bool MenuHeaderIsTargetBlank { get; set; }
+        public int? MenuHeaderSortIndex { get; set; }
+
+        public int? PageID { get; init; }
+        public string PageSlug { get; init; }
+        public string PageTitle { get; init; }
+        public string PageTitleEng { get; init; }        
+        public bool PageIsPublished { get; init; }        
+        #endregion
+    }
+}
