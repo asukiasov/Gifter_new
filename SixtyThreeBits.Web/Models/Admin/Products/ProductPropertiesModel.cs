@@ -259,8 +259,8 @@ namespace SixtyThreeBits.Web.Models.Admin
                             productID: Product.ProductID,
                             product: new ProductIudDTO
                             {
-                                ProductImageFilename = firstImage.ProductImageFilename ?? Constants.NullValueFor.String,
-                                ProductImageAltText = firstImage.ProductImageAltText ?? Constants.NullValueFor.String
+                                ProductImageFilename = firstImage?.ProductImageFilename ?? Constants.NullValueFor.String,
+                                ProductImageAltText = firstImage?.ProductImageAltText ?? Constants.NullValueFor.String
                             }
                         );
                     }
