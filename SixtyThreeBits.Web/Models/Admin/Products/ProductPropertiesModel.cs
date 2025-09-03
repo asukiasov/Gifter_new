@@ -151,11 +151,10 @@ namespace SixtyThreeBits.Web.Models.Admin
 
             if (postedFile.Length > 2097152) //2MB
             {
-                viewModel.Data = "Max file size exceeded";
+                viewModel.Data = "Max file size of 2MB exceeded";
             }
             else
             {
-                var productImageFilenameOriginal = postedFile.FileName;
                 var productImageFilename = GetFilenameFromUploadedFile(postedFile);
 
                 var repository = RepositoriesFactory.CreateProductsRepository();
@@ -195,7 +194,6 @@ namespace SixtyThreeBits.Web.Models.Admin
                     viewModel.Data = new ViewModel.ProductImage
                     {
                         ProductImageID = productImageID,
-                        ProductImageFilename = productImageFilenameOriginal,
                         ProductImageFileHttpPath = FileStorage.GetUploadedFileHttpPath(
                             filename: productImageFilename,
                             folderPath: FileStorage.GetFolderPathByModule(FileManagerModules.Products)
