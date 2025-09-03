@@ -143,31 +143,6 @@ namespace SixtyThreeBits.Web.Models.Admin
             return validationResult;
         }
 
-        public async Task<AjaxResponse> DeleteImage()
-        {
-            var viewModel = new AjaxResponse();
-
-            await FileStorage.DeleteFile(
-                filename: Product.ProductImageFilename,
-                folderPath: FileStorage.GetFolderPathByModule(FileManagerModules.Products)
-            );
-
-            var repository = RepositoriesFactory.CreateProductsRepository();
-            await repository.ProductsIUD(
-                databaseAction: Enums.DatabaseActions.UPDATE,
-                productID: Product.ProductID,
-                product: new ProductIudDTO
-                {
-                    ProductImageFilename = Constants.NullValueFor.String
-                }
-
-            );
-
-            viewModel.IsSuccess = !repository.IsError;
-
-            return viewModel;
-        }
-
         public async Task<AjaxResponse> UploadProductImages()
         {
             var viewModel = new AjaxResponse();
@@ -288,7 +263,27 @@ namespace SixtyThreeBits.Web.Models.Admin
                     productImageID: submitModel.ProductImageID,
                     productImage: null
                 );
-                viewModel.IsSuccess = !repository.IsError;
+
+                if (!repository.IsError)
+                {
+                    viewModel.IsSuccess = true;
+
+                    var isMainImageDeleted = productImage.ProductImageFilename == Product.ProductImageFilename;
+                    if (isMainImageDeleted)
+                    {
+                        Product = await repository.ProductsGetSingleByID(Product.ProductID);
+                        var firstImage = Product.ProductImages?.FirstOrDefault();
+                        await repository.ProductsIUD(
+                            databaseAction: Enums.DatabaseActions.UPDATE,
+                            productID: Product.ProductID,
+                            product: new ProductIudDTO
+                            {
+                                ProductImageFilename = firstImage?.ProductImageFilename ?? Constants.NullValueFor.String,
+                                ProductImageAltText = firstImage?.ProductImageAltText ?? Constants.NullValueFor.String
+                            }
+                        );
+                    }
+                }
             }
             return viewModel;
         }
