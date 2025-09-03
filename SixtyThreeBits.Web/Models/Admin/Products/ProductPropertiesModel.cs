@@ -151,7 +151,7 @@ namespace SixtyThreeBits.Web.Models.Admin
 
             if (postedFile.Length > 2097152) //2MB
             {
-                viewModel.Data = "Max file size exceeded";
+                viewModel.Data = "Max file size of 2MB exceeded";
             }
             else
             {

@@ -143,15 +143,19 @@ $(function () {
             productImageProgressItem.find('.js-progress-bar').width(e.progressPercent + '%');                        
         },
         onFinishUploadCallback: function (e) {
+            const productImageProgressItem = $('.js-product-image-item[data-filename="' + e.Filename + '"]');
             if (e.IsSuccess) {
-                const productImageProgressItem = $('.js-product-image-item[data-filename="' + e.Data.ProductImageFilename + '"]');
                 const productImageModel = {
                     ProductImageID: e.Data.ProductImageID,
                     ProductImageFileHttpPath: e.Data.ProductImageFileHttpPath
                 };
                 const productImageItemHtml = model.templates.productImageTemplate(productImageModel);
                 productImageProgressItem.replaceWith(productImageItemHtml);                
-            }            
+            }
+            else {
+                productImageProgressItem.remove();
+                components63Bits.dialog.error(e.Data);
+            }
         },
         onComplete: function () {            
             model.sortImages();
