@@ -18,39 +18,24 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         {
             Model.PluginsClient.EnableTinyMce(true).Enable63BitsForms(true).EnableFancybox(true).Enable63BitsSuccessErrorToast(true);
             var viewModel = await Model.GetViewModel(viewModel: null);
-            Model.PageTitle.Set($"{Model.DBItem.TeamMemberFirstname} {Model.DBItem.TeamMemberLastname}");
             return View(ViewNames.Admin.TeamMembers.TeamMemberPropertiesView, viewModel);
         }
 
         [HttpPost]
         [Route("properties")]
-        public async Task<IActionResult> Properties(TeamMemberPropertiesModel.ViewModel SubmitModel)
+        public async Task<IActionResult> Properties(TeamMemberPropertiesModel.ViewModel submitModel)
         {
-            var result = default(IActionResult);
             Model.PluginsClient.Enable63BitsForms(true).EnableFancybox(true).EnableTinyMce(true).Enable63BitsSuccessErrorToast(true);
-            var viewModel = await Model.GetViewModel(viewModel: SubmitModel);
-
-            Model.PageTitle.Set($"{Model.DBItem.TeamMemberFirstname} {Model.DBItem.TeamMemberLastname}");
-            Model.Validate(viewModel);
-            if (viewModel.IsValid)
+            var viewModel = await Model.Save(submitModel);
+            if (viewModel.HasErrors)
             {
-                await Model.Save(viewModel);
-                if (viewModel.IsValid)
-                {
-                    Model.ShowSuccessToastNotification();
-                    result = Redirect(Url.RouteUrl(ControllerActionRouteNames.Admin.TeamMemberPropertiesController.Properties, new { teamMemberID = Model.DBItem.TeamMemberID }));
-                }
-                else
-                {
-                    Model.ShowErrorToastNotification();
-                    result = View(ViewNames.Admin.TeamMembers.TeamMemberPropertiesView, viewModel);
-                }
+                return View(ViewNames.Admin.TeamMembers.TeamMemberPropertiesView, viewModel);
             }
             else
             {
-                result = View(ViewNames.Admin.TeamMembers.TeamMemberPropertiesView, viewModel);
+                Model.ShowSuccessToastNotification();
+                return Redirect(Model.UrlCurrentPageWithDomain);
             }
-            return result;
         }
 
         [HttpPost]

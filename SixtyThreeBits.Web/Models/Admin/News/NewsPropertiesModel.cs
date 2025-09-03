@@ -42,71 +42,90 @@ namespace SixtyThreeBits.Web.Models.Admin
 
             return viewModel;
         }
-
-        public async Task ValidateViewModel(ViewModel viewModel)
+        
+        public async Task<ViewModel> Save(ViewModel submitModel)
         {
-            viewModel.AddError(Validation63.ValidateRequired(errorKey: Validation63.GetJQueryNameSelectorFor(nameof(viewModel.NewsTitle)), valueToValidate: viewModel.NewsTitle));
-            viewModel.AddError(Validation63.ValidateRequired(errorKey: Validation63.GetJQueryNameSelectorFor(nameof(viewModel.NewsSlug)), valueToValidate: viewModel.NewsSlug));
-            viewModel.AddError(
-                await Validation63.ValidateAsync(
-                    errorAction: async () =>
-                    {
-                        var repository = RepositoriesFactory.CreateNewsRepository();
-                        var IsUniq = await repository.NewsIsSlugUniq(newsSlug: viewModel.NewsSlug, newsID: NewsItem.NewsID);
-                        return !IsUniq;
-                    },
-                    errorKey: Validation63.GetJQueryNameSelectorFor(nameof(viewModel.NewsSlug)),
-                    errorMessage: Resources.ValidationSlugNotUniq
-                )
-            );
-        }
+            var viewModel = GetViewModel(submitModel);
 
-        public async Task Save(ViewModel viewModel)
-        {
-            var hasNewsImage = viewModel.NewsImageFile?.Length > 0;
-            var newsImageFilename = hasNewsImage ? GetFilenameFromUploadedFile(viewModel.NewsImageFile) : null;
-            if (hasNewsImage)
+            var validationResult = await validateSubmitModel(submitModel);
+            if (validationResult.HasErrors)
             {
-                await FileStorage.DeleteFile(
-                    filename: newsImageFilename,
-                    folderPath: FileStorage.GetFolderPathByModule(FileManagerModules.News)
-                );
-            }
-
-            var repository = RepositoriesFactory.CreateNewsRepository();
-            await repository.NewsIUD(
-                databaseAction: Enums.DatabaseActions.UPDATE,
-                newsID: NewsItem.NewsID,
-                news: new NewsIudDTO
-                {
-                    NewsSlug = viewModel.NewsSlug,
-                    NewsTitle = viewModel.NewsTitle,
-                    NewsTitleEng = viewModel.NewsTitleEng ?? Constants.NullValueFor.String,
-                    NewsShortDescription = viewModel.NewsShortDescription ?? Constants.NullValueFor.String,
-                    NewsShortDescriptionEng = viewModel.NewsShortDescriptionEng ?? Constants.NullValueFor.String,
-                    NewsText = viewModel.NewsText ?? Constants.NullValueFor.String,
-                    NewsTextEng = viewModel.NewsTextEng ?? Constants.NullValueFor.String,
-                    NewsImageFilename = newsImageFilename,
-                    NewsDatePublished = Utilities.FormatDateSqlParseFriendly(viewModel.NewsDatePublished),
-                    NewsIsPublished = viewModel.NewsIsPublished
-                }
-            );
-
-            if (repository.IsError)
-            {
-                viewModel.AddError(repository.ErrorMessage);
+                viewModel.AddFormErrors(validationResult.Errors);
             }
             else
             {
+                var hasNewsImage = submitModel.NewsImageFile?.Length > 0;
+                var newsImageFilename = hasNewsImage ? GetFilenameFromUploadedFile(submitModel.NewsImageFile) : null;
                 if (hasNewsImage)
                 {
-                    await FileStorage.SaveUploadedFile(
-                       sourceFileStream: viewModel.NewsImageFile.OpenReadStream(),
-                       filename: newsImageFilename,
-                       folderPath: FileStorage.GetFolderPathByModule(FileManagerModules.News)
-                   );                    
+                    await FileStorage.DeleteFile(
+                        filename: newsImageFilename,
+                        folderPath: FileStorage.GetFolderPathByModule(FileManagerModules.News)
+                    );
+                }
+
+                var repository = RepositoriesFactory.CreateNewsRepository();
+                await repository.NewsIUD(
+                    databaseAction: Enums.DatabaseActions.UPDATE,
+                    newsID: NewsItem.NewsID,
+                    news: new NewsIudDTO
+                    {
+                        NewsSlug = submitModel.NewsSlug,
+                        NewsTitle = submitModel.NewsTitle,
+                        NewsTitleEng = submitModel.NewsTitleEng ?? Constants.NullValueFor.String,
+                        NewsShortDescription = submitModel.NewsShortDescription ?? Constants.NullValueFor.String,
+                        NewsShortDescriptionEng = submitModel.NewsShortDescriptionEng ?? Constants.NullValueFor.String,
+                        NewsText = submitModel.NewsText ?? Constants.NullValueFor.String,
+                        NewsTextEng = submitModel.NewsTextEng ?? Constants.NullValueFor.String,
+                        NewsImageFilename = newsImageFilename,
+                        NewsDatePublished = Utilities.FormatDateSqlParseFriendly(submitModel.NewsDatePublished),
+                        NewsIsPublished = submitModel.NewsIsPublished
+                    }
+                );
+
+                if (repository.IsError)
+                {
+                    viewModel.AddToastError(repository.ErrorMessage);
+                }
+                else
+                {
+                    if (hasNewsImage)
+                    {
+                        await FileStorage.SaveUploadedFile(
+                           sourceFileStream: submitModel.NewsImageFile.OpenReadStream(),
+                           filename: newsImageFilename,
+                           folderPath: FileStorage.GetFolderPathByModule(FileManagerModules.News)
+                       );
+                    }
                 }
             }
+
+            return viewModel;
+        }
+        async Task<ValidationResult63> validateSubmitModel(ViewModel submitModel)
+        {
+            var validationResult = new ValidationResult63();
+            var error = default(Error63);
+
+            error = Validation63.ValidateRequired(errorKey: Validation63.GetJQueryNameSelectorFor(nameof(submitModel.NewsTitle)), valueToValidate: submitModel.NewsTitle);
+            validationResult.AddError(error);
+
+            error = Validation63.ValidateRequired(errorKey: Validation63.GetJQueryNameSelectorFor(nameof(submitModel.NewsSlug)), valueToValidate: submitModel.NewsSlug);
+            validationResult.AddError(error);
+
+            error = await Validation63.ValidateAsync(
+                errorAction: async () =>
+                {
+                    var repository = RepositoriesFactory.CreateNewsRepository();
+                    var IsUniq = await repository.NewsIsSlugUniq(newsSlug: submitModel.NewsSlug, newsID: NewsItem.NewsID);
+                    return !IsUniq;
+                },
+                errorKey: Validation63.GetJQueryNameSelectorFor(nameof(submitModel.NewsSlug)),
+                errorMessage: Resources.ValidationSlugNotUniq
+            );
+            validationResult.AddError(error);
+
+            return validationResult;
         }
 
         public async Task<AjaxResponse> DeleteImage()
@@ -130,7 +149,6 @@ namespace SixtyThreeBits.Web.Models.Admin
             viewModel.IsSuccess = !repository.IsError;
             return viewModel;
         }
-
         #endregion
 
         #region Nested Classes

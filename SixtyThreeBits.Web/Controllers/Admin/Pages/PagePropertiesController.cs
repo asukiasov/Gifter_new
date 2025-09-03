@@ -26,24 +26,16 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         public async Task<IActionResult> Properties(PagePropertiesModel.ViewModel submitModel)
         {
             Model.PluginsClient.Enable63BitsForms(true).EnableFancybox(true).Enable63BitsSuccessErrorToast(true);
-            var viewModel = Model.GetViewModel(viewModel: submitModel);
-
-            await Model.ValidateViewModel(viewModel);
-            if (viewModel.IsValid)
+            var viewModel = await Model.Save(submitModel);
+            if(viewModel.HasErrors)
             {
-                await Model.Save(viewModel);
-                if (viewModel.IsValid)
-                {
-                    Model.ShowSuccessToastNotification();
-                    return Redirect(Url.RouteUrl(ControllerActionRouteNames.Admin.PagePropertiesController.Properties, new { pageID = Model.Page.PageID }));
-                }
-                else
-                {
-                    Model.ShowErrorToastNotification();
-                }
+                return View(ViewNames.Admin.Pages.Page.PagePropertiesView, viewModel);
             }
-
-            return View(ViewNames.Admin.Pages.Page.PagePropertiesView, viewModel);
+            else
+            {
+                Model.ShowSuccessToastNotification();
+                return Redirect(Model.UrlCurrentPageWithDomain);
+            }
         }
 
         [HttpPost]

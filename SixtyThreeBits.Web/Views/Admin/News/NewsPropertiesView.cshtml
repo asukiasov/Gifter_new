@@ -103,8 +103,17 @@
     </script>
     @if (Model.HasErrors)
     {
-    <script>
-        validation.init({ errorsJson: @Html.Raw(Model.ErrorsJson)}).showErrors();
-    </script>
+        @if (Model.HasFormErrors)
+        {
+            <script>
+                validation.init({ errorsJson: @Html.Raw(Model.FormErrorsJson) }).showErrors();
+            </script>
+        }
+        @if (Model.HasToastError)
+        {
+            <script>
+                successErrorToast63Bits.init({isError:true,message:'@Html.Raw(Model.ToastError)'}).showMessage();
+            </script>
+        }
     }
 }

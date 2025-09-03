@@ -25,29 +25,17 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         [Route("")]
         public async Task<IActionResult> Properties(BrandPropertiesModel.ViewModel submitModel)
         {
-            var result = default(IActionResult);
             Model.PluginsClient.Enable63BitsForms(true).EnableFancybox(true).Enable63BitsSuccessErrorToast(true);
-            var viewModel = Model.GetViewModel(submitModel);
-            Model.Validate(viewModel);
-            if (viewModel.IsValid)
+            var viewModel = await Model.Save(submitModel);
+            if(viewModel.HasErrors)
             {
-                await Model.Save(viewModel);
-                if (viewModel.IsValid)
-                {
-                    Model.ShowSuccessToastNotification();
-                    result = Redirect(Url.RouteUrl(ControllerActionRouteNames.Admin.BrandPropertiesController.Properties, new { brandID = Model.DBItem.BrandID }));
-                }
-                else
-                {
-                    Model.ShowErrorToastNotification();
-                    result = View(ViewNames.Admin.Brands.BrandPropertiesView, viewModel);
-                }
+                return View(ViewNames.Admin.Brands.BrandPropertiesView, viewModel);
             }
             else
             {
-                result = View(ViewNames.Admin.Brands.BrandPropertiesView, viewModel);
+                Model.ShowSuccessToastNotification();
+                return Redirect(Model.UrlCurrentPageWithDomain);
             }
-            return result;
         }
 
         [HttpPost]

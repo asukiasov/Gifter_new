@@ -25,35 +25,23 @@ namespace SixtyThreeBits.Web.Controllers.Admin
 
         [HttpPost]
         [Route("")]
-        public async Task<IActionResult> Properties(BlogPostPropertiesModel.ViewModel viewModel)
+        public async Task<IActionResult> Properties(BlogPostPropertiesModel.ViewModel submitModel)
         {
-            var result = default(IActionResult);
             Model.PluginsClient.Enable63BitsForms(true).EnableFancybox(true).EnableTinyMce(true).EnableDevextreme(true).Enable63BitsSuccessErrorToast(true);
-            viewModel = Model.GetViewModel(viewModel: viewModel);
 
-            Model.PageTitle.Set(Model.BlogPost.BlogPostTitle);
-            Model.Breadcrumbs.RenameLastItem(Model.BlogPost.BlogPostTitle);
+            var viewModel = await Model.Save(submitModel);
 
-            await Model.Validate(viewModel);
-            if (viewModel.IsValid)
+            if (viewModel.HasErrors)
             {
-                await Model.Save(viewModel);
-                if (viewModel.IsValid)
-                {
-                    Model.ShowSuccessToastNotification();
-                    result = Redirect(Url.RouteUrl(ControllerActionRouteNames.Admin.BlogPostPropertiesController.Properties, new { blogPostID = Model.BlogPost.BlogPostID }));
-                }
-                else
-                {
-                    Model.ShowErrorToastNotification();
-                    result = View(ViewNames.Admin.BlogPosts.BlogPostPropertiesView, viewModel);
-                }
+                Model.PageTitle.Set(Model.BlogPost.BlogPostTitle);
+                Model.Breadcrumbs.RenameLastItem(Model.BlogPost.BlogPostTitle);
+                return View(ViewNames.Admin.BlogPosts.BlogPostPropertiesView, viewModel);
             }
             else
             {
-                result = View(ViewNames.Admin.BlogPosts.BlogPostPropertiesView, viewModel);
+                Model.ShowSuccessToastNotification();
+                return Redirect(Model.UrlCurrentPageWithDomain);
             }
-            return result;
         }
 
         [HttpPost]

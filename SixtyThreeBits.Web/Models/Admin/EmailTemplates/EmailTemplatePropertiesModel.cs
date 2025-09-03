@@ -2,10 +2,8 @@
 using SixtyThreeBits.Core.Libraries;
 using SixtyThreeBits.Core.Properties;
 using SixtyThreeBits.Core.Utilities;
-using SixtyThreeBits.Libraries.Extensions;
 using SixtyThreeBits.Web.Domain.ViewModels.Base;
 using SixtyThreeBits.Web.Models.Base;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace SixtyThreeBits.Web.Models.Admin
@@ -37,34 +35,61 @@ namespace SixtyThreeBits.Web.Models.Admin
             return viewModel;
         }
 
-        public void ValidateViewModel(ViewModel viewModel)
+        public async Task<ViewModel> Save(int? emailTemplateID, ViewModel submitModel)
         {
-            viewModel.AddError(Validation63.ValidateRequired(Validation63.GetJQueryNameSelectorFor(nameof(viewModel.EmailTemplateName)), viewModel.EmailTemplateName));
-            viewModel.AddError(Validation63.ValidateRequired(Validation63.GetJQueryNameSelectorFor(nameof(viewModel.EmailTemplateSubject)), viewModel.EmailTemplateSubject));
-            viewModel.AddError(Validation63.ValidateRequired(Validation63.GetJQueryNameSelectorFor(nameof(viewModel.EmailTemplateBody)), viewModel.EmailTemplateBody));
-            viewModel.AddError(Validation63.ValidateRequired(Validation63.GetJQueryNameSelectorFor(nameof(viewModel.EmailTemplateSubjectEng)), viewModel.EmailTemplateSubjectEng));
-            viewModel.AddError(Validation63.ValidateRequired(Validation63.GetJQueryNameSelectorFor(nameof(viewModel.EmailTemplateBodyEng)), viewModel.EmailTemplateBodyEng));
+            var viewModel = await GetViewModel(emailTemplateID, submitModel);
+
+            var validationResult = validateSubmitModel(submitModel);
+
+            if (validationResult.HasErrors)
+            {
+                viewModel.AddFormErrors(validationResult.Errors);
+            }
+            else
+            {
+                var repository = RepositoriesFactory.CreateEmailTemplatesRepository();
+                await repository.EmailTemplatesIUD(
+                    databaseAction: Enums.DatabaseActions.UPDATE,
+                    emailTemplateID: emailTemplateID,
+                    emailTemplate: new EmailTemplateIudDTO
+                    {
+                        EmailTemplateName = submitModel.EmailTemplateName,
+                        EmailTemplateSubject = submitModel.EmailTemplateSubject,
+                        EmailTemplateSubjectEng = submitModel.EmailTemplateSubjectEng,
+                        EmailTemplateBody = submitModel.EmailTemplateBody,
+                        EmailTemplateBodyEng = submitModel.EmailTemplateBodyEng
+                    }
+                );
+                if (repository.IsError)
+                {
+                    viewModel.AddToastError(repository.ErrorMessage);
+                }
+            }
+
+            return viewModel;
         }
 
-        public async Task Save(int? emailTemplateID, ViewModel viewModel)
+        ValidationResult63 validateSubmitModel(ViewModel submitModel)
         {
-            var repository = RepositoriesFactory.CreateEmailTemplatesRepository();
-            await repository.EmailTemplatesIUD(
-                databaseAction: Enums.DatabaseActions.UPDATE,
-                emailTemplateID: emailTemplateID,
-                emailTemplate: new EmailTemplateIudDTO
-                {
-                    EmailTemplateName = viewModel.EmailTemplateName,
-                    EmailTemplateSubject = viewModel.EmailTemplateSubject,
-                    EmailTemplateSubjectEng = viewModel.EmailTemplateSubjectEng,
-                    EmailTemplateBody = viewModel.EmailTemplateBody,
-                    EmailTemplateBodyEng = viewModel.EmailTemplateBodyEng
-                }                
-            );
-            if (repository.IsError)
-            {
-                viewModel.AddError(repository.ErrorMessage);
-            }            
+            var validationResult = new ValidationResult63();
+            var error = default(Error63);
+
+            error = Validation63.ValidateRequired(Validation63.GetJQueryNameSelectorFor(nameof(submitModel.EmailTemplateName)), submitModel.EmailTemplateName);
+            validationResult.AddError(error);
+
+            error = Validation63.ValidateRequired(Validation63.GetJQueryNameSelectorFor(nameof(submitModel.EmailTemplateSubject)), submitModel.EmailTemplateSubject);
+            validationResult.AddError(error);
+
+            error = Validation63.ValidateRequired(Validation63.GetJQueryNameSelectorFor(nameof(submitModel.EmailTemplateBody)), submitModel.EmailTemplateBody);
+            validationResult.AddError(error);
+
+            error = Validation63.ValidateRequired(Validation63.GetJQueryNameSelectorFor(nameof(submitModel.EmailTemplateSubjectEng)), submitModel.EmailTemplateSubjectEng);
+            validationResult.AddError(error);
+
+            error = Validation63.ValidateRequired(Validation63.GetJQueryNameSelectorFor(nameof(submitModel.EmailTemplateBodyEng)), submitModel.EmailTemplateBodyEng);
+            validationResult.AddError(error);
+
+            return validationResult;
         }
         #endregion
 

@@ -166,6 +166,7 @@ namespace SixtyThreeBits.Core.Libraries
     {
         #region Properties
         readonly List<Error63> _errors = [];
+        public IReadOnlyList<Error63> Errors => _errors.AsReadOnly();
         public int Count => _errors.Count;
         public bool HasErrors => _errors.Any();
         public string ErrorsJson => _errors.ToJson();

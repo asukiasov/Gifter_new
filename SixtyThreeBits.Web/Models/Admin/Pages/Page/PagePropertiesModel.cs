@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using DevExpress.CodeParser;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SixtyThreeBits.Core.Infrastructure.Repositories.DTO;
 using SixtyThreeBits.Core.Libraries;
@@ -39,69 +40,89 @@ namespace SixtyThreeBits.Web.Models.Admin
 
             return viewModel;
         }
-
-        public async Task ValidateViewModel(ViewModel viewModel)
+        
+        public async Task<ViewModel> Save(ViewModel submitModel)
         {
-            viewModel.AddError(Validation63.ValidateRequired(errorKey: Validation63.GetJQueryNameSelectorFor(nameof(viewModel.PageTitle)), valueToValidate: viewModel.PageTitle));
-            viewModel.AddError(Validation63.ValidateRequired(errorKey: Validation63.GetJQueryNameSelectorFor(nameof(viewModel.PageSlug)), valueToValidate: viewModel.PageSlug));
-            viewModel.AddError(
-                await Validation63.ValidateAsync(
-                        errorAction: async () =>
-                        {
-                            var repository = RepositoriesFactory.CreatePagesRepository();
-                            var isUniq = await repository.PagesIsSlugUniq(pageSlug: viewModel.PageSlug, pageID: Page.PageID);
-                            var isError = !isUniq;
-                            return isError;
-                        },
-                        errorKey: Validation63.GetJQueryNameSelectorFor(nameof(viewModel.PageSlug)),
-                        errorMessage: Resources.ValidationPagesSlugNotUniq
-                    )
-            );
-        }
+            var viewModel = GetViewModel(submitModel);
 
-        public async Task Save(ViewModel viewModel)
-        {
-            var hasPageImage = viewModel.PageImageFile?.Length > 0;
-            var pageImageFilename = hasPageImage ? GetFilenameFromUploadedFile(viewModel.PageImageFile) : null;
-            if (hasPageImage)
+            var validationResult = await ValidateSubmitModel(submitModel);
+
+            if (validationResult.HasErrors)
             {
-                await FileStorage.DeleteFile(
-                    filename: pageImageFilename,
-                    folderPath: FileStorage.GetFolderPathByModule(FileManagerModules.Pages)
-                );
-            }
-
-            var repository = RepositoriesFactory.CreatePagesRepository();
-            await repository.PagesIUD(
-                databaseAction: Enums.DatabaseActions.UPDATE,
-                pageID: Page.PageID,
-                page: new PageIudDTO
-                {
-                    PageSlug = viewModel.PageSlug,
-                    PageTitle = viewModel.PageTitle,
-                    PageTitleEng = viewModel.PageTitleEng ?? Constants.NullValueFor.String,
-                    PageShortDescription = viewModel.PageShortDescription ?? Constants.NullValueFor.String,
-                    PageShortDescriptionEng = viewModel.PageShortDescriptionEng ?? Constants.NullValueFor.String,
-                    PageImageFilename = pageImageFilename,
-                    PageIsPublished = viewModel.PageIsPublished
-                }
-            );
-
-            if (repository.IsError)
-            {
-                viewModel.AddError(repository.ErrorMessage);
+                viewModel.AddFormErrors(validationResult.Errors);
             }
             else
             {
+                var hasPageImage = submitModel.PageImageFile?.Length > 0;
+                var pageImageFilename = hasPageImage ? GetFilenameFromUploadedFile(submitModel.PageImageFile) : null;
                 if (hasPageImage)
                 {
-                    await FileStorage.SaveUploadedFile(
-                        sourceFileStream: viewModel.PageImageFile.OpenReadStream(),
+                    await FileStorage.DeleteFile(
                         filename: pageImageFilename,
                         folderPath: FileStorage.GetFolderPathByModule(FileManagerModules.Pages)
                     );
                 }
+
+                var repository = RepositoriesFactory.CreatePagesRepository();
+                await repository.PagesIUD(
+                    databaseAction: Enums.DatabaseActions.UPDATE,
+                    pageID: Page.PageID,
+                    page: new PageIudDTO
+                    {
+                        PageSlug = submitModel.PageSlug,
+                        PageTitle = submitModel.PageTitle,
+                        PageTitleEng = submitModel.PageTitleEng ?? Constants.NullValueFor.String,
+                        PageShortDescription = submitModel.PageShortDescription ?? Constants.NullValueFor.String,
+                        PageShortDescriptionEng = submitModel.PageShortDescriptionEng ?? Constants.NullValueFor.String,
+                        PageImageFilename = pageImageFilename,
+                        PageIsPublished = submitModel.PageIsPublished
+                    }
+                );
+
+                if (repository.IsError)
+                {
+                    submitModel.AddToastError(repository.ErrorMessage);
+                }
+                else
+                {
+                    if (hasPageImage)
+                    {
+                        await FileStorage.SaveUploadedFile(
+                            sourceFileStream: submitModel.PageImageFile.OpenReadStream(),
+                            filename: pageImageFilename,
+                            folderPath: FileStorage.GetFolderPathByModule(FileManagerModules.Pages)
+                        );
+                    }
+                }
             }
+
+            return viewModel;
+        }
+        async Task<ValidationResult63> ValidateSubmitModel(ViewModel submitModel)
+        {
+            var validationResult = new ValidationResult63();
+            var error = default(Error63);
+
+            error = Validation63.ValidateRequired(errorKey: Validation63.GetJQueryNameSelectorFor(nameof(submitModel.PageTitle)), valueToValidate: submitModel.PageTitle);
+            validationResult.AddError(error);
+
+            error = Validation63.ValidateRequired(errorKey: Validation63.GetJQueryNameSelectorFor(nameof(submitModel.PageSlug)), valueToValidate: submitModel.PageSlug);
+            validationResult.AddError(error);
+
+            error = await Validation63.ValidateAsync(
+                errorAction: async () =>
+                {
+                    var repository = RepositoriesFactory.CreatePagesRepository();
+                    var isUniq = await repository.PagesIsSlugUniq(pageSlug: submitModel.PageSlug, pageID: Page.PageID);
+                    var isError = !isUniq;
+                    return isError;
+                },
+                errorKey: Validation63.GetJQueryNameSelectorFor(nameof(submitModel.PageSlug)),
+                errorMessage: Resources.ValidationPagesSlugNotUniq
+            );
+            validationResult.AddError(error);
+
+            return validationResult;
         }
 
         public async Task<AjaxResponse> DeleteImage()

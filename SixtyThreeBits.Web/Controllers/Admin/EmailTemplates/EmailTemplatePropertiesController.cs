@@ -32,42 +32,23 @@ namespace SixtyThreeBits.Web.Controllers.Admin
 
         [HttpPost]
         [Route("")]
-        public async Task<IActionResult> EmailTemplateProperties(int? emailTemplateID, EmailTemplatePropertiesModel.ViewModel viewModel)
+        public async Task<IActionResult> EmailTemplateProperties(int? emailTemplateID, EmailTemplatePropertiesModel.ViewModel submitModel)
         {
-            var result = default(IActionResult);
-            viewModel = await Model.GetViewModel(emailTemplateID, viewModel);
-            if (viewModel == null)
+            Model.PluginsClient.EnableTinyMce(true).Enable63BitsForms(true).Enable63BitsSuccessErrorToast(true);
+
+            var viewModel = await Model.Save(emailTemplateID, submitModel);
+
+            if(viewModel.HasErrors)
             {
-                result = Model.GetNotFoundWebsiteViewResult();
+                Model.PageTitle.Set(viewModel.EmailTemplateName);
+                Model.Breadcrumbs.RenameLastItem(viewModel.EmailTemplateName);
+                return View(ViewNames.Admin.EmailTemplates.EmailTemplatePropertiesView, viewModel);
             }
             else
             {
-                Model.PluginsClient.EnableTinyMce(true).Enable63BitsForms(true).Enable63BitsSuccessErrorToast(true);
-                Model.PageTitle.Set(viewModel.EmailTemplateName);
-                Model.Breadcrumbs.RenameLastItem(viewModel.EmailTemplateName);
-
-                Model.ValidateViewModel(viewModel);
-                if (viewModel.IsValid)
-                {
-                    await Model.Save(emailTemplateID, viewModel);
-                    if (viewModel.IsValid)
-                    {
-                        result = Redirect(Model.Url.RouteUrl(ControllerActionRouteNames.Admin.EmailTemplatePropertiesController.Properties, new { emailTemplateID }));
-                        Model.ShowSuccessToastNotification();
-                    }
-                    else
-                    {
-                        result = View(ViewNames.Admin.EmailTemplates.EmailTemplatePropertiesView, viewModel);
-                        Model.ShowErrorToastNotification(viewModel.ErrorMessage);
-                    }
-                }
-                else
-                {
-                    result = View(ViewNames.Admin.EmailTemplates.EmailTemplatePropertiesView, viewModel);
-                }
+                Model.ShowSuccessToastNotification();
+                return Redirect(Model.UrlCurrentPageWithDomain);
             }
-
-            return result;
         }
         #endregion
     }

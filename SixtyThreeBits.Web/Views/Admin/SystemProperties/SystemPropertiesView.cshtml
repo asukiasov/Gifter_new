@@ -421,4 +421,19 @@
         model.urlTestEmailOffice365 = '@Html.Raw(Model.UrlTestEmailOffice365)';
         model.urlTestAws = '@Html.Raw(Model.UrlTestAws)';
     </script>
+    @if (Model.HasErrors)
+    {
+        @if (Model.HasFormErrors)
+        {
+            <script>
+                validation.init({ errorsJson: @Html.Raw(Model.FormErrorsJson) }).showErrors();
+            </script>
+        }
+        @if (Model.HasToastError)
+        {
+            <script>
+                successErrorToast63Bits.init({isError:true,message:'@Html.Raw(Model.ToastError)'}).showMessage();
+            </script>
+        }
+    }
 }

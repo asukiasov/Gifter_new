@@ -30,48 +30,65 @@ namespace SixtyThreeBits.Web.Models.Admin
             return viewModel;
         }
 
-        public void Validate(ViewModel viewModel)
+        public async Task<ViewModel> Save(ViewModel submitModel)
         {
-            viewModel.AddError(Validation63.ValidateRequired(errorKey: Validation63.GetJQueryNameSelectorFor(nameof(viewModel.BrandName)), valueToValidate: viewModel.BrandName));
-        }
+            var viewModel = GetViewModel(submitModel);
 
-        public async Task Save(ViewModel viewModel)
-        {
-            var brandImageFilename = default(string);
+            var validationResult = validateSubmitModel(submitModel);
 
-            var hasBrandImage = viewModel.BrandImageFile?.Length > 0;
-            if (hasBrandImage)
+            if (validationResult.HasErrors)
             {
-                await FileStorage.DeleteFile(viewModel.BrandImageFilename);
-                brandImageFilename = GetFilenameFromUploadedFile(viewModel.BrandImageFile);
-            }
-
-            var repository = RepositoriesFactory.CreateBrandsRepository();
-            await repository.BrandsIUD(
-                databaseAction: Enums.DatabaseActions.UPDATE,
-                brandID: DBItem.BrandID,
-                brand: new BrandIudDTO
-                {
-                    BrandName = viewModel.BrandName,
-                    BrandNameEng = viewModel.BrandNameEng,
-                    BrandImageFilename = brandImageFilename
-                }
-            );
-
-            if (repository.IsError)
-            {
-                viewModel.AddError(repository.ErrorMessage);
+                viewModel.AddFormErrors(validationResult.Errors);
             }
             else
             {
+                var brandImageFilename = default(string);
+                var hasBrandImage = viewModel.BrandImageFile?.Length > 0;
                 if (hasBrandImage)
                 {
-                    await FileStorage.SaveUploadedFile(
-                      sourceFileStream: viewModel.BrandImageFile.OpenReadStream(),
-                      filename: brandImageFilename
-                    );
+                    await FileStorage.DeleteFile(viewModel.BrandImageFilename);
+                    brandImageFilename = GetFilenameFromUploadedFile(viewModel.BrandImageFile);
+                }
+
+                var repository = RepositoriesFactory.CreateBrandsRepository();
+                await repository.BrandsIUD(
+                    databaseAction: Enums.DatabaseActions.UPDATE,
+                    brandID: DBItem.BrandID,
+                    brand: new BrandIudDTO
+                    {
+                        BrandName = viewModel.BrandName,
+                        BrandNameEng = viewModel.BrandNameEng,
+                        BrandImageFilename = brandImageFilename
+                    }
+                );
+
+                if (repository.IsError)
+                {
+                    viewModel.AddToastError(repository.ErrorMessage);
+                }
+                else
+                {
+                    if (hasBrandImage)
+                    {
+                        await FileStorage.SaveUploadedFile(
+                            sourceFileStream: viewModel.BrandImageFile.OpenReadStream(),
+                            filename: brandImageFilename
+                        );
+                    }
                 }
             }
+
+            return viewModel;
+        }
+        ValidationResult63 validateSubmitModel(ViewModel submitModel)
+        {
+            var validationResult = new ValidationResult63();
+            var error = default(Error63);
+
+            error = Validation63.ValidateRequired(errorKey: Validation63.GetJQueryNameSelectorFor(nameof(submitModel.BrandName)), valueToValidate: submitModel.BrandName);
+            validationResult.AddError(error);
+
+            return validationResult;
         }
 
         public async Task<AjaxResponse> DeleteImage()
