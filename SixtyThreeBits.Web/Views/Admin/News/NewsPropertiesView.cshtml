@@ -112,7 +112,7 @@
         @if (Model.HasToastError)
         {
             <script>
-                successErrorToast63Bits.init({isError:true,message:'@Html.Raw(Model.ToastError)'});
+                successErrorToast63Bits.init({isError:true,message:'@Html.Raw(Model.ToastError)'}).showMessage();
             </script>
         }
     }

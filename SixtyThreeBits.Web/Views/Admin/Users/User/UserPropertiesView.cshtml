@@ -24,6 +24,7 @@
                 <div class="col-xl-6 form-group">
                     <label>@Html.Raw(Model.TextEmail) *</label>
                     <input type="text" class="form-control" name="@nameof(Model.UserEmail)" value="@Html.Raw(Model.UserEmail)"/>
+                    <div class="invalid-feedback"></div>
                 </div>
                 <div class="col-xl-6 form-group">
                     <label>@Html.Raw(Model.TextPassword)</label>
@@ -86,10 +87,19 @@
 </div>
 @section FooterSection{
     <script src="/js/admin/users/user/UserPropertiesView.js"></script>
-    @if (Model.HasFormErrors)
+    @if (Model.HasErrors)
     {
-        <script>
-            validation.init({ errorsJson: @Html.Raw(Model.FormErrorsJson)}).showErrors();
-        </script>
+        @if (Model.HasFormErrors)
+        {
+            <script>
+                validation.init({ errorsJson: @Html.Raw(Model.FormErrorsJson) }).showErrors();
+            </script>
+        }
+        @if (Model.HasToastError)
+        {
+            <script>
+                successErrorToast63Bits.init({isError:true,message:'@Html.Raw(Model.ToastError)'}).showMessage();
+            </script>
+        }
     }
 }
