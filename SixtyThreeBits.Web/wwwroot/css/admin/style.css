@@ -1,13 +1,12 @@
 ﻿:root{
     --font-family: '63Fonts', "Work Sans", sans-serif;
-    --font-family-uppercase: '63Fonts Up', "Work Sans", sans-serif;
 }
 
 body {
     font-family: var(--font-family);
 }
 .text-uppercase{
-    font-family: var(--font-family-uppercase);
+    font-feature-settings: "case" on;
 }
 
 .form-select-sm + .select2-container--bootstrap4 .select2-selection--single{

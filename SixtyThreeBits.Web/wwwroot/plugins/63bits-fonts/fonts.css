@@ -1,102 +1,50 @@
 /* 63Fonts */
 @font-face {
 	font-family: '63Fonts';
-	src: url('/plugins/63bits-fonts/63Fonts/thin.ttf');
-	src: url('/plugins/63bits-fonts/63Fonts/thin.woff2') format('woff2'),
-		 url('/plugins/63bits-fonts/63Fonts/thin.woff') format('woff'),
-		 url('/plugins/63bits-fonts/63Fonts/thin.ttf') format('truetype'),
-		 url('/plugins/63bits-fonts/63Fonts/thin.eot') format('embedded-opentype');
-	font-weight: 100;
+	src: url('./63Fonts/ultralight.woff2') format('woff2'),
+		 url('./63Fonts/ultralight.woff') format('woff');
+	font-weight: 200;
 	font-style: normal;
 }
 @font-face {
 	font-family: '63Fonts';
-	src: url('/plugins/63bits-fonts/63Fonts/light.ttf');
-	src: url('/plugins/63bits-fonts/63Fonts/light.woff2') format('woff2'),
-		 url('/plugins/63bits-fonts/63Fonts/light.woff') format('woff'),
-		 url('/plugins/63bits-fonts/63Fonts/light.ttf') format('truetype'),
-		 url('/plugins/63bits-fonts/63Fonts/light.eot') format('embedded-opentype');
+	src: url('./63Fonts/light.woff2') format('woff2'),
+		 url('./63Fonts/light.woff') format('woff');
 	font-weight: 300;
 	font-style: normal;
 }
 @font-face {
 	font-family: '63Fonts';
-	src: url('/plugins/63bits-fonts/63Fonts/regular.ttf');
-	src: url('/plugins/63bits-fonts/63Fonts/regular.woff2') format('woff2'),
-		 url('/plugins/63bits-fonts/63Fonts/regular.woff') format('woff'),
-		 url('/plugins/63bits-fonts/63Fonts/regular.ttf') format('truetype'),
-		 url('/plugins/63bits-fonts/63Fonts/regular.eot') format('embedded-opentype');
+	src: url('./63Fonts/regular.woff2') format('woff2'),
+		 url('./63Fonts/regular.woff') format('woff');
 	font-weight: normal;
 	font-style: normal;
 }
 @font-face {
 	font-family: '63Fonts';
-	src: url('/plugins/63bits-fonts/63Fonts/medium.ttf');
-	src: url('/plugins/63bits-fonts/63Fonts/medium.woff2') format('woff2'),
-		 url('/plugins/63bits-fonts/63Fonts/medium.woff') format('woff'),
-		 url('/plugins/63bits-fonts/63Fonts/medium.ttf') format('truetype'),
-		 url('/plugins/63bits-fonts/63Fonts/medium.eot') format('embedded-opentype');
+	src: url('./63Fonts/medium.woff2') format('woff2'),
+		 url('./63Fonts/medium.woff') format('woff');
 	font-weight: 500;
 	font-style: normal;
 }
 @font-face {
 	font-family: '63Fonts';
-	src: url('/plugins/63bits-fonts/63Fonts/bold.ttf');
-	src: url('/plugins/63bits-fonts/63Fonts/bold.woff2') format('woff2'),
-		 url('/plugins/63bits-fonts/63Fonts/bold.woff') format('woff'),
-		 url('/plugins/63bits-fonts/63Fonts/bold.ttf') format('truetype'),
-		 url('/plugins/63bits-fonts/63Fonts/bold.eot') format('embedded-opentype');
+	src: url('./63Fonts/bold.woff2') format('woff2'),
+	url('./63Fonts/bold.woff') format('woff');
 	font-weight: bold;
 	font-style: normal;
 }
-
 @font-face {
-	font-family: '63Fonts UP';
-	src: url('/plugins/63bits-fonts/63Fonts/thin_up.ttf');
-	src: url('/plugins/63bits-fonts/63Fonts/thin_up.woff2') format('woff2'),
-		 url('/plugins/63bits-fonts/63Fonts/thin_up.woff') format('woff'),
-		 url('/plugins/63bits-fonts/63Fonts/thin_up.ttf') format('truetype'),
-		 url('/plugins/63bits-fonts/63Fonts/thin_up.eot') format('embedded-opentype');
-	font-weight: 100;
+	font-family: '63Fonts';
+	src: url('./63Fonts/ultrabold.woff2') format('woff2'),
+	url('./63Fonts/ultrabold.woff') format('woff');
+	font-weight: 800;
 	font-style: normal;
 }
 @font-face {
-	font-family: '63Fonts UP';
-	src: url('/plugins/63bits-fonts/63Fonts/light_up.ttf');
-	src: url('/plugins/63bits-fonts/63Fonts/light_up.woff2') format('woff2'),
-		 url('/plugins/63bits-fonts/63Fonts/light_up.woff') format('woff'),
-		 url('/plugins/63bits-fonts/63Fonts/light_up.ttf') format('truetype'),
-		 url('/plugins/63bits-fonts/63Fonts/light_up.eot') format('embedded-opentype');
-	font-weight: 300;
-	font-style: normal;
-}
-@font-face {
-	font-family: '63Fonts UP';
-	src: url('/plugins/63bits-fonts/63Fonts/regular_up.ttf');
-	src: url('/plugins/63bits-fonts/63Fonts/regular_up.woff2') format('woff2'),
-		 url('/plugins/63bits-fonts/63Fonts/regular_up.woff') format('woff'),
-		 url('/plugins/63bits-fonts/63Fonts/regular_up.ttf') format('truetype'),
-		 url('/plugins/63bits-fonts/63Fonts/regular_up.eot') format('embedded-opentype');
-	font-weight: normal;
-	font-style: normal;
-}
-@font-face {
-	font-family: '63Fonts UP';
-	src: url('/plugins/63bits-fonts/63Fonts/medium_up.ttf');
-	src: url('/plugins/63bits-fonts/63Fonts/medium_up.woff2') format('woff2'),
-		 url('/plugins/63bits-fonts/63Fonts/medium_up.woff') format('woff'),
-		 url('/plugins/63bits-fonts/63Fonts/medium_up.ttf') format('truetype'),
-		 url('/plugins/63bits-fonts/63Fonts/medium_up.eot') format('embedded-opentype');
-	font-weight: 500;
-	font-style: normal;
-}
-@font-face {
-	font-family: '63Fonts UP';
-	src: url('/plugins/63bits-fonts/63Fonts/bold_up.ttf');
-	src: url('/plugins/63bits-fonts/63Fonts/bold_up.woff2') format('woff2'),
-		 url('/plugins/63bits-fonts/63Fonts/bold_up.woff') format('woff'),
-		 url('/plugins/63bits-fonts/63Fonts/bold_up.ttf') format('truetype'),
-		 url('/plugins/63bits-fonts/63Fonts/bold_up.eot') format('embedded-opentype');
-	font-weight: bold;
+	font-family: '63Fonts';
+	src: url('./63Fonts/black.woff2') format('woff2'),
+	url('./63Fonts/black.woff') format('woff');
+	font-weight: 900;
 	font-style: normal;
 }
