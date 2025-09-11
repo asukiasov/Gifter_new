@@ -531,10 +531,10 @@ $.fn.extend({
             placeholder: "_"
         });
         this.click(function () {
-            let Value = $(this).val().substr(4, $(this).val().length)
+            let Value = $(this).val().substr(6, $(this).val().length)
             var IndexOfFirstNum = Value.indexOf(Value.match(/\d/))
             if (IndexOfFirstNum < 0) {
-                IndexOfFirstNum = 4
+                IndexOfFirstNum = 6
                 this.setSelectionRange(IndexOfFirstNum, IndexOfFirstNum)
             }
         });
