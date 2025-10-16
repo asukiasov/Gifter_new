@@ -159,7 +159,8 @@ namespace SixtyThreeBits.Web
                 FileProvider = new PhysicalFileProvider(_appSettings.UploadFolderPhysicalPath),
                 RequestPath = _appSettings.UploadFolderHttpPath.TrimEnd('/')
             });
-            
+
+
             app.UseRouting();
             app.UseSession();
 
