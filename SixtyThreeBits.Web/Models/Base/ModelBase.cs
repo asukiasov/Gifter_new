@@ -128,21 +128,21 @@ namespace SixtyThreeBits.Web.Models.Base
         #region Success/Error Toast
         public void InitSuccessErrorToastNotificationPartialViewModel()
         {            
-            var errorMessage = SessionAssistance.Get<string>(WebConstants.SessionKeys.SuccessErrorMessageError);
+            var errorMessage = SessionAssistance.Get<string>(WebConstants.SessionKeys.SuccessErrorToastError);
             if (errorMessage != null)
             {
                 SuccessErrorPartialViewModel.ShowError = true;
                 SuccessErrorPartialViewModel.Message = errorMessage;
-                SessionAssistance.Remove(WebConstants.SessionKeys.SuccessErrorMessageError);
+                SessionAssistance.Remove(WebConstants.SessionKeys.SuccessErrorToastError);
             }
             else
             {
-                var successMessage = SessionAssistance.Get<string>(WebConstants.SessionKeys.SuccessErrorMessageSuccess);
+                var successMessage = SessionAssistance.Get<string>(WebConstants.SessionKeys.SuccessErrorToastSuccess);
                 if (successMessage != null)
                 {
                     SuccessErrorPartialViewModel.ShowSuccess = true;
                     SuccessErrorPartialViewModel.Message = successMessage;
-                    SessionAssistance.Remove(WebConstants.SessionKeys.SuccessErrorMessageSuccess);
+                    SessionAssistance.Remove(WebConstants.SessionKeys.SuccessErrorToastSuccess);
                 }
             }
         }
@@ -153,7 +153,7 @@ namespace SixtyThreeBits.Web.Models.Base
             {
                 message = Resources.TextSuccess;
             }
-            SessionAssistance.Set(WebConstants.SessionKeys.SuccessErrorMessageSuccess, message);
+            SessionAssistance.Set(WebConstants.SessionKeys.SuccessErrorToastSuccess, message);
         }
 
         public void ShowErrorToastNotification(string message = null, bool shouldDisplayAfterPageReload = false)
@@ -165,7 +165,7 @@ namespace SixtyThreeBits.Web.Models.Base
 
             if (shouldDisplayAfterPageReload)
             {
-                SessionAssistance.Set(WebConstants.SessionKeys.SuccessErrorMessageError, message);
+                SessionAssistance.Set(WebConstants.SessionKeys.SuccessErrorToastError, message);
             }
             else
             {

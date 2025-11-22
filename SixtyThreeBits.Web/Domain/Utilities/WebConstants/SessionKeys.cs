@@ -6,8 +6,8 @@
         {
             #region Properties
             public const string User = "User";
-            public const string SuccessErrorMessageError = "SuccessErrorMessageError";
-            public const string SuccessErrorMessageSuccess = "SuccessErrorMessageSuccess";
+            public const string SuccessErrorToastError = "SuccessErrorToastError";
+            public const string SuccessErrorToastSuccess = "SuccessErrorToastSuccess";
             #endregion            
         }
     }
