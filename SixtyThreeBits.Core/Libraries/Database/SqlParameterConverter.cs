@@ -2,7 +2,7 @@
 using System;
 using System.Data;
 
-namespace SixtyThreeBits.Core.Infrastructure.Database
+namespace SixtyThreeBits.Core.Libraries.Database
 {
     internal static class SqlParameterConverter
     {

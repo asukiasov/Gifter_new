@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SixtyThreeBits.Core.Factories;
-using SixtyThreeBits.Core.Infrastructure.Database;
 using SixtyThreeBits.Core.Infrastructure.Repositories.DTO;
+using SixtyThreeBits.Core.Libraries.Database;
 using SixtyThreeBits.Libraries;
 using System.Collections.Generic;
 using System.Linq;

@@ -6,9 +6,7 @@
         {
             public static class UserPropertiesController
             {
-                #region Properties                
                 public const string Properties = $"{nameof(Admin)}{nameof(UserPropertiesController)}{nameof(Properties)}";
-                #endregion
             }
         }
     }

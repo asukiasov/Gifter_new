@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
 
 namespace SixtyThreeBits.Core.Utilities
@@ -20,23 +21,26 @@ namespace SixtyThreeBits.Core.Utilities
         #endregion
 
         #region Constructors
-        public AppSettingsCollection(string contentRootPath, string webRootPath, IConfiguration configuration)
+        public AppSettingsCollection(string contentRootPath, string webRootPath, IConfiguration configuration, bool isDevelopmentEnvironment)
         {
-            _configuration = configuration;
             ContentRootPath = contentRootPath;
             WebRootPath = webRootPath;
 
             DownloadFolderPhysicalPath = $"{WebRootPath}{Path.DirectorySeparatorChar}{_downloadFolderName}";
-            UploadFolderPhysicalPath = GetConfigValue(nameof(UploadFolderPhysicalPath));
-            if (string.IsNullOrWhiteSpace(UploadFolderPhysicalPath))
+
+            if (isDevelopmentEnvironment)
             {
-                UploadFolderPhysicalPath = $"{WebRootPath}{Path.DirectorySeparatorChar}{_uploadFolderName}";
+                UploadFolderPhysicalPath = $"{webRootPath}\\{_uploadFolderName}";
             }
-            if (string.IsNullOrWhiteSpace(UploadFolderPhysicalPath))
+            else
             {
-                throw new System.Exception($"UploadFolderPhysicalPath: \"{UploadFolderPhysicalPath}\" is not found");
+                var parts = contentRootPath.Split('\\').ToList();
+                parts.RemoveAt(parts.Count - 1);
+                parts.Add(_uploadFolderName);
+                UploadFolderPhysicalPath = string.Join("\\", parts);
             }
-            
+
+            _configuration = configuration;
             ConnectionStrings = new ConnectionStringSettings(configuration);
         }
         #endregion

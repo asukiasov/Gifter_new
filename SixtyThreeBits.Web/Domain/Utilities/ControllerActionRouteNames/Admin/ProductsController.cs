@@ -6,7 +6,6 @@
         {
             public static class ProductsController
             {
-                #region Properties
                 public const string Products = $"{nameof(Admin)}{nameof(ProductsController)}{nameof(Products)}";
                 public const string Grid = $"{nameof(Admin)}{nameof(ProductsController)}{nameof(Grid)}";
                 public const string GridAdd = $"{nameof(Admin)}{nameof(ProductsController)}{nameof(GridAdd)}";
@@ -14,7 +13,6 @@
                 public const string GridDelete = $"{nameof(Admin)}{nameof(ProductsController)}{nameof(GridDelete)}";
                 public const string ExcelDownload = $"{nameof(Admin)}{nameof(ProductsController)}{nameof(ExcelDownload)}";
                 public const string ExcelUpload = $"{nameof(Admin)}{nameof(ProductsController)}{nameof(ExcelUpload)}";
-                #endregion                
             }
         }
     }

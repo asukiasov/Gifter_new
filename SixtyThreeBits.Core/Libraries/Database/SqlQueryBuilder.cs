@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SixtyThreeBits.Core.Infrastructure.Database
+namespace SixtyThreeBits.Core.Libraries.Database
 {
     internal class SqlQueryBuilder
     {

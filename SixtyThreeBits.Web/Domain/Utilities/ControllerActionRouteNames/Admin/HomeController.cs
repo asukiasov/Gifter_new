@@ -6,9 +6,7 @@
         {
             public static class HomeController
             {
-                #region Properties
                 public const string Index = $"{nameof(Admin)}{nameof(HomeController)}{nameof(Index)}";
-                #endregion
             }
         }
     }

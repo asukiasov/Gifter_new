@@ -11,7 +11,7 @@ namespace SixtyThreeBits.Web.Controllers.Admin
     [Route("admin/permissions")]
     public class PermissionsController : AdminControllerBase<PermissionsModel>
     {
-        #region Methods
+        #region Actions
         [HttpGet]
         [Route("", Name = ControllerActionRouteNames.Admin.PermissionsController.Permissions)]
         public IActionResult Permissions()

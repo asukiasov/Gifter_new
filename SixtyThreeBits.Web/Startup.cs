@@ -30,11 +30,13 @@ namespace SixtyThreeBits.Web
         readonly UtilityCollection _utilities;
         readonly RepositoryFactory _repositoryFactory;
         readonly ILogger _logger = new ErrorLogTxtFileLogger();
+        readonly bool _isDevelopmentEnvironment;
 
         public Startup(IWebHostEnvironment env)
         {            
             IConfiguration appSettingsConfiguration;
-            if (env.IsDevelopment())
+            _isDevelopmentEnvironment = env.IsDevelopment();
+            if (_isDevelopmentEnvironment)
             {
                 appSettingsConfiguration = new ConfigurationBuilder().SetBasePath(env.ContentRootPath).AddJsonFile("appsettings.json").Build();
             }
@@ -50,7 +52,8 @@ namespace SixtyThreeBits.Web
             _appSettings = new AppSettingsCollection(
                 contentRootPath: env.ContentRootPath,
                 webRootPath: env.WebRootPath,
-                configuration: appSettingsConfiguration
+                configuration: appSettingsConfiguration,
+                isDevelopmentEnvironment: _isDevelopmentEnvironment
             );
             _utilities = new UtilityCollection(
                 contentRootPath: env.ContentRootPath,
@@ -115,7 +118,7 @@ namespace SixtyThreeBits.Web
         {
             var urlRewriteOptions = new RewriteOptions().AddRedirect(@"(.*)/$", "$1", 301).AddRewrite(@"^$", "/", true).AddRewrite(@"(.*)/$", "$1", true);
 
-            if (env.IsDevelopment())
+            if (_isDevelopmentEnvironment)
             {
 				app.UseDeveloperExceptionPage();				
 			}
