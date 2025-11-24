@@ -15,12 +15,6 @@ namespace SixtyThreeBits.Web.Domain.Utilities
     public class WebUtilities
     {
         #region Methods
-        public static bool IsAjaxRequest(HttpRequest request)
-        {
-            var Header = request?.Headers["X-Requested-With"].ToString();
-            return Header == "XMLHttpRequest";
-        }
-
         public static string GetClientIP(HttpRequest request)
         {
             return request.HttpContext.Connection.RemoteIpAddress.ToString();
