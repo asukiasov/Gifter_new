@@ -66,8 +66,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Services
                 method: Method.Post,
                 headers: headers,
                 parameters: parameters,                
-                files: files,
-                httpStatusCodeSuccess: Enums.HttpStatusCodes.Status200OK
+                files: files
             );
             var result = new SendEmailResult(executeResult);
 

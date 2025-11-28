@@ -53,7 +53,6 @@ namespace SixtyThreeBits.Core.Infrastructure.Services
 
 
                 var result = await ExecuteAsyncTask(
-                    httpStatusCodeSuccess: Enums.HttpStatusCodes.Status200OK,
                     resource: "api/v1/oauth2/token",
                     method: Method.Post,
                     headers: headers,
@@ -111,7 +110,6 @@ namespace SixtyThreeBits.Core.Infrastructure.Services
             }.ToJson();
 
             var resultBase = await ExecuteAsyncTask(
-                httpStatusCodeSuccess: Enums.HttpStatusCodes.Status200OK,
                 resource: "api/v1/checkout/orders",
                 method: Method.Post,
                 headers: headers,                
@@ -161,7 +159,6 @@ namespace SixtyThreeBits.Core.Infrastructure.Services
             }.ToJson();
 
             var resultBase = await ExecuteAsyncTask(
-                httpStatusCodeSuccess: Enums.HttpStatusCodes.Status200OK,
                 resource: "api/v1/checkout/payment/subscription",
                 method: Method.Post,
                 headers: headers,
@@ -189,7 +186,6 @@ namespace SixtyThreeBits.Core.Infrastructure.Services
             };
 
             var resultBase = await ExecuteAsyncTask(
-                httpStatusCodeSuccess: Enums.HttpStatusCodes.Status200OK,
                 resource: $"api/v1/checkout/payment/{orderIDBank}",
                 method: Method.Get,
                 headers: headers
@@ -223,7 +219,6 @@ namespace SixtyThreeBits.Core.Infrastructure.Services
             };
 
             var resultBase = await ExecuteAsyncTask(
-                httpStatusCodeSuccess: Enums.HttpStatusCodes.Status200OK,
                 resource: "api/v1/checkout/refund",
                 method: Method.Post,
                 headers: headers,
@@ -253,7 +248,6 @@ namespace SixtyThreeBits.Core.Infrastructure.Services
 
             SetBaseUrl(_baseUrlInstallment);
             var resultBase = await ExecuteAsyncTask(
-                httpStatusCodeSuccess: Enums.HttpStatusCodes.Status200OK,
                 resource: "v1/services/installment/calculate",
                 method: Method.Post,
                 headers: headers,
@@ -321,7 +315,6 @@ namespace SixtyThreeBits.Core.Infrastructure.Services
 
             SetBaseUrl(_baseUrlInstallment);
             var resultBase = await ExecuteAsyncTask(
-                httpStatusCodeSuccess: Enums.HttpStatusCodes.Status200OK,
                 resource: "v1/installment/checkout",
                 method: Method.Post,
                 headers: headers,
@@ -360,7 +353,6 @@ namespace SixtyThreeBits.Core.Infrastructure.Services
 
             SetBaseUrl(_baseUrlInstallment);
             var resultBase = await ExecuteAsyncTask(
-                httpStatusCodeSuccess: Enums.HttpStatusCodes.Status200OK,
                 resource: $"v1/installment/checkout/{orderIDBank}",
                 method: Method.Get,
                 headers: headers
