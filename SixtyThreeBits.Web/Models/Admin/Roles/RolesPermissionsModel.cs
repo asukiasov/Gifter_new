@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using SixtyThreeBits.Core.Properties;
 using SixtyThreeBits.Libraries;
-using SixtyThreeBits.Web.Domain.Libraries;
+using SixtyThreeBits.Web.Domain.Libraries.DevExtreme;
 using SixtyThreeBits.Web.Domain.Utilities;
 using SixtyThreeBits.Web.Models.Base;
 using System.Collections.Generic;
@@ -108,7 +108,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             #endregion
 
             #region Nested Classes
-            public class RolesGridModel : DevExtremeGridViewModelBase<RolesGridModel.GridItem>
+            public class RolesGridModel : DevExtremeGridModelBase<RolesGridModel.GridItem>
             {
                 #region Methods
                 public override DataGridBuilder<GridItem> Render(IHtmlHelper Html)
@@ -152,7 +152,7 @@ namespace SixtyThreeBits.Web.Models.Admin
                 #endregion
             }
 
-            public class PermissionsTreeModel : DevExtremeTreeViewModelBase<PermissionsTreeModel.TreeItem>
+            public class PermissionsTreeModel : DevExtremeTreeModelBase<PermissionsTreeModel.TreeItem>
             {
                 #region Methods
                 public override TreeListBuilder<TreeItem> Render(IHtmlHelper Html)
