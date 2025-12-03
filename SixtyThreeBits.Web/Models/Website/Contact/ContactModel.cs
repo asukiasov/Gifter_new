@@ -1,5 +1,6 @@
 ﻿using SixtyThreeBits.Core.Infrastructure.Services;
 using SixtyThreeBits.Core.Libraries;
+using SixtyThreeBits.Core.Libraries.Validation;
 using SixtyThreeBits.Core.Properties;
 using SixtyThreeBits.Libraries;
 using SixtyThreeBits.Web.Models.Base;

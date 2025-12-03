@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SixtyThreeBits.Core.Infrastructure.Services
 {
-    public class AwsService 
+    public class AwsService
     {
         #region Properties
         readonly string _awsAccessKeyID;

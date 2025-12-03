@@ -23,7 +23,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Services.Base
         #endregion
 
         #region Methods        
-        public async Task<ApiResultBase> ExecuteAsyncTask(int? httpStatusCodeSuccess, string resource, Method method, List<Parameter> headers = null, List<Parameter> parameters = null, string body = null, List<File> files = null)
+        public async Task<ApiResultBase> ExecuteAsyncTask(string resource, Method method, List<Parameter> headers = null, List<Parameter> parameters = null, string body = null, byte[] bodyBinary = null, List<File> files = null)
         {
             var client = new RestClient(_baseUrl);
             var request = new RestRequest();
@@ -54,7 +54,10 @@ namespace SixtyThreeBits.Core.Infrastructure.Services.Base
             {
                 request.AddBody(body);
             }
-
+            if (bodyBinary?.Length > 0)
+            {
+                request.AddBody(bodyBinary, "application/octet-stream");
+            }
             if (files != null)
             {
                 foreach (var item in files)
@@ -73,7 +76,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Services.Base
             {
                 result.RequestHeaders = string.Join(",", headers.Select(item => $"{item.Key}: {item.Value}"));
             }
-            
+
             if (parameters is null)
             {
                 result.RequestBody = body;
@@ -83,18 +86,28 @@ namespace SixtyThreeBits.Core.Infrastructure.Services.Base
                 result.RequestBody = string.Join("&", parameters.Select(item => $"{item.Key}={item.Value}"));
             }
 
+
+
             result.ResponseStatusCode = (int)response.StatusCode;
+            result.ResponseHeaders = response.Headers?.GroupBy(h => h.Name).ToDictionary(g => g.Key, g => g.First().Value?.ToString());
+            result.ResponseRawBytes = response.RawBytes;
             result.ResponseContent = response.Content;
 
-            if (response.ErrorException == null)
+            var isStatusCodeSuccess = result.ResponseStatusCode >= 200 && result.ResponseStatusCode < 300;
+            if (isStatusCodeSuccess)
             {
-                result.IsSuccess = result.ResponseStatusCode == httpStatusCodeSuccess;
+                result.IsSuccess = true;
+            }
+            else if (response.ResponseStatus == ResponseStatus.TimedOut)
+            {
+                result.IsTimeout = true;
+                result.ResponseContent = response.ErrorException?.Message;
             }
             else
             {
                 if (string.IsNullOrWhiteSpace(result.ResponseContent))
                 {
-                    result.ResponseContent = response.ErrorException.Message;
+                    result.ResponseContent = response.ErrorException?.Message;
                 }
             }
 
@@ -112,11 +125,14 @@ namespace SixtyThreeBits.Core.Infrastructure.Services.Base
         {
             #region Properties
             public bool IsSuccess { get; set; }
+            public bool IsTimeout { get; set; }
             public string RequestUrl { get; set; }
             public string RequestMethod { get; set; }
             public string RequestHeaders { get; set; }
             public string RequestBody { get; set; }
             public int? ResponseStatusCode { get; set; }
+            public Dictionary<string, string> ResponseHeaders { get; set; }
+            public byte[] ResponseRawBytes { get; set; }
             public string ResponseContent { get; set; }
             #endregion
 

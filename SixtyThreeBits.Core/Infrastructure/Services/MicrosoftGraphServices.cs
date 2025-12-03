@@ -61,8 +61,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Services
                     resource: resource,
                     method: Method.Post,
                     headers: headers,
-                    parameters: parameters,                    
-                    httpStatusCodeSuccess: Enums.HttpStatusCodes.Status200OK
+                    parameters: parameters
                 );                              
                 
                 if(executeResult.IsSuccess)
@@ -112,19 +111,19 @@ namespace SixtyThreeBits.Core.Infrastructure.Services
                 }
                 if (cc?.Any() == true)
                 {
-                    RequestBody.Message.CCRecipients = cc.Select(Item => new MailMessageRequestBody.MessageClass.CCRecipientClass { EmailAddress = new() { Address = Item } }).ToList();
+                    RequestBody.Message.CCRecipients = cc.Select(item => new MailMessageRequestBody.MessageClass.CCRecipientClass { EmailAddress = new() { Address = item } }).ToList();
                 }
                 if (bcc?.Any() == true)
                 {
-                    RequestBody.Message.BCCRecipients = bcc.Select(Item => new MailMessageRequestBody.MessageClass.BCCRecipientClass { EmailAddress = new() { Address = Item } }).ToList();
+                    RequestBody.Message.BCCRecipients = bcc.Select(item => new MailMessageRequestBody.MessageClass.BCCRecipientClass { EmailAddress = new() { Address = item } }).ToList();
                 }
 
                 if (attachments?.Any() == true)
                 {
-                    RequestBody.Message.Attachments = attachments.Select(Item => new MailMessageRequestBody.MessageClass.AttachmentClass
+                    RequestBody.Message.Attachments = attachments.Select(item => new MailMessageRequestBody.MessageClass.AttachmentClass
                     {
-                        Name = Item.Filename,
-                        ContentBytesBase64 = Convert.ToBase64String(Item.FileBytes)
+                        Name = item.Filename,
+                        ContentBytesBase64 = Convert.ToBase64String(item.FileBytes)
                     }).ToList();
                 }
             }
@@ -135,8 +134,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Services
                 headers: headers,
                 parameters: null,
                 body: RequestBody.ToJson(),
-                files: null,
-                httpStatusCodeSuccess: Enums.HttpStatusCodes.Status202Accepted
+                files: null
             );
             var result = new SendEmailResult(executeResult);
 

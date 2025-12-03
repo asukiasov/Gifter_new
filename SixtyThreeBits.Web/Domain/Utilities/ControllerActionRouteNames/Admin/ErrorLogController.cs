@@ -2,8 +2,10 @@
 {
     public static partial class ControllerActionRouteNames
     {
+        #region Netsed Classes
         public static partial class Admin
         {
+            #region Netsed Classes
             public static class ErrorLogController
             {
                 #region Properties
@@ -11,6 +13,8 @@
                 public const string Clear = $"{nameof(Admin)}{nameof(ErrorLogController)}{nameof(Clear)}";
                 #endregion
             }
+            #endregion
         }
+        #endregion
     }
 }

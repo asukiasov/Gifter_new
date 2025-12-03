@@ -2,8 +2,10 @@
 {
     public static partial class ControllerActionRouteNames
     {
+        #region Netsed Classes
         public static partial class Admin
         {
+            #region Netsed Classes
             public static class PagesController
             {
                 #region Properties
@@ -12,9 +14,11 @@
                 public const string GridAdd = $"{nameof(Admin)}{nameof(PagesController)}{nameof(GridAdd)}";
                 public const string GridUpdate = $"{nameof(Admin)}{nameof(PagesController)}{nameof(GridUpdate)}";
                 public const string GridDelete = $"{nameof(Admin)}{nameof(PagesController)}{nameof(GridDelete)}";
-                public const string Json = $"{nameof(Admin)}{nameof(PagesController)}{nameof(Json)}";
-                #endregion                
+                public const string Json = $"{nameof(Admin)}{nameof(PagesController)}{nameof(Json)}"; 
+                #endregion
             }
+            #endregion
         }
+        #endregion
     }
 }

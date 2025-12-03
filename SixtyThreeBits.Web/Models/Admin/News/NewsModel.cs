@@ -6,7 +6,7 @@ using SixtyThreeBits.Core.Infrastructure.Repositories.DTO;
 using SixtyThreeBits.Core.Properties;
 using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries;
-using SixtyThreeBits.Web.Domain.Libraries;
+using SixtyThreeBits.Web.Domain.Libraries.DevExtreme;
 using SixtyThreeBits.Web.Domain.Utilities;
 using SixtyThreeBits.Web.Models.Base;
 using System;
@@ -99,7 +99,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             #endregion
 
             #region Nested Classes
-            public class GridModel : DevExtremeGridViewModelBase<GridModel.GridItem>
+            public class GridModel : DevExtremeGridModelBase<GridModel.GridItem>
             {
                 #region Methods
                 public override DataGridBuilder<GridItem> Render(IHtmlHelper html)
@@ -115,9 +115,9 @@ namespace SixtyThreeBits.Web.Models.Admin
                         {
                             options.AddRequired();
                         });
-                        columns.AddFor(m => m.NewsDatePublished).Caption(Resources.TextDate).DataType(GridColumnDataType.Date).Width(150).InitDateColumn();
-                        columns.AddFor(m => m.NewsIsPublished).Caption(Resources.TextPublished).DataType(GridColumnDataType.Boolean).Width(130).InitCheckboxColumn();
-                        columns.AddFor(m => m.NewsDateCreated).Caption(Resources.TextDateCreated).DataType(GridColumnDataType.Date).Width(150).InitDateColumn(formatDateTime: true).AllowEditing(false);
+                        columns.AddFor(m => m.NewsDatePublished).Caption(Resources.TextDate).Width(150).InitDateColumn(format: DevExtremeExtensions63.DateColumnFormat.Date);
+                        columns.AddFor(m => m.NewsIsPublished).Caption(Resources.TextPublished).Width(130).InitCheckboxColumn();
+                        columns.AddFor(m => m.NewsDateCreated).Caption(Resources.TextDateCreated).Width(150).InitDateColumn(format: DevExtremeExtensions63.DateColumnFormat.DateTime).AllowEditing(false);
                         columns.Add();
                     });
 

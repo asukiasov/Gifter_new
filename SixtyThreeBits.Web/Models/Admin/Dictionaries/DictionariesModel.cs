@@ -6,10 +6,9 @@ using SixtyThreeBits.Core.Infrastructure.Repositories.DTO;
 using SixtyThreeBits.Core.Properties;
 using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries;
-using SixtyThreeBits.Web.Domain.Libraries;
+using SixtyThreeBits.Web.Domain.Libraries.DevExtreme;
 using SixtyThreeBits.Web.Domain.Utilities;
 using SixtyThreeBits.Web.Models.Base;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -106,7 +105,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             #endregion
 
             #region Nested Classes
-            public class TreeModel : DevExtremeTreeViewModelBase<TreeModel.TreeItem>
+            public class TreeModel : DevExtremeTreeModelBase<TreeModel.TreeItem>
             {
                 #region Methods
                 public override TreeListBuilder<TreeItem> Render(IHtmlHelper html)

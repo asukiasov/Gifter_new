@@ -2,8 +2,10 @@
 {
     public static partial class ControllerActionRouteNames
     {
+        #region Netsed Classes
         public static partial class Admin
         {
+            #region Netsed Classes
             public static class SystemPropertiesController
             {
                 #region Properties
@@ -14,6 +16,8 @@
                 public const string TestAws = $"{nameof(Admin)}{nameof(SystemPropertiesController)}{nameof(TestAws)}";
                 #endregion
             }
+            #endregion
         }
+        #endregion
     }
 }

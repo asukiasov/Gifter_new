@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using SixtyThreeBits.Web.Domain.Libraries;
+using SixtyThreeBits.Web.Domain.Libraries.DevExtreme;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -15,12 +15,6 @@ namespace SixtyThreeBits.Web.Domain.Utilities
     public class WebUtilities
     {
         #region Methods
-        public static bool IsAjaxRequest(HttpRequest request)
-        {
-            var Header = request?.Headers["X-Requested-With"].ToString();
-            return Header == "XMLHttpRequest";
-        }
-
         public static string GetClientIP(HttpRequest request)
         {
             return request.HttpContext.Connection.RemoteIpAddress.ToString();

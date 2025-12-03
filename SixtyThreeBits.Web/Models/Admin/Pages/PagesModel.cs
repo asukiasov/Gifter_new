@@ -6,11 +6,10 @@ using SixtyThreeBits.Core.Infrastructure.Repositories.DTO;
 using SixtyThreeBits.Core.Properties;
 using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Libraries;
-using SixtyThreeBits.Web.Domain.Libraries;
+using SixtyThreeBits.Web.Domain.Libraries.DevExtreme;
 using SixtyThreeBits.Web.Domain.Utilities;
 using SixtyThreeBits.Web.Models.Base;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -126,7 +125,7 @@ namespace SixtyThreeBits.Web.Models.Admin
             #endregion
 
             #region Nested Classes
-            public class GridModel : DevExtremeGridViewModelBase<GridModel.GridItem>
+            public class GridModel : DevExtremeGridModelBase<GridModel.GridItem>
             {
                 #region Methods
                 public override DataGridBuilder<GridItem> Render(IHtmlHelper html)
@@ -145,7 +144,7 @@ namespace SixtyThreeBits.Web.Models.Admin
                         });
                         columns.AddFor(m => m.PageTitleEng).Caption(Resources.TextTitleEng).Width(300);                        
                         columns.AddFor(m => m.PageIsPublished).Caption(Resources.TextPublished).Width(100).InitCheckboxColumn();
-                        columns.AddFor(m => m.PageDateCreated).Caption(Resources.TextDateCreated).DataType(GridColumnDataType.DateTime).Width(140).InitDateColumn(true).AllowEditing(false);
+                        columns.AddFor(m => m.PageDateCreated).Caption(Resources.TextDateCreated).Width(140).InitDateColumn(format: DevExtremeExtensions63.DateColumnFormat.DateTime).AllowEditing(false);
                         columns.Add();
                     });
 

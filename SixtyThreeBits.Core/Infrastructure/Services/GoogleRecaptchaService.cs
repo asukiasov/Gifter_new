@@ -38,7 +38,6 @@ namespace SixtyThreeBits.Core.Infrastructure.Services
             }
 
             var executeResult = await ExecuteAsyncTask(
-                httpStatusCodeSuccess: Enums.HttpStatusCodes.Status200OK,
                 resource: null,
                 method: Method.Post,
                 parameters: parameters

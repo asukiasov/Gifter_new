@@ -2,8 +2,10 @@
 {
     public static partial class ControllerActionRouteNames
     {
+        #region Netsed Classes
         public static partial class Admin
         {
+            #region Netsed Classes
             public static class UsersController
             {
                 #region Properties
@@ -14,7 +16,8 @@
                 public const string GridDelete = $"{nameof(Admin)}{nameof(UsersController)}{nameof(GridDelete)}";
                 #endregion
             }
-
+            #endregion
         }
+        #endregion
     }
 }
