@@ -1,6 +1,10 @@
 ﻿@model PagesModel.ViewModel
 @section HeaderSection{
     @Html.Raw(Model.PageTextHeaderHtml)
+    @if(Model.HasPageImageHttpPath)
+    {
+        <meta property="og:image" content="@Html.Raw(Model.PageOgImageHttpPath)" />
+    }
 }
 <main class="app-page t63-page">    
     @Html.Raw(Model.PageText)

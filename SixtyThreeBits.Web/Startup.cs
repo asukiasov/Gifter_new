@@ -120,7 +120,7 @@ namespace SixtyThreeBits.Web
 
             if (_isDevelopmentEnvironment)
             {
-				app.UseDeveloperExceptionPage();				
+				app.UseDeveloperExceptionPage();
 			}
             else
             {				

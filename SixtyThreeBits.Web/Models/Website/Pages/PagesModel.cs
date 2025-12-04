@@ -1,6 +1,8 @@
-﻿using SixtyThreeBits.Core.Utilities;
+﻿using SixtyThreeBits.Core.Libraries.FileStorages.Enums;
+using SixtyThreeBits.Core.Utilities;
 using SixtyThreeBits.Web.Models.Base;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace SixtyThreeBits.Web.Models.Website
 {
@@ -20,7 +22,15 @@ namespace SixtyThreeBits.Web.Models.Website
                 viewModel.PageText = Utilities.GetValuesByLanguage(LanguageCultureCode, dbItem.PageText, dbItem.PageTextEng);
                 viewModel.PageTextHeaderHtml = Utilities.GetValuesByLanguage(LanguageCultureCode, dbItem.PageTextHeaderHtml, dbItem.PageTextHeaderHtmlEng);
                 viewModel.PageTextFooterHtml = Utilities.GetValuesByLanguage(LanguageCultureCode, dbItem.PageTextFooterHtml, dbItem.PageTextFooterHtmlEng);
-                viewModel.PageImageHttpPath = FileStorage.GetUploadedFileHttpPathOrDefault(dbItem.PageImageFilename);
+                viewModel.PageImageHttpPath = FileStorage.GetUploadedFileHttpPath(
+                    filename: dbItem.PageImageFilename,
+                    folderPath: FileStorage.GetFolderPathByModule(FileManagerModules.Pages)
+                );
+                    
+                viewModel.PageOgImageHttpPath = string.IsNullOrWhiteSpace(dbItem.PageImageFilename) ? null : FileStorage.GetUploadedFileHttpPath(
+                    filename: HttpUtility.UrlEncode(dbItem.PageImageFilename),
+                    folderPath: FileStorage.GetFolderPathByModule(FileManagerModules.Pages)
+                );
             }
             return viewModel;
         }
@@ -36,6 +46,8 @@ namespace SixtyThreeBits.Web.Models.Website
             public string PageTextHeaderHtml { get; set; }
             public string PageTextFooterHtml { get; set; }
             public string PageImageHttpPath { get; set; }
+            public string PageOgImageHttpPath { get; set; }
+            public bool HasPageImageHttpPath => !string.IsNullOrWhiteSpace(PageOgImageHttpPath);
             #endregion
         }
         #endregion
