@@ -69,7 +69,7 @@ namespace SixtyThreeBits.Web.Models.Admin
                 news: new NewsIudDTO
                 {
                     NewsTitle = submitModel.NewsTitle,
-                    NewsDatePublished = Utilities.FormatDateSqlParseFriendly(submitModel.NewsDatePublished),
+                    NewsDatePublished = submitModel.NewsDatePublished,
                     NewsIsPublished = submitModel.NewsIsPublished
                 }                
             );

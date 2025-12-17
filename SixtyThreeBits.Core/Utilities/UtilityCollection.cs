@@ -71,11 +71,6 @@ namespace SixtyThreeBits.Core.Utilities
             return string.Format(culture, Constants.Formats.DateEval, date);
         }
 
-		public string FormatDateSqlParseFriendly(object date)
-		{
-			return date == null ? null : string.Format(CultureInfo.InvariantCulture, "{0:yyyy-MM-ddTHH:mm:ss}", date);
-		}
-
 		public string FormatDateTime(object date)
         {
             return string.Format(Constants.Formats.DateTimeEval, date);

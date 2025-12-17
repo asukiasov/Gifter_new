@@ -1,4 +1,6 @@
-﻿namespace SixtyThreeBits.Core.Infrastructure.Repositories.DTO
+﻿using System;
+
+namespace SixtyThreeBits.Core.Infrastructure.Repositories.DTO
 {
     public record NewsIudDTO
     {
@@ -11,7 +13,7 @@
         public string NewsShortDescriptionEng { get; init; }
         public string NewsText { get; init; }
         public string NewsTextEng { get; init; }
-        public string NewsDatePublished { get; init; }
+        public DateTime? NewsDatePublished { get; init; }
         public string NewsImageFilename { get; init; }
         public bool? NewsIsPublished { get; init; }
         #endregion

@@ -25,7 +25,7 @@ namespace SixtyThreeBits.Core.Libraries.Database
             {
                 if (isOutput)
                 {
-                    //MAX value
+                    //-1 stands for MAX, for example varchar(max) or nvarchar(max)
                     sqlParameter.Size = -1;
                 }
                 else

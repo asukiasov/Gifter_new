@@ -79,7 +79,7 @@ namespace SixtyThreeBits.Web.Models.Admin
                 {
                     BlogPostTitle = submitModel.BlogPostTitle,
                     BlogPostAuthorName = submitModel.BlogPostAuthorName,
-                    BlogPostDate = Utilities.FormatDateSqlParseFriendly(submitModel.BlogPostDate),
+                    BlogPostDate = submitModel.BlogPostDate,
                     BlogPostIsPublished = submitModel.BlogPostIsPublished
                 }
             );

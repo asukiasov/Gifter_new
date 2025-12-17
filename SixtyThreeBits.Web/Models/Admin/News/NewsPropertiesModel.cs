@@ -78,7 +78,7 @@ namespace SixtyThreeBits.Web.Models.Admin
                         NewsText = submitModel.NewsText ?? Constants.NullValueFor.String,
                         NewsTextEng = submitModel.NewsTextEng ?? Constants.NullValueFor.String,
                         NewsImageFilename = newsImageFilename,
-                        NewsDatePublished = Utilities.FormatDateSqlParseFriendly(submitModel.NewsDatePublished),
+                        NewsDatePublished = submitModel.NewsDatePublished,
                         NewsIsPublished = submitModel.NewsIsPublished
                     }
                 );

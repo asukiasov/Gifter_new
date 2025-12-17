@@ -55,7 +55,7 @@ namespace SixtyThreeBits.Web.Models.Admin
                         UserPassword = submitModel.UserPassword,
                         UserFirstname = submitModel.UserFirstname,
                         UserLastname = submitModel.UserLastname,
-                        UserBirthdate = Utilities.FormatDateSqlParseFriendly(submitModel.UserBirthdate ?? Constants.NullValueFor.Date),
+                        UserBirthdate = submitModel.UserBirthdate ?? Constants.NullValueFor.Date,
                         UserPhoneNumberMobile = submitModel.UserPhoneNumberMobile ?? Constants.NullValueFor.String,
                         UserIsActive = submitModel.UserIsActive
                     }

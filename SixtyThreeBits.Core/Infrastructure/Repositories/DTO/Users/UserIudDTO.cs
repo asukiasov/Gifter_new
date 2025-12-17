@@ -1,4 +1,6 @@
-﻿namespace SixtyThreeBits.Core.Infrastructure.Repositories.DTO
+﻿using System;
+
+namespace SixtyThreeBits.Core.Infrastructure.Repositories.DTO
 {
     public record UserIudDTO
     {
@@ -10,7 +12,7 @@
         public string UserFirstname { get; init; }
         public string UserLastname { get; init; }
         public string UserFullname { get; init; }
-        public string UserBirthdate { get; init; }
+        public DateTime? UserBirthdate { get; init; }
         public string UserPhoneNumberMobile { get; init; }
         public string UserPersonalNumber { get; init; }
         public string UserAvatarFilename { get; init; }
