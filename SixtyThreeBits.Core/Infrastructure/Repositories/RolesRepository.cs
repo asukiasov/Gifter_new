@@ -37,9 +37,9 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             databaseObjectName: nameof(RolesIUD),
                             sqlParameters:
                             [
-                                databaseAction.ToSqlParameter(nameof(databaseAction),SqlDbType.TinyInt),
-                                roleID.ToSqlParameterOutput(nameof(roleID),SqlDbType.Int),
-                                roleJson.ToSqlParameter(nameof(roleJson),SqlDbType.NVarChar)
+                                databaseAction.ToSqlParameter(SqlDbType.TinyInt),
+                                roleID.ToSqlParameterOutput(SqlDbType.Int),
+                                roleJson.ToSqlParameter(SqlDbType.NVarChar)
                             ]
                          );
 
@@ -113,8 +113,8 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             databaseObjectName: nameof(RolesPermissionsUpdate),
                             sqlParameters:
                             [
-                                roleID.ToSqlParameter(nameof(roleID),SqlDbType.Int),
-                                permissionIDsJson.ToSqlParameter(nameof(permissionIDsJson),SqlDbType.NVarChar)
+                                roleID.ToSqlParameter(SqlDbType.Int),
+                                permissionIDsJson.ToSqlParameter(SqlDbType.NVarChar)
                             ]
                         );
                         await sqb.ExecuteStoredProcedure();                        

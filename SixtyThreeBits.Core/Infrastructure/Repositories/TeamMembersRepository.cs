@@ -34,7 +34,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             databaseObjectName: nameof(TeamMembersGetSingleByID),
                             sqlParameters:
                             [
-                                teamMemberID.ToSqlParameter(nameof(teamMemberID), SqlDbType.Int)
+                                teamMemberID.ToSqlParameter(SqlDbType.Int)
                             ]
                         );
 
@@ -62,9 +62,9 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             databaseObjectName: nameof(TeamMembersIUD),
                             sqlParameters:
                             [
-                                databaseAction.ToSqlParameter(nameof(databaseAction), SqlDbType.TinyInt),
-                                teamMemberID.ToSqlParameterOutput(nameof(teamMemberID), SqlDbType.Int),
-                                teamMemberJson.ToSqlParameter(nameof(teamMemberJson), SqlDbType.NVarChar)                                
+                                databaseAction.ToSqlParameter(SqlDbType.TinyInt),
+                                teamMemberID.ToSqlParameterOutput(SqlDbType.Int),
+                                teamMemberJson.ToSqlParameter(SqlDbType.NVarChar)                                
                             ]
                         );
 
@@ -115,7 +115,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             databaseObjectName: nameof(TeamMembersSyncSortIndexes),
                             sqlParameters:
                             [
-                                sortIndexesJson.ToSqlParameter(nameof(sortIndexesJson), SqlDbType.NVarChar)
+                                sortIndexesJson.ToSqlParameter(SqlDbType.NVarChar)
                             ]
                         );
                         await sqb.ExecuteStoredProcedure();

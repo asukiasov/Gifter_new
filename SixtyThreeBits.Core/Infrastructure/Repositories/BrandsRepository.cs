@@ -35,7 +35,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             databaseObjectName: nameof(BrandsGetSingleByID),
                             sqlParameters:
                             [
-                                brandID.ToSqlParameter(nameof(brandID), SqlDbType.Int)
+                                brandID.ToSqlParameter(SqlDbType.Int)
                             ]
                         );
 
@@ -64,9 +64,9 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             databaseObjectName: nameof(BrandsIUD),
                             sqlParameters:
                             [
-                                 databaseAction.ToSqlParameter(nameof(databaseAction),SqlDbType.TinyInt),
-                                 brandID.ToSqlParameterOutput(nameof(brandID),SqlDbType.Int),
-                                 brandJson.ToSqlParameter(nameof(brandJson),SqlDbType.NVarChar)
+                                 databaseAction.ToSqlParameter(SqlDbType.TinyInt),
+                                 brandID.ToSqlParameterOutput(SqlDbType.Int),
+                                 brandJson.ToSqlParameter(SqlDbType.NVarChar)
                             ]
                         );
 

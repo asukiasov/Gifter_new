@@ -34,7 +34,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             databaseObjectName: nameof(UsersGetSingleByID),
                             sqlParameters:
                             [
-                                userID.ToSqlParameter(nameof(userID), SqlDbType.Int)
+                                userID.ToSqlParameter(SqlDbType.Int)
                             ]
                         );
                         var resultJson = await sqb.ExecuteScalarValuedFunction<string>();
@@ -59,8 +59,8 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             databaseObjectName: nameof(UsersGetSingleByEmailAndPassword),
                             sqlParameters:
                             [
-                                userEmail.ToSqlParameter(nameof(userEmail), SqlDbType.VarChar),
-                                userPassword.ToSqlParameter(nameof(userPassword), SqlDbType.NVarChar)
+                                userEmail.ToSqlParameter(SqlDbType.VarChar),
+                                userPassword.ToSqlParameter(SqlDbType.NVarChar)
                             ]
                         );
 
@@ -87,8 +87,8 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             databaseObjectName: nameof(UsersIsEmailUnique),
                             sqlParameters:
                             [
-                                userEmail.ToSqlParameter(nameof(userEmail), SqlDbType.NVarChar),
-                                userID.ToSqlParameter(nameof(userID), SqlDbType.Int)
+                                userEmail.ToSqlParameter(SqlDbType.NVarChar),
+                                userID.ToSqlParameter(SqlDbType.Int)
                             ]
                         );
                         var result = await sqb.ExecuteScalarValuedFunction<bool>();                        
@@ -114,9 +114,9 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             databaseObjectName: nameof(UsersIUD),
                             sqlParameters:
                             [
-                                databaseAction.ToSqlParameter(nameof(databaseAction),SqlDbType.TinyInt),
-                                userID.ToSqlParameterOutput(nameof(userID),SqlDbType.Int),
-                                userJson.ToSqlParameter(nameof(userJson),SqlDbType.NVarChar),
+                                databaseAction.ToSqlParameter(SqlDbType.TinyInt),
+                                userID.ToSqlParameterOutput(SqlDbType.Int),
+                                userJson.ToSqlParameter(SqlDbType.NVarChar),
                             ]
                         );
 

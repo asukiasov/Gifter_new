@@ -34,7 +34,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             databaseObjectName: nameof(BlogPostGetSingleByID),
                             sqlParameters:
                             [
-                                blogPostID.ToSqlParameter(nameof(blogPostID), SqlDbType.Int),
+                                blogPostID.ToSqlParameter(SqlDbType.Int),
                             ]
                         );
 
@@ -61,8 +61,8 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             databaseObjectName: nameof(BlogPostIsSlugUniq),
                             sqlParameters:
                             [
-                                blogPostSlug.ToSqlParameter(nameof(blogPostSlug), SqlDbType.NVarChar),
-                                blogPostID.ToSqlParameter(nameof(blogPostID), SqlDbType.Int)
+                                blogPostSlug.ToSqlParameter(SqlDbType.NVarChar),
+                                blogPostID.ToSqlParameter(SqlDbType.Int)
                             ]
                         );
                         var result = await sqb.ExecuteScalarValuedFunction<bool>();                        
@@ -88,9 +88,9 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             databaseObjectName: nameof(BlogPostsIUD),
                             sqlParameters:
                             [
-                                 databaseAction.ToSqlParameter(nameof(databaseAction),SqlDbType.TinyInt),
-                                 blogPostID.ToSqlParameterOutput(nameof(blogPostID),SqlDbType.Int),
-                                 blogPostJson.ToSqlParameter(nameof(blogPostJson),SqlDbType.NVarChar)                                 
+                                 databaseAction.ToSqlParameter(SqlDbType.TinyInt),
+                                 blogPostID.ToSqlParameterOutput(SqlDbType.Int),
+                                 blogPostJson.ToSqlParameter(SqlDbType.NVarChar)                                 
                             ]
                         );
                         await sqb.ExecuteStoredProcedure();

@@ -35,7 +35,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             databaseObjectName: nameof(ProductCategoriesDeleteRecursive),
                             sqlParameters:
                             [
-                                productCategoryID.ToSqlParameter(nameof(productCategoryID), SqlDbType.Int)
+                                productCategoryID.ToSqlParameter(SqlDbType.Int)
                             ]
                         );
                         await sqb.ExecuteStoredProcedure();                        
@@ -57,7 +57,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             databaseObjectName: nameof(ProductCategoriesGetSingleByID),
                             sqlParameters:
                             [
-                                productCategoryID.ToSqlParameter(nameof(productCategoryID), SqlDbType.Int)
+                                productCategoryID.ToSqlParameter(SqlDbType.Int)
                             ]
                          );
 
@@ -84,7 +84,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             databaseObjectName: nameof(ProductCategoriesGetSingleBySlug),
                             sqlParameters:
                             [
-                                productCategorySlug.ToSqlParameter(nameof(productCategorySlug), SqlDbType.NVarChar)
+                                productCategorySlug.ToSqlParameter(SqlDbType.NVarChar)
                             ]
                         );
 
@@ -113,9 +113,9 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             databaseObjectName: nameof(ProductCategoriesIUD),
                             sqlParameters:
                             [
-                                databaseAction.ToSqlParameter(nameof(databaseAction),SqlDbType.TinyInt),
-                                productCategoryID.ToSqlParameterOutput(nameof(productCategoryID),SqlDbType.Int),
-                                productCategoryJson.ToSqlParameter(nameof(productCategoryJson),SqlDbType.NVarChar)
+                                databaseAction.ToSqlParameter(SqlDbType.TinyInt),
+                                productCategoryID.ToSqlParameterOutput(SqlDbType.Int),
+                                productCategoryJson.ToSqlParameter(SqlDbType.NVarChar)
                             ]
                         );
 
@@ -141,7 +141,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             databaseObjectName: nameof(ProductCategoriesList),
                             sqlParameters:
                             [
-                                productCategoryParentID.ToSqlParameter(nameof(productCategoryParentID), SqlDbType.Int),
+                                productCategoryParentID.ToSqlParameter(SqlDbType.Int),
                             ]
                         );
 
@@ -169,7 +169,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             databaseObjectName: nameof(ProductCategoriesListForDeleteRecursive),
                             sqlParameters:
                             [
-                                productCategoryID.ToSqlParameter(nameof(productCategoryID), SqlDbType.Int),
+                                productCategoryID.ToSqlParameter(SqlDbType.Int),
                             ]
                         );
 
@@ -234,7 +234,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             databaseObjectName: nameof(ProductCategoriesSyncParentsAndSortIndexes),
                             sqlParameters:
                             [
-                                sortIndexesJson.ToSqlParameter(nameof(sortIndexesJson),SqlDbType.NVarChar)
+                                sortIndexesJson.ToSqlParameter(SqlDbType.NVarChar)
                             ]
                         );
                         await sqb.ExecuteStoredProcedure();                        
@@ -256,7 +256,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             databaseObjectName: nameof(ProductsGetSingleByID),
                             sqlParameters:
                             [
-                                productID.ToSqlParameter(nameof(productID), SqlDbType.Int)
+                                productID.ToSqlParameter(SqlDbType.Int)
                             ]
                         );
 
@@ -283,7 +283,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             databaseObjectName: nameof(ProductsGetsingleBySlug),
                             sqlParameters:
                             [
-                                productSlug.ToSqlParameter(nameof(productSlug), SqlDbType.NVarChar)
+                                productSlug.ToSqlParameter(SqlDbType.NVarChar)
                             ]
                         );
 
@@ -312,9 +312,9 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             databaseObjectName: nameof(ProductsIUD),
                             sqlParameters:
                             [
-                                databaseAction.ToSqlParameter(nameof(databaseAction),SqlDbType.TinyInt),
-                                productID.ToSqlParameterOutput(nameof(productID),SqlDbType.Int),
-                                productJson.ToSqlParameter(nameof(productJson),SqlDbType.NVarChar)                                
+                                databaseAction.ToSqlParameter(SqlDbType.TinyInt),
+                                productID.ToSqlParameterOutput(SqlDbType.Int),
+                                productJson.ToSqlParameter(SqlDbType.NVarChar)                                
                             ]
                         );
 
@@ -342,9 +342,9 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             databaseObjectName: nameof(ProductsImagesIUD),
                             sqlParameters:
                             [
-                                databaseAction.ToSqlParameter(nameof(databaseAction),SqlDbType.TinyInt),
-                                productImageID.ToSqlParameterOutput(nameof(productImageID),SqlDbType.Int),
-                                productImageJson.ToSqlParameter(nameof(productImageJson),SqlDbType.NVarChar)                                
+                                databaseAction.ToSqlParameter(SqlDbType.TinyInt),
+                                productImageID.ToSqlParameterOutput(SqlDbType.Int),
+                                productImageJson.ToSqlParameter(SqlDbType.NVarChar)                                
                             ]
                         );
 
@@ -395,8 +395,8 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             databaseObjectName: nameof(ProductsImagesSyncSortIndex),
                             sqlParameters:
                             [
-                                productID.ToSqlParameter(nameof(productID), SqlDbType.Int),
-                                sortIndexesJson.ToSqlParameter(nameof(sortIndexesJson),SqlDbType.NVarChar)
+                                productID.ToSqlParameter(SqlDbType.Int),
+                                sortIndexesJson.ToSqlParameter(SqlDbType.NVarChar)
                             ]
                         );
                         await sqb.ExecuteStoredProcedure();                        

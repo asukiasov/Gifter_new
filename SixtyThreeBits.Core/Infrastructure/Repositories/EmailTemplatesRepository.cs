@@ -33,7 +33,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             databaseObjectName: nameof(EmailTemplatesGetSingleByID),
                             sqlParameters:
                             [
-                                emailTemplateID.ToSqlParameter(nameof(emailTemplateID), SqlDbType.Int)
+                                emailTemplateID.ToSqlParameter(SqlDbType.Int)
                             ]
                         );
 
@@ -62,9 +62,9 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             databaseObjectName: nameof(EmailTemplatesIUD),
                             sqlParameters:
                             [
-                                databaseAction.ToSqlParameter(nameof(databaseAction),SqlDbType.TinyInt),
-                                emailTemplateID.ToSqlParameterOutput(nameof(emailTemplateID),SqlDbType.Int),
-                                emailTemplateJson.ToSqlParameter(nameof(emailTemplateJson),SqlDbType.NVarChar)
+                                databaseAction.ToSqlParameter(SqlDbType.TinyInt),
+                                emailTemplateID.ToSqlParameterOutput(SqlDbType.Int),
+                                emailTemplateJson.ToSqlParameter(SqlDbType.NVarChar)
                             ]
                         );
 
@@ -113,10 +113,10 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             databaseObjectName: nameof(EmailTemplatesWrapInLayout),
                             sqlParameters:
                             [
-                                websiteHttpPath.ToSqlParameter(nameof(websiteHttpPath), SqlDbType.NVarChar),
-                                languageCultureCode.ToSqlParameter(nameof(languageCultureCode), SqlDbType.VarChar),
-                                bodyText.ToSqlParameter(nameof(bodyText), SqlDbType.NVarChar),
-                                urlUnsubscribe.ToSqlParameter(nameof(urlUnsubscribe), SqlDbType.NVarChar)
+                                websiteHttpPath.ToSqlParameter(SqlDbType.NVarChar),
+                                languageCultureCode.ToSqlParameter(SqlDbType.VarChar),
+                                bodyText.ToSqlParameter(SqlDbType.NVarChar),
+                                urlUnsubscribe.ToSqlParameter(SqlDbType.NVarChar)
                             ]
                         );
                         var result = await sqb.ExecuteScalarValuedFunction<string>();                                                

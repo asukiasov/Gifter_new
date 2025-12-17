@@ -34,7 +34,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             databaseObjectName: nameof(PermissionsDeleteRecursive),
                             sqlParameters:
                             [
-                                permissionID.ToSqlParameter(nameof(permissionID),SqlDbType.Int)
+                                permissionID.ToSqlParameter(SqlDbType.Int)
                             ]
                         );
                         await sqb.ExecuteStoredProcedure();                        
@@ -58,9 +58,9 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             databaseObjectName: nameof(PermissionsIUD),
                             sqlParameters:
                             [
-                                databaseAction.ToSqlParameter(nameof(databaseAction),SqlDbType.TinyInt),
-                                permissionID.ToSqlParameterOutput(nameof(permissionID),SqlDbType.Int),
-                                permissionJson.ToSqlParameter(nameof(permissionJson),SqlDbType.NVarChar)                                
+                                databaseAction.ToSqlParameter(SqlDbType.TinyInt),
+                                permissionID.ToSqlParameterOutput(SqlDbType.Int),
+                                permissionJson.ToSqlParameter(SqlDbType.NVarChar)                                
                             ]
                         );
 
@@ -110,7 +110,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             databaseObjectName: nameof(PermissionsListByRoleID),
                             sqlParameters:
                             [
-                                roleID.ToSqlParameter(nameof(roleID), SqlDbType.Int)
+                                roleID.ToSqlParameter(SqlDbType.Int)
                             ]
                         );
 

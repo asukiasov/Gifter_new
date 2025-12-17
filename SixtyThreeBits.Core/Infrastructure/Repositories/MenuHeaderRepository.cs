@@ -34,7 +34,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             databaseObjectName: nameof(MenuHeaderGetSingleByID),
                             sqlParameters:
                             [
-                                menuHeaderID.ToSqlParameter(nameof(menuHeaderID), SqlDbType.Int)
+                                menuHeaderID.ToSqlParameter(SqlDbType.Int)
                             ]
                         );
                         var resultJson = await sqb.ExecuteScalarValuedFunction<string>();
@@ -61,9 +61,9 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             databaseObjectName: nameof(MenuHeaderIUD),
                             sqlParameters:
                             [
-                                databaseAction.ToSqlParameter(nameof(databaseAction), SqlDbType.TinyInt),
-                                menuHeaderID.ToSqlParameterOutput(nameof(menuHeaderID), SqlDbType.Int),
-                                menuHeaderJson.ToSqlParameter(nameof(menuHeaderJson), SqlDbType.NVarChar)
+                                databaseAction.ToSqlParameter(SqlDbType.TinyInt),
+                                menuHeaderID.ToSqlParameterOutput(SqlDbType.Int),
+                                menuHeaderJson.ToSqlParameter(SqlDbType.NVarChar)
                             ]
                         );
 
@@ -89,7 +89,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             databaseObjectName: nameof(MenuHeaderList),
                             sqlParameters:
                             [
-                                menuHeaderIsPublished.ToSqlParameter(nameof(menuHeaderIsPublished), SqlDbType.Bit)
+                                menuHeaderIsPublished.ToSqlParameter(SqlDbType.Bit)
                             ]
                         );
                         var resultQueryable = sqb.ExecuteTableValuedFunction<MenuHeaderDTO>();
@@ -117,7 +117,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             databaseObjectName: nameof(MenuHeaderSort),
                             sqlParameters:
                             [                                
-                                sortIndexesJson.ToSqlParameter(nameof(sortIndexesJson), SqlDbType.NVarChar)
+                                sortIndexesJson.ToSqlParameter(SqlDbType.NVarChar)
                             ]
                         );
 

@@ -35,7 +35,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             databaseObjectName: nameof(PagesDelete),
                             sqlParameters:
                             [
-                                pageID.ToSqlParameter(nameof(pageID), SqlDbType.Int),
+                                pageID.ToSqlParameter(SqlDbType.Int),
                             ]
                         );
 
@@ -58,7 +58,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             databaseObjectName: nameof(PagesGetSingleByID),
                             sqlParameters:
                             [
-                                pageID.ToSqlParameter(nameof(pageID), SqlDbType.Int)
+                                pageID.ToSqlParameter(SqlDbType.Int)
                             ]
                         );
                         var resultJson = await sqb.ExecuteScalarValuedFunction<string>();                        
@@ -83,7 +83,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             databaseObjectName: nameof(PagesGetSingleBySlug),
                             sqlParameters:
                             [
-                                pageSlug.ToSqlParameter(nameof(pageSlug), SqlDbType.NVarChar)
+                                pageSlug.ToSqlParameter(SqlDbType.NVarChar)
                             ]
                         );
                         var resultJson = await sqb.ExecuteScalarValuedFunction<string>();                        
@@ -108,8 +108,8 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             databaseObjectName: nameof(PagesIsSlugUniq),
                             sqlParameters:
                             [
-                                pageSlug.ToSqlParameter(nameof(pageSlug), SqlDbType.NVarChar),
-                                pageID.ToSqlParameter(nameof(pageID), SqlDbType.Int)
+                                pageSlug.ToSqlParameter(SqlDbType.NVarChar),
+                                pageID.ToSqlParameter(SqlDbType.Int)
                             ]
                         );
                         var result = await sqb.ExecuteScalarValuedFunction<bool>();                        
@@ -135,9 +135,9 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             databaseObjectName: nameof(PagesIUD),
                             sqlParameters:
                             [
-                                databaseAction.ToSqlParameter(nameof(databaseAction),SqlDbType.TinyInt),
-                                pageID.ToSqlParameterOutput(nameof(pageID),SqlDbType.Int),
-                                pageJson.ToSqlParameter(nameof(pageJson),SqlDbType.NVarChar)
+                                databaseAction.ToSqlParameter(SqlDbType.TinyInt),
+                                pageID.ToSqlParameterOutput(SqlDbType.Int),
+                                pageJson.ToSqlParameter(SqlDbType.NVarChar)
                             ]
                         );
 

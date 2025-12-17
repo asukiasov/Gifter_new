@@ -56,7 +56,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             databaseObjectName: nameof(SystemPropertiesUpdate),
                             sqlParameters:
                             [
-                                systemPropertiesJson.ToSqlParameter(nameof(systemPropertiesJson),SqlDbType.NVarChar)
+                                systemPropertiesJson.ToSqlParameter(SqlDbType.NVarChar)
                             ]
                         );
                         await sqb.ExecuteStoredProcedure();                        

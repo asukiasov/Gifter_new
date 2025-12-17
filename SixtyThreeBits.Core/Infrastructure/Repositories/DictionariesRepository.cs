@@ -35,7 +35,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             databaseObjectName: nameof(DictionariesDeleteRecursive),
                             sqlParameters:
                             [
-                                dictionaryID.ToSqlParameter(nameof(dictionaryID),SqlDbType.Int)
+                                dictionaryID.ToSqlParameter(SqlDbType.Int)
                             ]
                         );
 
@@ -60,9 +60,9 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             databaseObjectName: nameof(DictionariesIUD),
                             sqlParameters:
                             [
-                                databaseAction.ToSqlParameter(nameof(databaseAction),SqlDbType.TinyInt),
-                                dictionaryID.ToSqlParameterOutput(nameof(dictionaryID),SqlDbType.Int),
-                                dictionaryJson.ToSqlParameter(nameof(dictionaryJson),SqlDbType.NVarChar)
+                                databaseAction.ToSqlParameter(SqlDbType.TinyInt),
+                                dictionaryID.ToSqlParameterOutput(SqlDbType.Int),
+                                dictionaryJson.ToSqlParameter(SqlDbType.NVarChar)
                             ]
                         );
 
@@ -117,9 +117,9 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             databaseObjectName: nameof(DictionariesListByLevelCodeIsVisible),
                             sqlParameters:
                             [
-                                dictionaryLevel.ToSqlParameter(nameof(dictionaryLevel), SqlDbType.Int),
-                                dictionaryCode.ToSqlParameter(nameof(dictionaryCode), SqlDbType.Int),
-                                dictionaryIsVisible.ToSqlParameter(nameof(dictionaryIsVisible), SqlDbType.Bit)
+                                dictionaryLevel.ToSqlParameter(SqlDbType.Int),
+                                dictionaryCode.ToSqlParameter(SqlDbType.Int),
+                                dictionaryIsVisible.ToSqlParameter(SqlDbType.Bit)
                             ]
                         );
 

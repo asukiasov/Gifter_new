@@ -34,7 +34,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             databaseObjectName: nameof(NewsGetSingleByID),
                             sqlParameters:
                             [
-                                newsID.ToSqlParameter(nameof(newsID), SqlDbType.Int)
+                                newsID.ToSqlParameter(SqlDbType.Int)
                             ]
                         );
 
@@ -61,8 +61,8 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             databaseObjectName: nameof(NewsIsSlugUniq),
                             sqlParameters:
                             [
-                                newsSlug.ToSqlParameter(nameof(newsSlug), SqlDbType.NVarChar),
-                                newsID.ToSqlParameter(nameof(newsID), SqlDbType.Int)
+                                newsSlug.ToSqlParameter(SqlDbType.NVarChar),
+                                newsID.ToSqlParameter(SqlDbType.Int)
                             ]
                         );
                         var result = await sqb.ExecuteScalarValuedFunction<bool>();                        
@@ -88,9 +88,9 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
                             databaseObjectName: nameof(NewsIUD),
                             sqlParameters:
                             [
-                                databaseAction.ToSqlParameter(nameof(databaseAction),SqlDbType.TinyInt),
-                                newsID.ToSqlParameterOutput(nameof(newsID),SqlDbType.Int),
-                                newsJson.ToSqlParameter(nameof(newsJson),SqlDbType.NVarChar)
+                                databaseAction.ToSqlParameter(SqlDbType.TinyInt),
+                                newsID.ToSqlParameterOutput(SqlDbType.Int),
+                                newsJson.ToSqlParameter(SqlDbType.NVarChar)
                             ]
                         );
 
