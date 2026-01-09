@@ -68,7 +68,7 @@ $(function () {
         const isSuccessVisible = !$('.succes-error').hasClass('error') && $('.succes-error').hasClass('opened');;
         if (isSuccessVisible) {
             setTimeout(function () {
-                $('.js-succes-error-close-button').trigger('click');
+                successErrorToast63Bits.hideMessage();
             }, 5000);
         }
     }
