@@ -1,5 +1,5 @@
 /*!
- * DevExtreme (dx.all.debug.js)
+ * DevExtreme (dx.custom.debug.js)
  * Version: 25.2.3
  * Build date: Mon Dec 15 2025
  *
@@ -45498,27 +45498,6 @@
                 exports.HeaderFilterPopupView = HeaderFilterPopupView;
                 HeaderFilterPopupView.dependencies = [_widget_mock.WidgetMock, _view_controller.HeaderFilterViewController]
             },
-        10195:
-            /*!***************************************************************!*\
-              !*** ./artifacts/transpiled-renovation-npm/bundles/dx.all.js ***!
-              \***************************************************************/
-            (module, exports, __webpack_require__) => {
-                exports.default = void 0;
-                __webpack_require__( /*! ./modules/parts/widgets-web */ 84789);
-                __webpack_require__( /*! ./modules/parts/viz */ 90750);
-                var _core = (e = __webpack_require__( /*! ./modules/core */ 92307), e && e.__esModule ? e : {
-                    default: e
-                });
-                var e;
-                var _events_strategy = __webpack_require__( /*! ../core/events_strategy */ 2607);
-                var _index = __webpack_require__( /*! ../core/options/index */ 74453);
-                _core.default.integration = {};
-                _core.default.integration.EventsStrategy = _events_strategy.EventsStrategy;
-                _core.default.integration.Options = _index.Options;
-                exports.default = _core.default;
-                module.exports = exports.default;
-                module.exports.default = exports.default
-            },
         10291:
             /*!***************************************************************************************!*\
               !*** ./artifacts/transpiled-renovation-npm/__internal/ui/date_box/m_date_box.base.js ***!
@@ -49267,12 +49246,14 @@
                     }
                     _removeEmptyRows(rows) {
                         const result = [];
+                        const isEmpty = function(data) {
+                            return !data.some((value => value > 0))
+                        };
                         for (let i = 0; i < rows.length; i++) {
-                            if (rows[i].length && !(data = rows[i], !data.some((value => value > 0)))) {
+                            if (rows[i].length && !isEmpty(rows[i])) {
                                 result.push(rows[i])
                             }
                         }
-                        var data;
                         return result
                     }
                     _getGroupHeaderContainer() {
@@ -76611,19 +76592,6 @@
                     DiagramContextMenu: DiagramContextMenu
                 }
             },
-        18899:
-            /*!**************************************************************************************!*\
-              !*** ./artifacts/transpiled-renovation-npm/bundles/modules/parts/file_management.js ***!
-              \**************************************************************************************/
-            (module, __unused_webpack_exports, __webpack_require__) => {
-                var _core = (e = __webpack_require__( /*! ./core */ 67712), e && e.__esModule ? e : {
-                    default: e
-                });
-                var e;
-                const fileManagement = __webpack_require__( /*! ../../../bundles/modules/file_management */ 73338);
-                _core.default.fileManagement = fileManagement;
-                module.exports = fileManagement
-            },
         18920:
             /*!***********************************************************************************!*\
               !*** ./artifacts/transpiled-renovation-npm/__internal/viz/tree_map/colorizing.js ***!
@@ -100799,62 +100767,6 @@
                     }
                 }
                 exports.default = GoogleStaticProvider
-            },
-        28779:
-            /*!***************************************************************!*\
-              !*** ./artifacts/transpiled-renovation-npm/viz/core/utils.js ***!
-              \***************************************************************/
-            (__unused_webpack_module, exports, __webpack_require__) => {
-                0;
-                0;
-                0;
-                0;
-                0;
-                0;
-                0;
-                0;
-                0;
-                0;
-                0;
-                0;
-                0;
-                0;
-                0;
-                0;
-                0;
-                0;
-                0;
-                0;
-                0;
-                0;
-                0;
-                0;
-                0;
-                0;
-                0;
-                0;
-                0;
-                0;
-                0;
-                0;
-                Object.defineProperty(exports, "a1", {
-                    enumerable: true,
-                    get: function() {
-                        return _utils.patchFontOptions
-                    }
-                });
-                0;
-                0;
-                0;
-                0;
-                0;
-                0;
-                0;
-                0;
-                0;
-                0;
-                0;
-                var _utils = __webpack_require__( /*! ../../__internal/viz/core/utils */ 98013)
             },
         28793:
             /*!***********************************************************************************!*\
@@ -167840,18 +167752,6 @@
                     }
                 }
             },
-        51323:
-            /*!***************************************************************************!*\
-              !*** ./artifacts/transpiled-renovation-npm/bundles/modules/parts/data.js ***!
-              \***************************************************************************/
-            (module, __unused_webpack_exports, __webpack_require__) => {
-                const DevExpress = __webpack_require__( /*! ./core */ 67712);
-                const data = DevExpress.data = __webpack_require__( /*! ../../../bundles/modules/data */ 54844);
-                __webpack_require__( /*! ../../../bundles/modules/data.legacy */ 23555);
-                data.odata = __webpack_require__( /*! ../../../bundles/modules/data.odata */ 71043);
-                __webpack_require__( /*! ../../../bundles/modules/data.odata.legacy */ 42190);
-                module.exports = data
-            },
         51324:
             /*!*******************************************************************************!*\
               !*** ./artifacts/transpiled-renovation-npm/__internal/data/m_remote_query.js ***!
@@ -205251,33 +205151,6 @@
                 var e;
                 _m_core.default.registerModule("sorting", _m_sorting.sortingModule)
             },
-        63022:
-            /*!****************************************************************************!*\
-              !*** ./artifacts/transpiled-renovation-npm/viz/core/renderers/renderer.js ***!
-              \****************************************************************************/
-            (__unused_webpack_module, exports, __webpack_require__) => {
-                0;
-                0;
-                0;
-                Object.defineProperty(exports, "A4", {
-                    enumerable: true,
-                    get: function() {
-                        return _renderer.Renderer
-                    }
-                });
-                Object.defineProperty(exports, "hJ", {
-                    enumerable: true,
-                    get: function() {
-                        return _renderer.SvgElement
-                    }
-                });
-                0;
-                0;
-                0;
-                0;
-                0;
-                var _renderer = __webpack_require__( /*! ../../../__internal/viz/core/renderers/renderer */ 15232)
-            },
         63108:
             /*!*************************************************************************************************************!*\
               !*** ./artifacts/transpiled-renovation-npm/__internal/grids/new/grid_core/filtering/header_filter/index.js ***!
@@ -214755,31 +214628,6 @@
                 exports.default = {
                     ChartIntegrationMixin: ChartIntegrationMixin
                 }
-            },
-        67712:
-            /*!***************************************************************************!*\
-              !*** ./artifacts/transpiled-renovation-npm/bundles/modules/parts/core.js ***!
-              \***************************************************************************/
-            (module, __unused_webpack_exports, __webpack_require__) => {
-                const DevExpress = __webpack_require__( /*! ../../../bundles/modules/core */ 92307);
-                __webpack_require__( /*! ../../../bundles/modules/core.legacy */ 11166);
-                __webpack_require__( /*! ../../../integration/jquery */ 21001);
-                __webpack_require__( /*! ../../../integration/knockout */ 34563);
-                __webpack_require__( /*! ../../../common/core/localization/globalize/core */ 23805);
-                __webpack_require__( /*! ../../../common/core/localization/globalize/message */ 84207);
-                __webpack_require__( /*! ../../../common/core/localization/globalize/number */ 13203);
-                __webpack_require__( /*! ../../../common/core/localization/globalize/date */ 99862);
-                __webpack_require__( /*! ../../../common/core/localization/globalize/currency */ 869);
-                __webpack_require__( /*! ../../../common/core/events/click */ 64044);
-                __webpack_require__( /*! ../../../common/core/events/contextmenu */ 80248);
-                __webpack_require__( /*! ../../../common/core/events/double_click */ 5636);
-                __webpack_require__( /*! ../../../common/core/events/drag */ 59144);
-                __webpack_require__( /*! ../../../common/core/events/hold */ 68095);
-                __webpack_require__( /*! ../../../common/core/events/hover */ 638);
-                __webpack_require__( /*! ../../../common/core/events/pointer */ 89797);
-                __webpack_require__( /*! ../../../common/core/events/swipe */ 80250);
-                __webpack_require__( /*! ../../../common/core/events/transform */ 37008);
-                module.exports = DevExpress
             },
         67793:
             /*!***********************************************************************************************!*\
@@ -225024,30 +224872,6 @@
                 exports.default = _endpoint_selector.default;
                 module.exports = exports.default;
                 module.exports.default = exports.default
-            },
-        73338:
-            /*!********************************************************************************!*\
-              !*** ./artifacts/transpiled-renovation-npm/bundles/modules/file_management.js ***!
-              \********************************************************************************/
-            (module, __unused_webpack_exports, __webpack_require__) => {
-                var _core = _interopRequireDefault(__webpack_require__( /*! ./core */ 92307));
-                var _error = _interopRequireDefault(__webpack_require__( /*! ../../file_management/error */ 46327));
-                var _file_system_item = _interopRequireDefault(__webpack_require__( /*! ../../file_management/file_system_item */ 53093));
-                var _object_provider = _interopRequireDefault(__webpack_require__( /*! ../../file_management/object_provider */ 76856));
-                var _remote_provider = _interopRequireDefault(__webpack_require__( /*! ../../file_management/remote_provider */ 80175));
-                var _custom_provider = _interopRequireDefault(__webpack_require__( /*! ../../file_management/custom_provider */ 85096));
-
-                function _interopRequireDefault(e) {
-                    return e && e.__esModule ? e : {
-                        default: e
-                    }
-                }
-                module.exports = _core.default.fileManagement = _core.default.fileManagement || {};
-                _core.default.fileManagement.FileSystemError = _error.default;
-                _core.default.fileManagement.FileSystemItem = _file_system_item.default;
-                _core.default.fileManagement.ObjectFileSystemProvider = _object_provider.default;
-                _core.default.fileManagement.RemoteFileSystemProvider = _remote_provider.default;
-                _core.default.fileManagement.CustomFileSystemProvider = _custom_provider.default
             },
         73418:
             /*!**********************************************************************************************!*\
@@ -242104,84 +241928,6 @@
                     return newColor.toHex()
                 }
             },
-        79178:
-            /*!***********************************************************************************!*\
-              !*** ./artifacts/transpiled-renovation-npm/bundles/modules/parts/widgets-base.js ***!
-              \***********************************************************************************/
-            (module, __unused_webpack_exports, __webpack_require__) => {
-                const DevExpress = __webpack_require__( /*! ./core */ 67712);
-                __webpack_require__( /*! ./data */ 51323);
-                __webpack_require__( /*! ./file_management */ 18899);
-                const ui = DevExpress.ui = __webpack_require__( /*! ../../../bundles/modules/ui */ 57190);
-                ui.themes = __webpack_require__( /*! ../../../ui/themes */ 52071);
-                ui.setTemplateEngine = __webpack_require__( /*! ../../../core/templates/template_engine_registry */ 35155).setTemplateEngine;
-                ui.dialog = __webpack_require__( /*! ../../../ui/dialog */ 35757);
-                ui.notify = __webpack_require__( /*! ../../../ui/notify */ 93380);
-                ui.repaintFloatingActionButton = __webpack_require__( /*! ../../../ui/speed_dial_action/repaint_floating_action_button */ 92725);
-                ui.hideToasts = __webpack_require__( /*! ../../../ui/toast/hide_toasts */ 41792);
-                ui.dxActionSheet = __webpack_require__( /*! ../../../ui/action_sheet */ 45263);
-                ui.dxAutocomplete = __webpack_require__( /*! ../../../ui/autocomplete */ 93485);
-                ui.dxBox = __webpack_require__( /*! ../../../ui/box */ 91204);
-                ui.dxButton = __webpack_require__( /*! ../../../ui/button */ 64973);
-                ui.dxDropDownButton = __webpack_require__( /*! ../../../ui/drop_down_button */ 56582);
-                ui.dxButtonGroup = __webpack_require__( /*! ../../../ui/button_group */ 17809);
-                ui.dxCalendar = __webpack_require__( /*! ../../../ui/calendar */ 22195);
-                ui.dxCheckBox = __webpack_require__( /*! ../../../ui/check_box */ 94319);
-                ui.dxColorBox = __webpack_require__( /*! ../../../ui/color_box */ 87928);
-                ui.dxChat = __webpack_require__( /*! ../../../ui/chat */ 73571);
-                ui.dxDateBox = __webpack_require__( /*! ../../../ui/date_box */ 2739);
-                ui.dxDateRangeBox = __webpack_require__( /*! ../../../ui/date_range_box */ 45453);
-                ui.dxDrawer = __webpack_require__( /*! ../../../ui/drawer */ 7968);
-                ui.dxDropDownBox = __webpack_require__( /*! ../../../ui/drop_down_box */ 74417);
-                ui.dxFileUploader = __webpack_require__( /*! ../../../ui/file_uploader */ 26980);
-                ui.dxForm = __webpack_require__( /*! ../../../ui/form */ 74075);
-                ui.dxGallery = __webpack_require__( /*! ../../../ui/gallery */ 89987);
-                ui.dxHtmlEditor = __webpack_require__( /*! ../../../ui/html_editor */ 16802);
-                ui.dxInformer = __webpack_require__( /*! ../../../ui/informer */ 22363);
-                ui.dxList = __webpack_require__( /*! ../../../ui/list */ 3121);
-                ui.dxLoadIndicator = __webpack_require__( /*! ../../../ui/load_indicator */ 11979);
-                ui.dxLoadPanel = __webpack_require__( /*! ../../../ui/load_panel */ 31876);
-                ui.dxLookup = __webpack_require__( /*! ../../../ui/lookup */ 99203);
-                ui.dxMap = __webpack_require__( /*! ../../../ui/map */ 55211);
-                ui.dxMultiView = __webpack_require__( /*! ../../../ui/multi_view */ 24150);
-                ui.dxNumberBox = __webpack_require__( /*! ../../../ui/number_box */ 48042);
-                ui.dxOverlay = __webpack_require__( /*! ../../../ui/overlay/ui.overlay */ 89132);
-                ui.dxPagination = __webpack_require__( /*! ../../../ui/pagination */ 38389);
-                ui.dxPopover = __webpack_require__( /*! ../../../ui/popover */ 46184);
-                ui.dxPopup = __webpack_require__( /*! ../../../ui/popup */ 97643);
-                ui.dxProgressBar = __webpack_require__( /*! ../../../ui/progress_bar */ 58436);
-                ui.dxRadioGroup = __webpack_require__( /*! ../../../ui/radio_group */ 84798);
-                ui.dxRangeSlider = __webpack_require__( /*! ../../../ui/range_slider */ 80790);
-                ui.dxResizable = __webpack_require__( /*! ../../../ui/resizable */ 28416);
-                ui.dxResponsiveBox = __webpack_require__( /*! ../../../ui/responsive_box */ 43597);
-                ui.dxScrollView = __webpack_require__( /*! ../../../ui/scroll_view */ 91374);
-                ui.dxSelectBox = __webpack_require__( /*! ../../../ui/select_box */ 60695);
-                ui.dxSlider = __webpack_require__( /*! ../../../ui/slider */ 56220);
-                ui.dxSpeechToText = __webpack_require__( /*! ../../../ui/speech_to_text */ 27493);
-                ui.dxSpeedDialAction = __webpack_require__( /*! ../../../ui/speed_dial_action */ 67924);
-                ui.dxStepper = __webpack_require__( /*! ../../../ui/stepper */ 87244);
-                ui.dxSplitter = __webpack_require__( /*! ../../../ui/splitter */ 78254);
-                ui.dxSwitch = __webpack_require__( /*! ../../../ui/switch */ 91029);
-                ui.dxTabPanel = __webpack_require__( /*! ../../../ui/tab_panel */ 78175);
-                ui.dxTabs = __webpack_require__( /*! ../../../ui/tabs */ 94385);
-                ui.dxTagBox = __webpack_require__( /*! ../../../ui/tag_box */ 4575);
-                ui.dxTextArea = __webpack_require__( /*! ../../../ui/text_area */ 23116);
-                ui.dxTextBox = __webpack_require__( /*! ../../../ui/text_box */ 20780);
-                ui.dxTileView = __webpack_require__( /*! ../../../ui/tile_view */ 96993);
-                ui.dxToast = __webpack_require__( /*! ../../../ui/toast */ 36574);
-                ui.dxToolbar = __webpack_require__( /*! ../../../ui/toolbar */ 2850);
-                ui.dxTooltip = __webpack_require__( /*! ../../../ui/tooltip */ 93370);
-                ui.dxTrackBar = __webpack_require__( /*! ../../../ui/track_bar */ 76256);
-                ui.dxDraggable = __webpack_require__( /*! ../../../ui/draggable */ 5298);
-                ui.dxSortable = __webpack_require__( /*! ../../../ui/sortable */ 95305);
-                DevExpress.validationEngine = __webpack_require__( /*! ../../../ui/validation_engine */ 19391);
-                ui.dxValidationSummary = __webpack_require__( /*! ../../../ui/validation_summary */ 10585);
-                ui.dxValidationGroup = __webpack_require__( /*! ../../../ui/validation_group */ 16390);
-                ui.dxValidator = __webpack_require__( /*! ../../../ui/validator */ 71775);
-                ui.CollectionWidget = __webpack_require__( /*! ../../../ui/collection/ui.collection_widget.edit */ 7607);
-                ui.dxDropDownEditor = __webpack_require__( /*! ../../../ui/drop_down_editor/ui.drop_down_editor */ 99142);
-                module.exports = ui
-            },
         79248:
             /*!*******************************************************************************************************************************************!*\
               !*** ./artifacts/transpiled-renovation-npm/__internal/scheduler/view_model/filtration/utils/filter_by_attributes/filter_by_attributes.js ***!
@@ -258496,30 +258242,6 @@
                 }
                 exports.default = DynamicProvider
             },
-        84789:
-            /*!**********************************************************************************!*\
-              !*** ./artifacts/transpiled-renovation-npm/bundles/modules/parts/widgets-web.js ***!
-              \**********************************************************************************/
-            (__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
-                const data = __webpack_require__( /*! ./data */ 51323);
-                const ui = __webpack_require__( /*! ./widgets-base */ 79178);
-                ui.dxAccordion = __webpack_require__( /*! ../../../ui/accordion */ 30543);
-                ui.dxContextMenu = __webpack_require__( /*! ../../../ui/context_menu */ 34378);
-                ui.dxDataGrid = __webpack_require__( /*! ../../../ui/data_grid */ 4920);
-                ui.dxTreeList = __webpack_require__( /*! ../../../ui/tree_list */ 21872);
-                ui.dxCardView = __webpack_require__( /*! ../../../ui/card_view */ 44655);
-                ui.dxMenu = __webpack_require__( /*! ../../../ui/menu */ 1614);
-                ui.dxPivotGrid = __webpack_require__( /*! ../../../ui/pivot_grid */ 49344);
-                ui.dxPivotGridFieldChooser = __webpack_require__( /*! ../../../ui/pivot_grid_field_chooser */ 55633);
-                data.PivotGridDataSource = __webpack_require__( /*! ../../../ui/pivot_grid/data_source */ 55067);
-                data.XmlaStore = __webpack_require__( /*! ../../../ui/pivot_grid/xmla_store */ 80445);
-                ui.dxScheduler = __webpack_require__( /*! ../../../ui/scheduler */ 17636);
-                ui.dxTreeView = __webpack_require__( /*! ../../../ui/tree_view */ 4313);
-                ui.dxFilterBuilder = __webpack_require__( /*! ../../../ui/filter_builder */ 35299);
-                ui.dxFileManager = __webpack_require__( /*! ../../../ui/file_manager */ 14247);
-                ui.dxDiagram = __webpack_require__( /*! ../../../ui/diagram */ 87632);
-                ui.dxGantt = __webpack_require__( /*! ../../../ui/gantt */ 16075)
-            },
         84798:
             /*!***************************************************************!*\
               !*** ./artifacts/transpiled-renovation-npm/ui/radio_group.js ***!
@@ -273422,54 +273144,6 @@
                     this._titleBBoxCache = Object.assign({}, this._title.getLayoutOptions());
                     _change_TITLE.apply(this, arguments)
                 }
-            },
-        90750:
-            /*!**************************************************************************!*\
-              !*** ./artifacts/transpiled-renovation-npm/bundles/modules/parts/viz.js ***!
-              \**************************************************************************/
-            (module, __unused_webpack_exports, __webpack_require__) => {
-                const DevExpress = __webpack_require__( /*! ./core */ 67712);
-                __webpack_require__( /*! ./data */ 51323);
-                __webpack_require__( /*! ../../../bundles/modules/common.charts */ 27114);
-                const viz = DevExpress.viz = __webpack_require__( /*! ../../../bundles/modules/viz */ 2211);
-                viz.currentTheme = __webpack_require__( /*! ../../../viz/themes */ 84560).currentTheme;
-                viz.registerTheme = __webpack_require__( /*! ../../../viz/themes */ 84560).registerTheme;
-                viz.exportFromMarkup = __webpack_require__( /*! ../../../viz/export */ 88168).exportFromMarkup;
-                viz.getMarkup = __webpack_require__( /*! ../../../viz/export */ 88168).getMarkup;
-                viz.exportWidgets = __webpack_require__( /*! ../../../viz/export */ 88168).exportWidgets;
-                viz.currentPalette = __webpack_require__( /*! ../../../viz/palette */ 9735).pq;
-                viz.getPalette = __webpack_require__( /*! ../../../viz/palette */ 9735).Sf;
-                viz.generateColors = __webpack_require__( /*! ../../../viz/palette */ 9735).oC;
-                viz.registerPalette = __webpack_require__( /*! ../../../viz/palette */ 9735).hr;
-                viz.refreshTheme = __webpack_require__( /*! ../../../viz/themes */ 84560).refreshTheme;
-                viz.dxChart = __webpack_require__( /*! ../../../viz/chart */ 26408);
-                viz.dxPieChart = __webpack_require__( /*! ../../../viz/pie_chart */ 4381);
-                viz.dxPolarChart = __webpack_require__( /*! ../../../viz/polar_chart */ 11247);
-                viz.dxLinearGauge = __webpack_require__( /*! ../../../viz/linear_gauge */ 4655);
-                viz.dxCircularGauge = __webpack_require__( /*! ../../../viz/circular_gauge */ 89463);
-                viz.dxBarGauge = __webpack_require__( /*! ../../../viz/bar_gauge */ 84601);
-                viz.dxRangeSelector = __webpack_require__( /*! ../../../viz/range_selector */ 30185);
-                viz.dxVectorMap = __webpack_require__( /*! ../../../viz/vector_map */ 85148);
-                viz.map = {};
-                viz.map.sources = {};
-                viz.map.projection = __webpack_require__( /*! ../../../viz/vector_map/projection */ 99094).Q;
-                viz.dxSparkline = __webpack_require__( /*! ../../../viz/sparkline */ 71871);
-                viz.dxBullet = __webpack_require__( /*! ../../../viz/bullet */ 75954);
-                viz.dxTreeMap = __webpack_require__( /*! ../../../viz/tree_map */ 61015);
-                viz.dxFunnel = __webpack_require__( /*! ../../../viz/funnel */ 61434);
-                viz.dxSankey = __webpack_require__( /*! ../../../viz/sankey */ 37755);
-                viz.getTheme = __webpack_require__( /*! ../../../viz/themes */ 84560).getTheme;
-                viz.findTheme = __webpack_require__( /*! ../../../viz/themes */ 84560).getTheme;
-                viz.refreshAll = __webpack_require__( /*! ../../../viz/themes */ 84560).refreshTheme;
-                viz.refreshPaths = __webpack_require__( /*! ../../../viz/utils */ 2225).refreshPaths;
-                viz.gauges = {
-                    __internals: {}
-                };
-                viz._dashboard = {};
-                viz._dashboard.Renderer = __webpack_require__( /*! ../../../viz/core/renderers/renderer */ 63022).A4;
-                viz._dashboard.SvgElement = __webpack_require__( /*! ../../../viz/core/renderers/renderer */ 63022).hJ;
-                viz._dashboard.patchFontOptions = __webpack_require__( /*! ../../../viz/core/utils */ 28779).a1;
-                module.exports = viz
             },
         90780:
             /*!**************************************************************************************************************!*\
@@ -295681,20 +295355,6 @@
                     }), [])
                 }
             },
-        99142:
-            /*!****************************************************************************************!*\
-              !*** ./artifacts/transpiled-renovation-npm/ui/drop_down_editor/ui.drop_down_editor.js ***!
-              \****************************************************************************************/
-            (module, exports, __webpack_require__) => {
-                exports.default = void 0;
-                var _m_drop_down_editor = (e = __webpack_require__( /*! ../../__internal/ui/drop_down_editor/m_drop_down_editor */ 28906), e && e.__esModule ? e : {
-                    default: e
-                });
-                var e;
-                exports.default = _m_drop_down_editor.default;
-                module.exports = exports.default;
-                module.exports.default = exports.default
-            },
         99203:
             /*!**********************************************************!*\
               !*** ./artifacts/transpiled-renovation-npm/ui/lookup.js ***!
@@ -296197,5 +295857,139 @@
             value: true
         })
     });
-    __webpack_require__(10195)
+    /*!******************************************************************!*\
+      !*** ./artifacts/transpiled-renovation-npm/bundles/dx.custom.js ***!
+      \******************************************************************/
+    const dx_custom_DevExpress = __webpack_require__( /*! ../bundles/modules/core */ 92307);
+    __webpack_require__( /*! ../bundles/modules/core.legacy */ 11166);
+    __webpack_require__( /*! ../integration/jquery */ 21001);
+    __webpack_require__( /*! ../integration/knockout */ 34563);
+    __webpack_require__( /*! ../common/core/localization/globalize/core */ 23805);
+    __webpack_require__( /*! ../common/core/localization/globalize/message */ 84207);
+    __webpack_require__( /*! ../common/core/localization/globalize/number */ 13203);
+    __webpack_require__( /*! ../common/core/localization/globalize/date */ 99862);
+    __webpack_require__( /*! ../common/core/localization/globalize/currency */ 869);
+    __webpack_require__( /*! ../common/core/events/click */ 64044);
+    __webpack_require__( /*! ../common/core/events/contextmenu */ 80248);
+    __webpack_require__( /*! ../common/core/events/double_click */ 5636);
+    __webpack_require__( /*! ../common/core/events/drag */ 59144);
+    __webpack_require__( /*! ../common/core/events/hold */ 68095);
+    __webpack_require__( /*! ../common/core/events/hover */ 638);
+    __webpack_require__( /*! ../common/core/events/pointer */ 89797);
+    __webpack_require__( /*! ../common/core/events/swipe */ 80250);
+    __webpack_require__( /*! ../common/core/events/transform */ 37008);
+    const data = dx_custom_DevExpress.data = __webpack_require__( /*! ../bundles/modules/data */ 54844);
+    __webpack_require__( /*! ../bundles/modules/data.legacy */ 23555);
+    data.odata = __webpack_require__( /*! ../bundles/modules/data.odata */ 71043);
+    __webpack_require__( /*! ../bundles/modules/data.odata.legacy */ 42190);
+    const ui = dx_custom_DevExpress.ui = __webpack_require__( /*! ../bundles/modules/ui */ 57190);
+    ui.themes = __webpack_require__( /*! ../ui/themes */ 52071);
+    ui.setTemplateEngine = __webpack_require__( /*! ../core/templates/template_engine_registry */ 35155).setTemplateEngine;
+    ui.dialog = __webpack_require__( /*! ../ui/dialog */ 35757);
+    ui.notify = __webpack_require__( /*! ../ui/notify */ 93380);
+    ui.repaintFloatingActionButton = __webpack_require__( /*! ../ui/speed_dial_action/repaint_floating_action_button */ 92725);
+    ui.hideToasts = __webpack_require__( /*! ../ui/toast/hide_toasts */ 41792);
+    ui.dxActionSheet = __webpack_require__( /*! ../ui/action_sheet */ 45263);
+    ui.dxAutocomplete = __webpack_require__( /*! ../ui/autocomplete */ 93485);
+    ui.dxBox = __webpack_require__( /*! ../ui/box */ 91204);
+    ui.dxButton = __webpack_require__( /*! ../ui/button */ 64973);
+    ui.dxDropDownButton = __webpack_require__( /*! ../ui/drop_down_button */ 56582);
+    ui.dxButtonGroup = __webpack_require__( /*! ../ui/button_group */ 17809);
+    ui.dxCalendar = __webpack_require__( /*! ../ui/calendar */ 22195);
+    ui.dxCheckBox = __webpack_require__( /*! ../ui/check_box */ 94319);
+    ui.dxColorBox = __webpack_require__( /*! ../ui/color_box */ 87928);
+    ui.dxChat = __webpack_require__( /*! ../ui/chat */ 73571);
+    ui.dxDateBox = __webpack_require__( /*! ../ui/date_box */ 2739);
+    ui.dxDateRangeBox = __webpack_require__( /*! ../ui/date_range_box */ 45453);
+    ui.dxDrawer = __webpack_require__( /*! ../ui/drawer */ 7968);
+    ui.dxDropDownBox = __webpack_require__( /*! ../ui/drop_down_box */ 74417);
+    ui.dxFileUploader = __webpack_require__( /*! ../ui/file_uploader */ 26980);
+    ui.dxForm = __webpack_require__( /*! ../ui/form */ 74075);
+    ui.dxGallery = __webpack_require__( /*! ../ui/gallery */ 89987);
+    ui.dxHtmlEditor = __webpack_require__( /*! ../ui/html_editor */ 16802);
+    ui.dxInformer = __webpack_require__( /*! ../ui/informer */ 22363);
+    ui.dxList = __webpack_require__( /*! ../ui/list */ 3121);
+    ui.dxLoadIndicator = __webpack_require__( /*! ../ui/load_indicator */ 11979);
+    ui.dxLoadPanel = __webpack_require__( /*! ../ui/load_panel */ 31876);
+    ui.dxLookup = __webpack_require__( /*! ../ui/lookup */ 99203);
+    ui.dxMap = __webpack_require__( /*! ../ui/map */ 55211);
+    ui.dxMultiView = __webpack_require__( /*! ../ui/multi_view */ 24150);
+    ui.dxNumberBox = __webpack_require__( /*! ../ui/number_box */ 48042);
+    ui.dxOverlay = __webpack_require__( /*! ../ui/overlay/ui.overlay */ 89132);
+    ui.dxPagination = __webpack_require__( /*! ../ui/pagination */ 38389);
+    ui.dxPopover = __webpack_require__( /*! ../ui/popover */ 46184);
+    ui.dxPopup = __webpack_require__( /*! ../ui/popup */ 97643);
+    ui.dxProgressBar = __webpack_require__( /*! ../ui/progress_bar */ 58436);
+    ui.dxRadioGroup = __webpack_require__( /*! ../ui/radio_group */ 84798);
+    ui.dxRangeSlider = __webpack_require__( /*! ../ui/range_slider */ 80790);
+    ui.dxResizable = __webpack_require__( /*! ../ui/resizable */ 28416);
+    ui.dxResponsiveBox = __webpack_require__( /*! ../ui/responsive_box */ 43597);
+    ui.dxScrollView = __webpack_require__( /*! ../ui/scroll_view */ 91374);
+    ui.dxSelectBox = __webpack_require__( /*! ../ui/select_box */ 60695);
+    ui.dxSlider = __webpack_require__( /*! ../ui/slider */ 56220);
+    ui.dxSpeechToText = __webpack_require__( /*! ../ui/speech_to_text */ 27493);
+    ui.dxSpeedDialAction = __webpack_require__( /*! ../ui/speed_dial_action */ 67924);
+    ui.dxStepper = __webpack_require__( /*! ../ui/stepper */ 87244);
+    ui.dxSplitter = __webpack_require__( /*! ../ui/splitter */ 78254);
+    ui.dxSwitch = __webpack_require__( /*! ../ui/switch */ 91029);
+    ui.dxTabPanel = __webpack_require__( /*! ../ui/tab_panel */ 78175);
+    ui.dxTabs = __webpack_require__( /*! ../ui/tabs */ 94385);
+    ui.dxTagBox = __webpack_require__( /*! ../ui/tag_box */ 4575);
+    ui.dxTextArea = __webpack_require__( /*! ../ui/text_area */ 23116);
+    ui.dxTextBox = __webpack_require__( /*! ../ui/text_box */ 20780);
+    ui.dxTileView = __webpack_require__( /*! ../ui/tile_view */ 96993);
+    ui.dxToast = __webpack_require__( /*! ../ui/toast */ 36574);
+    ui.dxToolbar = __webpack_require__( /*! ../ui/toolbar */ 2850);
+    ui.dxTooltip = __webpack_require__( /*! ../ui/tooltip */ 93370);
+    ui.dxTrackBar = __webpack_require__( /*! ../ui/track_bar */ 76256);
+    ui.dxDraggable = __webpack_require__( /*! ../ui/draggable */ 5298);
+    ui.dxSortable = __webpack_require__( /*! ../ui/sortable */ 95305);
+    dx_custom_DevExpress.validationEngine = __webpack_require__( /*! ../ui/validation_engine */ 19391);
+    ui.dxValidationSummary = __webpack_require__( /*! ../ui/validation_summary */ 10585);
+    ui.dxValidationGroup = __webpack_require__( /*! ../ui/validation_group */ 16390);
+    ui.dxValidator = __webpack_require__( /*! ../ui/validator */ 71775);
+    ui.dxAccordion = __webpack_require__( /*! ../ui/accordion */ 30543);
+    ui.dxContextMenu = __webpack_require__( /*! ../ui/context_menu */ 34378);
+    ui.dxDataGrid = __webpack_require__( /*! ../ui/data_grid */ 4920);
+    ui.dxTreeList = __webpack_require__( /*! ../ui/tree_list */ 21872);
+    ui.dxCardView = __webpack_require__( /*! ../ui/card_view */ 44655);
+    ui.dxMenu = __webpack_require__( /*! ../ui/menu */ 1614);
+    ui.dxPivotGrid = __webpack_require__( /*! ../ui/pivot_grid */ 49344);
+    ui.dxPivotGridFieldChooser = __webpack_require__( /*! ../ui/pivot_grid_field_chooser */ 55633);
+    data.PivotGridDataSource = __webpack_require__( /*! ../ui/pivot_grid/data_source */ 55067);
+    data.XmlaStore = __webpack_require__( /*! ../ui/pivot_grid/xmla_store */ 80445);
+    ui.dxScheduler = __webpack_require__( /*! ../ui/scheduler */ 17636);
+    ui.dxTreeView = __webpack_require__( /*! ../ui/tree_view */ 4313);
+    ui.dxFilterBuilder = __webpack_require__( /*! ../ui/filter_builder */ 35299);
+    ui.dxFileManager = __webpack_require__( /*! ../ui/file_manager */ 14247);
+    ui.dxDiagram = __webpack_require__( /*! ../ui/diagram */ 87632);
+    ui.dxGantt = __webpack_require__( /*! ../ui/gantt */ 16075);
+    __webpack_require__( /*! ../bundles/modules/common.charts */ 27114);
+    const viz = dx_custom_DevExpress.viz = __webpack_require__( /*! ../bundles/modules/viz */ 2211);
+    viz.currentTheme = __webpack_require__( /*! ../viz/themes */ 84560).currentTheme;
+    viz.registerTheme = __webpack_require__( /*! ../viz/themes */ 84560).registerTheme;
+    viz.exportFromMarkup = __webpack_require__( /*! ../viz/export */ 88168).exportFromMarkup;
+    viz.getMarkup = __webpack_require__( /*! ../viz/export */ 88168).getMarkup;
+    viz.exportWidgets = __webpack_require__( /*! ../viz/export */ 88168).exportWidgets;
+    viz.currentPalette = __webpack_require__( /*! ../viz/palette */ 9735).pq;
+    viz.getPalette = __webpack_require__( /*! ../viz/palette */ 9735).Sf;
+    viz.generateColors = __webpack_require__( /*! ../viz/palette */ 9735).oC;
+    viz.registerPalette = __webpack_require__( /*! ../viz/palette */ 9735).hr;
+    viz.refreshTheme = __webpack_require__( /*! ../viz/themes */ 84560).refreshTheme;
+    viz.dxChart = __webpack_require__( /*! ../viz/chart */ 26408);
+    viz.dxPieChart = __webpack_require__( /*! ../viz/pie_chart */ 4381);
+    viz.dxPolarChart = __webpack_require__( /*! ../viz/polar_chart */ 11247);
+    viz.dxLinearGauge = __webpack_require__( /*! ../viz/linear_gauge */ 4655);
+    viz.dxCircularGauge = __webpack_require__( /*! ../viz/circular_gauge */ 89463);
+    viz.dxBarGauge = __webpack_require__( /*! ../viz/bar_gauge */ 84601);
+    viz.dxRangeSelector = __webpack_require__( /*! ../viz/range_selector */ 30185);
+    viz.dxVectorMap = __webpack_require__( /*! ../viz/vector_map */ 85148);
+    viz.map = {};
+    viz.map.sources = {};
+    viz.map.projection = __webpack_require__( /*! ../viz/vector_map/projection */ 99094).Q;
+    viz.dxSparkline = __webpack_require__( /*! ../viz/sparkline */ 71871);
+    viz.dxBullet = __webpack_require__( /*! ../viz/bullet */ 75954);
+    viz.dxTreeMap = __webpack_require__( /*! ../viz/tree_map */ 61015);
+    viz.dxFunnel = __webpack_require__( /*! ../viz/funnel */ 61434);
+    viz.dxSankey = __webpack_require__( /*! ../viz/sankey */ 37755)
 })();

@@ -1,5 +1,5 @@
 /*!
- * DevExtreme-Quill Editor v.1.7.6
+ * DevExtreme-Quill Editor v.1.7.7
  * https://js.devexpress.com/
  * Copyright (c) 2020, Developer Express Inc.
  * Copyright (c) 2017, Slab
@@ -3922,10 +3922,10 @@ var RowContainer = /*#__PURE__*/function (_Container3) {
 }(_blots_container__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .A);
 var TableBody = /*#__PURE__*/function (_RowContainer) {
   _inherits(TableBody, _RowContainer);
-  var _super10 = _createSuper(TableBody);
+  var _super0 = _createSuper(TableBody);
   function TableBody() {
     _classCallCheck(this, TableBody);
-    return _super10.apply(this, arguments);
+    return _super0.apply(this, arguments);
   }
   return _createClass(TableBody);
 }(RowContainer);
@@ -3933,10 +3933,10 @@ TableBody.blotName = 'tableBody';
 TableBody.tagName = 'TBODY';
 var TableHeader = /*#__PURE__*/function (_RowContainer2) {
   _inherits(TableHeader, _RowContainer2);
-  var _super11 = _createSuper(TableHeader);
+  var _super1 = _createSuper(TableHeader);
   function TableHeader() {
     _classCallCheck(this, TableHeader);
-    return _super11.apply(this, arguments);
+    return _super1.apply(this, arguments);
   }
   return _createClass(TableHeader);
 }(RowContainer);
@@ -3944,10 +3944,10 @@ TableHeader.blotName = 'tableHeader';
 TableHeader.tagName = 'THEAD';
 var TableContainer = /*#__PURE__*/function (_Container4) {
   _inherits(TableContainer, _Container4);
-  var _super12 = _createSuper(TableContainer);
+  var _super10 = _createSuper(TableContainer);
   function TableContainer() {
     _classCallCheck(this, TableContainer);
-    return _super12.apply(this, arguments);
+    return _super10.apply(this, arguments);
   }
   _createClass(TableContainer, [{
     key: "balanceCells",
@@ -6546,7 +6546,6 @@ Inline.order = ['cursor', 'inline',
 // Chrome wants <a> to be lower
 'underline', 'strike', 'italic', 'bold', 'script', 'code' // Must be higher
 ];
-
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Inline);
 
 /***/ }),
@@ -6849,7 +6848,6 @@ function debug(method) {
     (_console = console)[method].apply(_console, args); // eslint-disable-line no-console
   }
 }
-
 function namespace(ns) {
   return levels.reduce(function (logger, method) {
     logger[method] = debug.bind(console, method, ns);
@@ -7579,7 +7577,7 @@ function convertListHTML(items, lastIndent, types) {
     length = _items$.length,
     indent = _items$.indent,
     type = _items$.type,
-    rest = _items.slice(1);
+    rest = _arrayLikeToArray(_items).slice(1);
   var _getListType3 = getListType(type, child),
     _getListType4 = _slicedToArray(_getListType3, 2),
     tag = _getListType4[0],
@@ -7670,6 +7668,8 @@ function combineFormats(formats, combined) {
     } else if (Array.isArray(combined[name])) {
       if (combined[name].indexOf(formats[name]) < 0) {
         merged[name] = combined[name].concat([formats[name]]);
+      } else {
+        merged[name] = combined[name];
       }
     } else {
       merged[name] = [combined[name], formats[name]];
@@ -12067,9 +12067,9 @@ var Quill = /*#__PURE__*/function () {
       var index = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
       var length = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.getLength() - index;
       var _overload9 = overload(index, length);
-      var _overload10 = _slicedToArray(_overload9, 2);
-      index = _overload10[0];
-      length = _overload10[1];
+      var _overload0 = _slicedToArray(_overload9, 2);
+      index = _overload0[0];
+      length = _overload0[1];
       return this.editor.getHTML(index, length);
     }
   }, {
@@ -12077,10 +12077,10 @@ var Quill = /*#__PURE__*/function () {
     value: function getText() {
       var index = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
       var length = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.getLength() - index;
-      var _overload11 = overload(index, length);
-      var _overload12 = _slicedToArray(_overload11, 2);
-      index = _overload12[0];
-      length = _overload12[1];
+      var _overload1 = overload(index, length);
+      var _overload10 = _slicedToArray(_overload1, 2);
+      index = _overload10[0];
+      length = _overload10[1];
       return this.editor.getText(index, length);
     }
   }, {
@@ -12103,11 +12103,11 @@ var Quill = /*#__PURE__*/function () {
       var _this7 = this;
       var formats;
       // eslint-disable-next-line prefer-const
-      var _overload13 = overload(index, 0, name, value, source);
-      var _overload14 = _slicedToArray(_overload13, 4);
-      index = _overload14[0];
-      formats = _overload14[2];
-      source = _overload14[3];
+      var _overload11 = overload(index, 0, name, value, source);
+      var _overload12 = _slicedToArray(_overload11, 4);
+      index = _overload12[0];
+      formats = _overload12[2];
+      source = _overload12[3];
       return modify.call(this, function () {
         return _this7.editor.insertText(index, text, formats);
       }, source, index, text.length);
@@ -12139,11 +12139,11 @@ var Quill = /*#__PURE__*/function () {
     key: "removeFormat",
     value: function removeFormat(index, length, source) {
       var _this8 = this;
-      var _overload15 = overload(index, length, source);
-      var _overload16 = _slicedToArray(_overload15, 4);
-      index = _overload16[0];
-      length = _overload16[1];
-      source = _overload16[3];
+      var _overload13 = overload(index, length, source);
+      var _overload14 = _slicedToArray(_overload13, 4);
+      index = _overload14[0];
+      length = _overload14[1];
+      source = _overload14[3];
       return modify.call(this, function () {
         return _this8.editor.removeFormat(index, length);
       }, source, index);
@@ -12177,11 +12177,11 @@ var Quill = /*#__PURE__*/function () {
       if (index == null) {
         this.selection.setRange(null, length || Quill.sources.API);
       } else {
-        var _overload17 = overload(index, length, source);
-        var _overload18 = _slicedToArray(_overload17, 4);
-        index = _overload18[0];
-        length = _overload18[1];
-        source = _overload18[3];
+        var _overload15 = overload(index, length, source);
+        var _overload16 = _slicedToArray(_overload15, 4);
+        index = _overload16[0];
+        length = _overload16[1];
+        source = _overload16[3];
         this.selection.setRange(new _selection__WEBPACK_IMPORTED_MODULE_7__/* .Range */ .Q(Math.max(0, index), length), source);
         if (source !== _emitter__WEBPACK_IMPORTED_MODULE_5__/* ["default"] */ .A.sources.SILENT) {
           this.selection.scrollIntoView(this.scrollingContainer);
@@ -12208,11 +12208,11 @@ var Quill = /*#__PURE__*/function () {
   }, {
     key: "updateContents",
     value: function updateContents(delta) {
-      var _this10 = this;
+      var _this0 = this;
       var source = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : _emitter__WEBPACK_IMPORTED_MODULE_5__/* ["default"] */ .A.sources.API;
       return modify.call(this, function () {
         delta = new (quill_delta__WEBPACK_IMPORTED_MODULE_0___default())(delta);
-        return _this10.editor.applyDelta(delta, source);
+        return _this0.editor.applyDelta(delta, source);
       }, source, true);
     }
   }, {
@@ -12244,7 +12244,7 @@ var Quill = /*#__PURE__*/function () {
   }, {
     key: "register",
     value: function register(path, target) {
-      var _this11 = this;
+      var _this1 = this;
       var overwrite = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
       if (typeof path !== 'string') {
         var name = path.attrName || path.blotName;
@@ -12253,7 +12253,7 @@ var Quill = /*#__PURE__*/function () {
           this.register("formats/".concat(name), path, target);
         } else {
           Object.keys(path).forEach(function (key) {
-            _this11.register(key, path[key], target);
+            _this1.register(key, path[key], target);
           });
         }
       } else {
@@ -12284,7 +12284,7 @@ Quill.DEFAULTS = {
 Quill.events = _emitter__WEBPACK_IMPORTED_MODULE_5__/* ["default"] */ .A.events;
 Quill.sources = _emitter__WEBPACK_IMPORTED_MODULE_5__/* ["default"] */ .A.sources;
 // eslint-disable-next-line no-undef
-Quill.version =  false ? 0 : "1.7.6";
+Quill.version =  false ? 0 : "1.7.7";
 Quill.MS_LIST_DATA_KEY = 'mso-list-data';
 Quill.replaceStyleAttribute = function (html) {
   var tagAttrsRegex = /(?:(<[a-z0-9]+\s*))([\s\S]*?)(>|\/>)/gi;
@@ -12380,7 +12380,6 @@ function modify(modifier, source, index, shift) {
     if (index === true) {
       index = range.index; // eslint-disable-line prefer-destructuring
     }
-
     if (shift == null) {
       range = shiftRange(range, change, source);
     } else if (shift !== 0) {
@@ -14116,7 +14115,6 @@ var InlineBlot = /** @class */function (_super) {
     if (Object.keys(formats).length === 0) {
       return this.unwrap(); // unformatted span
     }
-
     var next = this.next;
     if (next instanceof InlineBlot && next.prev === this && isEqual(formats, next.formats())) {
       next.moveChildren(this);
@@ -15154,10 +15152,10 @@ var Table = /*#__PURE__*/function (_Module) {
     value: function insertRow(offset) {
       var range = this.quill.getSelection();
       var _this$getTable9 = this.getTable(range),
-        _this$getTable10 = _slicedToArray(_this$getTable9, 3),
-        table = _this$getTable10[0],
-        row = _this$getTable10[1],
-        cell = _this$getTable10[2];
+        _this$getTable0 = _slicedToArray(_this$getTable9, 3),
+        table = _this$getTable0[0],
+        row = _this$getTable0[1],
+        cell = _this$getTable0[2];
       if (!(0,_utils_is_defined__WEBPACK_IMPORTED_MODULE_5__/* ["default"] */ .A)(cell)) {
         return;
       }
@@ -15184,10 +15182,10 @@ var Table = /*#__PURE__*/function (_Module) {
     key: "insertHeaderRow",
     value: function insertHeaderRow() {
       var range = this.quill.getSelection();
-      var _this$getTable11 = this.getTable(range),
-        _this$getTable12 = _slicedToArray(_this$getTable11, 3),
-        table = _this$getTable12[0],
-        cell = _this$getTable12[2];
+      var _this$getTable1 = this.getTable(range),
+        _this$getTable10 = _slicedToArray(_this$getTable1, 3),
+        table = _this$getTable10[0],
+        cell = _this$getTable10[2];
       if (!(0,_utils_is_defined__WEBPACK_IMPORTED_MODULE_5__/* ["default"] */ .A)(cell)) {
         return;
       }
@@ -16565,10 +16563,10 @@ TableHeader.blotName = 'tableHeader';
 TableHeader.tagName = ['THEAD'];
 var TableContainer = /*#__PURE__*/function (_Container3) {
   _inherits(TableContainer, _Container3);
-  var _super10 = _createSuper(TableContainer);
+  var _super0 = _createSuper(TableContainer);
   function TableContainer() {
     _classCallCheck(this, TableContainer);
-    return _super10.apply(this, arguments);
+    return _super0.apply(this, arguments);
   }
   _createClass(TableContainer, [{
     key: "balanceCells",
@@ -16976,10 +16974,10 @@ var TableLite = /*#__PURE__*/function (_Module) {
     value: function insertRow(offset) {
       var range = this.quill.getSelection();
       var _this$getTable9 = this.getTable(range),
-        _this$getTable10 = lite_slicedToArray(_this$getTable9, 3),
-        table = _this$getTable10[0],
-        row = _this$getTable10[1],
-        cell = _this$getTable10[2];
+        _this$getTable0 = lite_slicedToArray(_this$getTable9, 3),
+        table = _this$getTable0[0],
+        row = _this$getTable0[1],
+        cell = _this$getTable0[2];
       if (!(0,is_defined/* default */.A)(cell)) {
         return;
       }
@@ -17006,10 +17004,10 @@ var TableLite = /*#__PURE__*/function (_Module) {
     key: "insertHeaderRow",
     value: function insertHeaderRow() {
       var range = this.quill.getSelection();
-      var _this$getTable11 = this.getTable(range),
-        _this$getTable12 = lite_slicedToArray(_this$getTable11, 3),
-        table = _this$getTable12[0],
-        cell = _this$getTable12[2];
+      var _this$getTable1 = this.getTable(range),
+        _this$getTable10 = lite_slicedToArray(_this$getTable1, 3),
+        table = _this$getTable10[0],
+        cell = _this$getTable10[2];
       if (!(0,is_defined/* default */.A)(cell)) {
         return;
       }
@@ -17348,11 +17346,9 @@ function getScrollIntoViewConfig(element) {
   if (elemTop < 0) {
     return true; // scroll to the top
   }
-
   if (elemBottom >= windowHeight) {
     return false; // scroll to the bottom
   }
-
   return null;
 }
 ;// ./modules/keyboard.js
@@ -17739,8 +17735,8 @@ var Keyboard = /*#__PURE__*/function (_Module) {
       this.quill.setSelection(range.index + 1, core_quill/* default */.Ay.sources.SILENT);
       this.quill.focus();
       var _this$quill$getLine9 = this.quill.getLine(range.index + 1),
-        _this$quill$getLine10 = _slicedToArray(_this$quill$getLine9, 1),
-        line = _this$quill$getLine10[0];
+        _this$quill$getLine0 = _slicedToArray(_this$quill$getLine9, 1),
+        line = _this$quill$getLine0[0];
       var scrollConfig = getScrollIntoViewConfig(line.domNode);
       if (scrollConfig !== null) {
         line.domNode.scrollIntoView(scrollConfig);
@@ -17881,10 +17877,10 @@ Keyboard.DEFAULTS = {
         list: 'checked'
       },
       handler: function handler(range) {
-        var _this$quill$getLine11 = this.quill.getLine(range.index),
-          _this$quill$getLine12 = _slicedToArray(_this$quill$getLine11, 2),
-          line = _this$quill$getLine12[0],
-          offset = _this$quill$getLine12[1];
+        var _this$quill$getLine1 = this.quill.getLine(range.index),
+          _this$quill$getLine10 = _slicedToArray(_this$quill$getLine1, 2),
+          line = _this$quill$getLine10[0],
+          offset = _this$quill$getLine10[1];
         var formats = _objectSpread(_objectSpread({}, line.formats()), {}, {
           list: 'checked'
         });
@@ -17902,10 +17898,10 @@ Keyboard.DEFAULTS = {
       format: ['header'],
       suffix: /^$/,
       handler: function handler(range, context) {
-        var _this$quill$getLine13 = this.quill.getLine(range.index),
-          _this$quill$getLine14 = _slicedToArray(_this$quill$getLine13, 2),
-          line = _this$quill$getLine14[0],
-          offset = _this$quill$getLine14[1];
+        var _this$quill$getLine11 = this.quill.getLine(range.index),
+          _this$quill$getLine12 = _slicedToArray(_this$quill$getLine11, 2),
+          line = _this$quill$getLine12[0],
+          offset = _this$quill$getLine12[1];
         var delta = new (Delta_default())().retain(range.index).insert('\n', context.format).retain(line.length() - offset - 1).retain(1, {
           header: null
         });
@@ -17927,10 +17923,10 @@ Keyboard.DEFAULTS = {
       handler: function handler(range, context) {
         if (this.quill.scroll.query('list') == null) return true;
         var length = context.prefix.length;
-        var _this$quill$getLine15 = this.quill.getLine(range.index),
-          _this$quill$getLine16 = _slicedToArray(_this$quill$getLine15, 2),
-          line = _this$quill$getLine16[0],
-          offset = _this$quill$getLine16[1];
+        var _this$quill$getLine13 = this.quill.getLine(range.index),
+          _this$quill$getLine14 = _slicedToArray(_this$quill$getLine13, 2),
+          line = _this$quill$getLine14[0],
+          offset = _this$quill$getLine14[1];
         if (offset > length) return true;
         var value;
         switch (context.prefix.trim()) {
@@ -17967,10 +17963,10 @@ Keyboard.DEFAULTS = {
       prefix: /^$/,
       suffix: /^\s*$/,
       handler: function handler(range) {
-        var _this$quill$getLine17 = this.quill.getLine(range.index),
-          _this$quill$getLine18 = _slicedToArray(_this$quill$getLine17, 2),
-          line = _this$quill$getLine18[0],
-          offset = _this$quill$getLine18[1];
+        var _this$quill$getLine15 = this.quill.getLine(range.index),
+          _this$quill$getLine16 = _slicedToArray(_this$quill$getLine15, 2),
+          line = _this$quill$getLine16[0],
+          offset = _this$quill$getLine16[1];
         var numLines = 2;
         var cur = line;
         while (cur != null && cur.length() <= 1 && cur.formats()['code-block']) {
@@ -19050,7 +19046,6 @@ var Selection = /*#__PURE__*/function () {
         } else {
           blot.insertBefore(this.cursor, nativeRange.start.node); // Should never happen
         }
-
         this.cursor.attach();
       }
       this.cursor.format(_format, value);

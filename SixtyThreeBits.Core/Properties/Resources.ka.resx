@@ -516,4 +516,7 @@
   <data name="TextLogClearConfirm" xml:space="preserve">
     <value>ნამდვილად გსურთ ლოგების გაწმენდა?</value>
   </data>
+  <data name="ValidationDateInvalid" xml:space="preserve">
+    <value>თარიღი არასწორია</value>
+  </data>
 </root>

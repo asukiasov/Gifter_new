@@ -21,7 +21,7 @@
                 </div>                
                 <div class="col-lg-6 form-group">
                     <label>@Html.Raw(Model.TextDate)</label>
-                    <div class="form-control">
+                    <div class="form-control" name="@nameof(Model.NewsDatePublished)">
                         @(Html.DevExtreme()
                             .DateBox()
                             .Name(nameof(Model.NewsDatePublished))
@@ -31,6 +31,7 @@
                             .OpenOnFieldClick(true)
                             )
                     </div>
+                    <div class="invalid-feedback"></div>
                 </div>
             </div>            
             <div class="row">

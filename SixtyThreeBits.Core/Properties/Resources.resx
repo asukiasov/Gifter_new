@@ -516,4 +516,7 @@
   <data name="TextLogClearConfirm" xml:space="preserve">
     <value>Do you really want to clear logs?</value>
   </data>
+  <data name="ValidationDateInvalid" xml:space="preserve">
+    <value>Date is invalid</value>
+  </data>
 </root>

@@ -116,6 +116,21 @@ namespace SixtyThreeBits.Web.Models.Admin
             error = await Validation63.ValidateAsync(
                 errorAction: async () =>
                 {
+                    var isError = false;
+                    if(submitModel.NewsDatePublished.HasValue && submitModel.NewsDatePublished< new DateTime(1900,1,1))
+                    {
+                        isError = true;
+                    }
+                    return isError;
+                },
+                errorKey: Validation63.GetJQueryNameSelectorFor(nameof(submitModel.NewsDatePublished)),
+                errorMessage: Resources.ValidationDateInvalid
+            );
+            validationResult.AddError(error);
+
+            error = await Validation63.ValidateAsync(
+                errorAction: async () =>
+                {
                     var repository = RepositoriesFactory.CreateNewsRepository();
                     var IsUniq = await repository.NewsIsSlugUniq(newsSlug: submitModel.NewsSlug, newsID: NewsItem.NewsID);
                     return !IsUniq;

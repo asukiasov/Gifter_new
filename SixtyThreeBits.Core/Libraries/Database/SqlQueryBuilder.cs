@@ -107,6 +107,14 @@ namespace SixtyThreeBits.Core.Libraries.Database
             return result;
         }
 
+        public IQueryable<T> ExecuteSqlScriptView<T>() where T : class
+        {
+            _resultType = typeof(T);
+            buildViewSqlScript();
+            var result = _dbContext.Database.SqlQueryRaw<T>(SqlQuery, _sqlParameters);
+            return result;
+        }
+
         public T GetNextOutputParameterValue<T>()
         {
             var result = default(T);
@@ -139,6 +147,13 @@ namespace SixtyThreeBits.Core.Libraries.Database
             var propertyNames = _resultType.GetProperties().Select(item => item.Name);
             var propertiesString = string.Join(", ", propertyNames);
             SqlQuery = $"SELECT {propertiesString} FROM dbo.{_databaseObjectName}({_parametersString})";
+        }
+
+        void buildViewSqlScript()
+        {
+            var propertyNames = _resultType.GetProperties().Select(item => item.Name);
+            var propertiesString = string.Join(", ", propertyNames);
+            SqlQuery = $"SELECT {propertiesString} FROM dbo.{_databaseObjectName}";
         }
 
         void buildParameters()
