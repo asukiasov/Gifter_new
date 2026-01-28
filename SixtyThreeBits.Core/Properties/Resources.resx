@@ -304,7 +304,7 @@
     <value>Name Eng</value>
   </data>
   <data name="TextNext" xml:space="preserve">
-    <value>Prev</value>
+    <value>Next</value>
   </data>
   <data name="TextNo" xml:space="preserve">
     <value>No</value>
@@ -358,7 +358,7 @@
     <value>Position</value>
   </data>
   <data name="TextPrev" xml:space="preserve">
-    <value>Next</value>
+    <value>Prev</value>
   </data>
   <data name="TextPreview" xml:space="preserve">
     <value>Preview</value>

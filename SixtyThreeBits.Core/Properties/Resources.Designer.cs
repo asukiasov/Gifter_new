@@ -637,7 +637,7 @@ namespace SixtyThreeBits.Core.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Prev.
+        ///   Looks up a localized string similar to Next.
         /// </summary>
         public static string TextNext {
             get {
@@ -799,7 +799,7 @@ namespace SixtyThreeBits.Core.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Next.
+        ///   Looks up a localized string similar to Prev.
         /// </summary>
         public static string TextPrev {
             get {
