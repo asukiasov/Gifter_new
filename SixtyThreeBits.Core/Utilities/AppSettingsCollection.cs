@@ -30,14 +30,17 @@ namespace SixtyThreeBits.Core.Utilities
 
             if (isDevelopmentEnvironment)
             {
-                UploadFolderPhysicalPath = $"{webRootPath}\\{_uploadFolderName}";
+                UploadFolderPhysicalPath = Path.GetFullPath(Path.Combine(webRootPath, _uploadFolderName));
             }
             else
             {
-                var parts = contentRootPath.Split('\\').ToList();
-                parts.RemoveAt(parts.Count - 1);
-                parts.Add(_uploadFolderName);
-                UploadFolderPhysicalPath = string.Join("\\", parts);
+                string parentDir = Path.GetDirectoryName(contentRootPath);
+                UploadFolderPhysicalPath = Path.Combine(parentDir ?? contentRootPath, _uploadFolderName);
+            }
+
+            if (!Directory.Exists(UploadFolderPhysicalPath))
+            {
+                Directory.CreateDirectory(UploadFolderPhysicalPath);
             }
 
             _configuration = configuration;

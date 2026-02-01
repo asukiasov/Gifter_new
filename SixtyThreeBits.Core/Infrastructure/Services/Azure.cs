@@ -30,7 +30,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Services
         {
             var blobsList = new List<BlobItem>();
 
-            var blobItems = _containerClient.GetBlobsAsync(prefix: folderPath);
+            var blobItems = _containerClient.GetBlobsAsync(traits: BlobTraits.None, states: BlobStates.None, prefix: folderPath, cancellationToken: default);
 
             await foreach (var blobItem in blobItems)
             {
@@ -83,7 +83,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Services
 
         public async Task DeleteFolder(string folderPath)
         {
-            var folderBlobs = _containerClient.GetBlobsAsync(prefix: folderPath);
+            var folderBlobs = _containerClient.GetBlobsAsync(traits: BlobTraits.None, states: BlobStates.None, prefix: folderPath, cancellationToken: default);
             await foreach (var blob in folderBlobs)
             {
                 var blobClient = _containerClient.GetBlobClient(blob.Name);

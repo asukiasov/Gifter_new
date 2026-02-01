@@ -54,9 +54,24 @@ namespace SixtyThreeBits.Core.Factories
             return new MenuHeaderRepository(_dbContextFactory, _logger);
         }
 
+        public GiftListsRepository CreateGiftListsRepository()
+        {
+            return new GiftListsRepository(_dbContextFactory, _logger);
+        }
+
+        public GiftsRepository CreateGiftsRepository()
+        {
+            return new GiftsRepository(_dbContextFactory, _logger);
+        }
+
         public NewsRepository CreateNewsRepository()
         {
             return new NewsRepository(_dbContextFactory, _logger);
+        }
+
+        public OrdersRepository CreateOrdersRepository()
+        {
+            return new OrdersRepository(_dbContextFactory, _logger);
         }
 
         public PagesRepository CreatePagesRepository()
