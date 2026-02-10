@@ -1,0 +1,46 @@
+@model WebsiteLayoutViewModel
+
+<footer class="px-4 py-4 mt-auto">
+    <div class="d-flex flex-column align-items-center gap-3">
+        <!-- Divider -->
+        <div class="w-100" style="height: 1px; background: var(--glass-border);"></div>
+
+        <!-- Footer Content -->
+        <div class="d-flex flex-column flex-sm-row align-items-center justify-content-between w-100 gap-3">
+            <!-- Copyright -->
+            <p class="text-muted-foreground mb-0" style="font-size: 0.75rem;">
+                @DateTime.Now.Year Gifter. All rights reserved.
+            </p>
+
+            <!-- Social Links -->
+            <div class="d-flex align-items-center gap-3">
+                @if (Model.HasInstagramUrl)
+                {
+                    <a href="@Model.InstagramUrl" target="_blank" rel="noopener noreferrer"
+                       class="text-muted-foreground" style="font-size: 1.25rem;">
+                        <ion-icon name="logo-instagram"></ion-icon>
+                    </a>
+                }
+                @if (Model.HasFacebookUrl)
+                {
+                    <a href="@Model.FacebookUrl" target="_blank" rel="noopener noreferrer"
+                       class="text-muted-foreground" style="font-size: 1.25rem;">
+                        <ion-icon name="logo-facebook"></ion-icon>
+                    </a>
+                }
+                @if (Model.HasTwitterUrl)
+                {
+                    <a href="@Model.TwitterUrl" target="_blank" rel="noopener noreferrer"
+                       class="text-muted-foreground" style="font-size: 1.25rem;">
+                        <ion-icon name="logo-twitter"></ion-icon>
+                    </a>
+                }
+            </div>
+        </div>
+
+        <!-- Made with love -->
+        <p class="text-muted-foreground mb-0" style="font-size: 0.625rem; opacity: 0.6;">
+            Made with <span style="color: #ff5050;">&#10084;</span> by 63BITS
+        </p>
+    </div>
+</footer>

@@ -1,6 +1,6 @@
 # Gifter Development Roadmap - Documentation Index
 
-**Last Updated:** February 1, 2026
+**Last Updated:** February 6, 2026
 
 ---
 
@@ -93,7 +93,8 @@ Sprint_3_Tasks.md (Detailed Tasks)
 
 ### Phase 3: Social Graph & Privacy
 - ✅ **Sprint 0** - Followers table and secret lists
-- ⏳ **Sprint 3** - Authorization and privacy logic
+- ✅ **Sprint 2** - Admin User Followers tab (read-only grid)
+- ⏳ **Sprint 3** - Website Follow/Unfollow, authorization and privacy logic
 
 ### Phase 4: Reservations & Business Logic
 - ✅ **Sprint 0** - Reservation columns added
@@ -101,7 +102,7 @@ Sprint_3_Tasks.md (Detailed Tasks)
 
 ### Phase 5: Administration Module
 - ✅ **Sprint 0** - Admin controllers and DevExtreme grids
-- ✅ **Sprint 2** - Orders Dashboard grid (read-only, verified) + GiftLists admin grid (edit/delete)
+- ✅ **Sprint 2** - Orders Dashboard grid (read-only, verified) + GiftLists admin grid (edit/delete) + Gifts admin grid + User Followers tab
 - 📋 **Sprint 4** - TBD
 
 ---
@@ -150,10 +151,12 @@ Sprint_3_Tasks.md (Detailed Tasks)
 - Sprint 2 was reorganized into Sprint 3 (Jan 27, 2026)
 - Sprint 2 Week 1 infrastructure work was completed and is now prerequisite for Sprint 3
 - All old sprint files (Sprint 0, 1, 2) have been archived/removed
+- Sprint 2 completed: Admin User Followers tab added (Feb 6, 2026)
+- Website Follow/Unfollow feature deferred to future sprint (not part of Phase 1)
 - Current focus: Sprint 3 feature implementation
 
 ---
 
-**Maintained by:** Lead Developer  
-**Last Review:** February 1, 2026
-**Next Review:** February 8, 2026
+**Maintained by:** Lead Developer
+**Last Review:** February 6, 2026
+**Next Review:** February 13, 2026

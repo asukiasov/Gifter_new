@@ -1,0 +1,98 @@
+@model WebsiteLayoutViewModel
+@{
+    // Avatar Safe-Load: Generate fallback URL using user initials
+    string avatarUrl = "";
+    string fallbackAvatar = "";
+
+    if (Model.IsAuthenticated)
+    {
+        avatarUrl = Model.User.UserAvatarFilename ?? "";
+
+        // Generate initials for fallback avatar
+        var initials = string.IsNullOrEmpty(Model.User.UserFirstname)
+            ? Model.User.UserEmail?.Substring(0, 1).ToUpper() ?? "U"
+            : Model.User.UserFirstname.Substring(0, 1).ToUpper();
+
+        if (!string.IsNullOrEmpty(Model.User.UserLastname))
+        {
+            initials += Model.User.UserLastname.Substring(0, 1).ToUpper();
+        }
+
+        // Use ui-avatars.com as fallback (generates avatar from initials)
+        fallbackAvatar = $"https://ui-avatars.com/api/?name={initials}&background=1a1a1a&color=00aaff&size=32&bold=true";
+    }
+}
+
+<header class="d-flex flex-column align-items-center px-4 py-4 gap-3">
+    <!-- Top Bar: Logo + User Menu -->
+    <div class="w-100 d-flex align-items-center justify-content-between">
+        <!-- Logo -->
+        <a href="/" class="d-flex align-items-center gap-2 text-decoration-none">
+            <div class="d-flex align-items-center justify-content-center"
+                 style="width: 36px; height: 36px; border-radius: 12px; background: linear-gradient(135deg, var(--primary), var(--accent));">
+                <span style="font-size: 1.125rem;">🎁</span>
+            </div>
+            <h1 class="m-0 fw-bold text-foreground" style="font-size: 1.25rem; letter-spacing: -0.025em;">
+                Gifter
+            </h1>
+        </a>
+
+        <!-- User Menu -->
+        <div class="d-flex align-items-center gap-2">
+            @if (Model.IsAuthenticated)
+            {
+                <!-- My Wishlists Link -->
+                <a href="/dashboard"
+                   class="btn-squish d-flex align-items-center justify-content-center text-muted-foreground text-decoration-none"
+                   style="padding: 8px 12px; border-radius: 12px; background: rgba(36, 36, 36, 0.5); font-size: 0.875rem;">
+                    <ion-icon name="list-outline" style="font-size: 18px;" class="me-2"></ion-icon>
+                    <span class="d-none d-sm-inline">My Wishlists</span>
+                </a>
+
+                <!-- User Dropdown -->
+                <div class="dropdown">
+                    <button class="btn-squish d-flex align-items-center gap-2 dropdown-toggle"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                            style="padding: 6px 12px 6px 6px; border-radius: 20px; background: rgba(36, 36, 36, 0.5); border: none;">
+                        <!-- Avatar with onerror fallback -->
+                        <img src="@(string.IsNullOrEmpty(avatarUrl) ? fallbackAvatar : avatarUrl)"
+                             alt="@Model.User.UserFirstname"
+                             class="rounded-circle user-avatar"
+                             width="28" height="28"
+                             onerror="this.onerror=null; this.src='@fallbackAvatar';" />
+                        <span class="text-foreground d-none d-sm-inline" style="font-size: 0.875rem;">
+                            @Model.User.UserFirstname
+                        </span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end"
+                        style="background: var(--deep-obsidian); border: 1px solid var(--glass-border); border-radius: 12px;">
+                        <li>
+                            <a class="dropdown-item text-foreground" href="/dashboard">
+                                <ion-icon name="grid-outline" class="me-2"></ion-icon>
+                                Dashboard
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider" style="border-color: var(--glass-border);"></li>
+                        <li>
+                            <a class="dropdown-item text-muted-foreground" href="/account/logout">
+                                <ion-icon name="log-out-outline" class="me-2"></ion-icon>
+                                Logout
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            }
+            else
+            {
+                <!-- Sign In Button -->
+                <a href="/account/login"
+                   class="btn-squish d-flex align-items-center gap-2"
+                   style="padding: 10px 16px; border-radius: 16px; background: var(--primary); color: var(--primary-foreground); font-weight: 600; font-size: 0.875rem; text-decoration: none;">
+                    <ion-icon name="logo-google" style="font-size: 18px;"></ion-icon>
+                    <span>Sign in with Google</span>
+                </a>
+            }
+        </div>
+    </div>
+</header>

@@ -15,10 +15,12 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="63BITS.Libraries.DotNetCore" Version="1.0.92" />
+    <PackageReference Include="AngleSharp" Version="1.4.0" />
     <PackageReference Include="DevExpress.AspNetCore.Reporting" Version="25.2.3" />
     <PackageReference Include="DevExtreme.AspNet.Core" Version="25.2.3" />
     <PackageReference Include="DevExtreme.AspNet.Data" Version="5.1.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="10.0.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SixtyThreeBits.Core\SixtyThreeBits.Core.csproj" />

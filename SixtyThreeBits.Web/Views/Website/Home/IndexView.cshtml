@@ -1,8 +1,112 @@
-﻿<main class="app-page">
-    <div class="d-flex justify-content-center mt-5 mb-5">
-        <img src="/images/logo.svg" width="300" />
+@{
+    var layoutModel = WebUtilities.GetLayoutViewModel<WebsiteLayoutViewModel>(viewData: ViewData, key: WebConstants.ViewData.LayoutViewModel);
+}
+
+<!-- Hero Section -->
+<div class="d-flex flex-column align-items-center text-center py-5">
+    <!-- Hero Icon -->
+    <div class="mb-4 d-flex align-items-center justify-content-center rounded-2xl"
+         style="width: 80px; height: 80px; background: rgba(0, 170, 255, 0.1); border: 1px solid rgba(0, 170, 255, 0.2);">
+        <span style="font-size: 2.5rem;">🎁</span>
     </div>
-    <div class="d-flex justify-content-center">
-        <a href="/admin/" class="btn btn-primary">Login To Admin</a>
+
+    <h1 class="fw-bold text-foreground mb-3" style="font-size: 2rem; letter-spacing: -0.025em;">
+        Welcome to Gifter
+    </h1>
+
+    <p class="text-muted-foreground mb-4" style="font-size: 1rem; max-width: 300px;">
+        Create wishlists, share with friends, and never receive a bad gift again.
+    </p>
+
+    @if (layoutModel.IsAuthenticated)
+    {
+        <!-- Authenticated: Go to Dashboard -->
+        <a href="~/@layoutModel.LanguageCode/dashboard"
+           class="btn-squish position-relative"
+           style="text-decoration: none;">
+            <!-- Glow effect -->
+            <div class="position-absolute w-100 h-100 rounded-2xl"
+                 style="top: 0; left: 0; background: linear-gradient(to right, var(--primary), var(--accent), var(--primary)); opacity: 0.6; filter: blur(4px);">
+            </div>
+            <div class="position-relative d-flex align-items-center justify-content-center gap-2 px-4 py-3 rounded-2xl fw-semibold"
+                 style="background: var(--primary); color: var(--primary-foreground);">
+                <ion-icon name="grid-outline" style="font-size: 20px;"></ion-icon>
+                <span>Go to My Wishlists</span>
+            </div>
+        </a>
+    }
+    else
+    {
+        <!-- Not Authenticated: Sign In -->
+        <a href="~/@layoutModel.LanguageCode/account/login"
+           class="btn-squish position-relative"
+           style="text-decoration: none;">
+            <!-- Glow effect -->
+            <div class="position-absolute w-100 h-100 rounded-2xl"
+                 style="top: 0; left: 0; background: linear-gradient(to right, var(--primary), var(--accent), var(--primary)); opacity: 0.6; filter: blur(4px);">
+            </div>
+            <div class="position-relative d-flex align-items-center justify-content-center gap-2 px-4 py-3 rounded-2xl fw-semibold"
+                 style="background: var(--primary); color: var(--primary-foreground);">
+                <ion-icon name="logo-google" style="font-size: 20px;"></ion-icon>
+                <span>Get Started with Google</span>
+            </div>
+        </a>
+    }
+</div>
+
+<!-- Features Section -->
+<div class="py-4">
+    <h2 class="text-foreground fw-semibold text-center mb-4" style="font-size: 1.125rem;">
+        How it works
+    </h2>
+
+    <div class="row g-3">
+        <!-- Feature 1 -->
+        <div class="col-12">
+            <div class="bento-card p-4 d-flex align-items-start gap-3">
+                <div class="d-flex align-items-center justify-content-center flex-shrink-0"
+                     style="width: 48px; height: 48px; border-radius: 14px; background: rgba(0, 170, 255, 0.1);">
+                    <ion-icon name="add-circle-outline" style="font-size: 24px; color: var(--primary);"></ion-icon>
+                </div>
+                <div>
+                    <h3 class="fw-semibold text-foreground mb-1" style="font-size: 1rem;">Create Wishlists</h3>
+                    <p class="text-muted-foreground mb-0" style="font-size: 0.875rem;">
+                        Organize your wishes by occasion - birthday, wedding, holidays, and more.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Feature 2 -->
+        <div class="col-12">
+            <div class="bento-card p-4 d-flex align-items-start gap-3">
+                <div class="d-flex align-items-center justify-content-center flex-shrink-0"
+                     style="width: 48px; height: 48px; border-radius: 14px; background: rgba(205, 50, 255, 0.1);">
+                    <ion-icon name="link-outline" style="font-size: 24px; color: var(--accent);"></ion-icon>
+                </div>
+                <div>
+                    <h3 class="fw-semibold text-foreground mb-1" style="font-size: 1rem;">Add Products Easily</h3>
+                    <p class="text-muted-foreground mb-0" style="font-size: 0.875rem;">
+                        Paste any product URL and we'll automatically scrape the details.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Feature 3 -->
+        <div class="col-12">
+            <div class="bento-card p-4 d-flex align-items-start gap-3">
+                <div class="d-flex align-items-center justify-content-center flex-shrink-0"
+                     style="width: 48px; height: 48px; border-radius: 14px; background: rgba(22, 207, 140, 0.1);">
+                    <ion-icon name="share-social-outline" style="font-size: 24px; color: var(--match-gradient-start);"></ion-icon>
+                </div>
+                <div>
+                    <h3 class="fw-semibold text-foreground mb-1" style="font-size: 1rem;">Share & Reserve</h3>
+                    <p class="text-muted-foreground mb-0" style="font-size: 0.875rem;">
+                        Share your wishlist link. Friends can secretly reserve gifts.
+                    </p>
+                </div>
+            </div>
+        </div>
     </div>
-</main>
+</div>

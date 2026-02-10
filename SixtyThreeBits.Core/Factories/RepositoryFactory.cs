@@ -19,16 +19,6 @@ namespace SixtyThreeBits.Core.Factories
         #endregion
 
         #region Methods
-        public BlogPostsRepository CreateBlogRepository()
-        {
-            return new BlogPostsRepository(_dbContextFactory, _logger);
-        }
-
-        public BrandsRepository CreateBrandsRepository()
-        {
-            return new BrandsRepository(_dbContextFactory, _logger);
-        }
-
         public CountriesRepository CreateCountriesRepository()
         {
             return new CountriesRepository(_dbContextFactory, _logger);
@@ -42,6 +32,11 @@ namespace SixtyThreeBits.Core.Factories
         public EmailTemplatesRepository CreateEmailTemplatesRepository()
         {
             return new EmailTemplatesRepository(_dbContextFactory, _logger);
+        }
+
+        public FollowersRepository CreateFollowersRepository()
+        {
+            return new FollowersRepository(_dbContextFactory, _logger);
         }
 
         public MenuFooterRepository CreateMenuFooterRepository()
@@ -64,11 +59,6 @@ namespace SixtyThreeBits.Core.Factories
             return new GiftsRepository(_dbContextFactory, _logger);
         }
 
-        public NewsRepository CreateNewsRepository()
-        {
-            return new NewsRepository(_dbContextFactory, _logger);
-        }
-
         public OrdersRepository CreateOrdersRepository()
         {
             return new OrdersRepository(_dbContextFactory, _logger);
@@ -84,11 +74,6 @@ namespace SixtyThreeBits.Core.Factories
             return new PermissionsRepository(_dbContextFactory, _logger);
         }
 
-        public ProductsRepository CreateProductsRepository()
-        {
-            return new ProductsRepository(_dbContextFactory, _logger);
-        }
-
         public RedirectsRepository CreateRedirectsRepository()
         {
             return new RedirectsRepository(_dbContextFactory, _logger);
@@ -102,11 +87,6 @@ namespace SixtyThreeBits.Core.Factories
         public SystemPropertiesRepository CreateSystemPropertiesRepository()
         {
             return new SystemPropertiesRepository(_dbContextFactory, _logger);
-        }
-
-        public TeamMembersRepository CreateTeamMembersRepository()
-        {
-            return new TeamMembersRepository(_dbContextFactory, _logger);
         }
 
         public UsersRepository CreateUsersRepository()

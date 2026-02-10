@@ -152,6 +152,118 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
             );
             return result;
         }
+
+        public async Task<UserDTO> UsersGetSingleByGoogleID(string userGoogleID)
+        {
+            var result = await TryToReturnAsyncTask(
+                logString: $"{nameof(UsersGetSingleByGoogleID)}({nameof(userGoogleID)} = {userGoogleID})",
+                asyncFuncToTry: async () =>
+                {
+                    using (var dbContext = _dbContextFactory.CreateDbContext())
+                    {
+                        var sqb = new SqlQueryBuilder(
+                            dbContext: dbContext,
+                            databaseObjectName: nameof(UsersGetSingleByGoogleID),
+                            sqlParameters:
+                            [
+                                userGoogleID.ToSqlParameter(SqlDbType.NVarChar)
+                            ]
+                        );
+                        var resultJson = await sqb.ExecuteScalarValuedFunction<string>();
+                        var result = resultJson.DeserializeJsonTo<UserDTO>();
+                        return result;
+                    }
+                }
+            );
+            return result;
+        }
+
+        public async Task<UserDTO> UsersGetSingleByEmail(string userEmail)
+        {
+            var result = await TryToReturnAsyncTask(
+                logString: $"{nameof(UsersGetSingleByEmail)}({nameof(userEmail)} = {userEmail})",
+                asyncFuncToTry: async () =>
+                {
+                    using (var dbContext = _dbContextFactory.CreateDbContext())
+                    {
+                        var sqb = new SqlQueryBuilder(
+                            dbContext: dbContext,
+                            databaseObjectName: nameof(UsersGetSingleByEmail),
+                            sqlParameters:
+                            [
+                                userEmail.ToSqlParameter(SqlDbType.NVarChar)
+                            ]
+                        );
+                        var resultJson = await sqb.ExecuteScalarValuedFunction<string>();
+                        var result = resultJson.DeserializeJsonTo<UserDTO>();
+                        return result;
+                    }
+                }
+            );
+            return result;
+        }
+
+        public async Task<int?> UsersUpdateGoogleID(int userID, string googleID, string avatarUrl)
+        {
+            return await UsersIUD(
+                databaseAction: Enums.DatabaseActions.UPDATE,
+                userID: userID,
+                user: new UserIudDTO
+                {
+                    UserGoogleID = googleID,
+                    UserAvatarFilename = avatarUrl
+                }
+            );
+        }
+
+        public async Task<int?> UsersUpdateAvatar(int userID, string avatarUrl)
+        {
+            return await UsersIUD(
+                databaseAction: Enums.DatabaseActions.UPDATE,
+                userID: userID,
+                user: new UserIudDTO
+                {
+                    UserAvatarFilename = avatarUrl
+                }
+            );
+        }
+
+        public async Task<int?> UsersCreateFromGoogle(
+            string googleID,
+            string userEmail,
+            string userFullname,
+            string userFirstname,
+            string userLastname,
+            string avatarUrl)
+        {
+            return await UsersIUD(
+                databaseAction: Enums.DatabaseActions.INSERT,
+                userID: 0,
+                user: new UserIudDTO
+                {
+                    UserGoogleID = googleID,
+                    UserEmail = userEmail,
+                    UserFullname = userFullname,
+                    UserFirstname = userFirstname,
+                    UserLastname = userLastname,
+                    UserAvatarFilename = avatarUrl,
+                    UserIsActive = true,
+                    RoleID = 2 // Assuming 2 is 'User' role as per roadmap
+                }
+            );
+        }
+
+        public async Task<int?> UsersCompleteOnboarding(int userID)
+        {
+            return await UsersIUD(
+                databaseAction: Enums.DatabaseActions.UPDATE,
+                userID: userID,
+                user: new UserIudDTO
+                {
+                    UserIsFirstLogin = false
+                }
+            );
+        }
         #endregion Methods
     }    
 }

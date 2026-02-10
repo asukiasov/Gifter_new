@@ -3,8 +3,28 @@
     <div class="card-body">
         <div class="row">
             <div class="col">
+                @if (Model.ShowAddNewButton)
+                {
+                    @await Html.PartialAsync(ViewNames.Admin.Shared.ButtonAddNewPartialView, new ButtonAddNewViewModel())
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card">
+    <div class="card-body">
+        <div class="row">
+            <div class="col">
                 @Model.Grid.Render(Html)
             </div>
         </div>
     </div>
 </div>
+@section FooterSection{
+    <script>
+        var modelConfig = {
+            urlLoadFollowers: '@Model.Grid.UrlLoadFollowers'
+        };
+    </script>
+    <script src="/js/admin/giftLists/GiftListsView.js"></script>
+}

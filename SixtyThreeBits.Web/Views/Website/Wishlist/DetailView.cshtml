@@ -1,0 +1,524 @@
+@using SixtyThreeBits.Web.Models.Website
+@{
+    var layoutModel = WebUtilities.GetLayoutViewModel<WebsiteLayoutViewModel>(viewData: ViewData, key: WebConstants.ViewData.LayoutViewModel);
+    var model = ViewData.Model as WishlistDetailModel;
+    var wishlist = model?.Wishlist;
+    var gifts = model?.Gifts ?? new List<SixtyThreeBits.Core.Infrastructure.Repositories.DTO.GiftsListDTO>();
+    var isOwner = model?.IsOwner ?? false;
+
+    // Debug info
+    var debugUserID = model?.User?.UserID;
+    var debugWishlistUserID = wishlist?.GiftListUserID;
+}
+
+<!-- Header -->
+<div class="glass sticky-top mb-4 -mx-4 px-4 py-3" style="border-bottom: 1px solid rgba(255,255,255,0.05); z-index: 10;">
+    <!-- Back Button & Add Button Row -->
+    <div class="d-flex align-items-center justify-content-between mb-3">
+        <a href="/dashboard" class="d-flex align-items-center gap-2 btn-squish bg-transparent border-0 p-0 text-muted-foreground text-decoration-none" style="font-size: 0.875rem;">
+            <ion-icon name="arrow-back-outline" style="font-size: 20px;"></ion-icon>
+            <span>Back to My Wishlists</span>
+        </a>
+
+        @if (layoutModel.IsAuthenticated)
+        {
+            <button type="button" id="addProductBtn"
+                    class="d-flex align-items-center gap-2 px-3 py-2 rounded-pill btn-squish position-relative group"
+                    style="background: rgba(0, 170, 255, 0.2); border: 1px solid rgba(0, 170, 255, 0.5); color: var(--primary);">
+                <div class="position-absolute w-100 h-100 rounded-pill"
+                     style="top:0; left:0; background: rgba(0, 170, 255, 0.2); filter: blur(12px); opacity: 0.5; z-index: -1;">
+                </div>
+                <ion-icon name="add-outline" style="font-size: 16px;"></ion-icon>
+                <span class="fw-medium" style="font-size: 0.875rem;">Add Product</span>
+            </button>
+        }
+    </div>
+
+    <!-- Title & Stats -->
+    <div>
+        <h1 class="fw-bold text-foreground mb-1" style="font-size: 1.5rem;">
+            @wishlist?.GiftListTitle
+        </h1>
+        <p class="text-muted-foreground m-0" style="font-size: 0.875rem;">
+            @gifts.Count @(gifts.Count == 1 ? "Item" : "Items")
+            @if (!string.IsNullOrEmpty(wishlist?.GiftListOccasionType))
+            {
+                <span class="ms-2 badge" style="background: rgba(0, 170, 255, 0.2); color: var(--primary); font-size: 0.625rem;">
+                    @wishlist.GiftListOccasionType
+                </span>
+            }
+        </p>
+    </div>
+</div>
+
+@if (gifts.Any())
+{
+    <!-- Product Grid -->
+    <div class="row g-3" id="product-grid">
+        @foreach (var gift in gifts)
+        {
+            var sourceStyle = "background: rgba(36, 36, 36, 0.7); color: #8c8c8c; border: 1px solid rgba(255,255,255,0.05);";
+            if (gift.GiftUrl?.Contains("amazon") == true)
+            {
+                sourceStyle = "background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3);";
+            }
+
+            <div class="col-12 col-sm-6">
+                <div class="glass position-relative group" style="border-radius: 20px; overflow: hidden; @(gift.GiftIsReserved ? "opacity: 0.6;" : "")">
+                    <div class="position-relative bg-secondary" style="aspect-ratio: 4/3;">
+                        @if (string.IsNullOrEmpty(gift.GiftImageUrl))
+                        {
+                            <div class="position-absolute w-100 h-100 d-flex flex-column align-items-center justify-content-center text-muted-foreground opacity-50">
+                                <ion-icon name="image-outline" style="font-size: 32px; margin-bottom: 8px;"></ion-icon>
+                                <span style="font-size: 0.75rem;">No Image</span>
+                            </div>
+                        }
+                        else
+                        {
+                            <img src="@gift.GiftImageUrl" class="w-100 h-100 object-fit-cover" alt="@gift.GiftTitle">
+                        }
+
+                        <div class="position-absolute px-2 py-1 rounded-3 glass" style="top: 12px; left: 12px; border: 1px solid rgba(255,255,255,0.05);">
+                            <span class="fw-bold text-foreground" style="font-size: 0.875rem;">
+                                @(gift.GiftCurrency ?? "$")@gift.GiftPrice?.ToString("N0")
+                            </span>
+                        </div>
+
+                        @if (gift.GiftIsReserved)
+                        {
+                            <div class="position-absolute w-100 h-100 d-flex align-items-center justify-content-center" style="top: 0; left: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);">
+                                <div class="d-flex align-items-center gap-2 px-3 py-2 rounded-pill" style="background: rgba(34, 197, 94, 0.2); border: 1px solid rgba(34, 197, 94, 0.5);">
+                                    <ion-icon name="checkmark-outline" style="color: #4ade80;"></ion-icon>
+                                    <span class="fw-medium" style="color: #4ade80; font-size: 0.875rem;">Reserved</span>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    <div class="p-3">
+                        <h3 class="fw-semibold text-foreground mb-2 text-truncate" style="font-size: 0.875rem; line-height: 1.4;">
+                            @gift.GiftTitle
+                        </h3>
+
+                        <div class="d-flex align-items-center justify-content-between mt-3">
+                            @if (!string.IsNullOrEmpty(gift.GiftUrl))
+                            {
+                                <a href="@gift.GiftUrl" target="_blank" class="px-2 py-1 rounded-2 text-decoration-none" style="font-size: 0.75rem; @sourceStyle">
+                                    View Product
+                                </a>
+                            }
+                            else
+                            {
+                                <span class="px-2 py-1 rounded-2" style="font-size: 0.75rem; @sourceStyle">Custom</span>
+                            }
+
+                            @if (!isOwner && !gift.GiftIsReserved)
+                            {
+                                <button class="d-flex align-items-center justify-content-center rounded-circle btn-squish reserve-btn"
+                                        data-gift-id="@gift.GiftID"
+                                        style="width: 28px; height: 28px; background: rgba(34, 197, 94, 0.2); border: 1px solid rgba(34, 197, 94, 0.5);">
+                                    <ion-icon name="gift-outline" style="font-size: 14px; color: #4ade80;"></ion-icon>
+                                </button>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <!-- Empty State -->
+    <div class="d-flex flex-column align-items-center justify-content-center text-center" style="min-height: 300px;">
+        <div class="rounded-circle d-flex align-items-center justify-content-center mb-4 position-relative" style="width: 80px; height: 80px; background: rgba(36, 36, 36, 0.5);">
+            <div class="position-absolute w-100 h-100 rounded-circle" style="background: rgba(0, 170, 255, 0.1); filter: blur(20px);"></div>
+            <ion-icon name="add-outline" class="text-muted-foreground position-relative z-10" style="font-size: 40px;"></ion-icon>
+        </div>
+        <h3 class="fw-semibold text-foreground mb-2" style="font-size: 1.125rem;">This list is empty</h3>
+        <p class="text-muted-foreground mb-4 opacity-75" style="font-size: 0.875rem; max-width: 280px;">
+            @if (layoutModel.IsAuthenticated)
+            {
+                <text>Start by adding a product URL to track prices and organize your wishlist</text>
+            }
+            else
+            {
+                <text>No items have been added to this wishlist yet</text>
+            }
+        </p>
+        @if (layoutModel.IsAuthenticated)
+        {
+            <button id="addProductBtnEmpty" class="d-flex align-items-center gap-2 px-4 py-3 rounded-pill btn-squish position-relative group" style="background: var(--primary); color: var(--primary-foreground); border: none;">
+                <ion-icon name="add-outline" style="font-size: 20px;"></ion-icon>
+                <span class="fw-medium">Add Your First Product</span>
+            </button>
+        }
+    </div>
+}
+
+@if (layoutModel.IsAuthenticated)
+{
+    <!-- Add Product Modal -->
+    <div class="modal fade" id="addProductModal" data-bs-backdrop="static" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content glass" style="border: 1px solid rgba(255,255,255,0.1); border-radius: 24px;">
+                <div class="modal-body p-4">
+                    <!-- Header -->
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h5 class="m-0 fw-bold text-foreground">Add Product</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <!-- URL Input with Scrape Button -->
+                    <div class="mb-4">
+                        <label class="form-label text-muted-foreground small mb-2">Product URL</label>
+                        <div class="input-group">
+                            <input type="url" id="productUrlInput" class="form-control"
+                                   placeholder="Paste product URL..."
+                                   style="background: rgba(36,36,36,0.7); border: 1px solid rgba(255,255,255,0.1); color: var(--foreground); border-radius: 12px 0 0 12px;">
+                            <button class="btn btn-primary" id="scrapeBtn" disabled
+                                    style="border-radius: 0 12px 12px 0; padding: 0 1rem;">
+                                <ion-icon name="sparkles-outline" class="me-1"></ion-icon>
+                                <span class="d-none d-sm-inline">Scrape</span>
+                            </button>
+                        </div>
+                        <small class="text-muted-foreground opacity-75">Paste a product link to auto-fill details</small>
+                    </div>
+
+                    <!-- Image Preview -->
+                    <div class="position-relative rounded-3 overflow-hidden mb-4" id="imagePreviewContainer"
+                         style="aspect-ratio: 16/9; background: rgba(36,36,36,0.5); border: 1px dashed rgba(255,255,255,0.1);">
+                        <!-- Placeholder -->
+                        <div id="imagePlaceholder" class="position-absolute w-100 h-100 d-flex flex-column align-items-center justify-content-center text-muted-foreground">
+                            <ion-icon name="image-outline" style="font-size: 48px; opacity: 0.5;"></ion-icon>
+                            <span class="small opacity-75 mt-2">Product image will appear here</span>
+                        </div>
+                        <!-- Actual Image -->
+                        <img id="previewImgElement" class="w-100 h-100 object-fit-cover d-none" alt="Product preview">
+                        <!-- Scanning Overlay -->
+                        <div id="scanOverlay" class="position-absolute w-100 h-100 d-flex flex-column align-items-center justify-content-center d-none"
+                             style="top: 0; left: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px);">
+                            <div class="spinner-border text-primary mb-2" role="status"></div>
+                            <span class="text-foreground small">Scanning product...</span>
+                        </div>
+                    </div>
+
+                    <!-- Product Details Form -->
+                    <div class="mb-3">
+                        <label class="form-label text-muted-foreground small mb-2">Product Title</label>
+                        <input type="text" id="productTitleInput" class="form-control"
+                               placeholder="Enter product title"
+                               style="background: rgba(36,36,36,0.7); border: 1px solid rgba(255,255,255,0.1); color: var(--foreground); border-radius: 12px;">
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-8">
+                            <label class="form-label text-muted-foreground small mb-2">Price</label>
+                            <input type="number" id="productPriceInput" class="form-control"
+                                   placeholder="0.00" step="0.01" min="0"
+                                   style="background: rgba(36,36,36,0.7); border: 1px solid rgba(255,255,255,0.1); color: var(--foreground); border-radius: 12px;">
+                        </div>
+                        <div class="col-4">
+                            <label class="form-label text-muted-foreground small mb-2">Currency</label>
+                            <select id="currencyInput" class="form-select"
+                                    style="background: rgba(36,36,36,0.7); border: 1px solid rgba(255,255,255,0.1); color: var(--foreground); border-radius: 12px;">
+                                <option value="USD">USD</option>
+                                <option value="EUR">EUR</option>
+                                <option value="GEL">GEL</option>
+                                <option value="GBP">GBP</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Add Button -->
+                    <button type="button" id="addToWishlistBtn" class="btn btn-primary w-100 btn-squish py-3" disabled
+                            style="border-radius: 16px; font-weight: 600; opacity: 0.5;">
+                        <ion-icon name="add-outline" class="me-2"></ion-icon>
+                        Add to Wishlist
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section FooterSection {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var wishlistId = @(model.GiftListID);
+            var isOwner = @(isOwner ? "true" : "false");
+
+            console.log('DEBUG - Wishlist Detail');
+            console.log('DEBUG - User ID: @(debugUserID?.ToString() ?? "null")');
+            console.log('DEBUG - Wishlist Owner ID: @(debugWishlistUserID?.ToString() ?? "null")');
+            console.log('DEBUG - IsOwner: ' + isOwner);
+
+            // Add Product Modal Logic
+            var addProductModal = document.getElementById('addProductModal');
+            var bsAddProductModal = addProductModal ? new bootstrap.Modal(addProductModal) : null;
+
+            // Add product button click handlers - open modal
+            var addBtns = document.querySelectorAll('#addProductBtn, #addProductBtnEmpty');
+            addBtns.forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    if (bsAddProductModal) {
+                        resetAddProductModal();
+                        bsAddProductModal.show();
+                    }
+                });
+            });
+
+            // Scrape functionality
+            var urlInput = document.getElementById('productUrlInput');
+            var scrapeBtn = document.getElementById('scrapeBtn');
+            var titleInput = document.getElementById('productTitleInput');
+            var priceInput = document.getElementById('productPriceInput');
+            var currencyInput = document.getElementById('currencyInput');
+            var placeholder = document.getElementById('imagePlaceholder');
+            var previewImg = document.getElementById('previewImgElement');
+            var scanOverlay = document.getElementById('scanOverlay');
+            var addBtn = document.getElementById('addToWishlistBtn');
+
+            // Enable scrape button when URL is entered
+            if (urlInput) {
+                urlInput.addEventListener('input', function() {
+                    scrapeBtn.disabled = urlInput.value.length < 10;
+                });
+            }
+
+            // Scrape button click
+            if (scrapeBtn) {
+                scrapeBtn.addEventListener('click', async function() {
+                    var url = urlInput.value.trim();
+                    if (!url) return;
+
+                    // Show loading state
+                    scrapeBtn.disabled = true;
+                    scrapeBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Scanning...';
+                    scanOverlay.classList.remove('d-none');
+
+                    try {
+                        console.log('DEBUG Scraper: Starting scrape for URL:', url);
+
+                        var response = await fetch('/api/wishlist/' + wishlistId + '/scrape', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ url: url })
+                        });
+
+                        console.log('DEBUG Scraper: Response status:', response.status);
+
+                        var result = await response.json();
+
+                        // Log full response for debugging
+                        console.log('DEBUG Scraper: Full response:', JSON.stringify(result, null, 2));
+
+                        // Normalize response to handle both PascalCase and camelCase
+                        var data = {
+                            success: result.Success ?? result.success,
+                            title: result.Title ?? result.title,
+                            price: result.Price ?? result.price,
+                            currency: result.Currency ?? result.currency,
+                            imageUrl: result.ImageUrl ?? result.imageUrl,
+                            error: result.Error ?? result.error,
+                            logs: result.Logs ?? result.logs ?? []
+                        };
+
+                        // Log scraper logs if available
+                        if (data.logs && data.logs.length > 0) {
+                            console.log('DEBUG Scraper: Extraction logs:');
+                            data.logs.forEach(function(log, index) {
+                                console.log('  [' + index + '] ' + log);
+                            });
+                        }
+
+                        if (data.success) {
+                            console.log('DEBUG Scraper: SUCCESS - Title:', data.title, 'Price:', data.price, data.currency);
+
+                            // Populate form with scraped data
+                            if (data.title) titleInput.value = data.title;
+                            if (data.price) priceInput.value = data.price;
+                            if (data.currency) {
+                                var option = currencyInput.querySelector('option[value="' + data.currency + '"]');
+                                if (option) currencyInput.value = data.currency;
+                            }
+                            if (data.imageUrl) {
+                                previewImg.src = data.imageUrl;
+                                previewImg.classList.remove('d-none');
+                                placeholder.classList.add('d-none');
+                            }
+
+                            showToast('Product data extracted successfully!', 'success');
+                        } else {
+                            console.log('DEBUG Scraper: FAILED - Error:', data.error);
+                            console.log('DEBUG Scraper: Extracted data - Title:', data.title, 'Price:', data.price, 'Image:', data.imageUrl);
+
+                            // Show detailed error message
+                            var errorMsg = data.error || 'Could not extract product data';
+                            if (data.logs && data.logs.length > 0) {
+                                errorMsg += ' (Check console for details)';
+                            }
+                            showToast(errorMsg + '. Please fill in manually.', 'warning');
+                        }
+                    } catch (error) {
+                        console.error('DEBUG Scraper: Exception caught:', error);
+                        console.error('DEBUG Scraper: Error name:', error.name);
+                        console.error('DEBUG Scraper: Error message:', error.message);
+                        console.error('DEBUG Scraper: Error stack:', error.stack);
+                        showToast('Failed to scrape product: ' + error.message + '. Please fill in manually.', 'error');
+                    } finally {
+                        // Reset button state
+                        scrapeBtn.disabled = false;
+                        scrapeBtn.innerHTML = '<ion-icon name="sparkles-outline" class="me-1"></ion-icon><span class="d-none d-sm-inline">Scrape</span>';
+                        scanOverlay.classList.add('d-none');
+                        checkAddValidity();
+                    }
+                });
+            }
+
+            // Validate form inputs
+            if (titleInput && priceInput) {
+                titleInput.addEventListener('input', checkAddValidity);
+                priceInput.addEventListener('input', checkAddValidity);
+            }
+
+            function checkAddValidity() {
+                var isValid = titleInput && titleInput.value.trim().length > 0;
+                if (addBtn) {
+                    addBtn.disabled = !isValid;
+                    addBtn.style.opacity = isValid ? '1' : '0.5';
+                    addBtn.style.boxShadow = isValid ? '0 0 30px rgba(0, 170, 255, 0.4)' : 'none';
+                }
+            }
+
+            // Add to wishlist button click
+            if (addBtn) {
+                addBtn.addEventListener('click', async function() {
+                    var title = titleInput.value.trim();
+                    if (!title) {
+                        showToast('Please enter a product title', 'error');
+                        return;
+                    }
+
+                    // Show loading state
+                    addBtn.disabled = true;
+                    addBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Adding...';
+
+                    var requestBody = {
+                        title: title,
+                        price: priceInput.value ? parseFloat(priceInput.value) : null,
+                        currency: currencyInput.value,
+                        url: urlInput.value.trim() || null,
+                        imageUrl: previewImg.src && !previewImg.classList.contains('d-none') ? previewImg.src : null
+                    };
+
+                    console.log('DEBUG Add Product: Sending request to /api/wishlist/' + wishlistId + '/add-product');
+                    console.log('DEBUG Add Product: Request body:', JSON.stringify(requestBody, null, 2));
+
+                    try {
+                        var response = await fetch('/api/wishlist/' + wishlistId + '/add-product', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(requestBody)
+                        });
+
+                        console.log('DEBUG Add Product: Response status:', response.status);
+
+                        var result = await response.json();
+                        console.log('DEBUG Add Product: Full response:', JSON.stringify(result, null, 2));
+
+                        // Normalize response to handle both PascalCase and camelCase
+                        var isSuccess = result.Success ?? result.success;
+                        var errorMsg = result.Error ?? result.error;
+
+                        if (isSuccess) {
+                            // Success state
+                            addBtn.innerHTML = '<ion-icon name="checkmark-circle-outline" class="me-2"></ion-icon> Added!';
+                            addBtn.style.background = '#22c55e';
+
+                            showToast('Product added to wishlist!', 'success');
+
+                            // Reload page after short delay
+                            setTimeout(function() {
+                                window.location.reload();
+                            }, 1000);
+                        } else {
+                            console.log('DEBUG Add Product: FAILED - Error:', errorMsg);
+                            showToast(errorMsg || 'Failed to add product', 'error');
+                            addBtn.disabled = false;
+                            addBtn.innerHTML = '<ion-icon name="add-outline" class="me-2"></ion-icon> Add to Wishlist';
+                        }
+                    } catch (error) {
+                        console.error('DEBUG Add Product: Exception caught:', error);
+                        console.error('DEBUG Add Product: Error message:', error.message);
+                        showToast('An error occurred. Please try again.', 'error');
+                        addBtn.disabled = false;
+                        addBtn.innerHTML = '<ion-icon name="add-outline" class="me-2"></ion-icon> Add to Wishlist';
+                    }
+                });
+            }
+
+            function resetAddProductModal() {
+                if (urlInput) urlInput.value = '';
+                if (titleInput) titleInput.value = '';
+                if (priceInput) priceInput.value = '';
+                if (currencyInput) currencyInput.value = 'USD';
+                if (previewImg) {
+                    previewImg.src = '';
+                    previewImg.classList.add('d-none');
+                }
+                if (placeholder) placeholder.classList.remove('d-none');
+                if (addBtn) {
+                    addBtn.disabled = true;
+                    addBtn.style.opacity = '0.5';
+                    addBtn.style.boxShadow = 'none';
+                    addBtn.innerHTML = '<ion-icon name="add-outline" class="me-2"></ion-icon> Add to Wishlist';
+                    addBtn.style.background = '';
+                }
+                if (scrapeBtn) {
+                    scrapeBtn.disabled = true;
+                }
+            }
+
+            // Reserve button click handlers
+            var reserveBtns = document.querySelectorAll('.reserve-btn');
+            reserveBtns.forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    var giftId = this.getAttribute('data-gift-id');
+                    alert('Reserve feature coming soon! Gift ID: ' + giftId);
+                });
+            });
+
+            // Toast notification helper
+            function showToast(message, type) {
+                type = type || 'success';
+                var container = document.getElementById('toast-container');
+                if (!container) {
+                    container = document.createElement('div');
+                    container.id = 'toast-container';
+                    container.className = 'toast-container position-fixed top-0 end-0 p-3';
+                    container.style.zIndex = '9999';
+                    document.body.appendChild(container);
+                }
+
+                var bgClass = 'bg-success';
+                if (type === 'error') bgClass = 'bg-danger';
+                else if (type === 'warning') bgClass = 'bg-warning text-dark';
+
+                var toast = document.createElement('div');
+                toast.className = 'toast show align-items-center text-white ' + bgClass;
+                toast.innerHTML =
+                    '<div class="d-flex">' +
+                        '<div class="toast-body">' + message + '</div>' +
+                        '<button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>' +
+                    '</div>';
+
+                container.appendChild(toast);
+
+                setTimeout(function() {
+                    toast.remove();
+                }, 4000);
+            }
+        });
+    </script>
+}

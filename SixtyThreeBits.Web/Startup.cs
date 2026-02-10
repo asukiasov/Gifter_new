@@ -1,3 +1,6 @@
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
@@ -24,8 +27,9 @@ using System.Threading.Tasks;
 
 namespace SixtyThreeBits.Web
 {
-	public class Startup
+    public class Startup
     {
+        readonly IConfiguration _configuration;
         readonly AppSettingsCollection _appSettings;
         readonly UtilityCollection _utilities;
         readonly RepositoryFactory _repositoryFactory;
@@ -34,25 +38,24 @@ namespace SixtyThreeBits.Web
 
         public Startup(IWebHostEnvironment env)
         {            
-            IConfiguration appSettingsConfiguration;
             _isDevelopmentEnvironment = env.IsDevelopment();
             if (_isDevelopmentEnvironment)
             {
-                appSettingsConfiguration = new ConfigurationBuilder().SetBasePath(env.ContentRootPath).AddJsonFile("appsettings.json").Build();
+                _configuration = new ConfigurationBuilder().SetBasePath(env.ContentRootPath).AddJsonFile("appsettings.json").Build();
             }
             else
             {
                 #if DEBUG
-                appSettingsConfiguration = new ConfigurationBuilder().SetBasePath(env.ContentRootPath).AddJsonFile("appsettings.debug.json").Build();
+                _configuration = new ConfigurationBuilder().SetBasePath(env.ContentRootPath).AddJsonFile("appsettings.debug.json").Build();
                 #else
-                appSettingsConfiguration = new ConfigurationBuilder().SetBasePath(env.ContentRootPath).AddJsonFile("appsettings.production.json").Build();                
+                _configuration = new ConfigurationBuilder().SetBasePath(env.ContentRootPath).AddJsonFile("appsettings.production.json").Build();                
                 #endif
             }
 
             _appSettings = new AppSettingsCollection(
                 contentRootPath: env.ContentRootPath,
                 webRootPath: env.WebRootPath,
-                configuration: appSettingsConfiguration,
+                configuration: _configuration,
                 isDevelopmentEnvironment: _isDevelopmentEnvironment
             );
             _utilities = new UtilityCollection(
@@ -94,6 +97,32 @@ namespace SixtyThreeBits.Web
             
             services.Configure<RouteOptions>(routeOptions => {
                 routeOptions.AppendTrailingSlash = false;
+            });
+
+            // Authentication - Google Only
+            services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+            })
+            .AddCookie(options =>
+            {
+                options.LoginPath = "/Account/Login";
+                options.LogoutPath = "/Account/Logout";
+                options.ExpireTimeSpan = TimeSpan.FromDays(30);
+            })
+            .AddGoogle(options =>
+            {
+                options.ClientId = _configuration["Authentication:Google:ClientId"];
+                options.ClientSecret = _configuration["Authentication:Google:ClientSecret"];
+                options.CallbackPath = "/signin-google";
+
+                // Request additional scopes for profile picture
+                options.Scope.Add("profile");
+                options.Scope.Add("email");
+
+                // Map the picture claim
+                options.ClaimActions.MapJsonKey("picture", "picture");
             });
 
             //Response Compression
@@ -165,6 +194,8 @@ namespace SixtyThreeBits.Web
 
 
             app.UseRouting();
+            app.UseAuthentication();
+            app.UseAuthorization();
             app.UseSession();
 
             var requestLocalizationOptions = new RequestLocalizationOptions();

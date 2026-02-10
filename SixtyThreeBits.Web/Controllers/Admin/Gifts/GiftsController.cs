@@ -14,10 +14,10 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         #region Actions
         [HttpGet]
         [Route("", Name = ControllerActionRouteNames.Admin.GiftsController.Gifts)]
-        public IActionResult Gifts()
+        public async Task<IActionResult> Gifts()
         {
             Model.PluginsClient.EnableDevextreme(true);
-            var viewModel = Model.GetViewModel();
+            var viewModel = await Model.GetViewModel();
             return View(ViewNames.Admin.Gifts.GiftsView, viewModel);
         }
 
@@ -26,6 +26,15 @@ namespace SixtyThreeBits.Web.Controllers.Admin
         {
             var viewModel = await Model.GetGridItems();
             return DevExtremeGridResult(viewModel);
+        }
+
+        [HttpPost]
+        [Route("grid/add", Name = ControllerActionRouteNames.Admin.GiftsController.GridAdd)]
+        public async Task<IActionResult> GridAdd(int? key, string values)
+        {
+            var submitModel = values.DeserializeJsonTo<GiftsModel.ViewModel.GridModel.GridItem>() ?? new GiftsModel.ViewModel.GridModel.GridItem();
+            var viewModel = await Model.IUD(databaseAction: Enums.DatabaseActions.INSERT, giftID: key, submitModel: submitModel);
+            return DevExtremeGridActionResult(viewModel);
         }
 
         [HttpPut]

@@ -1,0 +1,483 @@
+@using SixtyThreeBits.Web.Models.Website
+@{
+    var layoutModel = WebUtilities.GetLayoutViewModel<WebsiteLayoutViewModel>(viewData: ViewData, key: WebConstants.ViewData.LayoutViewModel);
+    var model = ViewData.Model as DashboardModel;
+    var showWelcomeModal = layoutModel.User?.UserIsFirstLogin ?? false;
+    var wishlists = model?.Wishlists ?? new List<SixtyThreeBits.Core.Infrastructure.Repositories.DTO.GiftListsListDTO>();
+    var hasWishlists = wishlists.Any();
+
+    // Debug info
+    var debugUserID = model?.User?.UserID;
+    var debugWishlistCount = wishlists.Count;
+}
+
+<!-- Dashboard Header -->
+<div class="d-flex align-items-center justify-content-between mb-4">
+    <div>
+        <h1 class="fw-bold text-foreground mb-1" style="font-size: 1.5rem; letter-spacing: -0.025em;">
+            My Wishlists
+        </h1>
+        <p class="text-muted-foreground mb-0" style="font-size: 0.875rem;">
+            Welcome back, @layoutModel.User?.UserFirstname!
+        </p>
+    </div>
+</div>
+
+<!-- Create Wishlist Button -->
+<div class="mb-4">
+    <button type="button"
+            id="createWishlistBtn"
+            class="btn-squish position-relative w-100"
+            style="text-decoration: none; background: transparent; border: none;">
+        <!-- Glow effect -->
+        <div class="position-absolute w-100 h-100 rounded-2xl animate-pulse-glow"
+             style="top: 0; left: 0; background: linear-gradient(to right, var(--primary), var(--accent), var(--primary)); opacity: 0.4; filter: blur(8px);">
+        </div>
+        <div class="position-relative d-flex align-items-center justify-content-center gap-2 px-4 py-3 rounded-2xl fw-semibold"
+             style="background: var(--primary); color: var(--primary-foreground);">
+            <ion-icon name="add-outline" style="font-size: 20px;"></ion-icon>
+            <span>Create New Wishlist</span>
+        </div>
+    </button>
+</div>
+
+@if (hasWishlists)
+{
+    <!-- Wishlists Grid -->
+    <div class="row g-3" id="wishlist-grid">
+        @foreach (var wishlist in wishlists)
+        {
+            <div class="col-12 col-sm-6">
+                <a href="/wishlist/@wishlist.GiftListID" class="text-decoration-none">
+                    <div class="bento-card p-4 position-relative group cursor-pointer">
+                        <div class="position-relative z-10">
+                            <div class="d-flex align-items-start justify-content-between mb-3">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="d-flex align-items-center justify-content-center rounded-2xl" style="width: 48px; height: 48px; background: var(--secondary);">
+                                        <ion-icon name="gift-outline" style="color: var(--primary); font-size: 24px;"></ion-icon>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-foreground fw-semibold m-0" style="font-size: 1rem;">@wishlist.GiftListTitle</h3>
+                                        <p class="text-muted-foreground text-thin m-0" style="font-size: 0.875rem;">
+                                            @(wishlist.GiftListOccasionType ?? "General")
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="rounded-xl d-flex align-items-center justify-content-center mb-3" style="height: 96px; background: rgba(36, 36, 36, 0.5); border: 1px solid rgba(255,255,255,0.05);">
+                                <span class="text-muted-foreground" style="font-size: 0.75rem;">
+                                    @if (!string.IsNullOrEmpty(wishlist.GiftListDescription))
+                                    {
+                                        @(wishlist.GiftListDescription.Length > 50 ? wishlist.GiftListDescription.Substring(0, 50) + "..." : wishlist.GiftListDescription)
+                                    }
+                                    else
+                                    {
+                                        <text>No description</text>
+                                    }
+                                </span>
+                            </div>
+                            <div class="d-flex align-items-center justify-content-between">
+                                <span class="text-muted-foreground" style="font-size: 0.75rem;">
+                                    Created @wishlist.GiftListDateCreated?.ToString("MMM d, yyyy")
+                                </span>
+                                @if (wishlist.GiftListIsPublished)
+                                {
+                                    <span class="badge" style="background: rgba(34, 197, 94, 0.2); color: #4ade80; font-size: 0.625rem;">Published</span>
+                                }
+                                else
+                                {
+                                    <span class="badge" style="background: rgba(255, 255, 255, 0.1); color: #8c8c8c; font-size: 0.625rem;">Draft</span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <!-- Empty State -->
+    <div class="bento-card p-5 text-center">
+        <div class="mb-3">
+            <ion-icon name="gift-outline" style="font-size: 48px; color: var(--muted-foreground);"></ion-icon>
+        </div>
+        <h3 class="fw-semibold text-foreground mb-2" style="font-size: 1.125rem;">
+            No wishlists yet
+        </h3>
+        <p class="text-muted-foreground mb-0" style="font-size: 0.875rem;">
+            Create your first wishlist to start adding gifts you'd love to receive.
+        </p>
+    </div>
+}
+
+<!-- Create Wishlist Modal -->
+<div class="modal fade" id="createWishlistModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bento-card border-0 position-relative overflow-hidden"
+             style="background: rgba(20, 20, 20, 0.95); backdrop-filter: blur(20px);">
+            <!-- Ambient Glow -->
+            <div class="position-absolute rounded-circle"
+                 style="top: -80px; right: -80px; width: 160px; height: 160px; background: rgba(0, 170, 255, 0.1); filter: blur(60px); pointer-events: none;">
+            </div>
+            <div class="position-absolute rounded-circle"
+                 style="bottom: -80px; left: -80px; width: 160px; height: 160px; background: rgba(205, 50, 255, 0.1); filter: blur(60px); pointer-events: none;">
+            </div>
+
+            <!-- Close Button -->
+            <button type="button"
+                    class="btn-squish position-absolute top-0 end-0 m-3 p-2 rounded-circle d-flex align-items-center justify-content-center"
+                    data-bs-dismiss="modal" aria-label="Close"
+                    style="width: 32px; height: 32px; background: rgba(36,36,36,0.5); color: #8c8c8c; border: none; z-index: 10;">
+                <ion-icon name="close-outline" style="font-size: 16px;"></ion-icon>
+            </button>
+
+            <div class="modal-body p-4 pt-5">
+                <div class="text-center mb-4">
+                    <h3 class="fw-bold text-foreground mb-2 d-flex align-items-center justify-content-center gap-2"
+                        style="font-size: 1.5rem;">
+                        <ion-icon name="sparkles-outline" style="color: var(--primary);"></ion-icon>
+                        New Wishlist
+                    </h3>
+                    <p class="text-muted-foreground" style="font-size: 0.875rem;">
+                        Give your wishlist a name and pick a category
+                    </p>
+                </div>
+
+                <form id="createWishlistForm">
+                    <div class="mb-4 position-relative">
+                        <label class="position-absolute text-muted-foreground"
+                               style="top: 50%; left: 16px; transform: translateY(-50%); font-size: 1rem; pointer-events: none; transition: all 0.2s ease;">
+                            Wishlist Name
+                        </label>
+                        <input type="text" id="wishlistNameInput"
+                               class="form-control rounded-2xl bg-secondary border-0 text-foreground pt-4 pb-2 px-3 inner-glow-focus"
+                               placeholder=" " required
+                               style="height: 56px; background: rgba(36,36,36,0.5); box-shadow: none; font-size: 1.125rem;">
+                    </div>
+
+                    <div class="mb-4">
+                        <h4 class="fw-medium text-foreground mb-2" style="font-size: 0.875rem;">Select a Category</h4>
+                        <div class="row row-cols-5 g-2" id="categoryGrid">
+                            <!-- Categories will be rendered by JS -->
+                        </div>
+                    </div>
+
+                    <button type="submit" id="createSubmitBtn" class="w-100 position-relative group btn-squish"
+                            disabled style="border: none; background: transparent; opacity: 0.5;">
+                        <div class="position-absolute w-100 h-100 rounded-2xl"
+                             style="top: 0; left: 0; background: linear-gradient(to right, var(--primary), var(--accent), var(--primary)); opacity: 0.6; filter: blur(4px);">
+                        </div>
+                        <div class="position-relative d-flex align-items-center justify-content-center gap-2 w-100 px-4 py-3 rounded-2xl fw-semibold"
+                             style="background: var(--primary); color: var(--primary-foreground);">
+                            <ion-icon name="gift-outline" style="font-size: 20px;"></ion-icon>
+                            <span>Create Wishlist</span>
+                        </div>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (showWelcomeModal)
+{
+    <!-- Welcome Modal -->
+    <div class="modal fade" id="welcomeModal" tabindex="-1" aria-labelledby="welcomeModalLabel" aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="background: var(--card); border: 1px solid var(--border); border-radius: 16px;">
+                <div class="modal-body text-center p-5">
+                    <!-- Welcome Icon -->
+                    <div class="mb-4">
+                        <div class="d-inline-flex align-items-center justify-content-center rounded-circle"
+                             style="width: 80px; height: 80px; background: linear-gradient(135deg, var(--primary), var(--accent));">
+                            <ion-icon name="gift" style="font-size: 40px; color: white;"></ion-icon>
+                        </div>
+                    </div>
+
+                    <!-- Welcome Text -->
+                    <h2 class="fw-bold text-foreground mb-2" style="font-size: 1.5rem;">
+                        Welcome to Gifter!
+                    </h2>
+                    <p class="text-muted-foreground mb-4" style="font-size: 0.9375rem; line-height: 1.6;">
+                        Hello, @layoutModel.User?.UserFirstname! We're excited to have you here.
+                        Create wishlists, share them with friends and family, and make gift-giving effortless.
+                    </p>
+
+                    <!-- Features -->
+                    <div class="text-start mb-4 px-3">
+                        <div class="d-flex align-items-center gap-3 mb-3">
+                            <div class="d-flex align-items-center justify-content-center rounded-circle flex-shrink-0"
+                                 style="width: 32px; height: 32px; background: rgba(var(--primary-rgb), 0.1);">
+                                <ion-icon name="list-outline" style="font-size: 16px; color: var(--primary);"></ion-icon>
+                            </div>
+                            <span class="text-foreground" style="font-size: 0.875rem;">Create unlimited wishlists</span>
+                        </div>
+                        <div class="d-flex align-items-center gap-3 mb-3">
+                            <div class="d-flex align-items-center justify-content-center rounded-circle flex-shrink-0"
+                                 style="width: 32px; height: 32px; background: rgba(var(--accent-rgb), 0.1);">
+                                <ion-icon name="share-social-outline" style="font-size: 16px; color: var(--accent);"></ion-icon>
+                            </div>
+                            <span class="text-foreground" style="font-size: 0.875rem;">Share with friends and family</span>
+                        </div>
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="d-flex align-items-center justify-content-center rounded-circle flex-shrink-0"
+                                 style="width: 32px; height: 32px; background: rgba(var(--primary-rgb), 0.1);">
+                                <ion-icon name="notifications-outline" style="font-size: 16px; color: var(--primary);"></ion-icon>
+                            </div>
+                            <span class="text-foreground" style="font-size: 0.875rem;">Get notified when gifts are reserved</span>
+                        </div>
+                    </div>
+
+                    <!-- Get Started Button -->
+                    <button type="button" id="welcomeGetStartedBtn" class="btn w-100 py-3 fw-semibold"
+                            style="background: var(--primary); color: var(--primary-foreground); border-radius: 12px; border: none;">
+                        Get Started
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section FooterSection {
+    <script>
+        // Categories with emojis
+        var categories = [
+            { emoji: "💍", label: "Wedding" },
+            { emoji: "🎂", label: "Birthday" },
+            { emoji: "🎓", label: "Graduation" },
+            { emoji: "🎊", label: "Anniversary" },
+            { emoji: "🍼", label: "Baby Shower" },
+            { emoji: "🏠", label: "Housewarming" },
+            { emoji: "🎄", label: "Christmas" },
+            { emoji: "💖", label: "Valentine's" },
+            { emoji: "🥂", label: "Retirement" },
+            { emoji: "✨", label: "Other" }
+        ];
+
+        var selectedCategory = null;
+        var createWishlistModal = null;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Dashboard loaded');
+            console.log('DEBUG - UserID: @(debugUserID?.ToString() ?? "null")');
+            console.log('DEBUG - Wishlist count: @debugWishlistCount');
+
+            // Initialize create wishlist modal
+            var createModalEl = document.getElementById('createWishlistModal');
+            if (createModalEl) {
+                createWishlistModal = new bootstrap.Modal(createModalEl);
+                console.log('Create wishlist modal initialized');
+            }
+
+            // Bind create button click
+            var createBtn = document.getElementById('createWishlistBtn');
+            if (createBtn) {
+                createBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log('Create button clicked');
+                    if (createWishlistModal) {
+                        createWishlistModal.show();
+                    }
+                });
+            }
+
+            // Render categories
+            renderCategories();
+
+            // Floating label logic
+            var inputs = document.querySelectorAll('#createWishlistForm .form-control');
+            inputs.forEach(function(input) {
+                input.addEventListener('focus', handleLabelFloat);
+                input.addEventListener('blur', handleLabelFloat);
+                input.addEventListener('input', handleLabelFloat);
+            });
+
+            // Form submission
+            var createForm = document.getElementById('createWishlistForm');
+            if (createForm) {
+                createForm.addEventListener('submit', handleCreateWishlist);
+            }
+
+            // Reset modal state when hidden
+            if (createModalEl) {
+                createModalEl.addEventListener('hidden.bs.modal', resetCreateModal);
+            }
+
+            @if (showWelcomeModal)
+            {
+                <text>
+            // Welcome modal
+            var welcomeModalEl = document.getElementById('welcomeModal');
+            var welcomeModal = new bootstrap.Modal(welcomeModalEl);
+            welcomeModal.show();
+
+            document.getElementById('welcomeGetStartedBtn').addEventListener('click', function() {
+                var btn = this;
+                btn.disabled = true;
+                btn.textContent = 'Please wait...';
+
+                fetch('/api/users/complete-onboarding', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                })
+                .then(function(response) { return response.json(); })
+                .then(function(data) {
+                    if (data.success) {
+                        // Reload page to refresh session
+                        window.location.reload();
+                    } else {
+                        btn.disabled = false;
+                        btn.textContent = 'Get Started';
+                    }
+                })
+                .catch(function(error) {
+                    console.error('Error completing onboarding:', error);
+                    btn.disabled = false;
+                    btn.textContent = 'Get Started';
+                });
+            });
+                </text>
+            }
+        });
+
+        function renderCategories() {
+            var grid = document.getElementById('categoryGrid');
+            if (!grid) return;
+
+            grid.innerHTML = categories.map(function(cat) {
+                return '<div class="col">' +
+                    '<button type="button" class="category-btn btn-squish d-flex flex-column align-items-center justify-content-center gap-1 w-100 p-2 rounded-xl position-relative" ' +
+                    'style="aspect-ratio: 1; border: 1px solid rgba(255,255,255,0.08); background: rgba(36,36,36,0.5); transition: all 0.2s ease;" ' +
+                    'onclick="selectCategory(this, \'' + cat.label + '\')">' +
+                    '<span style="font-size: 1.25rem;">' + cat.emoji + '</span>' +
+                    '<span class="text-foreground opacity-75 text-center" style="font-size: 9px; line-height: 1.1;">' + cat.label + '</span>' +
+                    '</button>' +
+                '</div>';
+            }).join('');
+        }
+
+        function selectCategory(btn, label) {
+            selectedCategory = label;
+
+            // Remove active class from all
+            document.querySelectorAll('.category-btn').forEach(function(b) {
+                b.style.background = 'rgba(36,36,36,0.5)';
+                b.style.borderColor = 'rgba(255,255,255,0.08)';
+                b.style.boxShadow = 'none';
+            });
+
+            // Add active style
+            btn.style.background = 'rgba(0, 170, 255, 0.1)';
+            btn.style.borderColor = 'var(--primary)';
+            btn.style.boxShadow = '0 0 20px rgba(0, 170, 255, 0.4)';
+
+            checkFormValidity();
+        }
+
+        function handleLabelFloat() {
+            var input = this;
+            var label = input.previousElementSibling;
+            if (!label) return;
+
+            if (input.value || document.activeElement === input) {
+                label.style.top = '20%';
+                label.style.fontSize = '0.75rem';
+                label.style.color = 'var(--primary)';
+                input.style.borderColor = 'var(--primary)';
+            } else {
+                label.style.top = '50%';
+                label.style.fontSize = '1rem';
+                label.style.color = '#8c8c8c';
+                input.style.borderColor = 'transparent';
+            }
+
+            checkFormValidity();
+        }
+
+        function checkFormValidity() {
+            var nameInput = document.getElementById('wishlistNameInput');
+            var submitBtn = document.getElementById('createSubmitBtn');
+            var name = nameInput ? nameInput.value.trim() : '';
+
+            if (name && selectedCategory) {
+                submitBtn.disabled = false;
+                submitBtn.style.opacity = '1';
+            } else {
+                submitBtn.disabled = true;
+                submitBtn.style.opacity = '0.5';
+            }
+        }
+
+        function handleCreateWishlist(e) {
+            e.preventDefault();
+
+            var nameInput = document.getElementById('wishlistNameInput');
+            var submitBtn = document.getElementById('createSubmitBtn');
+            var title = nameInput.value.trim();
+
+            if (!title || !selectedCategory) return;
+
+            // Disable button and show loading
+            submitBtn.disabled = true;
+            submitBtn.querySelector('span').textContent = 'Creating...';
+
+            fetch('/api/dashboard/create-wishlist', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    title: title,
+                    occasionType: selectedCategory
+                })
+            })
+            .then(function(response) { return response.json(); })
+            .then(function(data) {
+                if (data.success) {
+                    // Redirect to the new wishlist or reload page
+                    window.location.href = '/wishlist/' + data.giftListID;
+                } else {
+                    alert('Failed to create wishlist: ' + (data.message || 'Unknown error'));
+                    submitBtn.disabled = false;
+                    submitBtn.querySelector('span').textContent = 'Create Wishlist';
+                }
+            })
+            .catch(function(error) {
+                console.error('Error creating wishlist:', error);
+                alert('Failed to create wishlist. Please try again.');
+                submitBtn.disabled = false;
+                submitBtn.querySelector('span').textContent = 'Create Wishlist';
+            });
+        }
+
+        function resetCreateModal() {
+            var nameInput = document.getElementById('wishlistNameInput');
+            var submitBtn = document.getElementById('createSubmitBtn');
+
+            if (nameInput) {
+                nameInput.value = '';
+                var label = nameInput.previousElementSibling;
+                if (label) {
+                    label.style.top = '50%';
+                    label.style.fontSize = '1rem';
+                    label.style.color = '#8c8c8c';
+                }
+                nameInput.style.borderColor = 'transparent';
+            }
+
+            selectedCategory = null;
+            document.querySelectorAll('.category-btn').forEach(function(b) {
+                b.style.background = 'rgba(36,36,36,0.5)';
+                b.style.borderColor = 'rgba(255,255,255,0.08)';
+                b.style.boxShadow = 'none';
+            });
+
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.style.opacity = '0.5';
+                submitBtn.querySelector('span').textContent = 'Create Wishlist';
+            }
+        }
+    </script>
+}

@@ -52,7 +52,7 @@ namespace SixtyThreeBits.Web.Domain.Libraries
 
         public void DeletePreLastItem()
         {
-            if (_breadCrumbItems?.Count > 0)
+            if (_breadCrumbItems?.Count > 1)
             {
                 _breadCrumbItems.RemoveAt(_breadCrumbItems.Count - 2);
             }

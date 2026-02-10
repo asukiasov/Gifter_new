@@ -1,83 +1,62 @@
-﻿@{
+@{
     var Model = WebUtilities.GetLayoutViewModel<WebsiteLayoutViewModel>(viewData: ViewData, key: WebConstants.ViewData.LayoutViewModel);
 }
 <!DOCTYPE html>
-<html lang="en">
+<html lang="@Model.LanguageCode">
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <link rel="icon" type="image/png" href="/images/favicon.png">
     <title>@Html.Raw(Model.PageTitle.TitleHead)</title>
-    @await Html.PartialAsync(ViewNames.Shared.PluginsClient.PluginsClientHeaderPartial, Model.PluginsClient)    
-    <link href="/css/website/style.css" rel="stylesheet" />
+
+    <!-- Google Fonts - Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap 5 -->
+    <link href="~/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Gifter Design System -->
+    <link href="~/css/website/gifter.css" rel="stylesheet">
+    <link href="~/css/website/style.css" rel="stylesheet">
+
+    <!-- Ionicons -->
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 
     @RenderSection("HeaderSection", false)
     @Html.Raw(Model.ScriptsHeader)
 </head>
-<body>
+
+<body class="bg-rich-black text-foreground">
     @Html.Raw(Model.ScriptsBodyStart)
-    <div class="app">
-        <header class="app-header">
-            <nav class="navbar navbar-expand-lg bg-body-tertiary">
-                <div class="container-fluid">
-                    <a class="navbar-brand" href="/">@Html.Raw(Model.ProjectName)</a>                    
-                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                        @if (Model.HasMenu)
-                        {
-                            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                                @foreach(var item in Model.Menu)
-                                {
-                                    if(item.HasChildren)
-                                    {
-                                        <li class="nav-item dropdown">
-                                            <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown">
-                                                @Html.Raw(item.Caption)
-                                            </a>                                            
-                                            <ul class="dropdown-menu">
-                                                @foreach(var child in item.Children)
-                                                {
-                                                    @if (child.IsSelected)
-                                                    {
-                                                        <li><a class="dropdown-item active">@Html.Raw(child.Caption)</a></li>
-                                                    }
-                                                    else
-                                                    {
-                                                        <li><a class="dropdown-item" href="@Html.Raw(child.NavigateUrl)">@Html.Raw(child.Caption)</a></li>
-                                                    }
-                                                }                                                                                                
-                                            </ul>
-                                        </li>
-                                    }
-                                    else
-                                    {
-                                        if(item.IsSelected)
-                                        {
-                                            <li class="nav-item">
-                                                <a class="nav-link active">@Html.Raw(item.Caption)</a>
-                                            </li>
-                                        }
-                                        else
-                                        {
-                                            <li class="nav-item">
-                                                <a class="nav-link" href="@Html.Raw(item.NavigateUrl)">@Html.Raw(item.Caption)</a>
-                                            </li>                                            
-                                        }
-                                    }
-                                }                                                                
-                            </ul>
-                        }
-                    </div>
-                </div>
-            </nav>            
-        </header>
-        @RenderBody()
-        <footer class="app-page">
-        </footer>
+
+    <div class="ambient-light">
+        <div class="app-container">
+            <!-- Header -->
+            @await Html.PartialAsync("~/Views/Website/Shared/_HeaderPartial.cshtml", Model)
+
+            <!-- Main Content -->
+            <main class="flex-grow-1 overflow-auto hide-scrollbar px-4 pb-5">
+                @RenderBody()
+            </main>
+
+            <!-- Footer -->
+            @await Html.PartialAsync("~/Views/Website/Shared/_FooterPartial.cshtml", Model)
+        </div>
     </div>
-    @await Html.PartialAsync(ViewNames.Shared.PluginsClient.PluginsClientFooterPartial, Model.PluginsClient)
-    <script src="/js/website/layout.js"></script>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1100;"></div>
+
+    <!-- Core Scripts -->
+    <script src="~/plugins/jquery/jquery.min.js"></script>
+    <script src="~/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/website/gifter-layout.js"></script>
+    <script src="~/js/website/components.js"></script>
+
     @RenderSection("FooterSection", false)
     @Html.Raw(Model.ScriptsBodyEnd)
 </body>
+
 </html>

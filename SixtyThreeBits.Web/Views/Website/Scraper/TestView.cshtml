@@ -1,0 +1,311 @@
+@model ScraperModel.ViewModel
+
+@{
+    ViewBag.Title = "Scraper Test";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-10">
+            <!-- Header -->
+            <div class="text-center mb-5">
+                <h1 class="h2 fw-bold mb-2">
+                    <ion-icon name="globe-outline" class="me-2 text-neon-blue"></ion-icon>
+                    Scraper Test
+                </h1>
+                <p class="text-muted">Test the product scraper with any URL</p>
+            </div>
+
+            <!-- URL Input -->
+            <div class="bento-card p-4 mb-4">
+                <div class="mb-3">
+                    <label for="productUrl" class="form-label text-muted small">Product URL</label>
+                    <div class="input-group">
+                        <input type="url" id="productUrl" class="form-control form-control-lg"
+                               placeholder="https://example.com/product..." />
+                        <button class="btn btn-primary px-4" id="scrapeBtn" type="button">
+                            <ion-icon name="search-outline" class="me-1"></ion-icon>
+                            Scrape
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loading State -->
+            <div id="loadingState" class="bento-card p-5 text-center mb-4" style="display: none;">
+                <div class="spinner-border text-primary mb-3" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="text-muted mb-0">Scraping product data...</p>
+            </div>
+
+            <!-- Error State -->
+            <div id="errorState" class="bento-card p-4 mb-4" style="display: none;">
+                <div class="d-flex align-items-start gap-3">
+                    <div class="text-danger fs-3">
+                        <ion-icon name="warning-outline"></ion-icon>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h5 class="text-danger mb-2">Scraping Failed</h5>
+                        <p class="text-muted mb-0" id="errorMessage"></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scraper Console -->
+            <div id="scraperConsoleContainer" class="bento-card p-4 mb-4" style="display: none; background: #0a0a0b; border: 1px solid #1e1e24;">
+                <h5 class="mb-3 text-light d-flex align-items-center">
+                    <ion-icon name="terminal-outline" class="me-2 text-neon-blue"></ion-icon>
+                    Scraper Console
+                </h5>
+                <div id="scraperConsole" class="font-monospace small text-muted" style="max-height: 200px; overflow-y: auto;">
+                    <!-- Logs will appear here -->
+                </div>
+            </div>
+
+            <!-- Result -->
+            <div id="resultContainer" style="display: none;">
+                <div class="row g-4">
+                    <!-- Product Preview -->
+                    <div class="col-12 col-md-5">
+                        <div class="bento-card p-4 h-100">
+                            <h5 class="mb-3">
+                                <ion-icon name="image-outline" class="me-2 text-neon-blue"></ion-icon>
+                                Preview
+                            </h5>
+                            <div id="productImageContainer" class="text-center">
+                                <img id="productImage" src="" alt="Product"
+                                     class="img-fluid rounded-3"
+                                     style="max-height: 300px; object-fit: contain; display: none;" />
+                                <div id="noImagePlaceholder" class="py-5 text-muted">
+                                    <ion-icon name="image-outline" style="font-size: 3rem;"></ion-icon>
+                                    <p class="mt-2 mb-0">No image found</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product Data -->
+                    <div class="col-12 col-md-7">
+                        <div class="bento-card p-4 h-100">
+                            <h5 class="mb-3">
+                                <ion-icon name="document-text-outline" class="me-2 text-neon-blue"></ion-icon>
+                                Extracted Data
+                            </h5>
+
+                            <div class="mb-3">
+                                <label class="form-label text-muted small">Title</label>
+                                <input type="text" id="resultTitle" class="form-control" readonly />
+                            </div>
+
+                            <div class="row g-3 mb-3">
+                                <div class="col-8">
+                                    <label class="form-label text-muted small">Price</label>
+                                    <input type="text" id="resultPrice" class="form-control" readonly />
+                                </div>
+                                <div class="col-4">
+                                    <label class="form-label text-muted small">Currency</label>
+                                    <input type="text" id="resultCurrency" class="form-control" readonly />
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label text-muted small">Image URL</label>
+                                <input type="text" id="resultImageUrl" class="form-control" readonly />
+                            </div>
+
+                            <div>
+                                <label class="form-label text-muted small">Source URL</label>
+                                <input type="text" id="resultUrl" class="form-control" readonly />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Raw JSON -->
+                <div class="bento-card p-4 mt-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="mb-0">
+                            <ion-icon name="code-outline" class="me-2 text-neon-blue"></ion-icon>
+                            Raw Response
+                        </h5>
+                        <button type="button" class="btn btn-outline-secondary btn-sm" id="copyJsonBtn">
+                            <ion-icon name="copy-outline" class="me-1"></ion-icon>
+                            Copy
+                        </button>
+                    </div>
+                    <pre id="rawJson" class="bg-dark text-light p-3 rounded-3 mb-0"
+                         style="max-height: 300px; overflow: auto; font-size: 0.85rem;"></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section FooterSection {
+    <script>
+        (function () {
+            const urlInput = document.getElementById('productUrl');
+            const scrapeBtn = document.getElementById('scrapeBtn');
+            const loadingState = document.getElementById('loadingState');
+            const errorState = document.getElementById('errorState');
+            const errorMessage = document.getElementById('errorMessage');
+            const resultContainer = document.getElementById('resultContainer');
+            const scraperConsoleContainer = document.getElementById('scraperConsoleContainer');
+            const scraperConsole = document.getElementById('scraperConsole');
+
+            // Quick URL buttons
+            document.querySelectorAll('.js-quick-url').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    urlInput.value = this.dataset.url;
+                    urlInput.focus();
+                });
+            });
+
+            // Scrape button click
+            scrapeBtn.addEventListener('click', scrapeProduct);
+
+            // Enter key in input
+            urlInput.addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    scrapeProduct();
+                }
+            });
+
+            async function scrapeProduct() {
+                const url = urlInput.value.trim();
+
+                if (!url) {
+                    showError('Please enter a URL');
+                    return;
+                }
+
+                // Validate URL format
+                try {
+                    new URL(url);
+                } catch {
+                    showError('Please enter a valid URL');
+                    return;
+                }
+
+                // Show loading
+                loadingState.style.display = 'block';
+                errorState.style.display = 'none';
+                resultContainer.style.display = 'none';
+                scraperConsoleContainer.style.display = 'block';
+                scraperConsole.innerHTML = '<div class="text-neon-blue mb-1">> Starting scrape for: ' + url + '</div>';
+                scrapeBtn.disabled = true;
+                scrapeBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Scraping...';
+
+                try {
+                    const response = await fetch('/scraper/api/scrape', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ url: url })
+                    });
+
+                    const data = await response.json();
+
+                    loadingState.style.display = 'none';
+
+                    // Convert to PascalCase references if they are not already
+                    const logs = data.Logs || data.logs || [];
+                    const success = data.Success !== undefined ? data.Success : data.success;
+                    const error = data.Error || data.error;
+
+                    if (logs && logs.length > 0) {
+                        logs.forEach(log => {
+                            const logEl = document.createElement('div');
+                            logEl.className = 'mb-1';
+                            logEl.innerHTML = '<span class="text-success me-2">✔</span>' + log;
+                            scraperConsole.appendChild(logEl);
+                        });
+                        scraperConsole.scrollTop = scraperConsole.scrollHeight;
+                    }
+
+                    if (success) {
+                        showResult(data);
+                        const successEl = document.createElement('div');
+                        successEl.className = 'text-success mt-2 fw-bold';
+                        successEl.innerHTML = '> Scrape completed successfully';
+                        scraperConsole.appendChild(successEl);
+                    } else {
+                        showError(error || 'Failed to scrape product data');
+                        const errorEl = document.createElement('div');
+                        errorEl.className = 'text-danger mt-2 fw-bold';
+                        errorEl.innerHTML = '> Scrape failed: ' + (error || 'Unknown error');
+                        scraperConsole.appendChild(errorEl);
+                    }
+                } catch (error) {
+                    loadingState.style.display = 'none';
+                    showError('Network error: ' + error.message);
+                } finally {
+                    scrapeBtn.disabled = false;
+                    scrapeBtn.innerHTML = '<ion-icon name="search-outline" class="me-1"></ion-icon> Scrape';
+                }
+            }
+
+            function showError(message) {
+                errorState.style.display = 'block';
+                errorMessage.textContent = message;
+                resultContainer.style.display = 'none';
+            }
+
+            function showResult(data) {
+                errorState.style.display = 'none';
+                resultContainer.style.display = 'block';
+
+                // Handle both PascalCase (C#) and camelCase
+                const title = data.Title || data.title || '';
+                const price = data.Price !== undefined ? data.Price : data.price;
+                const currency = data.Currency || data.currency || '';
+                const imageUrl = data.ImageUrl || data.imageUrl || '';
+                const url = data.Url || data.url || '';
+
+
+                // Populate fields
+                if (document.getElementById('resultTitle')) document.getElementById('resultTitle').value = title;
+                if (document.getElementById('resultPrice')) document.getElementById('resultPrice').value = (price !== null && price !== undefined) ? Number(price).toFixed(2) : '';
+                if (document.getElementById('resultCurrency')) document.getElementById('resultCurrency').value = currency;
+                if (document.getElementById('resultImageUrl')) document.getElementById('resultImageUrl').value = imageUrl;
+                if (document.getElementById('resultUrl')) document.getElementById('resultUrl').value = url;
+
+                // Image preview
+                const productImage = document.getElementById('productImage');
+                const noImagePlaceholder = document.getElementById('noImagePlaceholder');
+
+                if (imageUrl) {
+                    productImage.src = imageUrl;
+                    productImage.style.display = 'block';
+                    noImagePlaceholder.style.display = 'none';
+
+                    productImage.onerror = function () {
+                        console.error('Failed to load image:', imageUrl);
+                        productImage.style.display = 'none';
+                        noImagePlaceholder.style.display = 'block';
+                    };
+                } else {
+                    productImage.style.display = 'none';
+                    noImagePlaceholder.style.display = 'block';
+                }
+
+                // Raw JSON
+                document.getElementById('rawJson').textContent = JSON.stringify(data, null, 2);
+            }
+
+            // Copy JSON button
+            document.getElementById('copyJsonBtn').addEventListener('click', function () {
+                const json = document.getElementById('rawJson').textContent;
+                navigator.clipboard.writeText(json).then(() => {
+                    const originalText = this.innerHTML;
+                    this.innerHTML = '<ion-icon name="checkmark-outline" class="me-1"></ion-icon> Copied!';
+                    setTimeout(() => {
+                        this.innerHTML = originalText;
+                    }, 2000);
+                });
+            });
+        })();
+    </script>
+}

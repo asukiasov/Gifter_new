@@ -3,6 +3,7 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories.DTO
     public record GiftIudDTO
     {
         #region Properties
+        public int? GiftGiftListID { get; init; }
         public string GiftTitle { get; init; }
         public string GiftDescription { get; init; }
         public decimal? GiftPrice { get; init; }

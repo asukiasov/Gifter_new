@@ -56,6 +56,8 @@ namespace SixtyThreeBits.Web.Filters.Website
         {
             _viewModel = new WebsiteLayoutViewModel();
             _viewModel.ProjectName = _model.SystemProperties.ProjectName;
+            _viewModel.LanguageCode = _model.LanguageCultureCode;
+            _viewModel.User = _model.User;
             _viewModel.ContactPhone = _model.SystemProperties.ContactPhone;
             _viewModel.ContactEmail = _model.SystemProperties.ContactEmail;
             _viewModel.ContactAddress = _model.Utilities.GetValuesByLanguage(

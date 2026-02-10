@@ -1,4 +1,5 @@
-﻿using SixtyThreeBits.Web.Domain.ViewModels.Base;
+﻿using SixtyThreeBits.Core.Infrastructure.Repositories.DTO;
+using SixtyThreeBits.Web.Domain.ViewModels.Base;
 using SixtyThreeBits.Web.Domain.ViewModels.Shared;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,11 @@ namespace SixtyThreeBits.Web.Domain.ViewModels.Website
 {
     public class WebsiteLayoutViewModel : LayoutViewModelBase
     {
-        #region Properties           
+        #region Properties
+        public UserDTO User { get; set; }
+        public bool IsAuthenticated => User != null;
+        public string LanguageCode { get; set; }
+
         public string UrlKa { get; set; }
         public string UrlEn { get; set; }
         public bool ShowUrlKa { get; set; }

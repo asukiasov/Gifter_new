@@ -16,7 +16,9 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories.DTO
         public string UserPhoneNumberMobile { get; init; }
         public string UserPersonalNumber { get; init; }
         public string UserAvatarFilename { get; init; }
+        public string UserGoogleID { get; init; }
         public bool? UserIsActive { get; init; }
+        public bool? UserIsFirstLogin { get; init; }
         #endregion
     }
 }

@@ -13,8 +13,10 @@ namespace SixtyThreeBits.Web
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
             .ConfigureWebHostDefaults(webBuilder =>
-            {                                    
+            {
                 webBuilder.UseStartup<Startup>();
+                webBuilder.UseUrls("http://localhost:5001");
+                webBuilder.UseEnvironment("Development");
             });
     }
 }

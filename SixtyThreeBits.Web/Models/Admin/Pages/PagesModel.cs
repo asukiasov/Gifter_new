@@ -45,6 +45,7 @@ namespace SixtyThreeBits.Web.Models.Admin
                 PageID = item.PageID,
                 PageTitle = item.PageTitle,
                 PageTitleEng = item.PageTitleEng,
+                PageSlug = item.PageSlug,
                 PageIsPublished = item.PageIsPublished,
                 PageDateCreated = item.PageDateCreated,
                 UrlProperties = Url.RouteUrl(ControllerActionRouteNames.Admin.PagePropertiesController.Properties, new { pageID = item.PageID })
@@ -142,7 +143,9 @@ namespace SixtyThreeBits.Web.Models.Admin
                         {
                             options.AddRequired();
                         });
-                        columns.AddFor(m => m.PageTitleEng).Caption(Resources.TextTitleEng).Width(300);                        
+                        columns.AddFor(m => m.PageTitleEng).Caption(Resources.TextTitleEng).Width(300);      
+                        columns.AddFor(m => m.PageSlug).Caption("Slug").Width(200);
+                  
                         columns.AddFor(m => m.PageIsPublished).Caption(Resources.TextPublished).Width(100).InitCheckboxColumn();
                         columns.AddFor(m => m.PageDateCreated).Caption(Resources.TextDateCreated).Width(140).InitDateColumn(format: DevExtremeExtensions63.DateColumnFormat.DateTime).AllowEditing(false);
                         columns.Add();

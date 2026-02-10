@@ -16,6 +16,7 @@
                     #region Properties
                     public const string UserLayout = "~/Views/Admin/Users/User/UserLayout.cshtml";
                     public const string UserPropertiesView = "~/Views/Admin/Users/User/UserPropertiesView.cshtml";
+                    public const string UserFollowersView = "~/Views/Admin/Users/User/UserFollowersView.cshtml";
                     #endregion
                 }
                 #endregion

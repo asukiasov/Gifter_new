@@ -1,0 +1,2 @@
+ALTER TABLE [dbo].[Users]
+ADD [UserGoogleID] NVARCHAR(255) NULL;

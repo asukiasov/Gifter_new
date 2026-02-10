@@ -3,27 +3,28 @@
 This document outlines the steps required to build and stabilize the Admin Panel for the Gifter project.
 
 ## 1. Authentication & Authorization Stability
-The infrastructure for authentication is in place, but needs verification and minor fixes to ensure stability.
-- [ ] **Verification**: Confirm `AdminFilterAttribute` correctly redirects unauthenticated users to `/admin/login`.
-- [ ] **Fix**: Ensure `AuthController` correctly handles session persistence and cookie encryption for "Remember Me".
-- [ ] **Permissions**: Verify that the `hasUserPermission()` logic in `AdminFilterAttribute` correctly maps routes to the `Permissions` table in the database.
+The infrastructure for authentication is in place.
+- [x] **Verification**: `AdminFilterAttribute` correctly redirects unauthenticated users to `/admin/login`
+- [x] **Session**: `AuthController` handles session persistence and cookie encryption for "Remember Me"
+- [x] **Permissions**: `hasUserPermission()` logic in `AdminFilterAttribute` correctly maps routes to `Permissions` table via regex matching
 
 ## 2. Initial System Setup (Superadmin)
-To access the admin panel, a superadmin user must exist in the database with appropriate permissions.
-- [ ] **DB Script**: Create a SQL script to insert a superadmin user:
-  - **Email**: `admin@gifter.ge` (Example)
-  - **Password**: `asdf` (To be hashed/stored as per project standards)
-  - **Role**: Admin
-- [ ] **Permissions Seeding**: Ensure the `Permissions` table is populated with all admin routes and linked to the Admin role.
+Superadmin user exists in the database with appropriate permissions.
+- [x] **DB Script**: Admin user created via `SetupController.SeedAdmin()` endpoint
+  - **Email**: `admin@gifter.com`
+  - **Password**: `asdf`
+  - **Role**: Admin (RoleID = 1)
+- [x] **Permissions Seeding**: All admin routes populated in `Permissions` table and linked to Admin role via `RolesPermissions`
 
 ## 3. Users Management (Grid + CRUD)
 Manage system users, their roles, and status.
-- [ ] **Grid Implementation**: Use DevExtreme Grid in `/Admin/Users/Index` view.
-- [ ] **Repository Integration**: Connect grid to `UsersRepository.UsersList()`.
-- [ ] **CRUD Operations**:
-  - [ ] Implement **Create** using `UsersIUD` stored procedure.
-  - [ ] Implement **Update** with validation (unique email check).
-  - [ ] Implement **Delete/Deactivate** functionality.
+- [x] **Grid Implementation**: DevExtreme Grid at `/admin/users` via `UsersController`
+- [x] **Repository Integration**: Connected to `UsersRepository.UsersList()`
+- [x] **CRUD Operations**:
+  - [x] **Create** using `UsersIUD` stored procedure (GridAdd action)
+  - [x] **Update** with email uniqueness validation (GridUpdate action)
+  - [x] **Delete** with avatar cleanup (GridDelete action)
+- [x] **Verified**: Grid loads, CRUD operations work, role dropdown populated
 
 ## 4. Orders Dashboard (Read-only Grid)
 Activity log grid showing all tracked user actions across the platform.
@@ -56,6 +57,15 @@ All gifts across all wishlists — admin overview with inline edit and delete. C
 - [x] **Verified**: Grid loads and displays gifts with Update/Delete buttons
 - [ ] **Pending**: Test Update and Delete end-to-end; investigate empty Owner column (possible NULL in TVF join)
 
+## 8. User Followers Tab (Read-only Grid)
+Displays users who follow a specific user. Accessible as a tab on the User detail page.
+- [x] **Controller**: `UserFollowersController` at `/admin/users/{userID}/followers` with `Followers` (page) and `FollowersGrid` (AJAX data) actions
+- [x] **Repository**: Uses existing `FollowersRepository.FollowersMyFollowers()` method connected to `dbo.FollowersMyFollowers` TVF
+- [x] **Grid**: DevExtreme DataGrid — read-only (no Add/Edit/Delete)
+- [x] **Columns**: #, Follower (fullname), Email, Since (date)
+- [x] **Permissions**: Tab permission seeded with `PermissionCodeName = 'AdminUserFollowersControllerFollowers'`, `PermissionParentID` pointing to User permission, `PermissionIsMenuItem = 1`
+- [x] **Verified**: Tab appears on User detail page, grid loads and displays followers
+
 ---
-**Status:** ✅ Sections 4, 5, and 7 complete; Section 6 (Products) deprecated
-**Target Completion:** TBD
+**Status:** ✅ Sections 1, 2, 3, 4, 5, 7, and 8 complete; Section 6 (Products) deprecated
+**Target Completion:** Complete

@@ -1,10 +1,13 @@
 -- 002_seed_permissions.sql
 -- Idempotent script to insert key admin Permissions (page & catch-all entries).
--- Expanded to cover all detected admin controllers.
+-- Updated: 2026-02-04 — Restructured admin sidebar menu with groups and sort order
 
 SET XACT_ABORT ON;
 BEGIN TRY
-    -- Dashboard
+
+    -----------------------------------------------------------------------
+    -- 1. Dashboard
+    -----------------------------------------------------------------------
     IF NOT EXISTS (SELECT 1 FROM Permissions WHERE PermissionPagePath = '/admin')
     BEGIN
         INSERT INTO Permissions (PermissionPagePath, PermissionCode, PermissionCaption, PermissionIsMenuItem, PermissionMenuIcon)
@@ -23,7 +26,61 @@ BEGIN TRY
     ELSE
         PRINT '/admin/. permission exists';
 
-    -- Users
+    -----------------------------------------------------------------------
+    -- 2. System (parent group)
+    -----------------------------------------------------------------------
+    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE PermissionCode = 'ADMIN_SYSTEM')
+    BEGIN
+        INSERT INTO Permissions (PermissionPagePath, PermissionCode, PermissionCaption, PermissionIsMenuItem, PermissionMenuIcon)
+        VALUES (NULL, 'ADMIN_SYSTEM', 'System', 1, 'mdi-cogs');
+        PRINT 'Inserted ADMIN_SYSTEM permission (System group)';
+    END
+    ELSE
+        PRINT 'ADMIN_SYSTEM permission exists';
+
+    -- 2.1 System Properties
+    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE PermissionPagePath = '/admin/systemproperties')
+    BEGIN
+        INSERT INTO Permissions (PermissionPagePath, PermissionCode, PermissionCaption, PermissionIsMenuItem, PermissionMenuIcon)
+        VALUES ('/admin/systemproperties', 'ADMIN_SYSTEM_PROPERTIES', 'System Properties', 1, 'mdi-cog');
+        PRINT 'Inserted /admin/systemproperties permission';
+    END
+    ELSE
+        PRINT '/admin/systemproperties permission exists';
+
+    -- 2.2 Dictionaries
+    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE PermissionPagePath = '/admin/dictionaries')
+    BEGIN
+        INSERT INTO Permissions (PermissionPagePath, PermissionCode, PermissionCaption, PermissionIsMenuItem, PermissionMenuIcon)
+        VALUES ('/admin/dictionaries', 'ADMIN_DICTIONARIES', 'Dictionaries', 1, 'mdi-dictionary');
+        PRINT 'Inserted /admin/dictionaries permission';
+    END
+    ELSE
+        PRINT '/admin/dictionaries permission exists';
+
+    -- 2.3 Error Log
+    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE PermissionPagePath = '/admin/errorlog')
+    BEGIN
+        INSERT INTO Permissions (PermissionPagePath, PermissionCode, PermissionCaption, PermissionIsMenuItem, PermissionMenuIcon)
+        VALUES ('/admin/errorlog', 'ADMIN_ERROR_LOG', 'Error Log', 1, 'mdi-bug');
+        PRINT 'Inserted /admin/errorlog permission';
+    END
+    ELSE
+        PRINT '/admin/errorlog permission exists';
+
+    -----------------------------------------------------------------------
+    -- 3. Roles & Permissions (parent group)
+    -----------------------------------------------------------------------
+    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE PermissionCode = 'ADMIN_USERS_MANAGEMENT')
+    BEGIN
+        INSERT INTO Permissions (PermissionPagePath, PermissionCode, PermissionCaption, PermissionIsMenuItem, PermissionMenuIcon)
+        VALUES (NULL, 'ADMIN_USERS_MANAGEMENT', 'Roles & Permissions', 1, 'mdi-shield-account');
+        PRINT 'Inserted ADMIN_USERS_MANAGEMENT permission (Roles & Permissions group)';
+    END
+    ELSE
+        PRINT 'ADMIN_USERS_MANAGEMENT permission exists';
+
+    -- 3.1 Users (child of Roles & Permissions)
     IF NOT EXISTS (SELECT 1 FROM Permissions WHERE PermissionPagePath = '/admin/users')
     BEGIN
         INSERT INTO Permissions (PermissionPagePath, PermissionCode, PermissionCaption, PermissionIsMenuItem, PermissionMenuIcon)
@@ -42,7 +99,7 @@ BEGIN TRY
     ELSE
         PRINT '/admin/users/. permission exists';
 
-    -- Roles & Permissions
+    -- 3.2 Roles (child of Roles & Permissions)
     IF NOT EXISTS (SELECT 1 FROM Permissions WHERE PermissionPagePath = '/admin/roles')
     BEGIN
         INSERT INTO Permissions (PermissionPagePath, PermissionCode, PermissionCaption, PermissionIsMenuItem, PermissionMenuIcon)
@@ -52,6 +109,7 @@ BEGIN TRY
     ELSE
         PRINT '/admin/roles permission exists';
 
+    -- 3.3 Permissions (child of Roles & Permissions)
     IF NOT EXISTS (SELECT 1 FROM Permissions WHERE PermissionPagePath = '/admin/permissions')
     BEGIN
         INSERT INTO Permissions (PermissionPagePath, PermissionCode, PermissionCaption, PermissionIsMenuItem, PermissionMenuIcon)
@@ -61,6 +119,7 @@ BEGIN TRY
     ELSE
         PRINT '/admin/permissions permission exists';
 
+    -- Roles & Permissions page (hidden, access control only)
     IF NOT EXISTS (SELECT 1 FROM Permissions WHERE PermissionPagePath = '/admin/rolespermissions')
     BEGIN
         INSERT INTO Permissions (PermissionPagePath, PermissionCode, PermissionCaption, PermissionIsMenuItem, PermissionMenuIcon)
@@ -70,12 +129,14 @@ BEGIN TRY
     ELSE
         PRINT '/admin/rolespermissions permission exists';
 
-    -- Orders
+    -----------------------------------------------------------------------
+    -- 4. Activity Log (was "Orders")
+    -----------------------------------------------------------------------
     IF NOT EXISTS (SELECT 1 FROM Permissions WHERE PermissionPagePath = '/admin/orders')
     BEGIN
         INSERT INTO Permissions (PermissionPagePath, PermissionCode, PermissionCaption, PermissionIsMenuItem, PermissionMenuIcon)
-        VALUES ('/admin/orders', 'ADMIN_ORDERS', 'Orders', 1, 'mdi-cart');
-        PRINT 'Inserted /admin/orders permission';
+        VALUES ('/admin/orders', 'ADMIN_ORDERS', 'Activity Log', 1, 'mdi-history');
+        PRINT 'Inserted /admin/orders permission (Activity Log)';
     END
     ELSE
         PRINT '/admin/orders permission exists';
@@ -83,13 +144,15 @@ BEGIN TRY
     IF NOT EXISTS (SELECT 1 FROM Permissions WHERE PermissionPagePath = '/admin/orders/.')
     BEGIN
         INSERT INTO Permissions (PermissionPagePath, PermissionCode, PermissionCaption, PermissionIsMenuItem, PermissionMenuIcon)
-        VALUES ('/admin/orders/.', 'ADMIN_ORDERS_CATCHALL', 'Orders (catch-all)', 0, NULL);
+        VALUES ('/admin/orders/.', 'ADMIN_ORDERS_CATCHALL', 'Activity Log (catch-all)', 0, NULL);
         PRINT 'Inserted /admin/orders/. permission (catch-all)';
     END
     ELSE
         PRINT '/admin/orders/. permission exists';
 
-    -- GiftLists
+    -----------------------------------------------------------------------
+    -- 5. Gift Lists
+    -----------------------------------------------------------------------
     IF NOT EXISTS (SELECT 1 FROM Permissions WHERE PermissionPagePath = '/admin/giftlists')
     BEGIN
         INSERT INTO Permissions (PermissionPagePath, PermissionCode, PermissionCaption, PermissionIsMenuItem, PermissionMenuIcon)
@@ -108,7 +171,9 @@ BEGIN TRY
     ELSE
         PRINT '/admin/giftlists/. permission exists';
 
-    -- Gifts
+    -----------------------------------------------------------------------
+    -- 6. Gifts
+    -----------------------------------------------------------------------
     IF NOT EXISTS (SELECT 1 FROM Permissions WHERE PermissionPagePath = '/admin/gifts')
     BEGIN
         INSERT INTO Permissions (PermissionPagePath, PermissionCode, PermissionCaption, PermissionIsMenuItem, PermissionMenuIcon)
@@ -127,11 +192,25 @@ BEGIN TRY
     ELSE
         PRINT '/admin/gifts/. permission exists';
 
-    -- CMS: Pages, Redirects, Menu
+    -----------------------------------------------------------------------
+    -- Hidden permissions (not in sidebar but still needed for access control)
+    -----------------------------------------------------------------------
+
+    -- Page Management
+    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE PermissionPagePath = '/admin/page-management')
+    BEGIN
+        INSERT INTO Permissions (PermissionPagePath, PermissionCode, PermissionCaption, PermissionIsMenuItem, PermissionMenuIcon)
+        VALUES ('/admin/page-management', 'ADMIN_PAGE_MANAGEMENT', 'Page Management', 0, NULL);
+        PRINT 'Inserted /admin/page-management permission';
+    END
+    ELSE
+        PRINT '/admin/page-management permission exists';
+
+    -- CMS: Pages
     IF NOT EXISTS (SELECT 1 FROM Permissions WHERE PermissionPagePath = '/admin/pages')
     BEGIN
         INSERT INTO Permissions (PermissionPagePath, PermissionCode, PermissionCaption, PermissionIsMenuItem, PermissionMenuIcon)
-        VALUES ('/admin/pages', 'ADMIN_PAGES', 'Pages (CMS)', 1, 'mdi-file-document');
+        VALUES ('/admin/pages', 'ADMIN_PAGES', 'Pages (CMS)', 0, 'mdi-file-document');
         PRINT 'Inserted /admin/pages permission';
     END
     ELSE
@@ -146,82 +225,37 @@ BEGIN TRY
     ELSE
         PRINT '/admin/pages/. permission exists';
 
+    -- CMS: Redirects
     IF NOT EXISTS (SELECT 1 FROM Permissions WHERE PermissionPagePath = '/admin/redirects')
     BEGIN
         INSERT INTO Permissions (PermissionPagePath, PermissionCode, PermissionCaption, PermissionIsMenuItem, PermissionMenuIcon)
-        VALUES ('/admin/redirects', 'ADMIN_REDIRECTS', 'Redirects', 1, 'mdi-share-variant');
+        VALUES ('/admin/redirects', 'ADMIN_REDIRECTS', 'Redirects', 0, 'mdi-share-variant');
         PRINT 'Inserted /admin/redirects permission';
     END
     ELSE
         PRINT '/admin/redirects permission exists';
 
-    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE PermissionPagePath = '/admin/menuheader')
+    -- CMS: Menu Header
+    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE PermissionPagePath = '/admin/menu-header')
     BEGIN
         INSERT INTO Permissions (PermissionPagePath, PermissionCode, PermissionCaption, PermissionIsMenuItem, PermissionMenuIcon)
-        VALUES ('/admin/menuheader', 'ADMIN_MENU_HEADER', 'Menu Header', 0, NULL);
-        PRINT 'Inserted /admin/menuheader permission';
+        VALUES ('/admin/menu-header', 'ADMIN_MENU_HEADER', 'Menu Header', 0, NULL);
+        PRINT 'Inserted /admin/menu-header permission';
     END
     ELSE
-        PRINT '/admin/menuheader permission exists';
+        PRINT '/admin/menu-header permission exists';
 
-    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE PermissionPagePath = '/admin/menufooter')
+    -- CMS: Menu Footer
+    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE PermissionPagePath = '/admin/menu-footer')
     BEGIN
         INSERT INTO Permissions (PermissionPagePath, PermissionCode, PermissionCaption, PermissionIsMenuItem, PermissionMenuIcon)
-        VALUES ('/admin/menufooter', 'ADMIN_MENU_FOOTER', 'Menu Footer', 0, NULL);
-        PRINT 'Inserted /admin/menufooter permission';
+        VALUES ('/admin/menu-footer', 'ADMIN_MENU_FOOTER', 'Menu Footer', 0, NULL);
+        PRINT 'Inserted /admin/menu-footer permission';
     END
     ELSE
-        PRINT '/admin/menufooter permission exists';
+        PRINT '/admin/menu-footer permission exists';
 
-    -- Products and categories
-    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE PermissionPagePath = '/admin/products')
-    BEGIN
-        INSERT INTO Permissions (PermissionPagePath, PermissionCode, PermissionCaption, PermissionIsMenuItem, PermissionMenuIcon)
-        VALUES ('/admin/products', 'ADMIN_PRODUCTS', 'Products', 1, 'mdi-package-variant');
-        PRINT 'Inserted /admin/products permission';
-    END
-    ELSE
-        PRINT '/admin/products permission exists';
-
-    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE PermissionPagePath = '/admin/productcategories')
-    BEGIN
-        INSERT INTO Permissions (PermissionPagePath, PermissionCode, PermissionCaption, PermissionIsMenuItem, PermissionMenuIcon)
-        VALUES ('/admin/productcategories', 'ADMIN_PRODUCT_CATEGORIES', 'Product Categories', 1, 'mdi-shape');
-        PRINT 'Inserted /admin/productcategories permission';
-    END
-    ELSE
-        PRINT '/admin/productcategories permission exists';
-
-    -- Brands
-    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE PermissionPagePath = '/admin/brands')
-    BEGIN
-        INSERT INTO Permissions (PermissionPagePath, PermissionCode, PermissionCaption, PermissionIsMenuItem, PermissionMenuIcon)
-        VALUES ('/admin/brands', 'ADMIN_BRANDS', 'Brands', 1, 'mdi-tag');
-        PRINT 'Inserted /admin/brands permission';
-    END
-    ELSE
-        PRINT '/admin/brands permission exists';
-
-    -- News & Blog
-    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE PermissionPagePath = '/admin/news')
-    BEGIN
-        INSERT INTO Permissions (PermissionPagePath, PermissionCode, PermissionCaption, PermissionIsMenuItem, PermissionMenuIcon)
-        VALUES ('/admin/news', 'ADMIN_NEWS', 'News', 1, 'mdi-newspaper-variant');
-        PRINT 'Inserted /admin/news permission';
-    END
-    ELSE
-        PRINT '/admin/news permission exists';
-
-    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE PermissionPagePath = '/admin/blog')
-    BEGIN
-        INSERT INTO Permissions (PermissionPagePath, PermissionCode, PermissionCaption, PermissionIsMenuItem, PermissionMenuIcon)
-        VALUES ('/admin/blog', 'ADMIN_BLOG', 'Blog Posts', 1, 'mdi-rss');
-        PRINT 'Inserted /admin/blog permission';
-    END
-    ELSE
-        PRINT '/admin/blog permission exists';
-
-    -- Email templates & system props
+    -- Email Templates
     IF NOT EXISTS (SELECT 1 FROM Permissions WHERE PermissionPagePath = '/admin/emailtemplates')
     BEGIN
         INSERT INTO Permissions (PermissionPagePath, PermissionCode, PermissionCaption, PermissionIsMenuItem, PermissionMenuIcon)
@@ -231,16 +265,7 @@ BEGIN TRY
     ELSE
         PRINT '/admin/emailtemplates permission exists';
 
-    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE PermissionPagePath = '/admin/systemproperties')
-    BEGIN
-        INSERT INTO Permissions (PermissionPagePath, PermissionCode, PermissionCaption, PermissionIsMenuItem, PermissionMenuIcon)
-        VALUES ('/admin/systemproperties', 'ADMIN_SYSTEM_PROPERTIES', 'System Properties', 0, 'mdi-cog');
-        PRINT 'Inserted /admin/systemproperties permission';
-    END
-    ELSE
-        PRINT '/admin/systemproperties permission exists';
-
-    -- File manager
+    -- File Manager
     IF NOT EXISTS (SELECT 1 FROM Permissions WHERE PermissionPagePath = '/admin/filemanager')
     BEGIN
         INSERT INTO Permissions (PermissionPagePath, PermissionCode, PermissionCaption, PermissionIsMenuItem, PermissionMenuIcon)
@@ -250,33 +275,68 @@ BEGIN TRY
     ELSE
         PRINT '/admin/filemanager permission exists';
 
-    -- Dictionaries, TeamMembers, ErrorLog
-    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE PermissionPagePath = '/admin/dictionaries')
-    BEGIN
-        INSERT INTO Permissions (PermissionPagePath, PermissionCode, PermissionCaption, PermissionIsMenuItem, PermissionMenuIcon)
-        VALUES ('/admin/dictionaries', 'ADMIN_DICTIONARIES', 'Dictionaries', 0, 'mdi-dictionary');
-        PRINT 'Inserted /admin/dictionaries permission';
-    END
-    ELSE
-        PRINT '/admin/dictionaries permission exists';
+    -----------------------------------------------------------------------
+    -- Normalize legacy parent codes
+    -- Old databases have parent groups with PermissionCode = '#'.
+    -- Give them proper codes so INSERT checks and UPDATE targeting work.
+    -- Safe no-op on fresh databases (no '#' entries exist).
+    -----------------------------------------------------------------------
+    UPDATE Permissions SET PermissionCode = 'ADMIN_SYSTEM'
+    WHERE PermissionCode = '#' AND PermissionCaption = 'System' AND PermissionPagePath IS NULL;
 
-    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE PermissionPagePath = '/admin/teammembers')
-    BEGIN
-        INSERT INTO Permissions (PermissionPagePath, PermissionCode, PermissionCaption, PermissionIsMenuItem, PermissionMenuIcon)
-        VALUES ('/admin/teammembers', 'ADMIN_TEAM_MEMBERS', 'Team Members', 0, 'mdi-account-group');
-        PRINT 'Inserted /admin/teammembers permission';
-    END
-    ELSE
-        PRINT '/admin/teammembers permission exists';
+    UPDATE Permissions SET PermissionCode = 'ADMIN_USERS_MANAGEMENT'
+    WHERE PermissionCode = '#' AND PermissionCaption = 'Roles & Permissions' AND PermissionPagePath IS NULL;
 
-    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE PermissionPagePath = '/admin/errorlog')
+    -----------------------------------------------------------------------
+    -- Menu structure: sort order, parent-child, visibility
+    -- Only runs on FRESH databases (no legacy paths like /admin/system-properties).
+    -- Legacy databases are structured by 004_fix_menu_structure.sql instead.
+    -----------------------------------------------------------------------
+    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE PermissionPagePath = '/admin/system-properties')
     BEGIN
-        INSERT INTO Permissions (PermissionPagePath, PermissionCode, PermissionCaption, PermissionIsMenuItem, PermissionMenuIcon)
-        VALUES ('/admin/errorlog', 'ADMIN_ERROR_LOG', 'Error Log', 0, 'mdi-bug');
-        PRINT 'Inserted /admin/errorlog permission';
+        -- 1. Dashboard (top-level, sort=1)
+        UPDATE Permissions SET PermissionSortIndex = 1, PermissionParentID = NULL, PermissionIsMenuItem = 1, PermissionMenuIcon = 'mdi-view-dashboard' WHERE PermissionCode = 'ADMIN_DASHBOARD';
+
+        -- 2. System group (top-level, sort=2)
+        UPDATE Permissions SET PermissionSortIndex = 2, PermissionParentID = NULL, PermissionIsMenuItem = 1, PermissionMenuIcon = 'mdi-cogs', PermissionCaption = 'System' WHERE PermissionCode = 'ADMIN_SYSTEM';
+
+        -- 2.1 System Properties (child of System)
+        UPDATE Permissions SET PermissionSortIndex = 1, PermissionParentID = (SELECT PermissionID FROM Permissions WHERE PermissionCode = 'ADMIN_SYSTEM'), PermissionIsMenuItem = 1 WHERE PermissionCode = 'ADMIN_SYSTEM_PROPERTIES';
+        -- 2.2 Dictionaries (child of System)
+        UPDATE Permissions SET PermissionSortIndex = 2, PermissionParentID = (SELECT PermissionID FROM Permissions WHERE PermissionCode = 'ADMIN_SYSTEM'), PermissionIsMenuItem = 1 WHERE PermissionCode = 'ADMIN_DICTIONARIES';
+        -- 2.3 Error Log (child of System)
+        UPDATE Permissions SET PermissionSortIndex = 3, PermissionParentID = (SELECT PermissionID FROM Permissions WHERE PermissionCode = 'ADMIN_SYSTEM'), PermissionIsMenuItem = 1 WHERE PermissionCode = 'ADMIN_ERROR_LOG';
+
+        -- 3. Roles & Permissions group (top-level, sort=3)
+        UPDATE Permissions SET PermissionSortIndex = 3, PermissionParentID = NULL, PermissionIsMenuItem = 1, PermissionMenuIcon = 'mdi-shield-account', PermissionCaption = 'Roles & Permissions' WHERE PermissionCode = 'ADMIN_USERS_MANAGEMENT';
+
+        -- 3.1 Users (child of Roles & Permissions)
+        UPDATE Permissions SET PermissionSortIndex = 1, PermissionParentID = (SELECT PermissionID FROM Permissions WHERE PermissionCode = 'ADMIN_USERS_MANAGEMENT'), PermissionIsMenuItem = 1 WHERE PermissionCode = 'ADMIN_USERS';
+        -- 3.2 Roles (child of Roles & Permissions)
+        UPDATE Permissions SET PermissionSortIndex = 2, PermissionParentID = (SELECT PermissionID FROM Permissions WHERE PermissionCode = 'ADMIN_USERS_MANAGEMENT'), PermissionIsMenuItem = 1 WHERE PermissionCode = 'ADMIN_ROLES';
+        -- 3.3 Permissions (child of Roles & Permissions)
+        UPDATE Permissions SET PermissionSortIndex = 3, PermissionParentID = (SELECT PermissionID FROM Permissions WHERE PermissionCode = 'ADMIN_USERS_MANAGEMENT'), PermissionIsMenuItem = 1 WHERE PermissionCode = 'ADMIN_PERMISSIONS';
+        -- 3.4 Roles-Permissions (child of Roles & Permissions)
+        UPDATE Permissions SET PermissionSortIndex = 4, PermissionParentID = (SELECT PermissionID FROM Permissions WHERE PermissionCode = 'ADMIN_USERS_MANAGEMENT'), PermissionIsMenuItem = 1 WHERE PermissionCode = 'ADMIN_ROLES_PERMISSIONS';
+
+        -- 4. Activity Log (top-level, sort=4)
+        UPDATE Permissions SET PermissionSortIndex = 4, PermissionParentID = NULL, PermissionIsMenuItem = 1, PermissionMenuIcon = 'mdi-history' WHERE PermissionCode = 'ADMIN_ORDERS';
+
+        -- 5. Gift Lists (top-level, sort=5)
+        UPDATE Permissions SET PermissionSortIndex = 5, PermissionParentID = NULL, PermissionIsMenuItem = 1, PermissionMenuIcon = 'mdi-format-list-bulleted' WHERE PermissionCode = 'ADMIN_GIFTLISTS';
+
+        -- 6. Gifts (top-level, sort=6)
+        UPDATE Permissions SET PermissionSortIndex = 6, PermissionParentID = NULL, PermissionIsMenuItem = 1, PermissionMenuIcon = 'mdi-gift' WHERE PermissionCode = 'ADMIN_GIFTS';
+
+        -- Hidden items: NOT in the sidebar (access control only)
+        UPDATE Permissions SET PermissionIsMenuItem = 0 WHERE PermissionCode = 'ADMIN_PAGES';
+        UPDATE Permissions SET PermissionIsMenuItem = 0 WHERE PermissionCode = 'ADMIN_REDIRECTS';
+        UPDATE Permissions SET PermissionIsMenuItem = 0 WHERE PermissionCode = 'ADMIN_PAGE_MANAGEMENT';
+
+        PRINT 'Menu structure updated successfully (fresh database)';
     END
     ELSE
-        PRINT '/admin/errorlog permission exists';
+        PRINT 'Legacy database detected — menu structure managed by 004_fix_menu_structure.sql';
 
 END TRY
 BEGIN CATCH

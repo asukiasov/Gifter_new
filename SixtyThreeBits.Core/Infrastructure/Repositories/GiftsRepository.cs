@@ -45,6 +45,34 @@ namespace SixtyThreeBits.Core.Infrastructure.Repositories
             return result;
         }
 
+        public async Task<List<GiftsListDTO>> GiftsListByGiftListID(int giftListID)
+        {
+            var result = await TryToReturnAsyncTask(
+                logString: $"{nameof(GiftsListByGiftListID)}({nameof(giftListID)} = {giftListID})",
+                asyncFuncToTry: async () =>
+                {
+                    using (var dbContext = _dbContextFactory.CreateDbContext())
+                    {
+                        var sqb = new SqlQueryBuilder(
+                            dbContext: dbContext,
+                            databaseObjectName: nameof(GiftsListByGiftListID),
+                            sqlParameters:
+                            [
+                                giftListID.ToSqlParameter(SqlDbType.Int)
+                            ]
+                        );
+
+                        var resultQueryable = sqb.ExecuteTableValuedFunction<GiftsListDTO>();
+                        resultQueryable = resultQueryable.OrderByDescending(item => item.GiftDateCreated);
+                        var result = await resultQueryable.ToListAsync();
+
+                        return result;
+                    }
+                }
+            );
+            return result;
+        }
+
         public async Task<int?> GiftsIUD(Enums.DatabaseActions databaseAction, int? giftID, GiftIudDTO gift)
         {
             var giftJson = gift.ToJson();

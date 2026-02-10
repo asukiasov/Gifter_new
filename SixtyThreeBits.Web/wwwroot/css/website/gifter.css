@@ -1,0 +1,450 @@
+/* Gifter Design System - Ultra Modern Dark Theme */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+    /* Core Dark Palette */
+    --background: #080808;
+    /* 0 0% 3% in HSL is roughly #080808 */
+    --foreground: #fafafa;
+
+    /* Card surfaces */
+    --card: #1a1a1a;
+    --card-foreground: #fafafa;
+
+    --popover: #1a1a1a;
+    --popover-foreground: #fafafa;
+
+    /* Neon Blue Accent - HSL(200, 100%, 50%) is #00aaff */
+    --primary: #00aaff;
+    --primary-foreground: #080808;
+
+    --secondary: #242424;
+    --secondary-foreground: #fafafa;
+
+    --muted: #2e2e2e;
+    --muted-foreground: #8c8c8c;
+
+    --accent: #cd32ff;
+    /* HSL(280, 60%, 50%) */
+    --accent-foreground: #fafafa;
+
+    --destructive: #ff5050;
+    --destructive-foreground: #fafafa;
+
+    /* Borders & Inputs */
+    --border: rgba(255, 255, 255, 0.05);
+    --input: rgba(255, 255, 255, 0.08);
+    --ring: #00aaff;
+
+    --radius: 1.75rem;
+
+    /* Custom Gifter tokens */
+    --rich-black: #0d0d0d;
+    --deep-obsidian: #1a1a1a;
+    --glass-bg: rgba(20, 20, 20, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    /* 0 0% 100% / 0.08 */
+    --neon-blue: #00aaff;
+    --neon-blue-glow: rgba(0, 170, 255, 0.4);
+    --ambient-purple: rgba(205, 50, 255, 0.15);
+    --match-gradient-start: #16cf8c;
+    --match-gradient-end: #00aaff;
+}
+
+body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    margin: 0;
+    padding: 0;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* Glassmorphism */
+.glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid var(--glass-border);
+}
+
+/* Bento Card */
+.bento-card {
+    background: var(--deep-obsidian);
+    border-radius: 28px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+        box-shadow 0.3s ease;
+}
+
+.bento-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.5);
+}
+
+/* Neon glow border for active state */
+.neon-border-active {
+    box-shadow: 0 0 0 2px var(--neon-blue),
+        0 0 20px var(--neon-blue-glow);
+}
+
+/* Match rate gradient badge */
+.match-badge {
+    background: linear-gradient(135deg,
+            var(--match-gradient-start),
+            var(--match-gradient-end));
+}
+
+/* Inner glow for input */
+.inner-glow {
+    box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.05),
+        inset 0 0 20px rgba(0, 170, 255, 0.05);
+}
+
+/* Ambient light background */
+.ambient-light {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.ambient-light::before {
+    content: '';
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 800px;
+    height: 800px;
+    background: radial-gradient(circle,
+            var(--ambient-purple) 0%,
+            rgba(0, 170, 255, 0.03) 30%,
+            transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Button squish effect */
+.btn-squish {
+    transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
+    cursor: pointer;
+    border: none;
+    outline: none;
+    background: transparent;
+}
+
+.btn-squish:active {
+    transform: scale(0.95);
+}
+
+/* App container shadow */
+.app-container {
+    box-shadow: 0 0 80px 20px rgba(0, 0, 0, 0.8),
+        0 0 120px 40px rgba(205, 50, 255, 0.05);
+    width: 100%;
+    max-width: 550px;
+    min-height: 90vh;
+    background-color: var(--rich-black);
+    border-radius: 32px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Scrollbar styling */
+.hide-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* Utilities */
+.text-thin {
+    font-weight: 300;
+    letter-spacing: 0.02em;
+}
+
+.text-foreground {
+    color: var(--foreground);
+}
+
+.text-muted-foreground {
+    color: var(--muted-foreground);
+}
+
+.bg-rich-black {
+    background-color: var(--rich-black);
+}
+
+/* Tailwind-like utilities mapped */
+.gap-2 {
+    gap: 0.5rem;
+}
+
+.gap-3 {
+    gap: 0.75rem;
+}
+
+.gap-4 {
+    gap: 1rem;
+}
+
+.rounded-xl {
+    border-radius: 0.75rem;
+}
+
+.rounded-2xl {
+    border-radius: 1rem;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+/* Custom implementation for CreateWishlistButton pulse */
+.animate-pulse-glow {
+    animation: pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse-glow {
+
+    0%,
+    100% {
+        opacity: 0.7;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
+
+.animate-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: .5;
+    }
+}
+
+/* Modal specific inputs focus styles */
+/* We handle this partially in JS but helper class is good */
+.inner-glow-focus:focus {
+    box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.05),
+        inset 0 0 20px rgba(0, 170, 255, 0.1),
+        0 0 0 1px var(--primary) !important;
+}
+
+.animate-spin {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ========================================
+   Avatar Safe-Load Styling
+   ======================================== */
+
+/* User avatar with fallback support */
+.user-avatar {
+    object-fit: cover;
+    background-color: var(--deep-obsidian);
+    border: 2px solid var(--glass-border);
+}
+
+/* Fallback icon if image fails completely */
+.user-avatar-fallback {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--deep-obsidian);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--neon-blue);
+    font-weight: 600;
+    font-size: 14px;
+    border: 2px solid var(--glass-border);
+}
+
+/* ========================================
+   Dropdown Menu Dark Theme Override
+   ======================================== */
+
+.dropdown-menu {
+    background: var(--deep-obsidian);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 8px;
+}
+
+.dropdown-item {
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 0.875rem;
+    transition: background-color 0.15s ease;
+}
+
+.dropdown-item:hover,
+.dropdown-item:focus {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: var(--foreground);
+}
+
+.dropdown-divider {
+    border-color: var(--glass-border);
+    margin: 4px 0;
+}
+
+/* ========================================
+   Toast Notifications
+   ======================================== */
+
+.toast {
+    background: var(--deep-obsidian);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+}
+
+.toast.bg-success {
+    background: rgba(22, 207, 140, 0.15) !important;
+    border-color: rgba(22, 207, 140, 0.3);
+}
+
+.toast.bg-danger {
+    background: rgba(255, 80, 80, 0.15) !important;
+    border-color: rgba(255, 80, 80, 0.3);
+}
+
+/* ========================================
+   Form Controls Dark Theme
+   ======================================== */
+
+.form-control,
+.form-select {
+    background-color: rgba(36, 36, 36, 0.5);
+    border: 1px solid var(--glass-border);
+    color: var(--foreground);
+    border-radius: 12px;
+}
+
+.form-control:focus,
+.form-select:focus {
+    background-color: rgba(36, 36, 36, 0.7);
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(0, 170, 255, 0.2);
+    color: var(--foreground);
+}
+
+.form-control::placeholder {
+    color: var(--muted-foreground);
+}
+
+/* ========================================
+   Button Variants
+   ======================================== */
+
+.btn-primary {
+    background: var(--primary);
+    color: var(--primary-foreground);
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    padding: 10px 20px;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.btn-primary:hover {
+    background: var(--primary);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 170, 255, 0.3);
+}
+
+.btn-primary:active {
+    transform: scale(0.98);
+}
+
+.btn-outline-success {
+    border-color: var(--match-gradient-start);
+    color: var(--match-gradient-start);
+    border-radius: 12px;
+}
+
+.btn-outline-success:hover {
+    background: var(--match-gradient-start);
+    border-color: var(--match-gradient-start);
+    color: var(--background);
+}
+
+.btn-outline-secondary {
+    border-color: var(--muted-foreground);
+    color: var(--muted-foreground);
+    border-radius: 12px;
+}
+
+.btn-outline-secondary:hover {
+    background: var(--muted);
+    border-color: var(--muted);
+    color: var(--foreground);
+}
+
+/* ========================================
+   Badge Variants
+   ======================================== */
+
+.badge.bg-primary {
+    background: var(--primary) !important;
+    color: var(--primary-foreground);
+}
+
+.badge.bg-secondary {
+    background: var(--secondary) !important;
+    color: var(--secondary-foreground);
+}
+
+.badge.bg-success {
+    background: var(--match-gradient-start) !important;
+    color: var(--background);
+}
+
+/* ========================================
+   Modal Dark Theme Override
+   ======================================== */
+
+.modal-content {
+    background: var(--deep-obsidian);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+}
+
+.modal-backdrop.show {
+    opacity: 0.8;
+}
